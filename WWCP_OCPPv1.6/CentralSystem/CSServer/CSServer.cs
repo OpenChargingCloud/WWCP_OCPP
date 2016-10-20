@@ -229,10 +229,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             #region / (HTTPRoot)
 
-            SOAPServer.AddMethodCallback(HTTPMethod.GET,
+            SOAPServer.AddMethodCallback(HTTPHostname.Any,
+                                         HTTPMethod.GET,
                                          new String[] { "/", URIPrefix + "/" },
                                          HTTPContentType.TEXT_UTF8,
-                                         HTTPDelegate: Request => {
+                                         HTTPDelegate: async Request => {
 
                                              return new HTTPResponseBuilder(Request) {
 
@@ -261,10 +262,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             #region / - Authorize
 
-            SOAPServer.RegisterSOAPDelegate(URIPrefix,
+            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+                                            URIPrefix,
                                             "Authorize",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "authorizeRequest").FirstOrDefault(),
-                                            (SOAPRequest, HeaderXML, AuthorizeXML) => {
+                                            async (SOAPRequest, HeaderXML, AuthorizeXML) => {
 
                 #region Send OnAuthorizeRequest event
 
@@ -517,10 +519,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             #region / - Boot Notification
 
-            SOAPServer.RegisterSOAPDelegate(URIPrefix,
+            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+                                            URIPrefix,
                                             "Boot Notification",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "bootNotificationRequest").FirstOrDefault(),
-                                            (SOAPRequest, HeaderXML, BootNotificationXML) => {
+                                            async (SOAPRequest, HeaderXML, BootNotificationXML) => {
 
                 #region Send OnBootNotificationRequest event
 
@@ -800,10 +803,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             #region / - Heartbeat
 
-            SOAPServer.RegisterSOAPDelegate(URIPrefix,
+            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+                                            URIPrefix,
                                             "Heartbeat",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "heartbeatRequest").FirstOrDefault(),
-                                            (SOAPRequest, HeaderXML, HeartbeatXML) => {
+                                            async (SOAPRequest, HeaderXML, HeartbeatXML) => {
 
                 #region Send OnHeartbeatRequest event
 
@@ -1018,10 +1022,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             #region / - StartTransaction
 
-            SOAPServer.RegisterSOAPDelegate(URIPrefix,
+            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+                                            URIPrefix,
                                             "StartTransaction",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "startTransactionRequest").FirstOrDefault(),
-                                            (SOAPRequest, HeaderXML, StartTransactionXML) => {
+                                            async (SOAPRequest, HeaderXML, StartTransactionXML) => {
 
                 #region Send OnStartTransactionRequest event
 

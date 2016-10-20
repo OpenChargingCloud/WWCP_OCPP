@@ -174,10 +174,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_5
 
             #region / (HTTPRoot)
 
-            SOAPServer.AddMethodCallback(HTTPMethod.GET,
+            SOAPServer.AddMethodCallback(HTTPHostname.Any,
+                                         HTTPMethod.GET,
                                          new String[] { "/", URIPrefix + "/" },
                                          HTTPContentType.TEXT_UTF8,
-                                         HTTPDelegate: Request => {
+                                         HTTPDelegate: async Request => {
 
                                              return new HTTPResponseBuilder(Request) {
 
@@ -202,9 +203,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_5
                                          AllowReplacement: URIReplacement.Allow);
 
             #endregion
-
-
-
 
         }
 
