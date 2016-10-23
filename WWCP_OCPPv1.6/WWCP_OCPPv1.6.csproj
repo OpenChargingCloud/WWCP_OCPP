@@ -47,14 +47,55 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CentralSystem\CSClient\CSClientXMLMethods - Copy.cs" />
+    <Compile Include="DataTypes\MeterValue.cs" />
+    <Compile Include="DataTypes\Simple\AvailabilityStatus.cs" />
+    <Compile Include="DataTypes\Simple\DiagnosticsStatus.cs" />
+    <Compile Include="DataTypes\Simple\FirmwareStatus.cs" />
+    <Compile Include="DataTypes\Simple\ChargePointStatus.cs" />
+    <Compile Include="DataTypes\Simple\ClearChargingProfileStatus.cs" />
+    <Compile Include="DataTypes\Simple\ClearCacheStatus.cs" />
+    <Compile Include="DataTypes\Simple\ConfigurationStatus.cs" />
+    <Compile Include="DataTypes\Simple\Locations.cs" />
+    <Compile Include="DataTypes\Simple\ReadingContext.cs" />
+    <Compile Include="DataTypes\Simple\Measurands.cs" />
+    <Compile Include="DataTypes\Simple\Phases.cs" />
+    <Compile Include="DataTypes\Simple\RegistrationStatus.cs" />
+    <Compile Include="DataTypes\Simple\UnitsOfMeasure.cs" />
+    <Compile Include="DataTypes\Simple\RemoteStartStopStatus.cs" />
+    <Compile Include="DataTypes\Simple\CancelReservationStatus.cs" />
+    <Compile Include="DataTypes\Simple\DataTransferStatus.cs" />
+    <Compile Include="DataTypes\Simple\GetCompositeScheduleStatus.cs" />
+    <Compile Include="DataTypes\Simple\ReservationStatus.cs" />
+    <Compile Include="DataTypes\Simple\ChargingProfileStatus.cs" />
+    <Compile Include="DataTypes\Simple\MessageTrigger.cs" />
+    <Compile Include="DataTypes\Simple\ChargePointErrorCodes.cs" />
+    <Compile Include="DataTypes\Simple\ValueFormats.cs" />
+    <Compile Include="DataTypes\Simple\TriggerMessageStatus.cs" />
+    <Compile Include="DataTypes\Simple\Reasons.cs" />
+    <Compile Include="DataTypes\Simple\UpdateStatus.cs" />
+    <Compile Include="DataTypes\Simple\ResetStatus.cs" />
+    <Compile Include="DataTypes\Simple\AvailabilityTypes.cs" />
+    <Compile Include="DataTypes\Simple\ChargingRateUnitTypes.cs" />
+    <Compile Include="DataTypes\Simple\ChargingProfileKindTypes.cs" />
+    <Compile Include="DataTypes\Simple\RecurrencyKindTypes.cs" />
+    <Compile Include="DataTypes\Simple\UpdateTypes.cs" />
+    <Compile Include="DataTypes\Simple\ResetTypes.cs" />
+    <Compile Include="DataTypes\Simple\UnlockStatus.cs" />
+    <Compile Include="DataTypes\TransactionData.cs" />
+    <Compile Include="CentralSystem\CSServer\CSServerDelegates.cs" />
     <Compile Include="CentralSystem\CSServer\CSServer.cs" />
     <Compile Include="CentralSystem\CSServer\CSServerXMLMethods.cs" />
     <Compile Include="ChargePoint\CPClient\CPClientXMLMethods.cs" />
-    <Compile Include="DataTypes\IdToken.cs" />
-    <Compile Include="DataTypes\AuthorizationStatus.cs" />
-    <Compile Include="DataTypes\RegistrationStatus.cs" />
+    <Compile Include="DataTypes\CDRStatus.cs" />
+    <Compile Include="DataTypes\Complex\IdTagInfo.cs" />
+    <Compile Include="DataTypes\Complex\IdToken.cs" />
+    <Compile Include="DataTypes\Simple\AuthorizationStatus.cs" />
     <Compile Include="IO\OCPPNS.cs" />
     <Compile Include="IO\SOAP.cs" />
+    <Compile Include="IO\XML_IO.cs" />
+    <Compile Include="Messages\AuthorizeRequest.cs" />
+    <Compile Include="Messages\AuthorizeResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +123,7 @@
   <ItemGroup>
     <None Include="README.md" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

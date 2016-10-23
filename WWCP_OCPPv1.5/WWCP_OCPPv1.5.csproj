@@ -54,7 +54,6 @@
     <Compile Include="DataTypes\AuthorizationStatus.cs" />
     <Compile Include="DataTypes\RegistrationStatus.cs" />
     <Compile Include="DataTypes\Datatypes.cs" />
-    <Compile Include="CentralSystem\CSClient\CSClientXMLMethods.cs" />
     <Compile Include="IO\OCPPNS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IO\SOAP.cs" />
@@ -86,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ChargePoint\CPServer\" />
+    <Folder Include="Messages\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

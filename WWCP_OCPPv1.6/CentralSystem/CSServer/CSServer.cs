@@ -29,14 +29,15 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
 using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP.NS;
+using System.Threading.Tasks;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6
+namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP v1.5 HTTP/SOAP/XML Central System Server API.
+    /// An OCPP HTTP/SOAP/XML Central System Server API.
     /// </summary>
     public class CSServer : ASOAPServer
     {
@@ -56,16 +57,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
         /// </summary>
-        public     const           String    DefaultURIPrefix       = "v1.6";
+        public new const           String    DefaultURIPrefix       = "v1.6";
 
         /// <summary>
         /// The default query timeout.
         /// </summary>
         public new static readonly TimeSpan  DefaultQueryTimeout    = TimeSpan.FromMinutes(1);
-
-        #endregion
-
-        #region Properties
 
         #endregion
 
@@ -76,17 +73,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// An event sent whenever an authorize SOAP request was received.
         /// </summary>
-        public event RequestLogHandler         OnAuthorizeRequest;
+        public event RequestLogHandler           OnAuthorizeSOAPRequest;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to an authorize was sent.
+        /// An event sent whenever an authorize SOAP response was sent.
         /// </summary>
-        public event AccessLogHandler          OnAuthorizeResponse;
+        public event AccessLogHandler            OnAuthorizeSOAPResponse;
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
         /// </summary>
-        public event OnAuthorizeStartDelegate  OnAuthorize;
+        public event OnAuthorizeRequestDelegate  OnAuthorizeRequest;
 
         #endregion
 
@@ -105,7 +102,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// An event sent whenever a boot notification was received.
         /// </summary>
-        public event OnAuthorizeStartDelegate  OnBootNotification;
+        public event OnAuthorizeDelegate OnBootNotification;
 
         #endregion
 
@@ -124,7 +121,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// An event sent whenever a heartbeat was received.
         /// </summary>
-        public event OnAuthorizeStartDelegate  OnHeartbeat;
+        public event OnAuthorizeDelegate  OnHeartbeat;
 
         #endregion
 
@@ -143,7 +140,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        public event OnAuthorizeStartDelegate  OnStartTransaction;
+        public event OnAuthorizeDelegate  OnStartTransaction;
 
         #endregion
 
@@ -162,7 +159,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
         /// </summary>
-        public event OnAuthorizeStartDelegate  OnStopTransaction;
+        public event OnAuthorizeDelegate  OnStopTransaction;
 
         #endregion
 
@@ -187,7 +184,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                         Boolean   AutoStart       = false)
 
             : base(HTTPServerName.IsNotNullOrEmpty() ? HTTPServerName : DefaultHTTPServerName,
-                   TCPPort        != null            ? TCPPort        : DefaultHTTPServerPort,
+                   TCPPort ?? DefaultHTTPServerPort,
                    URIPrefix.     IsNotNullOrEmpty() ? URIPrefix      : DefaultURIPrefix,
                    HTTPContentType.SOAPXML_UTF8,
                    DNSClient,
@@ -202,7 +199,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region CSServer(SOAPServer, URIPrefix = "")
+        #region CSServer(SOAPServer, URIPrefix = DefaultURIPrefix)
 
         /// <summary>
         /// Use the given HTTP server for the OCPP HTTP/SOAP/XML Central System Server API using IPAddress.Any.
@@ -210,10 +207,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="SOAPServer">A SOAP server.</param>
         /// <param name="URIPrefix">An optional prefix for the HTTP URIs.</param>
         public CSServer(SOAPServer  SOAPServer,
-                        String      URIPrefix  = "")
+                        String      URIPrefix  = DefaultURIPrefix)
 
             : base(SOAPServer,
-                   URIPrefix)
+                   URIPrefix.IsNotNullOrEmpty() ? URIPrefix : DefaultURIPrefix)
 
         { }
 
@@ -266,1107 +263,872 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                             URIPrefix,
                                             "Authorize",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "authorizeRequest").FirstOrDefault(),
-                                            async (SOAPRequest, HeaderXML, AuthorizeXML) => {
+                                            async (Request, HeaderXML, AuthorizeXML) => {
 
-                #region Send OnAuthorizeRequest event
-
-                var Runtime = Stopwatch.StartNew();
+                #region Send OnAuthorizeSOAPRequest event
 
                 try
                 {
 
-                    OnAuthorizeRequest?.Invoke(DateTime.Now,
-                                               SOAPServer,
-                                               SOAPRequest);
+                    OnAuthorizeSOAPRequest?.Invoke(DateTime.Now,
+                                                   this.SOAPServer,
+                                                   Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log("OCPPv1.6.CentralSystemServer.OnAuthorizeRequest");
+                    e.Log(nameof(CSServer) + "." + nameof(OnAuthorizeSOAPRequest));
                 }
 
                 #endregion
 
-                #region Documentation
 
-                // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-                //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-                //                xmlns:ocpp = "urn://Ocpp/Cs/2015/10/">
-                //
-                //    <soap:Header>
-                //       <ns:chargeBoxIdentity>?</ns:chargeBoxIdentity>
-                //       <wsa:Action soap:mustUnderstand="1">/BootNotification</wsa:Action>
-                //       <wsa:ReplyTo soap:mustUnderstand="1">
-                //         <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
-                //       </wsa:ReplyTo>
-                //       <wsa:MessageID soap:mustUnderstand="1">uuid:516f7065-074c-4f4a-8b6d-fd3603d88e3d</wsa:MessageID>
-                //       <wsa:To soap:mustUnderstand="1">http://127.0.0.1:2010/v1.6</wsa:To>
-                //    </soap:Header>
-                //
-                //    <soap:Body>
-                //       <ocpp:authorizeRequest>
-                //          <ocpp:idTag>?</ocpp:idTag>
-                //       </ocpp:authorizeRequest>
-                //    </soap:Body>
-                //
-                // </soap:Envelope>
+                var _AuthorizeRequest = AuthorizeRequest.Parse(HeaderXML, AuthorizeXML);
 
-                #endregion
+                AuthorizeResponse response            = null;
 
-                #region Parse request parameters
-
-                // SOAP header...
-                var ChargeBoxIdentity  = HeaderXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity",
-                                                                         "The given SOAP header did not provide a valid 'charge box identity' information!");
-
-                var MessageId          = HeaderXML.ElementValueOrFail   (SOAPNS.SOAPAdressing + "MessageID");
-
-
-                // <wsa5:From><wsa5:Address>http://62.133.94.210:12345</wsa5:Address></wsa5:From>
-
-
-                // SOAP body...
-                var IdTag              = AuthorizeXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "idTag",
-                                                                                   "The given authorize XML did not provide a valid 'IdTag' information!");
-
-                #endregion
 
 
                 #region Call async subscribers
 
-                //AuthStartEVSEResult result = null;
+                if (response == null)
+                {
 
-                //var OnAuthorizeStartLocal = OnAuthorizeStart;
-                //if (OnAuthorizeStartLocal != null)
-                //{
+                    var results = OnAuthorizeRequest?.
+                                      GetInvocationList()?.
+                                      SafeSelect(subscriber => (subscriber as OnAuthorizeRequestDelegate)
+                                          (DateTime.Now,
+                                           this,
+                                           Request.CancellationToken,
+                                           Request.EventTrackingId,
+                                           _AuthorizeRequest.IdTag,
+                                           DefaultQueryTimeout)).
+                                      ToArray();
 
-                //    var CTS = new CancellationTokenSource();
+                    if (results.Length > 0)
+                    {
 
-                //    var task = OnAuthorizeStartLocal(DateTime.Now,
-                //                                     this,
-                //                                     CTS.Token,
-                //                                     EventTracking_Id.New,
-                //                                     OperatorId,
-                //                                     AuthToken,
-                //                                     EVSEId,
-                //                                     SessionId,
-                //                                     ChargingProductId,
-                //                                     PartnerSessionId,
-                //                                     DefaultQueryTimeout);
+                        await Task.WhenAll(results);
 
-                //    task.Wait();
-                //    result = task.Result;
+                        response = results.FirstOrDefault()?.Result;
 
-                //}
+                    }
 
-                #endregion
+                    if (results.Length == 0 || response == null)
+                        response = AuthorizeResponse.Failed;
 
-
-                var Status       = AuthorizationStatus.Accepted;
-                var ExpiryDate   = DateTime.Now.Add(TimeSpan.FromDays(1));
-                var ParentIdTag  = new IdToken("4567");
-
-                #region Map result
-
-                //var HubjectCode            = "";
-                //var HubjectDescription     = "";
-                //var HubjectAdditionalInfo  = "";
-
-                //if (result != null)
-                //    switch (result.Result)
-                //    {
-
-                //        case AuthStartEVSEResultType.Authorized:
-                //            HubjectCode         = "000";
-                //            HubjectDescription  = "Ready to charge!";
-                //            break;
-
-                //        case AuthStartEVSEResultType.NotAuthorized:
-                //            HubjectCode         = "102";
-                //            HubjectDescription  = "RFID Authentication failed - invalid UID";
-                //            break;
-
-                //        case AuthStartEVSEResultType.InvalidSessionId:
-                //            HubjectCode         = "400";
-                //            HubjectDescription  = "Session is invalid";
-                //            break;
-
-                //        case AuthStartEVSEResultType.EVSECommunicationTimeout:
-                //            HubjectCode         = "501";
-                //            HubjectDescription  = "Communication to EVSE failed!";
-                //            break;
-
-                //        case AuthStartEVSEResultType.StartChargingTimeout:
-                //            HubjectCode         = "510";
-                //            HubjectDescription  = "No EV connected to EVSE!";
-                //            break;
-
-                //        case AuthStartEVSEResultType.Reserved:
-                //            HubjectCode         = "601";
-                //            HubjectDescription  = "EVSE reserved!";
-                //            break;
-
-                //        //Note: Can not happen, or?
-                //        //case AuthStartEVSEResultType.AlreadyInUse:
-                //        //    HubjectCode         = "602";
-                //        //    HubjectDescription  = "EVSE is already in use!";
-                //        //    break;
-
-                //        case AuthStartEVSEResultType.UnknownEVSE:
-                //            HubjectCode         = "603";
-                //            HubjectDescription  = "Unknown EVSE ID!";
-                //            break;
-
-                //        case AuthStartEVSEResultType.OutOfService:
-                //            HubjectCode         = "700";
-                //            HubjectDescription  = "EVSE out of service!";
-                //            break;
-
-
-                //        default:
-                //            HubjectCode         = "320";
-                //            HubjectDescription  = "Service not available!";
-                //            break;
-
-                //    }
+                }
 
                 #endregion
 
-                #region Documentation
 
-                // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-                //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-                //                xmlns:ocpp = "urn://Ocpp/Cs/2015/10/">
-                //
-                //    <soap:Header>
-                //       <wsa:Action soap:mustUnderstand="true">/HeartbeatResponse</wsa:Action>
-                //    </soap:Header>
-                //
-                //    <soap:Body>
-                //       <ocpp:authorizeResponse>
-                //          <ocpp:idTagInfo>
-                //
-                //             <ocpp:status>?</ocpp:status>
-                //
-                //             <!--Optional:-->
-                //             <ocpp:expiryDate>?</ocpp:expiryDate>
-                //
-                //             <!--Optional:-->
-                //             <ocpp:parentIdTag>?</ocpp:parentIdTag>
-                //
-                //          </ocpp:idTagInfo>
-                //       </ocpp:authorizeResponse>
-                //    </soap:Body>
-                //
-                // </soap:Envelope>
 
-                #endregion
+                #region Create SOAPResponse
 
-                #region Create HTTP/SOAP response
-
-                var SOAPResponse = new HTTPResponseBuilder(SOAPRequest) {
+                var HTTPResponse = new HTTPResponseBuilder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.DefaultServerName,
                     Date            = DateTime.Now,
-                    ContentType     = HTTPContentType.SOAPXML_UTF8,
-                    Content         = SOAP.Encapsulation(
-
-                                          SOAPHeaders: new XElement[] {
-                                                           new XElement(SOAPNS.SOAPEnvelope_v1_2 + "Action",
-                                                               new XAttribute(SOAPNS.SOAPEnvelope_v1_2 + "mustUnderstand", "true"),
-                                                               "/AuthorizeResponse")
-                                                           // RelatesTo: MessageID
-                                                       },
-
-                                          SOAPBody:    new XElement(OCPPNS.OCPPv1_6_CS + "authorizeResponse",
-                                                           new XElement(OCPPNS.OCPPv1_6_CS + "idTagInfo",
-                                                               new XElement(OCPPNS.OCPPv1_6_CS + "status",      Status.ToString()),
-                                                               new XElement(OCPPNS.OCPPv1_6_CS + "expiryDate",  ExpiryDate.ToUniversalTime().ToIso8601()),
-                                                               new XElement(OCPPNS.OCPPv1_6_CS + "parentIdTag", ParentIdTag.ToString())
-                                                           )
-                                                       )
-
-                                         ).ToUTF8Bytes()
+                    ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                    Content         = SOAP.Encapsulation(new XElement[] { new XElement(OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity", "ChargeBoxIdentity") },
+                                                         response.ToXML()).ToUTF8Bytes()
                 };
 
                 #endregion
 
-                #region Send OnAuthorizeResponse event
 
-                Runtime.Stop();
+                #region Send OnAuthorizeSOAPResponse event
 
                 try
                 {
 
-                    OnAuthorizeResponse?.Invoke(SOAPResponse.Timestamp,
-                                                this.SOAPServer,
-                                                SOAPRequest,
-                                                SOAPResponse);
+                    OnAuthorizeSOAPResponse?.Invoke(HTTPResponse.Timestamp,
+                                                    this.SOAPServer,
+                                                    Request,
+                                                    HTTPResponse);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log("OCPPv1.6.CentralSystemServer.OnAuthorizeResponse");
+                    e.Log(nameof(CSServer) + "." + nameof(OnAuthorizeSOAPResponse));
                 }
 
                 #endregion
 
-                return SOAPResponse;
+                return HTTPResponse;
 
             });
 
             #endregion
 
-            #region / - Boot Notification
-
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
-                                            "Boot Notification",
-                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "bootNotificationRequest").FirstOrDefault(),
-                                            async (SOAPRequest, HeaderXML, BootNotificationXML) => {
-
-                #region Send OnBootNotificationRequest event
-
-                var Runtime = Stopwatch.StartNew();
-
-                try
-                {
-
-                    OnBootNotificationRequest?.Invoke(DateTime.Now,
-                                                      SOAPServer,
-                                                      SOAPRequest);
-
-                }
-                catch (Exception e)
-                {
-                    e.Log("OCPPv1.6.CentralSystemServer.OnBootNotificationRequest");
-                }
+            //#region / - Boot Notification
+
+            //SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            //                                URIPrefix,
+            //                                "Boot Notification",
+            //                                XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "bootNotificationRequest").FirstOrDefault(),
+            //                                async (SOAPRequest, HeaderXML, BootNotificationXML) => {
+
+            //    #region Send OnBootNotificationRequest event
+
+            //    var Runtime = Stopwatch.StartNew();
+
+            //    try
+            //    {
+
+            //        OnBootNotificationRequest?.Invoke(DateTime.Now,
+            //                                          SOAPServer,
+            //                                          SOAPRequest);
+
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        e.Log("OCPPv1.6.CentralSystemServer.OnBootNotificationRequest");
+            //    }
 
-                #endregion
-
-                #region Documentation
-
-                // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-                //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-                //                xmlns:ocpp = "urn://Ocpp/Cs/2015/10/">
-                //
-                //    <soap:Header>
-                //       <ns:chargeBoxIdentity>?</ns:chargeBoxIdentity>
-                //       <wsa:Action soap:mustUnderstand="1">/BootNotification</wsa:Action>
-                //       <wsa:ReplyTo soap:mustUnderstand="1">
-                //         <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
-                //       </wsa:ReplyTo>
-                //       <wsa:MessageID soap:mustUnderstand="1">uuid:516f7065-074c-4f4a-8b6d-fd3603d88e3d</wsa:MessageID>
-                //       <wsa:To soap:mustUnderstand="1">http://127.0.0.1:2010/v1.6</wsa:To>
-                //    </soap:Header>
-                //
-                //    <soap:Body>
-                //       <ocpp:bootNotificationRequest>
-                //
-                //          <ocpp:chargePointVendor>?</ocpp:chargePointVendor>
-                //          <ocpp:chargePointModel>?</ocpp:chargePointModel>
-                //
-                //          <!--Optional:-->
-                //          <ocpp:chargePointSerialNumber>?</ocpp:chargePointSerialNumber>
-                //
-                //          <!--Optional:-->
-                //          <ocpp:chargeBoxSerialNumber>?</ocpp:chargeBoxSerialNumber>
-                //
-                //          <!--Optional:-->
-                //          <ocpp:firmwareVersion>?</ocpp:firmwareVersion>
-                //
-                //          <!--Optional:-->
-                //          <ocpp:iccid>?</ocpp:iccid>
-                //
-                //          <!--Optional:-->
-                //          <ocpp:imsi>?</ocpp:imsi>
-                //
-                //          <!--Optional:-->
-                //          <ocpp:meterType>?</ocpp:meterType>
-                //
-                //          <!--Optional:-->
-                //          <ocpp:meterSerialNumber>?</ocpp:meterSerialNumber>
-                //
-                //       </ocpp:bootNotificationRequest>
-                //    </soap:Body>
-                //
-                // </soap:Envelope>
-
-                #endregion
+            //    #endregion
+
+            //    #region Documentation
+
+            //    // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
+            //    //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
+            //    //                xmlns:ocpp = "urn://Ocpp/Cs/2015/10/">
+            //    //
+            //    //    <soap:Header>
+            //    //       <ns:chargeBoxIdentity>?</ns:chargeBoxIdentity>
+            //    //       <wsa:Action soap:mustUnderstand="1">/BootNotification</wsa:Action>
+            //    //       <wsa:ReplyTo soap:mustUnderstand="1">
+            //    //         <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
+            //    //       </wsa:ReplyTo>
+            //    //       <wsa:MessageID soap:mustUnderstand="1">uuid:516f7065-074c-4f4a-8b6d-fd3603d88e3d</wsa:MessageID>
+            //    //       <wsa:To soap:mustUnderstand="1">http://127.0.0.1:2010/v1.6</wsa:To>
+            //    //    </soap:Header>
+            //    //
+            //    //    <soap:Body>
+            //    //       <ocpp:bootNotificationRequest>
+            //    //
+            //    //          <ocpp:chargePointVendor>?</ocpp:chargePointVendor>
+            //    //          <ocpp:chargePointModel>?</ocpp:chargePointModel>
+            //    //
+            //    //          <!--Optional:-->
+            //    //          <ocpp:chargePointSerialNumber>?</ocpp:chargePointSerialNumber>
+            //    //
+            //    //          <!--Optional:-->
+            //    //          <ocpp:chargeBoxSerialNumber>?</ocpp:chargeBoxSerialNumber>
+            //    //
+            //    //          <!--Optional:-->
+            //    //          <ocpp:firmwareVersion>?</ocpp:firmwareVersion>
+            //    //
+            //    //          <!--Optional:-->
+            //    //          <ocpp:iccid>?</ocpp:iccid>
+            //    //
+            //    //          <!--Optional:-->
+            //    //          <ocpp:imsi>?</ocpp:imsi>
+            //    //
+            //    //          <!--Optional:-->
+            //    //          <ocpp:meterType>?</ocpp:meterType>
+            //    //
+            //    //          <!--Optional:-->
+            //    //          <ocpp:meterSerialNumber>?</ocpp:meterSerialNumber>
+            //    //
+            //    //       </ocpp:bootNotificationRequest>
+            //    //    </soap:Body>
+            //    //
+            //    // </soap:Envelope>
+
+            //    #endregion
 
-                #region Parse request parameters
-
-
+            //    #region Parse request parameters
+
+
 
-                // SOAP header...
-                var ChargeBoxIdentity        = HeaderXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity",
-                                                                               "The given SOAP header did not provide a valid 'charge box identity' information!");
-
-                var MessageId                = HeaderXML.ElementValueOrFail   (SOAPNS.SOAPAdressing + "MessageID");
-
-
-                // <wsa5:From><wsa5:Address>http://62.133.94.210:12345</wsa5:Address></wsa5:From>
-
-
-
-
-
-                // SOAP body...
-                var ChargePointVendor        = BootNotificationXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargePointVendor",
-                                                                                         "The given BootNotification did not provide a valid 'charge point vender' information!");
-
-                var ChargePointModel         = BootNotificationXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargePointModel",
-                                                                                         "The given BootNotification did not provide a valid 'charge point model' information!");
-
-                var ChargePointSerialNumber  = BootNotificationXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "chargePointSerialNumber", "");
-                var ChargeBoxSerialNumber    = BootNotificationXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "chargeBoxSerialNumber",   "");
-                var FirmwareVersion          = BootNotificationXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "firmwareVersion",         "");
-                var ICCID                    = BootNotificationXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "iccid",                   "");
-                var IMSI                     = BootNotificationXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "imsi",                    "");
-                var MeterType                = BootNotificationXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "meterType",               "");
-                var MeterSerialNumer         = BootNotificationXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "meterSerialNumber",       "");
+            //    // SOAP header...
+            //    var ChargeBoxIdentity        = HeaderXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity",
+            //                                                                   "The given SOAP header did not provide a valid 'charge box identity' information!");
+
+            //    var MessageId                = HeaderXML.ElementValueOrFail   (SOAPNS.SOAPAdressing + "MessageID");
+
+
+            //    // <wsa5:From><wsa5:Address>http://62.133.94.210:12345</wsa5:Address></wsa5:From>
+
+
+
+
+
+            //    // SOAP body...
+            //    var ChargePointVendor        = BootNotificationXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargePointVendor",
+            //                                                                             "The given BootNotification did not provide a valid 'charge point vender' information!");
+
+            //    var ChargePointModel         = BootNotificationXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargePointModel",
+            //                                                                             "The given BootNotification did not provide a valid 'charge point model' information!");
+
+            //    var ChargePointSerialNumber  = BootNotificationXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "chargePointSerialNumber", "");
+            //    var ChargeBoxSerialNumber    = BootNotificationXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "chargeBoxSerialNumber",   "");
+            //    var FirmwareVersion          = BootNotificationXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "firmwareVersion",         "");
+            //    var ICCID                    = BootNotificationXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "iccid",                   "");
+            //    var IMSI                     = BootNotificationXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "imsi",                    "");
+            //    var MeterType                = BootNotificationXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "meterType",               "");
+            //    var MeterSerialNumer         = BootNotificationXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "meterSerialNumber",       "");
 
-                #endregion
+            //    #endregion
 
 
-                #region Call async subscribers
+            //    #region Call async subscribers
 
-                //AuthStartEVSEResult result = null;
+            //    //AuthStartEVSEResult result = null;
 
-                //var OnAuthorizeStartLocal = OnAuthorizeStart;
-                //if (OnAuthorizeStartLocal != null)
-                //{
+            //    //var OnAuthorizeStartLocal = OnAuthorizeStart;
+            //    //if (OnAuthorizeStartLocal != null)
+            //    //{
 
-                //    var CTS = new CancellationTokenSource();
+            //    //    var CTS = new CancellationTokenSource();
 
-                //    var task = OnAuthorizeStartLocal(DateTime.Now,
-                //                                     this,
-                //                                     CTS.Token,
-                //                                     EventTracking_Id.New,
-                //                                     OperatorId,
-                //                                     AuthToken,
-                //                                     EVSEId,
-                //                                     SessionId,
-                //                                     ChargingProductId,
-                //                                     PartnerSessionId,
-                //                                     DefaultQueryTimeout);
+            //    //    var task = OnAuthorizeStartLocal(DateTime.Now,
+            //    //                                     this,
+            //    //                                     CTS.Token,
+            //    //                                     EventTracking_Id.New,
+            //    //                                     OperatorId,
+            //    //                                     AuthToken,
+            //    //                                     EVSEId,
+            //    //                                     SessionId,
+            //    //                                     ChargingProductId,
+            //    //                                     PartnerSessionId,
+            //    //                                     DefaultQueryTimeout);
 
-                //    task.Wait();
-                //    result = task.Result;
+            //    //    task.Wait();
+            //    //    result = task.Result;
 
-                //}
-
-                #endregion
+            //    //}
+
+            //    #endregion
 
-
-                var Status    = RegistrationStatus.Accepted;
-                var Interval  = 300;
-
-                #region Map result
-
-                //var HubjectCode            = "";
-                //var HubjectDescription     = "";
-                //var HubjectAdditionalInfo  = "";
-
-                //if (result != null)
-                //    switch (result.Result)
-                //    {
-
-                //        case AuthStartEVSEResultType.Authorized:
-                //            HubjectCode         = "000";
-                //            HubjectDescription  = "Ready to charge!";
-                //            break;
-
-                //        case AuthStartEVSEResultType.NotAuthorized:
-                //            HubjectCode         = "102";
-                //            HubjectDescription  = "RFID Authentication failed - invalid UID";
-                //            break;
+
+            //    var Status    = RegistrationStatus.Accepted;
+            //    var Interval  = 300;
+
+            //    #region Map result
+
+            //    //var HubjectCode            = "";
+            //    //var HubjectDescription     = "";
+            //    //var HubjectAdditionalInfo  = "";
+
+            //    //if (result != null)
+            //    //    switch (result.Result)
+            //    //    {
+
+            //    //        case AuthStartEVSEResultType.Authorized:
+            //    //            HubjectCode         = "000";
+            //    //            HubjectDescription  = "Ready to charge!";
+            //    //            break;
+
+            //    //        case AuthStartEVSEResultType.NotAuthorized:
+            //    //            HubjectCode         = "102";
+            //    //            HubjectDescription  = "RFID Authentication failed - invalid UID";
+            //    //            break;
 
-                //        case AuthStartEVSEResultType.InvalidSessionId:
-                //            HubjectCode         = "400";
-                //            HubjectDescription  = "Session is invalid";
-                //            break;
-
-                //        case AuthStartEVSEResultType.EVSECommunicationTimeout:
-                //            HubjectCode         = "501";
-                //            HubjectDescription  = "Communication to EVSE failed!";
-                //            break;
-
-                //        case AuthStartEVSEResultType.StartChargingTimeout:
-                //            HubjectCode         = "510";
-                //            HubjectDescription  = "No EV connected to EVSE!";
-                //            break;
+            //    //        case AuthStartEVSEResultType.InvalidSessionId:
+            //    //            HubjectCode         = "400";
+            //    //            HubjectDescription  = "Session is invalid";
+            //    //            break;
+
+            //    //        case AuthStartEVSEResultType.EVSECommunicationTimeout:
+            //    //            HubjectCode         = "501";
+            //    //            HubjectDescription  = "Communication to EVSE failed!";
+            //    //            break;
+
+            //    //        case AuthStartEVSEResultType.StartChargingTimeout:
+            //    //            HubjectCode         = "510";
+            //    //            HubjectDescription  = "No EV connected to EVSE!";
+            //    //            break;
 
-                //        case AuthStartEVSEResultType.Reserved:
-                //            HubjectCode         = "601";
-                //            HubjectDescription  = "EVSE reserved!";
-                //            break;
+            //    //        case AuthStartEVSEResultType.Reserved:
+            //    //            HubjectCode         = "601";
+            //    //            HubjectDescription  = "EVSE reserved!";
+            //    //            break;
 
-                //        //Note: Can not happen, or?
-                //        //case AuthStartEVSEResultType.AlreadyInUse:
-                //        //    HubjectCode         = "602";
-                //        //    HubjectDescription  = "EVSE is already in use!";
-                //        //    break;
+            //    //        //Note: Can not happen, or?
+            //    //        //case AuthStartEVSEResultType.AlreadyInUse:
+            //    //        //    HubjectCode         = "602";
+            //    //        //    HubjectDescription  = "EVSE is already in use!";
+            //    //        //    break;
 
-                //        case AuthStartEVSEResultType.UnknownEVSE:
-                //            HubjectCode         = "603";
-                //            HubjectDescription  = "Unknown EVSE ID!";
-                //            break;
+            //    //        case AuthStartEVSEResultType.UnknownEVSE:
+            //    //            HubjectCode         = "603";
+            //    //            HubjectDescription  = "Unknown EVSE ID!";
+            //    //            break;
 
-                //        case AuthStartEVSEResultType.OutOfService:
-                //            HubjectCode         = "700";
-                //            HubjectDescription  = "EVSE out of service!";
-                //            break;
+            //    //        case AuthStartEVSEResultType.OutOfService:
+            //    //            HubjectCode         = "700";
+            //    //            HubjectDescription  = "EVSE out of service!";
+            //    //            break;
 
 
-                //        default:
-                //            HubjectCode         = "320";
-                //            HubjectDescription  = "Service not available!";
-                //            break;
+            //    //        default:
+            //    //            HubjectCode         = "320";
+            //    //            HubjectDescription  = "Service not available!";
+            //    //            break;
 
-                //    }
+            //    //    }
 
-                #endregion
+            //    #endregion
 
-                #region Documentation
+            //    #region Documentation
 
-                // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-                //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-                //                xmlns:ocpp = "urn://Ocpp/Cs/2015/10/">
-                //
-                //    <soap:Header>
-                //       <wsa:Action soap:mustUnderstand="true">/HeartbeatResponse</wsa:Action>
-                //    </soap:Header>
-                //
-                //    <soap:Body>
-                //       <ocpp:heartbeatResponse>
-                //          <ocpp:currentTime>?</ocpp:currentTime>
-                //       </ocpp:heartbeatResponse>
-                //    </soap:Body>
-                //
-                // </soap:Envelope>
+            //    // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
+            //    //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
+            //    //                xmlns:ocpp = "urn://Ocpp/Cs/2015/10/">
+            //    //
+            //    //    <soap:Header>
+            //    //       <wsa:Action soap:mustUnderstand="true">/HeartbeatResponse</wsa:Action>
+            //    //    </soap:Header>
+            //    //
+            //    //    <soap:Body>
+            //    //       <ocpp:heartbeatResponse>
+            //    //          <ocpp:currentTime>?</ocpp:currentTime>
+            //    //       </ocpp:heartbeatResponse>
+            //    //    </soap:Body>
+            //    //
+            //    // </soap:Envelope>
 
-                #endregion
-
-                #region Create HTTP/SOAP response
-
-                var SOAPResponse = new HTTPResponseBuilder(SOAPRequest) {
-                    HTTPStatusCode  = HTTPStatusCode.OK,
-                    Server          = SOAPServer.DefaultServerName,
-                    Date            = DateTime.Now,
-                    ContentType     = HTTPContentType.SOAPXML_UTF8,
-                    Content         = SOAP.Encapsulation(
+            //    #endregion
+
+            //    #region Create HTTP/SOAP response
+
+            //    var SOAPResponse = new HTTPResponseBuilder(SOAPRequest) {
+            //        HTTPStatusCode  = HTTPStatusCode.OK,
+            //        Server          = SOAPServer.DefaultServerName,
+            //        Date            = DateTime.Now,
+            //        ContentType     = HTTPContentType.SOAPXML_UTF8,
+            //        Content         = SOAP.Encapsulation(
 
-                                          SOAPHeaders: new XElement[] {
-                                                           new XElement(SOAPNS.SOAPEnvelope_v1_2 + "Action",
-                                                               new XAttribute(SOAPNS.SOAPEnvelope_v1_2 + "mustUnderstand", "true"),
-                                                               "/HeartbeatResponse")
-                                                           // RelatesTo: MessageID
-                                                       },
+            //                              SOAPHeaders: new XElement[] {
+            //                                               new XElement(SOAPNS.SOAPEnvelope_v1_2 + "Action",
+            //                                                   new XAttribute(SOAPNS.SOAPEnvelope_v1_2 + "mustUnderstand", "true"),
+            //                                                   "/HeartbeatResponse")
+            //                                               // RelatesTo: MessageID
+            //                                           },
 
-                                          SOAPBody:    new XElement(OCPPNS.OCPPv1_6_CS + "bootNotificationResponse",
-                                                           new XElement(OCPPNS.OCPPv1_6_CS + "status",       Status.ToString()),
-                                                           new XElement(OCPPNS.OCPPv1_6_CS + "currentTime",  DateTime.Now.ToUniversalTime().ToIso8601()),
-                                                           new XElement(OCPPNS.OCPPv1_6_CS + "interval",     Interval)
-                                                       )
+            //                              SOAPBody:    new XElement(OCPPNS.OCPPv1_6_CS + "bootNotificationResponse",
+            //                                               new XElement(OCPPNS.OCPPv1_6_CS + "status",       Status.ToString()),
+            //                                               new XElement(OCPPNS.OCPPv1_6_CS + "currentTime",  DateTime.Now.ToUniversalTime().ToIso8601()),
+            //                                               new XElement(OCPPNS.OCPPv1_6_CS + "interval",     Interval)
+            //                                           )
 
-                                         ).ToUTF8Bytes()
-                };
+            //                             ).ToUTF8Bytes()
+            //    };
 
-                #endregion
-
-                #region Send OnBootNotificationResponse event
+            //    #endregion
+
+            //    #region Send OnBootNotificationResponse event
 
-                Runtime.Stop();
+            //    Runtime.Stop();
 
-                try
-                {
+            //    try
+            //    {
 
-                    OnBootNotificationResponse?.Invoke(SOAPResponse.Timestamp,
-                                                       SOAPServer,
-                                                       SOAPRequest,
-                                                       SOAPResponse);
+            //        OnBootNotificationResponse?.Invoke(SOAPResponse.Timestamp,
+            //                                           SOAPServer,
+            //                                           SOAPRequest,
+            //                                           SOAPResponse);
 
-                }
-                catch (Exception e)
-                {
-                    e.Log("OCPPv1.6.CentralSystemServer.OnBootNotificationResponse");
-                }
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        e.Log("OCPPv1.6.CentralSystemServer.OnBootNotificationResponse");
+            //    }
 
-                #endregion
+            //    #endregion
 
-                return SOAPResponse;
+            //    return SOAPResponse;
 
-            });
+            //});
 
-            #endregion
+            //#endregion
 
-            #region / - Heartbeat
+            //#region / - Heartbeat
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
-                                            "Heartbeat",
-                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "heartbeatRequest").FirstOrDefault(),
-                                            async (SOAPRequest, HeaderXML, HeartbeatXML) => {
+            //SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            //                                URIPrefix,
+            //                                "Heartbeat",
+            //                                XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "heartbeatRequest").FirstOrDefault(),
+            //                                async (SOAPRequest, HeaderXML, HeartbeatXML) => {
 
-                #region Send OnHeartbeatRequest event
+            //    #region Send OnHeartbeatRequest event
 
-                var Runtime = Stopwatch.StartNew();
+            //    var Runtime = Stopwatch.StartNew();
 
-                try
-                {
+            //    try
+            //    {
 
-                    OnHeartbeatRequest?.Invoke(DateTime.Now,
-                                               SOAPServer,
-                                               SOAPRequest);
+            //        OnHeartbeatRequest?.Invoke(DateTime.Now,
+            //                                   SOAPServer,
+            //                                   SOAPRequest);
 
-                }
-                catch (Exception e)
-                {
-                    e.Log("OCPPv1.6.CentralSystemServer.OnHeartbeatRequest");
-                }
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        e.Log("OCPPv1.6.CentralSystemServer.OnHeartbeatRequest");
+            //    }
 
-                #endregion
+            //    #endregion
 
-                #region Documentation
+            //    #region Documentation
 
-                // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-                //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-                //                xmlns:ocpp = "urn://Ocpp/Cs/2015/10/">
-                //
-                //    <soap:Header>
-                //       <ns:chargeBoxIdentity>?</ns:chargeBoxIdentity>
-                //       <wsa:Action soap:mustUnderstand="1">/BootNotification</wsa:Action>
-                //       <wsa:ReplyTo soap:mustUnderstand="1">
-                //         <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
-                //       </wsa:ReplyTo>
-                //       <wsa:MessageID soap:mustUnderstand="1">uuid:516f7065-074c-4f4a-8b6d-fd3603d88e3d</wsa:MessageID>
-                //       <wsa:To soap:mustUnderstand="1">http://127.0.0.1:2010/v1.6</wsa:To>
-                //    </soap:Header>
-                //
-                //    <soap:Body>
-                //       <ocpp:heartbeatRequest />
-                //    </soap:Body>
-                //
-                // </soap:Envelope>
+            //    // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
+            //    //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
+            //    //                xmlns:ocpp = "urn://Ocpp/Cs/2015/10/">
+            //    //
+            //    //    <soap:Header>
+            //    //       <ns:chargeBoxIdentity>?</ns:chargeBoxIdentity>
+            //    //       <wsa:Action soap:mustUnderstand="1">/BootNotification</wsa:Action>
+            //    //       <wsa:ReplyTo soap:mustUnderstand="1">
+            //    //         <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
+            //    //       </wsa:ReplyTo>
+            //    //       <wsa:MessageID soap:mustUnderstand="1">uuid:516f7065-074c-4f4a-8b6d-fd3603d88e3d</wsa:MessageID>
+            //    //       <wsa:To soap:mustUnderstand="1">http://127.0.0.1:2010/v1.6</wsa:To>
+            //    //    </soap:Header>
+            //    //
+            //    //    <soap:Body>
+            //    //       <ocpp:heartbeatRequest />
+            //    //    </soap:Body>
+            //    //
+            //    // </soap:Envelope>
 
-                #endregion
+            //    #endregion
 
 
-                #region Call async subscribers
+            //    #region Call async subscribers
 
-                //AuthStartEVSEResult result = null;
+            //    //AuthStartEVSEResult result = null;
 
-                //var OnAuthorizeStartLocal = OnAuthorizeStart;
-                //if (OnAuthorizeStartLocal != null)
-                //{
+            //    //var OnAuthorizeStartLocal = OnAuthorizeStart;
+            //    //if (OnAuthorizeStartLocal != null)
+            //    //{
 
-                //    var CTS = new CancellationTokenSource();
-
-                //    var task = OnAuthorizeStartLocal(DateTime.Now,
-                //                                     this,
-                //                                     CTS.Token,
-                //                                     EventTracking_Id.New,
-                //                                     OperatorId,
-                //                                     AuthToken,
-                //                                     EVSEId,
-                //                                     SessionId,
-                //                                     ChargingProductId,
-                //                                     PartnerSessionId,
-                //                                     DefaultQueryTimeout);
-
-                //    task.Wait();
-                //    result = task.Result;
-
-                //}
-
-                #endregion
-
-
-                #region Map result
-
-                //var HubjectCode            = "";
-                //var HubjectDescription     = "";
-                //var HubjectAdditionalInfo  = "";
-
-                //if (result != null)
-                //    switch (result.Result)
-                //    {
-
-                //        case AuthStartEVSEResultType.Authorized:
-                //            HubjectCode         = "000";
-                //            HubjectDescription  = "Ready to charge!";
-                //            break;
+            //    //    var CTS = new CancellationTokenSource();
+
+            //    //    var task = OnAuthorizeStartLocal(DateTime.Now,
+            //    //                                     this,
+            //    //                                     CTS.Token,
+            //    //                                     EventTracking_Id.New,
+            //    //                                     OperatorId,
+            //    //                                     AuthToken,
+            //    //                                     EVSEId,
+            //    //                                     SessionId,
+            //    //                                     ChargingProductId,
+            //    //                                     PartnerSessionId,
+            //    //                                     DefaultQueryTimeout);
+
+            //    //    task.Wait();
+            //    //    result = task.Result;
+
+            //    //}
+
+            //    #endregion
+
+
+            //    #region Map result
+
+            //    //var HubjectCode            = "";
+            //    //var HubjectDescription     = "";
+            //    //var HubjectAdditionalInfo  = "";
+
+            //    //if (result != null)
+            //    //    switch (result.Result)
+            //    //    {
+
+            //    //        case AuthStartEVSEResultType.Authorized:
+            //    //            HubjectCode         = "000";
+            //    //            HubjectDescription  = "Ready to charge!";
+            //    //            break;
 
-                //        case AuthStartEVSEResultType.NotAuthorized:
-                //            HubjectCode         = "102";
-                //            HubjectDescription  = "RFID Authentication failed - invalid UID";
-                //            break;
+            //    //        case AuthStartEVSEResultType.NotAuthorized:
+            //    //            HubjectCode         = "102";
+            //    //            HubjectDescription  = "RFID Authentication failed - invalid UID";
+            //    //            break;
 
-                //        case AuthStartEVSEResultType.InvalidSessionId:
-                //            HubjectCode         = "400";
-                //            HubjectDescription  = "Session is invalid";
-                //            break;
+            //    //        case AuthStartEVSEResultType.InvalidSessionId:
+            //    //            HubjectCode         = "400";
+            //    //            HubjectDescription  = "Session is invalid";
+            //    //            break;
 
-                //        case AuthStartEVSEResultType.EVSECommunicationTimeout:
-                //            HubjectCode         = "501";
-                //            HubjectDescription  = "Communication to EVSE failed!";
-                //            break;
+            //    //        case AuthStartEVSEResultType.EVSECommunicationTimeout:
+            //    //            HubjectCode         = "501";
+            //    //            HubjectDescription  = "Communication to EVSE failed!";
+            //    //            break;
 
-                //        case AuthStartEVSEResultType.StartChargingTimeout:
-                //            HubjectCode         = "510";
-                //            HubjectDescription  = "No EV connected to EVSE!";
-                //            break;
+            //    //        case AuthStartEVSEResultType.StartChargingTimeout:
+            //    //            HubjectCode         = "510";
+            //    //            HubjectDescription  = "No EV connected to EVSE!";
+            //    //            break;
 
-                //        case AuthStartEVSEResultType.Reserved:
-                //            HubjectCode         = "601";
-                //            HubjectDescription  = "EVSE reserved!";
-                //            break;
+            //    //        case AuthStartEVSEResultType.Reserved:
+            //    //            HubjectCode         = "601";
+            //    //            HubjectDescription  = "EVSE reserved!";
+            //    //            break;
 
-                //        //Note: Can not happen, or?
-                //        //case AuthStartEVSEResultType.AlreadyInUse:
-                //        //    HubjectCode         = "602";
-                //        //    HubjectDescription  = "EVSE is already in use!";
-                //        //    break;
+            //    //        //Note: Can not happen, or?
+            //    //        //case AuthStartEVSEResultType.AlreadyInUse:
+            //    //        //    HubjectCode         = "602";
+            //    //        //    HubjectDescription  = "EVSE is already in use!";
+            //    //        //    break;
 
-                //        case AuthStartEVSEResultType.UnknownEVSE:
-                //            HubjectCode         = "603";
-                //            HubjectDescription  = "Unknown EVSE ID!";
-                //            break;
+            //    //        case AuthStartEVSEResultType.UnknownEVSE:
+            //    //            HubjectCode         = "603";
+            //    //            HubjectDescription  = "Unknown EVSE ID!";
+            //    //            break;
 
-                //        case AuthStartEVSEResultType.OutOfService:
-                //            HubjectCode         = "700";
-                //            HubjectDescription  = "EVSE out of service!";
-                //            break;
+            //    //        case AuthStartEVSEResultType.OutOfService:
+            //    //            HubjectCode         = "700";
+            //    //            HubjectDescription  = "EVSE out of service!";
+            //    //            break;
 
 
-                //        default:
-                //            HubjectCode         = "320";
-                //            HubjectDescription  = "Service not available!";
-                //            break;
+            //    //        default:
+            //    //            HubjectCode         = "320";
+            //    //            HubjectDescription  = "Service not available!";
+            //    //            break;
 
-                //    }
+            //    //    }
 
-                #endregion
+            //    #endregion
 
-                #region Documentation
+            //    #region Documentation
 
-                // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-                //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-                //                xmlns:ocpp = "urn://Ocpp/Cs/2015/10/">
-                //
-                //    <soap:Header>
-                //       <wsa:Action soap:mustUnderstand="true">/HeartbeatResponse</wsa:Action>
-                //    </soap:Header>
-                //
-                //    <soap:Body>
-                //       <ocpp:heartbeatResponse>
-                //          <ocpp:currentTime>?</ocpp:currentTime>
-                //       </ocpp:heartbeatResponse>
-                //    </soap:Body>
-                //
-                // </soap:Envelope>
-
-                #endregion
-
-                #region Create HTTP/SOAP response
-
-                var SOAPResponse = new HTTPResponseBuilder(SOAPRequest) {
-                    HTTPStatusCode  = HTTPStatusCode.OK,
-                    Server          = SOAPServer.DefaultServerName,
-                    Date            = DateTime.Now,
-                    ContentType     = HTTPContentType.SOAPXML_UTF8,
-                    Content         = SOAP.Encapsulation(
-
-                                          SOAPHeaders: new XElement[] {
-                                                           new XElement(SOAPNS.SOAPEnvelope_v1_2 + "Action",
-                                                               new XAttribute(SOAPNS.SOAPEnvelope_v1_2 + "mustUnderstand", "true"),
-                                                               "/HeartbeatResponse")
-                                                           // RelatesTo: MessageID
-                                                       },
-
-                                          SOAPBody:    new XElement(OCPPNS.OCPPv1_6_CS + "heartbeatResponse",
-                                                           new XElement(OCPPNS.OCPPv1_6_CS + "currentTime", DateTime.Now.ToUniversalTime().ToIso8601())
-                                                       )
-
-                                         ).ToUTF8Bytes()
-                };
+            //    // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
+            //    //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
+            //    //                xmlns:ocpp = "urn://Ocpp/Cs/2015/10/">
+            //    //
+            //    //    <soap:Header>
+            //    //       <wsa:Action soap:mustUnderstand="true">/HeartbeatResponse</wsa:Action>
+            //    //    </soap:Header>
+            //    //
+            //    //    <soap:Body>
+            //    //       <ocpp:heartbeatResponse>
+            //    //          <ocpp:currentTime>?</ocpp:currentTime>
+            //    //       </ocpp:heartbeatResponse>
+            //    //    </soap:Body>
+            //    //
+            //    // </soap:Envelope>
+
+            //    #endregion
+
+            //    #region Create HTTP/SOAP response
+
+            //    var SOAPResponse = new HTTPResponseBuilder(SOAPRequest) {
+            //        HTTPStatusCode  = HTTPStatusCode.OK,
+            //        Server          = SOAPServer.DefaultServerName,
+            //        Date            = DateTime.Now,
+            //        ContentType     = HTTPContentType.SOAPXML_UTF8,
+            //        Content         = SOAP.Encapsulation(
+
+            //                              SOAPHeaders: new XElement[] {
+            //                                               new XElement(SOAPNS.SOAPEnvelope_v1_2 + "Action",
+            //                                                   new XAttribute(SOAPNS.SOAPEnvelope_v1_2 + "mustUnderstand", "true"),
+            //                                                   "/HeartbeatResponse")
+            //                                               // RelatesTo: MessageID
+            //                                           },
+
+            //                              SOAPBody:    new XElement(OCPPNS.OCPPv1_6_CS + "heartbeatResponse",
+            //                                               new XElement(OCPPNS.OCPPv1_6_CS + "currentTime", DateTime.Now.ToUniversalTime().ToIso8601())
+            //                                           )
+
+            //                             ).ToUTF8Bytes()
+            //    };
 
-                #endregion
+            //    #endregion
 
-                #region Send OnHeartbeatResponse event
+            //    #region Send OnHeartbeatResponse event
 
-                Runtime.Stop();
+            //    Runtime.Stop();
 
-                try
-                {
+            //    try
+            //    {
 
-                    OnHeartbeatResponse?.Invoke(SOAPResponse.Timestamp,
-                                                SOAPServer,
-                                                SOAPRequest,
-                                                SOAPResponse);
+            //        OnHeartbeatResponse?.Invoke(SOAPResponse.Timestamp,
+            //                                    SOAPServer,
+            //                                    SOAPRequest,
+            //                                    SOAPResponse);
 
-                }
-                catch (Exception e)
-                {
-                    e.Log("OCPPv1.6.CentralSystemServer.OnHeartbeatResponse");
-                }
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        e.Log("OCPPv1.6.CentralSystemServer.OnHeartbeatResponse");
+            //    }
 
-                #endregion
+            //    #endregion
 
-                return SOAPResponse;
+            //    return SOAPResponse;
 
-            });
+            //});
 
-            #endregion
+            //#endregion
 
-            #region / - StartTransaction
+            //#region / - StartTransaction
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
-                                            "StartTransaction",
-                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "startTransactionRequest").FirstOrDefault(),
-                                            async (SOAPRequest, HeaderXML, StartTransactionXML) => {
+            //SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            //                                URIPrefix,
+            //                                "StartTransaction",
+            //                                XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "startTransactionRequest").FirstOrDefault(),
+            //                                async (SOAPRequest, HeaderXML, StartTransactionXML) => {
 
-                #region Send OnStartTransactionRequest event
+            //    #region Send OnStartTransactionRequest event
 
-                var Runtime = Stopwatch.StartNew();
+            //    var Runtime = Stopwatch.StartNew();
 
-                try
-                {
+            //    try
+            //    {
 
-                    OnStartTransactionRequest?.Invoke(DateTime.Now,
-                                               SOAPServer,
-                                               SOAPRequest);
+            //        OnStartTransactionRequest?.Invoke(DateTime.Now,
+            //                                   SOAPServer,
+            //                                   SOAPRequest);
 
-                }
-                catch (Exception e)
-                {
-                    e.Log("OCPPv1.6.CentralSystemServer.OnStartTransactionRequest");
-                }
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        e.Log("OCPPv1.6.CentralSystemServer.OnStartTransactionRequest");
+            //    }
 
-                #endregion
+            //    #endregion
 
-                #region Documentation
+            //    #region Documentation
 
-                // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-                //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-                //                xmlns:ocpp = "urn://Ocpp/Cs/2015/10/">
-                //
-                //    <soap:Header>
-                //       <ns:chargeBoxIdentity>?</ns:chargeBoxIdentity>
-                //       <wsa:Action soap:mustUnderstand="1">/BootNotification</wsa:Action>
-                //       <wsa:ReplyTo soap:mustUnderstand="1">
-                //         <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
-                //       </wsa:ReplyTo>
-                //       <wsa:MessageID soap:mustUnderstand="1">uuid:516f7065-074c-4f4a-8b6d-fd3603d88e3d</wsa:MessageID>
-                //       <wsa:To soap:mustUnderstand="1">http://127.0.0.1:2010/v1.6</wsa:To>
-                //    </soap:Header>
-                //
-                //    <soap:Body>
-                //       <ocpp:startTransactionRequest>
-                //
-                //          <ocpp:connectorId>?</ocpp:connectorId>
-                //          <ocpp:idTag>?</ocpp:idTag>
-                //          <ocpp:timestamp>?</ocpp:timestamp>
-                //          <ocpp:meterStart>?</ocpp:meterStart>
-                //
-                //          <!--Optional:-->
-                //          <ocpp:reservationId>?</ocpp:reservationId>
-                //
-                //       </ocpp:startTransactionRequest>
-                //    </soap:Body>
-                //
-                // </soap:Envelope>
+            //    // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
+            //    //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
+            //    //                xmlns:ocpp = "urn://Ocpp/Cs/2015/10/">
+            //    //
+            //    //    <soap:Header>
+            //    //       <ns:chargeBoxIdentity>?</ns:chargeBoxIdentity>
+            //    //       <wsa:Action soap:mustUnderstand="1">/BootNotification</wsa:Action>
+            //    //       <wsa:ReplyTo soap:mustUnderstand="1">
+            //    //         <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
+            //    //       </wsa:ReplyTo>
+            //    //       <wsa:MessageID soap:mustUnderstand="1">uuid:516f7065-074c-4f4a-8b6d-fd3603d88e3d</wsa:MessageID>
+            //    //       <wsa:To soap:mustUnderstand="1">http://127.0.0.1:2010/v1.6</wsa:To>
+            //    //    </soap:Header>
+            //    //
+            //    //    <soap:Body>
+            //    //       <ocpp:startTransactionRequest>
+            //    //
+            //    //          <ocpp:connectorId>?</ocpp:connectorId>
+            //    //          <ocpp:idTag>?</ocpp:idTag>
+            //    //          <ocpp:timestamp>?</ocpp:timestamp>
+            //    //          <ocpp:meterStart>?</ocpp:meterStart>
+            //    //
+            //    //          <!--Optional:-->
+            //    //          <ocpp:reservationId>?</ocpp:reservationId>
+            //    //
+            //    //       </ocpp:startTransactionRequest>
+            //    //    </soap:Body>
+            //    //
+            //    // </soap:Envelope>
 
-                #endregion
+            //    #endregion
 
 
-                #region Parse request parameters
+            //    #region Parse request parameters
 
-                // SOAP header...
-                var ChargeBoxIdentity  = HeaderXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity",
-                                                                         "The given SOAP header did not provide a valid 'charge box identity' information!");
+            //    // SOAP header...
+            //    var ChargeBoxIdentity  = HeaderXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity",
+            //                                                             "The given SOAP header did not provide a valid 'charge box identity' information!");
 
-                var MessageId          = HeaderXML.ElementValueOrFail   (SOAPNS.SOAPAdressing + "MessageID");
+            //    var MessageId          = HeaderXML.ElementValueOrFail   (SOAPNS.SOAPAdressing + "MessageID");
 
 
-                // <wsa5:From><wsa5:Address>http://62.133.94.210:12345</wsa5:Address></wsa5:From>
+            //    // <wsa5:From><wsa5:Address>http://62.133.94.210:12345</wsa5:Address></wsa5:From>
 
 
-                // SOAP body...
-                var ConnectorId        = StartTransactionXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "connectorId",
-                                                                                   "The given start transaction request does not have valid 'connectorId' information!");
+            //    // SOAP body...
+            //    var ConnectorId        = StartTransactionXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "connectorId",
+            //                                                                       "The given start transaction request does not have valid 'connectorId' information!");
 
-                var IdTag              = StartTransactionXML.MapValueOrFail       (OCPPNS.OCPPv1_6_CS + "idTag",
-                                                                                   IdToken.Parse,
-                                                                                   "The given start transaction request does not have valid 'idTag' information!");
+            //    var IdTag              = StartTransactionXML.MapValueOrFail       (OCPPNS.OCPPv1_6_CS + "idTag",
+            //                                                                       IdToken.Parse,
+            //                                                                       "The given start transaction request does not have valid 'idTag' information!");
 
-                var Timestamp          = StartTransactionXML.MapValueOrFail       (OCPPNS.OCPPv1_6_CS + "timestamp",
-                                                                                   DateTime.Parse,
-                                                                                   "The given start transaction request does not have valid 'timestamp' information!");
+            //    var Timestamp          = StartTransactionXML.MapValueOrFail       (OCPPNS.OCPPv1_6_CS + "timestamp",
+            //                                                                       DateTime.Parse,
+            //                                                                       "The given start transaction request does not have valid 'timestamp' information!");
 
-                var MeterStart         = StartTransactionXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "meterStart",
-                                                                                   "The given start transaction request does not have valid 'meterStart' information!");
+            //    var MeterStart         = StartTransactionXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "meterStart",
+            //                                                                       "The given start transaction request does not have valid 'meterStart' information!");
 
-                var ReservationId      = StartTransactionXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "reservationId","");
+            //    var ReservationId      = StartTransactionXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "reservationId","");
 
-                #endregion
+            //    #endregion
 
 
-                #region Call async subscribers
+            //    #region Call async subscribers
 
-                //AuthStartEVSEResult result = null;
+            //    //AuthStartEVSEResult result = null;
 
-                //var OnAuthorizeStartLocal = OnAuthorizeStart;
-                //if (OnAuthorizeStartLocal != null)
-                //{
+            //    //var OnAuthorizeStartLocal = OnAuthorizeStart;
+            //    //if (OnAuthorizeStartLocal != null)
+            //    //{
 
-                //    var CTS = new CancellationTokenSource();
+            //    //    var CTS = new CancellationTokenSource();
 
-                //    var task = OnAuthorizeStartLocal(DateTime.Now,
-                //                                     this,
-                //                                     CTS.Token,
-                //                                     EventTracking_Id.New,
-                //                                     OperatorId,
-                //                                     AuthToken,
-                //                                     EVSEId,
-                //                                     SessionId,
-                //                                     ChargingProductId,
-                //                                     PartnerSessionId,
-                //                                     DefaultQueryTimeout);
+            //    //    var task = OnAuthorizeStartLocal(DateTime.Now,
+            //    //                                     this,
+            //    //                                     CTS.Token,
+            //    //                                     EventTracking_Id.New,
+            //    //                                     OperatorId,
+            //    //                                     AuthToken,
+            //    //                                     EVSEId,
+            //    //                                     SessionId,
+            //    //                                     ChargingProductId,
+            //    //                                     PartnerSessionId,
+            //    //                                     DefaultQueryTimeout);
 
-                //    task.Wait();
-                //    result = task.Result;
+            //    //    task.Wait();
+            //    //    result = task.Result;
 
-                //}
+            //    //}
 
-                #endregion
+            //    #endregion
 
 
-                #region Map result
+            //    #region Map result
 
-                //var HubjectCode            = "";
-                //var HubjectDescription     = "";
-                //var HubjectAdditionalInfo  = "";
+            //    //var HubjectCode            = "";
+            //    //var HubjectDescription     = "";
+            //    //var HubjectAdditionalInfo  = "";
 
-                //if (result != null)
-                //    switch (result.Result)
-                //    {
+            //    //if (result != null)
+            //    //    switch (result.Result)
+            //    //    {
 
-                //        case AuthStartEVSEResultType.Authorized:
-                //            HubjectCode         = "000";
-                //            HubjectDescription  = "Ready to charge!";
-                //            break;
+            //    //        case AuthStartEVSEResultType.Authorized:
+            //    //            HubjectCode         = "000";
+            //    //            HubjectDescription  = "Ready to charge!";
+            //    //            break;
 
-                //        case AuthStartEVSEResultType.NotAuthorized:
-                //            HubjectCode         = "102";
-                //            HubjectDescription  = "RFID Authentication failed - invalid UID";
-                //            break;
+            //    //        case AuthStartEVSEResultType.NotAuthorized:
+            //    //            HubjectCode         = "102";
+            //    //            HubjectDescription  = "RFID Authentication failed - invalid UID";
+            //    //            break;
 
-                //        case AuthStartEVSEResultType.InvalidSessionId:
-                //            HubjectCode         = "400";
-                //            HubjectDescription  = "Session is invalid";
-                //            break;
+            //    //        case AuthStartEVSEResultType.InvalidSessionId:
+            //    //            HubjectCode         = "400";
+            //    //            HubjectDescription  = "Session is invalid";
+            //    //            break;
 
-                //        case AuthStartEVSEResultType.EVSECommunicationTimeout:
-                //            HubjectCode         = "501";
-                //            HubjectDescription  = "Communication to EVSE failed!";
-                //            break;
+            //    //        case AuthStartEVSEResultType.EVSECommunicationTimeout:
+            //    //            HubjectCode         = "501";
+            //    //            HubjectDescription  = "Communication to EVSE failed!";
+            //    //            break;
 
-                //        case AuthStartEVSEResultType.StartChargingTimeout:
-                //            HubjectCode         = "510";
-                //            HubjectDescription  = "No EV connected to EVSE!";
-                //            break;
+            //    //        case AuthStartEVSEResultType.StartChargingTimeout:
+            //    //            HubjectCode         = "510";
+            //    //            HubjectDescription  = "No EV connected to EVSE!";
+            //    //            break;
 
-                //        case AuthStartEVSEResultType.Reserved:
-                //            HubjectCode         = "601";
-                //            HubjectDescription  = "EVSE reserved!";
-                //            break;
+            //    //        case AuthStartEVSEResultType.Reserved:
+            //    //            HubjectCode         = "601";
+            //    //            HubjectDescription  = "EVSE reserved!";
+            //    //            break;
 
-                //        //Note: Can not happen, or?
-                //        //case AuthStartEVSEResultType.AlreadyInUse:
-                //        //    HubjectCode         = "602";
-                //        //    HubjectDescription  = "EVSE is already in use!";
-                //        //    break;
+            //    //        //Note: Can not happen, or?
+            //    //        //case AuthStartEVSEResultType.AlreadyInUse:
+            //    //        //    HubjectCode         = "602";
+            //    //        //    HubjectDescription  = "EVSE is already in use!";
+            //    //        //    break;
 
-                //        case AuthStartEVSEResultType.UnknownEVSE:
-                //            HubjectCode         = "603";
-                //            HubjectDescription  = "Unknown EVSE ID!";
-                //            break;
+            //    //        case AuthStartEVSEResultType.UnknownEVSE:
+            //    //            HubjectCode         = "603";
+            //    //            HubjectDescription  = "Unknown EVSE ID!";
+            //    //            break;
 
-                //        case AuthStartEVSEResultType.OutOfService:
-                //            HubjectCode         = "700";
-                //            HubjectDescription  = "EVSE out of service!";
-                //            break;
+            //    //        case AuthStartEVSEResultType.OutOfService:
+            //    //            HubjectCode         = "700";
+            //    //            HubjectDescription  = "EVSE out of service!";
+            //    //            break;
 
 
-                //        default:
-                //            HubjectCode         = "320";
-                //            HubjectDescription  = "Service not available!";
-                //            break;
+            //    //        default:
+            //    //            HubjectCode         = "320";
+            //    //            HubjectDescription  = "Service not available!";
+            //    //            break;
 
-                //    }
+            //    //    }
 
-                #endregion
+            //    #endregion
 
-                #region Documentation
+            //    #region Documentation
 
-                // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-                //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-                //                xmlns:ocpp = "urn://Ocpp/Cs/2015/10/">
-                //
-                //    <soap:Header>
-                //       <wsa:Action soap:mustUnderstand="true">/HeartbeatResponse</wsa:Action>
-                //    </soap:Header>
-                //
-                //    <soap:Body>
-                //       <ocpp:heartbeatResponse>
-                //          <ocpp:currentTime>?</ocpp:currentTime>
-                //       </ocpp:heartbeatResponse>
-                //    </soap:Body>
-                //
-                // </soap:Envelope>
+            //    // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
+            //    //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
+            //    //                xmlns:ocpp = "urn://Ocpp/Cs/2015/10/">
+            //    //
+            //    //    <soap:Header>
+            //    //       <wsa:Action soap:mustUnderstand="true">/HeartbeatResponse</wsa:Action>
+            //    //    </soap:Header>
+            //    //
+            //    //    <soap:Body>
+            //    //       <ocpp:heartbeatResponse>
+            //    //          <ocpp:currentTime>?</ocpp:currentTime>
+            //    //       </ocpp:heartbeatResponse>
+            //    //    </soap:Body>
+            //    //
+            //    // </soap:Envelope>
 
-                #endregion
+            //    #endregion
 
-                #region Create HTTP/SOAP response
+            //    #region Create HTTP/SOAP response
 
-                var SOAPResponse = new HTTPResponseBuilder(SOAPRequest) {
-                    HTTPStatusCode  = HTTPStatusCode.OK,
-                    Server          = SOAPServer.DefaultServerName,
-                    Date            = DateTime.Now,
-                    ContentType     = HTTPContentType.SOAPXML_UTF8,
-                    Content         = SOAP.Encapsulation(
+            //    var SOAPResponse = new HTTPResponseBuilder(SOAPRequest) {
+            //        HTTPStatusCode  = HTTPStatusCode.OK,
+            //        Server          = SOAPServer.DefaultServerName,
+            //        Date            = DateTime.Now,
+            //        ContentType     = HTTPContentType.SOAPXML_UTF8,
+            //        Content         = SOAP.Encapsulation(
 
-                                          SOAPHeaders: new XElement[] {
-                                                           new XElement(SOAPNS.SOAPEnvelope_v1_2 + "Action",
-                                                               new XAttribute(SOAPNS.SOAPEnvelope_v1_2 + "mustUnderstand", "true"),
-                                                               "/HeartbeatResponse")
-                                                           // RelatesTo: MessageID
-                                                       },
+            //                              SOAPHeaders: new XElement[] {
+            //                                               new XElement(SOAPNS.SOAPEnvelope_v1_2 + "Action",
+            //                                                   new XAttribute(SOAPNS.SOAPEnvelope_v1_2 + "mustUnderstand", "true"),
+            //                                                   "/HeartbeatResponse")
+            //                                               // RelatesTo: MessageID
+            //                                           },
 
-                                          SOAPBody:    new XElement(OCPPNS.OCPPv1_6_CS + "heartbeatResponse",
-                                                           new XElement(OCPPNS.OCPPv1_6_CS + "currentTime", DateTime.Now.ToUniversalTime().ToIso8601())
-                                                       )
+            //                              SOAPBody:    new XElement(OCPPNS.OCPPv1_6_CS + "heartbeatResponse",
+            //                                               new XElement(OCPPNS.OCPPv1_6_CS + "currentTime", DateTime.Now.ToUniversalTime().ToIso8601())
+            //                                           )
 
-                                         ).ToUTF8Bytes()
-                };
+            //                             ).ToUTF8Bytes()
+            //    };
 
-                #endregion
+            //    #endregion
 
-                #region Send OnHeartbeatResponse event
+            //    #region Send OnHeartbeatResponse event
 
-                Runtime.Stop();
+            //    Runtime.Stop();
 
-                try
-                {
+            //    try
+            //    {
 
-                    OnHeartbeatResponse?.Invoke(SOAPResponse.Timestamp,
-                                                SOAPServer,
-                                                SOAPRequest,
-                                                SOAPResponse);
+            //        OnHeartbeatResponse?.Invoke(SOAPResponse.Timestamp,
+            //                                    SOAPServer,
+            //                                    SOAPRequest,
+            //                                    SOAPResponse);
 
-                }
-                catch (Exception e)
-                {
-                    e.Log("OCPPv1.6.CentralSystemServer.OnHeartbeatResponse");
-                }
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        e.Log("OCPPv1.6.CentralSystemServer.OnHeartbeatResponse");
+            //    }
 
-                #endregion
+            //    #endregion
 
-                return SOAPResponse;
+            //    return SOAPResponse;
 
-            });
+            //});
 
-            #endregion
+            //#endregion
 
 
         }
 
         #endregion
-
-
-        //#region (internal) SendRemoteStart(...)
-
-        //internal async Task<RemoteStartEVSEResult> SendRemoteStart(DateTime            Timestamp,
-        //                                                           CSServer           Sender,
-        //                                                           CancellationToken   CancellationToken,
-        //                                                           EventTracking_Id    EventTrackingId,
-        //                                                           EVSE_Id             EVSEId,
-        //                                                           ChargingProduct_Id  ChargingProductId,
-        //                                                           ChargingSession_Id  SessionId,
-        //                                                           ChargingSession_Id  PartnerSessionId,
-        //                                                           EVSP_Id             ProviderId,
-        //                                                           eMA_Id              eMAId,
-        //                                                           TimeSpan?           QueryTimeout  = null)
-        //{
-
-        //    var OnRemoteStartLocal = OnRemoteStart;
-        //    if (OnRemoteStartLocal == null)
-        //        return RemoteStartEVSEResult.Error();
-
-        //    var results = await Task.WhenAll(OnRemoteStartLocal.
-        //                                         GetInvocationList().
-        //                                         Select(subscriber => (subscriber as OnRemoteStartDelegate)
-        //                                             (Timestamp,
-        //                                              this,
-        //                                              CancellationToken,
-        //                                              EventTrackingId,
-        //                                              EVSEId,
-        //                                              ChargingProductId,
-        //                                              SessionId,
-        //                                              PartnerSessionId,
-        //                                              ProviderId,
-        //                                              eMAId,
-        //                                              QueryTimeout)));
-
-        //    return results.
-        //               Where(result => result.Result != RemoteStartEVSEResultType.Unspecified).
-        //               First();
-
-        //}
-
-        //#endregion
-
-        //#region (internal) SendRemoteStop(...)
-
-        //internal async Task<RemoteStopEVSEResult> SendRemoteStop(DateTime            Timestamp,
-        //                                                         CSServer           Sender,
-        //                                                         CancellationToken   CancellationToken,
-        //                                                         EventTracking_Id    EventTrackingId,
-        //                                                         EVSE_Id             EVSEId,
-        //                                                         ChargingSession_Id  SessionId,
-        //                                                         ChargingSession_Id  PartnerSessionId,
-        //                                                         EVSP_Id             ProviderId,
-        //                                                         TimeSpan?           QueryTimeout  = null)
-        //{
-
-        //    var OnRemoteStopLocal = OnRemoteStop;
-        //    if (OnRemoteStopLocal == null)
-        //        return RemoteStopEVSEResult.Error(SessionId);
-
-        //    var results = await Task.WhenAll(OnRemoteStopLocal.
-        //                                         GetInvocationList().
-        //                                         Select(subscriber => (subscriber as OnRemoteStopDelegate)
-        //                                             (Timestamp,
-        //                                              this,
-        //                                              CancellationToken,
-        //                                              EventTrackingId,
-        //                                              EVSEId,
-        //                                              SessionId,
-        //                                              PartnerSessionId,
-        //                                              ProviderId,
-        //                                              QueryTimeout)));
-
-        //    return results.
-        //               Where(result => result.Result != RemoteStopEVSEResultType.Unspecified).
-        //               First();
-
-        //}
-
-        //#endregion
-
 
     }
 

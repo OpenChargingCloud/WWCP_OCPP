@@ -1,5 +1,5 @@
-WWCP OCPP v1.6
-==============
+WWCP OCPP
+=========
 
 This software will allow the communication between World Wide Charging
 Protocol (WWCP) entities and entities implementing the

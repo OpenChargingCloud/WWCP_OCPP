@@ -1,12 +1,12 @@
 ﻿/*
  * Copyright (c) 2014-2016 GraphDefined GmbH
- * This file is part of WWCP OCPP <https://github.com/GraphDefined/WWCP_OCPP>
+ * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
- * Licensed under the Affero GPL license, Version 3.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.gnu.org/licenses/agpl.html
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,29 +19,31 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// Defines the registration-status-value
+    /// Defines the availability-status-values.
     /// </summary>
-    public enum RegistrationStatus
+    public enum AvailabilityStatus
     {
 
         /// <summary>
-        /// Charge point is accepted by Central System.
+        /// Unknown availability status.
+        /// </summary>
+        Unknown,
+
+        /// <summary>
+        /// Request has been accepted and will be executed.
         /// </summary>
         Accepted,
 
         /// <summary>
-        /// Central System is not yet ready to accept the
-        /// Charge Point. Central System may send messages
-        /// to retrieve information or prepare the Charge Point.
+        /// Request has not been accepted and will not be executed.
         /// </summary>
-        Pending,
+        Rejected,
 
         /// <summary>
-        /// Charge point is not accepted by Central System.
-        /// This may happen when the Charge Point id is not
-        /// known by Central System.
+        /// Request has been accepted and will be executed when
+        /// transaction(s) in progress have finished.
         /// </summary>
-        Rejected
+        Scheduled
 
     }
 
