@@ -25,11 +25,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     {
 
         /// <summary>
-        /// Unknown value format.
-        /// </summary>
-        Unknown,
-
-        /// <summary>
         ///  Data is to be interpreted as integer/decimal numeric data.
         /// </summary>
         Raw,

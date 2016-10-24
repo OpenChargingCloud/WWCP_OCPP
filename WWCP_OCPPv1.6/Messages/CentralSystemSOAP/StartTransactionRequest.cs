@@ -38,31 +38,31 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Properties
 
         /// <summary>
-        /// The connector identification of the charge point.
+        /// The connector identification at the charge point.
         /// </summary>
-        public UInt16    ConnectorId     { get; }
+        public Connector_Id    ConnectorId      { get; }
 
         /// <summary>
         /// The identifier for which a transaction has to be started.
         /// </summary>
-        public IdToken   IdTag           { get; }
+        public IdToken         IdTag            { get; }
 
         /// <summary>
         /// The timestamp of the transaction start.
         /// </summary>
-        public DateTime  Timestamp       { get; }
+        public DateTime        Timestamp        { get; }
 
         /// <summary>
-        /// The meter value in Wh for the connector at start of
-        /// the transaction.
+        /// The energy meter value in Wh for the connector at start
+        /// of the transaction.
         /// </summary>
-        public UInt64    MeterStart      { get; }
+        public UInt64          MeterStart       { get; }
 
         /// <summary>
         /// An optional identification of the reservation that will
         /// terminate as a result of this transaction.
         /// </summary>
-        public Int32?    ReservationId   { get; }
+        public Reservation_Id  ReservationId    { get; }
 
         #endregion
 
@@ -71,22 +71,25 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Create an OCPP StartTransaction XML/SOAP request.
         /// </summary>
-        /// <param name="ConnectorId">The connector identification of the charge point.</param>
+        /// <param name="ConnectorId">The connector identification at the charge point.</param>
         /// <param name="IdTag">The identifier for which a transaction has to be started.</param>
         /// <param name="Timestamp">The timestamp of the transaction start.</param>
-        /// <param name="MeterStart">The meter value in Wh for the connector at start of the transaction.</param>
+        /// <param name="MeterStart">The energy meter value in Wh for the connector at start of the transaction.</param>
         /// <param name="ReservationId">An optional identification of the reservation that will terminate as a result of this transaction.</param>
-        public StartTransactionRequest(UInt16    ConnectorId,
-                                       IdToken   IdTag,
-                                       DateTime  Timestamp,
-                                       UInt64    MeterStart,
-                                       Int32?    ReservationId = null)
+        public StartTransactionRequest(Connector_Id    ConnectorId,
+                                       IdToken         IdTag,
+                                       DateTime        Timestamp,
+                                       UInt64          MeterStart,
+                                       Reservation_Id  ReservationId = null)
         {
 
             #region Initial checks
 
+            if (ConnectorId == null)
+                throw new ArgumentNullException(nameof(ConnectorId),  "The given connector identification must not be null!");
+
             if (IdTag == null)
-                throw new ArgumentNullException(nameof(IdTag),  "The given identification tag info must not be null!");
+                throw new ArgumentNullException(nameof(IdTag),        "The given identification tag info must not be null!");
 
             #endregion
 
@@ -191,20 +194,20 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 StartTransactionRequest = new StartTransactionRequest(
 
-                                              StartTransactionRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "connectorId",
-                                                                                            UInt16.Parse),
+                                              StartTransactionRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CS + "connectorId",
+                                                                                           Connector_Id.Parse),
 
-                                              StartTransactionRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "idTag",
-                                                                                            IdToken.Parse),
+                                              StartTransactionRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CS + "idTag",
+                                                                                           IdToken.Parse),
 
-                                              StartTransactionRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "timestamp",
-                                                                                            DateTime.Parse),
+                                              StartTransactionRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CS + "timestamp",
+                                                                                           DateTime.Parse),
 
-                                              StartTransactionRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "meterStart",
-                                                                                            UInt64.Parse),
+                                              StartTransactionRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CS + "meterStart",
+                                                                                           UInt64.Parse),
 
-                                              StartTransactionRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "reservationId",
-                                                                                            Int32.Parse)
+                                              StartTransactionRequestXML.MapValueOrDefault(OCPPNS.OCPPv1_6_CS + "reservationId",
+                                                                                           Reservation_Id.Parse)
 
                                           );
 
@@ -274,7 +277,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                    new XElement(OCPPNS.OCPPv1_6_CS + "timestamp",            Timestamp.ToIso8601()),
                    new XElement(OCPPNS.OCPPv1_6_CS + "meterStart",           MeterStart),
 
-                   ReservationId.HasValue
+                   ReservationId != null
                        ? new XElement(OCPPNS.OCPPv1_6_CS + "reservationId",  ReservationId.Value)
                        : null
 
@@ -370,8 +373,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                    Timestamp.  Equals(StartTransactionRequest.Timestamp)   &&
                    MeterStart. Equals(StartTransactionRequest.MeterStart)  &&
 
-                   ((!ReservationId.HasValue && !StartTransactionRequest.ReservationId.HasValue) ||
-                     (ReservationId.HasValue && StartTransactionRequest.ReservationId.HasValue && ReservationId.Value.Equals(StartTransactionRequest.ReservationId.Value)));
+                   ((ReservationId == null && StartTransactionRequest.ReservationId == null) ||
+                    (ReservationId != null && StartTransactionRequest.ReservationId != null && ReservationId.Equals(StartTransactionRequest.ReservationId)));
 
         }
 
@@ -395,7 +398,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                        Timestamp.  GetHashCode() *  6 ^
                        MeterStart. GetHashCode() *  5 ^
 
-                       (ReservationId.HasValue
+                       (ReservationId != null
                             ? ReservationId.GetHashCode()
                             : 0);
 
@@ -413,7 +416,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             => String.Concat(ConnectorId,
                              " for ", IdTag,
-                             ReservationId.HasValue ? " using reservation " + ReservationId : "");
+                             ReservationId != null ? " using reservation " + ReservationId : "");
 
         #endregion
 

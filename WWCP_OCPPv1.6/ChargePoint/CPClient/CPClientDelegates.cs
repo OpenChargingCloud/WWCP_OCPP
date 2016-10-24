@@ -144,11 +144,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                             String                      SenderId,
                                                             EventTracking_Id            EventTrackingId,
 
-                                                            UInt16                      ConnectorId,
+                                                            Connector_Id                ConnectorId,
                                                             IdToken                     IdTag,
                                                             DateTime                    Timestamp,
                                                             UInt64                      MeterStart,
-                                                            Int32?                      ReservationId,
+                                                            Reservation_Id              ReservationId,
 
                                                             TimeSpan?                   RequestTimeout);
 
@@ -161,11 +161,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                             String                      SenderId,
                                                             EventTracking_Id            EventTrackingId,
 
-                                                            UInt16                      ConnectorId,
+                                                            Connector_Id                ConnectorId,
                                                             IdToken                     IdTag,
                                                             DateTime                    Timestamp,
                                                             UInt64                      MeterStart,
-                                                            Int32?                      ReservationId,
+                                                            Reservation_Id              ReservationId,
 
                                                             TimeSpan?                   RequestTimeout,
                                                             StartTransactionResponse    Result,
@@ -184,7 +184,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                               String                        SenderId,
                                                               EventTracking_Id              EventTrackingId,
 
-                                                              UInt16                        ConnectorId,
+                                                              Connector_Id                  ConnectorId,
                                                               ChargePointStatus             Status,
                                                               ChargePointErrorCodes         ErrorCode,
                                                               String                        Info,
@@ -203,7 +203,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                               String                        SenderId,
                                                               EventTracking_Id              EventTrackingId,
 
-                                                              UInt16                        ConnectorId,
+                                                              Connector_Id                  ConnectorId,
                                                               ChargePointStatus             Status,
                                                               ChargePointErrorCodes         ErrorCode,
                                                               String                        Info,
@@ -216,5 +216,84 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                               TimeSpan                      Duration);
 
     #endregion
+
+    #region OnMeterValues
+
+    /// <summary>
+    /// A delegate called whenever a meter values request will be send to the central system.
+    /// </summary>
+    public delegate Task OnMeterValuesRequestDelegate (DateTime                 LogTimestamp,
+                                                       DateTime                 RequestTimestamp,
+                                                       CPClient                 Sender,
+                                                       String                   SenderId,
+                                                       EventTracking_Id         EventTrackingId,
+
+                                                       Connector_Id             ConnectorId,
+                                                       Transaction_Id           TransactionId,
+                                                       IEnumerable<MeterValue>  MeterValues,
+
+                                                       TimeSpan?                RequestTimeout);
+
+    /// <summary>
+    /// A delegate called whenever a response to a meter values request was received.
+    /// </summary>s
+    public delegate Task OnMeterValuesResponseDelegate(DateTime                 LogTimestamp,
+                                                       DateTime                 RequestTimestamp,
+                                                       CPClient                 Sender,
+                                                       String                   SenderId,
+                                                       EventTracking_Id         EventTrackingId,
+
+                                                       Connector_Id             ConnectorId,
+                                                       Transaction_Id           TransactionId,
+                                                       IEnumerable<MeterValue>  MeterValues,
+
+                                                       TimeSpan?                RequestTimeout,
+                                                       MeterValuesResponse      Result,
+                                                       TimeSpan                 Duration);
+
+    #endregion
+
+    #region OnStopTransaction
+
+    /// <summary>
+    /// A delegate called whenever a stop transaction request will be send to the central system.
+    /// </summary>
+    public delegate Task OnStopTransactionRequestDelegate (DateTime                   LogTimestamp,
+                                                           DateTime                   RequestTimestamp,
+                                                           CPClient                   Sender,
+                                                           String                     SenderId,
+                                                           EventTracking_Id           EventTrackingId,
+
+                                                           Transaction_Id             TransactionId,
+                                                           DateTime                   TransactionTimestamp,
+                                                           UInt64                     MeterStop,
+                                                           IdToken                    IdTag,
+                                                           Reasons?                   Reason,
+                                                           IEnumerable<MeterValue>    TransactionData,
+
+                                                           TimeSpan?                  RequestTimeout);
+
+    /// <summary>
+    /// A delegate called whenever a response to a stop transaction request was received.
+    /// </summary>
+    public delegate Task OnStopTransactionResponseDelegate(DateTime                   LogTimestamp,
+                                                           DateTime                   RequestTimestamp,
+                                                           CPClient                   Sender,
+                                                           String                     SenderId,
+                                                           EventTracking_Id           EventTrackingId,
+
+                                                           Transaction_Id             TransactionId,
+                                                           DateTime                   TransactionTimestamp,
+                                                           UInt64                     MeterStop,
+                                                           IdToken                    IdTag,
+                                                           Reasons?                   Reason,
+                                                           IEnumerable<MeterValue>    TransactionData,
+
+                                                           TimeSpan?                  RequestTimeout,
+                                                           StopTransactionResponse    Result,
+                                                           TimeSpan                   Duration);
+
+    #endregion
+
 
 }

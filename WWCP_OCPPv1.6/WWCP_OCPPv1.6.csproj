@@ -51,9 +51,13 @@
     <Compile Include="ChargePoint\CPClient\CPClient.cs" />
     <Compile Include="ChargePoint\CPClient\CPClientDelegates.cs" />
     <Compile Include="ChargePoint\CPClient\CPClientLogger.cs" />
-    <Compile Include="DataTypes\Complex\ChargeBox_Id.cs" />
+    <Compile Include="DataTypes\Complex\MeterValue.cs" />
+    <Compile Include="DataTypes\Complex\SampledValue.cs" />
+    <Compile Include="DataTypes\Simple\Reservation_Id.cs" />
+    <Compile Include="DataTypes\Simple\Transaction_Id.cs" />
+    <Compile Include="DataTypes\Simple\Connector_Id.cs" />
+    <Compile Include="DataTypes\Simple\ChargeBox_Id.cs" />
     <Compile Include="DataTypes\Complex\Result.cs" />
-    <Compile Include="DataTypes\MeterValue.cs" />
     <Compile Include="DataTypes\Simple\AvailabilityStatus.cs" />
     <Compile Include="DataTypes\Simple\DiagnosticsStatus.cs" />
     <Compile Include="DataTypes\Simple\FirmwareStatus.cs" />
@@ -93,23 +97,27 @@
     <Compile Include="CentralSystem\CSServer\CSServer.cs" />
     <Compile Include="DataTypes\CDRStatus.cs" />
     <Compile Include="DataTypes\Complex\IdTagInfo.cs" />
-    <Compile Include="DataTypes\Complex\IdToken.cs" />
+    <Compile Include="DataTypes\Simple\IdToken.cs" />
     <Compile Include="DataTypes\Simple\AuthorizationStatus.cs" />
     <Compile Include="IO\SOAPHeader.cs" />
     <Compile Include="IO\OCPPNS.cs" />
     <Compile Include="IO\SOAP.cs" />
     <Compile Include="IO\XML_IO.cs" />
     <Compile Include="Messages\AResponse.cs" />
-    <Compile Include="Messages\StatusNotificationResponse.cs" />
-    <Compile Include="Messages\StatusNotificationRequest.cs" />
-    <Compile Include="Messages\StartTransactionResponse.cs" />
-    <Compile Include="Messages\StartTransactionRequest.cs" />
-    <Compile Include="Messages\HeartbeatResponse.cs" />
-    <Compile Include="Messages\HeartbeatRequest.cs" />
-    <Compile Include="Messages\BootNotificationRequest.cs" />
-    <Compile Include="Messages\AuthorizeRequest.cs" />
-    <Compile Include="Messages\BootNotificationResponse.cs" />
-    <Compile Include="Messages\AuthorizeResponse.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\MeterValuesRequest.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\MeterValuesResponse.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\StopTransactionResponse.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\StopTransactionRequest.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\StatusNotificationResponse.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\StatusNotificationRequest.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\StartTransactionResponse.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\StartTransactionRequest.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\HeartbeatResponse.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\HeartbeatRequest.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\BootNotificationRequest.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\AuthorizeRequest.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\BootNotificationResponse.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\AuthorizeResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ChargePoint\CPServer\" />
+    <Folder Include="Messages\ChargePointSOAP\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

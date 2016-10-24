@@ -164,22 +164,41 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region OnMeterValues
+
+        /// <summary>
+        /// An event sent whenever a meter values SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler           OnMeterValuesSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a meter values request was sent.
+        /// </summary>
+        public event AccessLogHandler            OnMeterValuesSOAPResponse;
+
+        /// <summary>
+        /// An event sent whenever a meter values request was received.
+        /// </summary>
+        public event OnAuthorizeRequestDelegate  OnMeterValuesRequest;
+
+        #endregion
+
         #region OnStopTransaction
 
         /// <summary>
         /// An event sent whenever a stop transaction SOAP request was received.
         /// </summary>
-        public event RequestLogHandler         OnStopTransactionSOAPRequest;
+        public event RequestLogHandler                 OnStopTransactionSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a stop transaction request was sent.
         /// </summary>
-        public event AccessLogHandler          OnStopTransactionSOAPResponse;
+        public event AccessLogHandler                  OnStopTransactionSOAPResponse;
 
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
         /// </summary>
-        public event OnAuthorizeRequestDelegate OnStopTransactionRequest;
+        public event OnStopTransactionRequestDelegate  OnStopTransactionRequest;
 
         #endregion
 
@@ -622,7 +641,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
                                             URIPrefix,
                                             "StartTransaction",
-                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "startTransaction").FirstOrDefault(),
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "startTransactionRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, StartTransactionXML) => {
 
                 #region Send OnStartTransactionSOAPRequest event
@@ -737,7 +756,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
                                             URIPrefix,
                                             "StatusNotification",
-                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "statusNotification").FirstOrDefault(),
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "statusNotificationRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, StatusNotificationXML) => {
 
                 #region Send OnStatusNotificationSOAPRequest event
@@ -849,6 +868,234 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             #endregion
 
+            #region / - MeterValues
+
+            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+                                            URIPrefix,
+                                            "MeterValues",
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "meterValuesRequest").FirstOrDefault(),
+                                            async (Request, HeaderXML, MeterValuesXML) => {
+
+                #region Send OnMeterValuesSOAPRequest event
+
+                try
+                {
+
+                    OnMeterValuesSOAPRequest?.Invoke(DateTime.Now,
+                                                     this.SOAPServer,
+                                                     Request);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnMeterValuesSOAPRequest));
+                }
+
+                #endregion
+
+
+                var _OCPPHeader          = SOAPHeader.Parse(HeaderXML);
+                var _MeterValuesRequest  = MeterValuesRequest.Parse(MeterValuesXML);
+
+                MeterValuesResponse response            = null;
+
+
+
+                #region Call async subscribers
+
+                if (response == null)
+                {
+
+                    var results = OnMeterValuesRequest?.
+                                      GetInvocationList()?.
+                                      SafeSelect(subscriber => (subscriber as OnMeterValuesRequestDelegate)
+                                          (DateTime.Now,
+                                           this,
+                                           Request.CancellationToken,
+                                           Request.EventTrackingId,
+                                           _OCPPHeader.ChargeBoxIdentity,
+                                           _MeterValuesRequest.ConnectorId,
+                                           _MeterValuesRequest.TransactionId,
+                                           _MeterValuesRequest.MeterValues,
+                                           DefaultQueryTimeout)).
+                                      ToArray();
+
+                    if (results.Length > 0)
+                    {
+
+                        await Task.WhenAll(results);
+
+                        response = results.FirstOrDefault()?.Result;
+
+                    }
+
+                    if (results.Length == 0 || response == null)
+                        response = MeterValuesResponse.Failed;
+
+                }
+
+                #endregion
+
+
+
+                #region Create SOAPResponse
+
+                var HTTPResponse = new HTTPResponseBuilder(Request) {
+                    HTTPStatusCode  = HTTPStatusCode.OK,
+                    Server          = SOAPServer.DefaultServerName,
+                    Date            = DateTime.Now,
+                    ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                    Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
+                                                         "/MeterValuesResponse",
+                                                         null,
+                                                         _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
+                                                         _OCPPHeader.To,         // Fake it!
+                                                         _OCPPHeader.From,       // Fake it!
+                                                         response.ToXML()).ToUTF8Bytes()
+                };
+
+                #endregion
+
+
+                #region Send OnMeterValuesSOAPResponse event
+
+                try
+                {
+
+                    OnMeterValuesSOAPResponse?.Invoke(HTTPResponse.Timestamp,
+                                                      this.SOAPServer,
+                                                      Request,
+                                                      HTTPResponse);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnMeterValuesSOAPResponse));
+                }
+
+                #endregion
+
+                return HTTPResponse;
+
+            });
+
+            #endregion
+
+            #region / - StopTransaction
+
+            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+                                            URIPrefix,
+                                            "StopTransaction",
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "startTransactionRequest").FirstOrDefault(),
+                                            async (Request, HeaderXML, StopTransactionXML) => {
+
+                #region Send OnStopTransactionSOAPRequest event
+
+                try
+                {
+
+                    OnStopTransactionSOAPRequest?.Invoke(DateTime.Now,
+                                                         this.SOAPServer,
+                                                         Request);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnStopTransactionSOAPRequest));
+                }
+
+                #endregion
+
+
+                var _OCPPHeader               = SOAPHeader.Parse(HeaderXML);
+                var _StopTransactionRequest  = StopTransactionRequest.Parse(StopTransactionXML);
+
+                StopTransactionResponse response            = null;
+
+
+
+                #region Call async subscribers
+
+                if (response == null)
+                {
+
+                    var results = OnStopTransactionRequest?.
+                                      GetInvocationList()?.
+                                      SafeSelect(subscriber => (subscriber as OnStopTransactionRequestDelegate)
+                                          (DateTime.Now,
+                                           this,
+                                           Request.CancellationToken,
+                                           Request.EventTrackingId,
+                                           _OCPPHeader.ChargeBoxIdentity,
+                                           _StopTransactionRequest.TransactionId,
+                                           _StopTransactionRequest.Timestamp,
+                                           _StopTransactionRequest.MeterStop,
+                                           _StopTransactionRequest.IdTag,
+                                           _StopTransactionRequest.Reason,
+                                           _StopTransactionRequest.TransactionData,
+                                           DefaultQueryTimeout)).
+                                      ToArray();
+
+                    if (results.Length > 0)
+                    {
+
+                        await Task.WhenAll(results);
+
+                        response = results.FirstOrDefault()?.Result;
+
+                    }
+
+                    if (results.Length == 0 || response == null)
+                        response = StopTransactionResponse.Failed;
+
+                }
+
+                #endregion
+
+
+
+                #region Create SOAPResponse
+
+                var HTTPResponse = new HTTPResponseBuilder(Request) {
+                    HTTPStatusCode  = HTTPStatusCode.OK,
+                    Server          = SOAPServer.DefaultServerName,
+                    Date            = DateTime.Now,
+                    ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                    Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
+                                                         "/StopTransactionResponse",
+                                                         null,
+                                                         _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
+                                                         _OCPPHeader.To,         // Fake it!
+                                                         _OCPPHeader.From,       // Fake it!
+                                                         response.ToXML()).ToUTF8Bytes()
+                };
+
+                #endregion
+
+
+                #region Send OnStopTransactionSOAPResponse event
+
+                try
+                {
+
+                    OnStopTransactionSOAPResponse?.Invoke(HTTPResponse.Timestamp,
+                                                          this.SOAPServer,
+                                                          Request,
+                                                          HTTPResponse);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnStopTransactionSOAPResponse));
+                }
+
+                #endregion
+
+                return HTTPResponse;
+
+            });
+
+            #endregion
 
 
         }

@@ -26,12 +26,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     {
 
         /// <summary>
-        /// Unknown location.
-        /// </summary>
-        Unknown,
-
-
-        /// <summary>
         /// Body.
         /// </summary>
         Body,

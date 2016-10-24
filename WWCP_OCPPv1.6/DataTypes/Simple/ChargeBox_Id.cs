@@ -63,15 +63,15 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region TryParse(Text, out ChargeBox_Id)
+        #region TryParse(Text, out ChargeBoxId)
 
         /// <summary>
         /// Parse the given string as an OCPP charge box identification.
         /// </summary>
-        public static Boolean TryParse(String Text, out ChargeBox_Id ChargeBox_Id)
+        public static Boolean TryParse(String Text, out ChargeBox_Id ChargeBoxId)
         {
 
-            ChargeBox_Id = new ChargeBox_Id(Text);
+            ChargeBoxId = new ChargeBox_Id(Text);
 
             return true;
 
@@ -92,116 +92,116 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region Operator overloading
 
-        #region Operator == (ChargeBox_Id1, ChargeBox_Id2)
+        #region Operator == (ChargeBoxId1, ChargeBoxId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeBox_Id1">An id token.</param>
-        /// <param name="ChargeBox_Id2">Another id token.</param>
+        /// <param name="ChargeBoxId1">An charge box identification.</param>
+        /// <param name="ChargeBoxId2">Another charge box identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargeBox_Id ChargeBox_Id1, ChargeBox_Id ChargeBox_Id2)
+        public static Boolean operator == (ChargeBox_Id ChargeBoxId1, ChargeBox_Id ChargeBoxId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(ChargeBox_Id1, ChargeBox_Id2))
+            if (Object.ReferenceEquals(ChargeBoxId1, ChargeBoxId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChargeBox_Id1 == null) || ((Object) ChargeBox_Id2 == null))
+            if (((Object) ChargeBoxId1 == null) || ((Object) ChargeBoxId2 == null))
                 return false;
 
-            if ((Object) ChargeBox_Id1 == null)
-                throw new ArgumentNullException(nameof(ChargeBox_Id1),  "The given id token must not be null!");
+            if ((Object) ChargeBoxId1 == null)
+                throw new ArgumentNullException(nameof(ChargeBoxId1),  "The given charge box identification must not be null!");
 
-            return ChargeBox_Id1.Equals(ChargeBox_Id2);
+            return ChargeBoxId1.Equals(ChargeBoxId2);
 
         }
 
         #endregion
 
-        #region Operator != (ChargeBox_Id1, ChargeBox_Id2)
+        #region Operator != (ChargeBoxId1, ChargeBoxId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeBox_Id1">An id token.</param>
-        /// <param name="ChargeBox_Id2">Another id token.</param>
+        /// <param name="ChargeBoxId1">An charge box identification.</param>
+        /// <param name="ChargeBoxId2">Another charge box identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargeBox_Id ChargeBox_Id1, ChargeBox_Id ChargeBox_Id2)
-            => !(ChargeBox_Id1 == ChargeBox_Id2);
+        public static Boolean operator != (ChargeBox_Id ChargeBoxId1, ChargeBox_Id ChargeBoxId2)
+            => !(ChargeBoxId1 == ChargeBoxId2);
 
         #endregion
 
-        #region Operator <  (ChargeBox_Id1, ChargeBox_Id2)
+        #region Operator <  (ChargeBoxId1, ChargeBoxId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeBox_Id1">An id token.</param>
-        /// <param name="ChargeBox_Id2">Another id token.</param>
+        /// <param name="ChargeBoxId1">An charge box identification.</param>
+        /// <param name="ChargeBoxId2">Another charge box identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargeBox_Id ChargeBox_Id1, ChargeBox_Id ChargeBox_Id2)
+        public static Boolean operator < (ChargeBox_Id ChargeBoxId1, ChargeBox_Id ChargeBoxId2)
         {
 
-            if ((Object) ChargeBox_Id1 == null)
-                throw new ArgumentNullException(nameof(ChargeBox_Id1),  "The given id token must not be null!");
+            if ((Object) ChargeBoxId1 == null)
+                throw new ArgumentNullException(nameof(ChargeBoxId1),  "The given charge box identification must not be null!");
 
-            return ChargeBox_Id1.CompareTo(ChargeBox_Id2) < 0;
+            return ChargeBoxId1.CompareTo(ChargeBoxId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (ChargeBox_Id1, ChargeBox_Id2)
+        #region Operator <= (ChargeBoxId1, ChargeBoxId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeBox_Id1">An id token.</param>
-        /// <param name="ChargeBox_Id2">Another id token.</param>
+        /// <param name="ChargeBoxId1">An charge box identification.</param>
+        /// <param name="ChargeBoxId2">Another charge box identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargeBox_Id ChargeBox_Id1, ChargeBox_Id ChargeBox_Id2)
-            => !(ChargeBox_Id1 > ChargeBox_Id2);
+        public static Boolean operator <= (ChargeBox_Id ChargeBoxId1, ChargeBox_Id ChargeBoxId2)
+            => !(ChargeBoxId1 > ChargeBoxId2);
 
         #endregion
 
-        #region Operator >  (ChargeBox_Id1, ChargeBox_Id2)
+        #region Operator >  (ChargeBoxId1, ChargeBoxId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeBox_Id1">An id token.</param>
-        /// <param name="ChargeBox_Id2">Another id token.</param>
+        /// <param name="ChargeBoxId1">An charge box identification.</param>
+        /// <param name="ChargeBoxId2">Another charge box identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargeBox_Id ChargeBox_Id1, ChargeBox_Id ChargeBox_Id2)
+        public static Boolean operator > (ChargeBox_Id ChargeBoxId1, ChargeBox_Id ChargeBoxId2)
         {
 
-            if ((Object) ChargeBox_Id1 == null)
-                throw new ArgumentNullException(nameof(ChargeBox_Id1),  "The given id token must not be null!");
+            if ((Object) ChargeBoxId1 == null)
+                throw new ArgumentNullException(nameof(ChargeBoxId1),  "The given charge box identification must not be null!");
 
-            return ChargeBox_Id1.CompareTo(ChargeBox_Id2) > 0;
+            return ChargeBoxId1.CompareTo(ChargeBoxId2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (ChargeBox_Id1, ChargeBox_Id2)
+        #region Operator >= (ChargeBoxId1, ChargeBoxId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeBox_Id1">An id token.</param>
-        /// <param name="ChargeBox_Id2">Another id token.</param>
+        /// <param name="ChargeBoxId1">An charge box identification.</param>
+        /// <param name="ChargeBoxId2">Another charge box identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargeBox_Id ChargeBox_Id1, ChargeBox_Id ChargeBox_Id2)
-            => !(ChargeBox_Id1 < ChargeBox_Id2);
+        public static Boolean operator >= (ChargeBox_Id ChargeBoxId1, ChargeBox_Id ChargeBoxId2)
+            => !(ChargeBoxId1 < ChargeBoxId2);
 
         #endregion
 
         #endregion
 
-        #region IComparable<ChargeBox_Id> Members
+        #region IComparable<ChargeBoxId> Members
 
         #region CompareTo(Object)
 
@@ -215,10 +215,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if (Object == null)
                 throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
-            // Check if the given object is a id token.
+            // Check if the given object is a charge box identification.
             var ChargeBox_Id = Object as ChargeBox_Id;
             if ((Object) ChargeBox_Id == null)
-                throw new ArgumentException("The given object is not a ChargeBox_Id!", nameof(Object));
+                throw new ArgumentException("The given object is not a charge box identification!", nameof(Object));
 
             return CompareTo(ChargeBox_Id);
 
@@ -226,19 +226,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region CompareTo(ChargeBox_Id)
+        #region CompareTo(ChargeBoxId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeBox_Id">An object to compare with.</param>
-        public Int32 CompareTo(ChargeBox_Id ChargeBox_Id)
+        /// <param name="ChargeBoxId">An object to compare with.</param>
+        public Int32 CompareTo(ChargeBox_Id ChargeBoxId)
         {
 
-            if ((Object) ChargeBox_Id == null)
-                throw new ArgumentNullException(nameof(ChargeBox_Id),  "The given id token must not be null!");
+            if ((Object) ChargeBoxId == null)
+                throw new ArgumentNullException(nameof(ChargeBoxId),  "The given charge box identification must not be null!");
 
-            return String.Compare(Value, ChargeBox_Id.Value, StringComparison.Ordinal);
+            return String.Compare(Value, ChargeBoxId.Value, StringComparison.Ordinal);
 
         }
 
@@ -246,7 +246,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region IEquatable<ChargeBox_Id> Members
+        #region IEquatable<ChargeBoxId> Members
 
         #region Equals(Object)
 
@@ -261,7 +261,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if (Object == null)
                 return false;
 
-            // Check if the given object is a id token.
+            // Check if the given object is a charge box identification.
             var ChargeBox_Id = Object as ChargeBox_Id;
             if ((Object) ChargeBox_Id == null)
                 return false;
@@ -272,20 +272,20 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region Equals(ChargeBox_Id)
+        #region Equals(ChargeBoxId)
 
         /// <summary>
-        /// Compares two id tokens for equality.
+        /// Compares two charge box identifications for equality.
         /// </summary>
-        /// <param name="ChargeBox_Id">An id token to compare with.</param>
+        /// <param name="ChargeBoxId">An charge box identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargeBox_Id ChargeBox_Id)
+        public Boolean Equals(ChargeBox_Id ChargeBoxId)
         {
 
-            if ((Object) ChargeBox_Id == null)
+            if ((Object) ChargeBoxId == null)
                 return false;
 
-            return Value.Equals(ChargeBox_Id.Value);
+            return Value.Equals(ChargeBoxId.Value);
 
         }
 

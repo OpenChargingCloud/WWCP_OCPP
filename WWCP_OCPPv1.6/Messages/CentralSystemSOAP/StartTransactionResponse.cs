@@ -38,12 +38,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// The transaction identification assigned by the central system.
         /// </summary>
-        public Int64      TransactionId   { get; }
+        public Transaction_Id  TransactionId   { get; }
 
         /// <summary>
         /// Information about authorization status, expiry and parent id.
         /// </summary>
-        public IdTagInfo  IdTagInfo       { get; }
+        public IdTagInfo       IdTagInfo       { get; }
 
         #endregion
 
@@ -66,8 +66,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// </summary>
         /// <param name="TransactionId">The transaction identification assigned by the central system.</param>
         /// <param name="IdTagInfo">Information about authorization status, expiry and parent id.</param>
-        public StartTransactionResponse(Int64      TransactionId,
-                                        IdTagInfo  IdTagInfo)
+        public StartTransactionResponse(Transaction_Id  TransactionId,
+                                        IdTagInfo       IdTagInfo)
 
             : base(Result.OK())
 
@@ -75,8 +75,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             #region Initial checks
 
+            if (TransactionId == null)
+                throw new ArgumentNullException(nameof(TransactionId),  "The given transaction identification must not be null!");
+
             if (IdTagInfo == null)
-                throw new ArgumentNullException(nameof(IdTagInfo),  "The given identification tag info must not be null!");
+                throw new ArgumentNullException(nameof(IdTagInfo),      "The given identification tag info must not be null!");
 
             #endregion
 
@@ -198,7 +201,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 StartTransactionResponse = new StartTransactionResponse(
 
                                                StartTransactionResponseXML.MapValueOrFail  (OCPPNS.OCPPv1_6_CS + "transactionId",
-                                                                                            Int64.Parse),
+                                                                                            Transaction_Id.Parse),
 
                                                StartTransactionResponseXML.MapElementOrFail(OCPPNS.OCPPv1_6_CS + "idTagInfo",
                                                                                             IdTagInfo.Parse)
@@ -264,9 +267,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CS + "authorizeResponse",
+            => new XElement(OCPPNS.OCPPv1_6_CS + "startTransactionResponse",
 
-                   new XElement(OCPPNS.OCPPv1_6_CS + "transactionId",  TransactionId),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "transactionId",  TransactionId?.Value),
 
                    IdTagInfo.ToXML()
 

@@ -38,10 +38,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Properties
 
         /// <summary>
-        /// The connector identification of the charge point.
+        /// The connector identification at the charge point.
         /// Id '0' (zero) is used if the status is for the charge point main controller.
         /// </summary>
-        public UInt16                 ConnectorId       { get; }
+        public Connector_Id           ConnectorId       { get; }
 
         /// <summary>
         /// The current status of the charge point.
@@ -80,14 +80,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Create an OCPP StartTransaction XML/SOAP request.
         /// </summary>
-        /// <param name="ConnectorId">The connector identification of the charge point.</param>
+        /// <param name="ConnectorId">The connector identification at the charge point.</param>
         /// <param name="Status">The current status of the charge point.</param>
         /// <param name="ErrorCode">The error code reported by the charge point.</param>
         /// <param name="Info">Additional free format information related to the error.</param>
         /// <param name="StatusTimestamp">The time for which the status is reported.</param>
         /// <param name="VendorId">This identifies the vendor-specific implementation.</param>
         /// <param name="VendorErrorCode">A vendor-specific error code.</param>
-        public StatusNotificationRequest(UInt16                 ConnectorId,
+        public StatusNotificationRequest(Connector_Id           ConnectorId,
                                          ChargePointStatus      Status,
                                          ChargePointErrorCodes  ErrorCode,
                                          String                 Info             = null,
@@ -95,6 +95,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                          String                 VendorId         = null,
                                          String                 VendorErrorCode  = null)
         {
+
+            #region Initial checks
+
+            if (ConnectorId == null)
+                throw new ArgumentNullException(nameof(ConnectorId),  "The given connector identification must not be null!");
+
+            #endregion
 
             this.ConnectorId      = ConnectorId;
             this.Status           = Status;
@@ -209,7 +216,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 StatusNotificationRequest = new StatusNotificationRequest(
 
                                                 StatusNotificationRequestXML.MapValueOrFail       (OCPPNS.OCPPv1_6_CS + "connectorId",
-                                                                                                   UInt16.Parse),
+                                                                                                   Connector_Id.Parse),
 
                                                 StatusNotificationRequestXML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CS + "status",
                                                                                                    XML_IO.AsChargePointStatus),
@@ -289,7 +296,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             => new XElement(OCPPNS.OCPPv1_6_CS + "statusNotificationRequest",
 
-                   new XElement(OCPPNS.OCPPv1_6_CS + "connectorId",            ConnectorId),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "connectorId",            ConnectorId.Value),
                    new XElement(OCPPNS.OCPPv1_6_CS + "status",                 XML_IO.AsText(Status)),
                    new XElement(OCPPNS.OCPPv1_6_CS + "errorCode",              XML_IO.AsText(ErrorCode)),
 

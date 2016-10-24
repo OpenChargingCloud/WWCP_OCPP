@@ -25,11 +25,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     {
 
         /// <summary>
-        /// Unknown reading context.
-        /// </summary>
-        Unknown,
-
-        /// <summary>
         /// Value taken at start of interruption.
         /// </summary>
         InterruptionBegin,

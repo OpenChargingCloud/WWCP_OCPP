@@ -1348,9 +1348,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 case "Sample.Clock":
                     return ReadingContexts.SampleClock;
 
-                case "Sample.Periodic":
-                    return ReadingContexts.SamplePeriodic;
-
                 case "Transaction.Begin":
                     return ReadingContexts.TransactionBegin;
 
@@ -1362,7 +1359,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
 
                 default:
-                    return ReadingContexts.Unknown;
+                    return ReadingContexts.SamplePeriodic;
 
             }
 
@@ -1390,9 +1387,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 case ReadingContexts.SampleClock:
                     return "Sample.Clock";
 
-                case ReadingContexts.SamplePeriodic:
-                    return "Sample.Periodic";
-
                 case ReadingContexts.TransactionBegin:
                     return "Transaction.Begin";
 
@@ -1404,7 +1398,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
 
                 default:
-                    return "unknown";
+                    return "Sample.Periodic";
 
             }
 
@@ -1590,15 +1584,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             switch (Text)
             {
 
-                case "Raw":
-                    return ValueFormats.Raw;
-
                 case "SignedData":
                     return ValueFormats.SignedData;
 
 
                 default:
-                    return ValueFormats.Unknown;
+                    return ValueFormats.Raw;
 
             }
 
@@ -1614,15 +1605,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             switch (ValueFormat)
             {
 
-                case ValueFormats.Raw:
-                    return "Raw";
-
                 case ValueFormats.SignedData:
                     return "SignedData";
 
 
                 default:
-                    return "unknown";
+                    return "Raw";
 
             }
 
@@ -1875,12 +1863,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 case "Inlet":
                     return Locations.Inlet;
 
-                case "Outlet":
-                    return Locations.Outlet;
-
 
                 default:
-                    return Locations.Unknown;
+                    return Locations.Outlet;
 
             }
 
@@ -1908,12 +1893,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 case Locations.Inlet:
                     return "Inlet";
 
-                case Locations.Outlet:
-                    return "Outlet";
-
 
                 default:
-                    return "unknown";
+                    return "Outlet";
 
             }
 

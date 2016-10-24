@@ -205,6 +205,54 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region OnMeterValuesRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a meter values request will be send to the central system.
+        /// </summary>
+        public event OnMeterValuesRequestDelegate   OnMeterValuesRequest;
+
+        /// <summary>
+        /// An event fired whenever a meter values SOAP request will be send to the central system.
+        /// </summary>
+        public event ClientRequestLogHandler        OnMeterValuesSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a meter values SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler       OnMeterValuesSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a meter values request was received.
+        /// </summary>
+        public event OnMeterValuesResponseDelegate  OnMeterValuesResponse;
+
+        #endregion
+
+        #region OnStopTransactionRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a stop transaction request will be send to the central system.
+        /// </summary>
+        public event OnStopTransactionRequestDelegate   OnStopTransactionRequest;
+
+        /// <summary>
+        /// An event fired whenever a stop transaction SOAP request will be send to the central system.
+        /// </summary>
+        public event ClientRequestLogHandler            OnStopTransactionSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a stop transaction SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler           OnStopTransactionSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a stop transaction request was received.
+        /// </summary>
+        public event OnStopTransactionResponseDelegate  OnStopTransactionResponse;
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -364,7 +412,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #endregion
 
 
-        #region BootNotification(...)
+        #region BootNotification(ChargePointVendor, ChargePointModel, ...)
 
         /// <summary>
         /// Send a boot notification.
@@ -771,7 +819,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #endregion
 
 
-        #region Authorize(...)
+        #region Authorize         (IdTag, ...)
 
         /// <summary>
         /// Authorize the given token.
@@ -960,12 +1008,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region StartTransaction(...)
+        #region StartTransaction  (ConnectorId, IdTag, TransactionTimestamp, MeterStart, ...)
 
         /// <summary>
         /// Start a charging process at the given connector.
         /// </summary>
-        /// <param name="ConnectorId">The connector identification of the charge point.</param>
+        /// <param name="ConnectorId">The connector identification at the charge point.</param>
         /// <param name="IdTag">The identifier for which a transaction has to be started.</param>
         /// <param name="TransactionTimestamp">The timestamp of the transaction start.</param>
         /// <param name="MeterStart">The meter value in Wh for the connector at start of the transaction.</param>
@@ -977,11 +1025,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<StartTransactionResponse>>
 
-            StartTransaction(UInt16              ConnectorId,
+            StartTransaction(Connector_Id        ConnectorId,
                              IdToken             IdTag,
                              DateTime            TransactionTimestamp,
                              UInt64              MeterStart,
-                             Int32?              ReservationId      = null,
+                             Reservation_Id      ReservationId      = null,
 
                              DateTime?           Timestamp          = null,
                              CancellationToken?  CancellationToken  = null,
@@ -992,8 +1040,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             #region Initial checks
 
+            if (ConnectorId == null)
+                throw new ArgumentNullException(nameof(ConnectorId),  "The given connector identification must not be null!");
+
             if (IdTag == null)
-                throw new ArgumentNullException(nameof(IdTag),  "The given identification tag info must not be null!");
+                throw new ArgumentNullException(nameof(IdTag),        "The given identification tag info must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -1169,12 +1220,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region StatusNotification(...)
+        #region StatusNotification(ConnectorId, Status, ErrorCode, ...)
 
         /// <summary>
         /// Send a status notification for the given connector.
         /// </summary>
-        /// <param name="ConnectorId">The connector identification of the charge point.</param>
+        /// <param name="ConnectorId">The connector identification at the charge point.</param>
         /// <param name="Status">The current status of the charge point.</param>
         /// <param name="ErrorCode">The error code reported by the charge point.</param>
         /// <param name="Info">Additional free format information related to the error.</param>
@@ -1188,7 +1239,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<StatusNotificationResponse>>
 
-            StatusNotification(UInt16                 ConnectorId,
+            StatusNotification(Connector_Id           ConnectorId,
                                ChargePointStatus      Status,
                                ChargePointErrorCodes  ErrorCode,
                                String                 Info               = null,
@@ -1204,6 +1255,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         {
 
             #region Initial checks
+
+            if (ConnectorId == null)
+                throw new ArgumentNullException(nameof(ConnectorId),  "The given connector identification must not be null!");
+
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
@@ -1384,6 +1439,418 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region MeterValues       (ConnectorId, TransactionId = null, MeterValues = null, ...)
+
+        /// <summary>
+        /// Send a meter values for the given connector.
+        /// </summary>
+        /// <param name="ConnectorId">The connector identification at the charge point.</param>
+        /// <param name="TransactionId">The charging transaction to which the given meter value samples are related to.</param>
+        /// <param name="MeterValues">The sampled meter values with timestamps.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<HTTPResponse<MeterValuesResponse>>
+
+            MeterValues(Connector_Id             ConnectorId,
+                        Transaction_Id           TransactionId      = null,
+                        IEnumerable<MeterValue>  MeterValues        = null,
+
+                        DateTime?                Timestamp          = null,
+                        CancellationToken?       CancellationToken  = null,
+                        EventTracking_Id         EventTrackingId    = null,
+                        TimeSpan?                RequestTimeout     = null)
+
+        {
+
+            #region Initial checks
+
+            if (ConnectorId == null)
+                throw new ArgumentNullException(nameof(ConnectorId),  "The given connector identification must not be null!");
+
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+
+            HTTPResponse<MeterValuesResponse> result = null;
+
+            #endregion
+
+            #region Send OnMeterValuesRequest event
+
+            try
+            {
+
+                OnMeterValuesRequest?.Invoke(DateTime.Now,
+                                             Timestamp.Value,
+                                             this,
+                                             ClientId,
+                                             EventTrackingId,
+                                             ConnectorId,
+                                             TransactionId,
+                                             MeterValues,
+                                             RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnMeterValuesRequest));
+            }
+
+            #endregion
+
+
+            using (var _OCPPClient = new SOAPClient(Hostname,
+                                                    RemotePort,
+                                                    HTTPVirtualHost,
+                                                    URIPrefix,
+                                                    RemoteCertificateValidator,
+                                                    ClientCert,
+                                                    UserAgent,
+                                                    DNSClient))
+            {
+
+                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                    "/MeterValues",
+                                                                    null,
+                                                                    From,
+                                                                    To,
+                                                                    new MeterValuesRequest(ConnectorId,
+                                                                                           TransactionId,
+                                                                                           MeterValues).ToXML()),
+                                                 "MeterValues",
+                                                 RequestLogDelegate:   OnMeterValuesSOAPRequest,
+                                                 ResponseLogDelegate:  OnMeterValuesSOAPResponse,
+                                                 CancellationToken:    CancellationToken,
+                                                 EventTrackingId:      EventTrackingId,
+                                                 QueryTimeout:         RequestTimeout,
+
+                                                 #region OnSuccess
+
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(MeterValuesResponse.Parse),
+
+                                                 #endregion
+
+                                                 #region OnSOAPFault
+
+                                                 OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendSOAPError(timestamp, this, httpresponse.Content);
+
+                                                     return new HTTPResponse<MeterValuesResponse>(httpresponse,
+                                                                                                  new MeterValuesResponse(
+                                                                                                      Result.Format(
+                                                                                                          "Invalid SOAP => " +
+                                                                                                          httpresponse.HTTPBody.ToUTF8String()
+                                                                                                      )
+                                                                                                  ),
+                                                                                                  IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnHTTPError
+
+                                                 OnHTTPError: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendHTTPError(timestamp, this, httpresponse);
+
+                                                     return new HTTPResponse<MeterValuesResponse>(httpresponse,
+                                                                                                  new MeterValuesResponse(
+                                                                                                      Result.Server(
+                                                                                                           httpresponse.HTTPStatusCode.ToString() +
+                                                                                                           " => " +
+                                                                                                           httpresponse.HTTPBody.      ToUTF8String()
+                                                                                                      )
+                                                                                                  ),
+                                                                                                  IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnException
+
+                                                 OnException: (timestamp, sender, exception) => {
+
+                                                     SendException(timestamp, sender, exception);
+
+                                                     return HTTPResponse<MeterValuesResponse>.ExceptionThrown(new MeterValuesResponse(
+                                                                                                                  Result.Format(exception.Message +
+                                                                                                                                " => " +
+                                                                                                                                exception.StackTrace)),
+                                                                                                              exception);
+
+                                                 }
+
+                                                 #endregion
+
+                                                );
+
+            }
+
+            if (result == null)
+                result = HTTPResponse<MeterValuesResponse>.OK(new MeterValuesResponse(Result.OK("Nothing to upload!")));
+
+
+            #region Send OnMeterValuesResponse event
+
+            try
+            {
+
+                OnMeterValuesResponse?.Invoke(DateTime.Now,
+                                              Timestamp.Value,
+                                              this,
+                                              ClientId,
+                                              EventTrackingId,
+                                              ConnectorId,
+                                              TransactionId,
+                                              MeterValues,
+                                              RequestTimeout,
+                                              result.Content,
+                                              DateTime.Now - Timestamp.Value);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnMeterValuesResponse));
+            }
+
+            #endregion
+
+            return result;
+
+
+        }
+
+        #endregion
+
+        #region StopTransaction   (TransactionId, TransactionTimestamp, MeterStop, ...)
+
+        /// <summary>
+        /// Stop a charging process at the given connector.
+        /// </summary>
+        /// <param name="TransactionId">The transaction identification copied from the start transaction response.</param>
+        /// <param name="TransactionTimestamp">The timestamp of the end of the charging transaction.</param>
+        /// <param name="MeterStop">The energy meter value in Wh for the connector at end of the charging transaction.</param>
+        /// <param name="IdTag">An optional identifier which requested to stop the charging.</param>
+        /// <param name="Reason">An optional reason why the transaction had been stopped.</param>
+        /// <param name="TransactionData">Optional transaction usage details relevant for billing purposes.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<HTTPResponse<StopTransactionResponse>>
+
+            StopTransaction(Transaction_Id           TransactionId,
+                            DateTime                 TransactionTimestamp,
+                            UInt64                   MeterStop,
+                            IdToken                  IdTag              = null,
+                            Reasons?                 Reason             = null,
+                            IEnumerable<MeterValue>  TransactionData    = null,
+
+                            DateTime?                Timestamp          = null,
+                            CancellationToken?       CancellationToken  = null,
+                            EventTracking_Id         EventTrackingId    = null,
+                            TimeSpan?                RequestTimeout     = null)
+
+        {
+
+            #region Initial checks
+
+            if (TransactionId == null)
+                throw new ArgumentNullException(nameof(TransactionId),  "The given transaction identification must not be null!");
+
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+
+            HTTPResponse<StopTransactionResponse> result = null;
+
+            #endregion
+
+            #region Send OnStopTransactionRequest event
+
+            try
+            {
+
+                OnStopTransactionRequest?.Invoke(DateTime.Now,
+                                                 Timestamp.Value,
+                                                 this,
+                                                 ClientId,
+                                                 EventTrackingId,
+                                                 TransactionId,
+                                                 TransactionTimestamp,
+                                                 MeterStop,
+                                                 IdTag,
+                                                 Reason,
+                                                 TransactionData,
+                                                 RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnStopTransactionRequest));
+            }
+
+            #endregion
+
+
+            using (var _OCPPClient = new SOAPClient(Hostname,
+                                                    RemotePort,
+                                                    HTTPVirtualHost,
+                                                    URIPrefix,
+                                                    RemoteCertificateValidator,
+                                                    ClientCert,
+                                                    UserAgent,
+                                                    DNSClient))
+            {
+
+                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                    "/StopTransaction",
+                                                                    null,
+                                                                    From,
+                                                                    To,
+                                                                    new StopTransactionRequest(TransactionId,
+                                                                                               TransactionTimestamp,
+                                                                                               MeterStop,
+                                                                                               IdTag,
+                                                                                               Reason,
+                                                                                               TransactionData).ToXML()),
+                                                 "StopTransaction",
+                                                 RequestLogDelegate:   OnStopTransactionSOAPRequest,
+                                                 ResponseLogDelegate:  OnStopTransactionSOAPResponse,
+                                                 CancellationToken:    CancellationToken,
+                                                 EventTrackingId:      EventTrackingId,
+                                                 QueryTimeout:         RequestTimeout,
+
+                                                 #region OnSuccess
+
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(StopTransactionResponse.Parse),
+
+                                                 #endregion
+
+                                                 #region OnSOAPFault
+
+                                                 OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendSOAPError(timestamp, this, httpresponse.Content);
+
+                                                     return new HTTPResponse<StopTransactionResponse>(httpresponse,
+                                                                                                      new StopTransactionResponse(
+                                                                                                          Result.Format(
+                                                                                                              "Invalid SOAP => " +
+                                                                                                              httpresponse.HTTPBody.ToUTF8String()
+                                                                                                          )
+                                                                                                      ),
+                                                                                                      IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnHTTPError
+
+                                                 OnHTTPError: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendHTTPError(timestamp, this, httpresponse);
+
+                                                     return new HTTPResponse<StopTransactionResponse>(httpresponse,
+                                                                                                      new StopTransactionResponse(
+                                                                                                          Result.Server(
+                                                                                                               httpresponse.HTTPStatusCode.ToString() +
+                                                                                                               " => " +
+                                                                                                               httpresponse.HTTPBody.      ToUTF8String()
+                                                                                                          )
+                                                                                                      ),
+                                                                                                      IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnException
+
+                                                 OnException: (timestamp, sender, exception) => {
+
+                                                     SendException(timestamp, sender, exception);
+
+                                                     return HTTPResponse<StopTransactionResponse>.ExceptionThrown(new StopTransactionResponse(
+                                                                                                                      Result.Format(exception.Message +
+                                                                                                                                    " => " +
+                                                                                                                                    exception.StackTrace)),
+                                                                                                                  exception);
+
+                                                 }
+
+                                                 #endregion
+
+                                                );
+
+            }
+
+            if (result == null)
+                result = HTTPResponse<StopTransactionResponse>.OK(new StopTransactionResponse(Result.OK("Nothing to upload!")));
+
+
+            #region Send OnStopTransactionResponse event
+
+            try
+            {
+
+                OnStopTransactionResponse?.Invoke(DateTime.Now,
+                                                   Timestamp.Value,
+                                                   this,
+                                                   ClientId,
+                                                   EventTrackingId,
+                                                   TransactionId,
+                                                   TransactionTimestamp,
+                                                   MeterStop,
+                                                   IdTag,
+                                                   Reason,
+                                                   TransactionData,
+                                                   RequestTimeout,
+                                                   result.Content,
+                                                   DateTime.Now - Timestamp.Value);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnStopTransactionResponse));
+            }
+
+            #endregion
+
+            return result;
+
+
+        }
+
+        #endregion
 
 
     }

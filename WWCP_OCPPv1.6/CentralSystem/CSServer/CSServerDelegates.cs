@@ -137,7 +137,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// 
     /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// <param name="ConnectorId">The connector identification of the charge point.</param>
+    /// <param name="ConnectorId">The connector identification at the charge point.</param>
     /// <param name="IdTag">The identifier for which a transaction has to be started.</param>
     /// <param name="TransactionTimestamp">The timestamp of the transaction start.</param>
     /// <param name="MeterStart">The meter value in Wh for the connector at start of the transaction.</param>
@@ -152,11 +152,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                           EventTracking_Id     EventTrackingId,
 
                                           ChargeBox_Id         ChargeBoxIdentity,
-                                          UInt16               ConnectorId,
+                                          Connector_Id         ConnectorId,
                                           IdToken              IdTag,
                                           DateTime             TransactionTimestamp,
                                           UInt64               MeterStart,
-                                          Int32?               ReservationId,
+                                          Reservation_Id       ReservationId,
 
                                           TimeSpan?            QueryTimeout = null);
 
@@ -173,7 +173,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// 
     /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// <param name="ConnectorId">The connector identification of the charge point.</param>
+    /// <param name="ConnectorId">The connector identification at the charge point.</param>
     /// <param name="Status">The current status of the charge point.</param>
     /// <param name="ErrorCode">The error code reported by the charge point.</param>
     /// <param name="Info">Additional free format information related to the error.</param>
@@ -190,7 +190,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                             EventTracking_Id         EventTrackingId,
 
                                             ChargeBox_Id             ChargeBoxIdentity,
-                                            UInt16                   ConnectorId,
+                                            Connector_Id             ConnectorId,
                                             ChargePointStatus        Status,
                                             ChargePointErrorCodes    ErrorCode,
                                             String                   Info,
@@ -201,5 +201,76 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                             TimeSpan?                QueryTimeout = null);
 
     #endregion
+
+    #region OnMeterValues
+
+    /// <summary>
+    /// Send charge point meter values.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// 
+    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+    /// <param name="ConnectorId">The connector identification at the charge point.</param>
+    /// <param name="TransactionId">The charging transaction to which the given meter value samples are related to.</param>
+    /// <param name="MeterValues">The sampled meter values with timestamps.</param>
+    /// 
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    public delegate Task<MeterValuesResponse>
+
+        OnMeterValuesRequestDelegate(DateTime                 Timestamp,
+                                     CSServer                 Sender,
+                                     CancellationToken        CancellationToken,
+                                     EventTracking_Id         EventTrackingId,
+
+                                     ChargeBox_Id             ChargeBoxIdentity,
+                                     Connector_Id             ConnectorId,
+                                     Transaction_Id           TransactionId,
+                                     IEnumerable<MeterValue>  MeterValues,
+
+                                     TimeSpan?                QueryTimeout = null);
+
+    #endregion
+
+    #region OnStopTransaction
+
+    /// <summary>
+    /// A stop transaction at the given charge point.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// 
+    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+    /// <param name="TransactionId">The transaction identification copied from the start transaction response.</param>
+    /// <param name="TransactionTimestamp">The timestamp of the end of the charging transaction.</param>
+    /// <param name="MeterStop">The energy meter value in Wh for the connector at end of the charging transaction.</param>
+    /// <param name="IdTag">An optional identifier which requested to stop the charging.</param>
+    /// <param name="Reason">An optional reason why the transaction had been stopped.</param>
+    /// <param name="TransactionData">Optional transaction usage details relevant for billing purposes.</param>
+    /// 
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    public delegate Task<StopTransactionResponse>
+
+        OnStopTransactionRequestDelegate(DateTime                   Timestamp,
+                                         CSServer                   Sender,
+                                         CancellationToken          CancellationToken,
+                                         EventTracking_Id           EventTrackingId,
+
+                                         ChargeBox_Id               ChargeBoxIdentity,
+                                         Transaction_Id             TransactionId,
+                                         DateTime                   TransactionTimestamp,
+                                         UInt64                     MeterStop,
+                                         IdToken                    IdTag,
+                                         Reasons?                   Reason,
+                                         IEnumerable<MeterValue>    TransactionData,
+
+                                         TimeSpan?                  QueryTimeout = null);
+
+    #endregion
+
 
 }
