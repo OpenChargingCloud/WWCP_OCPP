@@ -68,25 +68,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #region Events
 
-        #region OnAuthorize
-
-        /// <summary>
-        /// An event sent whenever an authorize SOAP request was received.
-        /// </summary>
-        public event RequestLogHandler           OnAuthorizeSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever an authorize SOAP response was sent.
-        /// </summary>
-        public event AccessLogHandler            OnAuthorizeSOAPResponse;
-
-        /// <summary>
-        /// An event sent whenever an authorize request was received.
-        /// </summary>
-        public event OnAuthorizeRequestDelegate  OnAuthorizeRequest;
-
-        #endregion
-
         #region OnBootNotification
 
         /// <summary>
@@ -125,6 +106,26 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+
+        #region OnAuthorize
+
+        /// <summary>
+        /// An event sent whenever an authorize SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler           OnAuthorizeSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever an authorize SOAP response was sent.
+        /// </summary>
+        public event AccessLogHandler            OnAuthorizeSOAPResponse;
+
+        /// <summary>
+        /// An event sent whenever an authorize request was received.
+        /// </summary>
+        public event OnAuthorizeRequestDelegate  OnAuthorizeRequest;
+
+        #endregion
+
         #region OnStartTransaction
 
         /// <summary>
@@ -141,6 +142,25 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// An event sent whenever a start transaction request was received.
         /// </summary>
         public event OnAuthorizeRequestDelegate  OnStartTransactionRequest;
+
+        #endregion
+
+        #region OnStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a status notification SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler           OnStatusNotificationSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a status notification request was sent.
+        /// </summary>
+        public event AccessLogHandler            OnStatusNotificationSOAPResponse;
+
+        /// <summary>
+        /// An event sent whenever a status notification request was received.
+        /// </summary>
+        public event OnAuthorizeRequestDelegate  OnStatusNotificationRequest;
 
         #endregion
 
@@ -257,6 +277,235 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #endregion
 
 
+            #region / - BootNotification
+
+            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+                                            URIPrefix,
+                                            "BootNotification",
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "bootNotificationRequest").FirstOrDefault(),
+                                            async (Request, HeaderXML, BootNotificationXML) => {
+
+                #region Send OnBootNotificationSOAPRequest event
+
+                try
+                {
+
+                    OnBootNotificationSOAPRequest?.Invoke(DateTime.Now,
+                                                          this.SOAPServer,
+                                                          Request);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnBootNotificationSOAPRequest));
+                }
+
+                #endregion
+
+
+                var _OCPPHeader               = SOAPHeader.Parse(HeaderXML);
+                var _BootNotificationRequest  = BootNotificationRequest.Parse(BootNotificationXML);
+
+                BootNotificationResponse response            = null;
+
+
+
+                #region Call async subscribers
+
+                if (response == null)
+                {
+
+                    var results = OnBootNotificationRequest?.
+                                      GetInvocationList()?.
+                                      SafeSelect(subscriber => (subscriber as OnBootNotificationRequestDelegate)
+                                          (DateTime.Now,
+                                           this,
+                                           Request.CancellationToken,
+                                           Request.EventTrackingId,
+                                           _OCPPHeader.ChargeBoxIdentity,
+                                           _BootNotificationRequest.ChargePointVendor,
+                                           _BootNotificationRequest.ChargePointModel,
+                                           _BootNotificationRequest.ChargePointSerialNumber,
+                                           _BootNotificationRequest.FirmwareVersion,
+                                           _BootNotificationRequest.Iccid,
+                                           _BootNotificationRequest.IMSI,
+                                           _BootNotificationRequest.MeterType,
+                                           _BootNotificationRequest.MeterSerialNumber,
+                                           DefaultQueryTimeout)).
+                                      ToArray();
+
+                    if (results.Length > 0)
+                    {
+
+                        await Task.WhenAll(results);
+
+                        response = results.FirstOrDefault()?.Result;
+
+                    }
+
+                    if (results.Length == 0 || response == null)
+                        response = BootNotificationResponse.Failed;
+
+                }
+
+                #endregion
+
+
+
+                #region Create SOAPResponse
+
+                var HTTPResponse = new HTTPResponseBuilder(Request) {
+                    HTTPStatusCode  = HTTPStatusCode.OK,
+                    Server          = SOAPServer.DefaultServerName,
+                    Date            = DateTime.Now,
+                    ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                    Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
+                                                         "/BootNotificationResponse",
+                                                         null,
+                                                         _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
+                                                         _OCPPHeader.To,         // Fake it!
+                                                         _OCPPHeader.From,       // Fake it!
+                                                         response.ToXML()).ToUTF8Bytes()
+                };
+
+                #endregion
+
+
+                #region Send OnBootNotificationSOAPResponse event
+
+                try
+                {
+
+                    OnBootNotificationSOAPResponse?.Invoke(HTTPResponse.Timestamp,
+                                                           this.SOAPServer,
+                                                           Request,
+                                                           HTTPResponse);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnBootNotificationSOAPResponse));
+                }
+
+                #endregion
+
+                return HTTPResponse;
+
+            });
+
+            #endregion
+
+            #region / - Heartbeat
+
+            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+                                            URIPrefix,
+                                            "Heartbeat",
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "heartbeatRequest").FirstOrDefault(),
+                                            async (Request, HeaderXML, HeartbeatXML) => {
+
+                #region Send OnHeartbeatSOAPRequest event
+
+                try
+                {
+
+                    OnHeartbeatSOAPRequest?.Invoke(DateTime.Now,
+                                                   this.SOAPServer,
+                                                   Request);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnHeartbeatSOAPRequest));
+                }
+
+                #endregion
+
+
+                var _OCPPHeader        = SOAPHeader.Parse(HeaderXML);
+                var _HeartbeatRequest  = HeartbeatRequest.Parse(HeartbeatXML);
+
+                HeartbeatResponse response            = null;
+
+
+
+                #region Call async subscribers
+
+                if (response == null)
+                {
+
+                    var results = OnHeartbeatRequest?.
+                                      GetInvocationList()?.
+                                      SafeSelect(subscriber => (subscriber as OnHeartbeatRequestDelegate)
+                                          (DateTime.Now,
+                                           this,
+                                           Request.CancellationToken,
+                                           Request.EventTrackingId,
+                                           _OCPPHeader.ChargeBoxIdentity,
+                                           DefaultQueryTimeout)).
+                                      ToArray();
+
+                    if (results.Length > 0)
+                    {
+
+                        await Task.WhenAll(results);
+
+                        response = results.FirstOrDefault()?.Result;
+
+                    }
+
+                    if (results.Length == 0 || response == null)
+                        response = HeartbeatResponse.Failed;
+
+                }
+
+                #endregion
+
+
+
+                #region Create SOAPResponse
+
+                var HTTPResponse = new HTTPResponseBuilder(Request) {
+                    HTTPStatusCode  = HTTPStatusCode.OK,
+                    Server          = SOAPServer.DefaultServerName,
+                    Date            = DateTime.Now,
+                    ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                    Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
+                                                         "/HeartbeatResponse",
+                                                         null,
+                                                         _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
+                                                         _OCPPHeader.To,         // Fake it!
+                                                         _OCPPHeader.From,       // Fake it!
+                                                         response.ToXML()).ToUTF8Bytes()
+                };
+
+                #endregion
+
+
+                #region Send OnHeartbeatSOAPResponse event
+
+                try
+                {
+
+                    OnHeartbeatSOAPResponse?.Invoke(HTTPResponse.Timestamp,
+                                                    this.SOAPServer,
+                                                    Request,
+                                                    HTTPResponse);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnHeartbeatSOAPResponse));
+                }
+
+                #endregion
+
+                return HTTPResponse;
+
+            });
+
+            #endregion
+
+
             #region / - Authorize
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
@@ -302,6 +551,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
+                                           _OCPPHeader.ChargeBoxIdentity,
                                            _AuthorizeRequest.IdTag,
                                            DefaultQueryTimeout)).
                                       ToArray();
@@ -334,8 +584,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/AuthorizeResponse",
                                                          null,
-                                                         _OCPPHeader.To,   // Fake it!
-                                                         _OCPPHeader.From, // Fake it!
+                                                         _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
+                                                         _OCPPHeader.To,         // Fake it!
+                                                         _OCPPHeader.From,       // Fake it!
                                                          response.ToXML()).ToUTF8Bytes()
                 };
 
@@ -365,6 +616,239 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             });
 
             #endregion
+
+            #region / - StartTransaction
+
+            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+                                            URIPrefix,
+                                            "StartTransaction",
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "startTransaction").FirstOrDefault(),
+                                            async (Request, HeaderXML, StartTransactionXML) => {
+
+                #region Send OnStartTransactionSOAPRequest event
+
+                try
+                {
+
+                    OnStartTransactionSOAPRequest?.Invoke(DateTime.Now,
+                                                          this.SOAPServer,
+                                                          Request);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnStartTransactionSOAPRequest));
+                }
+
+                #endregion
+
+
+                var _OCPPHeader               = SOAPHeader.Parse(HeaderXML);
+                var _StartTransactionRequest  = StartTransactionRequest.Parse(StartTransactionXML);
+
+                StartTransactionResponse response            = null;
+
+
+
+                #region Call async subscribers
+
+                if (response == null)
+                {
+
+                    var results = OnStartTransactionRequest?.
+                                      GetInvocationList()?.
+                                      SafeSelect(subscriber => (subscriber as OnStartTransactionRequestDelegate)
+                                          (DateTime.Now,
+                                           this,
+                                           Request.CancellationToken,
+                                           Request.EventTrackingId,
+                                           _OCPPHeader.ChargeBoxIdentity,
+                                           _StartTransactionRequest.ConnectorId,
+                                           _StartTransactionRequest.IdTag,
+                                           _StartTransactionRequest.Timestamp,
+                                           _StartTransactionRequest.MeterStart,
+                                           _StartTransactionRequest.ReservationId,
+                                           DefaultQueryTimeout)).
+                                      ToArray();
+
+                    if (results.Length > 0)
+                    {
+
+                        await Task.WhenAll(results);
+
+                        response = results.FirstOrDefault()?.Result;
+
+                    }
+
+                    if (results.Length == 0 || response == null)
+                        response = StartTransactionResponse.Failed;
+
+                }
+
+                #endregion
+
+
+
+                #region Create SOAPResponse
+
+                var HTTPResponse = new HTTPResponseBuilder(Request) {
+                    HTTPStatusCode  = HTTPStatusCode.OK,
+                    Server          = SOAPServer.DefaultServerName,
+                    Date            = DateTime.Now,
+                    ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                    Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
+                                                         "/StartTransactionResponse",
+                                                         null,
+                                                         _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
+                                                         _OCPPHeader.To,         // Fake it!
+                                                         _OCPPHeader.From,       // Fake it!
+                                                         response.ToXML()).ToUTF8Bytes()
+                };
+
+                #endregion
+
+
+                #region Send OnStartTransactionSOAPResponse event
+
+                try
+                {
+
+                    OnStartTransactionSOAPResponse?.Invoke(HTTPResponse.Timestamp,
+                                                           this.SOAPServer,
+                                                           Request,
+                                                           HTTPResponse);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnStartTransactionSOAPResponse));
+                }
+
+                #endregion
+
+                return HTTPResponse;
+
+            });
+
+            #endregion
+
+            #region / - StatusNotification
+
+            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+                                            URIPrefix,
+                                            "StatusNotification",
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "statusNotification").FirstOrDefault(),
+                                            async (Request, HeaderXML, StatusNotificationXML) => {
+
+                #region Send OnStatusNotificationSOAPRequest event
+
+                try
+                {
+
+                    OnStatusNotificationSOAPRequest?.Invoke(DateTime.Now,
+                                                            this.SOAPServer,
+                                                            Request);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnStatusNotificationSOAPRequest));
+                }
+
+                #endregion
+
+
+                var _OCPPHeader                 = SOAPHeader.Parse(HeaderXML);
+                var _StatusNotificationRequest  = StatusNotificationRequest.Parse(StatusNotificationXML);
+
+                StatusNotificationResponse response            = null;
+
+
+
+                #region Call async subscribers
+
+                if (response == null)
+                {
+
+                    var results = OnStatusNotificationRequest?.
+                                      GetInvocationList()?.
+                                      SafeSelect(subscriber => (subscriber as OnStatusNotificationRequestDelegate)
+                                          (DateTime.Now,
+                                           this,
+                                           Request.CancellationToken,
+                                           Request.EventTrackingId,
+                                           _OCPPHeader.ChargeBoxIdentity,
+                                           _StatusNotificationRequest.ConnectorId,
+                                           _StatusNotificationRequest.Status,
+                                           _StatusNotificationRequest.ErrorCode,
+                                           _StatusNotificationRequest.Info,
+                                           _StatusNotificationRequest.StatusTimestamp,
+                                           _StatusNotificationRequest.VendorId,
+                                           _StatusNotificationRequest.VendorErrorCode,
+                                           DefaultQueryTimeout)).
+                                      ToArray();
+
+                    if (results.Length > 0)
+                    {
+
+                        await Task.WhenAll(results);
+
+                        response = results.FirstOrDefault()?.Result;
+
+                    }
+
+                    if (results.Length == 0 || response == null)
+                        response = StatusNotificationResponse.Failed;
+
+                }
+
+                #endregion
+
+
+
+                #region Create SOAPResponse
+
+                var HTTPResponse = new HTTPResponseBuilder(Request) {
+                    HTTPStatusCode  = HTTPStatusCode.OK,
+                    Server          = SOAPServer.DefaultServerName,
+                    Date            = DateTime.Now,
+                    ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                    Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
+                                                         "/StatusNotificationResponse",
+                                                         null,
+                                                         _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
+                                                         _OCPPHeader.To,         // Fake it!
+                                                         _OCPPHeader.From,       // Fake it!
+                                                         response.ToXML()).ToUTF8Bytes()
+                };
+
+                #endregion
+
+
+                #region Send OnStatusNotificationSOAPResponse event
+
+                try
+                {
+
+                    OnStatusNotificationSOAPResponse?.Invoke(HTTPResponse.Timestamp,
+                                                             this.SOAPServer,
+                                                             Request,
+                                                             HTTPResponse);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnStatusNotificationSOAPResponse));
+                }
+
+                #endregion
+
+                return HTTPResponse;
+
+            });
+
+            #endregion
+
 
 
         }

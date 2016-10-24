@@ -100,7 +100,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         //    <soap:Body>
         //       <ns:heartbeatResponse>
         //
-        //          <ns:currentTime>?</ns:currentTime>        //
+        //          <ns:currentTime>?</ns:currentTime>
+        //
         //       </ns:heartbeatResponse>
         //    </soap:Body>
         // </soap:Envelope>

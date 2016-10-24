@@ -29,42 +29,17 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
-    #region OnAuthorize
-
-    /// <summary>
-    /// Authorize the given identification token.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="IdToken">An OCPP identification token.</param>
-    /// 
-    /// <param name="QueryTimeout">An optional timeout for this request.</param>
-    public delegate Task<AuthorizeResponse>
-
-        OnAuthorizeRequestDelegate(DateTime                       Timestamp,
-                                   CSServer                       Sender,
-                                   CancellationToken              CancellationToken,
-                                   EventTracking_Id               EventTrackingId,
-
-                                   IdToken                        IdToken,
-
-                                   TimeSpan?                      QueryTimeout = null);
-
-    #endregion
-
     #region OnBootNotification
 
     /// <summary>
-    /// BootNotification the given identification token.
+    /// A boot notification.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// 
+    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
     /// <param name="ChargePointVendor">The charge point vendor identification.</param>
     /// <param name="ChargePointModel">The charge point model identification.</param>
     /// <param name="ChargePointSerialNumber">The serial number of the charge point.</param>
@@ -82,6 +57,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                           CancellationToken              CancellationToken,
                                           EventTracking_Id               EventTrackingId,
 
+                                          ChargeBox_Id                   ChargeBoxIdentity,
                                           String                         ChargePointVendor,
                                           String                         ChargePointModel,
                                           String                         ChargePointSerialNumber,
@@ -104,6 +80,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// 
+    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+    /// 
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate Task<HeartbeatResponse>
 
@@ -111,9 +90,116 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                    CSServer             Sender,
                                    CancellationToken    CancellationToken,
                                    EventTracking_Id     EventTrackingId,
+
+                                   ChargeBox_Id         ChargeBoxIdentity,
+
                                    TimeSpan?            QueryTimeout = null);
 
     #endregion
 
+
+    #region OnAuthorize
+
+    /// <summary>
+    /// Authorize the given identification token.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// 
+    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+    /// <param name="IdToken">An OCPP identification token.</param>
+    /// 
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    public delegate Task<AuthorizeResponse>
+
+        OnAuthorizeRequestDelegate(DateTime                       Timestamp,
+                                   CSServer                       Sender,
+                                   CancellationToken              CancellationToken,
+                                   EventTracking_Id               EventTrackingId,
+
+                                   ChargeBox_Id                   ChargeBoxIdentity,
+                                   IdToken                        IdToken,
+
+                                   TimeSpan?                      QueryTimeout = null);
+
+    #endregion
+
+    #region OnStartTransaction
+
+    /// <summary>
+    /// A start transaction at the given charge point.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// 
+    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+    /// <param name="ConnectorId">The connector identification of the charge point.</param>
+    /// <param name="IdTag">The identifier for which a transaction has to be started.</param>
+    /// <param name="TransactionTimestamp">The timestamp of the transaction start.</param>
+    /// <param name="MeterStart">The meter value in Wh for the connector at start of the transaction.</param>
+    /// <param name="ReservationId">An optional identification of the reservation that will terminate as a result of this transaction.</param>
+    /// 
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    public delegate Task<StartTransactionResponse>
+
+        OnStartTransactionRequestDelegate(DateTime             Timestamp,
+                                          CSServer             Sender,
+                                          CancellationToken    CancellationToken,
+                                          EventTracking_Id     EventTrackingId,
+
+                                          ChargeBox_Id         ChargeBoxIdentity,
+                                          UInt16               ConnectorId,
+                                          IdToken              IdTag,
+                                          DateTime             TransactionTimestamp,
+                                          UInt64               MeterStart,
+                                          Int32?               ReservationId,
+
+                                          TimeSpan?            QueryTimeout = null);
+
+    #endregion
+
+    #region OnStatusNotification
+
+    /// <summary>
+    /// A charge point status notification.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// 
+    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+    /// <param name="ConnectorId">The connector identification of the charge point.</param>
+    /// <param name="Status">The current status of the charge point.</param>
+    /// <param name="ErrorCode">The error code reported by the charge point.</param>
+    /// <param name="Info">Additional free format information related to the error.</param>
+    /// <param name="StatusTimestamp">The time for which the status is reported.</param>
+    /// <param name="VendorId">This identifies the vendor-specific implementation.</param>
+    /// <param name="VendorErrorCode">A vendor-specific error code.</param>
+    /// 
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    public delegate Task<StatusNotificationResponse>
+
+        OnStatusNotificationRequestDelegate(DateTime                 Timestamp,
+                                            CSServer                 Sender,
+                                            CancellationToken        CancellationToken,
+                                            EventTracking_Id         EventTrackingId,
+
+                                            ChargeBox_Id             ChargeBoxIdentity,
+                                            UInt16                   ConnectorId,
+                                            ChargePointStatus        Status,
+                                            ChargePointErrorCodes    ErrorCode,
+                                            String                   Info,
+                                            DateTime?                StatusTimestamp,
+                                            String                   VendorId,
+                                            String                   VendorErrorCode,
+
+                                            TimeSpan?                QueryTimeout = null);
+
+    #endregion
 
 }

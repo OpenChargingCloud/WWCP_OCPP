@@ -39,32 +39,32 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// The unique identification of an OCPP charge box.
         /// </summary>
-        public String  ChargeBoxIdentity   { get; }
+        public ChargeBox_Id  ChargeBoxIdentity   { get; }
 
         /// <summary>
         /// The SOAP action.
         /// </summary>
-        public String  Action              { get; }
+        public String        Action              { get; }
 
         /// <summary>
         /// An unique SOAP message identification.
         /// </summary>
-        public String  MessageId           { get; }
+        public String        MessageId           { get; }
 
         /// <summary>
         /// The unique message identification of the related SOAP request.
         /// </summary>
-        public String  RelatesTo           { get; }
+        public String        RelatesTo           { get; }
 
         /// <summary>
         /// The source URI of the SOAP message.
         /// </summary>
-        public String  From                { get; }
+        public String        From                { get; }
 
         /// <summary>
         /// The destination URI of the SOAP message.
         /// </summary>
-        public String  To                  { get; }
+        public String        To                  { get; }
 
         #endregion
 
@@ -80,11 +80,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="MessageId">An unique message identification.</param>
         /// <param name="From">The source URI of the SOAP message.</param>
         /// <param name="To">The destination URI of the SOAP message.</param>
-        public SOAPHeader(String ChargeBoxIdentity,
-                          String Action,
-                          String MessageId,
-                          String From,
-                          String To)
+        public SOAPHeader(ChargeBox_Id  ChargeBoxIdentity,
+                          String        Action,
+                          String        MessageId,
+                          String        From,
+                          String        To)
 
             : this(ChargeBoxIdentity,
                    Action,
@@ -108,17 +108,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="RelatesTo">The unique message identification of the related SOAP request.</param>
         /// <param name="From">The source URI of the SOAP message.</param>
         /// <param name="To">The destination URI of the SOAP message.</param>
-        public SOAPHeader(String ChargeBoxIdentity,
-                          String Action,
-                          String MessageId,
-                          String RelatesTo,
-                          String From,
-                          String To)
+        public SOAPHeader(ChargeBox_Id  ChargeBoxIdentity,
+                          String        Action,
+                          String        MessageId,
+                          String        RelatesTo,
+                          String        From,
+                          String        To)
         {
 
             #region Initial checks
 
-            if (ChargeBoxIdentity.IsNullOrEmpty())
+            if (ChargeBoxIdentity == null)
                 throw new ArgumentNullException(nameof(ChargeBoxIdentity),  "The given charge box identification must not be null!");
 
             if (Action.IsNullOrEmpty())
@@ -234,7 +234,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 SOAPHeader = new SOAPHeader(
 
-                                 SOAPHeaderXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity"),
+                                 SOAPHeaderXML.MapValueOrFail       (OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity",
+                                                                     ChargeBox_Id.Parse),
+
                                  SOAPHeaderXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "Action"),
                                  SOAPHeaderXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "MessageID"),
                                  SOAPHeaderXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "RelatesTo"),
@@ -304,7 +306,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             => new XElement(SOAPNS.SOAPEnvelope_v1_2 + "Header",
 
-                   new XElement(OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity", ChargeBoxIdentity),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity", ChargeBoxIdentity.Value),
 
                    new XElement(SOAPNS.SOAPAdressing + "Action",
                        new XAttribute(SOAPNS.SOAPEnvelope_v1_2 + "mustUnderstand", true),

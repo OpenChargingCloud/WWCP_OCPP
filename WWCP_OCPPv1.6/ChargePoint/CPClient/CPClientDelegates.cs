@@ -28,34 +28,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
-    #region OnAuthorize
-
-    /// <summary>
-    /// A delegate called whenever an authorize request will be send to the central system.
-    /// </summary>
-    public delegate Task OnAuthorizeRequestDelegate (DateTime             LogTimestamp,
-                                                     DateTime             RequestTimestamp,
-                                                     CPClient             Sender,
-                                                     String               SenderId,
-                                                     EventTracking_Id     EventTrackingId,
-                                                     IdToken              IdTag,
-                                                     TimeSpan?            RequestTimeout);
-
-    /// <summary>
-    /// A delegate called whenever a response to an authorize request was received.
-    /// </summary>
-    public delegate Task OnAuthorizeResponseDelegate(DateTime             LogTimestamp,
-                                                     DateTime             RequestTimestamp,
-                                                     CPClient             Sender,
-                                                     String               SenderId,
-                                                     EventTracking_Id     EventTrackingId,
-                                                     IdToken              IdTag,
-                                                     TimeSpan?            RequestTimeout,
-                                                     AuthorizeResponse    Result,
-                                                     TimeSpan             Duration);
-
-    #endregion
-
     #region OnBootNotification
 
     /// <summary>
@@ -66,6 +38,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                             CPClient                    Sender,
                                                             String                      SenderId,
                                                             EventTracking_Id            EventTrackingId,
+
                                                             String                      ChargePointVendor,
                                                             String                      ChargePointModel,
                                                             String                      ChargePointSerialNumber,
@@ -74,6 +47,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                             String                      IMSI,
                                                             String                      MeterType,
                                                             String                      MeterSerialNumber,
+
                                                             TimeSpan?                   RequestTimeout);
 
     /// <summary>
@@ -84,6 +58,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                             CPClient                    Sender,
                                                             String                      SenderId,
                                                             EventTracking_Id            EventTrackingId,
+
                                                             String                      ChargePointVendor,
                                                             String                      ChargePointModel,
                                                             String                      ChargePointSerialNumber,
@@ -92,6 +67,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                             String                      IMSI,
                                                             String                      MeterType,
                                                             String                      MeterSerialNumber,
+
                                                             TimeSpan?                   RequestTimeout,
                                                             BootNotificationResponse    Result,
                                                             TimeSpan                    Duration);
@@ -124,5 +100,121 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
     #endregion
 
+
+    #region OnAuthorize
+
+    /// <summary>
+    /// A delegate called whenever an authorize request will be send to the central system.
+    /// </summary>
+    public delegate Task OnAuthorizeRequestDelegate (DateTime             LogTimestamp,
+                                                     DateTime             RequestTimestamp,
+                                                     CPClient             Sender,
+                                                     String               SenderId,
+                                                     EventTracking_Id     EventTrackingId,
+
+                                                     IdToken              IdTag,
+
+                                                     TimeSpan?            RequestTimeout);
+
+    /// <summary>
+    /// A delegate called whenever a response to an authorize request was received.
+    /// </summary>
+    public delegate Task OnAuthorizeResponseDelegate(DateTime             LogTimestamp,
+                                                     DateTime             RequestTimestamp,
+                                                     CPClient             Sender,
+                                                     String               SenderId,
+                                                     EventTracking_Id     EventTrackingId,
+
+                                                     IdToken              IdTag,
+
+                                                     TimeSpan?            RequestTimeout,
+                                                     AuthorizeResponse    Result,
+                                                     TimeSpan             Duration);
+
+    #endregion
+
+    #region OnStartTransaction
+
+    /// <summary>
+    /// A delegate called whenever a start transaction request will be send to the central system.
+    /// </summary>
+    public delegate Task OnStartTransactionRequestDelegate (DateTime                    LogTimestamp,
+                                                            DateTime                    RequestTimestamp,
+                                                            CPClient                    Sender,
+                                                            String                      SenderId,
+                                                            EventTracking_Id            EventTrackingId,
+
+                                                            UInt16                      ConnectorId,
+                                                            IdToken                     IdTag,
+                                                            DateTime                    Timestamp,
+                                                            UInt64                      MeterStart,
+                                                            Int32?                      ReservationId,
+
+                                                            TimeSpan?                   RequestTimeout);
+
+    /// <summary>
+    /// A delegate called whenever a response to a start transaction request was received.
+    /// </summary>
+    public delegate Task OnStartTransactionResponseDelegate(DateTime                    LogTimestamp,
+                                                            DateTime                    RequestTimestamp,
+                                                            CPClient                    Sender,
+                                                            String                      SenderId,
+                                                            EventTracking_Id            EventTrackingId,
+
+                                                            UInt16                      ConnectorId,
+                                                            IdToken                     IdTag,
+                                                            DateTime                    Timestamp,
+                                                            UInt64                      MeterStart,
+                                                            Int32?                      ReservationId,
+
+                                                            TimeSpan?                   RequestTimeout,
+                                                            StartTransactionResponse    Result,
+                                                            TimeSpan                    Duration);
+
+    #endregion
+
+    #region OnStatusNotification
+
+    /// <summary>
+    /// A delegate called whenever a status notification request will be send to the central system.
+    /// </summary>
+    public delegate Task OnStatusNotificationRequestDelegate (DateTime                      LogTimestamp,
+                                                              DateTime                      RequestTimestamp,
+                                                              CPClient                      Sender,
+                                                              String                        SenderId,
+                                                              EventTracking_Id              EventTrackingId,
+
+                                                              UInt16                        ConnectorId,
+                                                              ChargePointStatus             Status,
+                                                              ChargePointErrorCodes         ErrorCode,
+                                                              String                        Info,
+                                                              DateTime?                     StatusTimestamp,
+                                                              String                        VendorId,
+                                                              String                        VendorErrorCode,
+
+                                                              TimeSpan?                     RequestTimeout);
+
+    /// <summary>
+    /// A delegate called whenever a response to a status notification request was received.
+    /// </summary>s
+    public delegate Task OnStatusNotificationResponseDelegate(DateTime                      LogTimestamp,
+                                                              DateTime                      RequestTimestamp,
+                                                              CPClient                      Sender,
+                                                              String                        SenderId,
+                                                              EventTracking_Id              EventTrackingId,
+
+                                                              UInt16                        ConnectorId,
+                                                              ChargePointStatus             Status,
+                                                              ChargePointErrorCodes         ErrorCode,
+                                                              String                        Info,
+                                                              DateTime?                     StatusTimestamp,
+                                                              String                        VendorId,
+                                                              String                        VendorErrorCode,
+
+                                                              TimeSpan?                     RequestTimeout,
+                                                              StatusNotificationResponse    Result,
+                                                              TimeSpan                      Duration);
+
+    #endregion
 
 }

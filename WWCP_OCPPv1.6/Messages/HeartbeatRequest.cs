@@ -22,7 +22,7 @@ using System.Xml.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP.NS;
 
 #endregion
 
@@ -46,7 +46,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         //    </soap:Header>
         //
         //    <soap:Body>
-        //       <ns:heartbeatRequest/>        //    </soap:Body>
+        //       <ns:heartbeatRequest/>
+        //    </soap:Body>
         //
         // </soap:Envelope>
 
@@ -147,7 +148,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             try
             {
 
-                if (TryParse(XDocument.Parse(HeartbeatRequestText).Root.Element(SOAPNS.NS.SOAPEnvelope_v1_2 + "Body"),
+                if (TryParse(XDocument.Parse(HeartbeatRequestText).Root.Element(SOAPNS.SOAPEnvelope_v1_2 + "Body"),
                              out HeartbeatRequest,
                              OnException))
 
@@ -275,14 +276,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
 
-                return base.GetHashCode();
-
-            }
-        }
+            => base.GetHashCode();
 
         #endregion
 

@@ -56,6 +56,16 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
+        #region Statics
+
+        /// <summary>
+        /// The boot notification failed.
+        /// </summary>
+        public static BootNotificationResponse Failed
+            => new BootNotificationResponse(Result.Server());
+
+        #endregion
+
         #region Constructor(s)
 
         #region BootNotificationResponse(Status, CurrentTime, Interval)
@@ -82,10 +92,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region AuthorizeResponse(Result)
+        #region BootNotificationResponse(Result)
 
         /// <summary>
-        /// Create a new OCPP authorize response.
+        /// Create a new OCPP boot notification response.
         /// </summary>
         public BootNotificationResponse(Result Result)
 

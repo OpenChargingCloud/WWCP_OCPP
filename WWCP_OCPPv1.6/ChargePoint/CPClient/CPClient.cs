@@ -61,8 +61,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The unique identification of this OCPP charge box.
         /// </summary>
-        public String          ChargeBoxIdentity
-            => ClientId;
+        public ChargeBox_Id    ChargeBoxIdentity
+            => ChargeBox_Id.Parse(ClientId);
 
         /// <summary>
         /// The source URI of the SOAP message.
@@ -83,30 +83,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #endregion
 
         #region Events
-
-        #region OnAuthorizeRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever an authorize request will be send to the central system.
-        /// </summary>
-        public event OnAuthorizeRequestDelegate   OnAuthorizeRequest;
-
-        /// <summary>
-        /// An event fired whenever an authorize SOAP request will be send to the central system.
-        /// </summary>
-        public event ClientRequestLogHandler      OnAuthorizeSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to an authorize SOAP request was received.
-        /// </summary>
-        public event ClientResponseLogHandler     OnAuthorizeSOAPResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to an authorize request was received.
-        /// </summary>
-        public event OnAuthorizeResponseDelegate  OnAuthorizeResponse;
-
-        #endregion
 
         #region OnBootNotificationRequest/-Response
 
@@ -153,6 +129,79 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// An event fired whenever a response to a heartbeat request was received.
         /// </summary>
         public event OnHeartbeatResponseDelegate  OnHeartbeatResponse;
+
+        #endregion
+
+
+        #region OnAuthorizeRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever an authorize request will be send to the central system.
+        /// </summary>
+        public event OnAuthorizeRequestDelegate   OnAuthorizeRequest;
+
+        /// <summary>
+        /// An event fired whenever an authorize SOAP request will be send to the central system.
+        /// </summary>
+        public event ClientRequestLogHandler      OnAuthorizeSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an authorize SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler     OnAuthorizeSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to an authorize request was received.
+        /// </summary>
+        public event OnAuthorizeResponseDelegate  OnAuthorizeResponse;
+
+        #endregion
+
+        #region OnStartTransactionRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a start transaction request will be send to the central system.
+        /// </summary>
+        public event OnStartTransactionRequestDelegate   OnStartTransactionRequest;
+
+        /// <summary>
+        /// An event fired whenever a start transaction SOAP request will be send to the central system.
+        /// </summary>
+        public event ClientRequestLogHandler             OnStartTransactionSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a start transaction SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler            OnStartTransactionSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a start transaction request was received.
+        /// </summary>
+        public event OnStartTransactionResponseDelegate  OnStartTransactionResponse;
+
+        #endregion
+
+        #region OnStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a status notification request will be send to the central system.
+        /// </summary>
+        public event OnStatusNotificationRequestDelegate   OnStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a status notification SOAP request will be send to the central system.
+        /// </summary>
+        public event ClientRequestLogHandler               OnStatusNotificationSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a status notification SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler              OnStatusNotificationSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a status notification request was received.
+        /// </summary>
+        public event OnStatusNotificationResponseDelegate  OnStatusNotificationResponse;
 
         #endregion
 
@@ -314,195 +363,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-
-        #region Authorize(...)
-
-        /// <summary>
-        /// Authorize the given IdTag.
-        /// </summary>
-        /// <param name="IdTag">The identifier that needs to be authorized.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<AuthorizeResponse>>
-
-            Authorize(IdToken             IdTag,
-
-                      DateTime?           Timestamp          = null,
-                      CancellationToken?  CancellationToken  = null,
-                      EventTracking_Id    EventTrackingId    = null,
-                      TimeSpan?           RequestTimeout     = null)
-
-        {
-
-            #region Initial checks
-
-            if (IdTag == null)
-                throw new ArgumentNullException(nameof(IdTag),  "The given identification tag info must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<AuthorizeResponse> result = null;
-
-            #endregion
-
-            #region Send OnAuthorizeRequest event
-
-            try
-            {
-
-                OnAuthorizeRequest?.Invoke(DateTime.Now,
-                                           Timestamp.Value,
-                                           this,
-                                           ClientId,
-                                           EventTrackingId,
-                                           IdTag,
-                                           RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(CPClient) + "." + nameof(OnAuthorizeRequest));
-            }
-
-            #endregion
-
-
-            using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    RemotePort,
-                                                    HTTPVirtualHost,
-                                                    URIPrefix,
-                                                    RemoteCertificateValidator,
-                                                    ClientCert,
-                                                    UserAgent,
-                                                    DNSClient))
-            {
-
-                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                    "/Authorize",
-                                                                    null,
-                                                                    From,
-                                                                    To,
-                                                                    new AuthorizeRequest(IdTag).ToXML()),
-                                                 "Authorize",
-                                                 RequestLogDelegate:   OnAuthorizeSOAPRequest,
-                                                 ResponseLogDelegate:  OnAuthorizeSOAPResponse,
-                                                 CancellationToken:    CancellationToken,
-                                                 EventTrackingId:      EventTrackingId,
-                                                 QueryTimeout:         RequestTimeout,
-
-                                                 #region OnSuccess
-
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(AuthorizeResponse.Parse),
-
-                                                 #endregion
-
-                                                 #region OnSOAPFault
-
-                                                 OnSOAPFault: (timestamp, soapclient, httpresponse) => {
-
-                                                     SendSOAPError(timestamp, this, httpresponse.Content);
-
-                                                     return new HTTPResponse<AuthorizeResponse>(httpresponse,
-                                                                                                new AuthorizeResponse(
-                                                                                                    Result.Format(
-                                                                                                        "Invalid SOAP => " +
-                                                                                                        httpresponse.HTTPBody.ToUTF8String()
-                                                                                                    )
-                                                                                                ),
-                                                                                                IsFault: true);
-
-                                                 },
-
-                                                 #endregion
-
-                                                 #region OnHTTPError
-
-                                                 OnHTTPError: (timestamp, soapclient, httpresponse) => {
-
-                                                     SendHTTPError(timestamp, this, httpresponse);
-
-                                                     return new HTTPResponse<AuthorizeResponse>(httpresponse,
-                                                                                                new AuthorizeResponse(
-                                                                                                    Result.Server(
-                                                                                                         httpresponse.HTTPStatusCode.ToString() +
-                                                                                                         " => " +
-                                                                                                         httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                    )
-                                                                                                ),
-                                                                                                IsFault: true);
-
-                                                 },
-
-                                                 #endregion
-
-                                                 #region OnException
-
-                                                 OnException: (timestamp, sender, exception) => {
-
-                                                     SendException(timestamp, sender, exception);
-
-                                                     return HTTPResponse<AuthorizeResponse>.ExceptionThrown(new AuthorizeResponse(
-                                                                                                                Result.Format(exception.Message +
-                                                                                                                              " => " +
-                                                                                                                              exception.StackTrace)),
-                                                                                                            exception);
-
-                                                 }
-
-                                                 #endregion
-
-                                                );
-
-            }
-
-            if (result == null)
-                result = HTTPResponse<AuthorizeResponse>.OK(new AuthorizeResponse(Result.OK("Nothing to upload!")));
-
-
-            #region Send OnAuthorizeResponse event
-
-            try
-            {
-
-                OnAuthorizeResponse?.Invoke(DateTime.Now,
-                                            Timestamp.Value,
-                                            this,
-                                            ClientId,
-                                            EventTrackingId,
-                                            IdTag,
-                                            RequestTimeout,
-                                            result.Content,
-                                            DateTime.Now - Timestamp.Value);
-
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(CPClient) + "." + nameof(OnAuthorizeResponse));
-            }
-
-            #endregion
-
-            return result;
-
-
-        }
-
-        #endregion
 
         #region BootNotification(...)
 
@@ -909,6 +769,621 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         }
 
         #endregion
+
+
+        #region Authorize(...)
+
+        /// <summary>
+        /// Authorize the given token.
+        /// </summary>
+        /// <param name="IdTag">The identifier that needs to be authorized.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<HTTPResponse<AuthorizeResponse>>
+
+            Authorize(IdToken             IdTag,
+
+                      DateTime?           Timestamp          = null,
+                      CancellationToken?  CancellationToken  = null,
+                      EventTracking_Id    EventTrackingId    = null,
+                      TimeSpan?           RequestTimeout     = null)
+
+        {
+
+            #region Initial checks
+
+            if (IdTag == null)
+                throw new ArgumentNullException(nameof(IdTag),  "The given identification tag info must not be null!");
+
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+
+            HTTPResponse<AuthorizeResponse> result = null;
+
+            #endregion
+
+            #region Send OnAuthorizeRequest event
+
+            try
+            {
+
+                OnAuthorizeRequest?.Invoke(DateTime.Now,
+                                           Timestamp.Value,
+                                           this,
+                                           ClientId,
+                                           EventTrackingId,
+                                           IdTag,
+                                           RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnAuthorizeRequest));
+            }
+
+            #endregion
+
+
+            using (var _OCPPClient = new SOAPClient(Hostname,
+                                                    RemotePort,
+                                                    HTTPVirtualHost,
+                                                    URIPrefix,
+                                                    RemoteCertificateValidator,
+                                                    ClientCert,
+                                                    UserAgent,
+                                                    DNSClient))
+            {
+
+                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                    "/Authorize",
+                                                                    null,
+                                                                    From,
+                                                                    To,
+                                                                    new AuthorizeRequest(IdTag).ToXML()),
+                                                 "Authorize",
+                                                 RequestLogDelegate:   OnAuthorizeSOAPRequest,
+                                                 ResponseLogDelegate:  OnAuthorizeSOAPResponse,
+                                                 CancellationToken:    CancellationToken,
+                                                 EventTrackingId:      EventTrackingId,
+                                                 QueryTimeout:         RequestTimeout,
+
+                                                 #region OnSuccess
+
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(AuthorizeResponse.Parse),
+
+                                                 #endregion
+
+                                                 #region OnSOAPFault
+
+                                                 OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendSOAPError(timestamp, this, httpresponse.Content);
+
+                                                     return new HTTPResponse<AuthorizeResponse>(httpresponse,
+                                                                                                new AuthorizeResponse(
+                                                                                                    Result.Format(
+                                                                                                        "Invalid SOAP => " +
+                                                                                                        httpresponse.HTTPBody.ToUTF8String()
+                                                                                                    )
+                                                                                                ),
+                                                                                                IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnHTTPError
+
+                                                 OnHTTPError: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendHTTPError(timestamp, this, httpresponse);
+
+                                                     return new HTTPResponse<AuthorizeResponse>(httpresponse,
+                                                                                                new AuthorizeResponse(
+                                                                                                    Result.Server(
+                                                                                                         httpresponse.HTTPStatusCode.ToString() +
+                                                                                                         " => " +
+                                                                                                         httpresponse.HTTPBody.      ToUTF8String()
+                                                                                                    )
+                                                                                                ),
+                                                                                                IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnException
+
+                                                 OnException: (timestamp, sender, exception) => {
+
+                                                     SendException(timestamp, sender, exception);
+
+                                                     return HTTPResponse<AuthorizeResponse>.ExceptionThrown(new AuthorizeResponse(
+                                                                                                                Result.Format(exception.Message +
+                                                                                                                              " => " +
+                                                                                                                              exception.StackTrace)),
+                                                                                                            exception);
+
+                                                 }
+
+                                                 #endregion
+
+                                                );
+
+            }
+
+            if (result == null)
+                result = HTTPResponse<AuthorizeResponse>.OK(new AuthorizeResponse(Result.OK("Nothing to upload!")));
+
+
+            #region Send OnAuthorizeResponse event
+
+            try
+            {
+
+                OnAuthorizeResponse?.Invoke(DateTime.Now,
+                                            Timestamp.Value,
+                                            this,
+                                            ClientId,
+                                            EventTrackingId,
+                                            IdTag,
+                                            RequestTimeout,
+                                            result.Content,
+                                            DateTime.Now - Timestamp.Value);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnAuthorizeResponse));
+            }
+
+            #endregion
+
+            return result;
+
+
+        }
+
+        #endregion
+
+        #region StartTransaction(...)
+
+        /// <summary>
+        /// Start a charging process at the given connector.
+        /// </summary>
+        /// <param name="ConnectorId">The connector identification of the charge point.</param>
+        /// <param name="IdTag">The identifier for which a transaction has to be started.</param>
+        /// <param name="TransactionTimestamp">The timestamp of the transaction start.</param>
+        /// <param name="MeterStart">The meter value in Wh for the connector at start of the transaction.</param>
+        /// <param name="ReservationId">An optional identification of the reservation that will terminate as a result of this transaction.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<HTTPResponse<StartTransactionResponse>>
+
+            StartTransaction(UInt16              ConnectorId,
+                             IdToken             IdTag,
+                             DateTime            TransactionTimestamp,
+                             UInt64              MeterStart,
+                             Int32?              ReservationId      = null,
+
+                             DateTime?           Timestamp          = null,
+                             CancellationToken?  CancellationToken  = null,
+                             EventTracking_Id    EventTrackingId    = null,
+                             TimeSpan?           RequestTimeout     = null)
+
+        {
+
+            #region Initial checks
+
+            if (IdTag == null)
+                throw new ArgumentNullException(nameof(IdTag),  "The given identification tag info must not be null!");
+
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+
+            HTTPResponse<StartTransactionResponse> result = null;
+
+            #endregion
+
+            #region Send OnStartTransactionRequest event
+
+            try
+            {
+
+                OnStartTransactionRequest?.Invoke(DateTime.Now,
+                                                  Timestamp.Value,
+                                                  this,
+                                                  ClientId,
+                                                  EventTrackingId,
+                                                  ConnectorId,
+                                                  IdTag,
+                                                  TransactionTimestamp,
+                                                  MeterStart,
+                                                  ReservationId,
+                                                  RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnStartTransactionRequest));
+            }
+
+            #endregion
+
+
+            using (var _OCPPClient = new SOAPClient(Hostname,
+                                                    RemotePort,
+                                                    HTTPVirtualHost,
+                                                    URIPrefix,
+                                                    RemoteCertificateValidator,
+                                                    ClientCert,
+                                                    UserAgent,
+                                                    DNSClient))
+            {
+
+                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                    "/StartTransaction",
+                                                                    null,
+                                                                    From,
+                                                                    To,
+                                                                    new StartTransactionRequest(ConnectorId,
+                                                                                                IdTag,
+                                                                                                TransactionTimestamp,
+                                                                                                MeterStart,
+                                                                                                ReservationId).ToXML()),
+                                                 "StartTransaction",
+                                                 RequestLogDelegate:   OnStartTransactionSOAPRequest,
+                                                 ResponseLogDelegate:  OnStartTransactionSOAPResponse,
+                                                 CancellationToken:    CancellationToken,
+                                                 EventTrackingId:      EventTrackingId,
+                                                 QueryTimeout:         RequestTimeout,
+
+                                                 #region OnSuccess
+
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(StartTransactionResponse.Parse),
+
+                                                 #endregion
+
+                                                 #region OnSOAPFault
+
+                                                 OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendSOAPError(timestamp, this, httpresponse.Content);
+
+                                                     return new HTTPResponse<StartTransactionResponse>(httpresponse,
+                                                                                                       new StartTransactionResponse(
+                                                                                                           Result.Format(
+                                                                                                               "Invalid SOAP => " +
+                                                                                                               httpresponse.HTTPBody.ToUTF8String()
+                                                                                                           )
+                                                                                                       ),
+                                                                                                       IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnHTTPError
+
+                                                 OnHTTPError: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendHTTPError(timestamp, this, httpresponse);
+
+                                                     return new HTTPResponse<StartTransactionResponse>(httpresponse,
+                                                                                                       new StartTransactionResponse(
+                                                                                                           Result.Server(
+                                                                                                                httpresponse.HTTPStatusCode.ToString() +
+                                                                                                                " => " +
+                                                                                                                httpresponse.HTTPBody.      ToUTF8String()
+                                                                                                           )
+                                                                                                       ),
+                                                                                                       IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnException
+
+                                                 OnException: (timestamp, sender, exception) => {
+
+                                                     SendException(timestamp, sender, exception);
+
+                                                     return HTTPResponse<StartTransactionResponse>.ExceptionThrown(new StartTransactionResponse(
+                                                                                                                       Result.Format(exception.Message +
+                                                                                                                                     " => " +
+                                                                                                                                     exception.StackTrace)),
+                                                                                                                   exception);
+
+                                                 }
+
+                                                 #endregion
+
+                                                );
+
+            }
+
+            if (result == null)
+                result = HTTPResponse<StartTransactionResponse>.OK(new StartTransactionResponse(Result.OK("Nothing to upload!")));
+
+
+            #region Send OnStartTransactionResponse event
+
+            try
+            {
+
+                OnStartTransactionResponse?.Invoke(DateTime.Now,
+                                                   Timestamp.Value,
+                                                   this,
+                                                   ClientId,
+                                                   EventTrackingId,
+                                                   ConnectorId,
+                                                   IdTag,
+                                                   TransactionTimestamp,
+                                                   MeterStart,
+                                                   ReservationId,
+                                                   RequestTimeout,
+                                                   result.Content,
+                                                   DateTime.Now - Timestamp.Value);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnStartTransactionResponse));
+            }
+
+            #endregion
+
+            return result;
+
+
+        }
+
+        #endregion
+
+        #region StatusNotification(...)
+
+        /// <summary>
+        /// Send a status notification for the given connector.
+        /// </summary>
+        /// <param name="ConnectorId">The connector identification of the charge point.</param>
+        /// <param name="Status">The current status of the charge point.</param>
+        /// <param name="ErrorCode">The error code reported by the charge point.</param>
+        /// <param name="Info">Additional free format information related to the error.</param>
+        /// <param name="StatusTimestamp">The time for which the status is reported.</param>
+        /// <param name="VendorId">This identifies the vendor-specific implementation.</param>
+        /// <param name="VendorErrorCode">A vendor-specific error code.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<HTTPResponse<StatusNotificationResponse>>
+
+            StatusNotification(UInt16                 ConnectorId,
+                               ChargePointStatus      Status,
+                               ChargePointErrorCodes  ErrorCode,
+                               String                 Info               = null,
+                               DateTime?              StatusTimestamp    = null,
+                               String                 VendorId           = null,
+                               String                 VendorErrorCode    = null,
+
+                               DateTime?              Timestamp          = null,
+                               CancellationToken?     CancellationToken  = null,
+                               EventTracking_Id       EventTrackingId    = null,
+                               TimeSpan?              RequestTimeout     = null)
+
+        {
+
+            #region Initial checks
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+
+            HTTPResponse<StatusNotificationResponse> result = null;
+
+            #endregion
+
+            #region Send OnStatusNotificationRequest event
+
+            try
+            {
+
+                OnStatusNotificationRequest?.Invoke(DateTime.Now,
+                                                    Timestamp.Value,
+                                                    this,
+                                                    ClientId,
+                                                    EventTrackingId,
+                                                    ConnectorId,
+                                                    Status,
+                                                    ErrorCode,
+                                                    Info,
+                                                    StatusTimestamp,
+                                                    VendorId,
+                                                    VendorErrorCode,
+                                                    RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnStatusNotificationRequest));
+            }
+
+            #endregion
+
+
+            using (var _OCPPClient = new SOAPClient(Hostname,
+                                                    RemotePort,
+                                                    HTTPVirtualHost,
+                                                    URIPrefix,
+                                                    RemoteCertificateValidator,
+                                                    ClientCert,
+                                                    UserAgent,
+                                                    DNSClient))
+            {
+
+                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                    "/StatusNotification",
+                                                                    null,
+                                                                    From,
+                                                                    To,
+                                                                    new StatusNotificationRequest(ConnectorId,
+                                                                                                  Status,
+                                                                                                  ErrorCode,
+                                                                                                  Info,
+                                                                                                  StatusTimestamp,
+                                                                                                  VendorId,
+                                                                                                  VendorErrorCode).ToXML()),
+                                                 "StatusNotification",
+                                                 RequestLogDelegate:   OnStatusNotificationSOAPRequest,
+                                                 ResponseLogDelegate:  OnStatusNotificationSOAPResponse,
+                                                 CancellationToken:    CancellationToken,
+                                                 EventTrackingId:      EventTrackingId,
+                                                 QueryTimeout:         RequestTimeout,
+
+                                                 #region OnSuccess
+
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(StatusNotificationResponse.Parse),
+
+                                                 #endregion
+
+                                                 #region OnSOAPFault
+
+                                                 OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendSOAPError(timestamp, this, httpresponse.Content);
+
+                                                     return new HTTPResponse<StatusNotificationResponse>(httpresponse,
+                                                                                                         new StatusNotificationResponse(
+                                                                                                             Result.Format(
+                                                                                                                 "Invalid SOAP => " +
+                                                                                                                 httpresponse.HTTPBody.ToUTF8String()
+                                                                                                             )
+                                                                                                         ),
+                                                                                                         IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnHTTPError
+
+                                                 OnHTTPError: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendHTTPError(timestamp, this, httpresponse);
+
+                                                     return new HTTPResponse<StatusNotificationResponse>(httpresponse,
+                                                                                                         new StatusNotificationResponse(
+                                                                                                             Result.Server(
+                                                                                                                  httpresponse.HTTPStatusCode.ToString() +
+                                                                                                                  " => " +
+                                                                                                                  httpresponse.HTTPBody.      ToUTF8String()
+                                                                                                             )
+                                                                                                         ),
+                                                                                                         IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnException
+
+                                                 OnException: (timestamp, sender, exception) => {
+
+                                                     SendException(timestamp, sender, exception);
+
+                                                     return HTTPResponse<StatusNotificationResponse>.ExceptionThrown(new StatusNotificationResponse(
+                                                                                                                         Result.Format(exception.Message +
+                                                                                                                                       " => " +
+                                                                                                                                       exception.StackTrace)),
+                                                                                                                     exception);
+
+                                                 }
+
+                                                 #endregion
+
+                                                );
+
+            }
+
+            if (result == null)
+                result = HTTPResponse<StatusNotificationResponse>.OK(new StatusNotificationResponse(Result.OK("Nothing to upload!")));
+
+
+            #region Send OnStatusNotificationResponse event
+
+            try
+            {
+
+                OnStatusNotificationResponse?.Invoke(DateTime.Now,
+                                                     Timestamp.Value,
+                                                     this,
+                                                     ClientId,
+                                                     EventTrackingId,
+                                                     ConnectorId,
+                                                     Status,
+                                                     ErrorCode,
+                                                     Info,
+                                                     StatusTimestamp,
+                                                     VendorId,
+                                                     VendorErrorCode,
+                                                     RequestTimeout,
+                                                     result.Content,
+                                                     DateTime.Now - Timestamp.Value);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnStatusNotificationResponse));
+            }
+
+            #endregion
+
+            return result;
+
+
+        }
+
+        #endregion
+
 
 
     }

@@ -51,6 +51,7 @@
     <Compile Include="ChargePoint\CPClient\CPClient.cs" />
     <Compile Include="ChargePoint\CPClient\CPClientDelegates.cs" />
     <Compile Include="ChargePoint\CPClient\CPClientLogger.cs" />
+    <Compile Include="DataTypes\Complex\ChargeBox_Id.cs" />
     <Compile Include="DataTypes\Complex\Result.cs" />
     <Compile Include="DataTypes\MeterValue.cs" />
     <Compile Include="DataTypes\Simple\AvailabilityStatus.cs" />
@@ -99,6 +100,10 @@
     <Compile Include="IO\SOAP.cs" />
     <Compile Include="IO\XML_IO.cs" />
     <Compile Include="Messages\AResponse.cs" />
+    <Compile Include="Messages\StatusNotificationResponse.cs" />
+    <Compile Include="Messages\StatusNotificationRequest.cs" />
+    <Compile Include="Messages\StartTransactionResponse.cs" />
+    <Compile Include="Messages\StartTransactionRequest.cs" />
     <Compile Include="Messages\HeartbeatResponse.cs" />
     <Compile Include="Messages\HeartbeatRequest.cs" />
     <Compile Include="Messages\BootNotificationRequest.cs" />

@@ -65,7 +65,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="To">The destination URI of the SOAP message.</param>
         /// <param name="SOAPBody">The internal XML for the SOAP body.</param>
         /// <param name="XMLNamespaces">An optional delegate to process the XML namespaces.</param>
-        public static XElement Encapsulation(String                 ChargeBoxIdentity,
+        public static XElement Encapsulation(ChargeBox_Id           ChargeBoxIdentity,
                                              String                 Action,
                                              String                 MessageId,
                                              String                 From,
@@ -94,7 +94,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="To">The destination URI of the SOAP message.</param>
         /// <param name="SOAPBody">The internal XML for the SOAP body.</param>
         /// <param name="XMLNamespaces">An optional delegate to process the XML namespaces.</param>
-        public static XElement Encapsulation(String                 ChargeBoxIdentity,
+        public static XElement Encapsulation(ChargeBox_Id           ChargeBoxIdentity,
                                              String                 Action,
                                              String                 MessageId,
                                              String                 RelatesTo,
@@ -106,8 +106,23 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             #region Initial checks
 
+            if (ChargeBoxIdentity == null)
+                throw new ArgumentNullException(nameof(ChargeBoxIdentity),  "The given charge box identity must not be null!");
+
+            if (Action == null)
+                throw new ArgumentNullException(nameof(Action),             "The given SOAP action must not be null!");
+
+            if (MessageId == null)
+                throw new ArgumentNullException(nameof(MessageId),          "The given SOAP message identification must not be null!");
+
+            if (From == null)
+                throw new ArgumentNullException(nameof(From),               "The given SOAP message source must not be null!");
+
+            if (To == null)
+                throw new ArgumentNullException(nameof(To),                 "The given SOAP message destination must not be null!");
+
             if (SOAPBody == null)
-                throw new ArgumentNullException(nameof(SOAPBody), "The given XML must not be null!");
+                throw new ArgumentNullException(nameof(SOAPBody),           "The given XML must not be null!");
 
             if (XMLNamespaces == null)
                 XMLNamespaces = xml => xml;
