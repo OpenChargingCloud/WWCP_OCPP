@@ -20,7 +20,9 @@
 using System;
 using System.Xml.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP.NS;
 
 #endregion
 
@@ -28,20 +30,78 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// SOAP helpers.
+    /// OCPP XML/SOAP helpers.
     /// </summary>
     public static class SOAP
     {
 
         /// <summary>
-        /// Encapsulate the given XML within a XML SOAP frame.
+        /// Encapsulate the given XML within an OCPP XML SOAP frame.
         /// </summary>
-        /// <param name="SOAPHeaders">The internal XML for the SOAP header.</param>
+        /// <param name="SOAPHeader">An OCPP SOAP header.</param>
         /// <param name="SOAPBody">The internal XML for the SOAP body.</param>
         /// <param name="XMLNamespaces">An optional delegate to process the XML namespaces.</param>
-        public static XElement Encapsulation(XElement[]                    SOAPHeaders,
-                                             XElement                      SOAPBody,
-                                             SOAPNS.XMLNamespacesDelegate  XMLNamespaces = null)
+        public static XElement Encapsulation(SOAPHeader             SOAPHeader,
+                                             XElement               SOAPBody,
+                                             XMLNamespacesDelegate  XMLNamespaces = null)
+
+            => Encapsulation(SOAPHeader.ChargeBoxIdentity,
+                             SOAPHeader.Action,
+                             SOAPHeader.MessageId,
+                             SOAPHeader.RelatesTo,
+                             SOAPHeader.From,
+                             SOAPHeader.To,
+                             SOAPBody,
+                             XMLNamespaces);
+
+
+        /// <summary>
+        /// Encapsulate the given XML within an OCPP XML SOAP frame.
+        /// </summary>
+        /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+        /// <param name="Action">The SOAP action.</param>
+        /// <param name="MessageId">An unique message identification.</param>
+        /// <param name="From">The source URI of the SOAP message.</param>
+        /// <param name="To">The destination URI of the SOAP message.</param>
+        /// <param name="SOAPBody">The internal XML for the SOAP body.</param>
+        /// <param name="XMLNamespaces">An optional delegate to process the XML namespaces.</param>
+        public static XElement Encapsulation(String                 ChargeBoxIdentity,
+                                             String                 Action,
+                                             String                 MessageId,
+                                             String                 From,
+                                             String                 To,
+                                             XElement               SOAPBody,
+                                             XMLNamespacesDelegate  XMLNamespaces = null)
+
+            => Encapsulation(ChargeBoxIdentity,
+                             Action,
+                             MessageId,
+                             null,
+                             From,
+                             To,
+                             SOAPBody,
+                             XMLNamespaces);
+
+
+        /// <summary>
+        /// Encapsulate the given XML within an OCPP XML SOAP frame.
+        /// </summary>
+        /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+        /// <param name="Action">The SOAP action.</param>
+        /// <param name="MessageId">An unique message identification.</param>
+        /// <param name="RelatesTo">The unique message identification of the related SOAP request.</param>
+        /// <param name="From">The source URI of the SOAP message.</param>
+        /// <param name="To">The destination URI of the SOAP message.</param>
+        /// <param name="SOAPBody">The internal XML for the SOAP body.</param>
+        /// <param name="XMLNamespaces">An optional delegate to process the XML namespaces.</param>
+        public static XElement Encapsulation(String                 ChargeBoxIdentity,
+                                             String                 Action,
+                                             String                 MessageId,
+                                             String                 RelatesTo,
+                                             String                 From,
+                                             String                 To,
+                                             XElement               SOAPBody,
+                                             XMLNamespacesDelegate  XMLNamespaces = null)
         {
 
             #region Initial checks
@@ -54,28 +114,46 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             #endregion
 
+            #region Documentation
+
+            // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
+            //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
+            //                xmlns:ns   = "urn://Ocpp/Cs/2015/10/">
+            //
+            //    <soap:Header>
+            //       <ns:chargeBoxIdentity>?</ns:chargeBoxIdentity>
+            //       <wsa:Action soap:mustUnderstand="1">/Authorize</wsa:Action>
+            //       <wsa:ReplyTo soap:mustUnderstand="1">
+            //         <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
+            //       </wsa:ReplyTo>
+            //       <wsa:MessageID soap:mustUnderstand="1">uuid:516f7065-074c-4f4a-8b6d-fd3603d88e3d</wsa:MessageID>
+            //       <wsa:RelatesTo soap:mustUnderstand="1">uuid:35245423-4545-4454-8454-f45243645672</wsa:MessageID>
+            //       <wsa:To soap:mustUnderstand="1">http://127.0.0.1:2010/v1.6</wsa:To>
+            //    </soap:Header>
+            //
+            //    <soap:Body>
+            //       ...
+            //    </soap:Body>
+            //
+            // </soap:Envelope>
+
+            #endregion
+
             return XMLNamespaces(
 
-                new XElement(SOAPNS.NS.SOAPEnvelope_v1_2 + "Envelope",
-                    new XAttribute(XNamespace.Xmlns + "SOAP",  SOAPNS.NS.SOAPEnvelope_v1_2.NamespaceName),
-                    new XAttribute(XNamespace.Xmlns + "CS",    OCPPNS.OCPPv1_6_CS.    NamespaceName),
-                    new XAttribute(XNamespace.Xmlns + "CP",    OCPPNS.OCPPv1_6_CP.    NamespaceName),
+                new XElement(SOAPNS.SOAPEnvelope_v1_2 + "Envelope",
+                    new XAttribute(XNamespace.Xmlns + "SOAP",  SOAPNS.SOAPEnvelope_v1_2.NamespaceName),
+                    new XAttribute(XNamespace.Xmlns + "CS",    OCPPNS.OCPPv1_6_CS.      NamespaceName),
+                    new XAttribute(XNamespace.Xmlns + "CP",    OCPPNS.OCPPv1_6_CP.      NamespaceName),
 
-                    // <soap:Header>
-                    //   <ns:chargeBoxIdentity>Belectric_Ready</ns:chargeBoxIdentity>
-                    //   <wsrm:Sequence>
-                    //     <wsrm:Identifier>soapenv:Sender
-                    //               wsa:ActionNotSupported</wsrm:Identifier>
-                    //     <wsrm:MessageNumber>1</wsrm:MessageNumber>
-                    //   </wsrm:Sequence>
-                    //   <wsa:Action>/BootNotification</wsa:Action>
-                    //   <wsa:MessageID>uuid:3b047fc6-8da0-4856-95c8-0e8cdad5bed6</wsa:MessageID>
-                    //   <wsa:To>https://emobilityqs.regioit-aachen.de/SmartWheelsAccessServiceWs2/services/CentralSystemService_1_5</wsa:To>
-                    //   <wsa:RelatesTo>uuid:10db04d5-9b4a-4498-b7ee-3a37d571ce65</wsa:RelatesTo>
-                    // </soap:Header>
-                    new XElement(SOAPNS.NS.SOAPEnvelope_v1_2 + "Header", SOAPHeaders),
+                    new SOAPHeader(ChargeBoxIdentity,
+                                   Action,
+                                   MessageId.IsNotNullOrEmpty() ? MessageId : "uuid:" + Guid.NewGuid().ToString(),
+                                   RelatesTo,
+                                   From,
+                                   To),
 
-                    new XElement(SOAPNS.NS.SOAPEnvelope_v1_2 + "Body",   SOAPBody)
+                    new XElement(SOAPNS.SOAPEnvelope_v1_2 + "Body",   SOAPBody)
 
                 )
 

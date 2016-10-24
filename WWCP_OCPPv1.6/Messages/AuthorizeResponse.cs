@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP authorize response.
     /// </summary>
-    public class AuthorizeResponse
+    public class AuthorizeResponse : AResponse
     {
 
         #region Properties
@@ -54,11 +54,16 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region Constructor(s)
 
+        #region AuthorizeResponse(IdTagInfo)
+
         /// <summary>
-        /// Create a new OCHP add service endpoints response.
+        /// Create a new OCPP authorize response.
         /// </summary>
         /// <param name="IdTagInfo">An identification tag info.</param>
         public AuthorizeResponse(IdTagInfo  IdTagInfo)
+
+            : base(Result.OK())
+
         {
 
             #region Initial checks
@@ -71,6 +76,25 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             this.IdTagInfo = IdTagInfo;
 
         }
+
+        #endregion
+
+        #region AuthorizeResponse(Result)
+
+        /// <summary>
+        /// Create a new OCPP authorize response.
+        /// </summary>
+        public AuthorizeResponse(Result Result)
+
+            : base(Result)
+
+        {
+
+            this.IdTagInfo = new IdTagInfo(AuthorizationStatus.Unknown);
+
+        }
+
+        #endregion
 
         #endregion
 
@@ -104,7 +128,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) Parse(AuthorizeResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCHP add service endpoints response.
+        /// Parse the given XML representation of an OCPP authorize response.
         /// </summary>
         /// <param name="AuthorizeResponseXML">The XML to parse.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -126,7 +150,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) Parse(AuthorizeResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCHP add service endpoints response.
+        /// Parse the given text representation of an OCPP authorize response.
         /// </summary>
         /// <param name="AuthorizeResponseText">The text to parse.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -148,14 +172,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) TryParse(AuthorizeResponseXML,  out AuthorizeResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCHP add service endpoints response.
+        /// Try to parse the given XML representation of an OCPP authorize response.
         /// </summary>
         /// <param name="AuthorizeResponseXML">The XML to parse.</param>
-        /// <param name="AuthorizeResponse">The parsed add service endpoints response.</param>
+        /// <param name="AuthorizeResponse">The parsed authorize response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                                 AuthorizeResponseXML,
+        public static Boolean TryParse(XElement               AuthorizeResponseXML,
                                        out AuthorizeResponse  AuthorizeResponse,
-                                       OnExceptionDelegate                      OnException  = null)
+                                       OnExceptionDelegate    OnException  = null)
         {
 
             try
@@ -198,10 +222,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) TryParse(AuthorizeResponseText, out AuthorizeResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCHP add service endpoints response.
+        /// Try to parse the given text representation of an OCPP authorize response.
         /// </summary>
         /// <param name="AuthorizeResponseText">The text to parse.</param>
-        /// <param name="AuthorizeResponse">The parsed add service endpoints response.</param>
+        /// <param name="AuthorizeResponse">The parsed authorize response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                 AuthorizeResponseText,
                                        out AuthorizeResponse  AuthorizeResponse,
@@ -261,10 +285,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Operator == (AuthorizeResponse1, AuthorizeResponse2)
 
         /// <summary>
-        /// Compares two add service endpoints responses for equality.
+        /// Compares two authorize responses for equality.
         /// </summary>
-        /// <param name="AuthorizeResponse1">A add service endpoints response.</param>
-        /// <param name="AuthorizeResponse2">Another add service endpoints response.</param>
+        /// <param name="AuthorizeResponse1">A authorize response.</param>
+        /// <param name="AuthorizeResponse2">Another authorize response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AuthorizeResponse AuthorizeResponse1, AuthorizeResponse AuthorizeResponse2)
         {
@@ -286,10 +310,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Operator != (AuthorizeResponse1, AuthorizeResponse2)
 
         /// <summary>
-        /// Compares two add service endpoints responses for inequality.
+        /// Compares two authorize responses for inequality.
         /// </summary>
-        /// <param name="AuthorizeResponse1">A add service endpoints response.</param>
-        /// <param name="AuthorizeResponse2">Another add service endpoints response.</param>
+        /// <param name="AuthorizeResponse1">A authorize response.</param>
+        /// <param name="AuthorizeResponse2">Another authorize response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AuthorizeResponse AuthorizeResponse1, AuthorizeResponse AuthorizeResponse2)
 
@@ -314,7 +338,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if (Object == null)
                 return false;
 
-            // Check if the given object is a add service endpoints response.
+            // Check if the given object is a authorize response.
             var AuthorizeResponse = Object as AuthorizeResponse;
             if ((Object) AuthorizeResponse == null)
                 return false;
@@ -328,9 +352,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Equals(AuthorizeResponse)
 
         /// <summary>
-        /// Compares two add service endpoints responses for equality.
+        /// Compares two authorize responses for equality.
         /// </summary>
-        /// <param name="AuthorizeResponse">A add service endpoints response to compare with.</param>
+        /// <param name="AuthorizeResponse">A authorize response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(AuthorizeResponse AuthorizeResponse)
         {
@@ -346,7 +370,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         /// <summary>
         /// Return the HashCode of this object.

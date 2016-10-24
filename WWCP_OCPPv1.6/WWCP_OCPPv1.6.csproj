@@ -48,6 +48,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CentralSystem\CSClient\CSClientXMLMethods - Copy.cs" />
+    <Compile Include="ChargePoint\CPClient\CPClient.cs" />
+    <Compile Include="ChargePoint\CPClient\CPClientDelegates.cs" />
+    <Compile Include="ChargePoint\CPClient\CPClientLogger.cs" />
+    <Compile Include="DataTypes\Complex\Result.cs" />
     <Compile Include="DataTypes\MeterValue.cs" />
     <Compile Include="DataTypes\Simple\AvailabilityStatus.cs" />
     <Compile Include="DataTypes\Simple\DiagnosticsStatus.cs" />
@@ -61,6 +65,7 @@
     <Compile Include="DataTypes\Simple\Measurands.cs" />
     <Compile Include="DataTypes\Simple\Phases.cs" />
     <Compile Include="DataTypes\Simple\RegistrationStatus.cs" />
+    <Compile Include="DataTypes\Simple\ResultCodes.cs" />
     <Compile Include="DataTypes\Simple\UnitsOfMeasure.cs" />
     <Compile Include="DataTypes\Simple\RemoteStartStopStatus.cs" />
     <Compile Include="DataTypes\Simple\CancelReservationStatus.cs" />
@@ -85,16 +90,20 @@
     <Compile Include="DataTypes\TransactionData.cs" />
     <Compile Include="CentralSystem\CSServer\CSServerDelegates.cs" />
     <Compile Include="CentralSystem\CSServer\CSServer.cs" />
-    <Compile Include="CentralSystem\CSServer\CSServerXMLMethods.cs" />
-    <Compile Include="ChargePoint\CPClient\CPClientXMLMethods.cs" />
     <Compile Include="DataTypes\CDRStatus.cs" />
     <Compile Include="DataTypes\Complex\IdTagInfo.cs" />
     <Compile Include="DataTypes\Complex\IdToken.cs" />
     <Compile Include="DataTypes\Simple\AuthorizationStatus.cs" />
+    <Compile Include="IO\SOAPHeader.cs" />
     <Compile Include="IO\OCPPNS.cs" />
     <Compile Include="IO\SOAP.cs" />
     <Compile Include="IO\XML_IO.cs" />
+    <Compile Include="Messages\AResponse.cs" />
+    <Compile Include="Messages\HeartbeatResponse.cs" />
+    <Compile Include="Messages\HeartbeatRequest.cs" />
+    <Compile Include="Messages\BootNotificationRequest.cs" />
     <Compile Include="Messages\AuthorizeRequest.cs" />
+    <Compile Include="Messages\BootNotificationResponse.cs" />
     <Compile Include="Messages\AuthorizeResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -123,7 +132,9 @@
   <ItemGroup>
     <None Include="README.md" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ChargePoint\CPServer\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

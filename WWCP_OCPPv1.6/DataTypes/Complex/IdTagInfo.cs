@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Xml.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -70,6 +71,172 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             this.ParentIdTag  = ParentIdTag;
 
         }
+
+        #endregion
+
+
+        #region Documentation
+
+        // <ns:idTagInfo>
+        //
+        //    <ns:status>?</ns:status>
+        //
+        //    <!--Optional:-->
+        //    <ns:expiryDate>?</ns:expiryDate>
+        //
+        //    <!--Optional:-->
+        //    <ns:parentIdTag>?</ns:parentIdTag>
+        //
+        // </ns:idTagInfo>
+
+        #endregion
+
+        #region (static) Parse(IdTagInfoXML,  OnException = null)
+
+        /// <summary>
+        /// Parse the given XML representation of an OCPP identification tag info.
+        /// </summary>
+        /// <param name="IdTagInfoXML">The XML to parse.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static IdTagInfo Parse(XElement             IdTagInfoXML,
+                                      OnExceptionDelegate  OnException = null)
+        {
+
+            IdTagInfo _IdTagInfo;
+
+            if (TryParse(IdTagInfoXML, out _IdTagInfo, OnException))
+                return _IdTagInfo;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse(IdTagInfoText, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of an OCPP identification tag info.
+        /// </summary>
+        /// <param name="IdTagInfoText">The text to parse.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static IdTagInfo Parse(String               IdTagInfoText,
+                                      OnExceptionDelegate  OnException = null)
+        {
+
+            IdTagInfo _IdTagInfo;
+
+            if (TryParse(IdTagInfoText, out _IdTagInfo, OnException))
+                return _IdTagInfo;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(IdTagInfoXML,  out IdTagInfo, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given XML representation of an OCPP identification tag info.
+        /// </summary>
+        /// <param name="IdTagInfoXML">The XML to parse.</param>
+        /// <param name="IdTagInfo">The parsed connector type.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(XElement             IdTagInfoXML,
+                                       out IdTagInfo        IdTagInfo,
+                                       OnExceptionDelegate  OnException  = null)
+        {
+
+            try
+            {
+
+                IdTagInfo = new IdTagInfo(
+
+                                    IdTagInfoXML.MapEnumValues     (OCPPNS.OCPPv1_6_CS + "status",
+                                                                    XML_IO.AsAuthorizationStatus),
+
+                                    IdTagInfoXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "expiryDate",
+                                                                    DateTime.Parse),
+
+                                    IdTagInfoXML.MapValueOrNull    (OCPPNS.OCPPv1_6_CS + "parentIdTag",
+                                                                    IdToken.Parse)
+
+                                );
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.Now, IdTagInfoXML, e);
+
+                IdTagInfo = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(IdTagInfoText, out IdTagInfo, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of an OCPP identification tag info.
+        /// </summary>
+        /// <param name="IdTagInfoText">The text to parse.</param>
+        /// <param name="IdTagInfo">The parsed connector type.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(String               IdTagInfoText,
+                                       out IdTagInfo        IdTagInfo,
+                                       OnExceptionDelegate  OnException  = null)
+        {
+
+            try
+            {
+
+                if (TryParse(XDocument.Parse(IdTagInfoText).Root,
+                             out IdTagInfo,
+                             OnException))
+
+                    return true;
+
+            }
+            catch (Exception e)
+            {
+                OnException?.Invoke(DateTime.Now, IdTagInfoText, e);
+            }
+
+            IdTagInfo = null;
+            return false;
+
+        }
+
+        #endregion
+
+        #region ToXML(XName = null)
+
+        /// <summary>
+        /// Return a XML representation of this object.
+        /// </summary>
+        /// <param name="XName">An alternative XML element name [default: "OCPPv1_6_CS:idTagInfo"]</param>
+        public XElement ToXML(XName XName = null)
+
+            => new XElement(XName ?? OCPPNS.OCPPv1_6_CS + "idTagInfo",
+
+                   new XElement(OCPPNS.OCPPv1_6_CS + "connectorStandard",  XML_IO.AsText(Status)),
+
+                   ExpiryDate.HasValue
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "expiryDate",   ExpiryDate.Value.ToIso8601())
+                       : null,
+
+                   ParentIdTag != null
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "parentIdTag",  ParentIdTag.Value)
+                       : null
+
+               );
 
         #endregion
 

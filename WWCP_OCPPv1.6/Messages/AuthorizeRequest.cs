@@ -18,9 +18,7 @@
 #region Usings
 
 using System;
-using System.Linq;
 using System.Xml.Linq;
-using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -52,7 +50,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// Create an OCPP Authorize XML/SOAP request.
         /// </summary>
         /// <param name="IdTag">The identifier that needs to be authorized.</param>
-        public AuthorizeRequest(IdToken IdTag)
+        public AuthorizeRequest(IdToken  IdTag)
         {
 
             #region Initial checks
@@ -76,13 +74,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         //                xmlns:ns   = "urn://Ocpp/Cs/2015/10/">
         //
         //    <soap:Header>
-        //       <ns:chargeBoxIdentity>?</ns:chargeBoxIdentity>
-        //       <wsa:Action soap:mustUnderstand="1">/Authorize</wsa:Action>
-        //       <wsa:ReplyTo soap:mustUnderstand="1">
-        //         <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
-        //       </wsa:ReplyTo>
-        //       <wsa:MessageID soap:mustUnderstand="1">uuid:516f7065-074c-4f4a-8b6d-fd3603d88e3d</wsa:MessageID>
-        //       <wsa:To soap:mustUnderstand="1">http://127.0.0.1:2010/v1.6</wsa:To>
+        //       ...
         //    </soap:Header>
         //
         //    <soap:Body>
@@ -97,22 +89,20 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse(HeaderXML, AuthorizeRequestXML,  OnException = null)
+        #region (static) Parse(AuthorizeRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCHP authorize request.
+        /// Parse the given XML representation of an OCPP authorize request.
         /// </summary>
-        /// <param name="HeaderXML">The SOAP header.</param>
         /// <param name="AuthorizeRequestXML">The XML to parse.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AuthorizeRequest Parse(XElement             HeaderXML,
-                                             XElement             AuthorizeRequestXML,
+        public static AuthorizeRequest Parse(XElement             AuthorizeRequestXML,
                                              OnExceptionDelegate  OnException = null)
         {
 
             AuthorizeRequest _AuthorizeRequest;
 
-            if (TryParse(HeaderXML, AuthorizeRequestXML, out _AuthorizeRequest, OnException))
+            if (TryParse(AuthorizeRequestXML, out _AuthorizeRequest, OnException))
                 return _AuthorizeRequest;
 
             return null;
@@ -124,7 +114,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) Parse(AuthorizeRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCHP authorize request.
+        /// Parse the given text representation of an OCPP authorize request.
         /// </summary>
         /// <param name="AuthorizeRequestText">The text to parse.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -143,29 +133,21 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(HeaderXML, AuthorizeRequestXML,  out AuthorizeRequest, OnException = null)
+        #region (static) TryParse(AuthorizeRequestXML,  out AuthorizeRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCHP authorize request.
+        /// Try to parse the given XML representation of an OCPP authorize request.
         /// </summary>
-        /// <param name="HeaderXML">The SOAP header.</param>
         /// <param name="AuthorizeRequestXML">The XML to parse.</param>
         /// <param name="AuthorizeRequest">The parsed authorize request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement              HeaderXML,
-                                       XElement              AuthorizeRequestXML,
+        public static Boolean TryParse(XElement              AuthorizeRequestXML,
                                        out AuthorizeRequest  AuthorizeRequest,
                                        OnExceptionDelegate   OnException  = null)
         {
 
             try
             {
-
-                // SOAP header...
-                var ChargeBoxIdentity  = HeaderXML.ElementValueOrFail(OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity",
-                                                                      "The given SOAP header did not provide a valid 'charge box identity' information!");
-
-                var MessageId          = HeaderXML.ElementValueOrFail(SOAPNS.NS.SOAPAdressing + "MessageID");
 
                 AuthorizeRequest = new AuthorizeRequest(
 
@@ -194,7 +176,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) TryParse(AuthorizeRequestText, out AuthorizeRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCHP authorize request.
+        /// Try to parse the given text representation of an OCPP authorize request.
         /// </summary>
         /// <param name="AuthorizeRequestText">The text to parse.</param>
         /// <param name="AuthorizeRequest">The parsed authorize request.</param>
@@ -207,8 +189,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             try
             {
 
-                if (TryParse(XDocument.Parse(AuthorizeRequestText).Root.Element(SOAPNS.NS.SOAPEnvelope_v1_2 + "Header"),
-                             XDocument.Parse(AuthorizeRequestText).Root.Element(SOAPNS.NS.SOAPEnvelope_v1_2 + "Body"),
+                if (TryParse(XDocument.Parse(AuthorizeRequestText).Root.Element(SOAPNS.NS.SOAPEnvelope_v1_2 + "Body"),
                              out AuthorizeRequest,
                              OnException))
 
@@ -331,7 +312,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         /// <summary>
         /// Return the HashCode of this object.

@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2014-2016 GraphDefined GmbH
- * This file is part of WWCP OCHP <https://github.com/OpenChargingCloud/WWCP_OCHP>
+ * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,66 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                    IdToken                        IdToken,
 
                                    TimeSpan?                      QueryTimeout = null);
+
+    #endregion
+
+    #region OnBootNotification
+
+    /// <summary>
+    /// BootNotification the given identification token.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// 
+    /// <param name="ChargePointVendor">The charge point vendor identification.</param>
+    /// <param name="ChargePointModel">The charge point model identification.</param>
+    /// <param name="ChargePointSerialNumber">The serial number of the charge point.</param>
+    /// <param name="FirmwareVersion">The firmware version of the charge point.</param>
+    /// <param name="Iccid">The ICCID of the charge point's SIM card.</param>
+    /// <param name="IMSI">The IMSI of the charge point’s SIM card.</param>
+    /// <param name="MeterType">The meter type of the main power meter of the charge point.</param>
+    /// <param name="MeterSerialNumber">The serial number of the main power meter of the charge point.</param>
+    /// 
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    public delegate Task<BootNotificationResponse>
+
+        OnBootNotificationRequestDelegate(DateTime                       Timestamp,
+                                          CSServer                       Sender,
+                                          CancellationToken              CancellationToken,
+                                          EventTracking_Id               EventTrackingId,
+
+                                          String                         ChargePointVendor,
+                                          String                         ChargePointModel,
+                                          String                         ChargePointSerialNumber,
+                                          String                         FirmwareVersion,
+                                          String                         Iccid,
+                                          String                         IMSI,
+                                          String                         MeterType,
+                                          String                         MeterSerialNumber,
+
+                                          TimeSpan?                      QueryTimeout = null);
+
+    #endregion
+
+    #region OnHeartbeat
+
+    /// <summary>
+    /// A charge point heartbeat.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    public delegate Task<HeartbeatResponse>
+
+        OnHeartbeatRequestDelegate(DateTime             Timestamp,
+                                   CSServer             Sender,
+                                   CancellationToken    CancellationToken,
+                                   EventTracking_Id     EventTrackingId,
+                                   TimeSpan?            QueryTimeout = null);
 
     #endregion
 

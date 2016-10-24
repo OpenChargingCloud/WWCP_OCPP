@@ -15,53 +15,49 @@
  * limitations under the License.
  */
 
-namespace org.GraphDefined.WWCP.OCPPv1_4
+namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// Reflects the current status of the CDR. This is reflecting the status
-    /// of internal processing in the clearing house. The value cannot be
-    /// changed by the partner's systems directly. Implicit changes are made
-    /// while uploading (including revised, rejected CDRs), approving or
-    /// declining CDRs.
+    /// Result and error codes for the class Result as return value for method calls.
     /// </summary>
-    public enum CDRStatus
+    public enum ResultCodes
     {
 
         /// <summary>
-        /// Unknown status.
+        /// Unknown result code.
         /// </summary>
         Unknown,
 
         /// <summary>
-        /// A new CDR before upload to the CHS.
+        /// Data accepted and processed.
         /// </summary>
-        New,
+        OK,
 
         /// <summary>
-        /// An uploaded CDR was accepted by the CHS as plausible.
+        /// Only part of the data was accepted.
         /// </summary>
-        Accepted,
+        Partly,
 
         /// <summary>
-        /// The checked CDR again rejected by the CHS and is to be archived.
+        /// Wrong username and/or password.
         /// </summary>
-        Rejected,
+        NotAuthorized,
 
         /// <summary>
-        /// The CDR was declined by the owner (EVSP).
+        /// One or more ID (EVSE/Contract) were not valid for this user.
         /// </summary>
-        Declined,
+        InvalidId,
 
         /// <summary>
-        /// The CDR was approved by the owner (EVSP).
+        /// Internal server error.
         /// </summary>
-        Approved,
+        Server,
 
         /// <summary>
-        /// The CDR was revised by the CPO after a rejection by the owner.
+        /// Data has technical errors.
         /// </summary>
-        Revised
+        Format
 
     }
 
