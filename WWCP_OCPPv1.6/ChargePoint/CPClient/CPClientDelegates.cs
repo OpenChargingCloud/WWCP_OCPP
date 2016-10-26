@@ -296,4 +296,105 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     #endregion
 
 
+    #region OnDataTransfer
+
+    /// <summary>
+    /// A delegate called whenever a data transfer request will be send to the central system.
+    /// </summary>
+    public delegate Task OnDataTransferRequestDelegate (DateTime                LogTimestamp,
+                                                        DateTime                RequestTimestamp,
+                                                        CPClient                Sender,
+                                                        String                  SenderId,
+                                                        EventTracking_Id        EventTrackingId,
+
+                                                        String                  VendorId,
+                                                        String                  MessageId,
+                                                        String                  Data,
+
+                                                        TimeSpan?               RequestTimeout);
+
+    /// <summary>
+    /// A delegate called whenever a response to a data transfer request was received.
+    /// </summary>
+    public delegate Task OnDataTransferResponseDelegate(DateTime                LogTimestamp,
+                                                        DateTime                RequestTimestamp,
+                                                        CPClient                Sender,
+                                                        String                  SenderId,
+                                                        EventTracking_Id        EventTrackingId,
+
+                                                        String                  VendorId,
+                                                        String                  MessageId,
+                                                        String                  Data,
+
+                                                        TimeSpan?               RequestTimeout,
+                                                        DataTransferResponse    Result,
+                                                        TimeSpan                Duration);
+
+    #endregion
+
+    #region OnDiagnosticsStatusNotification
+
+    /// <summary>
+    /// A delegate called whenever a diagnostics status notification request will be send to the central system.
+    /// </summary>
+    public delegate Task OnDiagnosticsStatusNotificationRequestDelegate (DateTime                                 LogTimestamp,
+                                                                         DateTime                                 RequestTimestamp,
+                                                                         CPClient                                 Sender,
+                                                                         String                                   SenderId,
+                                                                         EventTracking_Id                         EventTrackingId,
+
+                                                                         DiagnosticsStatus                        Status,
+
+                                                                         TimeSpan?                                RequestTimeout);
+
+    /// <summary>
+    /// A delegate called whenever a response to a diagnostics status notification request was received.
+    /// </summary>
+    public delegate Task OnDiagnosticsStatusNotificationResponseDelegate(DateTime                                 LogTimestamp,
+                                                                         DateTime                                 RequestTimestamp,
+                                                                         CPClient                                 Sender,
+                                                                         String                                   SenderId,
+                                                                         EventTracking_Id                         EventTrackingId,
+
+                                                                         DiagnosticsStatus                        Status,
+
+                                                                         TimeSpan?                                RequestTimeout,
+                                                                         DiagnosticsStatusNotificationResponse    Result,
+                                                                         TimeSpan                                 Duration);
+
+    #endregion
+
+    #region OnFirmwareStatusNotification
+
+    /// <summary>
+    /// A delegate called whenever a firmware status notification request will be send to the central system.
+    /// </summary>
+    public delegate Task OnFirmwareStatusNotificationRequestDelegate (DateTime                              LogTimestamp,
+                                                                      DateTime                              RequestTimestamp,
+                                                                      CPClient                              Sender,
+                                                                      String                                SenderId,
+                                                                      EventTracking_Id                      EventTrackingId,
+
+                                                                      FirmwareStatus                        Status,
+
+                                                                      TimeSpan?                             RequestTimeout);
+
+    /// <summary>
+    /// A delegate called whenever a response to a firmware status notification request was received.
+    /// </summary>
+    public delegate Task OnFirmwareStatusNotificationResponseDelegate(DateTime                              LogTimestamp,
+                                                                      DateTime                              RequestTimestamp,
+                                                                      CPClient                              Sender,
+                                                                      String                                SenderId,
+                                                                      EventTracking_Id                      EventTrackingId,
+
+                                                                      FirmwareStatus                        Status,
+
+                                                                      TimeSpan?                             RequestTimeout,
+                                                                      FirmwareStatusNotificationResponse    Result,
+                                                                      TimeSpan                              Duration);
+
+    #endregion
+
+
 }

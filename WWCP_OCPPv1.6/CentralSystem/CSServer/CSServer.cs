@@ -202,6 +202,64 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+
+        #region OnDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a data transfer SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler              OnDataTransferSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a data transfer request was sent.
+        /// </summary>
+        public event AccessLogHandler               OnDataTransferSOAPResponse;
+
+        /// <summary>
+        /// An event sent whenever a data transfer request was received.
+        /// </summary>
+        public event OnDataTransferRequestDelegate  OnDataTransferRequest;
+
+        #endregion
+
+        #region OnDiagnosticsStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a diagnostics status notification SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler                               OnDiagnosticsStatusNotificationSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a diagnostics status notification request was sent.
+        /// </summary>
+        public event AccessLogHandler                                OnDiagnosticsStatusNotificationSOAPResponse;
+
+        /// <summary>
+        /// An event sent whenever a diagnostics status notification request was received.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationRequestDelegate  OnDiagnosticsStatusNotificationRequest;
+
+        #endregion
+
+        #region OnFirmwareStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler                            OnFirmwareStatusNotificationSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a firmware status notification request was sent.
+        /// </summary>
+        public event AccessLogHandler                             OnFirmwareStatusNotificationSOAPResponse;
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        public event OnFirmwareStatusNotificationRequestDelegate  OnFirmwareStatusNotificationRequest;
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -1097,6 +1155,341 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             #endregion
 
+
+            #region / - DataTransfer
+
+            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+                                            URIPrefix,
+                                            "DataTransfer",
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "dataTransferRequest").FirstOrDefault(),
+                                            async (Request, HeaderXML, DataTransferXML) => {
+
+                #region Send OnDataTransferSOAPRequest event
+
+                try
+                {
+
+                    OnDataTransferSOAPRequest?.Invoke(DateTime.Now,
+                                                      this.SOAPServer,
+                                                      Request);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnDataTransferSOAPRequest));
+                }
+
+                #endregion
+
+
+                var _OCPPHeader           = SOAPHeader.Parse(HeaderXML);
+                var _DataTransferRequest  = DataTransferRequest.Parse(DataTransferXML);
+
+                DataTransferResponse response            = null;
+
+
+
+                #region Call async subscribers
+
+                if (response == null)
+                {
+
+                    var results = OnDataTransferRequest?.
+                                      GetInvocationList()?.
+                                      SafeSelect(subscriber => (subscriber as OnDataTransferRequestDelegate)
+                                          (DateTime.Now,
+                                           this,
+                                           Request.CancellationToken,
+                                           Request.EventTrackingId,
+                                           _OCPPHeader.ChargeBoxIdentity,
+                                           _DataTransferRequest.VendorId,
+                                           _DataTransferRequest.MessageId,
+                                           _DataTransferRequest.Data,
+                                           DefaultQueryTimeout)).
+                                      ToArray();
+
+                    if (results.Length > 0)
+                    {
+
+                        await Task.WhenAll(results);
+
+                        response = results.FirstOrDefault()?.Result;
+
+                    }
+
+                    if (results.Length == 0 || response == null)
+                        response = DataTransferResponse.Failed;
+
+                }
+
+                #endregion
+
+
+
+                #region Create SOAPResponse
+
+                var HTTPResponse = new HTTPResponseBuilder(Request) {
+                    HTTPStatusCode  = HTTPStatusCode.OK,
+                    Server          = SOAPServer.DefaultServerName,
+                    Date            = DateTime.Now,
+                    ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                    Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
+                                                         "/DataTransferResponse",
+                                                         null,
+                                                         _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
+                                                         _OCPPHeader.To,         // Fake it!
+                                                         _OCPPHeader.From,       // Fake it!
+                                                         response.ToXML()).ToUTF8Bytes()
+                };
+
+                #endregion
+
+
+                #region Send OnDataTransferSOAPResponse event
+
+                try
+                {
+
+                    OnDataTransferSOAPResponse?.Invoke(HTTPResponse.Timestamp,
+                                                       this.SOAPServer,
+                                                       Request,
+                                                       HTTPResponse);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnDataTransferSOAPResponse));
+                }
+
+                #endregion
+
+                return HTTPResponse;
+
+            });
+
+            #endregion
+
+            #region / - DiagnosticsStatusNotification
+
+            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+                                            URIPrefix,
+                                            "DiagnosticsStatusNotification",
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "diagnosticsStatusNotificationRequest").FirstOrDefault(),
+                                            async (Request, HeaderXML, DiagnosticsStatusNotificationXML) => {
+
+                #region Send OnDiagnosticsStatusNotificationSOAPRequest event
+
+                try
+                {
+
+                    OnDiagnosticsStatusNotificationSOAPRequest?.Invoke(DateTime.Now,
+                                                                       this.SOAPServer,
+                                                                       Request);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnDiagnosticsStatusNotificationSOAPRequest));
+                }
+
+                #endregion
+
+
+                var _OCPPHeader                            = SOAPHeader.Parse(HeaderXML);
+                var _DiagnosticsStatusNotificationRequest  = DiagnosticsStatusNotificationRequest.Parse(DiagnosticsStatusNotificationXML);
+
+                DiagnosticsStatusNotificationResponse response            = null;
+
+
+
+                #region Call async subscribers
+
+                if (response == null)
+                {
+
+                    var results = OnDiagnosticsStatusNotificationRequest?.
+                                      GetInvocationList()?.
+                                      SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationRequestDelegate)
+                                          (DateTime.Now,
+                                           this,
+                                           Request.CancellationToken,
+                                           Request.EventTrackingId,
+                                           _OCPPHeader.ChargeBoxIdentity,
+                                           _DiagnosticsStatusNotificationRequest.Status,
+                                           DefaultQueryTimeout)).
+                                      ToArray();
+
+                    if (results.Length > 0)
+                    {
+
+                        await Task.WhenAll(results);
+
+                        response = results.FirstOrDefault()?.Result;
+
+                    }
+
+                    if (results.Length == 0 || response == null)
+                        response = DiagnosticsStatusNotificationResponse.Failed;
+
+                }
+
+                #endregion
+
+
+
+                #region Create SOAPResponse
+
+                var HTTPResponse = new HTTPResponseBuilder(Request) {
+                    HTTPStatusCode  = HTTPStatusCode.OK,
+                    Server          = SOAPServer.DefaultServerName,
+                    Date            = DateTime.Now,
+                    ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                    Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
+                                                         "/DiagnosticsStatusNotificationResponse",
+                                                         null,
+                                                         _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
+                                                         _OCPPHeader.To,         // Fake it!
+                                                         _OCPPHeader.From,       // Fake it!
+                                                         response.ToXML()).ToUTF8Bytes()
+                };
+
+                #endregion
+
+
+                #region Send OnDiagnosticsStatusNotificationSOAPResponse event
+
+                try
+                {
+
+                    OnDiagnosticsStatusNotificationSOAPResponse?.Invoke(HTTPResponse.Timestamp,
+                                                                        this.SOAPServer,
+                                                                        Request,
+                                                                        HTTPResponse);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnDiagnosticsStatusNotificationSOAPResponse));
+                }
+
+                #endregion
+
+                return HTTPResponse;
+
+            });
+
+            #endregion
+
+            #region / - FirmwareStatusNotification
+
+            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+                                            URIPrefix,
+                                            "FirmwareStatusNotification",
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "firmwareStatusNotificationRequest").FirstOrDefault(),
+                                            async (Request, HeaderXML, FirmwareStatusNotificationXML) => {
+
+                #region Send OnFirmwareStatusNotificationSOAPRequest event
+
+                try
+                {
+
+                    OnFirmwareStatusNotificationSOAPRequest?.Invoke(DateTime.Now,
+                                                                    this.SOAPServer,
+                                                                    Request);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnFirmwareStatusNotificationSOAPRequest));
+                }
+
+                #endregion
+
+
+                var _OCPPHeader               = SOAPHeader.Parse(HeaderXML);
+                var _FirmwareStatusNotificationRequest  = FirmwareStatusNotificationRequest.Parse(FirmwareStatusNotificationXML);
+
+                FirmwareStatusNotificationResponse response            = null;
+
+
+
+                #region Call async subscribers
+
+                if (response == null)
+                {
+
+                    var results = OnFirmwareStatusNotificationRequest?.
+                                      GetInvocationList()?.
+                                      SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationRequestDelegate)
+                                          (DateTime.Now,
+                                           this,
+                                           Request.CancellationToken,
+                                           Request.EventTrackingId,
+                                           _OCPPHeader.ChargeBoxIdentity,
+                                           _FirmwareStatusNotificationRequest.Status,
+                                           DefaultQueryTimeout)).
+                                      ToArray();
+
+                    if (results.Length > 0)
+                    {
+
+                        await Task.WhenAll(results);
+
+                        response = results.FirstOrDefault()?.Result;
+
+                    }
+
+                    if (results.Length == 0 || response == null)
+                        response = FirmwareStatusNotificationResponse.Failed;
+
+                }
+
+                #endregion
+
+
+
+                #region Create SOAPResponse
+
+                var HTTPResponse = new HTTPResponseBuilder(Request) {
+                    HTTPStatusCode  = HTTPStatusCode.OK,
+                    Server          = SOAPServer.DefaultServerName,
+                    Date            = DateTime.Now,
+                    ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                    Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
+                                                         "/FirmwareStatusNotificationResponse",
+                                                         null,
+                                                         _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
+                                                         _OCPPHeader.To,         // Fake it!
+                                                         _OCPPHeader.From,       // Fake it!
+                                                         response.ToXML()).ToUTF8Bytes()
+                };
+
+                #endregion
+
+
+                #region Send OnFirmwareStatusNotificationSOAPResponse event
+
+                try
+                {
+
+                    OnFirmwareStatusNotificationSOAPResponse?.Invoke(HTTPResponse.Timestamp,
+                                                                     this.SOAPServer,
+                                                                     Request,
+                                                                     HTTPResponse);
+
+                }
+                catch (Exception e)
+                {
+                    e.Log(nameof(CSServer) + "." + nameof(OnFirmwareStatusNotificationSOAPResponse));
+                }
+
+                #endregion
+
+                return HTTPResponse;
+
+            });
+
+            #endregion
 
         }
 

@@ -18,7 +18,6 @@
 #region Usings
 
 using System;
-using System.Linq;
 using System.Threading;
 using System.Net.Security;
 using System.Threading.Tasks;
@@ -250,6 +249,79 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// An event fired whenever a response to a stop transaction request was received.
         /// </summary>
         public event OnStopTransactionResponseDelegate  OnStopTransactionResponse;
+
+        #endregion
+
+
+        #region OnDataTransferRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a data transfer request will be send to the central system.
+        /// </summary>
+        public event OnDataTransferRequestDelegate   OnDataTransferRequest;
+
+        /// <summary>
+        /// An event fired whenever a data transfer SOAP request will be send to the central system.
+        /// </summary>
+        public event ClientRequestLogHandler         OnDataTransferSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a data transfer SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler        OnDataTransferSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a data transfer request was received.
+        /// </summary>
+        public event OnDataTransferResponseDelegate  OnDataTransferResponse;
+
+        #endregion
+
+        #region OnDiagnosticsStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a diagnostics status notification request will be send to the central system.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationRequestDelegate   OnDiagnosticsStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a diagnostics status notification SOAP request will be send to the central system.
+        /// </summary>
+        public event ClientRequestLogHandler                          OnDiagnosticsStatusNotificationSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a diagnostics status notification SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler                         OnDiagnosticsStatusNotificationSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a diagnostics status notification request was received.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
+
+        #endregion
+
+        #region OnFirmwareStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a firmware status notification request will be send to the central system.
+        /// </summary>
+        public event OnFirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a firmware status notification SOAP request will be send to the central system.
+        /// </summary>
+        public event ClientRequestLogHandler                       OnFirmwareStatusNotificationSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a firmware status notification SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler                      OnFirmwareStatusNotificationSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a firmware status notification request was received.
+        /// </summary>
+        public event OnFirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
 
         #endregion
 
@@ -1008,7 +1080,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region StartTransaction  (ConnectorId, IdTag, TransactionTimestamp, MeterStart, ...)
+        #region StartTransaction  (ConnectorId, IdTag, TransactionTimestamp, MeterStart, ReservationId = null, ...)
 
         /// <summary>
         /// Start a charging process at the given connector.
@@ -1841,6 +1913,576 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             catch (Exception e)
             {
                 e.Log(nameof(CPClient) + "." + nameof(OnStopTransactionResponse));
+            }
+
+            #endregion
+
+            return result;
+
+
+        }
+
+        #endregion
+
+
+        #region DataTransfer(VendorId, MessageId = null, Data = null, ...)
+
+        /// <summary>
+        /// Send the given vendor-specific data to the central system.
+        /// </summary>
+        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
+        /// <param name="MessageId">The charge point model identification.</param>
+        /// <param name="Data">The serial number of the charge point.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<HTTPResponse<DataTransferResponse>>
+
+            DataTransfer(String              VendorId,
+                         String              MessageId          = null,
+                         String              Data               = null,
+
+                         DateTime?           Timestamp          = null,
+                         CancellationToken?  CancellationToken  = null,
+                         EventTracking_Id    EventTrackingId    = null,
+                         TimeSpan?           RequestTimeout     = null)
+
+        {
+
+            #region Initial checks
+
+            if (VendorId.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(VendorId),  "The given vendor identification must not be null or empty!");
+
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+
+            HTTPResponse<DataTransferResponse> result = null;
+
+            #endregion
+
+            #region Send OnDataTransferRequest event
+
+            try
+            {
+
+                OnDataTransferRequest?.Invoke(DateTime.Now,
+                                              Timestamp.Value,
+                                              this,
+                                              ClientId,
+                                              EventTrackingId,
+                                              VendorId,
+                                              MessageId,
+                                              Data,
+                                              RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnDataTransferRequest));
+            }
+
+            #endregion
+
+
+            using (var _OCPPClient = new SOAPClient(Hostname,
+                                                    RemotePort,
+                                                    HTTPVirtualHost,
+                                                    URIPrefix,
+                                                    RemoteCertificateValidator,
+                                                    ClientCert,
+                                                    UserAgent,
+                                                    DNSClient))
+            {
+
+                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                    "/DataTransfer",
+                                                                    null,
+                                                                    From,
+                                                                    To,
+                                                                    new DataTransferRequest(VendorId,
+                                                                                            MessageId,
+                                                                                            Data).ToXML()),
+                                                 "DataTransfer",
+                                                 RequestLogDelegate:   OnDataTransferSOAPRequest,
+                                                 ResponseLogDelegate:  OnDataTransferSOAPResponse,
+                                                 CancellationToken:    CancellationToken,
+                                                 EventTrackingId:      EventTrackingId,
+                                                 QueryTimeout:         RequestTimeout,
+
+                                                 #region OnSuccess
+
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(DataTransferResponse.Parse),
+
+                                                 #endregion
+
+                                                 #region OnSOAPFault
+
+                                                 OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendSOAPError(timestamp, this, httpresponse.Content);
+
+                                                     return new HTTPResponse<DataTransferResponse>(httpresponse,
+                                                                                                   new DataTransferResponse(
+                                                                                                       Result.Format(
+                                                                                                           "Invalid SOAP => " +
+                                                                                                           httpresponse.HTTPBody.ToUTF8String()
+                                                                                                       )
+                                                                                                   ),
+                                                                                                   IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnHTTPError
+
+                                                 OnHTTPError: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendHTTPError(timestamp, this, httpresponse);
+
+                                                     return new HTTPResponse<DataTransferResponse>(httpresponse,
+                                                                                                   new DataTransferResponse(
+                                                                                                       Result.Server(
+                                                                                                            httpresponse.HTTPStatusCode.ToString() +
+                                                                                                            " => " +
+                                                                                                            httpresponse.HTTPBody.      ToUTF8String()
+                                                                                                       )
+                                                                                                   ),
+                                                                                                   IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnException
+
+                                                 OnException: (timestamp, sender, exception) => {
+
+                                                     SendException(timestamp, sender, exception);
+
+                                                     return HTTPResponse<DataTransferResponse>.ExceptionThrown(new DataTransferResponse(
+                                                                                                                   Result.Format(exception.Message +
+                                                                                                                                 " => " +
+                                                                                                                                 exception.StackTrace)),
+                                                                                                               exception);
+
+                                                 }
+
+                                                 #endregion
+
+                                                );
+
+            }
+
+            if (result == null)
+                result = HTTPResponse<DataTransferResponse>.OK(new DataTransferResponse(Result.OK("Nothing to upload!")));
+
+
+            #region Send OnDataTransferResponse event
+
+            try
+            {
+
+                OnDataTransferResponse?.Invoke(DateTime.Now,
+                                                   Timestamp.Value,
+                                                   this,
+                                                   ClientId,
+                                                   EventTrackingId,
+                                                   VendorId,
+                                                   MessageId,
+                                                   Data,
+                                                   RequestTimeout,
+                                                   result.Content,
+                                                   DateTime.Now - Timestamp.Value);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnDataTransferResponse));
+            }
+
+            #endregion
+
+            return result;
+
+
+        }
+
+        #endregion
+
+        #region DiagnosticsStatusNotification(Status, ...)
+
+        /// <summary>
+        /// Send a diagnostics status notification to the central system.
+        /// </summary>
+        /// <param name="Status">The status of the diagnostics upload.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<HTTPResponse<DiagnosticsStatusNotificationResponse>>
+
+            DiagnosticsStatusNotification(DiagnosticsStatus   Status,
+
+                                          DateTime?           Timestamp          = null,
+                                          CancellationToken?  CancellationToken  = null,
+                                          EventTracking_Id    EventTrackingId    = null,
+                                          TimeSpan?           RequestTimeout     = null)
+
+        {
+
+            #region Initial checks
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+
+            HTTPResponse<DiagnosticsStatusNotificationResponse> result = null;
+
+            #endregion
+
+            #region Send OnDiagnosticsStatusNotificationRequest event
+
+            try
+            {
+
+                OnDiagnosticsStatusNotificationRequest?.Invoke(DateTime.Now,
+                                                               Timestamp.Value,
+                                                               this,
+                                                               ClientId,
+                                                               EventTrackingId,
+                                                               Status,
+                                                               RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
+            }
+
+            #endregion
+
+
+            using (var _OCPPClient = new SOAPClient(Hostname,
+                                                    RemotePort,
+                                                    HTTPVirtualHost,
+                                                    URIPrefix,
+                                                    RemoteCertificateValidator,
+                                                    ClientCert,
+                                                    UserAgent,
+                                                    DNSClient))
+            {
+
+                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                    "/DiagnosticsStatusNotification",
+                                                                    null,
+                                                                    From,
+                                                                    To,
+                                                                    new DiagnosticsStatusNotificationRequest(Status).ToXML()),
+                                                 "DiagnosticsStatusNotification",
+                                                 RequestLogDelegate:   OnDiagnosticsStatusNotificationSOAPRequest,
+                                                 ResponseLogDelegate:  OnDiagnosticsStatusNotificationSOAPResponse,
+                                                 CancellationToken:    CancellationToken,
+                                                 EventTrackingId:      EventTrackingId,
+                                                 QueryTimeout:         RequestTimeout,
+
+                                                 #region OnSuccess
+
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(DiagnosticsStatusNotificationResponse.Parse),
+
+                                                 #endregion
+
+                                                 #region OnSOAPFault
+
+                                                 OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendSOAPError(timestamp, this, httpresponse.Content);
+
+                                                     return new HTTPResponse<DiagnosticsStatusNotificationResponse>(httpresponse,
+                                                                                                                    new DiagnosticsStatusNotificationResponse(
+                                                                                                                        Result.Format(
+                                                                                                                            "Invalid SOAP => " +
+                                                                                                                            httpresponse.HTTPBody.ToUTF8String()
+                                                                                                                        )
+                                                                                                                    ),
+                                                                                                                    IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnHTTPError
+
+                                                 OnHTTPError: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendHTTPError(timestamp, this, httpresponse);
+
+                                                     return new HTTPResponse<DiagnosticsStatusNotificationResponse>(httpresponse,
+                                                                                                                    new DiagnosticsStatusNotificationResponse(
+                                                                                                                        Result.Server(
+                                                                                                                             httpresponse.HTTPStatusCode.ToString() +
+                                                                                                                             " => " +
+                                                                                                                             httpresponse.HTTPBody.      ToUTF8String()
+                                                                                                                        )
+                                                                                                                    ),
+                                                                                                                    IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnException
+
+                                                 OnException: (timestamp, sender, exception) => {
+
+                                                     SendException(timestamp, sender, exception);
+
+                                                     return HTTPResponse<DiagnosticsStatusNotificationResponse>.ExceptionThrown(new DiagnosticsStatusNotificationResponse(
+                                                                                                                                    Result.Format(exception.Message +
+                                                                                                                                                  " => " +
+                                                                                                                                                  exception.StackTrace)),
+                                                                                                                                exception);
+
+                                                 }
+
+                                                 #endregion
+
+                                                );
+
+            }
+
+            if (result == null)
+                result = HTTPResponse<DiagnosticsStatusNotificationResponse>.OK(new DiagnosticsStatusNotificationResponse(Result.OK("Nothing to upload!")));
+
+
+            #region Send OnDiagnosticsStatusNotificationResponse event
+
+            try
+            {
+
+                OnDiagnosticsStatusNotificationResponse?.Invoke(DateTime.Now,
+                                                                Timestamp.Value,
+                                                                this,
+                                                                ClientId,
+                                                                EventTrackingId,
+                                                                Status,
+                                                                RequestTimeout,
+                                                                result.Content,
+                                                                DateTime.Now - Timestamp.Value);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
+            }
+
+            #endregion
+
+            return result;
+
+
+        }
+
+        #endregion
+
+        #region FirmwareStatusNotification   (Status, ...)
+
+        /// <summary>
+        /// Send a firmware status notification to the central system.
+        /// </summary>
+        /// <param name="Status">The status of the firmware installation.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<HTTPResponse<FirmwareStatusNotificationResponse>>
+
+            FirmwareStatusNotification(FirmwareStatus      Status,
+
+                                       DateTime?           Timestamp          = null,
+                                       CancellationToken?  CancellationToken  = null,
+                                       EventTracking_Id    EventTrackingId    = null,
+                                       TimeSpan?           RequestTimeout     = null)
+
+        {
+
+            #region Initial checks
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+
+            HTTPResponse<FirmwareStatusNotificationResponse> result = null;
+
+            #endregion
+
+            #region Send OnFirmwareStatusNotificationRequest event
+
+            try
+            {
+
+                OnFirmwareStatusNotificationRequest?.Invoke(DateTime.Now,
+                                                            Timestamp.Value,
+                                                            this,
+                                                            ClientId,
+                                                            EventTrackingId,
+                                                            Status,
+                                                            RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnFirmwareStatusNotificationRequest));
+            }
+
+            #endregion
+
+
+            using (var _OCPPClient = new SOAPClient(Hostname,
+                                                    RemotePort,
+                                                    HTTPVirtualHost,
+                                                    URIPrefix,
+                                                    RemoteCertificateValidator,
+                                                    ClientCert,
+                                                    UserAgent,
+                                                    DNSClient))
+            {
+
+                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                    "/FirmwareStatusNotification",
+                                                                    null,
+                                                                    From,
+                                                                    To,
+                                                                    new FirmwareStatusNotificationRequest(Status).ToXML()),
+                                                 "FirmwareStatusNotification",
+                                                 RequestLogDelegate:   OnFirmwareStatusNotificationSOAPRequest,
+                                                 ResponseLogDelegate:  OnFirmwareStatusNotificationSOAPResponse,
+                                                 CancellationToken:    CancellationToken,
+                                                 EventTrackingId:      EventTrackingId,
+                                                 QueryTimeout:         RequestTimeout,
+
+                                                 #region OnSuccess
+
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(FirmwareStatusNotificationResponse.Parse),
+
+                                                 #endregion
+
+                                                 #region OnSOAPFault
+
+                                                 OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendSOAPError(timestamp, this, httpresponse.Content);
+
+                                                     return new HTTPResponse<FirmwareStatusNotificationResponse>(httpresponse,
+                                                                                                                 new FirmwareStatusNotificationResponse(
+                                                                                                                     Result.Format(
+                                                                                                                         "Invalid SOAP => " +
+                                                                                                                         httpresponse.HTTPBody.ToUTF8String()
+                                                                                                                     )
+                                                                                                                 ),
+                                                                                                                 IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnHTTPError
+
+                                                 OnHTTPError: (timestamp, soapclient, httpresponse) => {
+
+                                                     SendHTTPError(timestamp, this, httpresponse);
+
+                                                     return new HTTPResponse<FirmwareStatusNotificationResponse>(httpresponse,
+                                                                                                                 new FirmwareStatusNotificationResponse(
+                                                                                                                     Result.Server(
+                                                                                                                          httpresponse.HTTPStatusCode.ToString() +
+                                                                                                                          " => " +
+                                                                                                                          httpresponse.HTTPBody.      ToUTF8String()
+                                                                                                                     )
+                                                                                                                 ),
+                                                                                                                 IsFault: true);
+
+                                                 },
+
+                                                 #endregion
+
+                                                 #region OnException
+
+                                                 OnException: (timestamp, sender, exception) => {
+
+                                                     SendException(timestamp, sender, exception);
+
+                                                     return HTTPResponse<FirmwareStatusNotificationResponse>.ExceptionThrown(new FirmwareStatusNotificationResponse(
+                                                                                                                                 Result.Format(exception.Message +
+                                                                                                                                               " => " +
+                                                                                                                                               exception.StackTrace)),
+                                                                                                                             exception);
+
+                                                 }
+
+                                                 #endregion
+
+                                                );
+
+            }
+
+            if (result == null)
+                result = HTTPResponse<FirmwareStatusNotificationResponse>.OK(new FirmwareStatusNotificationResponse(Result.OK("Nothing to upload!")));
+
+
+            #region Send OnFirmwareStatusNotificationResponse event
+
+            try
+            {
+
+                OnFirmwareStatusNotificationResponse?.Invoke(DateTime.Now,
+                                                             Timestamp.Value,
+                                                             this,
+                                                             ClientId,
+                                                             EventTrackingId,
+                                                             Status,
+                                                             RequestTimeout,
+                                                             result.Content,
+                                                             DateTime.Now - Timestamp.Value);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(CPClient) + "." + nameof(OnFirmwareStatusNotificationResponse));
             }
 
             #endregion

@@ -273,4 +273,93 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     #endregion
 
 
+    #region OnDataTransfer
+
+    /// <summary>
+    /// A data transfer from the given charge point.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// 
+    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+    /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
+    /// <param name="MessageId">The charge point model identification.</param>
+    /// <param name="Data">The serial number of the charge point.</param>
+    /// 
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    public delegate Task<DataTransferResponse>
+
+        OnDataTransferRequestDelegate(DateTime             Timestamp,
+                                      CSServer             Sender,
+                                      CancellationToken    CancellationToken,
+                                      EventTracking_Id     EventTrackingId,
+
+                                      ChargeBox_Id         ChargeBoxIdentity,
+                                      String               VendorId,
+                                      String               MessageId,
+                                      String               Data,
+
+                                      TimeSpan?            QueryTimeout = null);
+
+    #endregion
+
+    #region OnDiagnosticsStatusNotification
+
+    /// <summary>
+    /// A diagnostics status notification from the given charge point.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// 
+    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+    /// <param name="Status">The status of the diagnostics upload.</param>
+    /// 
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    public delegate Task<DiagnosticsStatusNotificationResponse>
+
+        OnDiagnosticsStatusNotificationRequestDelegate(DateTime             Timestamp,
+                                                       CSServer             Sender,
+                                                       CancellationToken    CancellationToken,
+                                                       EventTracking_Id     EventTrackingId,
+
+                                                       ChargeBox_Id         ChargeBoxIdentity,
+                                                       DiagnosticsStatus    Status,
+
+                                                       TimeSpan?            QueryTimeout = null);
+
+    #endregion
+
+    #region OnFirmwareStatusNotification
+
+    /// <summary>
+    /// A firmware installation status notification from the given charge point.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// 
+    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+    /// <param name="Status">The current status of a firmware installation.</param>
+    /// 
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    public delegate Task<FirmwareStatusNotificationResponse>
+
+        OnFirmwareStatusNotificationRequestDelegate(DateTime             Timestamp,
+                                                    CSServer             Sender,
+                                                    CancellationToken    CancellationToken,
+                                                    EventTracking_Id     EventTrackingId,
+
+                                                    ChargeBox_Id         ChargeBoxIdentity,
+                                                    FirmwareStatus       Status,
+
+                                                    TimeSpan?            QueryTimeout = null);
+
+    #endregion
+
+
 }

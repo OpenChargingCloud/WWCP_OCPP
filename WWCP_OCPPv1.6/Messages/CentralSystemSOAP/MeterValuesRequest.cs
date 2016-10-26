@@ -135,7 +135,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         //
         //          </ns:meterValue>
         //
-        //       </ns:meterValuesRequest>        //    </soap:Body>
+        //       </ns:meterValuesRequest>
+        //    </soap:Body>
         //
         // </soap:Envelope>
 

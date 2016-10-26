@@ -104,8 +104,14 @@
     <Compile Include="IO\SOAP.cs" />
     <Compile Include="IO\XML_IO.cs" />
     <Compile Include="Messages\AResponse.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\DataTransferRequest.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\FirmwareStatusNotificationRequest.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\DiagnosticsStatusNotificationRequest.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\FirmwareStatusNotificationResponse.cs" />
     <Compile Include="Messages\CentralSystemSOAP\MeterValuesRequest.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\DiagnosticsStatusNotificationResponse.cs" />
     <Compile Include="Messages\CentralSystemSOAP\MeterValuesResponse.cs" />
+    <Compile Include="Messages\CentralSystemSOAP\DataTransferResponse.cs" />
     <Compile Include="Messages\CentralSystemSOAP\StopTransactionResponse.cs" />
     <Compile Include="Messages\CentralSystemSOAP\StopTransactionRequest.cs" />
     <Compile Include="Messages\CentralSystemSOAP\StatusNotificationResponse.cs" />
@@ -118,6 +124,8 @@
     <Compile Include="Messages\CentralSystemSOAP\AuthorizeRequest.cs" />
     <Compile Include="Messages\CentralSystemSOAP\BootNotificationResponse.cs" />
     <Compile Include="Messages\CentralSystemSOAP\AuthorizeResponse.cs" />
+    <Compile Include="Messages\ChargePointSOAP\DataTransferRequest.cs" />
+    <Compile Include="Messages\ChargePointSOAP\DataTransferResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -147,7 +155,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ChargePoint\CPServer\" />
-    <Folder Include="Messages\ChargePointSOAP\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
