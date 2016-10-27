@@ -147,7 +147,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         //    <!--Optional:-->
         //    <ns:unit>?</ns:unit>
         //
-        // </ns:sampledValue>
+        // </ns:sampledValue>
+
         #endregion
 
         #region (static) Parse(SampledValueXML,  OnException = null)

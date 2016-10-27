@@ -1103,6 +1103,55 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #endregion
 
 
+        #region AsChargingProfilePurpose(Text)
+
+        public static ChargingProfilePurposes AsChargingProfilePurpose(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "ChargePointMaxProfile":
+                    return ChargingProfilePurposes.ChargePointMaxProfile;
+
+                case "TxProfile":
+                    return ChargingProfilePurposes.TxProfile;
+
+
+                default:
+                    return ChargingProfilePurposes.TxDefaultProfile;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this ChargingProfilePurpose)
+
+        public static String AsText(this ChargingProfilePurposes ChargingProfilePurpose)
+        {
+
+            switch (ChargingProfilePurpose)
+            {
+
+                case ChargingProfilePurposes.ChargePointMaxProfile:
+                    return "ChargePointMaxProfile";
+
+                case ChargingProfilePurposes.TxProfile:
+                    return "TxProfile";
+
+
+                default:
+                    return "TxDefaultProfile";
+
+            }
+
+        }
+
+        #endregion
+
+
         #region AsMessageTrigger(Text)
 
         public static MessageTrigger AsMessageTrigger(this String Text)

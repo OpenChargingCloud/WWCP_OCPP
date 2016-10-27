@@ -47,12 +47,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CentralSystem\CSClient\CSClientXMLMethods - Copy.cs" />
+    <Compile Include="CentralSystem\CSServer\CSServerLogger.cs" />
     <Compile Include="ChargePoint\CPClient\CPClient.cs" />
     <Compile Include="ChargePoint\CPClient\CPClientDelegates.cs" />
     <Compile Include="ChargePoint\CPClient\CPClientLogger.cs" />
+    <Compile Include="DataTypes\Complex\ChargingSchedulePeriod.cs" />
+    <Compile Include="DataTypes\Complex\ChargingSchedule.cs" />
+    <Compile Include="DataTypes\Complex\ChargingProfile.cs" />
     <Compile Include="DataTypes\Complex\MeterValue.cs" />
     <Compile Include="DataTypes\Complex\SampledValue.cs" />
+    <Compile Include="DataTypes\Simple\ChargingProfilePurposes.cs" />
+    <Compile Include="DataTypes\Simple\ChargingProfile_Id.cs" />
     <Compile Include="DataTypes\Simple\Reservation_Id.cs" />
     <Compile Include="DataTypes\Simple\Transaction_Id.cs" />
     <Compile Include="DataTypes\Simple\Connector_Id.cs" />
@@ -124,8 +129,16 @@
     <Compile Include="Messages\CentralSystemSOAP\AuthorizeRequest.cs" />
     <Compile Include="Messages\CentralSystemSOAP\BootNotificationResponse.cs" />
     <Compile Include="Messages\CentralSystemSOAP\AuthorizeResponse.cs" />
+    <Compile Include="Messages\ChargePointSOAP\RemoteStartTransactionResponse.cs" />
+    <Compile Include="Messages\ChargePointSOAP\RemoteStartTransactionRequest.cs" />
+    <Compile Include="Messages\ChargePointSOAP\RemoteStopTransactionResponse.cs" />
+    <Compile Include="Messages\ChargePointSOAP\RemoteStopTransactionRequest.cs" />
+    <Compile Include="Messages\ChargePointSOAP\CancelReservationRequest.cs" />
+    <Compile Include="Messages\ChargePointSOAP\ReserveNowRequest.cs" />
     <Compile Include="Messages\ChargePointSOAP\DataTransferRequest.cs" />
     <Compile Include="Messages\ChargePointSOAP\DataTransferResponse.cs" />
+    <Compile Include="Messages\ChargePointSOAP\CancelReservationResponse.cs" />
+    <Compile Include="Messages\ChargePointSOAP\ReserveNowResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +167,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="CentralSystem\CSClient\" />
     <Folder Include="ChargePoint\CPServer\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

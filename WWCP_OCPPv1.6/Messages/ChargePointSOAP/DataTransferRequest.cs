@@ -87,7 +87,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
         //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-        //                xmlns:ns   = "urn://Ocpp/Cs/2015/10/">
+        //                xmlns:ns   = "urn://Ocpp/Cp/2015/10/">
         //
         //    <soap:Header>
         //       ...

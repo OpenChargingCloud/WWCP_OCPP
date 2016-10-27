@@ -106,7 +106,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         //
         //    </ns:sampledValue>
         //
-        // </ns:meterValue>
+        // </ns:meterValue>
+
 
         #endregion
 

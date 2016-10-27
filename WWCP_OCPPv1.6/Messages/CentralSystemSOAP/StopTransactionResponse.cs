@@ -102,7 +102,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         //    <soap:Body>
         //       <ns:stopTransactionResponse>
         //
-        //          <!--Optional:-->        //          <ns:idTagInfo>
+        //          <!--Optional:-->
+        //          <ns:idTagInfo>
         //
         //             <ns:status>?</ns:status>
         //
