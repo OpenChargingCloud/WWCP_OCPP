@@ -26,11 +26,11 @@ using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP.NS;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6.CP
+namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP data transfer request.
+    /// An OCPP data transfer request.!!!
     /// </summary>
     public class DataTransferRequest
     {

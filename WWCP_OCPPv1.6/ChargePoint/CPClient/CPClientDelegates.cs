@@ -23,6 +23,8 @@ using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using org.GraphDefined.WWCP.OCPPv1_6.CS;
+
 #endregion
 
 namespace org.GraphDefined.WWCP.OCPPv1_6.CP

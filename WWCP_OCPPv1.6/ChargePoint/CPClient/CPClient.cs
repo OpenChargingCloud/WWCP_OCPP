@@ -30,6 +30,8 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
+using org.GraphDefined.WWCP.OCPPv1_6.CS;
+
 #endregion
 
 namespace org.GraphDefined.WWCP.OCPPv1_6.CP

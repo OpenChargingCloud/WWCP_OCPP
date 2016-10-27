@@ -52,22 +52,22 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate Task<BootNotificationResponse>
 
-        OnBootNotificationRequestDelegate(DateTime                       Timestamp,
-                                          CSServer                       Sender,
-                                          CancellationToken              CancellationToken,
-                                          EventTracking_Id               EventTrackingId,
+        OnBootNotificationDelegate(DateTime                       Timestamp,
+                                   CSServer                       Sender,
+                                   CancellationToken              CancellationToken,
+                                   EventTracking_Id               EventTrackingId,
 
-                                          ChargeBox_Id                   ChargeBoxIdentity,
-                                          String                         ChargePointVendor,
-                                          String                         ChargePointModel,
-                                          String                         ChargePointSerialNumber,
-                                          String                         FirmwareVersion,
-                                          String                         Iccid,
-                                          String                         IMSI,
-                                          String                         MeterType,
-                                          String                         MeterSerialNumber,
+                                   ChargeBox_Id                   ChargeBoxIdentity,
+                                   String                         ChargePointVendor,
+                                   String                         ChargePointModel,
+                                   String                         ChargePointSerialNumber,
+                                   String                         FirmwareVersion,
+                                   String                         Iccid,
+                                   String                         IMSI,
+                                   String                         MeterType,
+                                   String                         MeterSerialNumber,
 
-                                          TimeSpan?                      QueryTimeout = null);
+                                   TimeSpan?                      QueryTimeout = null);
 
     #endregion
 
@@ -86,14 +86,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate Task<HeartbeatResponse>
 
-        OnHeartbeatRequestDelegate(DateTime             Timestamp,
-                                   CSServer             Sender,
-                                   CancellationToken    CancellationToken,
-                                   EventTracking_Id     EventTrackingId,
+        OnHeartbeatDelegate(DateTime             Timestamp,
+                            CSServer             Sender,
+                            CancellationToken    CancellationToken,
+                            EventTracking_Id     EventTrackingId,
 
-                                   ChargeBox_Id         ChargeBoxIdentity,
+                            ChargeBox_Id         ChargeBoxIdentity,
 
-                                   TimeSpan?            QueryTimeout = null);
+                            TimeSpan?            QueryTimeout = null);
 
     #endregion
 
@@ -114,15 +114,15 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate Task<AuthorizeResponse>
 
-        OnAuthorizeRequestDelegate(DateTime                       Timestamp,
-                                   CSServer                       Sender,
-                                   CancellationToken              CancellationToken,
-                                   EventTracking_Id               EventTrackingId,
+        OnAuthorizeDelegate(DateTime                       Timestamp,
+                            CSServer                       Sender,
+                            CancellationToken              CancellationToken,
+                            EventTracking_Id               EventTrackingId,
 
-                                   ChargeBox_Id                   ChargeBoxIdentity,
-                                   IdToken                        IdToken,
+                            ChargeBox_Id                   ChargeBoxIdentity,
+                            IdToken                        IdToken,
 
-                                   TimeSpan?                      QueryTimeout = null);
+                            TimeSpan?                      QueryTimeout = null);
 
     #endregion
 
@@ -146,19 +146,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate Task<StartTransactionResponse>
 
-        OnStartTransactionRequestDelegate(DateTime             Timestamp,
-                                          CSServer             Sender,
-                                          CancellationToken    CancellationToken,
-                                          EventTracking_Id     EventTrackingId,
+        OnStartTransactionDelegate(DateTime             Timestamp,
+                                   CSServer             Sender,
+                                   CancellationToken    CancellationToken,
+                                   EventTracking_Id     EventTrackingId,
 
-                                          ChargeBox_Id         ChargeBoxIdentity,
-                                          Connector_Id         ConnectorId,
-                                          IdToken              IdTag,
-                                          DateTime             TransactionTimestamp,
-                                          UInt64               MeterStart,
-                                          Reservation_Id       ReservationId,
+                                   ChargeBox_Id         ChargeBoxIdentity,
+                                   Connector_Id         ConnectorId,
+                                   IdToken              IdTag,
+                                   DateTime             TransactionTimestamp,
+                                   UInt64               MeterStart,
+                                   Reservation_Id       ReservationId,
 
-                                          TimeSpan?            QueryTimeout = null);
+                                   TimeSpan?            QueryTimeout = null);
 
     #endregion
 
@@ -184,21 +184,21 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate Task<StatusNotificationResponse>
 
-        OnStatusNotificationRequestDelegate(DateTime                 Timestamp,
-                                            CSServer                 Sender,
-                                            CancellationToken        CancellationToken,
-                                            EventTracking_Id         EventTrackingId,
+        OnStatusNotificationDelegate(DateTime                 Timestamp,
+                                     CSServer                 Sender,
+                                     CancellationToken        CancellationToken,
+                                     EventTracking_Id         EventTrackingId,
 
-                                            ChargeBox_Id             ChargeBoxIdentity,
-                                            Connector_Id             ConnectorId,
-                                            ChargePointStatus        Status,
-                                            ChargePointErrorCodes    ErrorCode,
-                                            String                   Info,
-                                            DateTime?                StatusTimestamp,
-                                            String                   VendorId,
-                                            String                   VendorErrorCode,
+                                     ChargeBox_Id             ChargeBoxIdentity,
+                                     Connector_Id             ConnectorId,
+                                     ChargePointStatus        Status,
+                                     ChargePointErrorCodes    ErrorCode,
+                                     String                   Info,
+                                     DateTime?                StatusTimestamp,
+                                     String                   VendorId,
+                                     String                   VendorErrorCode,
 
-                                            TimeSpan?                QueryTimeout = null);
+                                     TimeSpan?                QueryTimeout = null);
 
     #endregion
 
@@ -220,17 +220,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate Task<MeterValuesResponse>
 
-        OnMeterValuesRequestDelegate(DateTime                 Timestamp,
-                                     CSServer                 Sender,
-                                     CancellationToken        CancellationToken,
-                                     EventTracking_Id         EventTrackingId,
+        OnMeterValuesDelegate(DateTime                 Timestamp,
+                              CSServer                 Sender,
+                              CancellationToken        CancellationToken,
+                              EventTracking_Id         EventTrackingId,
 
-                                     ChargeBox_Id             ChargeBoxIdentity,
-                                     Connector_Id             ConnectorId,
-                                     Transaction_Id           TransactionId,
-                                     IEnumerable<MeterValue>  MeterValues,
+                              ChargeBox_Id             ChargeBoxIdentity,
+                              Connector_Id             ConnectorId,
+                              Transaction_Id           TransactionId,
+                              IEnumerable<MeterValue>  MeterValues,
 
-                                     TimeSpan?                QueryTimeout = null);
+                              TimeSpan?                QueryTimeout = null);
 
     #endregion
 
@@ -255,20 +255,20 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate Task<StopTransactionResponse>
 
-        OnStopTransactionRequestDelegate(DateTime                   Timestamp,
-                                         CSServer                   Sender,
-                                         CancellationToken          CancellationToken,
-                                         EventTracking_Id           EventTrackingId,
+        OnStopTransactionDelegate(DateTime                   Timestamp,
+                                  CSServer                   Sender,
+                                  CancellationToken          CancellationToken,
+                                  EventTracking_Id           EventTrackingId,
 
-                                         ChargeBox_Id               ChargeBoxIdentity,
-                                         Transaction_Id             TransactionId,
-                                         DateTime                   TransactionTimestamp,
-                                         UInt64                     MeterStop,
-                                         IdToken                    IdTag,
-                                         Reasons?                   Reason,
-                                         IEnumerable<MeterValue>    TransactionData,
+                                  ChargeBox_Id               ChargeBoxIdentity,
+                                  Transaction_Id             TransactionId,
+                                  DateTime                   TransactionTimestamp,
+                                  UInt64                     MeterStop,
+                                  IdToken                    IdTag,
+                                  Reasons?                   Reason,
+                                  IEnumerable<MeterValue>    TransactionData,
 
-                                         TimeSpan?                  QueryTimeout = null);
+                                  TimeSpan?                  QueryTimeout = null);
 
     #endregion
 
@@ -291,17 +291,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate Task<DataTransferResponse>
 
-        OnDataTransferRequestDelegate(DateTime             Timestamp,
-                                      CSServer             Sender,
-                                      CancellationToken    CancellationToken,
-                                      EventTracking_Id     EventTrackingId,
+        OnDataTransferDelegate(DateTime             Timestamp,
+                               CSServer             Sender,
+                               CancellationToken    CancellationToken,
+                               EventTracking_Id     EventTrackingId,
 
-                                      ChargeBox_Id         ChargeBoxIdentity,
-                                      String               VendorId,
-                                      String               MessageId,
-                                      String               Data,
+                               ChargeBox_Id         ChargeBoxIdentity,
+                               String               VendorId,
+                               String               MessageId,
+                               String               Data,
 
-                                      TimeSpan?            QueryTimeout = null);
+                               TimeSpan?            QueryTimeout = null);
 
     #endregion
 
@@ -321,15 +321,15 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate Task<DiagnosticsStatusNotificationResponse>
 
-        OnDiagnosticsStatusNotificationRequestDelegate(DateTime             Timestamp,
-                                                       CSServer             Sender,
-                                                       CancellationToken    CancellationToken,
-                                                       EventTracking_Id     EventTrackingId,
+        OnDiagnosticsStatusNotificationDelegate(DateTime             Timestamp,
+                                                CSServer             Sender,
+                                                CancellationToken    CancellationToken,
+                                                EventTracking_Id     EventTrackingId,
 
-                                                       ChargeBox_Id         ChargeBoxIdentity,
-                                                       DiagnosticsStatus    Status,
+                                                ChargeBox_Id         ChargeBoxIdentity,
+                                                DiagnosticsStatus    Status,
 
-                                                       TimeSpan?            QueryTimeout = null);
+                                                TimeSpan?            QueryTimeout = null);
 
     #endregion
 
@@ -349,15 +349,15 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate Task<FirmwareStatusNotificationResponse>
 
-        OnFirmwareStatusNotificationRequestDelegate(DateTime             Timestamp,
-                                                    CSServer             Sender,
-                                                    CancellationToken    CancellationToken,
-                                                    EventTracking_Id     EventTrackingId,
+        OnFirmwareStatusNotificationDelegate(DateTime             Timestamp,
+                                             CSServer             Sender,
+                                             CancellationToken    CancellationToken,
+                                             EventTracking_Id     EventTrackingId,
 
-                                                    ChargeBox_Id         ChargeBoxIdentity,
-                                                    FirmwareStatus       Status,
+                                             ChargeBox_Id         ChargeBoxIdentity,
+                                             FirmwareStatus       Status,
 
-                                                    TimeSpan?            QueryTimeout = null);
+                                             TimeSpan?            QueryTimeout = null);
 
     #endregion
 

@@ -26,7 +26,7 @@ using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP.NS;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6.CP
+namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
@@ -38,16 +38,16 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region Properties
 
         /// <summary>
-        /// The unique identification of this reservation.
-        /// </summary>
-        public Reservation_Id  ReservationId    { get; }
-
-        /// <summary>
         /// The identification of the connector to be reserved.
         /// A value of 0 means that the reservation is not for
         /// a specific connector.
         /// </summary>
         public Connector_Id    ConnectorId      { get; }
+
+        /// <summary>
+        /// The unique identification of this reservation.
+        /// </summary>
+        public Reservation_Id  ReservationId    { get; }
 
         /// <summary>
         /// The timestamp when the reservation ends.
@@ -72,13 +72,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Create an OCPP ReserveNowRequest XML/SOAP request.
         /// </summary>
-        /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// <param name="ConnectorId">The identification of the connector to be reserved. A value of 0 means that the reservation is not for a specific connector.</param>
+        /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
         /// <param name="IdTag">The identifier for which the charge point has to reserve a connector.</param>
-        /// <param name="ParentIdTag">An optional parent idTag.</param>
-        public ReserveNowRequest(Reservation_Id  ReservationId,
-                                 Connector_Id    ConnectorId,
+        /// <param name="ParentIdTag">An optional ParentIdTag.</param>
+        public ReserveNowRequest(Connector_Id    ConnectorId,
+                                 Reservation_Id  ReservationId,
                                  DateTime        ExpiryDate,
                                  IdToken         IdTag,
                                  IdToken         ParentIdTag = null)
@@ -86,19 +86,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             #region Initial checks
 
-            if (ReservationId == null)
-                throw new ArgumentNullException(nameof(ReservationId),  "The given unique reservation identification must not be null!");
-
             if (ConnectorId   == null)
                 throw new ArgumentNullException(nameof(ConnectorId),    "The given unique connector identification must not be null!");
+
+            if (ReservationId == null)
+                throw new ArgumentNullException(nameof(ReservationId),  "The given unique reservation identification must not be null!");
 
             if (IdTag         == null)
                 throw new ArgumentNullException(nameof(IdTag),          "The given identification tag must not be null!");
 
             #endregion
 
-            this.ReservationId  = ReservationId;
             this.ConnectorId    = ConnectorId;
+            this.ReservationId  = ReservationId;
             this.ExpiryDate     = ExpiryDate;
             this.IdTag          = IdTag;
             this.ParentIdTag    = ParentIdTag;
@@ -198,11 +198,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 ReserveNowRequest = new ReserveNowRequest(
 
-                                        ReserveNowRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CP + "reservationId",
-                                                                               Reservation_Id.Parse),
-
                                         ReserveNowRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CP + "connectorId",
                                                                                Connector_Id.Parse),
+
+                                        ReserveNowRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CP + "reservationId",
+                                                                               Reservation_Id.Parse),
 
                                         ReserveNowRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CP + "expiryDate",
                                                                                DateTime.Parse),

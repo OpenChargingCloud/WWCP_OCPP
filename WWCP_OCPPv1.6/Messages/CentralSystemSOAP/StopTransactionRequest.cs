@@ -28,7 +28,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6
+namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>

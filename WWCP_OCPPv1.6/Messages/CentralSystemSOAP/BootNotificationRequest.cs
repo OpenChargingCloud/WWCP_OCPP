@@ -26,7 +26,7 @@ using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP.NS;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6
+namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     //After start-up, every charge point SHALL send a request to the

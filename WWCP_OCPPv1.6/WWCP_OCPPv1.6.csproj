@@ -47,10 +47,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CentralSystem\CSClient\CSClientLogger.cs" />
+    <Compile Include="CentralSystem\CSClient\CSClient.cs" />
+    <Compile Include="CentralSystem\CSClient\CSClientDelegates.cs" />
     <Compile Include="CentralSystem\CSServer\CSServerLogger.cs" />
     <Compile Include="ChargePoint\CPClient\CPClient.cs" />
     <Compile Include="ChargePoint\CPClient\CPClientDelegates.cs" />
     <Compile Include="ChargePoint\CPClient\CPClientLogger.cs" />
+    <Compile Include="ChargePoint\CPServer\CPServerDelegates.cs" />
+    <Compile Include="ChargePoint\CPServer\CPServer.cs" />
     <Compile Include="DataTypes\Complex\ChargingSchedulePeriod.cs" />
     <Compile Include="DataTypes\Complex\ChargingSchedule.cs" />
     <Compile Include="DataTypes\Complex\ChargingProfile.cs" />
@@ -97,10 +102,8 @@
     <Compile Include="DataTypes\Simple\UpdateTypes.cs" />
     <Compile Include="DataTypes\Simple\ResetTypes.cs" />
     <Compile Include="DataTypes\Simple\UnlockStatus.cs" />
-    <Compile Include="DataTypes\TransactionData.cs" />
     <Compile Include="CentralSystem\CSServer\CSServerDelegates.cs" />
     <Compile Include="CentralSystem\CSServer\CSServer.cs" />
-    <Compile Include="DataTypes\CDRStatus.cs" />
     <Compile Include="DataTypes\Complex\IdTagInfo.cs" />
     <Compile Include="DataTypes\Simple\IdToken.cs" />
     <Compile Include="DataTypes\Simple\AuthorizationStatus.cs" />
@@ -140,6 +143,7 @@
     <Compile Include="Messages\ChargePointSOAP\CancelReservationResponse.cs" />
     <Compile Include="Messages\ChargePointSOAP\ReserveNowResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Version.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\BouncyCastle\crypto\crypto.csproj">
@@ -166,10 +170,7 @@
   <ItemGroup>
     <None Include="README.md" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CentralSystem\CSClient\" />
-    <Folder Include="ChargePoint\CPServer\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

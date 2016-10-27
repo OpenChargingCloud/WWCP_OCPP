@@ -21,6 +21,7 @@ using System;
 using System.Linq;
 using System.Xml.Linq;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -28,8 +29,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP.NS;
-using System.Threading.Tasks;
+using org.GraphDefined.WWCP.OCPPv1_6.CP;
 
 #endregion
 
@@ -47,7 +47,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The default HTTP/SOAP/XML server name.
         /// </summary>
-        public new const           String    DefaultHTTPServerName  = "GraphDefined OCPP v1.6 HTTP/SOAP/XML Central System Server API";
+        public new const           String    DefaultHTTPServerName  = "GraphDefined OCPP " + Version.Number + " HTTP/SOAP/XML Central System Server API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server TCP port.
@@ -57,7 +57,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
         /// </summary>
-        public new const           String    DefaultURIPrefix       = "v1.6";
+        public new const           String    DefaultURIPrefix       = Version.Number;
 
         /// <summary>
         /// The default query timeout.
@@ -73,17 +73,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a boot notification SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                  OnBootNotificationSOAPRequest;
+        public event RequestLogHandler           OnBootNotificationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a boot notification was sent.
         /// </summary>
-        public event AccessLogHandler                   OnBootNotificationSOAPResponse;
+        public event AccessLogHandler            OnBootNotificationSOAPResponse;
 
         /// <summary>
         /// An event sent whenever a boot notification was received.
         /// </summary>
-        public event OnBootNotificationRequestDelegate  OnBootNotificationRequest;
+        public event OnBootNotificationDelegate  OnBootNotificationRequest;
 
         #endregion
 
@@ -92,17 +92,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a heartbeat SOAP request was received.
         /// </summary>
-        public event RequestLogHandler           OnHeartbeatSOAPRequest;
+        public event RequestLogHandler    OnHeartbeatSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a heartbeat was sent.
         /// </summary>
-        public event AccessLogHandler            OnHeartbeatSOAPResponse;
+        public event AccessLogHandler     OnHeartbeatSOAPResponse;
 
         /// <summary>
         /// An event sent whenever a heartbeat was received.
         /// </summary>
-        public event OnHeartbeatRequestDelegate  OnHeartbeatRequest;
+        public event OnHeartbeatDelegate  OnHeartbeatRequest;
 
         #endregion
 
@@ -112,17 +112,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever an authorize SOAP request was received.
         /// </summary>
-        public event RequestLogHandler           OnAuthorizeSOAPRequest;
+        public event RequestLogHandler    OnAuthorizeSOAPRequest;
 
         /// <summary>
         /// An event sent whenever an authorize SOAP response was sent.
         /// </summary>
-        public event AccessLogHandler            OnAuthorizeSOAPResponse;
+        public event AccessLogHandler     OnAuthorizeSOAPResponse;
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
         /// </summary>
-        public event OnAuthorizeRequestDelegate  OnAuthorizeRequest;
+        public event OnAuthorizeDelegate  OnAuthorizeRequest;
 
         #endregion
 
@@ -131,17 +131,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a start transaction SOAP request was received.
         /// </summary>
-        public event RequestLogHandler           OnStartTransactionSOAPRequest;
+        public event RequestLogHandler    OnStartTransactionSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a start transaction request was sent.
         /// </summary>
-        public event AccessLogHandler            OnStartTransactionSOAPResponse;
+        public event AccessLogHandler     OnStartTransactionSOAPResponse;
 
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        public event OnAuthorizeRequestDelegate  OnStartTransactionRequest;
+        public event OnAuthorizeDelegate  OnStartTransactionRequest;
 
         #endregion
 
@@ -150,17 +150,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a status notification SOAP request was received.
         /// </summary>
-        public event RequestLogHandler           OnStatusNotificationSOAPRequest;
+        public event RequestLogHandler    OnStatusNotificationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a status notification request was sent.
         /// </summary>
-        public event AccessLogHandler            OnStatusNotificationSOAPResponse;
+        public event AccessLogHandler     OnStatusNotificationSOAPResponse;
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
         /// </summary>
-        public event OnAuthorizeRequestDelegate  OnStatusNotificationRequest;
+        public event OnAuthorizeDelegate  OnStatusNotificationRequest;
 
         #endregion
 
@@ -169,17 +169,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a meter values SOAP request was received.
         /// </summary>
-        public event RequestLogHandler           OnMeterValuesSOAPRequest;
+        public event RequestLogHandler    OnMeterValuesSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a meter values request was sent.
         /// </summary>
-        public event AccessLogHandler            OnMeterValuesSOAPResponse;
+        public event AccessLogHandler     OnMeterValuesSOAPResponse;
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
         /// </summary>
-        public event OnAuthorizeRequestDelegate  OnMeterValuesRequest;
+        public event OnAuthorizeDelegate  OnMeterValuesRequest;
 
         #endregion
 
@@ -188,17 +188,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a stop transaction SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                 OnStopTransactionSOAPRequest;
+        public event RequestLogHandler          OnStopTransactionSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a stop transaction request was sent.
         /// </summary>
-        public event AccessLogHandler                  OnStopTransactionSOAPResponse;
+        public event AccessLogHandler           OnStopTransactionSOAPResponse;
 
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
         /// </summary>
-        public event OnStopTransactionRequestDelegate  OnStopTransactionRequest;
+        public event OnStopTransactionDelegate  OnStopTransactionRequest;
 
         #endregion
 
@@ -208,17 +208,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a data transfer SOAP request was received.
         /// </summary>
-        public event RequestLogHandler              OnDataTransferSOAPRequest;
+        public event RequestLogHandler       OnDataTransferSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a data transfer request was sent.
         /// </summary>
-        public event AccessLogHandler               OnDataTransferSOAPResponse;
+        public event AccessLogHandler        OnDataTransferSOAPResponse;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnDataTransferRequestDelegate  OnDataTransferRequest;
+        public event OnDataTransferDelegate  OnDataTransferRequest;
 
         #endregion
 
@@ -227,17 +227,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a diagnostics status notification SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                               OnDiagnosticsStatusNotificationSOAPRequest;
+        public event RequestLogHandler                        OnDiagnosticsStatusNotificationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a diagnostics status notification request was sent.
         /// </summary>
-        public event AccessLogHandler                                OnDiagnosticsStatusNotificationSOAPResponse;
+        public event AccessLogHandler                         OnDiagnosticsStatusNotificationSOAPResponse;
 
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationRequestDelegate  OnDiagnosticsStatusNotificationRequest;
+        public event OnDiagnosticsStatusNotificationDelegate  OnDiagnosticsStatusNotificationRequest;
 
         #endregion
 
@@ -246,17 +246,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a firmware status notification SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                            OnFirmwareStatusNotificationSOAPRequest;
+        public event RequestLogHandler                     OnFirmwareStatusNotificationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a firmware status notification request was sent.
         /// </summary>
-        public event AccessLogHandler                             OnFirmwareStatusNotificationSOAPResponse;
+        public event AccessLogHandler                      OnFirmwareStatusNotificationSOAPResponse;
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate  OnFirmwareStatusNotificationRequest;
+        public event OnFirmwareStatusNotificationDelegate  OnFirmwareStatusNotificationRequest;
 
         #endregion
 
@@ -394,7 +394,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     var results = OnBootNotificationRequest?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnBootNotificationRequestDelegate)
+                                      SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)
                                           (DateTime.Now,
                                            this,
                                            Request.CancellationToken,
@@ -512,7 +512,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     var results = OnHeartbeatRequest?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnHeartbeatRequestDelegate)
+                                      SafeSelect(subscriber => (subscriber as OnHeartbeatDelegate)
                                           (DateTime.Now,
                                            this,
                                            Request.CancellationToken,
@@ -623,7 +623,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     var results = OnAuthorizeRequest?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnAuthorizeRequestDelegate)
+                                      SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)
                                           (DateTime.Now,
                                            this,
                                            Request.CancellationToken,
@@ -734,7 +734,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     var results = OnStartTransactionRequest?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnStartTransactionRequestDelegate)
+                                      SafeSelect(subscriber => (subscriber as OnStartTransactionDelegate)
                                           (DateTime.Now,
                                            this,
                                            Request.CancellationToken,
@@ -849,7 +849,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     var results = OnStatusNotificationRequest?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnStatusNotificationRequestDelegate)
+                                      SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)
                                           (DateTime.Now,
                                            this,
                                            Request.CancellationToken,
@@ -966,7 +966,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     var results = OnMeterValuesRequest?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnMeterValuesRequestDelegate)
+                                      SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)
                                           (DateTime.Now,
                                            this,
                                            Request.CancellationToken,
@@ -1079,7 +1079,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     var results = OnStopTransactionRequest?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnStopTransactionRequestDelegate)
+                                      SafeSelect(subscriber => (subscriber as OnStopTransactionDelegate)
                                           (DateTime.Now,
                                            this,
                                            Request.CancellationToken,
@@ -1196,7 +1196,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     var results = OnDataTransferRequest?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnDataTransferRequestDelegate)
+                                      SafeSelect(subscriber => (subscriber as OnDataTransferDelegate)
                                           (DateTime.Now,
                                            this,
                                            Request.CancellationToken,
@@ -1309,7 +1309,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     var results = OnDiagnosticsStatusNotificationRequest?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationRequestDelegate)
+                                      SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationDelegate)
                                           (DateTime.Now,
                                            this,
                                            Request.CancellationToken,
@@ -1420,7 +1420,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     var results = OnFirmwareStatusNotificationRequest?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationRequestDelegate)
+                                      SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)
                                           (DateTime.Now,
                                            this,
                                            Request.CancellationToken,
