@@ -46,7 +46,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// An optional connector identification on which the charging
         /// transaction should be started (SHALL be > 0).
         /// </summary>
-        public Connector_Id     ConnectorId       { get; }
+        public Connector_Id?    ConnectorId       { get; }
 
         /// <summary>
         /// An optional charging profile to be used by the charge point
@@ -66,7 +66,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="ConnectorId">An optional connector identification on which the charging transaction should be started (SHALL be > 0).</param>
         /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
         public RemoteStartTransactionRequest(IdToken          IdTag,
-                                             Connector_Id     ConnectorId      = null,
+                                             Connector_Id?    ConnectorId      = null,
                                              ChargingProfile  ChargingProfile  = null)
         {
 
@@ -218,14 +218,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 RemoteStartTransactionRequest = new RemoteStartTransactionRequest(
 
-                                                    RemoteStartTransactionRequestXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "idTag",
-                                                                                                    IdToken.Parse),
+                                                    RemoteStartTransactionRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "idTag",
+                                                                                                        IdToken.Parse),
 
-                                                    RemoteStartTransactionRequestXML.MapValueOrNull(OCPPNS.OCPPv1_6_CP + "connectorId",
-                                                                                                    Connector_Id.Parse),
+                                                    RemoteStartTransactionRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "connectorId",
+                                                                                                        Connector_Id.Parse),
 
-                                                    RemoteStartTransactionRequestXML.MapElement    (OCPPNS.OCPPv1_6_CP + "chargingProfile",
-                                                                                                    ChargingProfile.Parse)
+                                                    RemoteStartTransactionRequestXML.MapElement        (OCPPNS.OCPPv1_6_CP + "chargingProfile",
+                                                                                                        ChargingProfile.Parse)
 
                                                 );
 
@@ -290,8 +290,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "remoteStartTransactionRequest",
 
-                   ConnectorId != null
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "connectorId",  ConnectorId.ToString())
+                   ConnectorId.HasValue
+                       ? new XElement(OCPPNS.OCPPv1_6_CP + "connectorId",  ConnectorId.Value.ToString())
                        : null,
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "idTag",              IdTag.ToString()),
@@ -389,8 +389,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             return IdTag.Equals(RemoteStartTransactionRequest.IdTag) &&
 
-                   ((ConnectorId     == null && RemoteStartTransactionRequest.ConnectorId     == null) ||
-                    (ConnectorId     != null && RemoteStartTransactionRequest.ConnectorId     != null && ConnectorId.Equals(RemoteStartTransactionRequest.ConnectorId))) &&
+                   ((!ConnectorId.HasValue && !RemoteStartTransactionRequest.ConnectorId.HasValue) ||
+                     (ConnectorId.HasValue &&  RemoteStartTransactionRequest.ConnectorId.HasValue && ConnectorId.Value.Equals(RemoteStartTransactionRequest.ConnectorId.Value))) &&
 
                    ((ChargingProfile == null && RemoteStartTransactionRequest.ChargingProfile == null) ||
                     (ChargingProfile != null && RemoteStartTransactionRequest.ChargingProfile != null && ChargingProfile.Equals(RemoteStartTransactionRequest.ChargingProfile)));
@@ -414,7 +414,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 return IdTag.GetHashCode() * 11 ^
 
-                       (ConnectorId     != null
+                       (ConnectorId.HasValue
                             ? ConnectorId.    GetHashCode() * 7
                             : 0) ^
 
@@ -436,7 +436,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             => String.Concat(IdTag,
 
-                             ConnectorId     != null
+                             ConnectorId.HasValue
                                  ? " at " + IdTag : "",
 
                              ChargingProfile != null

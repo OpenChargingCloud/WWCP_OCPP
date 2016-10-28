@@ -40,7 +40,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// It is optional, because a transaction may have been stopped
         /// without an identifier.
         /// </summary>
-        public IdTagInfo  IdTagInfo   { get; }
+        public IdTagInfo?  IdTagInfo   { get; }
 
         #endregion
 
@@ -62,7 +62,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// Create a new OCPP stop transaction response.
         /// </summary>
         /// <param name="IdTagInfo">Information about authorization status, expiry and parent id.</param>
-        public StopTransactionResponse(IdTagInfo  IdTagInfo = null)
+        public StopTransactionResponse(IdTagInfo?  IdTagInfo = null)
 
             : base(Result.OK())
 
@@ -183,8 +183,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 StopTransactionResponse = new StopTransactionResponse(
 
-                                              StopTransactionResponseXML.MapElement(OCPPNS.OCPPv1_6_CS + "idTagInfo",
-                                                                                    IdTagInfo.Parse)
+                                              StopTransactionResponseXML.MapElementOrNullable(OCPPNS.OCPPv1_6_CS + "idTagInfo",
+                                                                                              OCPPv1_6.IdTagInfo.Parse)
 
                                           );
 
@@ -248,7 +248,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public XElement ToXML()
 
             => new XElement(OCPPNS.OCPPv1_6_CS + "stopTransactionResponse",
-                   IdTagInfo.ToXML()
+
+                   IdTagInfo.HasValue
+                       ? IdTagInfo.Value.ToXML()
+                       : null
+
                );
 
         #endregion

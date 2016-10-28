@@ -216,7 +216,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public XElement ToXML()
 
             => new XElement(OCPPNS.OCPPv1_6_CS + "authorizeRequest",
-                   new XElement(OCPPNS.OCPPv1_6_CS + "idTag",  IdTag.Value)
+
+                   new XElement(OCPPNS.OCPPv1_6_CS + "idTag",  IdTag.ToString())
+
                );
 
         #endregion
@@ -329,7 +331,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-            => IdTag.Value;
+            => IdTag.ToString();
 
         #endregion
 

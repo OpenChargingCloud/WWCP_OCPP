@@ -269,7 +269,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             => new XElement(OCPPNS.OCPPv1_6_CS + "startTransactionResponse",
 
-                   new XElement(OCPPNS.OCPPv1_6_CS + "transactionId",  TransactionId?.Value),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "transactionId",  TransactionId.ToString()),
 
                    IdTagInfo.ToXML()
 

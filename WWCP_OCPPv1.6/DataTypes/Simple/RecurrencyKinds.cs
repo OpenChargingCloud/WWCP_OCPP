@@ -21,7 +21,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// Defines the recurrency-kind-type-values.
     /// </summary>
-    public enum RecurrencyKindTypes
+    public enum RecurrencyKinds
     {
 
         /// <summary>

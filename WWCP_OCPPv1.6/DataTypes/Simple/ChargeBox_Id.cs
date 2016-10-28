@@ -27,15 +27,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP charge box identification.
     /// </summary>
-    public class ChargeBox_Id
+    public struct ChargeBox_Id
     {
 
-        #region Properties
+        #region Data
 
-        /// <summary>
-        /// The value of the charge box identification.
-        /// </summary>
-        public String Value { get; }
+        private readonly String _Value;
 
         #endregion
 
@@ -47,7 +44,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="Token">A string.</param>
         private ChargeBox_Id(String  Token)
         {
-            this.Value = Token;
+            this._Value = Token;
         }
 
         #endregion
@@ -85,7 +82,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// Clone this charge box identification.
         /// </summary>
         public ChargeBox_Id Clone
-            => new ChargeBox_Id(new String(Value.ToCharArray()));
+            => new ChargeBox_Id(new String(_Value.ToCharArray()));
 
         #endregion
 
@@ -216,11 +213,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
             // Check if the given object is a charge box identification.
-            var ChargeBox_Id = Object as ChargeBox_Id;
-            if ((Object) ChargeBox_Id == null)
+            if (!(Object is ChargeBox_Id))
                 throw new ArgumentException("The given object is not a charge box identification!", nameof(Object));
 
-            return CompareTo(ChargeBox_Id);
+            return CompareTo((ChargeBox_Id) Object);
 
         }
 
@@ -238,7 +234,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if ((Object) ChargeBoxId == null)
                 throw new ArgumentNullException(nameof(ChargeBoxId),  "The given charge box identification must not be null!");
 
-            return String.Compare(Value, ChargeBoxId.Value, StringComparison.Ordinal);
+            return String.Compare(_Value, ChargeBoxId._Value, StringComparison.Ordinal);
 
         }
 
@@ -262,11 +258,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 return false;
 
             // Check if the given object is a charge box identification.
-            var ChargeBox_Id = Object as ChargeBox_Id;
-            if ((Object) ChargeBox_Id == null)
+            if (!(Object is ChargeBox_Id))
                 return false;
 
-            return this.Equals(ChargeBox_Id);
+            return this.Equals((ChargeBox_Id) Object);
 
         }
 
@@ -285,7 +280,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if ((Object) ChargeBoxId == null)
                 return false;
 
-            return Value.Equals(ChargeBoxId.Value);
+            return _Value.Equals(ChargeBoxId._Value);
 
         }
 
@@ -300,7 +295,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => Value.GetHashCode();
+            => _Value.GetHashCode();
 
         #endregion
 
@@ -310,7 +305,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-            => Value;
+            => _Value;
 
         #endregion
 

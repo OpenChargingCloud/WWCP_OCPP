@@ -306,7 +306,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             => new XElement(SOAPNS.SOAPEnvelope_v1_2 + "Header",
 
-                   new XElement(OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity", ChargeBoxIdentity.Value),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity", ChargeBoxIdentity.ToString()),
 
                    new XElement(SOAPNS.SOAPAdressing + "Action",
                        new XAttribute(SOAPNS.SOAPEnvelope_v1_2 + "mustUnderstand", true),

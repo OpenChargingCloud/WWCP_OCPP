@@ -59,7 +59,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                              Reservation_Id       ReservationId,
                              DateTime             ExpiryDate,
                              IdToken              IdTag,
-                             IdToken              ParentIdTag,
+                             IdToken?             ParentIdTag,
 
                              TimeSpan?            QueryTimeout = null);
 
@@ -118,7 +118,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                          ChargeBox_Id         ChargeBoxIdentity,
                                          IdToken              IdTag,
-                                         Connector_Id         ConnectorId,
+                                         Connector_Id?        ConnectorId,
                                          ChargingProfile      ChargingProfile,
 
                                          TimeSpan?            QueryTimeout = null);

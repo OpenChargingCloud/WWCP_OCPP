@@ -1103,7 +1103,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                              IdToken             IdTag,
                              DateTime            TransactionTimestamp,
                              UInt64              MeterStart,
-                             Reservation_Id      ReservationId      = null,
+                             Reservation_Id?     ReservationId      = null,
 
                              DateTime?           Timestamp          = null,
                              CancellationToken?  CancellationToken  = null,
@@ -1113,13 +1113,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         {
 
             #region Initial checks
-
-            if (ConnectorId == null)
-                throw new ArgumentNullException(nameof(ConnectorId),  "The given connector identification must not be null!");
-
-            if (IdTag == null)
-                throw new ArgumentNullException(nameof(IdTag),        "The given identification tag info must not be null!");
-
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
@@ -1330,10 +1323,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             #region Initial checks
 
-            if (ConnectorId == null)
-                throw new ArgumentNullException(nameof(ConnectorId),  "The given connector identification must not be null!");
-
-
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
 
@@ -1529,7 +1518,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public async Task<HTTPResponse<MeterValuesResponse>>
 
             MeterValues(Connector_Id             ConnectorId,
-                        Transaction_Id           TransactionId      = null,
+                        Transaction_Id?          TransactionId      = null,
                         IEnumerable<MeterValue>  MeterValues        = null,
 
                         DateTime?                Timestamp          = null,
@@ -1540,10 +1529,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         {
 
             #region Initial checks
-
-            if (ConnectorId == null)
-                throw new ArgumentNullException(nameof(ConnectorId),  "The given connector identification must not be null!");
-
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
@@ -1733,7 +1718,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             StopTransaction(Transaction_Id           TransactionId,
                             DateTime                 TransactionTimestamp,
                             UInt64                   MeterStop,
-                            IdToken                  IdTag              = null,
+                            IdToken?                 IdTag              = null,
                             Reasons?                 Reason             = null,
                             IEnumerable<MeterValue>  TransactionData    = null,
 

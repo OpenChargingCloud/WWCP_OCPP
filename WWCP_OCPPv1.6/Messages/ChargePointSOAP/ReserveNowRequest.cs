@@ -63,7 +63,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An optional parent idTag.
         /// </summary>
-        public IdToken         ParentIdTag      { get; }
+        public IdToken?        ParentIdTag      { get; }
 
         #endregion
 
@@ -81,7 +81,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                  Reservation_Id  ReservationId,
                                  DateTime        ExpiryDate,
                                  IdToken         IdTag,
-                                 IdToken         ParentIdTag = null)
+                                 IdToken?        ParentIdTag = null)
         {
 
             #region Initial checks
@@ -101,7 +101,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             this.ReservationId  = ReservationId;
             this.ExpiryDate     = ExpiryDate;
             this.IdTag          = IdTag;
-            this.ParentIdTag    = ParentIdTag;
+            this.ParentIdTag    = ParentIdTag ?? new IdToken?();
 
         }
 
@@ -198,20 +198,20 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 ReserveNowRequest = new ReserveNowRequest(
 
-                                        ReserveNowRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CP + "connectorId",
-                                                                               Connector_Id.Parse),
+                                        ReserveNowRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "connectorId",
+                                                                                Connector_Id.Parse),
 
-                                        ReserveNowRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CP + "reservationId",
-                                                                               Reservation_Id.Parse),
+                                        ReserveNowRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "reservationId",
+                                                                                Reservation_Id.Parse),
 
-                                        ReserveNowRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CP + "expiryDate",
-                                                                               DateTime.Parse),
+                                        ReserveNowRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "expiryDate",
+                                                                                DateTime.Parse),
 
-                                        ReserveNowRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CP + "idTag",
-                                                                               IdToken.Parse),
+                                        ReserveNowRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "idTag",
+                                                                                IdToken.Parse),
 
-                                        ReserveNowRequestXML.MapValueOrDefault(OCPPNS.OCPPv1_6_CP + "parentIdTag",
-                                                                               IdToken.Parse)
+                                        ReserveNowRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "parentIdTag",
+                                                                                IdToken.Parse)
 
                                     );
 
@@ -280,8 +280,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                    new XElement(OCPPNS.OCPPv1_6_CP + "expiryDate",         ExpiryDate.   ToIso8601()),
                    new XElement(OCPPNS.OCPPv1_6_CP + "idTag",              IdTag.        ToString()),
 
-                   ParentIdTag != null
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "parentIdTag",  ParentIdTag.  ToString())
+                   ParentIdTag.HasValue
+                       ? new XElement(OCPPNS.OCPPv1_6_CP + "parentIdTag",  ParentIdTag.Value.ToString())
                        : null,
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "reservationId",      ReservationId.ToString())
@@ -378,8 +378,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                    ExpiryDate.   Equals(ReserveNowRequest.ExpiryDate)    &&
                    IdTag.        Equals(ReserveNowRequest.IdTag)         &&
 
-                   ((ParentIdTag == null && ReserveNowRequest.ParentIdTag == null) ||
-                    (ParentIdTag != null && ReserveNowRequest.ParentIdTag != null && ParentIdTag.Equals(ReserveNowRequest.ParentIdTag)));
+                   ((!ParentIdTag.HasValue && !ReserveNowRequest.ParentIdTag.HasValue) ||
+                     (ParentIdTag.HasValue &&  ReserveNowRequest.ParentIdTag.HasValue && ParentIdTag.Equals(ReserveNowRequest.ParentIdTag)));
 
         }
 
@@ -403,7 +403,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                        ExpiryDate   .GetHashCode() * 17 ^
                        IdTag        .GetHashCode() * 11 ^
 
-                       (ParentIdTag != null
+                       (ParentIdTag.HasValue
                             ? ParentIdTag.GetHashCode()
                             : 0);
 
@@ -422,7 +422,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             => String.Concat(ConnectorId, " / ",
                              ExpiryDate.ToIso8601(), " / ",
                              IdTag,
-                             ParentIdTag != null ? "/" + ParentIdTag : "",
+                             ParentIdTag.HasValue ? "/" + ParentIdTag.Value : "",
                              " (", ReservationId, ")");
 
         #endregion

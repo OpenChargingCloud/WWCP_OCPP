@@ -19,33 +19,45 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// Defines the charging-profile-kind-type-values.
+    /// Defines the message-trigger-values.
     /// </summary>
-    public enum ChargingProfileKindTypes
+    public enum MessageTriggers
     {
 
         /// <summary>
-        /// Unknown charging profile kind type.
+        /// Unknown message-trigger status.
         /// </summary>
         Unknown,
 
         /// <summary>
-        /// Schedule periods are relative to a fixed point in
-        /// time defined in the schedule.
+        /// To trigger a BootNotification request.
         /// </summary>
-        Absolute,
+        BootNotification,
 
         /// <summary>
-        /// The schedule restarts periodically at the first schedule period.
+        /// To trigger a DiagnosticsStatusNotification request.
         /// </summary>
-        Recurring,
+        DiagnosticsStatusNotification,
 
         /// <summary>
-        /// Schedule periods are relative to a situationspecific start
-        /// point (such as the start of a session) that is determined
-        /// by the charge point.
+        /// To trigger a FirmwareStatusNotification request.
         /// </summary>
-        Relative
+        FirmwareStatusNotification,
+
+        /// <summary>
+        /// To trigger a Heartbeat request.
+        /// </summary>
+        Heartbeat,
+
+        /// <summary>
+        /// To trigger a MeterValues request.
+        /// </summary>
+        MeterValues,
+
+        /// <summary>
+        /// To trigger a StatusNotification request.
+        /// </summary>
+        StatusNotification
 
     }
 

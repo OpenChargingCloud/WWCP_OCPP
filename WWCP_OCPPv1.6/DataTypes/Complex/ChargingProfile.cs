@@ -38,54 +38,54 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// The unique identification of this profile.
         /// </summary>
-        public ChargingProfile_Id        ChargingProfileId       { get; }
+        public ChargingProfile_Id       ChargingProfileId       { get; }
 
 
         /// <summary>
         /// Value determining level in hierarchy stack of profiles. Higher values
         /// have precedence over lower values. Lowest level is 0.
         /// </summary>
-        public UInt32                    StackLevel               { get; }
+        public UInt32                   StackLevel               { get; }
 
         /// <summary>
         /// Defines the purpose of the schedule transferred by this message.
         /// </summary>
-        public ChargingProfilePurposes   ChargingProfilePurpose   { get; }
+        public ChargingProfilePurposes  ChargingProfilePurpose   { get; }
 
         /// <summary>
         /// Indicates the kind of schedule.
         /// </summary>
-        public ChargingProfileKindTypes  ChargingProfileKind      { get; }
+        public ChargingProfileKinds     ChargingProfileKind      { get; }
 
         /// <summary>
         /// Contains limits for the available power or current over time.
         /// </summary>
-        public ChargingSchedule          ChargingSchedule         { get; }
+        public ChargingSchedule         ChargingSchedule         { get; }
 
         /// <summary>
         /// When the ChargingProfilePurpose is set to TxProfile, this value MAY
         /// be used to match the profile to a specific charging transaction.
         /// </summary>
-        public Transaction_Id            TransactionId            { get; }
+        public Transaction_Id?          TransactionId            { get; }
 
         /// <summary>
         /// An optional indication of the start point of a recurrence.
         /// </summary>
-        public RecurrencyKindTypes?      RecurrencyKind           { get; }
+        public RecurrencyKinds?         RecurrencyKind           { get; }
 
         /// <summary>
         /// An optional timestamp at which the profile starts to be valid. If absent,
         /// the profile is valid as soon as it is received by the charge point. Not
         /// allowed to be used when ChargingProfilePurpose is TxProfile.
         /// </summary>
-        public DateTime?                 ValidFrom                { get; }
+        public DateTime?                ValidFrom                { get; }
 
         /// <summary>
         /// An optional timestamp at which the profile stops to be valid. If absent,
         /// the profile is valid until it is replaced by another profile. Not allowed
         /// to be used when ChargingProfilePurpose is TxProfile.
         /// </summary>
-        public DateTime?                 ValidTo                  { get; }
+        public DateTime?                ValidTo                  { get; }
 
         #endregion
 
@@ -104,23 +104,20 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="RecurrencyKind">An optional indication of the start point of a recurrence.</param>
         /// <param name="ValidFrom">An optional timestamp at which the profile starts to be valid. If absent, the profile is valid as soon as it is received by the charge point. Not allowed to be used when ChargingProfilePurpose is TxProfile.</param>
         /// <param name="ValidTo">An optional timestamp at which the profile stops to be valid. If absent, the profile is valid until it is replaced by another profile. Not allowed to be used when ChargingProfilePurpose is TxProfile.</param>
-        public ChargingProfile(ChargingProfile_Id        ChargingProfileId,
-                               UInt32                    StackLevel,
-                               ChargingProfilePurposes   ChargingProfilePurpose,
-                               ChargingProfileKindTypes  ChargingProfileKind,
-                               ChargingSchedule          ChargingSchedule,
+        public ChargingProfile(ChargingProfile_Id       ChargingProfileId,
+                               UInt32                   StackLevel,
+                               ChargingProfilePurposes  ChargingProfilePurpose,
+                               ChargingProfileKinds     ChargingProfileKind,
+                               ChargingSchedule         ChargingSchedule,
 
-                               Transaction_Id            TransactionId   = null,
-                               RecurrencyKindTypes?      RecurrencyKind  = null,
-                               DateTime?                 ValidFrom       = null,
-                               DateTime?                 ValidTo         = null)
+                               Transaction_Id?          TransactionId   = null,
+                               RecurrencyKinds?         RecurrencyKind  = null,
+                               DateTime?                ValidFrom       = null,
+                               DateTime?                ValidTo         = null)
 
         {
 
             #region Initial checks
-
-            if (ChargingProfileId == null)
-                throw new ArgumentNullException(nameof(ChargingProfileId),  "The given charging profile identification must not be null!");
 
             if (ChargingSchedule  == null)
                 throw new ArgumentNullException(nameof(ChargingSchedule),   "The given charging schedule must not be null!");
@@ -133,10 +130,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             this.ChargingProfileKind     = ChargingProfileKind;
             this.ChargingSchedule        = ChargingSchedule;
 
-            this.TransactionId           = TransactionId;
-            this.RecurrencyKind          = RecurrencyKind;
-            this.ValidFrom               = ValidFrom;
-            this.ValidTo                 = ValidTo;
+            this.TransactionId           = TransactionId  ?? new Transaction_Id?();
+            this.RecurrencyKind          = RecurrencyKind ?? new RecurrencyKinds?();
+            this.ValidFrom               = ValidFrom      ?? new DateTime?();
+            this.ValidTo                 = ValidTo        ?? new DateTime?();
 
         }
 
@@ -263,16 +260,16 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                                                              XML_IO.AsChargingProfilePurpose),
 
                                       ChargingProfileXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "chargingProfileKind",
-                                                                             XML_IO.AsChargingProfileKindType),
+                                                                             XML_IO.AsChargingProfileKind),
 
                                       ChargingProfileXML.MapElementOrFail   (OCPPNS.OCPPv1_6_CP + "chargingSchedule",
                                                                              ChargingSchedule.Parse),
 
-                                      ChargingProfileXML.MapValueOrDefault  (OCPPNS.OCPPv1_6_CP + "transactionId",
+                                      ChargingProfileXML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "transactionId",
                                                                              Transaction_Id.Parse),
 
                                       ChargingProfileXML.MapEnumValuesOrNull(OCPPNS.OCPPv1_6_CP + "recurrencyKind",
-                                                                             XML_IO.AsRecurrencyKindType),
+                                                                             XML_IO.AsRecurrencyKind),
 
                                       ChargingProfileXML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "validFrom",
                                                                              DateTime.Parse),
@@ -463,8 +460,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                    ChargingProfileKind.   Equals(ChargingProfile.ChargingProfileKind)    &&
                    ChargingSchedule.      Equals(ChargingProfile.ChargingSchedule)       &&
 
-                   ((TransactionId == null && ChargingProfile.TransactionId == null) ||
-                    (TransactionId != null && ChargingProfile.TransactionId != null && TransactionId.Equals(ChargingProfile.TransactionId))) &&
+                   ((!TransactionId. HasValue && !ChargingProfile.TransactionId. HasValue) ||
+                     (TransactionId. HasValue &&  ChargingProfile.TransactionId. HasValue && TransactionId. Value.Equals(ChargingProfile.TransactionId. Value))) &&
 
                    ((!RecurrencyKind.HasValue && !ChargingProfile.RecurrencyKind.HasValue) ||
                      (RecurrencyKind.HasValue &&  ChargingProfile.RecurrencyKind.HasValue && RecurrencyKind.Value.Equals(ChargingProfile.RecurrencyKind.Value))) &&

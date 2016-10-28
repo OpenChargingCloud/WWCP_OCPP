@@ -27,15 +27,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP reservation identification.
     /// </summary>
-    public class Reservation_Id
+    public struct Reservation_Id
     {
 
-        #region Properties
+        #region Data
 
-        /// <summary>
-        /// The value of the reservation identification.
-        /// </summary>
-        public UInt64 Value { get; }
+        private readonly UInt64 _Value;
 
         #endregion
 
@@ -47,7 +44,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="Token">An integer.</param>
         private Reservation_Id(UInt64 Token)
         {
-            this.Value = Token;
+            this._Value = Token;
         }
 
         #endregion
@@ -89,7 +86,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 return true;
             }
 
-            ReservationId = null;
+            ReservationId = default(Reservation_Id);
             return false;
 
         }
@@ -118,7 +115,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// Clone this reservation identification.
         /// </summary>
         public Reservation_Id Clone
-            => new Reservation_Id(Value);
+            => new Reservation_Id(_Value);
 
         #endregion
 
@@ -249,17 +246,16 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
             // Check if the given object is a reservation identification.
-            var Reservation_Id = Object as Reservation_Id;
-            if ((Object) Reservation_Id == null)
+            if (!(Object is Reservation_Id))
                 throw new ArgumentException("The given object is not a reservation identification!", nameof(Object));
 
-            return CompareTo(Reservation_Id);
+            return CompareTo((Reservation_Id) Object);
 
         }
 
         #endregion
 
-        #region CompareTo(Reservation_Id)
+        #region CompareTo(ReservationId)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -271,7 +267,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if ((Object) ReservationId == null)
                 throw new ArgumentNullException(nameof(ReservationId),  "The given reservation identification must not be null!");
 
-            return Value.CompareTo(ReservationId.Value);
+            return _Value.CompareTo(ReservationId._Value);
 
         }
 
@@ -295,11 +291,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 return false;
 
             // Check if the given object is a reservation identification.
-            var Reservation_Id = Object as Reservation_Id;
-            if ((Object) Reservation_Id == null)
+            if (!(Object is Reservation_Id))
                 return false;
 
-            return this.Equals(Reservation_Id);
+            return this.Equals((Reservation_Id) Object);
 
         }
 
@@ -318,7 +313,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if ((Object) ReservationId == null)
                 return false;
 
-            return Value.Equals(ReservationId.Value);
+            return _Value.Equals(ReservationId._Value);
 
         }
 
@@ -333,7 +328,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => Value.GetHashCode();
+            => _Value.GetHashCode();
 
         #endregion
 
@@ -343,7 +338,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-            => Value.ToString();
+            => _Value.ToString();
 
         #endregion
 

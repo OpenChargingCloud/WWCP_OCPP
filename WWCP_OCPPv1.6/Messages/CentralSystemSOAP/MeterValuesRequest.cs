@@ -47,7 +47,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The charging transaction to which the given meter value samples are related to.
         /// </summary>
-        public Transaction_Id           TransactionId    { get; }
+        public Transaction_Id?          TransactionId    { get; }
 
         /// <summary>
         /// The sampled meter values with timestamps.
@@ -65,16 +65,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="TransactionId">The charging transaction to which the given meter value samples are related to.</param>
         /// <param name="MeterValues">The sampled meter values with timestamps.</param>
         public MeterValuesRequest(Connector_Id             ConnectorId,
-                                  Transaction_Id           TransactionId  = null,
+                                  Transaction_Id?          TransactionId  = null,
                                   IEnumerable<MeterValue>  MeterValues    = null)
         {
-
-            #region Initial checks
-
-            if (ConnectorId == null)
-                throw new ArgumentNullException(nameof(ConnectorId),    "The given connector identification must not be null!");
-
-            #endregion
 
             this.ConnectorId    = ConnectorId;
             this.TransactionId  = TransactionId;
@@ -204,14 +197,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 MeterValuesRequest = new MeterValuesRequest(
 
-                                         MeterValuesRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CS + "connectorId",
-                                                                                 Connector_Id.Parse),
+                                         MeterValuesRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "connectorId",
+                                                                                  Connector_Id.Parse),
 
-                                         MeterValuesRequestXML.MapValueOrDefault(OCPPNS.OCPPv1_6_CS + "transactionId",
-                                                                                 Transaction_Id.Parse),
+                                         MeterValuesRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "transactionId",
+                                                                                  Transaction_Id.Parse),
 
-                                         MeterValuesRequestXML.MapElementsOrFail(OCPPNS.OCPPv1_6_CS + "errorCode",
-                                                                                 MeterValue.Parse)
+                                         MeterValuesRequestXML.MapElementsOrFail (OCPPNS.OCPPv1_6_CS + "errorCode",
+                                                                                  MeterValue.Parse)
 
                                      );
 
@@ -278,7 +271,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                    new XElement(OCPPNS.OCPPv1_6_CS + "connectorId",          ConnectorId),
 
-                   TransactionId != null
+                   TransactionId.HasValue
                        ? new XElement(OCPPNS.OCPPv1_6_CS + "transactionId",  TransactionId.Value)
                        : null,
 
@@ -375,8 +368,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             return ConnectorId.Equals(MeterValuesRequest.ConnectorId) &&
 
-                   ((TransactionId == null && MeterValuesRequest.TransactionId == null) ||
-                    (TransactionId != null && MeterValuesRequest.TransactionId != null && TransactionId.Equals(MeterValuesRequest.TransactionId))) &&
+                   ((!TransactionId.HasValue && !MeterValuesRequest.TransactionId.HasValue) ||
+                     (TransactionId.HasValue &&  MeterValuesRequest.TransactionId.HasValue && TransactionId.Value.Equals(MeterValuesRequest.TransactionId.Value))) &&
 
                    MeterValues.Count().Equals(MeterValuesRequest.MeterValues.Count());
 
@@ -399,7 +392,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 return ConnectorId.GetHashCode() * 17 ^
 
-                       (TransactionId != null
+                       (TransactionId.HasValue
                             ? TransactionId.GetHashCode()
                             : 0) * 11 ^
 
@@ -419,8 +412,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             => String.Concat(ConnectorId,
 
-                             TransactionId != null
-                                 ? " / " + TransactionId
+                             TransactionId.HasValue
+                                 ? " / " + TransactionId.Value
                                  : "",
 
                              ", ", MeterValues.Count(), " meter value(s)");

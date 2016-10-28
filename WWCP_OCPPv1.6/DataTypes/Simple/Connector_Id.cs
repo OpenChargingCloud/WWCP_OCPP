@@ -27,15 +27,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP connector identification.
     /// </summary>
-    public class Connector_Id
+    public struct Connector_Id
     {
 
-        #region Properties
+        #region Data
 
-        /// <summary>
-        /// The value of the connector identification.
-        /// </summary>
-        public UInt64 Value { get; }
+        private readonly UInt64 _Value;
 
         #endregion
 
@@ -47,7 +44,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="Token">An integer.</param>
         private Connector_Id(UInt64 Token)
         {
-            this.Value = Token;
+            this._Value = Token;
         }
 
         #endregion
@@ -89,7 +86,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 return true;
             }
 
-            ConnectorId = null;
+            ConnectorId = default(Connector_Id);
             return false;
 
         }
@@ -118,7 +115,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// Clone this connector identification.
         /// </summary>
         public Connector_Id Clone
-            => new Connector_Id(Value);
+            => new Connector_Id(_Value);
 
         #endregion
 
@@ -249,11 +246,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
             // Check if the given object is a connector identification.
-            var Connector_Id = Object as Connector_Id;
-            if ((Object) Connector_Id == null)
+            if (!(Object is Connector_Id))
                 throw new ArgumentException("The given object is not a connector identification!", nameof(Object));
 
-            return CompareTo(Connector_Id);
+            return CompareTo((Connector_Id) Object);
 
         }
 
@@ -271,7 +267,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if ((Object) ConnectorId == null)
                 throw new ArgumentNullException(nameof(ConnectorId),  "The given connector identification must not be null!");
 
-            return Value.CompareTo(ConnectorId.Value);
+            return _Value.CompareTo(ConnectorId._Value);
 
         }
 
@@ -295,11 +291,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 return false;
 
             // Check if the given object is a connector identification.
-            var Connector_Id = Object as Connector_Id;
-            if ((Object) Connector_Id == null)
+            if (!(Object is Connector_Id))
                 return false;
 
-            return this.Equals(Connector_Id);
+            return this.Equals((Connector_Id) Object);
 
         }
 
@@ -318,7 +313,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if ((Object) ConnectorId == null)
                 return false;
 
-            return Value.Equals(ConnectorId.Value);
+            return _Value.Equals(ConnectorId._Value);
 
         }
 
@@ -333,7 +328,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => Value.GetHashCode();
+            => _Value.GetHashCode();
 
         #endregion
 
@@ -343,7 +338,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-            => Value.ToString();
+            => _Value.ToString();
 
         #endregion
 

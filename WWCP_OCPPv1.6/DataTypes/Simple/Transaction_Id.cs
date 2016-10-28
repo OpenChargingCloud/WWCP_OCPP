@@ -27,15 +27,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP transaction identification.
     /// </summary>
-    public class Transaction_Id
+    public struct Transaction_Id
     {
 
-        #region Properties
+        #region Data
 
-        /// <summary>
-        /// The value of the transaction identification.
-        /// </summary>
-        public UInt64 Value { get; }
+        private readonly UInt64 _Value;
 
         #endregion
 
@@ -47,7 +44,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="Token">An integer.</param>
         private Transaction_Id(UInt64 Token)
         {
-            this.Value = Token;
+            this._Value = Token;
         }
 
         #endregion
@@ -89,7 +86,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 return true;
             }
 
-            TransactionId = null;
+            TransactionId = default(Transaction_Id);
             return false;
 
         }
@@ -118,7 +115,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// Clone this transaction identification.
         /// </summary>
         public Transaction_Id Clone
-            => new Transaction_Id(Value);
+            => new Transaction_Id(_Value);
 
         #endregion
 
@@ -249,11 +246,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
             // Check if the given object is a transaction identification.
-            var Transaction_Id = Object as Transaction_Id;
-            if ((Object) Transaction_Id == null)
+            if (!(Object is Transaction_Id))
                 throw new ArgumentException("The given object is not a transaction identification!", nameof(Object));
 
-            return CompareTo(Transaction_Id);
+            return CompareTo((Transaction_Id) Object);
 
         }
 
@@ -271,7 +267,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if ((Object) TransactionId == null)
                 throw new ArgumentNullException(nameof(TransactionId),  "The given transaction identification must not be null!");
 
-            return Value.CompareTo(TransactionId.Value);
+            return _Value.CompareTo(TransactionId._Value);
 
         }
 
@@ -295,11 +291,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 return false;
 
             // Check if the given object is a transaction identification.
-            var Transaction_Id = Object as Transaction_Id;
-            if ((Object) Transaction_Id == null)
+            if (!(Object is Transaction_Id))
                 return false;
 
-            return this.Equals(Transaction_Id);
+            return this.Equals((Transaction_Id) Object);
 
         }
 
@@ -318,7 +313,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if ((Object) TransactionId == null)
                 return false;
 
-            return Value.Equals(TransactionId.Value);
+            return _Value.Equals(TransactionId._Value);
 
         }
 
@@ -333,7 +328,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => Value.GetHashCode();
+            => _Value.GetHashCode();
 
         #endregion
 
@@ -343,7 +338,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-            => Value.ToString();
+            => _Value.ToString();
 
         #endregion
 

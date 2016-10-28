@@ -27,15 +27,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP charging profile identification.
     /// </summary>
-    public class ChargingProfile_Id
+    public struct ChargingProfile_Id
     {
 
-        #region Properties
+        #region Data
 
-        /// <summary>
-        /// The value of the charging profile identification.
-        /// </summary>
-        public UInt64 Value { get; }
+        private readonly UInt64 _Value;
 
         #endregion
 
@@ -47,7 +44,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="Token">An integer.</param>
         private ChargingProfile_Id(UInt64 Token)
         {
-            this.Value = Token;
+            this._Value = Token;
         }
 
         #endregion
@@ -73,38 +70,38 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region TryParse(Text,    out ReservationId)
+        #region TryParse(Text,    out ChargingProfileId)
 
         /// <summary>
         /// Parse the given string as an OCPP charging profile identification.
         /// </summary>
-        public static Boolean TryParse(String Text, out ChargingProfile_Id ReservationId)
+        public static Boolean TryParse(String Text, out ChargingProfile_Id ChargingProfileId)
         {
 
             UInt64 _Integer;
 
             if (UInt64.TryParse(Text, out _Integer))
             {
-                ReservationId = new ChargingProfile_Id(_Integer);
+                ChargingProfileId = new ChargingProfile_Id(_Integer);
                 return true;
             }
 
-            ReservationId = null;
+            ChargingProfileId = default(ChargingProfile_Id);
             return false;
 
         }
 
         #endregion
 
-        #region TryParse(Integer, out ReservationId)
+        #region TryParse(Integer, out ChargingProfileId)
 
         /// <summary>
         /// Parse the given integer as an OCPP charging profile identification.
         /// </summary>
-        public static Boolean TryParse(UInt64 Integer, out ChargingProfile_Id ReservationId)
+        public static Boolean TryParse(UInt64 Integer, out ChargingProfile_Id ChargingProfileId)
         {
 
-            ReservationId = new ChargingProfile_Id(Integer);
+            ChargingProfileId = new ChargingProfile_Id(Integer);
 
             return true;
 
@@ -118,123 +115,123 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// Clone this charging profile identification.
         /// </summary>
         public ChargingProfile_Id Clone
-            => new ChargingProfile_Id(Value);
+            => new ChargingProfile_Id(_Value);
 
         #endregion
 
 
         #region Operator overloading
 
-        #region Operator == (ReservationId1, ReservationId2)
+        #region Operator == (ChargingProfileId1, ChargingProfileId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ReservationId1">An charging profile identification.</param>
-        /// <param name="ReservationId2">Another charging profile identification.</param>
+        /// <param name="ChargingProfileId1">An charging profile identification.</param>
+        /// <param name="ChargingProfileId2">Another charging profile identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingProfile_Id ReservationId1, ChargingProfile_Id ReservationId2)
+        public static Boolean operator == (ChargingProfile_Id ChargingProfileId1, ChargingProfile_Id ChargingProfileId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(ReservationId1, ReservationId2))
+            if (Object.ReferenceEquals(ChargingProfileId1, ChargingProfileId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ReservationId1 == null) || ((Object) ReservationId2 == null))
+            if (((Object) ChargingProfileId1 == null) || ((Object) ChargingProfileId2 == null))
                 return false;
 
-            if ((Object) ReservationId1 == null)
-                throw new ArgumentNullException(nameof(ReservationId1),  "The given charging profile identification must not be null!");
+            if ((Object) ChargingProfileId1 == null)
+                throw new ArgumentNullException(nameof(ChargingProfileId1),  "The given charging profile identification must not be null!");
 
-            return ReservationId1.Equals(ReservationId2);
+            return ChargingProfileId1.Equals(ChargingProfileId2);
 
         }
 
         #endregion
 
-        #region Operator != (ReservationId1, ReservationId2)
+        #region Operator != (ChargingProfileId1, ChargingProfileId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ReservationId1">An charging profile identification.</param>
-        /// <param name="ReservationId2">Another charging profile identification.</param>
+        /// <param name="ChargingProfileId1">An charging profile identification.</param>
+        /// <param name="ChargingProfileId2">Another charging profile identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingProfile_Id ReservationId1, ChargingProfile_Id ReservationId2)
-            => !(ReservationId1 == ReservationId2);
+        public static Boolean operator != (ChargingProfile_Id ChargingProfileId1, ChargingProfile_Id ChargingProfileId2)
+            => !(ChargingProfileId1 == ChargingProfileId2);
 
         #endregion
 
-        #region Operator <  (ReservationId1, ReservationId2)
+        #region Operator <  (ChargingProfileId1, ChargingProfileId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ReservationId1">An charging profile identification.</param>
-        /// <param name="ReservationId2">Another charging profile identification.</param>
+        /// <param name="ChargingProfileId1">An charging profile identification.</param>
+        /// <param name="ChargingProfileId2">Another charging profile identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingProfile_Id ReservationId1, ChargingProfile_Id ReservationId2)
+        public static Boolean operator < (ChargingProfile_Id ChargingProfileId1, ChargingProfile_Id ChargingProfileId2)
         {
 
-            if ((Object) ReservationId1 == null)
-                throw new ArgumentNullException(nameof(ReservationId1),  "The given charging profile identification must not be null!");
+            if ((Object) ChargingProfileId1 == null)
+                throw new ArgumentNullException(nameof(ChargingProfileId1),  "The given charging profile identification must not be null!");
 
-            return ReservationId1.CompareTo(ReservationId2) < 0;
+            return ChargingProfileId1.CompareTo(ChargingProfileId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (ReservationId1, ReservationId2)
+        #region Operator <= (ChargingProfileId1, ChargingProfileId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ReservationId1">An charging profile identification.</param>
-        /// <param name="ReservationId2">Another charging profile identification.</param>
+        /// <param name="ChargingProfileId1">An charging profile identification.</param>
+        /// <param name="ChargingProfileId2">Another charging profile identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingProfile_Id ReservationId1, ChargingProfile_Id ReservationId2)
-            => !(ReservationId1 > ReservationId2);
+        public static Boolean operator <= (ChargingProfile_Id ChargingProfileId1, ChargingProfile_Id ChargingProfileId2)
+            => !(ChargingProfileId1 > ChargingProfileId2);
 
         #endregion
 
-        #region Operator >  (ReservationId1, ReservationId2)
+        #region Operator >  (ChargingProfileId1, ChargingProfileId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ReservationId1">An charging profile identification.</param>
-        /// <param name="ReservationId2">Another charging profile identification.</param>
+        /// <param name="ChargingProfileId1">An charging profile identification.</param>
+        /// <param name="ChargingProfileId2">Another charging profile identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingProfile_Id ReservationId1, ChargingProfile_Id ReservationId2)
+        public static Boolean operator > (ChargingProfile_Id ChargingProfileId1, ChargingProfile_Id ChargingProfileId2)
         {
 
-            if ((Object) ReservationId1 == null)
-                throw new ArgumentNullException(nameof(ReservationId1),  "The given charging profile identification must not be null!");
+            if ((Object) ChargingProfileId1 == null)
+                throw new ArgumentNullException(nameof(ChargingProfileId1),  "The given charging profile identification must not be null!");
 
-            return ReservationId1.CompareTo(ReservationId2) > 0;
+            return ChargingProfileId1.CompareTo(ChargingProfileId2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (ReservationId1, ReservationId2)
+        #region Operator >= (ChargingProfileId1, ChargingProfileId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ReservationId1">An charging profile identification.</param>
-        /// <param name="ReservationId2">Another charging profile identification.</param>
+        /// <param name="ChargingProfileId1">An charging profile identification.</param>
+        /// <param name="ChargingProfileId2">Another charging profile identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingProfile_Id ReservationId1, ChargingProfile_Id ReservationId2)
-            => !(ReservationId1 < ReservationId2);
+        public static Boolean operator >= (ChargingProfile_Id ChargingProfileId1, ChargingProfile_Id ChargingProfileId2)
+            => !(ChargingProfileId1 < ChargingProfileId2);
 
         #endregion
 
         #endregion
 
-        #region IComparable<ReservationId> Members
+        #region IComparable<ChargingProfileId> Members
 
         #region CompareTo(Object)
 
@@ -249,11 +246,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
             // Check if the given object is a charging profile identification.
-            var ChargingProfile_Id = Object as ChargingProfile_Id;
-            if ((Object) ChargingProfile_Id == null)
+            if (!(Object is ChargingProfile_Id))
                 throw new ArgumentException("The given object is not a charging profile identification!", nameof(Object));
 
-            return CompareTo(ChargingProfile_Id);
+            return CompareTo((ChargingProfile_Id) Object);
 
         }
 
@@ -264,14 +260,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ReservationId">An object to compare with.</param>
-        public Int32 CompareTo(ChargingProfile_Id ReservationId)
+        /// <param name="ChargingProfileId">An object to compare with.</param>
+        public Int32 CompareTo(ChargingProfile_Id ChargingProfileId)
         {
 
-            if ((Object) ReservationId == null)
-                throw new ArgumentNullException(nameof(ReservationId),  "The given charging profile identification must not be null!");
+            if ((Object) ChargingProfileId == null)
+                throw new ArgumentNullException(nameof(ChargingProfileId),  "The given charging profile identification must not be null!");
 
-            return Value.CompareTo(ReservationId.Value);
+            return _Value.CompareTo(ChargingProfileId._Value);
 
         }
 
@@ -279,7 +275,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region IEquatable<ReservationId> Members
+        #region IEquatable<ChargingProfileId> Members
 
         #region Equals(Object)
 
@@ -295,30 +291,29 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 return false;
 
             // Check if the given object is a charging profile identification.
-            var ChargingProfile_Id = Object as ChargingProfile_Id;
-            if ((Object) ChargingProfile_Id == null)
+            if (!(Object is ChargingProfile_Id))
                 return false;
 
-            return this.Equals(ChargingProfile_Id);
+            return this.Equals((ChargingProfile_Id) Object);
 
         }
 
         #endregion
 
-        #region Equals(ReservationId)
+        #region Equals(ChargingProfileId)
 
         /// <summary>
         /// Compares two charging profile identifications for equality.
         /// </summary>
-        /// <param name="ReservationId">An charging profile identification to compare with.</param>
+        /// <param name="ChargingProfileId">An charging profile identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingProfile_Id ReservationId)
+        public Boolean Equals(ChargingProfile_Id ChargingProfileId)
         {
 
-            if ((Object) ReservationId == null)
+            if ((Object) ChargingProfileId == null)
                 return false;
 
-            return Value.Equals(ReservationId.Value);
+            return _Value.Equals(ChargingProfileId._Value);
 
         }
 
@@ -333,7 +328,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => Value.GetHashCode();
+            => _Value.GetHashCode();
 
         #endregion
 
@@ -343,7 +338,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-            => Value.ToString();
+            => _Value.ToString();
 
         #endregion
 

@@ -27,15 +27,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP identification token.
     /// </summary>
-    public class IdToken
+    public struct IdToken
     {
 
-        #region Properties
+        #region Data
 
-        /// <summary>
-        /// The value of the identification token.
-        /// </summary>
-        public String Value { get; }
+        private readonly String _Value;
 
         #endregion
 
@@ -47,7 +44,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="Token">A string.</param>
         private IdToken(String  Token)
         {
-            this.Value = Token;
+            this._Value = Token;
         }
 
         #endregion
@@ -85,7 +82,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// Clone this identification token.
         /// </summary>
         public IdToken Clone
-            => new IdToken(new String(Value.ToCharArray()));
+            => new IdToken(new String(_Value.ToCharArray()));
 
         #endregion
 
@@ -216,11 +213,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
             // Check if the given object is a id token.
-            var IdToken = Object as IdToken;
-            if ((Object) IdToken == null)
+            if (!(Object is IdToken))
                 throw new ArgumentException("The given object is not a IdToken!", nameof(Object));
 
-            return CompareTo(IdToken);
+            return CompareTo((IdToken) Object);
 
         }
 
@@ -238,7 +234,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if ((Object) IdToken == null)
                 throw new ArgumentNullException(nameof(IdToken),  "The given id token must not be null!");
 
-            return String.Compare(Value, IdToken.Value, StringComparison.Ordinal);
+            return String.Compare(_Value, IdToken._Value, StringComparison.Ordinal);
 
         }
 
@@ -262,11 +258,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 return false;
 
             // Check if the given object is a id token.
-            var IdToken = Object as IdToken;
-            if ((Object) IdToken == null)
+            if (!(Object is IdToken))
                 return false;
 
-            return this.Equals(IdToken);
+            return this.Equals((IdToken) Object);
 
         }
 
@@ -285,7 +280,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if ((Object) IdToken == null)
                 return false;
 
-            return Value.Equals(IdToken.Value);
+            return _Value.Equals(IdToken._Value);
 
         }
 
@@ -300,7 +295,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => Value.GetHashCode();
+            => _Value.GetHashCode();
 
         #endregion
 
@@ -310,7 +305,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-            => Value;
+            => _Value;
 
         #endregion
 

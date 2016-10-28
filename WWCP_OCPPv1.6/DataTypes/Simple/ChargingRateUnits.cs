@@ -19,45 +19,25 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// Defines the message-trigger-values.
+    /// Defines the charging-rate-unit-type-values.
     /// </summary>
-    public enum MessageTrigger
+    public enum ChargingRateUnits
     {
 
         /// <summary>
-        /// Unknown message-trigger status.
+        /// Unknown charging-rate-unit type.
         /// </summary>
         Unknown,
 
         /// <summary>
-        /// To trigger a BootNotification request.
+        /// Watts (power).
         /// </summary>
-        BootNotification,
+        Watts,
 
         /// <summary>
-        /// To trigger a DiagnosticsStatusNotification request.
+        /// Amperes (current).
         /// </summary>
-        DiagnosticsStatusNotification,
-
-        /// <summary>
-        /// To trigger a FirmwareStatusNotification request.
-        /// </summary>
-        FirmwareStatusNotification,
-
-        /// <summary>
-        /// To trigger a Heartbeat request.
-        /// </summary>
-        Heartbeat,
-
-        /// <summary>
-        /// To trigger a MeterValues request.
-        /// </summary>
-        MeterValues,
-
-        /// <summary>
-        /// To trigger a StatusNotification request.
-        /// </summary>
-        StatusNotification
+        Amperes
 
     }
 

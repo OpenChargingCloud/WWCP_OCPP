@@ -388,7 +388,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                        Reservation_Id      ReservationId,
                        DateTime            ExpiryDate,
                        IdToken             IdTag,
-                       IdToken             ParentIdTag        = null,
+                       IdToken?            ParentIdTag        = null,
 
                        DateTime?           Timestamp          = null,
                        CancellationToken?  CancellationToken  = null,
@@ -798,7 +798,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             RemoteStartTransaction(ChargeBox_Id        ChargeBoxIdentity,
                                    IdToken             IdTag,
-                                   Connector_Id        ConnectorId        = null,
+                                   Connector_Id?       ConnectorId        = null,
                                    ChargingProfile     ChargingProfile    = null,
 
                                    DateTime?           Timestamp          = null,

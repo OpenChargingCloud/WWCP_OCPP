@@ -156,7 +156,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                    IdToken              IdTag,
                                    DateTime             TransactionTimestamp,
                                    UInt64               MeterStart,
-                                   Reservation_Id       ReservationId,
+                                   Reservation_Id?      ReservationId,
 
                                    TimeSpan?            QueryTimeout = null);
 
@@ -227,7 +227,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                               ChargeBox_Id             ChargeBoxIdentity,
                               Connector_Id             ConnectorId,
-                              Transaction_Id           TransactionId,
+                              Transaction_Id?          TransactionId,
                               IEnumerable<MeterValue>  MeterValues,
 
                               TimeSpan?                QueryTimeout = null);
@@ -264,7 +264,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                   Transaction_Id             TransactionId,
                                   DateTime                   TransactionTimestamp,
                                   UInt64                     MeterStop,
-                                  IdToken                    IdTag,
+                                  IdToken?                   IdTag,
                                   Reasons?                   Reason,
                                   IEnumerable<MeterValue>    TransactionData,
 

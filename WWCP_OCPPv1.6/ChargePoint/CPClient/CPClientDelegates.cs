@@ -150,7 +150,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                             IdToken                     IdTag,
                                                             DateTime                    Timestamp,
                                                             UInt64                      MeterStart,
-                                                            Reservation_Id              ReservationId,
+                                                            Reservation_Id?             ReservationId,
 
                                                             TimeSpan?                   RequestTimeout);
 
@@ -167,7 +167,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                             IdToken                     IdTag,
                                                             DateTime                    Timestamp,
                                                             UInt64                      MeterStart,
-                                                            Reservation_Id              ReservationId,
+                                                            Reservation_Id?             ReservationId,
 
                                                             TimeSpan?                   RequestTimeout,
                                                             StartTransactionResponse    Result,
@@ -231,7 +231,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                        EventTracking_Id         EventTrackingId,
 
                                                        Connector_Id             ConnectorId,
-                                                       Transaction_Id           TransactionId,
+                                                       Transaction_Id?          TransactionId,
                                                        IEnumerable<MeterValue>  MeterValues,
 
                                                        TimeSpan?                RequestTimeout);
@@ -246,7 +246,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                        EventTracking_Id         EventTrackingId,
 
                                                        Connector_Id             ConnectorId,
-                                                       Transaction_Id           TransactionId,
+                                                       Transaction_Id?          TransactionId,
                                                        IEnumerable<MeterValue>  MeterValues,
 
                                                        TimeSpan?                RequestTimeout,
@@ -269,7 +269,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                            Transaction_Id             TransactionId,
                                                            DateTime                   TransactionTimestamp,
                                                            UInt64                     MeterStop,
-                                                           IdToken                    IdTag,
+                                                           IdToken?                   IdTag,
                                                            Reasons?                   Reason,
                                                            IEnumerable<MeterValue>    TransactionData,
 
@@ -287,7 +287,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                            Transaction_Id             TransactionId,
                                                            DateTime                   TransactionTimestamp,
                                                            UInt64                     MeterStop,
-                                                           IdToken                    IdTag,
+                                                           IdToken?                   IdTag,
                                                            Reasons?                   Reason,
                                                            IEnumerable<MeterValue>    TransactionData,
 

@@ -46,7 +46,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                       Reservation_Id        ReservationId,
                                                       DateTime              ExpiryDate,
                                                       IdToken               IdTag,
-                                                      IdToken               ParentIdTag,
+                                                      IdToken?              ParentIdTag,
 
                                                       TimeSpan?             RequestTimeout);
 
@@ -64,7 +64,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                       Reservation_Id        ReservationId,
                                                       DateTime              ExpiryDate,
                                                       IdToken               IdTag,
-                                                      IdToken               ParentIdTag,
+                                                      IdToken?              ParentIdTag,
 
                                                       TimeSpan?             RequestTimeout,
                                                       ReserveNowResponse    Result,
@@ -119,7 +119,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                                   ChargeBox_Id                      ChargeBoxIdentity,
                                                                   IdToken                           IdTag,
-                                                                  Connector_Id                      ConnectorId,
+                                                                  Connector_Id?                     ConnectorId,
                                                                   ChargingProfile                   ChargingProfile,
 
                                                                   TimeSpan?                         RequestTimeout);
@@ -135,7 +135,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                                   ChargeBox_Id                      ChargeBoxIdentity,
                                                                   IdToken                           IdTag,
-                                                                  Connector_Id                      ConnectorId,
+                                                                  Connector_Id?                     ConnectorId,
                                                                   ChargingProfile                   ChargingProfile,
 
                                                                   TimeSpan?                         RequestTimeout,

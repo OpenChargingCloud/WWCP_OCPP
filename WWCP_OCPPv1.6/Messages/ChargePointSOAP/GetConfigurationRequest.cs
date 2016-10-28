@@ -41,6 +41,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         /// <summary>
         /// An enumeration of keys for which the configuration is requested.
+        /// Return all keys if empty.
         /// </summary>
         public IEnumerable<String>  Keys   { get; }
 
@@ -51,18 +52,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Create an OCPP GetConfigurationRequest XML/SOAP request.
         /// </summary>
-        /// <param name="Keys">An enumeration of keys for which the configuration is requested.</param>
-        public GetConfigurationRequest(IEnumerable<String> Keys)
+        /// <param name="Keys">An enumeration of keys for which the configuration is requested. Return all keys if empty.</param>
+        public GetConfigurationRequest(IEnumerable<String> Keys = null)
         {
 
-            #region Initial checks
-
-            if (Keys.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Keys),  "The given enumeration of configuration keys must not be null or empty!");
-
-            #endregion
-
-            this.Keys  = Keys;
+            this.Keys = Keys ?? new String[0];
 
         }
 
@@ -217,7 +211,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "getConfigurationRequest",
 
-                   Keys.Select(key => new XElement(OCPPNS.OCPPv1_6_CP + "key",  key))
+                   Keys.IsNeitherNullNorEmpty()
+                       ? Keys.Select(key => new XElement(OCPPNS.OCPPv1_6_CP + "key",  key))
+                       : null
 
                );
 
@@ -306,7 +302,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if ((Object) GetConfigurationRequest == null)
                 return false;
 
-            return Keys.Count().Equals(GetConfigurationRequest.Keys.Count());
+            return (Keys == null && GetConfigurationRequest.Keys == null) ||
+                   (Keys != null && GetConfigurationRequest.Keys != null && Keys.Count().Equals(GetConfigurationRequest.Keys.Count()));
 
         }
 
@@ -322,7 +319,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => Keys.GetHashCode();
+            => Keys != null
+                   ? Keys.GetHashCode()
+                   : base.GetHashCode();
 
         #endregion
 
@@ -333,7 +332,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => Keys.Count() + " configuration key(s)";
+            => (Keys != null
+                    ? Keys.Count().ToString()
+                    : "0") + " configuration key(s)";
 
         #endregion
 

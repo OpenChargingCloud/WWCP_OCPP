@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP identification tag info.
     /// </summary>
-    public class IdTagInfo
+    public struct IdTagInfo
     {
 
         #region Properties
@@ -49,7 +49,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// An optional the parent-identifier.
         /// </summary>
-        public IdToken              ParentIdTag   { get; }
+        public IdToken?             ParentIdTag   { get; }
 
         #endregion
 
@@ -63,12 +63,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="ParentIdTag">An optional the parent-identifier.</param>
         public IdTagInfo(AuthorizationStatus  Status,
                          DateTime?            ExpiryDate   = null,
-                         IdToken              ParentIdTag  = null)
+                         IdToken?             ParentIdTag  = null)
         {
 
             this.Status       = Status;
-            this.ExpiryDate   = ExpiryDate ?? new DateTime?();
-            this.ParentIdTag  = ParentIdTag;
+            this.ExpiryDate   = ExpiryDate  ?? new DateTime?();
+            this.ParentIdTag  = ParentIdTag ?? new IdToken?();
 
         }
 
@@ -107,7 +107,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if (TryParse(IdTagInfoXML, out _IdTagInfo, OnException))
                 return _IdTagInfo;
 
-            return null;
+            return default(IdTagInfo);
 
         }
 
@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if (TryParse(IdTagInfoText, out _IdTagInfo, OnException))
                 return _IdTagInfo;
 
-            return null;
+            return default(IdTagInfo);
 
         }
 
@@ -172,7 +172,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 OnException?.Invoke(DateTime.Now, IdTagInfoXML, e);
 
-                IdTagInfo = null;
+                IdTagInfo = default(IdTagInfo);
                 return false;
 
             }
@@ -209,7 +209,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 OnException?.Invoke(DateTime.Now, IdTagInfoText, e);
             }
 
-            IdTagInfo = null;
+            IdTagInfo = default(IdTagInfo);
             return false;
 
         }
@@ -232,8 +232,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                        ? new XElement(OCPPNS.OCPPv1_6_CS + "expiryDate",   ExpiryDate.Value.ToIso8601())
                        : null,
 
-                   ParentIdTag != null
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "parentIdTag",  ParentIdTag.Value)
+                   ParentIdTag.HasValue
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "parentIdTag",  ParentIdTag.Value.ToString())
                        : null
 
                );
@@ -302,11 +302,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 return false;
 
             // Check if the given object is a id tag info.
-            var IdTagInfo = Object as IdTagInfo;
-            if ((Object) IdTagInfo == null)
+            if (!(Object is IdTagInfo))
                 return false;
 
-            return this.Equals(IdTagInfo);
+            return this.Equals((IdTagInfo) Object);
 
         }
 
@@ -327,11 +326,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             return Status.Equals(IdTagInfo.Status) &&
 
-                   ((!ExpiryDate.HasValue && !IdTagInfo.ExpiryDate.HasValue) ||
-                     (ExpiryDate.HasValue && IdTagInfo.ExpiryDate.HasValue && ExpiryDate.Value.Equals(IdTagInfo.ExpiryDate.Value))) &&
+                   ((!ExpiryDate.HasValue  && !IdTagInfo.ExpiryDate. HasValue) ||
+                     (ExpiryDate.HasValue  &&  IdTagInfo.ExpiryDate. HasValue && ExpiryDate. Value.Equals(IdTagInfo.ExpiryDate. Value))) &&
 
-                   ((ParentIdTag == null && IdTagInfo.ParentIdTag == null) ||
-                    (ParentIdTag != null && IdTagInfo.ParentIdTag != null && ParentIdTag.Equals(IdTagInfo.ParentIdTag)));
+                   ((!ParentIdTag.HasValue && !IdTagInfo.ParentIdTag.HasValue) ||
+                     (ParentIdTag.HasValue &&  IdTagInfo.ParentIdTag.HasValue && ParentIdTag.Value.Equals(IdTagInfo.ParentIdTag.Value)));
 
         }
 
@@ -350,12 +349,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             unchecked
             {
 
-                return (ParentIdTag != null
-                            ? ParentIdTag.GetHashCode() * 17
+                return (ParentIdTag.HasValue
+                            ? ParentIdTag.GetHashCode() * 7
                             : 0) ^
 
                        (ExpiryDate.HasValue
-                            ? ExpiryDate.GetHashCode()  * 11
+                            ? ExpiryDate. GetHashCode() * 5
                             : 0) ^
 
                        Status.GetHashCode();
@@ -374,7 +373,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             => String.Concat(Status,
 
-                             ParentIdTag != null
+                             ParentIdTag.HasValue
                                  ? " (" + ParentIdTag.Value + ")"
                                  : "",
 

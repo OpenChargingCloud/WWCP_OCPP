@@ -61,7 +61,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// optional because a charge point may terminate charging without the
         /// presence of an idTag, e.g. in case of a reset.
         /// </summary>
-        public IdToken                  IdTag              { get; }
+        public IdToken?                 IdTag              { get; }
 
         /// <summary>
         /// An optional reason why the transaction had been stopped.
@@ -90,7 +90,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public StopTransactionRequest(Transaction_Id           TransactionId,
                                       DateTime                 Timestamp,
                                       UInt64                   MeterStop,
-                                      IdToken                  IdTag            = null,
+                                      IdToken?                 IdTag            = null,
                                       Reasons?                 Reason           = null,
                                       IEnumerable<MeterValue>  TransactionData  = null)
 
@@ -106,8 +106,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             this.TransactionId    = TransactionId;
             this.Timestamp        = Timestamp;
             this.MeterStop        = MeterStop;
-            this.IdTag            = IdTag;
-            this.Reason           = Reason;
+            this.IdTag            = IdTag           ?? new IdToken?();
+            this.Reason           = Reason          ?? new Reasons?();
             this.TransactionData  = TransactionData ?? new MeterValue[0];
 
         }
@@ -240,23 +240,23 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 StopTransactionRequest = new StopTransactionRequest(
 
-                                             StopTransactionRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CS + "transactionId",
-                                                                                         Transaction_Id.Parse),
+                                             StopTransactionRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "transactionId",
+                                                                                          Transaction_Id.Parse),
 
-                                             StopTransactionRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CS + "idTag",
-                                                                                         DateTime.Parse),
+                                             StopTransactionRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "idTag",
+                                                                                          DateTime.Parse),
 
-                                             StopTransactionRequestXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CS + "meterStop",
-                                                                                         UInt64.Parse),
+                                             StopTransactionRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "meterStop",
+                                                                                          UInt64.Parse),
 
-                                             StopTransactionRequestXML.MapValueOrDefault(OCPPNS.OCPPv1_6_CS + "idTag",
-                                                                                         IdToken.Parse),
+                                             StopTransactionRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "idTag",
+                                                                                          IdToken.Parse),
 
-                                             StopTransactionRequestXML.MapEnumValues    (OCPPNS.OCPPv1_6_CS + "reason",
-                                                                                         XML_IO.AsReasons),
+                                             StopTransactionRequestXML.MapEnumValues     (OCPPNS.OCPPv1_6_CS + "reason",
+                                                                                          XML_IO.AsReasons),
 
-                                             StopTransactionRequestXML.MapElements      (OCPPNS.OCPPv1_6_CS + "transactionData",
-                                                                                         MeterValue.Parse)
+                                             StopTransactionRequestXML.MapElements       (OCPPNS.OCPPv1_6_CS + "transactionData",
+                                                                                          MeterValue.Parse)
 
                                          );
 
@@ -323,7 +323,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                    new XElement(OCPPNS.OCPPv1_6_CS + "transactionId",   TransactionId),
 
-                   IdTag != null
+                   IdTag.HasValue
                        ? new XElement(OCPPNS.OCPPv1_6_CS + "idTag",     IdTag.Value)
                        : null,
 
@@ -429,8 +429,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                    Timestamp.    Equals(StopTransactionRequest.Timestamp)     &&
                    MeterStop.    Equals(StopTransactionRequest.MeterStop)     &&
 
-                   ((IdTag == null && StopTransactionRequest.IdTag == null) ||
-                    (IdTag != null && StopTransactionRequest.IdTag != null && IdTag.Equals(StopTransactionRequest.IdTag))) &&
+                   ((!IdTag.HasValue  && !StopTransactionRequest.IdTag. HasValue) ||
+                     (IdTag.HasValue  &&  StopTransactionRequest.IdTag. HasValue && IdTag. Equals(StopTransactionRequest.IdTag))) &&
 
                    ((!Reason.HasValue && !StopTransactionRequest.Reason.HasValue) ||
                      (Reason.HasValue &&  StopTransactionRequest.Reason.HasValue && Reason.Equals(StopTransactionRequest.Reason))) &&
@@ -458,7 +458,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                        Timestamp.    GetHashCode() * 23 ^
                        MeterStop.    GetHashCode() * 19 ^
 
-                       (IdTag != null
+                       (IdTag.HasValue
                             ? IdTag. GetHashCode() * 17
                             : 0) ^
 
@@ -482,7 +482,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             => String.Concat(TransactionId,
 
-                             IdTag != null
+                             IdTag.HasValue
                                  ? " for " + IdTag
                                  : "",
 

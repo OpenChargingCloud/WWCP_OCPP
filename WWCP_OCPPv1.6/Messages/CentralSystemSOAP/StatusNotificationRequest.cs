@@ -96,13 +96,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                          String                 VendorErrorCode  = null)
         {
 
-            #region Initial checks
-
-            if (ConnectorId == null)
-                throw new ArgumentNullException(nameof(ConnectorId),  "The given connector identification must not be null!");
-
-            #endregion
-
             this.ConnectorId      = ConnectorId;
             this.Status           = Status;
             this.ErrorCode        = ErrorCode;
@@ -296,7 +289,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             => new XElement(OCPPNS.OCPPv1_6_CS + "statusNotificationRequest",
 
-                   new XElement(OCPPNS.OCPPv1_6_CS + "connectorId",            ConnectorId.Value),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "connectorId",            ConnectorId.ToString()),
                    new XElement(OCPPNS.OCPPv1_6_CS + "status",                 XML_IO.AsText(Status)),
                    new XElement(OCPPNS.OCPPv1_6_CS + "errorCode",              XML_IO.AsText(ErrorCode)),
 

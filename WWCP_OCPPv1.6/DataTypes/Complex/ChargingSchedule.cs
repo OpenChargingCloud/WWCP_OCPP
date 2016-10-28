@@ -40,7 +40,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// The unit of measure the limit is expressed in.
         /// </summary>
-        public ChargingRateUnitTypes                ChargingRateUnit          { get; }
+        public ChargingRateUnits                ChargingRateUnit          { get; }
 
         /// <summary>
         /// An enumeration of ChargingSchedulePeriods defining maximum power or current
@@ -81,7 +81,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="Duration">The optional duration of the charging schedule in seconds. If the duration is no defined, the last period will continue indefinitely or until end of the transaction in case startSchedule is also undefined.</param>
         /// <param name="StartSchedule">The optional starting point of an absolute schedule. If absent the schedule will be relative to start of charging.</param>
         /// <param name="MinChargingRate">An optional minimum charging rate supported by the electric vehicle. The unit of measure is defined by the chargingRateUnit. This parameter is intended to be used by a local smart charging algorithm to optimize the power allocation for in the case a charging process is inefficient at lower charging rates.</param>
-        public ChargingSchedule(ChargingRateUnitTypes                ChargingRateUnit,
+        public ChargingSchedule(ChargingRateUnits                ChargingRateUnit,
                                 IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods,
                                 UInt32?                              Duration         = null,
                                 DateTime?                            StartSchedule    = null,
@@ -198,7 +198,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 ChargingSchedule = new ChargingSchedule(
 
                                        ChargingScheduleXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "chargingRateUnit",
-                                                                               XML_IO.AsChargingRateUnitType),
+                                                                               XML_IO.AsChargingRateUnit),
 
                                        ChargingScheduleXML.MapElementsOrFail  (OCPPNS.OCPPv1_6_CP + "chargingSchedulePeriod",
                                                                                ChargingSchedulePeriod.Parse),

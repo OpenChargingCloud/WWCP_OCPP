@@ -19,25 +19,33 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// Defines the charging-rate-unit-type-values.
+    /// Defines the charging-profile-kind-type-values.
     /// </summary>
-    public enum ChargingRateUnitTypes
+    public enum ChargingProfileKinds
     {
 
         /// <summary>
-        /// Unknown charging-rate-unit type.
+        /// Unknown charging profile kind type.
         /// </summary>
         Unknown,
 
         /// <summary>
-        /// Watts (power).
+        /// Schedule periods are relative to a fixed point in
+        /// time defined in the schedule.
         /// </summary>
-        Watts,
+        Absolute,
 
         /// <summary>
-        /// Amperes (current).
+        /// The schedule restarts periodically at the first schedule period.
         /// </summary>
-        Amperes
+        Recurring,
+
+        /// <summary>
+        /// Schedule periods are relative to a situationspecific start
+        /// point (such as the start of a session) that is determined
+        /// by the charge point.
+        /// </summary>
+        Relative
 
     }
 

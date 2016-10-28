@@ -669,23 +669,23 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #endregion
 
 
-        #region AsChargingRateUnitType(Text)
+        #region AsChargingRateUnit(Text)
 
-        public static ChargingRateUnitTypes AsChargingRateUnitType(this String Text)
+        public static ChargingRateUnits AsChargingRateUnit(this String Text)
         {
 
             switch (Text)
             {
 
                 case "A":
-                    return ChargingRateUnitTypes.Amperes;
+                    return ChargingRateUnits.Amperes;
 
                 case "W":
-                    return ChargingRateUnitTypes.Watts;
+                    return ChargingRateUnits.Watts;
 
 
                 default:
-                    return ChargingRateUnitTypes.Unknown;
+                    return ChargingRateUnits.Unknown;
 
             }
 
@@ -695,16 +695,16 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsText(this ChargingRateUnitType)
 
-        public static String AsText(this ChargingRateUnitTypes ChargingRateUnitType)
+        public static String AsText(this ChargingRateUnits ChargingRateUnitType)
         {
 
             switch (ChargingRateUnitType)
             {
 
-                case ChargingRateUnitTypes.Amperes:
+                case ChargingRateUnits.Amperes:
                     return "A";
 
-                case ChargingRateUnitTypes.Watts:
+                case ChargingRateUnits.Watts:
                     return "W";
 
 
@@ -944,26 +944,26 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #endregion
 
 
-        #region AsChargingProfileKindType(Text)
+        #region AsChargingProfileKind(Text)
 
-        public static ChargingProfileKindTypes AsChargingProfileKindType(this String Text)
+        public static ChargingProfileKinds AsChargingProfileKind(this String Text)
         {
 
             switch (Text)
             {
 
                 case "Absolute":
-                    return ChargingProfileKindTypes.Absolute;
+                    return ChargingProfileKinds.Absolute;
 
                 case "Recurring":
-                    return ChargingProfileKindTypes.Recurring;
+                    return ChargingProfileKinds.Recurring;
 
                 case "Relative":
-                    return ChargingProfileKindTypes.Relative;
+                    return ChargingProfileKinds.Relative;
 
 
                 default:
-                    return ChargingProfileKindTypes.Unknown;
+                    return ChargingProfileKinds.Unknown;
 
             }
 
@@ -973,19 +973,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsText(this ChargingProfileKindType)
 
-        public static String AsText(this ChargingProfileKindTypes ChargingProfileKindType)
+        public static String AsText(this ChargingProfileKinds ChargingProfileKindType)
         {
 
             switch (ChargingProfileKindType)
             {
 
-                case ChargingProfileKindTypes.Absolute:
+                case ChargingProfileKinds.Absolute:
                     return "Absolute";
 
-                case ChargingProfileKindTypes.Recurring:
+                case ChargingProfileKinds.Recurring:
                     return "Recurring";
 
-                case ChargingProfileKindTypes.Relative:
+                case ChargingProfileKinds.Relative:
                     return "Relative";
 
 
@@ -999,23 +999,23 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #endregion
 
 
-        #region AsRecurrencyKindType(Text)
+        #region AsRecurrencyKind(Text)
 
-        public static RecurrencyKindTypes AsRecurrencyKindType(this String Text)
+        public static RecurrencyKinds AsRecurrencyKind(this String Text)
         {
 
             switch (Text)
             {
 
                 case "Daily":
-                    return RecurrencyKindTypes.Daily;
+                    return RecurrencyKinds.Daily;
 
                 case "Weekly":
-                    return RecurrencyKindTypes.Weekly;
+                    return RecurrencyKinds.Weekly;
 
 
                 default:
-                    return RecurrencyKindTypes.Unknown;
+                    return RecurrencyKinds.Unknown;
 
             }
 
@@ -1025,16 +1025,16 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsText(this RecurrencyKindType)
 
-        public static String AsText(this RecurrencyKindTypes RecurrencyKindType)
+        public static String AsText(this RecurrencyKinds RecurrencyKindType)
         {
 
             switch (RecurrencyKindType)
             {
 
-                case RecurrencyKindTypes.Daily:
+                case RecurrencyKinds.Daily:
                     return "Daily";
 
-                case RecurrencyKindTypes.Weekly:
+                case RecurrencyKinds.Weekly:
                     return "Weekly";
 
 
@@ -1154,33 +1154,33 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsMessageTrigger(Text)
 
-        public static MessageTrigger AsMessageTrigger(this String Text)
+        public static MessageTriggers AsMessageTrigger(this String Text)
         {
 
             switch (Text)
             {
 
                 case "BootNotification":
-                    return MessageTrigger.BootNotification;
+                    return MessageTriggers.BootNotification;
 
                 case "DiagnosticsStatusNotification":
-                    return MessageTrigger.DiagnosticsStatusNotification;
+                    return MessageTriggers.DiagnosticsStatusNotification;
 
                 case "FirmwareStatusNotification":
-                    return MessageTrigger.FirmwareStatusNotification;
+                    return MessageTriggers.FirmwareStatusNotification;
 
                 case "Heartbeat":
-                    return MessageTrigger.Heartbeat;
+                    return MessageTriggers.Heartbeat;
 
                 case "MeterValues":
-                    return MessageTrigger.MeterValues;
+                    return MessageTriggers.MeterValues;
 
                 case "StatusNotification":
-                    return MessageTrigger.StatusNotification;
+                    return MessageTriggers.StatusNotification;
 
 
                 default:
-                    return MessageTrigger.Unknown;
+                    return MessageTriggers.Unknown;
 
             }
 
@@ -1190,28 +1190,28 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsText(this MessageTrigger)
 
-        public static String AsText(this MessageTrigger MessageTrigger)
+        public static String AsText(this MessageTriggers MessageTrigger)
         {
 
             switch (MessageTrigger)
             {
 
-                case MessageTrigger.BootNotification:
+                case MessageTriggers.BootNotification:
                     return "BootNotification";
 
-                case MessageTrigger.DiagnosticsStatusNotification:
+                case MessageTriggers.DiagnosticsStatusNotification:
                     return "DiagnosticsStatusNotification";
 
-                case MessageTrigger.FirmwareStatusNotification:
+                case MessageTriggers.FirmwareStatusNotification:
                     return "FirmwareStatusNotification";
 
-                case MessageTrigger.Heartbeat:
+                case MessageTriggers.Heartbeat:
                     return "Heartbeat";
 
-                case MessageTrigger.MeterValues:
+                case MessageTriggers.MeterValues:
                     return "MeterValues";
 
-                case MessageTrigger.StatusNotification:
+                case MessageTriggers.StatusNotification:
                     return "StatusNotification";
 
 
