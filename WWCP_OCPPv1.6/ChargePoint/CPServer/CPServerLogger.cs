@@ -24,13 +24,13 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6.CS
+namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP CS server logger.
+    /// An OCPP CP server logger.
     /// </summary>
-    public class CSServerLogger : HTTPLogger
+    public class CPServerLogger : HTTPLogger
     {
 
         #region Data
@@ -38,34 +38,34 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The default context for this logger.
         /// </summary>
-        public const String DefaultContext = "OCPP_CSServer";
+        public const String DefaultContext = "OCPP_CPServer";
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// The linked OCPP central service SOAP server.
+        /// The linked OCPP charge point SOAP server.
         /// </summary>
-        public CSServer CSServer { get; }
+        public CPServer CPServer { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region CSServerLogger(CSServer, Context = DefaultContext, LogFileCreator = null)
+        #region CPServerLogger(CPServer, Context = DefaultContext, LogFileCreator = null)
 
         /// <summary>
-        /// Create a new OCPP central service SOAP server logger using the default logging delegates.
+        /// Create a new OCPP charge point SOAP server logger using the default logging delegates.
         /// </summary>
-        /// <param name="CSServer">A OCPP central service SOAP server.</param>
+        /// <param name="CPServer">A OCPP charge point SOAP server.</param>
         /// <param name="Context">A context of this API.</param>
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CSServerLogger(CSServer                    CSServer,
+        public CPServerLogger(CPServer                    CPServer,
                                String                       Context         = DefaultContext,
                                Func<String, String, String> LogFileCreator  = null)
 
-            : this(CSServer,
+            : this(CPServer,
                    Context.IsNotNullOrEmpty() ? Context : DefaultContext,
                    null,
                    null,
@@ -78,12 +78,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region CSServerLogger(CSServer, Context, ... Logging delegates ...)
+        #region CPServerLogger(CPServer, Context, ... Logging delegates ...)
 
         /// <summary>
-        /// Create a new OCPP central service SOAP server logger using the given logging delegates.
+        /// Create a new OCPP charge point SOAP server logger using the given logging delegates.
         /// </summary>
-        /// <param name="CSServer">A OCPP central service SOAP server.</param>
+        /// <param name="CPServer">A OCPP charge point SOAP server.</param>
         /// <param name="Context">A context of this API.</param>
         /// 
         /// <param name="LogHTTPRequest_toConsole">A delegate to log incoming HTTP requests to console.</param>
@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="LogHTTPError_toHTTPSSE">A delegate to log HTTP errors to a HTTP server sent events source.</param>
         /// 
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CSServerLogger(CSServer                      CSServer,
+        public CPServerLogger(CPServer                      CPServer,
                               String                        Context,
 
                               HTTPRequestLoggerDelegate     LogHTTPRequest_toConsole,
@@ -122,7 +122,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                               Func<String, String, String>  LogFileCreator             = null)
 
-            : base(CSServer.SOAPServer,
+            : base(CPServer.SOAPServer,
                    Context.IsNotNullOrEmpty() ? Context : DefaultContext,
 
                    LogHTTPRequest_toConsole,
@@ -146,10 +146,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             #region Initial checks
 
-            if (CSServer == null)
-                throw new ArgumentNullException(nameof(CSServer), "The given CS server must not be null!");
+            if (CPServer == null)
+                throw new ArgumentNullException(nameof(CPServer), "The given CP server must not be null!");
 
-            this.CSServer = CSServer;
+            this.CPServer = CPServer;
 
             #endregion
 
@@ -157,15 +157,15 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             //#region SelectEVSE
 
             //RegisterEvent("SelectEVSERequest",
-            //              handler => CSServer.OnSelectEVSESOAPRequest += handler,
-            //              handler => CSServer.OnSelectEVSESOAPRequest -= handler,
+            //              handler => CPServer.OnSelectEVSESOAPRequest += handler,
+            //              handler => CPServer.OnSelectEVSESOAPRequest -= handler,
             //              "SelectEVSE", "OCPPdirect", "Requests", "All").
             //    RegisterDefaultConsoleLogTarget(this).
             //    RegisterDefaultDiscLogTarget(this);
 
             //RegisterEvent("SelectEVSEResponse",
-            //              handler => CSServer.OnSelectEVSESOAPResponse += handler,
-            //              handler => CSServer.OnSelectEVSESOAPResponse -= handler,
+            //              handler => CPServer.OnSelectEVSESOAPResponse += handler,
+            //              handler => CPServer.OnSelectEVSESOAPResponse -= handler,
             //              "SelectEVSE", "OCPPdirect", "Responses", "All").
             //   RegisterDefaultConsoleLogTarget(this).
             //   RegisterDefaultDiscLogTarget(this);
