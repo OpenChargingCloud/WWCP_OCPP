@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP get local list version request.
     /// </summary>
-    public class GetLocalListVersionRequest
+    public class GetLocalListVersionRequest : IEquatable<GetLocalListVersionRequest>
     {
 
         #region Documentation

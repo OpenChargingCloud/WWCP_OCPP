@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// OCPP authorization data.
     /// </summary>
-    public struct AuthorizationData
+    public struct AuthorizationData : IEquatable<AuthorizationData>
     {
 
         #region Properties

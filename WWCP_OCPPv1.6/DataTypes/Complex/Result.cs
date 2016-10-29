@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// A generic OCPP result.
     /// </summary>
-    public class Result
+    public class Result : IEquatable<Result>
     {
 
         #region Properties

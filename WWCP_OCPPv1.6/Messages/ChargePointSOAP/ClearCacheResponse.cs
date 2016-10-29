@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP clear cache response.
     /// </summary>
-    public class ClearCacheResponse : AResponse
+    public class ClearCacheResponse : AResponse<ClearCacheResponse>
     {
 
         #region Properties
@@ -310,7 +310,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="ClearCacheResponse">A clear cache response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ClearCacheResponse ClearCacheResponse)
+        public override Boolean Equals(ClearCacheResponse ClearCacheResponse)
         {
 
             if ((Object) ClearCacheResponse == null)

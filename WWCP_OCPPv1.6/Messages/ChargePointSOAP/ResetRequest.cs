@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP reset request.
     /// </summary>
-    public class ResetRequest
+    public class ResetRequest : IEquatable<ResetRequest>
     {
 
         #region Properties

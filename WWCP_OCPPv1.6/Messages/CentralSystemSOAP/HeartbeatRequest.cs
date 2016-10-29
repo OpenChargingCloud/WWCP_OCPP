@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP heartbeat request.
     /// </summary>
-    public class HeartbeatRequest
+    public class HeartbeatRequest : IEquatable<HeartbeatRequest>
     {
 
         #region Documentation

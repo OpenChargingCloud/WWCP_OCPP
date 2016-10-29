@@ -27,7 +27,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP charging profile identification.
     /// </summary>
-    public struct ChargingProfile_Id
+    public struct ChargingProfile_Id : IId,
+                                       IEquatable<ChargingProfile_Id>,
+                                       IComparable<ChargingProfile_Id>
     {
 
         #region Data

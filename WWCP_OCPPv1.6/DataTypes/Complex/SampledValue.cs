@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP sampled value.
     /// </summary>
-    public class SampledValue
+    public class SampledValue : IEquatable<SampledValue>
     {
 
         #region Properties

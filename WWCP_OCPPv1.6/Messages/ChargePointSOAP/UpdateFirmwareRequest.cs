@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP update firmware request.
     /// </summary>
-    public class UpdateFirmwareRequest
+    public class UpdateFirmwareRequest : IEquatable<UpdateFirmwareRequest>
     {
 
         #region Properties

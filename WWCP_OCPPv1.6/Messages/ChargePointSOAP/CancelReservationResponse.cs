@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP cancel reservation response.
     /// </summary>
-    public class CancelReservationResponse : AResponse
+    public class CancelReservationResponse : AResponse<CancelReservationResponse>
     {
 
         #region Properties
@@ -311,7 +311,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="CancelReservationResponse">A cancel reservation response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(CancelReservationResponse CancelReservationResponse)
+        public override Boolean Equals(CancelReservationResponse CancelReservationResponse)
         {
 
             if ((Object) CancelReservationResponse == null)

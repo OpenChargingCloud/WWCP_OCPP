@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP remote stop transaction response.
     /// </summary>
-    public class RemoteStopTransactionResponse : AResponse
+    public class RemoteStopTransactionResponse : AResponse<RemoteStopTransactionResponse>
     {
 
         #region Properties
@@ -312,7 +312,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="RemoteStopTransactionResponse">A remote stop transaction response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(RemoteStopTransactionResponse RemoteStopTransactionResponse)
+        public override Boolean Equals(RemoteStopTransactionResponse RemoteStopTransactionResponse)
         {
 
             if ((Object) RemoteStopTransactionResponse == null)

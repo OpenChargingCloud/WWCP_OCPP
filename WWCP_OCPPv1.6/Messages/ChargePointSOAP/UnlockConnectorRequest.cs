@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP unlock connector request.
     /// </summary>
-    public class UnlockConnectorRequest
+    public class UnlockConnectorRequest : IEquatable<UnlockConnectorRequest>
     {
 
         #region Properties

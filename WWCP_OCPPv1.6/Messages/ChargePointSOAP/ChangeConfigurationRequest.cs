@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP change configuration request.
     /// </summary>
-    public class ChangeConfigurationRequest
+    public class ChangeConfigurationRequest : IEquatable<ChangeConfigurationRequest>
     {
 
         #region Properties

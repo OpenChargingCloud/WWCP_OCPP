@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP meter values request.
     /// </summary>
-    public class MeterValuesRequest
+    public class MeterValuesRequest : IEquatable<MeterValuesRequest>
     {
 
         #region Properties

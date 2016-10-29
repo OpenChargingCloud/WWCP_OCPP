@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP remote stop transaction request.
     /// </summary>
-    public class RemoteStopTransactionRequest
+    public class RemoteStopTransactionRequest : IEquatable<RemoteStopTransactionRequest>
     {
 
         #region Properties

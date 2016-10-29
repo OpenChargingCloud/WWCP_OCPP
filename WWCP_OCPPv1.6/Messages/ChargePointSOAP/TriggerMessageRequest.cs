@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP trigger message request.
     /// </summary>
-    public class TriggerMessageRequest
+    public class TriggerMessageRequest : IEquatable<TriggerMessageRequest>
     {
 
         #region Properties

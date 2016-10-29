@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP start transaction request.
     /// </summary>
-    public class StartTransactionRequest
+    public class StartTransactionRequest : IEquatable<StartTransactionRequest>
     {
 
         #region Properties

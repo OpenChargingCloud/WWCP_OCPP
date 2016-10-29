@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP reset response.
     /// </summary>
-    public class ResetResponse : AResponse
+    public class ResetResponse : AResponse<ResetResponse>
     {
 
         #region Properties
@@ -312,7 +312,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="ResetResponse">A reset response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ResetResponse ResetResponse)
+        public override Boolean Equals(ResetResponse ResetResponse)
         {
 
             if ((Object) ResetResponse == null)

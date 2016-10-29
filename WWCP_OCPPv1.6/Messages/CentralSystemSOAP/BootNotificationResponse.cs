@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP boot notification response.
     /// </summary>
-    public class BootNotificationResponse : AResponse
+    public class BootNotificationResponse : AResponse<BootNotificationResponse>
     {
 
         #region Properties
@@ -351,7 +351,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="BootNotificationResponse">A boot notification response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(BootNotificationResponse BootNotificationResponse)
+        public override Boolean Equals(BootNotificationResponse BootNotificationResponse)
         {
 
             if ((Object) BootNotificationResponse == null)

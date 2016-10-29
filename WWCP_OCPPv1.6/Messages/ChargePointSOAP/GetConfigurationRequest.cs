@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP get configuration request.
     /// </summary>
-    public class GetConfigurationRequest
+    public class GetConfigurationRequest : IEquatable<GetConfigurationRequest>
     {
 
         #region Properties

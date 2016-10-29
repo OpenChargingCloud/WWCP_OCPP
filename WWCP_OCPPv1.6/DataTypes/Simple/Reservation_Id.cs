@@ -27,7 +27,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP reservation identification.
     /// </summary>
-    public struct Reservation_Id
+    public struct Reservation_Id : IId,
+                                   IEquatable<Reservation_Id>,
+                                   IComparable<Reservation_Id>
     {
 
         #region Data

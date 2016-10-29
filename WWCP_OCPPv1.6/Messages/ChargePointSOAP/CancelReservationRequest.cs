@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP cancel reservation request.
     /// </summary>
-    public class CancelReservationRequest
+    public class CancelReservationRequest : IEquatable<CancelReservationRequest>
     {
 
         #region Properties

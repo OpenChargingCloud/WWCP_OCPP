@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP remote start transaction response.
     /// </summary>
-    public class RemoteStartTransactionResponse : AResponse
+    public class RemoteStartTransactionResponse : AResponse<RemoteStartTransactionResponse>
     {
 
         #region Properties
@@ -312,7 +312,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="RemoteStartTransactionResponse">A remote start transaction response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(RemoteStartTransactionResponse RemoteStartTransactionResponse)
+        public override Boolean Equals(RemoteStartTransactionResponse RemoteStartTransactionResponse)
         {
 
             if ((Object) RemoteStartTransactionResponse == null)

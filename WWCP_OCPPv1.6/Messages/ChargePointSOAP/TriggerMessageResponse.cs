@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP trigger message response.
     /// </summary>
-    public class TriggerMessageResponse : AResponse
+    public class TriggerMessageResponse : AResponse<TriggerMessageResponse>
     {
 
         #region Properties
@@ -312,7 +312,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="TriggerMessageResponse">A trigger message response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(TriggerMessageResponse TriggerMessageResponse)
+        public override Boolean Equals(TriggerMessageResponse TriggerMessageResponse)
         {
 
             if ((Object) TriggerMessageResponse == null)

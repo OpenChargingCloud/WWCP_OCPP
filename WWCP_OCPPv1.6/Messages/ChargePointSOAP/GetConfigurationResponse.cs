@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP get configuration response.
     /// </summary>
-    public class GetConfigurationResponse : AResponse
+    public class GetConfigurationResponse : AResponse<GetConfigurationResponse>
     {
 
         #region Properties
@@ -344,7 +344,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="GetConfigurationResponse">A get configuration response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(GetConfigurationResponse GetConfigurationResponse)
+        public override Boolean Equals(GetConfigurationResponse GetConfigurationResponse)
         {
 
             if ((Object) GetConfigurationResponse == null)

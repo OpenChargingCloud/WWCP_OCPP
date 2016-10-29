@@ -27,7 +27,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP charge box identification.
     /// </summary>
-    public struct ChargeBox_Id
+    public struct ChargeBox_Id : IId,
+                                 IEquatable<ChargeBox_Id>,
+                                 IComparable<ChargeBox_Id>
     {
 
         #region Data

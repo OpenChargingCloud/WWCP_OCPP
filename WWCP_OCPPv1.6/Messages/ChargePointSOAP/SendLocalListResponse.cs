@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP send local list response.
     /// </summary>
-    public class SendLocalListResponse : AResponse
+    public class SendLocalListResponse : AResponse<SendLocalListResponse>
     {
 
         #region Properties
@@ -312,7 +312,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="SendLocalListResponse">A send local list response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(SendLocalListResponse SendLocalListResponse)
+        public override Boolean Equals(SendLocalListResponse SendLocalListResponse)
         {
 
             if ((Object) SendLocalListResponse == null)

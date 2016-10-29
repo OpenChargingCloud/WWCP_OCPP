@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP stop transaction request.
     /// </summary>
-    public class StopTransactionRequest
+    public class StopTransactionRequest : IEquatable<StopTransactionRequest>
     {
 
         #region Properties

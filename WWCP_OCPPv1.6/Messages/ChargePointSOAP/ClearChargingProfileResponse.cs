@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP clear charging profile response.
     /// </summary>
-    public class ClearChargingProfileResponse : AResponse
+    public class ClearChargingProfileResponse : AResponse<ClearChargingProfileResponse>
     {
 
         #region Properties
@@ -310,7 +310,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="ClearChargingProfileResponse">A clear charging profile response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ClearChargingProfileResponse ClearChargingProfileResponse)
+        public override Boolean Equals(ClearChargingProfileResponse ClearChargingProfileResponse)
         {
 
             if ((Object) ClearChargingProfileResponse == null)

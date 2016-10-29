@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP authorize response.
     /// </summary>
-    public class AuthorizeResponse : AResponse
+    public class AuthorizeResponse : AResponse<AuthorizeResponse>
     {
 
         #region Properties
@@ -356,7 +356,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="AuthorizeResponse">A authorize response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(AuthorizeResponse AuthorizeResponse)
+        public override Boolean Equals(AuthorizeResponse AuthorizeResponse)
         {
 
             if ((Object) AuthorizeResponse == null)

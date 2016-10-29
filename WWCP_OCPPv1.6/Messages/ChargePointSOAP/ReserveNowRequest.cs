@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP reserve now request.
     /// </summary>
-    public class ReserveNowRequest
+    public class ReserveNowRequest : IEquatable<ReserveNowRequest>
     {
 
         #region Properties

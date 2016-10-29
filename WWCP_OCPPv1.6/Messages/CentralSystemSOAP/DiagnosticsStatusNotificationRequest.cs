@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP diagnostics status notification request.
     /// </summary>
-    public class DiagnosticsStatusNotificationRequest
+    public class DiagnosticsStatusNotificationRequest : IEquatable<DiagnosticsStatusNotificationRequest>
     {
 
         #region Properties

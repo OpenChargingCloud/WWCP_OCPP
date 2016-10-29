@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP firmware status notification response.
     /// </summary>
-    public class FirmwareStatusNotificationResponse : AResponse
+    public class FirmwareStatusNotificationResponse : AResponse<FirmwareStatusNotificationResponse>
     {
 
         #region Statics
@@ -284,7 +284,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="FirmwareStatusNotificationResponse">A firmware status notification response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(FirmwareStatusNotificationResponse FirmwareStatusNotificationResponse)
+        public override Boolean Equals(FirmwareStatusNotificationResponse FirmwareStatusNotificationResponse)
         {
 
             if ((Object) FirmwareStatusNotificationResponse == null)

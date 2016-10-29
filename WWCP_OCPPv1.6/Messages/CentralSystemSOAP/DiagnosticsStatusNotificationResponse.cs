@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP diagnostics status notification response.
     /// </summary>
-    public class DiagnosticsStatusNotificationResponse : AResponse
+    public class DiagnosticsStatusNotificationResponse : AResponse<DiagnosticsStatusNotificationResponse>
     {
 
         #region Statics
@@ -284,7 +284,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="DiagnosticsStatusNotificationResponse">A diagnostics status notification response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(DiagnosticsStatusNotificationResponse DiagnosticsStatusNotificationResponse)
+        public override Boolean Equals(DiagnosticsStatusNotificationResponse DiagnosticsStatusNotificationResponse)
         {
 
             if ((Object) DiagnosticsStatusNotificationResponse == null)

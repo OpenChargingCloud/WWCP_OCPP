@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP charging profile.
     /// </summary>
-    public class ChargingProfile
+    public class ChargingProfile : IEquatable<ChargingProfile>
     {
 
         #region Properties

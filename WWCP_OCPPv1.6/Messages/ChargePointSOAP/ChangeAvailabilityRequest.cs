@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP change availability request.
     /// </summary>
-    public class ChangeAvailabilityRequest
+    public class ChangeAvailabilityRequest : IEquatable<ChangeAvailabilityRequest>
     {
 
         #region Properties

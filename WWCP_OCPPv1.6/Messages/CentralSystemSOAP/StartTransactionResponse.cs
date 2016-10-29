@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP start transaction response.
     /// </summary>
-    public class StartTransactionResponse : AResponse
+    public class StartTransactionResponse : AResponse<StartTransactionResponse>
     {
 
         #region Properties
@@ -354,7 +354,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="StartTransactionResponse">A start transaction response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(StartTransactionResponse StartTransactionResponse)
+        public override Boolean Equals(StartTransactionResponse StartTransactionResponse)
         {
 
             if ((Object) StartTransactionResponse == null)

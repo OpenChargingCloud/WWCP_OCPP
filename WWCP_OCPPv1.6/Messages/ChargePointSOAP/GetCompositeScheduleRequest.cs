@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP get composite schedule request.
     /// </summary>
-    public class GetCompositeScheduleRequest
+    public class GetCompositeScheduleRequest : IEquatable<GetCompositeScheduleRequest>
     {
 
         #region Properties

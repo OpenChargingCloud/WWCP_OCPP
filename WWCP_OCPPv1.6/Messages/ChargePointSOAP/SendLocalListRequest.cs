@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP send local list request.
     /// </summary>
-    public class SendLocalListRequest
+    public class SendLocalListRequest : IEquatable<SendLocalListRequest>
     {
 
         #region Properties

@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP get composite schedule response.
     /// </summary>
-    public class GetCompositeScheduleResponse : AResponse
+    public class GetCompositeScheduleResponse : AResponse<GetCompositeScheduleResponse>
     {
 
         #region Properties
@@ -399,7 +399,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="GetCompositeScheduleResponse">A get composite schedule response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(GetCompositeScheduleResponse GetCompositeScheduleResponse)
+        public override Boolean Equals(GetCompositeScheduleResponse GetCompositeScheduleResponse)
         {
 
             if ((Object) GetCompositeScheduleResponse == null)

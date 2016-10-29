@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP get diagnostics request.
     /// </summary>
-    public class GetDiagnosticsRequest
+    public class GetDiagnosticsRequest : IEquatable<GetDiagnosticsRequest>
     {
 
         #region Properties

@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP data transfer request.
     /// </summary>
-    public class DataTransferRequest
+    public class DataTransferRequest : IEquatable<DataTransferRequest>
     {
 
         #region Properties

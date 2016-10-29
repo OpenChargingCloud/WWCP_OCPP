@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP data transfer response.!!!
     /// </summary>
-    public class DataTransferResponse : AResponse
+    public class DataTransferResponse : AResponse<DataTransferResponse>
     {
 
         #region Properties
@@ -336,7 +336,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="DataTransferResponse">A data transfer response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(DataTransferResponse DataTransferResponse)
+        public override Boolean Equals(DataTransferResponse DataTransferResponse)
         {
 
             if ((Object) DataTransferResponse == null)

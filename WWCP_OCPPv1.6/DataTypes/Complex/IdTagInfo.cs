@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP identification tag info.
     /// </summary>
-    public struct IdTagInfo
+    public struct IdTagInfo : IEquatable<IdTagInfo>
     {
 
         #region Properties

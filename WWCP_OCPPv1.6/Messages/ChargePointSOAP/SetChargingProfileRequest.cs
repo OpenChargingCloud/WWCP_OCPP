@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP set charging profile request.
     /// </summary>
-    public class SetChargingProfileRequest
+    public class SetChargingProfileRequest : IEquatable<SetChargingProfileRequest>
     {
 
         #region Properties

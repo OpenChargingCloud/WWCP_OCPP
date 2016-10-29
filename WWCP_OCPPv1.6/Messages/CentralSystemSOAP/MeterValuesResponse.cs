@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP meter values response.
     /// </summary>
-    public class MeterValuesResponse : AResponse
+    public class MeterValuesResponse : AResponse<MeterValuesResponse>
     {
 
         #region Statics
@@ -284,7 +284,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="MeterValuesResponse">A meter values response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(MeterValuesResponse MeterValuesResponse)
+        public override Boolean Equals(MeterValuesResponse MeterValuesResponse)
         {
 
             if ((Object) MeterValuesResponse == null)

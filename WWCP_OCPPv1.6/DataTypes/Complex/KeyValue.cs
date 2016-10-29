@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP configuration key value pair.
     /// </summary>
-    public struct KeyValue
+    public struct KeyValue : IEquatable<KeyValue>
     {
 
         #region Properties

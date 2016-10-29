@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP change configuration response.
     /// </summary>
-    public class ChangeConfigurationResponse : AResponse
+    public class ChangeConfigurationResponse : AResponse<ChangeConfigurationResponse>
     {
 
         #region Properties
@@ -310,7 +310,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="ChangeConfigurationResponse">A change configuration response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChangeConfigurationResponse ChangeConfigurationResponse)
+        public override Boolean Equals(ChangeConfigurationResponse ChangeConfigurationResponse)
         {
 
             if ((Object) ChangeConfigurationResponse == null)

@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP get diagnostics response.
     /// </summary>
-    public class GetDiagnosticsResponse : AResponse
+    public class GetDiagnosticsResponse : AResponse<GetDiagnosticsResponse>
     {
 
         #region Properties
@@ -315,7 +315,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="GetDiagnosticsResponse">A get diagnostics response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(GetDiagnosticsResponse GetDiagnosticsResponse)
+        public override Boolean Equals(GetDiagnosticsResponse GetDiagnosticsResponse)
         {
 
             if ((Object) GetDiagnosticsResponse == null)

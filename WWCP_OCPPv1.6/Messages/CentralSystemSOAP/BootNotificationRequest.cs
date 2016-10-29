@@ -36,7 +36,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP boot notification request.
     /// </summary>
-    public class BootNotificationRequest
+    public class BootNotificationRequest : IEquatable<BootNotificationRequest>
     {
 
         #region Properties

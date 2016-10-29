@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP clear charging profile request.
     /// </summary>
-    public class ClearChargingProfileRequest
+    public class ClearChargingProfileRequest : IEquatable<ClearChargingProfileRequest>
     {
 
         #region Properties

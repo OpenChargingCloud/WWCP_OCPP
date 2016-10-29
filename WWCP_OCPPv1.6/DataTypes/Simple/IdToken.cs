@@ -27,7 +27,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP identification token.
     /// </summary>
-    public struct IdToken
+    public struct IdToken : IId,
+                            IEquatable<IdToken>,
+                            IComparable<IdToken>
     {
 
         #region Data

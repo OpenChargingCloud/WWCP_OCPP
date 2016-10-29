@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP heartbeat response.
     /// </summary>
-    public class HeartbeatResponse : AResponse
+    public class HeartbeatResponse : AResponse<HeartbeatResponse>
     {
 
         #region Properties
@@ -317,7 +317,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="HeartbeatResponse">A heartbeat response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(HeartbeatResponse HeartbeatResponse)
+        public override Boolean Equals(HeartbeatResponse HeartbeatResponse)
         {
 
             if ((Object) HeartbeatResponse == null)

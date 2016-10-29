@@ -27,7 +27,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP transaction identification.
     /// </summary>
-    public struct Transaction_Id
+    public struct Transaction_Id : IId,
+                                   IEquatable<Transaction_Id>,
+                                   IComparable<Transaction_Id>
     {
 
         #region Data

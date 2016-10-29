@@ -32,7 +32,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// A generic OCHP response.
     /// </summary>
-    public class AResponse
+    public abstract class AResponse<T> : IEquatable<T>
+
+        where T : class
+
     {
 
         #region Properties
@@ -58,122 +61,81 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #endregion
 
 
-        #region Operator overloading
+        //#region Operator overloading
 
-        #region Operator == (AResponse1, AResponse2)
+        //#region Operator == (AResponse1, AResponse2)
 
-        /// <summary>
-        /// Compares two responses for equality.
-        /// </summary>
-        /// <param name="AResponse1">A response.</param>
-        /// <param name="AResponse2">Another response.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (AResponse AResponse1, AResponse AResponse2)
-        {
+        ///// <summary>
+        ///// Compares two responses for equality.
+        ///// </summary>
+        ///// <param name="AResponse1">A response.</param>
+        ///// <param name="AResponse2">Another response.</param>
+        ///// <returns>True if both match; False otherwise.</returns>
+        //public static Boolean operator == (AResponse AResponse1, AResponse AResponse2)
+        //{
 
-            // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(AResponse1, AResponse2))
-                return true;
+        //    // If both are null, or both are same instance, return true.
+        //    if (Object.ReferenceEquals(AResponse1, AResponse2))
+        //        return true;
 
-            // If one is null, but not both, return false.
-            if (((Object) AResponse1 == null) || ((Object) AResponse2 == null))
-                return false;
+        //    // If one is null, but not both, return false.
+        //    if (((Object) AResponse1 == null) || ((Object) AResponse2 == null))
+        //        return false;
 
-            return AResponse1.Equals(AResponse2);
+        //    return AResponse1.Equals(AResponse2);
 
-        }
+        //}
 
-        #endregion
+        //#endregion
 
-        #region Operator != (AResponse1, AResponse2)
+        //#region Operator != (AResponse1, AResponse2)
 
-        /// <summary>
-        /// Compares two responses for inequality.
-        /// </summary>
-        /// <param name="AResponse1">A response.</param>
-        /// <param name="AResponse2">Another response.</param>
-        /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (AResponse AResponse1, AResponse AResponse2)
+        ///// <summary>
+        ///// Compares two responses for inequality.
+        ///// </summary>
+        ///// <param name="AResponse1">A response.</param>
+        ///// <param name="AResponse2">Another response.</param>
+        ///// <returns>False if both match; True otherwise.</returns>
+        //public static Boolean operator != (AResponse AResponse1, AResponse AResponse2)
 
-            => !(AResponse1 == AResponse2);
+        //    => !(AResponse1 == AResponse2);
 
-        #endregion
+        //#endregion
 
-        #endregion
+        //#endregion
 
         #region IEquatable<AResponse> Members
 
-        #region Equals(Object)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
-
-            if (Object == null)
-                return false;
-
-            // Check if the given object is a response.
-            var AResponse = Object as AResponse;
-            if ((Object) AResponse == null)
-                return false;
-
-            return this.Equals(AResponse);
-
-        }
+        public abstract Boolean Equals(T AResponse);
 
         #endregion
 
-        #region Equals(AResponse)
+        //#region GetHashCode()
 
-        /// <summary>
-        /// Compares two responses for equality.
-        /// </summary>
-        /// <param name="AResponse">A response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(AResponse AResponse)
-        {
+        ///// <summary>
+        ///// Return the HashCode of this object.
+        ///// </summary>
+        ///// <returns>The HashCode of this object.</returns>
+        //public override Int32 GetHashCode()
+        //{
+        //    unchecked
+        //    {
+        //        return Result.GetHashCode();
+        //    }
+        //}
 
-            if ((Object) AResponse == null)
-                return false;
+        //#endregion
 
-            return this.Result.Equals(AResponse.Result);
+        //#region (override) ToString()
 
-        }
+        ///// <summary>
+        ///// Return a string representation of this object.
+        ///// </summary>
+        //public override String ToString()
 
-        #endregion
+        //    => Result.ToString();
 
-        #endregion
-
-        #region GetHashCode()
-
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        /// <returns>The HashCode of this object.</returns>
-        public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-                return Result.GetHashCode();
-            }
-        }
-
-        #endregion
-
-        #region (override) ToString()
-
-        /// <summary>
-        /// Return a string representation of this object.
-        /// </summary>
-        public override String ToString()
-
-            => Result.ToString();
-
-        #endregion
+        //#endregion
 
     }
 

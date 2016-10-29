@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP unlock connector response.
     /// </summary>
-    public class UnlockConnectorResponse : AResponse
+    public class UnlockConnectorResponse : AResponse<UnlockConnectorResponse>
     {
 
         #region Properties
@@ -310,7 +310,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="UnlockConnectorResponse">A unlock connector response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(UnlockConnectorResponse UnlockConnectorResponse)
+        public override Boolean Equals(UnlockConnectorResponse UnlockConnectorResponse)
         {
 
             if ((Object) UnlockConnectorResponse == null)

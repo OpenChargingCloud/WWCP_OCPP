@@ -27,7 +27,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP connector identification.
     /// </summary>
-    public struct Connector_Id
+    public struct Connector_Id : IId,
+                                 IEquatable<Connector_Id>,
+                                 IComparable<Connector_Id>
     {
 
         #region Data

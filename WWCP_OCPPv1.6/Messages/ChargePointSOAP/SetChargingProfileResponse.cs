@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP set charging profile response.
     /// </summary>
-    public class SetChargingProfileResponse : AResponse
+    public class SetChargingProfileResponse : AResponse<SetChargingProfileResponse>
     {
 
         #region Properties
@@ -312,7 +312,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="SetChargingProfileResponse">A set charging profile response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(SetChargingProfileResponse SetChargingProfileResponse)
+        public override Boolean Equals(SetChargingProfileResponse SetChargingProfileResponse)
         {
 
             if ((Object) SetChargingProfileResponse == null)

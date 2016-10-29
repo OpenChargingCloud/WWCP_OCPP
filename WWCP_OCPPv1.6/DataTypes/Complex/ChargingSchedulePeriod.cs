@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP charging schedule period.
     /// </summary>
-    public struct ChargingSchedulePeriod
+    public struct ChargingSchedulePeriod : IEquatable<ChargingSchedulePeriod>
     {
 
         #region Properties

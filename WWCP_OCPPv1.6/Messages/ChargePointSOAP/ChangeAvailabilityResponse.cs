@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP change availability response.
     /// </summary>
-    public class ChangeAvailabilityResponse : AResponse
+    public class ChangeAvailabilityResponse : AResponse<ChangeAvailabilityResponse>
     {
 
         #region Properties
@@ -310,7 +310,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="ChangeAvailabilityResponse">A change availability response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChangeAvailabilityResponse ChangeAvailabilityResponse)
+        public override Boolean Equals(ChangeAvailabilityResponse ChangeAvailabilityResponse)
         {
 
             if ((Object) ChangeAvailabilityResponse == null)

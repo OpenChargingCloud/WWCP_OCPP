@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP clear cache request.
     /// </summary>
-    public class ClearCacheRequest
+    public class ClearCacheRequest : IEquatable<ClearCacheRequest>
     {
 
         #region Documentation

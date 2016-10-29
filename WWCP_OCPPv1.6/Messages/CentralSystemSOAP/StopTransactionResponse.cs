@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP stop transaction response.
     /// </summary>
-    public class StopTransactionResponse : AResponse
+    public class StopTransactionResponse : AResponse<StopTransactionResponse>
     {
 
         #region Properties
@@ -334,7 +334,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="StopTransactionResponse">A stop transaction response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(StopTransactionResponse StopTransactionResponse)
+        public override Boolean Equals(StopTransactionResponse StopTransactionResponse)
         {
 
             if ((Object) StopTransactionResponse == null)

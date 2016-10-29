@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP remote start transaction request.
     /// </summary>
-    public class RemoteStartTransactionRequest
+    public class RemoteStartTransactionRequest : IEquatable<RemoteStartTransactionRequest>
     {
 
         #region Properties

@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP authorize request.
     /// </summary>
-    public class AuthorizeRequest
+    public class AuthorizeRequest : IEquatable<AuthorizeRequest>
     {
 
         #region Properties

@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP update firmware response.
     /// </summary>
-    public class UpdateFirmwareResponse : AResponse
+    public class UpdateFirmwareResponse : AResponse<UpdateFirmwareResponse>
     {
 
         #region Statics
@@ -284,7 +284,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="UpdateFirmwareResponse">A update firmware response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(UpdateFirmwareResponse UpdateFirmwareResponse)
+        public override Boolean Equals(UpdateFirmwareResponse UpdateFirmwareResponse)
         {
 
             if ((Object) UpdateFirmwareResponse == null)

@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP get local list version response.
     /// </summary>
-    public class GetLocalListVersionResponse : AResponse
+    public class GetLocalListVersionResponse : AResponse<GetLocalListVersionResponse>
     {
 
         #region Properties
@@ -311,7 +311,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="GetLocalListVersionResponse">A get local list version response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(GetLocalListVersionResponse GetLocalListVersionResponse)
+        public override Boolean Equals(GetLocalListVersionResponse GetLocalListVersionResponse)
         {
 
             if ((Object) GetLocalListVersionResponse == null)

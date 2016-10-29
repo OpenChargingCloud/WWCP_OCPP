@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// An OCPP meter value.
     /// </summary>
-    public class MeterValue
+    public class MeterValue : IEquatable<MeterValue>
     {
 
         #region Properties

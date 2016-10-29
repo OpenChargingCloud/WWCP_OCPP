@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP reserve now response.
     /// </summary>
-    public class ReserveNowResponse : AResponse
+    public class ReserveNowResponse : AResponse<ReserveNowResponse>
     {
 
         #region Properties
@@ -310,7 +310,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="ReserveNowResponse">A reserve now response to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ReserveNowResponse ReserveNowResponse)
+        public override Boolean Equals(ReserveNowResponse ReserveNowResponse)
         {
 
             if ((Object) ReserveNowResponse == null)
