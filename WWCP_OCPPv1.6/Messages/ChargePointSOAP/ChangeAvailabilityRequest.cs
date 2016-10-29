@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP change availability request.
     /// </summary>
-    public class ChangeAvailabilityRequest : IEquatable<ChangeAvailabilityRequest>
+    public class ChangeAvailabilityRequest : ARequest<ChangeAvailabilityRequest>
     {
 
         #region Properties
@@ -306,7 +306,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="ChangeAvailabilityRequest">A change availability request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChangeAvailabilityRequest ChangeAvailabilityRequest)
+        public override Boolean Equals(ChangeAvailabilityRequest ChangeAvailabilityRequest)
         {
 
             if ((Object) ChangeAvailabilityRequest == null)

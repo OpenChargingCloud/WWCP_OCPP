@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP reserve now request.
     /// </summary>
-    public class ReserveNowRequest : IEquatable<ReserveNowRequest>
+    public class ReserveNowRequest : ARequest<ReserveNowRequest>
     {
 
         #region Properties
@@ -367,7 +367,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="ReserveNowRequest">A reserve now request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ReserveNowRequest ReserveNowRequest)
+        public override Boolean Equals(ReserveNowRequest ReserveNowRequest)
         {
 
             if ((Object) ReserveNowRequest == null)

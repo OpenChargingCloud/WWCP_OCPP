@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP authorize request.
     /// </summary>
-    public class AuthorizeRequest : IEquatable<AuthorizeRequest>
+    public class AuthorizeRequest : ARequest<AuthorizeRequest>
     {
 
         #region Properties
@@ -52,13 +52,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="IdTag">The identifier that needs to be authorized.</param>
         public AuthorizeRequest(IdToken  IdTag)
         {
-
-            #region Initial checks
-
-            if (IdTag == null)
-                throw new ArgumentNullException(nameof(IdTag),  "The given identification tag info must not be null!");
-
-            #endregion
 
             this.IdTag = IdTag;
 
@@ -300,7 +293,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="AuthorizeRequest">A authorize request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(AuthorizeRequest AuthorizeRequest)
+        public override Boolean Equals(AuthorizeRequest AuthorizeRequest)
         {
 
             if ((Object) AuthorizeRequest == null)

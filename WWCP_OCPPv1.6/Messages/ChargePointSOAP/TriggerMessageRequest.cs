@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP trigger message request.
     /// </summary>
-    public class TriggerMessageRequest : IEquatable<TriggerMessageRequest>
+    public class TriggerMessageRequest : ARequest<TriggerMessageRequest>
     {
 
         #region Properties
@@ -311,7 +311,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="TriggerMessageRequest">A trigger message request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(TriggerMessageRequest TriggerMessageRequest)
+        public override Boolean Equals(TriggerMessageRequest TriggerMessageRequest)
         {
 
             if ((Object) TriggerMessageRequest == null)

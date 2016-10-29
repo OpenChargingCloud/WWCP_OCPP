@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP get local list version request.
     /// </summary>
-    public class GetLocalListVersionRequest : IEquatable<GetLocalListVersionRequest>
+    public class GetLocalListVersionRequest : ARequest<GetLocalListVersionRequest>
     {
 
         #region Documentation
@@ -255,7 +255,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="GetLocalListVersionRequest">A get local list version request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(GetLocalListVersionRequest GetLocalListVersionRequest)
+        public override Boolean Equals(GetLocalListVersionRequest GetLocalListVersionRequest)
         {
 
             if ((Object) GetLocalListVersionRequest == null)

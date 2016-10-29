@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP clear charging profile request.
     /// </summary>
-    public class ClearChargingProfileRequest : IEquatable<ClearChargingProfileRequest>
+    public class ClearChargingProfileRequest : ARequest<ClearChargingProfileRequest>
     {
 
         #region Properties
@@ -355,7 +355,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="ClearChargingProfileRequest">A clear charging profile request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ClearChargingProfileRequest ClearChargingProfileRequest)
+        public override Boolean Equals(ClearChargingProfileRequest ClearChargingProfileRequest)
         {
 
             if ((Object) ClearChargingProfileRequest == null)

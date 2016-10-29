@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP unlock connector request.
     /// </summary>
-    public class UnlockConnectorRequest : IEquatable<UnlockConnectorRequest>
+    public class UnlockConnectorRequest : ARequest<UnlockConnectorRequest>
     {
 
         #region Properties
@@ -292,7 +292,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="UnlockConnectorRequest">A unlock connector request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(UnlockConnectorRequest UnlockConnectorRequest)
+        public override Boolean Equals(UnlockConnectorRequest UnlockConnectorRequest)
         {
 
             if ((Object) UnlockConnectorRequest == null)

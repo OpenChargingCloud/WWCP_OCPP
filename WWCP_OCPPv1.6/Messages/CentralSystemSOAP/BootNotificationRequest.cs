@@ -36,7 +36,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP boot notification request.
     /// </summary>
-    public class BootNotificationRequest : IEquatable<BootNotificationRequest>
+    public class BootNotificationRequest : ARequest<BootNotificationRequest>
     {
 
         #region Properties
@@ -398,7 +398,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="BootNotificationRequest">A boot notification request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(BootNotificationRequest BootNotificationRequest)
+        public override Boolean Equals(BootNotificationRequest BootNotificationRequest)
         {
 
             if ((Object) BootNotificationRequest == null)

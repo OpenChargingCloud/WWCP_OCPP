@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP stop transaction request.
     /// </summary>
-    public class StopTransactionRequest : IEquatable<StopTransactionRequest>
+    public class StopTransactionRequest : ARequest<StopTransactionRequest>
     {
 
         #region Properties
@@ -95,13 +95,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                       IEnumerable<MeterValue>  TransactionData  = null)
 
         {
-
-            #region Initial checks
-
-            if (TransactionId == null)
-                throw new ArgumentNullException(nameof(TransactionId),  "The given transaction identification must not be null!");
-
-            #endregion
 
             this.TransactionId    = TransactionId;
             this.Timestamp        = Timestamp;
@@ -419,7 +412,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="StopTransactionRequest">A stop transaction request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(StopTransactionRequest StopTransactionRequest)
+        public override Boolean Equals(StopTransactionRequest StopTransactionRequest)
         {
 
             if ((Object) StopTransactionRequest == null)

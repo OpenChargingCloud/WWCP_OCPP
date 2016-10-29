@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP get configuration request.
     /// </summary>
-    public class GetConfigurationRequest : IEquatable<GetConfigurationRequest>
+    public class GetConfigurationRequest : ARequest<GetConfigurationRequest>
     {
 
         #region Properties
@@ -296,7 +296,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="GetConfigurationRequest">A get configuration request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(GetConfigurationRequest GetConfigurationRequest)
+        public override Boolean Equals(GetConfigurationRequest GetConfigurationRequest)
         {
 
             if ((Object) GetConfigurationRequest == null)

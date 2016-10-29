@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP get composite schedule request.
     /// </summary>
-    public class GetCompositeScheduleRequest : IEquatable<GetCompositeScheduleRequest>
+    public class GetCompositeScheduleRequest : ARequest<GetCompositeScheduleRequest>
     {
 
         #region Properties
@@ -325,7 +325,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="GetCompositeScheduleRequest">A get composite schedule request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(GetCompositeScheduleRequest GetCompositeScheduleRequest)
+        public override Boolean Equals(GetCompositeScheduleRequest GetCompositeScheduleRequest)
         {
 
             if ((Object) GetCompositeScheduleRequest == null)

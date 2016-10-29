@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP cancel reservation request.
     /// </summary>
-    public class CancelReservationRequest : IEquatable<CancelReservationRequest>
+    public class CancelReservationRequest : ARequest<CancelReservationRequest>
     {
 
         #region Properties
@@ -52,13 +52,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         public CancelReservationRequest(Reservation_Id  ReservationId)
         {
-
-            #region Initial checks
-
-            if (ReservationId == null)
-                throw new ArgumentNullException(nameof(ReservationId),  "The given unique reservation identification must not be null!");
-
-            #endregion
 
             this.ReservationId  = ReservationId;
 
@@ -300,7 +293,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="CancelReservationRequest">A cancel reservation request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(CancelReservationRequest CancelReservationRequest)
+        public override Boolean Equals(CancelReservationRequest CancelReservationRequest)
         {
 
             if ((Object) CancelReservationRequest == null)

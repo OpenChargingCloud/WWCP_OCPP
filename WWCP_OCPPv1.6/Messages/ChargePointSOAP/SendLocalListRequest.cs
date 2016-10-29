@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP send local list request.
     /// </summary>
-    public class SendLocalListRequest : IEquatable<SendLocalListRequest>
+    public class SendLocalListRequest : ARequest<SendLocalListRequest>
     {
 
         #region Properties
@@ -351,7 +351,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="SendLocalListRequest">A send local list request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(SendLocalListRequest SendLocalListRequest)
+        public override Boolean Equals(SendLocalListRequest SendLocalListRequest)
         {
 
             if ((Object) SendLocalListRequest == null)

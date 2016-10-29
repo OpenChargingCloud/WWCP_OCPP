@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP heartbeat request.
     /// </summary>
-    public class HeartbeatRequest : IEquatable<HeartbeatRequest>
+    public class HeartbeatRequest : ARequest<HeartbeatRequest>
     {
 
         #region Documentation
@@ -255,7 +255,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="HeartbeatRequest">A heartbeat request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(HeartbeatRequest HeartbeatRequest)
+        public override Boolean Equals(HeartbeatRequest HeartbeatRequest)
         {
 
             if ((Object) HeartbeatRequest == null)

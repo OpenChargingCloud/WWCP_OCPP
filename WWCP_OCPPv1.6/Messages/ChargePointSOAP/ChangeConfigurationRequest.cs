@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP change configuration request.
     /// </summary>
-    public class ChangeConfigurationRequest : IEquatable<ChangeConfigurationRequest>
+    public class ChangeConfigurationRequest : ARequest<ChangeConfigurationRequest>
     {
 
         #region Properties
@@ -56,8 +56,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="Key">The name of the configuration setting to change.</param>
         /// <param name="Value">The new value as string for the setting.</param>
-        public ChangeConfigurationRequest(String Key,
-                                          String Value)
+        public ChangeConfigurationRequest(String  Key,
+                                          String  Value)
         {
 
             #region Initial checks
@@ -309,7 +309,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="ChangeConfigurationRequest">A change configuration request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChangeConfigurationRequest ChangeConfigurationRequest)
+        public override Boolean Equals(ChangeConfigurationRequest ChangeConfigurationRequest)
         {
 
             if ((Object) ChangeConfigurationRequest == null)

@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP firmware status notification request.
     /// </summary>
-    public class FirmwareStatusNotificationRequest : IEquatable<FirmwareStatusNotificationRequest>
+    public class FirmwareStatusNotificationRequest : ARequest<FirmwareStatusNotificationRequest>
     {
 
         #region Properties
@@ -291,7 +291,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="FirmwareStatusNotificationRequest">A firmware status notification request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest)
+        public override Boolean Equals(FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest)
         {
 
             if ((Object) FirmwareStatusNotificationRequest == null)

@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP set charging profile request.
     /// </summary>
-    public class SetChargingProfileRequest : IEquatable<SetChargingProfileRequest>
+    public class SetChargingProfileRequest : ARequest<SetChargingProfileRequest>
     {
 
         #region Properties
@@ -360,7 +360,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="SetChargingProfileRequest">A set charging profile request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(SetChargingProfileRequest SetChargingProfileRequest)
+        public override Boolean Equals(SetChargingProfileRequest SetChargingProfileRequest)
         {
 
             if ((Object) SetChargingProfileRequest == null)

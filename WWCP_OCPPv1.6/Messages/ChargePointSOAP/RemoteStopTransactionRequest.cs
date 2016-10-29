@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP remote stop transaction request.
     /// </summary>
-    public class RemoteStopTransactionRequest : IEquatable<RemoteStopTransactionRequest>
+    public class RemoteStopTransactionRequest : ARequest<RemoteStopTransactionRequest>
     {
 
         #region Properties
@@ -301,7 +301,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="RemoteStopTransactionRequest">A remote stop transaction request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(RemoteStopTransactionRequest RemoteStopTransactionRequest)
+        public override Boolean Equals(RemoteStopTransactionRequest RemoteStopTransactionRequest)
         {
 
             if ((Object) RemoteStopTransactionRequest == null)

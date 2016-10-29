@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP reset request.
     /// </summary>
-    public class ResetRequest : IEquatable<ResetRequest>
+    public class ResetRequest : ARequest<ResetRequest>
     {
 
         #region Properties
@@ -292,7 +292,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="ResetRequest">A reset request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ResetRequest ResetRequest)
+        public override Boolean Equals(ResetRequest ResetRequest)
         {
 
             if ((Object) ResetRequest == null)

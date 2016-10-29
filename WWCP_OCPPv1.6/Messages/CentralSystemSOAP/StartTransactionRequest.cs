@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP start transaction request.
     /// </summary>
-    public class StartTransactionRequest : IEquatable<StartTransactionRequest>
+    public class StartTransactionRequest : ARequest<StartTransactionRequest>
     {
 
         #region Properties
@@ -352,7 +352,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="StartTransactionRequest">A start transaction request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(StartTransactionRequest StartTransactionRequest)
+        public override Boolean Equals(StartTransactionRequest StartTransactionRequest)
         {
 
             if ((Object) StartTransactionRequest == null)

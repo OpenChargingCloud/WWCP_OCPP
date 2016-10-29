@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP update firmware request.
     /// </summary>
-    public class UpdateFirmwareRequest : IEquatable<UpdateFirmwareRequest>
+    public class UpdateFirmwareRequest : ARequest<UpdateFirmwareRequest>
     {
 
         #region Properties
@@ -353,7 +353,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="UpdateFirmwareRequest">A update firmware request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(UpdateFirmwareRequest UpdateFirmwareRequest)
+        public override Boolean Equals(UpdateFirmwareRequest UpdateFirmwareRequest)
         {
 
             if ((Object) UpdateFirmwareRequest == null)

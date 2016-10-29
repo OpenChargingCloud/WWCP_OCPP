@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP get diagnostics request.
     /// </summary>
-    public class GetDiagnosticsRequest : IEquatable<GetDiagnosticsRequest>
+    public class GetDiagnosticsRequest : ARequest<GetDiagnosticsRequest>
     {
 
         #region Properties
@@ -377,7 +377,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="GetDiagnosticsRequest">A get diagnostics request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(GetDiagnosticsRequest GetDiagnosticsRequest)
+        public override Boolean Equals(GetDiagnosticsRequest GetDiagnosticsRequest)
         {
 
             if ((Object) GetDiagnosticsRequest == null)

@@ -114,6 +114,7 @@
     <Compile Include="IO\OCPPNS.cs" />
     <Compile Include="IO\SOAP.cs" />
     <Compile Include="IO\XML_IO.cs" />
+    <Compile Include="Messages\ARequest.cs" />
     <Compile Include="Messages\AResponse.cs" />
     <Compile Include="Messages\CentralSystemSOAP\DataTransferRequest.cs" />
     <Compile Include="Messages\CentralSystemSOAP\FirmwareStatusNotificationRequest.cs" />

@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP remote start transaction request.
     /// </summary>
-    public class RemoteStartTransactionRequest : IEquatable<RemoteStartTransactionRequest>
+    public class RemoteStartTransactionRequest : ARequest<RemoteStartTransactionRequest>
     {
 
         #region Properties
@@ -381,7 +381,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="RemoteStartTransactionRequest">A remote start transaction request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(RemoteStartTransactionRequest RemoteStartTransactionRequest)
+        public override Boolean Equals(RemoteStartTransactionRequest RemoteStartTransactionRequest)
         {
 
             if ((Object) RemoteStartTransactionRequest == null)

@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP clear cache request.
     /// </summary>
-    public class ClearCacheRequest : IEquatable<ClearCacheRequest>
+    public class ClearCacheRequest : ARequest<ClearCacheRequest>
     {
 
         #region Documentation
@@ -255,7 +255,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="ClearCacheRequest">A clear cache request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ClearCacheRequest ClearCacheRequest)
+        public override Boolean Equals(ClearCacheRequest ClearCacheRequest)
         {
 
             if ((Object) ClearCacheRequest == null)

@@ -66,13 +66,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         {
 
-            #region Initial checks
-
-            if (IdTagInfo == null)
-                throw new ArgumentNullException(nameof(IdTagInfo),  "The given identification tag info must not be null!");
-
-            #endregion
-
             this.IdTagInfo = IdTagInfo;
 
         }

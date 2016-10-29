@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP status notification request.
     /// </summary>
-    public class StatusNotificationRequest : IEquatable<StatusNotificationRequest>
+    public class StatusNotificationRequest : ARequest<StatusNotificationRequest>
     {
 
         #region Properties
@@ -390,7 +390,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="StatusNotificationRequest">A status notification request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(StatusNotificationRequest StatusNotificationRequest)
+        public override Boolean Equals(StatusNotificationRequest StatusNotificationRequest)
         {
 
             if ((Object) StatusNotificationRequest == null)

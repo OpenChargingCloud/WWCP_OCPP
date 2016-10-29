@@ -25,9 +25,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An abstract generic OCPP response.
+    /// An abstract generic OCPP request.
     /// </summary>
-    public abstract class AResponse<T> : IEquatable<T>
+    public abstract class ARequest<T> : IEquatable<T>
 
         where T : class
 
@@ -36,41 +36,34 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Properties
 
         /// <summary>
-        /// The machine-readable result code.
+        /// The timestamp of the request message creation.
         /// </summary>
-        public Result    Result              { get; }
-
-        /// <summary>
-        /// The timestamp of the response message creation.
-        /// </summary>
-        public DateTime  ResponseTimestamp   { get; }
+        public DateTime  RequestTimestamp   { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new generic OCHP response.
+        /// Create a new generic OCHP request.
         /// </summary>
-        /// <param name="Result">A generic OCHP result.</param>
-        public AResponse(Result Result)
+        public ARequest()
         {
 
-            this.Result             = Result;
-            this.ResponseTimestamp  = DateTime.Now;
+            this.RequestTimestamp  = DateTime.Now;
 
         }
 
         #endregion
 
 
-        #region IEquatable<AResponse> Members
+        #region IEquatable<ARequest> Members
 
         /// <summary>
-        /// Compare two responses for equality.
+        /// Compare two requests for equality.
         /// </summary>
-        /// <param name="AResponse">Another abstract generic OCPP response.</param>
-        public abstract Boolean Equals(T AResponse);
+        /// <param name="ARequest">Another abstract generic OCPP request.</param>
+        public abstract Boolean Equals(T ARequest);
 
         #endregion
 

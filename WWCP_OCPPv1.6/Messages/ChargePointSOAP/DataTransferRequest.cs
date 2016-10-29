@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP data transfer request.
     /// </summary>
-    public class DataTransferRequest : IEquatable<DataTransferRequest>
+    public class DataTransferRequest : ARequest<DataTransferRequest>
     {
 
         #region Properties
@@ -43,12 +43,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public String  VendorId    { get; }
 
         /// <summary>
-        /// The charge point model identification.
+        /// An optional message identification field.
         /// </summary>
         public String  MessageId   { get; }
 
         /// <summary>
-        /// The serial number of the charge point.
+        /// Optional message data as text without specified length or format.
         /// </summary>
         public String  Data        { get; }
 
@@ -60,8 +60,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// Create an OCPP DataTransferRequest XML/SOAP request.
         /// </summary>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">The charge point model identification.</param>
-        /// <param name="Data">The serial number of the charge point.</param>
+        /// <param name="MessageId">An optional message identification field.</param>
+        /// <param name="Data">Optional message data as text without specified length or format.</param>
         public DataTransferRequest(String VendorId,
                                    String MessageId  = null,
                                    String Data       = null)
@@ -331,7 +331,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="DataTransferRequest">A data transfer request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(DataTransferRequest DataTransferRequest)
+        public override Boolean Equals(DataTransferRequest DataTransferRequest)
         {
 
             if ((Object) DataTransferRequest == null)

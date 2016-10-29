@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP meter values request.
     /// </summary>
-    public class MeterValuesRequest : IEquatable<MeterValuesRequest>
+    public class MeterValuesRequest : ARequest<MeterValuesRequest>
     {
 
         #region Properties
@@ -360,7 +360,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="MeterValuesRequest">A meter values request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(MeterValuesRequest MeterValuesRequest)
+        public override Boolean Equals(MeterValuesRequest MeterValuesRequest)
         {
 
             if ((Object) MeterValuesRequest == null)
