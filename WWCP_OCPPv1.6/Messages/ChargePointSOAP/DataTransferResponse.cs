@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP data transfer response.!!!
+    /// An OCPP data transfer response.
     /// </summary>
     public class DataTransferResponse : AResponse<DataTransferResponse>
     {

@@ -25,48 +25,20 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An abstract generic OCPP request message.
+    /// The common interface of an OCPP response message.
     /// </summary>
-    public abstract class ARequest<T> : IRequest,
-                                        IEquatable<T>
-
-        where T : class
-
+    public interface IResponse
     {
 
-        #region Properties
+        /// <summary>
+        /// The machine-readable result code.
+        /// </summary>
+        Result    Result              { get; }
 
         /// <summary>
-        /// The timestamp of the request message creation.
+        /// The timestamp of the response message creation.
         /// </summary>
-        public DateTime  RequestTimestamp   { get; }
-
-        #endregion
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Create a new generic OCHP request message.
-        /// </summary>
-        public ARequest()
-        {
-
-            this.RequestTimestamp  = DateTime.Now;
-
-        }
-
-        #endregion
-
-
-        #region IEquatable<ARequest> Members
-
-        /// <summary>
-        /// Compare two requests for equality.
-        /// </summary>
-        /// <param name="ARequest">Another abstract generic OCPP request.</param>
-        public abstract Boolean Equals(T ARequest);
-
-        #endregion
+        DateTime  ResponseTimestamp   { get; }
 
     }
 

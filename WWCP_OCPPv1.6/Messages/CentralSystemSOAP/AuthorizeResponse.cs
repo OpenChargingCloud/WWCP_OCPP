@@ -30,7 +30,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP authorize response.
     /// </summary>
-    public class AuthorizeResponse : AResponse<AuthorizeResponse>
+    public class AuthorizeResponse : AResponse<CP.AuthorizeRequest,
+                                                  AuthorizeResponse>
     {
 
         #region Properties
@@ -47,22 +48,24 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The authentication failed.
         /// </summary>
-        public static AuthorizeResponse Failed
-            => new AuthorizeResponse(new IdTagInfo(AuthorizationStatus.Error));
+        public static AuthorizeResponse Failed(CP.AuthorizeRequest Request)
+            => new AuthorizeResponse(Request, new IdTagInfo(AuthorizationStatus.Error));
 
         #endregion
 
         #region Constructor(s)
 
-        #region AuthorizeResponse(IdTagInfo)
+        #region AuthorizeResponse(Request, IdTagInfo)
 
         /// <summary>
         /// Create a new OCPP authorize response.
         /// </summary>
+        /// <param name="Request">The related authorize request.</param>
         /// <param name="IdTagInfo">An identification tag info.</param>
-        public AuthorizeResponse(IdTagInfo  IdTagInfo)
+        public AuthorizeResponse(CP.AuthorizeRequest  Request,
+                                 IdTagInfo            IdTagInfo)
 
-            : base(Result.OK())
+            : base(Request, Result.OK())
 
         {
 
@@ -72,14 +75,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region AuthorizeResponse(Result)
+        #region AuthorizeResponse(Request, Result)
 
         /// <summary>
         /// Create a new OCPP authorize response.
         /// </summary>
-        public AuthorizeResponse(Result Result)
+        /// <param name="Request">The related authorize request.</param>
+        /// <param name="Result">An OCPP result.</param>
+        public AuthorizeResponse(CP.AuthorizeRequest  Request,
+                                 Result               Result)
 
-            : base(Result)
+            : base(Request, Result)
 
         {
 
@@ -125,13 +131,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="AuthorizeResponseXML">The XML to parse.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AuthorizeResponse Parse(XElement             AuthorizeResponseXML,
+        public static AuthorizeResponse Parse(CP.AuthorizeRequest  Request,
+                                              XElement             AuthorizeResponseXML,
                                               OnExceptionDelegate  OnException = null)
         {
 
             AuthorizeResponse _AuthorizeResponse;
 
-            if (TryParse(AuthorizeResponseXML, out _AuthorizeResponse, OnException))
+            if (TryParse(Request, AuthorizeResponseXML, out _AuthorizeResponse, OnException))
                 return _AuthorizeResponse;
 
             return null;
@@ -147,13 +154,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="AuthorizeResponseText">The text to parse.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AuthorizeResponse Parse(String               AuthorizeResponseText,
+        public static AuthorizeResponse Parse(CP.AuthorizeRequest  Request,
+                                              String               AuthorizeResponseText,
                                               OnExceptionDelegate  OnException = null)
         {
 
             AuthorizeResponse _AuthorizeResponse;
 
-            if (TryParse(AuthorizeResponseText, out _AuthorizeResponse, OnException))
+            if (TryParse(Request, AuthorizeResponseText, out _AuthorizeResponse, OnException))
                 return _AuthorizeResponse;
 
             return null;
@@ -170,7 +178,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="AuthorizeResponseXML">The XML to parse.</param>
         /// <param name="AuthorizeResponse">The parsed authorize response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement               AuthorizeResponseXML,
+        public static Boolean TryParse(CP.AuthorizeRequest    Request,
+                                       XElement               AuthorizeResponseXML,
                                        out AuthorizeResponse  AuthorizeResponse,
                                        OnExceptionDelegate    OnException  = null)
         {
@@ -182,6 +191,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
 
                 AuthorizeResponse = new AuthorizeResponse(
+
+                                        Request,
+
                                         new IdTagInfo(
 
                                             IdTagInfoXML.MapEnumValues     (OCPPNS.OCPPv1_6_CS + "status",
@@ -193,7 +205,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                             IdTagInfoXML.MapValueOrNull    (OCPPNS.OCPPv1_6_CS + "parentIdTag",
                                                                             IdToken.Parse)
 
-                                    )   );
+                                        )
+
+                                    );
 
                 return true;
 
@@ -220,7 +234,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="AuthorizeResponseText">The text to parse.</param>
         /// <param name="AuthorizeResponse">The parsed authorize response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                 AuthorizeResponseText,
+        public static Boolean TryParse(CP.AuthorizeRequest    Request,
+                                       String                 AuthorizeResponseText,
                                        out AuthorizeResponse  AuthorizeResponse,
                                        OnExceptionDelegate    OnException  = null)
         {
@@ -228,7 +243,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(AuthorizeResponseText).Root,
+                if (TryParse(Request,
+                             XDocument.Parse(AuthorizeResponseText).Root,
                              out AuthorizeResponse,
                              OnException))
 

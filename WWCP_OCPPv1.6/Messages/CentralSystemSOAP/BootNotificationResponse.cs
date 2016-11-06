@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP boot notification response.
     /// </summary>
-    public class BootNotificationResponse : AResponse<BootNotificationResponse>
+    public class BootNotificationResponse : AResponse<CP.BootNotificationRequest, BootNotificationResponse>
     {
 
         #region Properties
@@ -61,26 +61,28 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The boot notification failed.
         /// </summary>
-        public static BootNotificationResponse Failed
-            => new BootNotificationResponse(Result.Server());
+        public static BootNotificationResponse Failed(CP.BootNotificationRequest Request)
+            => new BootNotificationResponse(Request, Result.Server());
 
         #endregion
 
         #region Constructor(s)
 
-        #region BootNotificationResponse(Status, CurrentTime, Interval)
+        #region BootNotificationResponse(Request, Status, CurrentTime, Interval)
 
         /// <summary>
         /// Create a new OCPP boot notification response.
         /// </summary>
+        /// <param name="Request">The related boot notification request.</param>
         /// <param name="Status">The registration status.</param>
         /// <param name="CurrentTime">The current time at the central system.</param>
         /// <param name="Interval">When the registration status is 'accepted', the interval defines the heartbeat interval in seconds. In all other cases, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.</param>
-        public BootNotificationResponse(RegistrationStatus  Status,
-                                        DateTime            CurrentTime,
-                                        TimeSpan            Interval)
+        public BootNotificationResponse(CP.BootNotificationRequest  Request,
+                                        RegistrationStatus          Status,
+                                        DateTime                    CurrentTime,
+                                        TimeSpan                    Interval)
 
-            : base(Result.OK())
+            : base(Request, Result.OK())
 
         {
 
@@ -92,14 +94,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region BootNotificationResponse(Result)
+        #region BootNotificationResponse(Request, Result)
 
         /// <summary>
         /// Create a new OCPP boot notification response.
         /// </summary>
-        public BootNotificationResponse(Result Result)
+        /// <param name="Request">The related authorize request.</param>
+        /// <param name="Result">An OCPP result.</param>
+        public BootNotificationResponse(CP.BootNotificationRequest  Request,
+                                        Result                      Result)
 
-            : base(Result)
+            : base(Request, Result)
 
         {
 
@@ -139,13 +144,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="BootNotificationResponseXML">The XML to parse.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static BootNotificationResponse Parse(XElement             BootNotificationResponseXML,
-                                                     OnExceptionDelegate  OnException = null)
+        public static BootNotificationResponse Parse(CP.BootNotificationRequest  Request,
+                                                     XElement                    BootNotificationResponseXML,
+                                                     OnExceptionDelegate         OnException = null)
         {
 
             BootNotificationResponse _BootNotificationResponse;
 
-            if (TryParse(BootNotificationResponseXML, out _BootNotificationResponse, OnException))
+            if (TryParse(Request, BootNotificationResponseXML, out _BootNotificationResponse, OnException))
                 return _BootNotificationResponse;
 
             return null;
@@ -161,13 +167,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="BootNotificationResponseText">The text to parse.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static BootNotificationResponse Parse(String               BootNotificationResponseText,
-                                                     OnExceptionDelegate  OnException = null)
+        public static BootNotificationResponse Parse(CP.BootNotificationRequest  Request,
+                                                     String                      BootNotificationResponseText,
+                                                     OnExceptionDelegate         OnException = null)
         {
 
             BootNotificationResponse _BootNotificationResponse;
 
-            if (TryParse(BootNotificationResponseText, out _BootNotificationResponse, OnException))
+            if (TryParse(Request, BootNotificationResponseText, out _BootNotificationResponse, OnException))
                 return _BootNotificationResponse;
 
             return null;
@@ -184,7 +191,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="BootNotificationResponseXML">The XML to parse.</param>
         /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                      BootNotificationResponseXML,
+        public static Boolean TryParse(CP.BootNotificationRequest    Request,
+                                       XElement                      BootNotificationResponseXML,
                                        out BootNotificationResponse  BootNotificationResponse,
                                        OnExceptionDelegate           OnException  = null)
         {
@@ -193,6 +201,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             {
 
                 BootNotificationResponse = new BootNotificationResponse(
+
+                                               Request,
 
                                                BootNotificationResponseXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CS + "status",
                                                                                                XML_IO.AsRegistrationStatus),
@@ -230,7 +240,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="BootNotificationResponseText">The text to parse.</param>
         /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                        BootNotificationResponseText,
+        public static Boolean TryParse(CP.BootNotificationRequest    Request,
+                                       String                        BootNotificationResponseText,
                                        out BootNotificationResponse  BootNotificationResponse,
                                        OnExceptionDelegate           OnException  = null)
         {
@@ -238,7 +249,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(BootNotificationResponseText).Root,
+                if (TryParse(Request,
+                             XDocument.Parse(BootNotificationResponseText).Root,
                              out BootNotificationResponse,
                              OnException))
 

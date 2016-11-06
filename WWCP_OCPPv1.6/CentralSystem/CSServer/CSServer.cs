@@ -421,7 +421,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = BootNotificationResponse.Failed;
+                        response = BootNotificationResponse.Failed(_BootNotificationRequest);
 
                 }
 
@@ -643,7 +643,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = AuthorizeResponse.Failed;
+                        response = AuthorizeResponse.Failed(_AuthorizeRequest);
 
                 }
 
