@@ -1,12 +1,12 @@
 ﻿/*
  * Copyright (c) 2014-2016 GraphDefined GmbH
- * This file is part of WWCP OCPP <https://github.com/GraphDefined/WWCP_OCPP>
+ * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
- * Licensed under the Affero GPL license, Version 3.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.gnu.org/licenses/agpl.html
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -47,7 +47,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The default HTTP/SOAP/XML server name.
         /// </summary>
-        public new const           String    DefaultHTTPServerName  = "GraphDefined OCPP " + Version.Number + " HTTP/SOAP/XML Charge Point Server API";
+        public new const           String    DefaultHTTPServerName  = "GraphDefined OCPP " + Version.Number + " HTTP/SOAP/XML Charge Point API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server TCP port.
@@ -168,26 +168,31 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region CPServer(HTTPServerName, TCPPort = null, URIPrefix = DefaultURIPrefix, DNSClient = null, AutoStart = false)
+        #region CPServer(HTTPServerName, TCPPort = default, URIPrefix = default, ContentType = default, DNSClient = null, AutoStart = false)
 
         /// <summary>
-        /// Initialize a new HTTP server for the OCPP HTTP/SOAP/XML Central System Server API using IPAddress.Any.
+        /// Initialize a new HTTP server for the OCPP HTTP/SOAP/XML Charge Point API.
         /// </summary>
         /// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
         /// <param name="URIPrefix">An optional prefix for the HTTP URIs.</param>
+        /// <param name="ContentType">An optional HTTP content type to use.</param>
+        /// <param name="RegisterHTTPRootService">Register HTTP root services for sending a notice to clients connecting via HTML or plain text.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
-        /// <param name="AutoStart">Whether to start the server immediately or not.</param>
-        public CPServer(String    HTTPServerName  = DefaultHTTPServerName,
-                        IPPort    TCPPort         = null,
-                        String    URIPrefix       = DefaultURIPrefix,
-                        DNSClient DNSClient       = null,
-                        Boolean   AutoStart       = false)
+        /// <param name="AutoStart">Start the server immediately.</param>
+        public CPServer(String          HTTPServerName           = DefaultHTTPServerName,
+                        IPPort          TCPPort                  = null,
+                        String          URIPrefix                = DefaultURIPrefix,
+                        HTTPContentType ContentType              = null,
+                        Boolean         RegisterHTTPRootService  = true,
+                        DNSClient       DNSClient                = null,
+                        Boolean         AutoStart                = false)
 
             : base(HTTPServerName.IsNotNullOrEmpty() ? HTTPServerName : DefaultHTTPServerName,
-                   TCPPort ?? DefaultHTTPServerPort,
-                   URIPrefix.     IsNotNullOrEmpty() ? URIPrefix      : DefaultURIPrefix,
-                   HTTPContentType.SOAPXML_UTF8,
+                   TCPPort     ?? DefaultHTTPServerPort,
+                   URIPrefix   ?? DefaultURIPrefix,
+                   ContentType ?? DefaultContentType,
+                   RegisterHTTPRootService,
                    DNSClient,
                    AutoStart: false)
 
@@ -203,7 +208,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region CPServer(SOAPServer, URIPrefix = DefaultURIPrefix)
 
         /// <summary>
-        /// Use the given HTTP server for the OCPP HTTP/SOAP/XML Central System Server API using IPAddress.Any.
+        /// Use the given HTTP server for the OCPP HTTP/SOAP/XML Charge Point API.
         /// </summary>
         /// <param name="SOAPServer">A SOAP server.</param>
         /// <param name="URIPrefix">An optional prefix for the HTTP URIs.</param>
@@ -211,7 +216,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                         String      URIPrefix  = DefaultURIPrefix)
 
             : base(SOAPServer,
-                   URIPrefix.IsNotNullOrEmpty() ? URIPrefix : DefaultURIPrefix)
+                   URIPrefix ?? DefaultURIPrefix)
 
         { }
 
@@ -222,41 +227,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #region (override) RegisterURITemplates()
 
+        /// <summary>
+        /// Register all URI templates for this SOAP API.
+        /// </summary>
         protected override void RegisterURITemplates()
         {
-
-            #region / (HTTPRoot)
-
-            SOAPServer.AddMethodCallback(HTTPHostname.Any,
-                                         HTTPMethod.GET,
-                                         new String[] { "/", URIPrefix + "/" },
-                                         HTTPContentType.TEXT_UTF8,
-                                         HTTPDelegate: async Request => {
-
-                                             return new HTTPResponseBuilder(Request) {
-
-                                                 HTTPStatusCode  = HTTPStatusCode.BadGateway,
-                                                 ContentType     = HTTPContentType.TEXT_UTF8,
-                                                 Content         = ("Welcome at " + DefaultHTTPServerName + Environment.NewLine +
-                                                                    "This is a HTTP/SOAP/XML endpoint!" + Environment.NewLine + Environment.NewLine +
-                                                                    "Defined endpoints: " + Environment.NewLine + Environment.NewLine +
-                                                                    SOAPServer.
-                                                                        SOAPDispatchers.
-                                                                        Select(group => " - " + group.Key + Environment.NewLine +
-                                                                                        "   " + group.SelectMany(dispatcher => dispatcher.SOAPDispatches).
-                                                                                                      Select    (dispatch   => dispatch.  Description).
-                                                                                                      AggregateWith(", ")
-                                                                              ).AggregateWith(Environment.NewLine + Environment.NewLine)
-                                                                   ).ToUTF8Bytes(),
-                                                 Connection      = "close"
-
-                                             };
-
-                                         },
-                                         AllowReplacement: URIReplacement.Allow);
-
-            #endregion
-
 
             #region / - ReserveNow
 
@@ -821,7 +796,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             });
 
             #endregion
-
 
         }
 

@@ -1,12 +1,12 @@
 ﻿/*
  * Copyright (c) 2014-2016 GraphDefined GmbH
- * This file is part of WWCP OCPP <https://github.com/GraphDefined/WWCP_OCPP>
+ * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
- * Licensed under the Affero GPL license, Version 3.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.gnu.org/licenses/agpl.html
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -47,22 +47,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The default HTTP/SOAP/XML server name.
         /// </summary>
-        public new const           String    DefaultHTTPServerName  = "GraphDefined OCPP " + Version.Number + " HTTP/SOAP/XML Central System Server API";
+        public new const           String           DefaultHTTPServerName  = "GraphDefined OCPP " + Version.Number + " HTTP/SOAP/XML Central System API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server TCP port.
         /// </summary>
-        public new static readonly IPPort    DefaultHTTPServerPort  = new IPPort(2010);
+        public new static readonly IPPort           DefaultHTTPServerPort  = new IPPort(2010);
 
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
         /// </summary>
-        public new const           String    DefaultURIPrefix       = Version.Number;
+        public new const           String           DefaultURIPrefix       = "";
 
         /// <summary>
-        /// The default query timeout.
+        /// The default HTTP/SOAP/XML content type.
         /// </summary>
-        public new static readonly TimeSpan  DefaultQueryTimeout    = TimeSpan.FromMinutes(1);
+        public new static readonly HTTPContentType  DefaultContentType     = HTTPContentType.XMLTEXT_UTF8;
+
+        /// <summary>
+        /// The default request timeout.
+        /// </summary>
+        public new static readonly TimeSpan         DefaultRequestTimeout  = TimeSpan.FromMinutes(1);
 
         #endregion
 
@@ -264,26 +269,31 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region CSServer(HTTPServerName, TCPPort = null, URIPrefix = DefaultURIPrefix, DNSClient = null, AutoStart = false)
+        #region CSServer(HTTPServerName, TCPPort = default, URIPrefix = default, ContentType = default, DNSClient = null, AutoStart = false)
 
         /// <summary>
-        /// Initialize a new HTTP server for the OCPP HTTP/SOAP/XML Central System Server API using IPAddress.Any.
+        /// Initialize a new HTTP server for the OCPP HTTP/SOAP/XML Central System API.
         /// </summary>
         /// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
         /// <param name="URIPrefix">An optional prefix for the HTTP URIs.</param>
+        /// <param name="ContentType">An optional HTTP content type to use.</param>
+        /// <param name="RegisterHTTPRootService">Register HTTP root services for sending a notice to clients connecting via HTML or plain text.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
-        /// <param name="AutoStart">Whether to start the server immediately or not.</param>
-        public CSServer(String    HTTPServerName  = DefaultHTTPServerName,
-                        IPPort    TCPPort         = null,
-                        String    URIPrefix       = DefaultURIPrefix,
-                        DNSClient DNSClient       = null,
-                        Boolean   AutoStart       = false)
+        /// <param name="AutoStart">Start the server immediately.</param>
+        public CSServer(String          HTTPServerName           = DefaultHTTPServerName,
+                        IPPort          TCPPort                  = null,
+                        String          URIPrefix                = DefaultURIPrefix,
+                        HTTPContentType ContentType              = null,
+                        Boolean         RegisterHTTPRootService  = true,
+                        DNSClient       DNSClient                = null,
+                        Boolean         AutoStart                = false)
 
             : base(HTTPServerName.IsNotNullOrEmpty() ? HTTPServerName : DefaultHTTPServerName,
-                   TCPPort ?? DefaultHTTPServerPort,
-                   URIPrefix.     IsNotNullOrEmpty() ? URIPrefix      : DefaultURIPrefix,
-                   HTTPContentType.SOAPXML_UTF8,
+                   TCPPort     ?? DefaultHTTPServerPort,
+                   URIPrefix   ?? DefaultURIPrefix,
+                   ContentType ?? DefaultContentType,
+                   RegisterHTTPRootService,
                    DNSClient,
                    AutoStart: false)
 
@@ -299,7 +309,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region CSServer(SOAPServer, URIPrefix = DefaultURIPrefix)
 
         /// <summary>
-        /// Use the given HTTP server for the OCPP HTTP/SOAP/XML Central System Server API using IPAddress.Any.
+        /// Use the given HTTP server for the OCPP HTTP/SOAP/XML Central System API.
         /// </summary>
         /// <param name="SOAPServer">A SOAP server.</param>
         /// <param name="URIPrefix">An optional prefix for the HTTP URIs.</param>
@@ -307,7 +317,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                         String      URIPrefix  = DefaultURIPrefix)
 
             : base(SOAPServer,
-                   URIPrefix.IsNotNullOrEmpty() ? URIPrefix : DefaultURIPrefix)
+                   URIPrefix ?? DefaultURIPrefix)
 
         { }
 
@@ -318,41 +328,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #region (override) RegisterURITemplates()
 
+        /// <summary>
+        /// Register all URI templates for this SOAP API.
+        /// </summary>
         protected override void RegisterURITemplates()
         {
-
-            #region / (HTTPRoot)
-
-            SOAPServer.AddMethodCallback(HTTPHostname.Any,
-                                         HTTPMethod.GET,
-                                         new String[] { "/", URIPrefix + "/" },
-                                         HTTPContentType.TEXT_UTF8,
-                                         HTTPDelegate: async Request => {
-
-                                             return new HTTPResponseBuilder(Request) {
-
-                                                 HTTPStatusCode  = HTTPStatusCode.BadGateway,
-                                                 ContentType     = HTTPContentType.TEXT_UTF8,
-                                                 Content         = ("Welcome at " + DefaultHTTPServerName + Environment.NewLine +
-                                                                    "This is a HTTP/SOAP/XML endpoint!" + Environment.NewLine + Environment.NewLine +
-                                                                    "Defined endpoints: " + Environment.NewLine + Environment.NewLine +
-                                                                    SOAPServer.
-                                                                        SOAPDispatchers.
-                                                                        Select(group => " - " + group.Key + Environment.NewLine +
-                                                                                        "   " + group.SelectMany(dispatcher => dispatcher.SOAPDispatches).
-                                                                                                      Select    (dispatch   => dispatch.  Description).
-                                                                                                      AggregateWith(", ")
-                                                                              ).AggregateWith(Environment.NewLine + Environment.NewLine)
-                                                                   ).ToUTF8Bytes(),
-                                                 Connection      = "close"
-
-                                             };
-
-                                         },
-                                         AllowReplacement: URIReplacement.Allow);
-
-            #endregion
-
 
             #region / - BootNotification
 
@@ -408,7 +388,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                            _BootNotificationRequest.IMSI,
                                            _BootNotificationRequest.MeterType,
                                            _BootNotificationRequest.MeterSerialNumber,
-                                           DefaultQueryTimeout)).
+                                           DefaultRequestTimeout)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -518,7 +498,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
                                            _OCPPHeader.ChargeBoxIdentity,
-                                           DefaultQueryTimeout)).
+                                           DefaultRequestTimeout)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -630,7 +610,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                            Request.EventTrackingId,
                                            _OCPPHeader.ChargeBoxIdentity,
                                            _AuthorizeRequest.IdTag,
-                                           DefaultQueryTimeout)).
+                                           DefaultRequestTimeout)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -745,7 +725,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                            _StartTransactionRequest.Timestamp,
                                            _StartTransactionRequest.MeterStart,
                                            _StartTransactionRequest.ReservationId,
-                                           DefaultQueryTimeout)).
+                                           DefaultRequestTimeout)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -862,7 +842,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                            _StatusNotificationRequest.StatusTimestamp,
                                            _StatusNotificationRequest.VendorId,
                                            _StatusNotificationRequest.VendorErrorCode,
-                                           DefaultQueryTimeout)).
+                                           DefaultRequestTimeout)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -975,7 +955,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                            _MeterValuesRequest.ConnectorId,
                                            _MeterValuesRequest.TransactionId,
                                            _MeterValuesRequest.MeterValues,
-                                           DefaultQueryTimeout)).
+                                           DefaultRequestTimeout)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -1091,7 +1071,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                            _StopTransactionRequest.IdTag,
                                            _StopTransactionRequest.Reason,
                                            _StopTransactionRequest.TransactionData,
-                                           DefaultQueryTimeout)).
+                                           DefaultRequestTimeout)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -1205,7 +1185,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                            _DataTransferRequest.VendorId,
                                            _DataTransferRequest.MessageId,
                                            _DataTransferRequest.Data,
-                                           DefaultQueryTimeout)).
+                                           DefaultRequestTimeout)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -1316,7 +1296,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                            Request.EventTrackingId,
                                            _OCPPHeader.ChargeBoxIdentity,
                                            _DiagnosticsStatusNotificationRequest.Status,
-                                           DefaultQueryTimeout)).
+                                           DefaultRequestTimeout)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -1427,7 +1407,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                            Request.EventTrackingId,
                                            _OCPPHeader.ChargeBoxIdentity,
                                            _FirmwareStatusNotificationRequest.Status,
-                                           DefaultQueryTimeout)).
+                                           DefaultRequestTimeout)).
                                       ToArray();
 
                     if (results.Length > 0)
