@@ -115,17 +115,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_5
         /// <summary>
         /// An event sent whenever an authorize SOAP request was received.
         /// </summary>
-        public event RequestLogHandler    OnAuthorizeSOAPRequest;
+        public event RequestLogHandler                OnAuthorizeSOAPRequest;
 
         /// <summary>
         /// An event sent whenever an authorize SOAP response was sent.
         /// </summary>
-        public event AccessLogHandler     OnAuthorizeSOAPResponse;
+        public event AccessLogHandler                 OnAuthorizeSOAPResponse;
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
         /// </summary>
-        public event OnAuthorizeDelegate  OnAuthorizeRequest;
+        public event OnAuthorizeStartRequestDelegate  OnAuthorizeRequest;
 
         #endregion
 
@@ -144,7 +144,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_5
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        public event OnAuthorizeDelegate  OnStartTransactionRequest;
+        public event OnAuthorizeStartRequestDelegate  OnStartTransactionRequest;
 
         #endregion
 
@@ -163,7 +163,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_5
         /// <summary>
         /// An event sent whenever a status notification request was received.
         /// </summary>
-        public event OnAuthorizeDelegate  OnStatusNotificationRequest;
+        public event OnAuthorizeStartRequestDelegate  OnStatusNotificationRequest;
 
         #endregion
 
@@ -182,7 +182,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_5
         /// <summary>
         /// An event sent whenever a meter values request was received.
         /// </summary>
-        public event OnAuthorizeDelegate  OnMeterValuesRequest;
+        public event OnAuthorizeStartRequestDelegate  OnMeterValuesRequest;
 
         #endregion
 
