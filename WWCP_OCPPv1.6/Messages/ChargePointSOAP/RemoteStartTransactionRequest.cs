@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2016 GraphDefined GmbH
+ * Copyright (c) 2014-2017 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -150,7 +150,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //             </ns:chargingSchedule>
         //          </ns:chargingProfile>
         //
-        //       </ns:remoteStartTransactionRequest>        //    </soap:Body>
+        //       </ns:remoteStartTransactionRequest>
+        //    </soap:Body>
         //
         // </soap:Envelope>
 
