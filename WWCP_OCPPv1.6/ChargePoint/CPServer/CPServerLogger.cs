@@ -61,9 +61,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="CPServer">A OCPP charge point SOAP server.</param>
         /// <param name="Context">A context of this API.</param>
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CPServerLogger(CPServer                    CPServer,
-                               String                       Context         = DefaultContext,
-                               Func<String, String, String> LogFileCreator  = null)
+        public CPServerLogger(CPServer                 CPServer,
+                               String                  Context         = DefaultContext,
+                               LogfileCreatorDelegate  LogFileCreator  = null)
 
             : this(CPServer,
                    Context.IsNotNullOrEmpty() ? Context : DefaultContext,
@@ -102,25 +102,25 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="LogHTTPError_toHTTPSSE">A delegate to log HTTP errors to a HTTP server sent events source.</param>
         /// 
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CPServerLogger(CPServer                      CPServer,
-                              String                        Context,
+        public CPServerLogger(CPServer                    CPServer,
+                              String                      Context,
 
-                              HTTPRequestLoggerDelegate     LogHTTPRequest_toConsole,
-                              HTTPResponseLoggerDelegate    LogHTTPResponse_toConsole,
-                              HTTPRequestLoggerDelegate     LogHTTPRequest_toDisc,
-                              HTTPResponseLoggerDelegate    LogHTTPResponse_toDisc,
+                              HTTPRequestLoggerDelegate   LogHTTPRequest_toConsole,
+                              HTTPResponseLoggerDelegate  LogHTTPResponse_toConsole,
+                              HTTPRequestLoggerDelegate   LogHTTPRequest_toDisc,
+                              HTTPResponseLoggerDelegate  LogHTTPResponse_toDisc,
 
-                              HTTPRequestLoggerDelegate     LogHTTPRequest_toNetwork   = null,
-                              HTTPResponseLoggerDelegate    LogHTTPResponse_toNetwork  = null,
-                              HTTPRequestLoggerDelegate     LogHTTPRequest_toHTTPSSE   = null,
-                              HTTPResponseLoggerDelegate    LogHTTPResponse_toHTTPSSE  = null,
+                              HTTPRequestLoggerDelegate   LogHTTPRequest_toNetwork    = null,
+                              HTTPResponseLoggerDelegate  LogHTTPResponse_toNetwork   = null,
+                              HTTPRequestLoggerDelegate   LogHTTPRequest_toHTTPSSE    = null,
+                              HTTPResponseLoggerDelegate  LogHTTPResponse_toHTTPSSE   = null,
 
-                              HTTPResponseLoggerDelegate    LogHTTPError_toConsole     = null,
-                              HTTPResponseLoggerDelegate    LogHTTPError_toDisc        = null,
-                              HTTPResponseLoggerDelegate    LogHTTPError_toNetwork     = null,
-                              HTTPResponseLoggerDelegate    LogHTTPError_toHTTPSSE     = null,
+                              HTTPResponseLoggerDelegate  LogHTTPError_toConsole      = null,
+                              HTTPResponseLoggerDelegate  LogHTTPError_toDisc         = null,
+                              HTTPResponseLoggerDelegate  LogHTTPError_toNetwork      = null,
+                              HTTPResponseLoggerDelegate  LogHTTPError_toHTTPSSE      = null,
 
-                              Func<String, String, String>  LogFileCreator             = null)
+                              LogfileCreatorDelegate      LogFileCreator              = null)
 
             : base(CPServer.SOAPServer,
                    Context.IsNotNullOrEmpty() ? Context : DefaultContext,

@@ -235,16 +235,16 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                         String                               To,
 
                         String                               Hostname,
-                        IPPort                               RemotePort                  = null,
-                        RemoteCertificateValidationCallback  RemoteCertificateValidator  = null,
-                        X509Certificate                      ClientCert                  = null,
-                        String                               HTTPVirtualHost             = null,
-                        String                               URIPrefix                   = null,
-                        String                               HTTPUserAgent               = DefaultHTTPUserAgent,
-                        TimeSpan?                            RequestTimeout              = null,
-                        DNSClient                            DNSClient                   = null,
-                        String                               LoggingContext              = CSClientLogger.DefaultContext,
-                        Func<String, String, String>         LogFileCreator              = null)
+                        IPPort                               RemotePort                   = null,
+                        RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
+                        X509Certificate                      ClientCert                   = null,
+                        String                               HTTPVirtualHost              = null,
+                        String                               URIPrefix                    = null,
+                        String                               HTTPUserAgent                = DefaultHTTPUserAgent,
+                        TimeSpan?                            RequestTimeout               = null,
+                        DNSClient                            DNSClient                    = null,
+                        String                               LoggingContext               = CSClientLogger.DefaultContext,
+                        LogfileCreatorDelegate               LogFileCreator               = null)
 
             : base(ChargeBoxIdentity,
                    Hostname,
