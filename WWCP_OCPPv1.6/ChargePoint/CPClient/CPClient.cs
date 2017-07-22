@@ -348,6 +348,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="URIPrefix">An default URI prefix.</param>
         /// <param name="HTTPUserAgent">An optional HTTP user agent to use.</param>
         /// <param name="RequestTimeout">An optional timeout for upstream queries.</param>
+        /// <param name="MaxNumberOfRetries">The default number of maximum transmission retries.</param>
         /// <param name="DNSClient">An optional DNS client.</param>
         /// <param name="LoggingContext">An optional context for logging client methods.</param>
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
@@ -364,6 +365,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                         String                               URIPrefix                    = null,
                         String                               HTTPUserAgent                = DefaultHTTPUserAgent,
                         TimeSpan?                            RequestTimeout               = null,
+                        Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
                         DNSClient                            DNSClient                    = null,
                         String                               LoggingContext               = CPClientLogger.DefaultContext,
                         LogfileCreatorDelegate               LogFileCreator               = null)
@@ -379,6 +381,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                    null,
                    HTTPUserAgent,
                    RequestTimeout,
+                   MaxNumberOfRetries,
                    DNSClient)
 
         {
@@ -428,6 +431,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="URIPrefix">An default URI prefix.</param>
         /// <param name="HTTPUserAgent">An optional HTTP user agent to use.</param>
         /// <param name="RequestTimeout">An optional timeout for upstream queries.</param>
+        /// <param name="MaxNumberOfRetries">The default number of maximum transmission retries.</param>
         /// <param name="DNSClient">An optional DNS client.</param>
         public CPClient(String                               ChargeBoxIdentity,
                         String                               From,
@@ -443,6 +447,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                         String                               URIPrefix                    = null,
                         String                               HTTPUserAgent                = DefaultHTTPUserAgent,
                         TimeSpan?                            RequestTimeout               = null,
+                        Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
                         DNSClient                            DNSClient                    = null)
 
             : base(ChargeBoxIdentity,
@@ -456,6 +461,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                    null,
                    HTTPUserAgent,
                    RequestTimeout,
+                   MaxNumberOfRetries,
                    DNSClient)
 
         {
