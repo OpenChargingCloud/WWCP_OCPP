@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP CP server logger.
     /// </summary>
-    public class CPServerLogger : HTTPLogger
+    public class CPServerLogger : HTTPServerLogger
     {
 
         #region Data

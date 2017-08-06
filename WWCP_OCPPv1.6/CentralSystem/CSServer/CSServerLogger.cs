@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP CS server logger.
     /// </summary>
-    public class CSServerLogger : HTTPLogger
+    public class CSServerLogger : HTTPServerLogger
     {
 
         #region Data

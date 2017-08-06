@@ -37,7 +37,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An OCPP CS client (HTTP/SOAP client) logger.
         /// </summary>
-        public class CSClientLogger : HTTPLogger
+        public class CSClientLogger : HTTPClientLogger
         {
 
             #region Data
@@ -54,7 +54,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             /// <summary>
             /// The attached OCPP CS client.
             /// </summary>
-            public CSClient CSClient { get; }
+            public ICSClient  CSClient   { get; }
 
             #endregion
 
@@ -109,7 +109,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             /// <param name="LogHTTPError_toHTTPSSE">A delegate to log HTTP errors to a HTTP client sent events source.</param>
             /// 
             /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-            public CSClientLogger(CSClient                    CSClient,
+            public CSClientLogger(ICSClient                   CSClient,
                                   String                      Context,
 
                                   HTTPRequestLoggerDelegate   LogHTTPRequest_toConsole,
@@ -129,7 +129,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                   LogfileCreatorDelegate      LogFileCreator              = null)
 
-                : base(Context.IsNotNullOrEmpty() ? Context : DefaultContext,
+                : base(CSClient,
+                       Context.IsNotNullOrEmpty() ? Context : DefaultContext,
 
                        LogHTTPRequest_toConsole,
                        LogHTTPResponse_toConsole,
@@ -152,10 +153,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 #region Initial checks
 
-                if (CSClient == null)
-                    throw new ArgumentNullException(nameof(CSClient), "The given EMP client must not be null!");
-
-                this.CSClient = CSClient;
+                this.CSClient = CSClient ?? throw new ArgumentNullException(nameof(CSClient), "The given EMP client must not be null!");
 
                 #endregion
 

@@ -47,10 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CentralSystem\CSClient\ICSClient.cs" />
     <Compile Include="CentralSystem\CSClient\CSClientLogger.cs" />
     <Compile Include="CentralSystem\CSClient\CSClient.cs" />
     <Compile Include="CentralSystem\CSClient\CSClientDelegates.cs" />
     <Compile Include="CentralSystem\CSServer\CSServerLogger.cs" />
+    <Compile Include="ChargePoint\CPClient\ICPClient.cs" />
     <Compile Include="ChargePoint\CPClient\CPClient.cs" />
     <Compile Include="ChargePoint\CPClient\CPClientDelegates.cs" />
     <Compile Include="ChargePoint\CPClient\CPClientLogger.cs" />

@@ -40,7 +40,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP CS client.
     /// </summary>
-    public partial class CSClient : ASOAPClient
+    public partial class CSClient : ASOAPClient,
+                                    ICSClient
     {
 
         #region Data
