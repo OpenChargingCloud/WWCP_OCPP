@@ -22,7 +22,7 @@ using System.Xml.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP.NS;
+using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
 #endregion
 
@@ -280,7 +280,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(BootNotificationRequestText).Root.Element(SOAPNS.SOAPEnvelope_v1_2 + "Body"),
+                if (TryParse(XDocument.Parse(BootNotificationRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
                              out BootNotificationRequest,
                              OnException))
 

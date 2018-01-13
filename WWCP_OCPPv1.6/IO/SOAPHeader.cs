@@ -21,7 +21,7 @@ using System;
 using System.Xml.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP.NS;
+using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
 #endregion
 
@@ -304,35 +304,35 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(SOAPNS.SOAPEnvelope_v1_2 + "Header",
+            => new XElement(SOAPNS.v1_2.NS.SOAPEnvelope + "Header",
 
                    new XElement(OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity", ChargeBoxIdentity.ToString()),
 
-                   new XElement(SOAPNS.SOAPAdressing + "Action",
-                       new XAttribute(SOAPNS.SOAPEnvelope_v1_2 + "mustUnderstand", true),
+                   new XElement(SOAPNS.v1_2.NS.SOAPAdressing + "Action",
+                       new XAttribute(SOAPNS.v1_2.NS.SOAPEnvelope + "mustUnderstand", true),
                        Action),
 
-                   new XElement(SOAPNS.SOAPAdressing + "MessageID",
-                       new XAttribute(SOAPNS.SOAPEnvelope_v1_2 + "mustUnderstand", true),
+                   new XElement(SOAPNS.v1_2.NS.SOAPAdressing + "MessageID",
+                       new XAttribute(SOAPNS.v1_2.NS.SOAPEnvelope + "mustUnderstand", true),
                        MessageId),
 
                    RelatesTo.IsNotNullOrEmpty()
-                       ? new XElement(SOAPNS.SOAPAdressing + "RelatesTo",
-                             new XAttribute(SOAPNS.SOAPEnvelope_v1_2 + "mustUnderstand", true),
+                       ? new XElement(SOAPNS.v1_2.NS.SOAPAdressing + "RelatesTo",
+                             new XAttribute(SOAPNS.v1_2.NS.SOAPEnvelope + "mustUnderstand", true),
                              RelatesTo)
                        : null,
 
-                   new XElement(SOAPNS.SOAPAdressing + "From",
-                       new XAttribute(SOAPNS.SOAPEnvelope_v1_2 + "mustUnderstand", true),
+                   new XElement(SOAPNS.v1_2.NS.SOAPAdressing + "From",
+                       new XAttribute(SOAPNS.v1_2.NS.SOAPEnvelope + "mustUnderstand", true),
                        From),
 
-                   new XElement(SOAPNS.SOAPAdressing + "ReplyTo",
-                       new XAttribute(SOAPNS.SOAPEnvelope_v1_2 + "mustUnderstand", true),
-                       new XElement  (SOAPNS.SOAPEnvelope_v1_2 + "Address",        "http://www.w3.org/2005/08/addressing/anonymous")
+                   new XElement(SOAPNS.v1_2.NS.SOAPAdressing + "ReplyTo",
+                       new XAttribute(SOAPNS.v1_2.NS.SOAPEnvelope + "mustUnderstand", true),
+                       new XElement  (SOAPNS.v1_2.NS.SOAPEnvelope + "Address",        "http://www.w3.org/2005/08/addressing/anonymous")
                    ),
 
-                   new XElement(SOAPNS.SOAPAdressing + "To",
-                       new XAttribute(SOAPNS.SOAPEnvelope_v1_2 + "mustUnderstand", true),
+                   new XElement(SOAPNS.v1_2.NS.SOAPAdressing + "To",
+                       new XAttribute(SOAPNS.v1_2.NS.SOAPEnvelope + "mustUnderstand", true),
                        To)
 
                );

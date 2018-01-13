@@ -22,7 +22,7 @@ using System.Xml.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP.NS;
+using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
 #endregion
 
@@ -156,10 +156,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             return XMLNamespaces(
 
-                new XElement(SOAPNS.SOAPEnvelope_v1_2 + "Envelope",
-                    new XAttribute(XNamespace.Xmlns + "SOAP",  SOAPNS.SOAPEnvelope_v1_2.NamespaceName),
-                    new XAttribute(XNamespace.Xmlns + "CS",    OCPPNS.OCPPv1_6_CS.      NamespaceName),
-                    new XAttribute(XNamespace.Xmlns + "CP",    OCPPNS.OCPPv1_6_CP.      NamespaceName),
+                new XElement(SOAPNS.v1_2.NS.SOAPEnvelope + "Envelope",
+                    new XAttribute(XNamespace.Xmlns + "SOAP",  SOAPNS.v1_2.NS.SOAPEnvelope.NamespaceName),
+                    new XAttribute(XNamespace.Xmlns + "CS",    OCPPNS.OCPPv1_6_CS.         NamespaceName),
+                    new XAttribute(XNamespace.Xmlns + "CP",    OCPPNS.OCPPv1_6_CP.         NamespaceName),
 
                     new SOAPHeader(ChargeBoxIdentity,
                                    Action,
@@ -168,7 +168,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                    From,
                                    To),
 
-                    new XElement(SOAPNS.SOAPEnvelope_v1_2 + "Body",   SOAPBody)
+                    new XElement(SOAPNS.v1_2.NS.SOAPEnvelope + "Body",   SOAPBody)
 
                 )
 

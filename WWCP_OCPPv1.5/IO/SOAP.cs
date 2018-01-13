@@ -56,10 +56,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_5
 
             return XMLNamespaces(
 
-                new XElement(SOAPNS.NS.SOAPEnvelope_v1_2 + "Envelope",
-                    new XAttribute(XNamespace.Xmlns + "SOAP",  SOAPNS.NS.SOAPEnvelope_v1_2.NamespaceName),
-                    new XAttribute(XNamespace.Xmlns + "CS",    OCPPNS.OCPPv1_5_CS.    NamespaceName),
-                    new XAttribute(XNamespace.Xmlns + "CP",    OCPPNS.OCPPv1_5_CP.    NamespaceName),
+                new XElement(SOAPNS.v1_2.NS.SOAPEnvelope + "Envelope",
+                    new XAttribute(XNamespace.Xmlns + "SOAP",  SOAPNS.v1_2.NS.SOAPEnvelope.NamespaceName),
+                    new XAttribute(XNamespace.Xmlns + "CS",    OCPPNS.OCPPv1_5_CS.         NamespaceName),
+                    new XAttribute(XNamespace.Xmlns + "CP",    OCPPNS.OCPPv1_5_CP.         NamespaceName),
 
                     // <soap:Header>
                     //   <ns:chargeBoxIdentity>Belectric_Ready</ns:chargeBoxIdentity>
@@ -73,9 +73,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_5
                     //   <wsa:To>https://emobilityqs.regioit-aachen.de/SmartWheelsAccessServiceWs2/services/CentralSystemService_1_5</wsa:To>
                     //   <wsa:RelatesTo>uuid:10db04d5-9b4a-4498-b7ee-3a37d571ce65</wsa:RelatesTo>
                     // </soap:Header>
-                    new XElement(SOAPNS.NS.SOAPEnvelope_v1_2 + "Header", SOAPHeaders),
+                    new XElement(SOAPNS.v1_2.NS.SOAPEnvelope + "Header", SOAPHeaders),
 
-                    new XElement(SOAPNS.NS.SOAPEnvelope_v1_2 + "Body",   SOAPBody)
+                    new XElement(SOAPNS.v1_2.NS.SOAPEnvelope + "Body",   SOAPBody)
 
                 )
 

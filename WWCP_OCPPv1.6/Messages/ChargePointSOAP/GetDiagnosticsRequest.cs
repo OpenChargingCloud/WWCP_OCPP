@@ -22,7 +22,7 @@ using System.Xml.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP.NS;
+using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
 #endregion
 
@@ -251,7 +251,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(GetDiagnosticsRequestText).Root.Element(SOAPNS.SOAPEnvelope_v1_2 + "Body"),
+                if (TryParse(XDocument.Parse(GetDiagnosticsRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
                              out GetDiagnosticsRequest,
                              OnException))
 
