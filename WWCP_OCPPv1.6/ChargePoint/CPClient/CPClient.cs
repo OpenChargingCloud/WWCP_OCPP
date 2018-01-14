@@ -345,7 +345,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="Hostname">The OCPP hostname to connect to.</param>
         /// <param name="RemotePort">An optional OCPP TCP port to connect to.</param>
         /// <param name="RemoteCertificateValidator">A delegate to verify the remote TLS certificate.</param>
-        /// <param name="ClientCert">The TLS client certificate to use.</param>
+        /// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
         /// <param name="HTTPVirtualHost">An optional HTTP virtual host name to use.</param>
         /// <param name="URIPrefix">An default URI prefix.</param>
         /// <param name="HTTPUserAgent">An optional HTTP user agent to use.</param>
@@ -361,8 +361,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                         String                               Hostname,
                         IPPort                               RemotePort                   = null,
                         RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                        LocalCertificateSelectionCallback    LocalCertificateSelector     = null,
-                        X509Certificate                      ClientCert                   = null,
+                        LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
                         String                               HTTPVirtualHost              = null,
                         String                               URIPrefix                    = null,
                         String                               HTTPUserAgent                = DefaultHTTPUserAgent,
@@ -376,8 +375,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                    Hostname,
                    RemotePort ?? DefaultRemotePort,
                    RemoteCertificateValidator,
-                   LocalCertificateSelector,
-                   ClientCert,
+                   ClientCertificateSelector,
                    HTTPVirtualHost,
                    URIPrefix.Trim().IsNotNullOrEmpty() ? URIPrefix.Trim() : "",
                    null,
@@ -428,7 +426,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="Hostname">The OCPP hostname to connect to.</param>
         /// <param name="RemotePort">An optional OCPP TCP port to connect to.</param>
         /// <param name="RemoteCertificateValidator">A delegate to verify the remote TLS certificate.</param>
-        /// <param name="ClientCert">The TLS client certificate to use.</param>
+        /// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
         /// <param name="HTTPVirtualHost">An optional HTTP virtual host name to use.</param>
         /// <param name="URIPrefix">An default URI prefix.</param>
         /// <param name="HTTPUserAgent">An optional HTTP user agent to use.</param>
@@ -443,8 +441,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                         String                               Hostname,
                         IPPort                               RemotePort                   = null,
                         RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                        LocalCertificateSelectionCallback    LocalCertificateSelector     = null,
-                        X509Certificate                      ClientCert                   = null,
+                        LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
                         String                               HTTPVirtualHost              = null,
                         String                               URIPrefix                    = null,
                         String                               HTTPUserAgent                = DefaultHTTPUserAgent,
@@ -456,8 +453,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                    Hostname,
                    RemotePort ?? DefaultRemotePort,
                    RemoteCertificateValidator,
-                   LocalCertificateSelector,
-                   ClientCert,
+                   ClientCertificateSelector,
                    HTTPVirtualHost,
                    URIPrefix.Trim().IsNotNullOrEmpty() ? URIPrefix.Trim() : "",
                    null,
@@ -606,7 +602,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                     URIPrefix,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
-                                                    ClientCert,
                                                     UserAgent,
                                                     RequestTimeout,
                                                     DNSClient))
@@ -798,7 +793,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                     URIPrefix,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
-                                                    ClientCert,
                                                     UserAgent,
                                                     RequestTimeout,
                                                     DNSClient))
@@ -991,7 +985,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                     URIPrefix,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
-                                                    ClientCert,
                                                     UserAgent,
                                                     RequestTimeout,
                                                     DNSClient))
@@ -1193,7 +1186,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                     URIPrefix,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
-                                                    ClientCert,
                                                     UserAgent,
                                                     RequestTimeout,
                                                     DNSClient))
@@ -1406,7 +1398,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                     URIPrefix,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
-                                                    ClientCert,
                                                     UserAgent,
                                                     RequestTimeout,
                                                     DNSClient))
@@ -1611,7 +1602,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                     URIPrefix,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
-                                                    ClientCert,
                                                     UserAgent,
                                                     RequestTimeout,
                                                     DNSClient))
@@ -1821,7 +1811,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                     URIPrefix,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
-                                                    ClientCert,
                                                     UserAgent,
                                                     RequestTimeout,
                                                     DNSClient))
@@ -2033,7 +2022,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                     URIPrefix,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
-                                                    ClientCert,
                                                     UserAgent,
                                                     RequestTimeout,
                                                     DNSClient))
@@ -2222,7 +2210,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                     URIPrefix,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
-                                                    ClientCert,
                                                     UserAgent,
                                                     RequestTimeout,
                                                     DNSClient))
@@ -2409,7 +2396,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                     URIPrefix,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
-                                                    ClientCert,
                                                     UserAgent,
                                                     RequestTimeout,
                                                     DNSClient))
