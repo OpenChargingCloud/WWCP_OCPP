@@ -340,7 +340,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (override) ToString()
 
         /// <summary>
-        /// Return a string representation of this object.
+        /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
             => "List version " + ListVersion.ToString();
