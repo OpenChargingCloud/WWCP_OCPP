@@ -50,12 +50,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_5
         /// <summary>
         /// The default HTTP/SOAP/XML server TCP port.
         /// </summary>
-        public new static readonly IPPort           DefaultHTTPServerPort  = new IPPort(2010);
+        public new static readonly IPPort           DefaultHTTPServerPort  = IPPort.Parse(2010);
 
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
         /// </summary>
-        public new const           String           DefaultURIPrefix       = "";
+        public new static readonly HTTPURI          DefaultURIPrefix       = HTTPURI.Parse("/");
 
         /// <summary>
         /// The default HTTP/SOAP/XML content type.
@@ -280,8 +280,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_5
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
         public CSServer(String          HTTPServerName           = DefaultHTTPServerName,
-                        IPPort          TCPPort                  = null,
-                        String          URIPrefix                = DefaultURIPrefix,
+                        IPPort?         TCPPort                  = null,
+                        HTTPURI?        URIPrefix                = null,
                         HTTPContentType ContentType              = null,
                         Boolean         RegisterHTTPRootService  = true,
                         DNSClient       DNSClient                = null,
@@ -314,7 +314,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_5
         /// <param name="SOAPServer">A SOAP server.</param>
         /// <param name="URIPrefix">An optional prefix for the HTTP URIs.</param>
         public CSServer(SOAPServer  SOAPServer,
-                        String      URIPrefix  = DefaultURIPrefix)
+                        HTTPURI?    URIPrefix = null)
 
             : base(SOAPServer,
                    URIPrefix ?? DefaultURIPrefix)
