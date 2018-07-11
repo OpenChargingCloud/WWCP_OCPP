@@ -163,7 +163,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, KeyValueXML, e);
+                OnException?.Invoke(DateTime.UtcNow, KeyValueXML, e);
 
                 KeyValue = default(KeyValue);
                 return false;
@@ -199,7 +199,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, KeyValueText, e);
+                OnException?.Invoke(DateTime.UtcNow, KeyValueText, e);
             }
 
             KeyValue = default(KeyValue);

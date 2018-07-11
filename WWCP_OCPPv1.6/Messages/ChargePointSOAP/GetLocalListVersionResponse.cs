@@ -176,7 +176,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, GetLocalListVersionResponseXML, e);
+                OnException?.Invoke(DateTime.UtcNow, GetLocalListVersionResponseXML, e);
 
                 GetLocalListVersionResponse = null;
                 return false;
@@ -212,7 +212,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, GetLocalListVersionResponseText, e);
+                OnException?.Invoke(DateTime.UtcNow, GetLocalListVersionResponseText, e);
             }
 
             GetLocalListVersionResponse = null;

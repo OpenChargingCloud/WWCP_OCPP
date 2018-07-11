@@ -241,7 +241,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, SampledValueXML, e);
+                OnException?.Invoke(DateTime.UtcNow, SampledValueXML, e);
 
                 SampledValue = null;
                 return false;
@@ -277,7 +277,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, SampledValueText, e);
+                OnException?.Invoke(DateTime.UtcNow, SampledValueText, e);
             }
 
             SampledValue = null;

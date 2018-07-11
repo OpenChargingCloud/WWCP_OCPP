@@ -206,7 +206,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, GetConfigurationResponseXML, e);
+                OnException?.Invoke(DateTime.UtcNow, GetConfigurationResponseXML, e);
 
                 GetConfigurationResponse = null;
                 return false;
@@ -242,7 +242,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, GetConfigurationResponseText, e);
+                OnException?.Invoke(DateTime.UtcNow, GetConfigurationResponseText, e);
             }
 
             GetConfigurationResponse = null;

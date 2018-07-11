@@ -194,7 +194,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, StopTransactionResponseXML, e);
+                OnException?.Invoke(DateTime.UtcNow, StopTransactionResponseXML, e);
 
                 StopTransactionResponse = null;
                 return false;
@@ -230,7 +230,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, StopTransactionResponseText, e);
+                OnException?.Invoke(DateTime.UtcNow, StopTransactionResponseText, e);
             }
 
             StopTransactionResponse = null;

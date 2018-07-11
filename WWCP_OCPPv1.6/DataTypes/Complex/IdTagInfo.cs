@@ -170,7 +170,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, IdTagInfoXML, e);
+                OnException?.Invoke(DateTime.UtcNow, IdTagInfoXML, e);
 
                 IdTagInfo = default(IdTagInfo);
                 return false;
@@ -206,7 +206,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, IdTagInfoText, e);
+                OnException?.Invoke(DateTime.UtcNow, IdTagInfoText, e);
             }
 
             IdTagInfo = default(IdTagInfo);

@@ -170,7 +170,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, TriggerMessageRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, TriggerMessageRequestXML, e);
 
                 TriggerMessageRequest = null;
                 return false;
@@ -206,7 +206,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, TriggerMessageRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, TriggerMessageRequestText, e);
             }
 
             TriggerMessageRequest = null;

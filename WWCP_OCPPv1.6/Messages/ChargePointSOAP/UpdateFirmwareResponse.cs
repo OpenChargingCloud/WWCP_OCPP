@@ -152,7 +152,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, UpdateFirmwareResponseXML, e);
+                OnException?.Invoke(DateTime.UtcNow, UpdateFirmwareResponseXML, e);
 
                 UpdateFirmwareResponse = null;
                 return false;
@@ -188,7 +188,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, UpdateFirmwareResponseText, e);
+                OnException?.Invoke(DateTime.UtcNow, UpdateFirmwareResponseText, e);
             }
 
             UpdateFirmwareResponse = null;

@@ -169,7 +169,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, ChargingSchedulePeriodXML, e);
+                OnException?.Invoke(DateTime.UtcNow, ChargingSchedulePeriodXML, e);
 
                 ChargingSchedulePeriod = default(ChargingSchedulePeriod);
                 return false;
@@ -205,7 +205,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, ChargingSchedulePeriodText, e);
+                OnException?.Invoke(DateTime.UtcNow, ChargingSchedulePeriodText, e);
             }
 
             ChargingSchedulePeriod = default(ChargingSchedulePeriod);

@@ -194,7 +194,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, DataTransferResponseXML, e);
+                OnException?.Invoke(DateTime.UtcNow, DataTransferResponseXML, e);
 
                 DataTransferResponse = null;
                 return false;
@@ -230,7 +230,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, DataTransferResponseText, e);
+                OnException?.Invoke(DateTime.UtcNow, DataTransferResponseText, e);
             }
 
             DataTransferResponse = null;

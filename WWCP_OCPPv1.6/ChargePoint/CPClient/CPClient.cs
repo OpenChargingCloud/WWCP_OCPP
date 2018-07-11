@@ -563,7 +563,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnBootNotificationRequest?.Invoke(DateTime.Now,
+                OnBootNotificationRequest?.Invoke(DateTime.UtcNow,
                                                   Timestamp.Value,
                                                   this,
                                                   ClientId,
@@ -697,7 +697,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnBootNotificationResponse?.Invoke(DateTime.Now,
+                OnBootNotificationResponse?.Invoke(DateTime.UtcNow,
                                                    Timestamp.Value,
                                                    this,
                                                    ClientId,
@@ -771,7 +771,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnHeartbeatRequest?.Invoke(DateTime.Now,
+                OnHeartbeatRequest?.Invoke(DateTime.UtcNow,
                                            Timestamp.Value,
                                            this,
                                            ClientId,
@@ -885,7 +885,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnHeartbeatResponse?.Invoke(DateTime.Now,
+                OnHeartbeatResponse?.Invoke(DateTime.UtcNow,
                                             Timestamp.Value,
                                             this,
                                             ClientId,
@@ -960,7 +960,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnAuthorizeRequest?.Invoke(DateTime.Now,
+                OnAuthorizeRequest?.Invoke(DateTime.UtcNow,
                                            Timestamp.Value,
                                            this,
                                            ClientId,
@@ -1080,7 +1080,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnAuthorizeResponse?.Invoke(DateTime.Now,
+                OnAuthorizeResponse?.Invoke(DateTime.UtcNow,
                                             Timestamp.Value,
                                             this,
                                             ClientId,
@@ -1159,7 +1159,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnStartTransactionRequest?.Invoke(DateTime.Now,
+                OnStartTransactionRequest?.Invoke(DateTime.UtcNow,
                                                   Timestamp.Value,
                                                   this,
                                                   ClientId,
@@ -1282,7 +1282,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnStartTransactionResponse?.Invoke(DateTime.Now,
+                OnStartTransactionResponse?.Invoke(DateTime.UtcNow,
                                                    Timestamp.Value,
                                                    this,
                                                    ClientId,
@@ -1369,7 +1369,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnStatusNotificationRequest?.Invoke(DateTime.Now,
+                OnStatusNotificationRequest?.Invoke(DateTime.UtcNow,
                                                     Timestamp.Value,
                                                     this,
                                                     ClientId,
@@ -1496,7 +1496,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnStatusNotificationResponse?.Invoke(DateTime.Now,
+                OnStatusNotificationResponse?.Invoke(DateTime.UtcNow,
                                                      Timestamp.Value,
                                                      this,
                                                      ClientId,
@@ -1577,7 +1577,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnMeterValuesRequest?.Invoke(DateTime.Now,
+                OnMeterValuesRequest?.Invoke(DateTime.UtcNow,
                                              Timestamp.Value,
                                              this,
                                              ClientId,
@@ -1696,7 +1696,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnMeterValuesResponse?.Invoke(DateTime.Now,
+                OnMeterValuesResponse?.Invoke(DateTime.UtcNow,
                                               Timestamp.Value,
                                               this,
                                               ClientId,
@@ -1783,7 +1783,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnStopTransactionRequest?.Invoke(DateTime.Now,
+                OnStopTransactionRequest?.Invoke(DateTime.UtcNow,
                                                  Timestamp.Value,
                                                  this,
                                                  ClientId,
@@ -1908,7 +1908,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnStopTransactionResponse?.Invoke(DateTime.Now,
+                OnStopTransactionResponse?.Invoke(DateTime.UtcNow,
                                                    Timestamp.Value,
                                                    this,
                                                    ClientId,
@@ -1993,7 +1993,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnDataTransferRequest?.Invoke(DateTime.Now,
+                OnDataTransferRequest?.Invoke(DateTime.UtcNow,
                                               Timestamp.Value,
                                               this,
                                               ClientId,
@@ -2114,7 +2114,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnDataTransferResponse?.Invoke(DateTime.Now,
+                OnDataTransferResponse?.Invoke(DateTime.UtcNow,
                                                    Timestamp.Value,
                                                    this,
                                                    ClientId,
@@ -2187,7 +2187,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnDiagnosticsStatusNotificationRequest?.Invoke(DateTime.Now,
+                OnDiagnosticsStatusNotificationRequest?.Invoke(DateTime.UtcNow,
                                                                Timestamp.Value,
                                                                this,
                                                                ClientId,
@@ -2302,7 +2302,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnDiagnosticsStatusNotificationResponse?.Invoke(DateTime.Now,
+                OnDiagnosticsStatusNotificationResponse?.Invoke(DateTime.UtcNow,
                                                                 Timestamp.Value,
                                                                 this,
                                                                 ClientId,
@@ -2373,7 +2373,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnFirmwareStatusNotificationRequest?.Invoke(DateTime.Now,
+                OnFirmwareStatusNotificationRequest?.Invoke(DateTime.UtcNow,
                                                             Timestamp.Value,
                                                             this,
                                                             ClientId,
@@ -2488,7 +2488,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                OnFirmwareStatusNotificationResponse?.Invoke(DateTime.Now,
+                OnFirmwareStatusNotificationResponse?.Invoke(DateTime.UtcNow,
                                                              Timestamp.Value,
                                                              this,
                                                              ClientId,

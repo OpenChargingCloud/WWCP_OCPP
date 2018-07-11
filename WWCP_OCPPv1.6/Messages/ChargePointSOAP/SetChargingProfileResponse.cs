@@ -175,7 +175,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, SetChargingProfileResponseXML, e);
+                OnException?.Invoke(DateTime.UtcNow, SetChargingProfileResponseXML, e);
 
                 SetChargingProfileResponse = null;
                 return false;
@@ -211,7 +211,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, SetChargingProfileResponseText, e);
+                OnException?.Invoke(DateTime.UtcNow, SetChargingProfileResponseText, e);
             }
 
             SetChargingProfileResponse = null;

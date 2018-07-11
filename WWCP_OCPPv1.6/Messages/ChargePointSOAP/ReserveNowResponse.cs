@@ -175,7 +175,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, ReserveNowResponseXML, e);
+                OnException?.Invoke(DateTime.UtcNow, ReserveNowResponseXML, e);
 
                 ReserveNowResponse = null;
                 return false;
@@ -211,7 +211,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, ReserveNowResponseText, e);
+                OnException?.Invoke(DateTime.UtcNow, ReserveNowResponseText, e);
             }
 
             ReserveNowResponse = null;

@@ -175,7 +175,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, SendLocalListResponseXML, e);
+                OnException?.Invoke(DateTime.UtcNow, SendLocalListResponseXML, e);
 
                 SendLocalListResponse = null;
                 return false;
@@ -211,7 +211,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, SendLocalListResponseText, e);
+                OnException?.Invoke(DateTime.UtcNow, SendLocalListResponseText, e);
             }
 
             SendLocalListResponse = null;

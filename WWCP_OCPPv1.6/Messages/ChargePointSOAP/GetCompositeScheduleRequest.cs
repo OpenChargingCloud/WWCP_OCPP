@@ -183,7 +183,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, GetCompositeScheduleRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, GetCompositeScheduleRequestXML, e);
 
                 GetCompositeScheduleRequest = null;
                 return false;
@@ -219,7 +219,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, GetCompositeScheduleRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, GetCompositeScheduleRequestText, e);
             }
 
             GetCompositeScheduleRequest = null;

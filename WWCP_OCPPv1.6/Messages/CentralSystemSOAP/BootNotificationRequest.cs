@@ -253,7 +253,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, BootNotificationRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, BootNotificationRequestXML, e);
 
                 BootNotificationRequest = null;
                 return false;
@@ -289,7 +289,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, BootNotificationRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, BootNotificationRequestText, e);
             }
 
             BootNotificationRequest = null;

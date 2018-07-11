@@ -150,7 +150,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, MeterValuesResponseXML, e);
+                OnException?.Invoke(DateTime.UtcNow, MeterValuesResponseXML, e);
 
                 MeterValuesResponse = null;
                 return false;
@@ -186,7 +186,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, MeterValuesResponseText, e);
+                OnException?.Invoke(DateTime.UtcNow, MeterValuesResponseText, e);
             }
 
             MeterValuesResponse = null;

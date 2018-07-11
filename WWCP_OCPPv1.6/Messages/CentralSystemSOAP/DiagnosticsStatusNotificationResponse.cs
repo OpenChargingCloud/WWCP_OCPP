@@ -150,7 +150,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, DiagnosticsStatusNotificationResponseXML, e);
+                OnException?.Invoke(DateTime.UtcNow, DiagnosticsStatusNotificationResponseXML, e);
 
                 DiagnosticsStatusNotificationResponse = null;
                 return false;
@@ -186,7 +186,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, DiagnosticsStatusNotificationResponseText, e);
+                OnException?.Invoke(DateTime.UtcNow, DiagnosticsStatusNotificationResponseText, e);
             }
 
             DiagnosticsStatusNotificationResponse = null;

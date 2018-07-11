@@ -444,7 +444,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                OnReserveNowRequest?.Invoke(DateTime.Now,
+                OnReserveNowRequest?.Invoke(DateTime.UtcNow,
                                             Timestamp.Value,
                                             this,
                                             ClientId,
@@ -568,7 +568,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                OnReserveNowResponse?.Invoke(DateTime.Now,
+                OnReserveNowResponse?.Invoke(DateTime.UtcNow,
                                              Timestamp.Value,
                                              this,
                                              ClientId,
@@ -650,7 +650,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                OnCancelReservationRequest?.Invoke(DateTime.Now,
+                OnCancelReservationRequest?.Invoke(DateTime.UtcNow,
                                                    Timestamp.Value,
                                                    this,
                                                    ClientId,
@@ -766,7 +766,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                OnCancelReservationResponse?.Invoke(DateTime.Now,
+                OnCancelReservationResponse?.Invoke(DateTime.UtcNow,
                                                     Timestamp.Value,
                                                     this,
                                                     ClientId,
@@ -851,7 +851,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                OnRemoteStartTransactionRequest?.Invoke(DateTime.Now,
+                OnRemoteStartTransactionRequest?.Invoke(DateTime.UtcNow,
                                                         Timestamp.Value,
                                                         this,
                                                         ClientId,
@@ -971,7 +971,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                OnRemoteStartTransactionResponse?.Invoke(DateTime.Now,
+                OnRemoteStartTransactionResponse?.Invoke(DateTime.UtcNow,
                                                          Timestamp.Value,
                                                          this,
                                                          ClientId,
@@ -1054,7 +1054,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                OnRemoteStopTransactionRequest?.Invoke(DateTime.Now,
+                OnRemoteStopTransactionRequest?.Invoke(DateTime.UtcNow,
                                                        Timestamp.Value,
                                                        this,
                                                        ClientId,
@@ -1170,7 +1170,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                OnRemoteStopTransactionResponse?.Invoke(DateTime.Now,
+                OnRemoteStopTransactionResponse?.Invoke(DateTime.UtcNow,
                                                         Timestamp.Value,
                                                         this,
                                                         ClientId,
@@ -1251,7 +1251,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                OnDataTransferRequest?.Invoke(DateTime.Now,
+                OnDataTransferRequest?.Invoke(DateTime.UtcNow,
                                               Timestamp.Value,
                                               this,
                                               ClientId,
@@ -1370,7 +1370,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                OnDataTransferResponse?.Invoke(DateTime.Now,
+                OnDataTransferResponse?.Invoke(DateTime.UtcNow,
                                                Timestamp.Value,
                                                this,
                                                ClientId,

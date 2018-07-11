@@ -181,7 +181,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, HeartbeatResponseXML, e);
+                OnException?.Invoke(DateTime.UtcNow, HeartbeatResponseXML, e);
 
                 HeartbeatResponse = null;
                 return false;
@@ -217,7 +217,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, HeartbeatResponseText, e);
+                OnException?.Invoke(DateTime.UtcNow, HeartbeatResponseText, e);
             }
 
             HeartbeatResponse = null;

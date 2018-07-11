@@ -204,7 +204,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, ClearChargingProfileRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, ClearChargingProfileRequestXML, e);
 
                 ClearChargingProfileRequest = null;
                 return false;
@@ -240,7 +240,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, ClearChargingProfileRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, ClearChargingProfileRequestText, e);
             }
 
             ClearChargingProfileRequest = null;

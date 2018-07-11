@@ -155,7 +155,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, DiagnosticsStatusNotificationRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, DiagnosticsStatusNotificationRequestXML, e);
 
                 DiagnosticsStatusNotificationRequest = null;
                 return false;
@@ -191,7 +191,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, DiagnosticsStatusNotificationRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, DiagnosticsStatusNotificationRequestText, e);
             }
 
             DiagnosticsStatusNotificationRequest = null;

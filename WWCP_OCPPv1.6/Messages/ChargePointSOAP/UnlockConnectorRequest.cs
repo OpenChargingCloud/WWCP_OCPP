@@ -155,7 +155,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, UnlockConnectorRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, UnlockConnectorRequestXML, e);
 
                 UnlockConnectorRequest = null;
                 return false;
@@ -191,7 +191,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, UnlockConnectorRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, UnlockConnectorRequestText, e);
             }
 
             UnlockConnectorRequest = null;

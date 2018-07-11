@@ -170,7 +170,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, AuthorizationDataXML, e);
+                OnException?.Invoke(DateTime.UtcNow, AuthorizationDataXML, e);
 
                 AuthorizationData = default(AuthorizationData);
                 return false;
@@ -206,7 +206,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, AuthorizationDataText, e);
+                OnException?.Invoke(DateTime.UtcNow, AuthorizationDataText, e);
             }
 
             AuthorizationData = default(AuthorizationData);

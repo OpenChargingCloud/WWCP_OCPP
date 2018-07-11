@@ -122,7 +122,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                               LogfileCreatorDelegate      LogFileCreator              = null)
 
-            : base(CSServer.SOAPServer,
+            : base(CSServer.SOAPServer.HTTPServer,
                    Context.IsNotNullOrEmpty() ? Context : DefaultContext,
 
                    LogHTTPRequest_toConsole,

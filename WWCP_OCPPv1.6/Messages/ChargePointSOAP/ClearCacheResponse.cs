@@ -175,7 +175,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, ClearCacheResponseXML, e);
+                OnException?.Invoke(DateTime.UtcNow, ClearCacheResponseXML, e);
 
                 ClearCacheResponse = null;
                 return false;
@@ -211,7 +211,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, ClearCacheResponseText, e);
+                OnException?.Invoke(DateTime.UtcNow, ClearCacheResponseText, e);
             }
 
             ClearCacheResponse = null;

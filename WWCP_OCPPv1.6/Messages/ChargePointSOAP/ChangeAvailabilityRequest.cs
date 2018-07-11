@@ -169,7 +169,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, ChangeAvailabilityRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, ChangeAvailabilityRequestXML, e);
 
                 ChangeAvailabilityRequest = null;
                 return false;
@@ -205,7 +205,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, ChangeAvailabilityRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, ChangeAvailabilityRequestText, e);
             }
 
             ChangeAvailabilityRequest = null;

@@ -171,7 +171,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, ChangeConfigurationRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, ChangeConfigurationRequestXML, e);
 
                 ChangeConfigurationRequest = null;
                 return false;
@@ -207,7 +207,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, ChangeConfigurationRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, ChangeConfigurationRequestText, e);
             }
 
             ChangeConfigurationRequest = null;

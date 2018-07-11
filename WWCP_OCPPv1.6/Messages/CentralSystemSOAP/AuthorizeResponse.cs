@@ -215,7 +215,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, AuthorizeResponseXML, e);
+                OnException?.Invoke(DateTime.UtcNow, AuthorizeResponseXML, e);
 
                 AuthorizeResponse = null;
                 return false;
@@ -253,7 +253,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, AuthorizeResponseText, e);
+                OnException?.Invoke(DateTime.UtcNow, AuthorizeResponseText, e);
             }
 
             AuthorizeResponse = null;

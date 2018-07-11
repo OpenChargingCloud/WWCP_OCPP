@@ -234,7 +234,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, StatusNotificationRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, StatusNotificationRequestXML, e);
 
                 StatusNotificationRequest = null;
                 return false;
@@ -270,7 +270,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, StatusNotificationRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, StatusNotificationRequestText, e);
             }
 
             StatusNotificationRequest = null;

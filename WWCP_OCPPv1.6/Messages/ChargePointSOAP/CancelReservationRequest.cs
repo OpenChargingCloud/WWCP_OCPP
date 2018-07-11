@@ -155,7 +155,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, CancelReservationRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, CancelReservationRequestXML, e);
 
                 CancelReservationRequest = null;
                 return false;
@@ -191,7 +191,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, CancelReservationRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, CancelReservationRequestText, e);
             }
 
             CancelReservationRequest = null;

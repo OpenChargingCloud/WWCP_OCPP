@@ -286,7 +286,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, ChargingProfileXML, e);
+                OnException?.Invoke(DateTime.UtcNow, ChargingProfileXML, e);
 
                 ChargingProfile = null;
                 return false;
@@ -322,7 +322,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, ChargingProfileText, e);
+                OnException?.Invoke(DateTime.UtcNow, ChargingProfileText, e);
             }
 
             ChargingProfile = null;

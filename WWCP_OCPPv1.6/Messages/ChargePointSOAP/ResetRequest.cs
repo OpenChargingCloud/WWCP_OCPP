@@ -155,7 +155,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, ResetRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, ResetRequestXML, e);
 
                 ResetRequest = null;
                 return false;
@@ -191,7 +191,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, ResetRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, ResetRequestText, e);
             }
 
             ResetRequest = null;

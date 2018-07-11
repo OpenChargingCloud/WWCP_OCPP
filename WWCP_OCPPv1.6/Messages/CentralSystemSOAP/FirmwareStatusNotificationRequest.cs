@@ -155,7 +155,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, FirmwareStatusNotificationRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, FirmwareStatusNotificationRequestXML, e);
 
                 FirmwareStatusNotificationRequest = null;
                 return false;
@@ -191,7 +191,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, FirmwareStatusNotificationRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, FirmwareStatusNotificationRequestText, e);
             }
 
             FirmwareStatusNotificationRequest = null;

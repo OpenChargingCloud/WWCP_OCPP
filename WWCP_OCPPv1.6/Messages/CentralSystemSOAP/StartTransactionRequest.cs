@@ -207,7 +207,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, StartTransactionRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, StartTransactionRequestXML, e);
 
                 StartTransactionRequest = null;
                 return false;
@@ -243,7 +243,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, StartTransactionRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, StartTransactionRequestText, e);
             }
 
             StartTransactionRequest = null;

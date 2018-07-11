@@ -252,8 +252,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 try
                 {
 
-                    OnReserveNowSOAPRequest?.Invoke(DateTime.Now,
-                                                    this.SOAPServer,
+                    OnReserveNowSOAPRequest?.Invoke(DateTime.UtcNow,
+                                                    this.SOAPServer.HTTPServer,
                                                     Request);
 
                 }
@@ -315,7 +315,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 var HTTPResponse = new HTTPResponseBuilder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
-                    Server          = SOAPServer.DefaultServerName,
+                    Server          = SOAPServer.HTTPServer.DefaultServerName,
                     Date            = DateTime.Now,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
@@ -336,7 +336,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 {
 
                     OnReserveNowSOAPResponse?.Invoke(HTTPResponse.Timestamp,
-                                                     this.SOAPServer,
+                                                     this.SOAPServer.HTTPServer,
                                                      Request,
                                                      HTTPResponse);
 
@@ -367,8 +367,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 try
                 {
 
-                    OnCancelReservationSOAPRequest?.Invoke(DateTime.Now,
-                                                           this.SOAPServer,
+                    OnCancelReservationSOAPRequest?.Invoke(DateTime.UtcNow,
+                                                           this.SOAPServer.HTTPServer,
                                                            Request);
 
                 }
@@ -426,7 +426,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 var HTTPResponse = new HTTPResponseBuilder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
-                    Server          = SOAPServer.DefaultServerName,
+                    Server          = SOAPServer.HTTPServer.DefaultServerName,
                     Date            = DateTime.Now,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
@@ -447,7 +447,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 {
 
                     OnCancelReservationSOAPResponse?.Invoke(HTTPResponse.Timestamp,
-                                                            this.SOAPServer,
+                                                            this.SOAPServer.HTTPServer,
                                                             Request,
                                                             HTTPResponse);
 
@@ -478,8 +478,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 try
                 {
 
-                    OnRemoteStartTransactionSOAPRequest?.Invoke(DateTime.Now,
-                                                                this.SOAPServer,
+                    OnRemoteStartTransactionSOAPRequest?.Invoke(DateTime.UtcNow,
+                                                                this.SOAPServer.HTTPServer,
                                                                 Request);
 
                 }
@@ -539,7 +539,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 var HTTPResponse = new HTTPResponseBuilder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
-                    Server          = SOAPServer.DefaultServerName,
+                    Server          = SOAPServer.HTTPServer.DefaultServerName,
                     Date            = DateTime.Now,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
@@ -560,7 +560,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 {
 
                     OnRemoteStartTransactionSOAPResponse?.Invoke(HTTPResponse.Timestamp,
-                                                                 this.SOAPServer,
+                                                                 this.SOAPServer.HTTPServer,
                                                                  Request,
                                                                  HTTPResponse);
 
@@ -591,8 +591,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 try
                 {
 
-                    OnRemoteStopTransactionSOAPRequest?.Invoke(DateTime.Now,
-                                                               this.SOAPServer,
+                    OnRemoteStopTransactionSOAPRequest?.Invoke(DateTime.UtcNow,
+                                                               this.SOAPServer.HTTPServer,
                                                                Request);
 
                 }
@@ -650,7 +650,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 var HTTPResponse = new HTTPResponseBuilder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
-                    Server          = SOAPServer.DefaultServerName,
+                    Server          = SOAPServer.HTTPServer.DefaultServerName,
                     Date            = DateTime.Now,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
@@ -671,7 +671,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 {
 
                     OnRemoteStopTransactionSOAPResponse?.Invoke(HTTPResponse.Timestamp,
-                                                                this.SOAPServer,
+                                                                this.SOAPServer.HTTPServer,
                                                                 Request,
                                                                 HTTPResponse);
 
@@ -703,8 +703,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 try
                 {
 
-                    OnDataTransferSOAPRequest?.Invoke(DateTime.Now,
-                                                      this.SOAPServer,
+                    OnDataTransferSOAPRequest?.Invoke(DateTime.UtcNow,
+                                                      this.SOAPServer.HTTPServer,
                                                       Request);
 
                 }
@@ -764,7 +764,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 var HTTPResponse = new HTTPResponseBuilder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
-                    Server          = SOAPServer.DefaultServerName,
+                    Server          = SOAPServer.HTTPServer.DefaultServerName,
                     Date            = DateTime.Now,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
@@ -785,7 +785,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 {
 
                     OnDataTransferSOAPResponse?.Invoke(HTTPResponse.Timestamp,
-                                                       this.SOAPServer,
+                                                       this.SOAPServer.HTTPServer,
                                                        Request,
                                                        HTTPResponse);
 

@@ -163,7 +163,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, RemoteStopTransactionRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, RemoteStopTransactionRequestXML, e);
 
                 RemoteStopTransactionRequest = null;
                 return false;
@@ -199,7 +199,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, RemoteStopTransactionRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, RemoteStopTransactionRequestText, e);
             }
 
             RemoteStopTransactionRequest = null;

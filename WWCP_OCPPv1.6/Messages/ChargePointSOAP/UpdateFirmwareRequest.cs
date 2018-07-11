@@ -207,7 +207,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now, UpdateFirmwareRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, UpdateFirmwareRequestXML, e);
 
                 UpdateFirmwareRequest = null;
                 return false;
@@ -243,7 +243,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.Now, UpdateFirmwareRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, UpdateFirmwareRequestText, e);
             }
 
             UpdateFirmwareRequest = null;
