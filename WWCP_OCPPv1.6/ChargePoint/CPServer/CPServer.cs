@@ -313,7 +313,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region Create SOAPResponse
 
-                var HTTPResponse = new HTTPResponseBuilder(Request) {
+                var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
                     Date            = DateTime.Now,
@@ -424,7 +424,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region Create SOAPResponse
 
-                var HTTPResponse = new HTTPResponseBuilder(Request) {
+                var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
                     Date            = DateTime.Now,
@@ -537,7 +537,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region Create SOAPResponse
 
-                var HTTPResponse = new HTTPResponseBuilder(Request) {
+                var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
                     Date            = DateTime.Now,
@@ -648,7 +648,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region Create SOAPResponse
 
-                var HTTPResponse = new HTTPResponseBuilder(Request) {
+                var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
                     Date            = DateTime.Now,
@@ -762,7 +762,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region Create SOAPResponse
 
-                var HTTPResponse = new HTTPResponseBuilder(Request) {
+                var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
                     Date            = DateTime.Now,
