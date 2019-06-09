@@ -358,11 +358,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                         String                               From,
                         String                               To,
 
-                        String                               Hostname,
+                        HTTPHostname                         Hostname,
                         IPPort?                              RemotePort                   = null,
                         RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
                         LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                        String                               HTTPVirtualHost              = null,
+                        HTTPHostname?                        HTTPVirtualHost              = null,
                         HTTPURI?                             URIPrefix                    = null,
                         String                               HTTPUserAgent                = DefaultHTTPUserAgent,
                         TimeSpan?                            RequestTimeout               = null,
@@ -396,10 +396,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             if (To.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(To),                 "The given SOAP message destination must not be null or empty!");
-
-
-            if (Hostname.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Hostname),           "The given hostname must not be null or empty!");
 
             #endregion
 
@@ -438,11 +434,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                         String                               To,
 
                         CPClientLogger                       Logger,
-                        String                               Hostname,
+                        HTTPHostname                         Hostname,
                         IPPort?                              RemotePort                   = null,
                         RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
                         LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                        String                               HTTPVirtualHost              = null,
+                        HTTPHostname?                        HTTPVirtualHost              = null,
                         HTTPURI?                             URIPrefix                    = null,
                         String                               HTTPUserAgent                = DefaultHTTPUserAgent,
                         TimeSpan?                            RequestTimeout               = null,
@@ -475,19 +471,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (To.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(To),                 "The given SOAP message destination must not be null or empty!");
 
-
-            if (Logger == null)
-                throw new ArgumentNullException(nameof(Logger),             "The given client logger must not be null!");
-
-            if (Hostname.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Hostname),           "The given hostname must not be null or empty!");
-
             #endregion
 
-            this.From       = From;
-            this.To         = To;
+            this.From    = From;
+            this.To      = To;
 
-            this.Logger     = Logger;
+            this.Logger  = Logger ?? throw new ArgumentNullException(nameof(Hostname), "The given hostname must not be null or empty!");
 
         }
 
@@ -597,8 +586,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                       MeterSerialNumber);
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    HTTPVirtualHost,
                                                     URIPrefix,
+                                                    VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
@@ -788,8 +777,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    HTTPVirtualHost,
                                                     URIPrefix,
+                                                    VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
@@ -980,8 +969,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    HTTPVirtualHost,
                                                     URIPrefix,
+                                                    VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
@@ -1181,8 +1170,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    HTTPVirtualHost,
                                                     URIPrefix,
+                                                    VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
@@ -1393,8 +1382,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    HTTPVirtualHost,
                                                     URIPrefix,
+                                                    VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
@@ -1597,8 +1586,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    HTTPVirtualHost,
                                                     URIPrefix,
+                                                    VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
@@ -1806,8 +1795,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    HTTPVirtualHost,
                                                     URIPrefix,
+                                                    VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
@@ -2017,8 +2006,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    HTTPVirtualHost,
                                                     URIPrefix,
+                                                    VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
@@ -2205,8 +2194,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    HTTPVirtualHost,
                                                     URIPrefix,
+                                                    VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
@@ -2391,8 +2380,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    HTTPVirtualHost,
                                                     URIPrefix,
+                                                    VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
