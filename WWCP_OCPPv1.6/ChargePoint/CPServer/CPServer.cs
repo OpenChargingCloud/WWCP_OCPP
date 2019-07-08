@@ -57,7 +57,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
         /// </summary>
-        public new static readonly HTTPURI   DefaultURIPrefix       = HTTPURI.Parse("/" + Version.Number);
+        public new static readonly HTTPPath   DefaultURIPrefix       = HTTPPath.Parse("/" + Version.Number);
 
         /// <summary>
         /// The default query timeout.
@@ -182,7 +182,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="AutoStart">Start the server immediately.</param>
         public CPServer(String          HTTPServerName           = DefaultHTTPServerName,
                         IPPort?         TCPPort                  = null,
-                        HTTPURI?        URIPrefix                = null,
+                        HTTPPath?        URIPrefix                = null,
                         HTTPContentType ContentType              = null,
                         Boolean         RegisterHTTPRootService  = true,
                         DNSClient       DNSClient                = null,
@@ -215,7 +215,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="SOAPServer">A SOAP server.</param>
         /// <param name="URIPrefix">An optional prefix for the HTTP URIs.</param>
         public CPServer(SOAPServer  SOAPServer,
-                        HTTPURI?    URIPrefix = null)
+                        HTTPPath?    URIPrefix = null)
 
             : base(SOAPServer,
                    URIPrefix ?? DefaultURIPrefix)
