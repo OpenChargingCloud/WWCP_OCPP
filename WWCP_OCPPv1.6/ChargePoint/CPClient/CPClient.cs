@@ -381,6 +381,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                    null,
                    HTTPUserAgent,
                    RequestTimeout,
+                   null,
                    MaxNumberOfRetries,
                    DNSClient)
 
@@ -455,6 +456,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                    null,
                    HTTPUserAgent,
                    RequestTimeout,
+                   null,
                    MaxNumberOfRetries,
                    DNSClient)
 
