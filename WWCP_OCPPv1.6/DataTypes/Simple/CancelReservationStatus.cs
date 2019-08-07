@@ -30,12 +30,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         Unknown,
 
         /// <summary>
-        /// Reservation for the identifier has been cancelled. 
+        /// Reservation for the identifier has been canceled. 
         /// </summary>
         Accepted,
 
         /// <summary>
-        /// Reservation could not be cancelled, because there
+        /// Reservation could not be canceled, because there
         /// is no reservation active for the identifier.
         /// </summary>
         Rejected
