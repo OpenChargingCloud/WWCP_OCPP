@@ -36,7 +36,23 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region Data
 
-        private readonly String _Value;
+        private readonly String InternalId;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Indicates whether this identification is null or empty.
+        /// </summary>
+        public Boolean IsNullOrEmpty
+            => InternalId.IsNullOrEmpty();
+
+        /// <summary>
+        /// The length of the tag identification.
+        /// </summary>
+        public UInt64 Length
+            => (UInt64)InternalId?.Length;
 
         #endregion
 
@@ -48,7 +64,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="Token">A string.</param>
         private ChargeBox_Id(String  Token)
         {
-            this._Value = Token;
+            this.InternalId = Token;
         }
 
         #endregion
@@ -86,7 +102,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// Clone this charge box identification.
         /// </summary>
         public ChargeBox_Id Clone
-            => new ChargeBox_Id(new String(_Value.ToCharArray()));
+            => new ChargeBox_Id(new String(InternalId.ToCharArray()));
 
         #endregion
 
@@ -238,7 +254,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if ((Object) ChargeBoxId == null)
                 throw new ArgumentNullException(nameof(ChargeBoxId),  "The given charge box identification must not be null!");
 
-            return String.Compare(_Value, ChargeBoxId._Value, StringComparison.Ordinal);
+            return String.Compare(InternalId, ChargeBoxId.InternalId, StringComparison.Ordinal);
 
         }
 
@@ -284,7 +300,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if ((Object) ChargeBoxId == null)
                 return false;
 
-            return _Value.Equals(ChargeBoxId._Value);
+            return InternalId.Equals(ChargeBoxId.InternalId);
 
         }
 
@@ -299,7 +315,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => _Value.GetHashCode();
+            => InternalId.GetHashCode();
 
         #endregion
 
@@ -309,7 +325,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => _Value;
+            => InternalId;
 
         #endregion
 
