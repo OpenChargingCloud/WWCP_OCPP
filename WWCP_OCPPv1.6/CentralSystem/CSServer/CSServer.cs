@@ -381,7 +381,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var results = OnBootNotificationRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)
-                                          (DateTime.Now,
+                                          (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -420,7 +420,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.Now,
+                    Date            = DateTime.UtcNow,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/BootNotificationResponse",
@@ -499,7 +499,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var results = OnHeartbeatRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnHeartbeatDelegate)
-                                          (DateTime.Now,
+                                          (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -530,7 +530,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.Now,
+                    Date            = DateTime.UtcNow,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/HeartbeatResponse",
@@ -610,7 +610,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var results = OnAuthorizeRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)
-                                          (DateTime.Now,
+                                          (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -642,7 +642,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.Now,
+                    Date            = DateTime.UtcNow,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/AuthorizeResponse",
@@ -721,7 +721,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var results = OnStartTransactionRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnStartTransactionDelegate)
-                                          (DateTime.Now,
+                                          (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -757,7 +757,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.Now,
+                    Date            = DateTime.UtcNow,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/StartTransactionResponse",
@@ -836,7 +836,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var results = OnStatusNotificationRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)
-                                          (DateTime.Now,
+                                          (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -874,7 +874,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.Now,
+                    Date            = DateTime.UtcNow,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/StatusNotificationResponse",
@@ -953,7 +953,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var results = OnMeterValuesRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)
-                                          (DateTime.Now,
+                                          (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -987,7 +987,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.Now,
+                    Date            = DateTime.UtcNow,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/MeterValuesResponse",
@@ -1066,7 +1066,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var results = OnStopTransactionRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnStopTransactionDelegate)
-                                          (DateTime.Now,
+                                          (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -1103,7 +1103,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.Now,
+                    Date            = DateTime.UtcNow,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/StopTransactionResponse",
@@ -1183,7 +1183,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var results = OnDataTransferRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnDataTransferDelegate)
-                                          (DateTime.Now,
+                                          (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -1217,7 +1217,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.Now,
+                    Date            = DateTime.UtcNow,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/DataTransferResponse",
@@ -1296,7 +1296,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var results = OnDiagnosticsStatusNotificationRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationDelegate)
-                                          (DateTime.Now,
+                                          (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -1328,7 +1328,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.Now,
+                    Date            = DateTime.UtcNow,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/DiagnosticsStatusNotificationResponse",
@@ -1407,7 +1407,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var results = OnFirmwareStatusNotificationRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)
-                                          (DateTime.Now,
+                                          (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -1439,7 +1439,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.Now,
+                    Date            = DateTime.UtcNow,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/FirmwareStatusNotificationResponse",

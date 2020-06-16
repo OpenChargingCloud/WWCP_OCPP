@@ -255,7 +255,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(IdTagInfo1, IdTagInfo2))
+            if (ReferenceEquals(IdTagInfo1, IdTagInfo2))
                 return true;
 
             // If one is null, but not both, return false.

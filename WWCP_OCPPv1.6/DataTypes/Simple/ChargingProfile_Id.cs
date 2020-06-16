@@ -154,7 +154,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(ChargingProfileId1, ChargingProfileId2))
+            if (ReferenceEquals(ChargingProfileId1, ChargingProfileId2))
                 return true;
 
             // If one is null, but not both, return false.

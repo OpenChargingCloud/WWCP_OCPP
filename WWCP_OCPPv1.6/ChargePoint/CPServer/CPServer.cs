@@ -280,7 +280,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                     var results = OnReserveNowRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)
-                                          (DateTime.Now,
+                                          (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -316,7 +316,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.Now,
+                    Date            = DateTime.UtcNow,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/ReserveNowResponse",
@@ -395,7 +395,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                     var results = OnCancelReservationRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnCancelReservationDelegate)
-                                          (DateTime.Now,
+                                          (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -427,7 +427,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.Now,
+                    Date            = DateTime.UtcNow,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/CancelReservationResponse",
@@ -506,7 +506,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                     var results = OnRemoteStartTransactionRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnRemoteStartTransactionDelegate)
-                                          (DateTime.Now,
+                                          (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -540,7 +540,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.Now,
+                    Date            = DateTime.UtcNow,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/RemoteStartTransactionResponse",
@@ -619,7 +619,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                     var results = OnRemoteStopTransactionRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnRemoteStopTransactionDelegate)
-                                          (DateTime.Now,
+                                          (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -651,7 +651,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.Now,
+                    Date            = DateTime.UtcNow,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/RemoteStopTransactionResponse",
@@ -731,7 +731,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                     var results = OnDataTransferRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnDataTransferDelegate)
-                                          (DateTime.Now,
+                                          (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -765,7 +765,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.Now,
+                    Date            = DateTime.UtcNow,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/DataTransferResponse",

@@ -414,7 +414,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -572,7 +572,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                              ParentIdTag,
                                              RequestTimeout,
                                              result.Content,
-                                             DateTime.Now - Timestamp.Value);
+                                             DateTime.UtcNow - Timestamp.Value);
 
             }
             catch (Exception e)
@@ -620,7 +620,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -766,7 +766,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                     ReservationId,
                                                     RequestTimeout,
                                                     result.Content,
-                                                    DateTime.Now - Timestamp.Value);
+                                                    DateTime.UtcNow - Timestamp.Value);
 
             }
             catch (Exception e)
@@ -821,7 +821,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -973,7 +973,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                          ChargingProfile,
                                                          RequestTimeout,
                                                          result.Content,
-                                                         DateTime.Now - Timestamp.Value);
+                                                         DateTime.UtcNow - Timestamp.Value);
 
             }
             catch (Exception e)
@@ -1024,7 +1024,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1170,7 +1170,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                         TransactionId,
                                                         RequestTimeout,
                                                         result.Content,
-                                                        DateTime.Now - Timestamp.Value);
+                                                        DateTime.UtcNow - Timestamp.Value);
 
             }
             catch (Exception e)
@@ -1221,7 +1221,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1371,7 +1371,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                Data,
                                                RequestTimeout,
                                                result.Content,
-                                               DateTime.Now - Timestamp.Value);
+                                               DateTime.UtcNow - Timestamp.Value);
 
             }
             catch (Exception e)

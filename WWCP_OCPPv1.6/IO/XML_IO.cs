@@ -1953,61 +1953,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #endregion
 
 
-        #region AsRegistrationStatus(Text)
-
-        public static RegistrationStatus AsRegistrationStatus(this String Text)
-        {
-
-            switch (Text)
-            {
-
-                case "Accepted":
-                    return RegistrationStatus.Accepted;
-
-                case "Pending":
-                    return RegistrationStatus.Pending;
-
-                case "Rejected":
-                    return RegistrationStatus.Rejected;
-
-
-                default:
-                    return RegistrationStatus.Unknown;
-
-            }
-
-        }
-
-        #endregion
-
-        #region AsText(this RegistrationStatus)
-
-        public static String AsText(this RegistrationStatus RegistrationStatus)
-        {
-
-            switch (RegistrationStatus)
-            {
-
-                case RegistrationStatus.Accepted:
-                    return "Accepted";
-
-                case RegistrationStatus.Pending:
-                    return "Pending";
-
-                case RegistrationStatus.Rejected:
-                    return "Rejected";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
-
-        #endregion
-
-
         #region AsChargePointErrorCodes(Text)
 
         public static ChargePointErrorCodes AsChargePointErrorCodes(this String Text)

@@ -51,7 +51,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         public ARequest()
         {
 
-            this.RequestTimestamp  = DateTime.Now;
+            this.RequestTimestamp  = DateTime.UtcNow;
 
         }
 

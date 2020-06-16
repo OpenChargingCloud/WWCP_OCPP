@@ -100,7 +100,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         {
 
             this.Result             = Result;
-            this.ResponseTimestamp  = DateTime.Now;
+            this.ResponseTimestamp  = DateTime.UtcNow;
 
         }
 
@@ -121,7 +121,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(AResponse1, AResponse2))
+            if (ReferenceEquals(AResponse1, AResponse2))
                 return true;
 
             // If one is null, but not both, return false.
