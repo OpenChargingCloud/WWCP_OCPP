@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP authorize request.
+    /// An authorize request.
     /// </summary>
     public class AuthorizeRequest : ARequest<AuthorizeRequest>
     {
@@ -47,7 +48,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP Authorize XML/SOAP request.
+        /// Create an authorize request.
         /// </summary>
         /// <param name="IdTag">The identifier that needs to be authorized.</param>
         public AuthorizeRequest(IdToken  IdTag)
@@ -80,23 +81,42 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema":  "http://json-schema.org/draft-04/schema#",
+        //     "id":       "urn:OCPP:1.6:2019:12:AuthorizeRequest",
+        //     "title":    "AuthorizeRequest",
+        //     "type":     "object",
+        //     "properties": {
+        //         "idTag": {
+        //             "type":      "string",
+        //             "maxLength":  20
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "idTag"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse(AuthorizeRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP authorize request.
+        /// Parse the given XML representation of an authorize request.
         /// </summary>
-        /// <param name="AuthorizeRequestXML">The XML to parse.</param>
+        /// <param name="AuthorizeRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static AuthorizeRequest Parse(XElement             AuthorizeRequestXML,
                                              OnExceptionDelegate  OnException = null)
         {
 
-            AuthorizeRequest _AuthorizeRequest;
-
-            if (TryParse(AuthorizeRequestXML, out _AuthorizeRequest, OnException))
-                return _AuthorizeRequest;
+            if (TryParse(AuthorizeRequestXML,
+                         out AuthorizeRequest authorizeRequest,
+                         OnException))
+            {
+                return authorizeRequest;
+            }
 
             return null;
 
@@ -107,18 +127,44 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse(AuthorizeRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP authorize request.
+        /// Parse the given JSON representation of an authorize request.
         /// </summary>
-        /// <param name="AuthorizeRequestText">The text to parse.</param>
+        /// <param name="AuthorizeRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static AuthorizeRequest Parse(JObject              AuthorizeRequestJSON,
+                                             OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(AuthorizeRequestJSON,
+                         out AuthorizeRequest authorizeRequest,
+                         OnException))
+            {
+                return authorizeRequest;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse(AuthorizeRequestText, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a authorize request.
+        /// </summary>
+        /// <param name="AuthorizeRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static AuthorizeRequest Parse(String               AuthorizeRequestText,
                                              OnExceptionDelegate  OnException = null)
         {
 
-            AuthorizeRequest _AuthorizeRequest;
-
-            if (TryParse(AuthorizeRequestText, out _AuthorizeRequest, OnException))
-                return _AuthorizeRequest;
+            if (TryParse(AuthorizeRequestText,
+                         out AuthorizeRequest authorizeRequest,
+                         OnException))
+            {
+                return authorizeRequest;
+            }
 
             return null;
 
@@ -129,9 +175,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(AuthorizeRequestXML,  out AuthorizeRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP authorize request.
+        /// Try to parse the given XML representation of an authorize request.
         /// </summary>
-        /// <param name="AuthorizeRequestXML">The XML to parse.</param>
+        /// <param name="AuthorizeRequestXML">The XML to be parsed.</param>
         /// <param name="AuthorizeRequest">The parsed authorize request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement              AuthorizeRequestXML,
@@ -166,12 +212,62 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParse(AuthorizeRequestJSON, out AuthorizeRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of an authorize request.
+        /// </summary>
+        /// <param name="AuthorizeRequestJSON">The JSON to be parsed.</param>
+        /// <param name="AuthorizeRequest">The parsed authorize request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject               AuthorizeRequestJSON,
+                                       out AuthorizeRequest  AuthorizeRequest,
+                                       OnExceptionDelegate   OnException  = null)
+        {
+
+            try
+            {
+
+                AuthorizeRequest = null;
+
+                #region IdTag
+
+                if (!AuthorizeRequestJSON.ParseMandatory("idTag",
+                                                         "id tag",
+                                                         IdToken.TryParse,
+                                                         out IdToken IdTag,
+                                                         out String ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                AuthorizeRequest = new AuthorizeRequest(IdTag);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, AuthorizeRequestJSON, e);
+
+                AuthorizeRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(AuthorizeRequestText, out AuthorizeRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP authorize request.
+        /// Try to parse the given text representation of an authorize request.
         /// </summary>
-        /// <param name="AuthorizeRequestText">The text to parse.</param>
+        /// <param name="AuthorizeRequestText">The text to be parsed.</param>
         /// <param name="AuthorizeRequest">The parsed authorize request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                AuthorizeRequestText,
@@ -182,11 +278,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(AuthorizeRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
+                AuthorizeRequestText = AuthorizeRequestText?.Trim();
+
+                if (TryParse(XDocument.Parse(AuthorizeRequestText).Root,//.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
                              out AuthorizeRequest,
                              OnException))
-
+                {
                     return true;
+                }
 
             }
             catch (Exception e)
@@ -216,6 +315,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region ToJSON(CustomAuthorizeRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomAuthorizeRequestSerializer">A delegate to serialize custom authorize requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeRequest> CustomAuthorizeRequestSerializer = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("idTag",  IdTag.ToString())
+                       );
+
+            return CustomAuthorizeRequestSerializer != null
+                       ? CustomAuthorizeRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -235,7 +355,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) AuthorizeRequest1 == null) || ((Object) AuthorizeRequest2 == null))
+            if ((AuthorizeRequest1 is null) || (AuthorizeRequest2 is null))
                 return false;
 
             return AuthorizeRequest1.Equals(AuthorizeRequest2);
@@ -272,15 +392,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
-            // Check if the given object is a authorize request.
-            var AuthorizeRequest = Object as AuthorizeRequest;
-            if ((Object) AuthorizeRequest == null)
+            if (!(Object is AuthorizeRequest AuthorizeRequest))
                 return false;
 
-            return this.Equals(AuthorizeRequest);
+            return Equals(AuthorizeRequest);
 
         }
 
@@ -296,7 +414,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(AuthorizeRequest AuthorizeRequest)
         {
 
-            if ((Object) AuthorizeRequest == null)
+            if (AuthorizeRequest is null)
                 return false;
 
             return IdTag.Equals(AuthorizeRequest.IdTag);
@@ -327,7 +445,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             => IdTag.ToString();
 
         #endregion
-
 
     }
 

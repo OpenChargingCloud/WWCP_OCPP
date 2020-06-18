@@ -21,10 +21,9 @@ using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
-using org.GraphDefined.Vanaheimr.Illias;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -93,7 +92,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Create a new boot notification response.
         /// </summary>
-        /// <param name="Request">The related authorize request.</param>
+        /// <param name="Request">The authorize request.</param>
         /// <param name="Result">An OCPP result.</param>
         public BootNotificationResponse(CP.BootNotificationRequest  Request,
                                         Result                      Result)
@@ -162,13 +161,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(BootNotificationResponseXML,  OnException = null)
+        #region (static) Parse   (Request, BootNotificationResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a boot notification response.
         /// </summary>
         /// <param name="Request">The boot notification request leading to this response.</param>
-        /// <param name="BootNotificationResponseXML">The XML to parse.</param>
+        /// <param name="BootNotificationResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static BootNotificationResponse Parse(CP.BootNotificationRequest  Request,
                                                      XElement                    BootNotificationResponseXML,
@@ -190,13 +189,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(BootNotificationResponseJSON, OnException = null)
+        #region (static) Parse   (Request, BootNotificationResponseJSON, OnException = null)
 
         /// <summary>
         /// Parse the given JSON representation of a boot notification response.
         /// </summary>
         /// <param name="Request">The boot notification request leading to this response.</param>
-        /// <param name="BootNotificationResponseJSON">The JSON to parse.</param>
+        /// <param name="BootNotificationResponseJSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static BootNotificationResponse Parse(CP.BootNotificationRequest  Request,
                                                      JObject                     BootNotificationResponseJSON,
@@ -218,13 +217,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(BootNotificationResponseText, OnException = null)
+        #region (static) Parse   (Request, BootNotificationResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a boot notification response.
         /// </summary>
         /// <param name="Request">The boot notification request leading to this response.</param>
-        /// <param name="BootNotificationResponseText">The text to parse.</param>
+        /// <param name="BootNotificationResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static BootNotificationResponse Parse(CP.BootNotificationRequest  Request,
                                                      String                      BootNotificationResponseText,
@@ -246,13 +245,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(BootNotificationResponseXML,  out BootNotificationResponse, OnException = null)
+        #region (static) TryParse(Request, BootNotificationResponseXML,  out BootNotificationResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a boot notification response.
         /// </summary>
         /// <param name="Request">The boot notification request leading to this response.</param>
-        /// <param name="BootNotificationResponseXML">The XML to parse.</param>
+        /// <param name="BootNotificationResponseXML">The XML to be parsed.</param>
         /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.BootNotificationRequest    Request,
@@ -296,13 +295,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(BootNotificationResponseJSON, out BootNotificationResponse, OnException = null)
+        #region (static) TryParse(Request, BootNotificationResponseJSON, out BootNotificationResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a boot notification response.
         /// </summary>
         /// <param name="Request">The boot notification request leading to this response.</param>
-        /// <param name="BootNotificationResponseJSON">The JSON to parse.</param>
+        /// <param name="BootNotificationResponseJSON">The JSON to be parsed.</param>
         /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.BootNotificationRequest    Request,
@@ -377,13 +376,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(BootNotificationResponseText, out BootNotificationResponse, OnException = null)
+        #region (static) TryParse(Request, BootNotificationResponseText, out BootNotificationResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given text representation of a boot notification response.
         /// </summary>
         /// <param name="Request">The boot notification request leading to this response.</param>
-        /// <param name="BootNotificationResponseText">The text to parse.</param>
+        /// <param name="BootNotificationResponseText">The text to be parsed.</param>
         /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.BootNotificationRequest    Request,
@@ -410,7 +409,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     }
 
                     if (TryParse(Request,
-                                 XDocument.Parse(BootNotificationResponseText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
+                                 XDocument.Parse(BootNotificationResponseText).Root,
                                  out BootNotificationResponse,
                                  OnException))
                     {

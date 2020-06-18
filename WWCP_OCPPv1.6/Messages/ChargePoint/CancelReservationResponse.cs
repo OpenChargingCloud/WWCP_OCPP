@@ -107,7 +107,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of an OCPP cancel reservation response.
         /// </summary>
-        /// <param name="CancelReservationResponseXML">The XML to parse.</param>
+        /// <param name="CancelReservationResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static CancelReservationResponse Parse(XElement             CancelReservationResponseXML,
                                                       OnExceptionDelegate  OnException = null)
@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given text representation of an OCPP cancel reservation response.
         /// </summary>
-        /// <param name="CancelReservationResponseText">The text to parse.</param>
+        /// <param name="CancelReservationResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static CancelReservationResponse Parse(String               CancelReservationResponseText,
                                                       OnExceptionDelegate  OnException = null)
@@ -151,7 +151,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of an OCPP cancel reservation response.
         /// </summary>
-        /// <param name="CancelReservationResponseXML">The XML to parse.</param>
+        /// <param name="CancelReservationResponseXML">The XML to be parsed.</param>
         /// <param name="CancelReservationResponse">The parsed cancel reservation response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                       CancelReservationResponseXML,
@@ -191,7 +191,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given text representation of an OCPP cancel reservation response.
         /// </summary>
-        /// <param name="CancelReservationResponseText">The text to parse.</param>
+        /// <param name="CancelReservationResponseText">The text to be parsed.</param>
         /// <param name="CancelReservationResponse">The parsed cancel reservation response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                         CancelReservationResponseText,

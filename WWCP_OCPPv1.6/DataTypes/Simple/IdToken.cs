@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An OCPP identification token.
+    /// An identification token.
     /// </summary>
     public struct IdToken : IId,
                             IEquatable<IdToken>,
@@ -52,14 +52,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// The length of the tag identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64)InternalId?.Length;
+            => (UInt64) InternalId?.Length;
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new OCPP identification token.
+        /// Create an new identification token.
         /// </summary>
         /// <param name="Token">A string.</param>
         private IdToken(String  Token)
@@ -70,20 +70,44 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #endregion
 
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as an OCPP identification token.
+        /// Parse the given string as an identification token.
         /// </summary>
         public static IdToken Parse(String Text)
-            => new IdToken(Text);
+        {
+
+            if (TryParse(Text, out IdToken idToken))
+                return idToken;
+
+            throw new ArgumentException(nameof(Text), "The given text can not be parsed!");
+
+        }
+
+        #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Parse the given string as an identification token.
+        /// </summary>
+        public static IdToken? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out IdToken idToken))
+                return idToken;
+
+            return null;
+
+        }
 
         #endregion
 
         #region TryParse(Text, out IdToken)
 
         /// <summary>
-        /// Parse the given string as an OCPP identification token.
+        /// Parse the given string as an identification token.
         /// </summary>
         public static Boolean TryParse(String Text, out IdToken IdToken)
         {
@@ -114,8 +138,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An id token.</param>
-        /// <param name="IdToken2">Another id token.</param>
+        /// <param name="IdToken1">An identification token.</param>
+        /// <param name="IdToken2">Another identification token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (IdToken IdToken1, IdToken IdToken2)
         {
@@ -129,7 +153,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 return false;
 
             if ((Object) IdToken1 == null)
-                throw new ArgumentNullException(nameof(IdToken1),  "The given id token must not be null!");
+                throw new ArgumentNullException(nameof(IdToken1),  "The given identification token must not be null!");
 
             return IdToken1.Equals(IdToken2);
 
@@ -142,8 +166,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An id token.</param>
-        /// <param name="IdToken2">Another id token.</param>
+        /// <param name="IdToken1">An identification token.</param>
+        /// <param name="IdToken2">Another identification token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (IdToken IdToken1, IdToken IdToken2)
             => !(IdToken1 == IdToken2);
@@ -155,14 +179,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An id token.</param>
-        /// <param name="IdToken2">Another id token.</param>
+        /// <param name="IdToken1">An identification token.</param>
+        /// <param name="IdToken2">Another identification token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (IdToken IdToken1, IdToken IdToken2)
         {
 
             if ((Object) IdToken1 == null)
-                throw new ArgumentNullException(nameof(IdToken1),  "The given id token must not be null!");
+                throw new ArgumentNullException(nameof(IdToken1),  "The given identification token must not be null!");
 
             return IdToken1.CompareTo(IdToken2) < 0;
 
@@ -175,8 +199,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An id token.</param>
-        /// <param name="IdToken2">Another id token.</param>
+        /// <param name="IdToken1">An identification token.</param>
+        /// <param name="IdToken2">Another identification token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (IdToken IdToken1, IdToken IdToken2)
             => !(IdToken1 > IdToken2);
@@ -188,14 +212,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An id token.</param>
-        /// <param name="IdToken2">Another id token.</param>
+        /// <param name="IdToken1">An identification token.</param>
+        /// <param name="IdToken2">Another identification token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (IdToken IdToken1, IdToken IdToken2)
         {
 
             if ((Object) IdToken1 == null)
-                throw new ArgumentNullException(nameof(IdToken1),  "The given id token must not be null!");
+                throw new ArgumentNullException(nameof(IdToken1),  "The given identification token must not be null!");
 
             return IdToken1.CompareTo(IdToken2) > 0;
 
@@ -208,8 +232,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An id token.</param>
-        /// <param name="IdToken2">Another id token.</param>
+        /// <param name="IdToken1">An identification token.</param>
+        /// <param name="IdToken2">Another identification token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (IdToken IdToken1, IdToken IdToken2)
             => !(IdToken1 < IdToken2);
@@ -232,7 +256,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if (Object == null)
                 throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
-            // Check if the given object is a id token.
+            // Check if the given object is a identification token.
             if (!(Object is IdToken))
                 throw new ArgumentException("The given object is not a IdToken!", nameof(Object));
 
@@ -252,7 +276,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         {
 
             if ((Object) IdToken == null)
-                throw new ArgumentNullException(nameof(IdToken),  "The given id token must not be null!");
+                throw new ArgumentNullException(nameof(IdToken),  "The given identification token must not be null!");
 
             return String.Compare(InternalId, IdToken.InternalId, StringComparison.Ordinal);
 
@@ -277,7 +301,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if (Object == null)
                 return false;
 
-            // Check if the given object is a id token.
+            // Check if the given object is a identification token.
             if (!(Object is IdToken))
                 return false;
 
@@ -290,9 +314,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Equals(IdToken)
 
         /// <summary>
-        /// Compares two id tokens for equality.
+        /// Compares two identification tokens for equality.
         /// </summary>
-        /// <param name="IdToken">An id token to compare with.</param>
+        /// <param name="IdToken">An identification token to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(IdToken IdToken)
         {
@@ -328,7 +352,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             => InternalId;
 
         #endregion
-
 
     }
 

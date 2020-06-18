@@ -19,7 +19,8 @@
 
 using System;
 using System.Xml.Linq;
-
+using Newtonsoft.Json.Linq;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -28,7 +29,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An OCPP identification tag info.
+    /// An identification tag info.
     /// </summary>
     public struct IdTagInfo : IEquatable<IdTagInfo>
     {
@@ -56,19 +57,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new OCPP identification tag info.
+        /// Create an new identification tag info.
         /// </summary>
         /// <param name="Status">The authentication result.</param>
         /// <param name="ExpiryDate">An optional date at which the idTag should be removed from the authorization cache.</param>
         /// <param name="ParentIdTag">An optional the parent-identifier.</param>
         public IdTagInfo(AuthorizationStatus  Status,
-                         DateTime?            ExpiryDate   = null,
-                         IdToken?             ParentIdTag  = null)
+                         DateTime?            ExpiryDate    = null,
+                         IdToken?             ParentIdTag   = null)
         {
 
             this.Status       = Status;
-            this.ExpiryDate   = ExpiryDate  ?? new DateTime?();
-            this.ParentIdTag  = ParentIdTag ?? new IdToken?();
+            this.ExpiryDate   = ExpiryDate;
+            this.ParentIdTag  = ParentIdTag;
 
         }
 
@@ -89,47 +90,108 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         //
         // </ns:idTagInfo>
 
+        // {
+        //     "$schema":  "http://json-schema.org/draft-04/schema#",
+        //     "id":       "urn:OCPP:1.6:2019:12:idTagInfo",
+        //     "title":    "idTagInfo",
+        //     "type":     "object",
+        //     "properties": {
+        //         "expiryDate": {
+        //             "type":      "string",
+        //             "format":    "date-time"
+        //         },
+        //         "parentIdTag": {
+        //             "type":      "string",
+        //             "maxLength":  20
+        //         },
+        //         "status": {
+        //             "type":      "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Blocked",
+        //                 "Expired",
+        //                 "Invalid",
+        //                 "ConcurrentTx"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
+
         #endregion
 
-        #region (static) Parse(IdTagInfoXML,  OnException = null)
+        #region (static) Parse   (IdTagInfoXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP identification tag info.
+        /// Parse the given XML representation of an identification tag info.
         /// </summary>
-        /// <param name="IdTagInfoXML">The XML to parse.</param>
+        /// <param name="IdTagInfoXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static IdTagInfo Parse(XElement             IdTagInfoXML,
                                       OnExceptionDelegate  OnException = null)
         {
 
-            IdTagInfo _IdTagInfo;
+            if (TryParse(IdTagInfoXML,
+                         out IdTagInfo idTagInfo,
+                         OnException))
+            {
+                return idTagInfo;
+            }
 
-            if (TryParse(IdTagInfoXML, out _IdTagInfo, OnException))
-                return _IdTagInfo;
-
-            return default(IdTagInfo);
+            return default;
 
         }
 
         #endregion
 
-        #region (static) Parse(IdTagInfoText, OnException = null)
+        #region (static) Parse   (IdTagInfoJSON, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP identification tag info.
+        /// Parse the given JSON representation of an identification tag info.
         /// </summary>
-        /// <param name="IdTagInfoText">The text to parse.</param>
+        /// <param name="IdTagInfoJSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static IdTagInfo Parse(String               IdTagInfoText,
-                                      OnExceptionDelegate  OnException = null)
+        public static IdTagInfo Parse(JObject              IdTagInfoJSON,
+                                      OnExceptionDelegate  OnException   = null)
         {
 
-            IdTagInfo _IdTagInfo;
+            if (TryParse(IdTagInfoJSON,
+                         out IdTagInfo idTagInfo,
+                         OnException))
+            {
+                return idTagInfo;
+            }
 
-            if (TryParse(IdTagInfoText, out _IdTagInfo, OnException))
-                return _IdTagInfo;
+            return default;
 
-            return default(IdTagInfo);
+        }
+
+        #endregion
+
+        #region (static) Parse   (IdTagInfoText, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of an identification tag info.
+        /// </summary>
+        /// <param name="IdTagInfoText">The text to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static IdTagInfo Parse(String               IdTagInfoText,
+                                      OnExceptionDelegate  OnException   = null)
+        {
+
+
+            if (TryParse(IdTagInfoText,
+                         out IdTagInfo idTagInfo,
+                         OnException))
+            {
+                return idTagInfo;
+            }
+
+            return default;
 
         }
 
@@ -138,9 +200,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) TryParse(IdTagInfoXML,  out IdTagInfo, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP identification tag info.
+        /// Try to parse the given XML representation of an identification tag info.
         /// </summary>
-        /// <param name="IdTagInfoXML">The XML to parse.</param>
+        /// <param name="IdTagInfoXML">The XML to be parsed.</param>
         /// <param name="IdTagInfo">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement             IdTagInfoXML,
@@ -154,7 +216,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 IdTagInfo = new IdTagInfo(
 
                                     IdTagInfoXML.MapEnumValues     (OCPPNS.OCPPv1_6_CS + "status",
-                                                                    XML_IO.AsAuthorizationStatus),
+                                                                    AuthorizationStatusExtentions.AsAuthorizationStatus),
 
                                     IdTagInfoXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "expiryDate",
                                                                     DateTime.Parse),
@@ -181,12 +243,96 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
+        #region (static) TryParse(IdTagInfoJSON, out IdTagInfo, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of an identification tag info.
+        /// </summary>
+        /// <param name="IdTagInfoJSON">The JSON to be parsed.</param>
+        /// <param name="IdTagInfo">The parsed connector type.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject              IdTagInfoJSON,
+                                       out IdTagInfo        IdTagInfo,
+                                       OnExceptionDelegate  OnException  = null)
+        {
+
+            try
+            {
+
+                IdTagInfo = default;
+
+                #region Status
+
+                if (!IdTagInfoJSON.ParseMandatory("status",
+                                                  "authorization status",
+                                                  AuthorizationStatusExtentions.AsAuthorizationStatus,
+                                                  out AuthorizationStatus  Status,
+                                                  out String               ErrorString))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region ExpiryDate
+
+                if (IdTagInfoJSON.ParseOptional("expiryDate",
+                                                "expiry date",
+                                                out DateTime?  ExpiryDate,
+                                                out            ErrorString))
+                {
+
+                    if (ErrorString != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region ParentIdTag
+
+                if (IdTagInfoJSON.ParseOptional("parentIdTag",
+                                                "parent id tag",
+                                                IdToken.TryParse,
+                                                out IdToken?  ParentIdTag,
+                                                out           ErrorString))
+                {
+
+                    if (ErrorString != null)
+                        return false;
+
+                }
+
+                #endregion
+
+
+                IdTagInfo = new IdTagInfo(Status,
+                                          ExpiryDate,
+                                          ParentIdTag);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, IdTagInfoJSON, e);
+
+                IdTagInfo = default;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(IdTagInfoText, out IdTagInfo, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP identification tag info.
+        /// Try to parse the given text representation of an identification tag info.
         /// </summary>
-        /// <param name="IdTagInfoText">The text to parse.</param>
+        /// <param name="IdTagInfoText">The text to be parsed.</param>
         /// <param name="IdTagInfo">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String               IdTagInfoText,
@@ -197,11 +343,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             try
             {
 
-                if (TryParse(XDocument.Parse(IdTagInfoText).Root,
-                             out IdTagInfo,
-                             OnException))
+                IdTagInfoText = IdTagInfoText?.Trim();
 
-                    return true;
+                if (IdTagInfoText.IsNotNullOrEmpty())
+                {
+
+                    if (IdTagInfoText.StartsWith("{") &&
+                        TryParse(JObject.Parse(IdTagInfoText),
+                                 out IdTagInfo,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(IdTagInfoText).Root,
+                                 out IdTagInfo,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -209,7 +371,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 OnException?.Invoke(DateTime.UtcNow, IdTagInfoText, e);
             }
 
-            IdTagInfo = default(IdTagInfo);
+            IdTagInfo = default;
             return false;
 
         }
@@ -226,10 +388,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             => new XElement(XName ?? OCPPNS.OCPPv1_6_CS + "idTagInfo",
 
-                   new XElement(OCPPNS.OCPPv1_6_CS + "connectorStandard",  XML_IO.AsText(Status)),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "connectorStandard",  Status.           AsText()),
 
                    ExpiryDate.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "expiryDate",   ExpiryDate.Value.ToIso8601())
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "expiryDate",   ExpiryDate. Value.ToIso8601())
                        : null,
 
                    ParentIdTag.HasValue
@@ -237,6 +399,37 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                        : null
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomIdTagInfoResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<IdTagInfo> CustomIdTagInfoResponseSerializer = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                                 new JProperty("status",        Status.           AsText()),
+
+                           ExpiryDate.HasValue
+                               ? new JProperty("expiryDate",    ExpiryDate. Value.ToIso8601())
+                               : null,
+
+                           ParentIdTag.HasValue
+                               ? new JProperty("parentIdTag",   ParentIdTag.Value.ToString())
+                               : null
+
+                       );
+
+            return CustomIdTagInfoResponseSerializer != null
+                       ? CustomIdTagInfoResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 
@@ -301,11 +494,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if (Object == null)
                 return false;
 
-            // Check if the given object is a id tag info.
-            if (!(Object is IdTagInfo))
+            if (!(Object is IdTagInfo IdTagInfo))
                 return false;
 
-            return this.Equals((IdTagInfo) Object);
+            return Equals(IdTagInfo);
 
         }
 
@@ -382,7 +574,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                  : "");
 
         #endregion
-
 
     }
 

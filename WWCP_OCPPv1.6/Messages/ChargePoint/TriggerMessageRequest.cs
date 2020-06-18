@@ -99,7 +99,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given XML representation of an OCPP trigger message request.
         /// </summary>
-        /// <param name="TriggerMessageRequestXML">The XML to parse.</param>
+        /// <param name="TriggerMessageRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static TriggerMessageRequest Parse(XElement             TriggerMessageRequestXML,
                                                   OnExceptionDelegate  OnException = null)
@@ -121,7 +121,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given text representation of an OCPP trigger message request.
         /// </summary>
-        /// <param name="TriggerMessageRequestText">The text to parse.</param>
+        /// <param name="TriggerMessageRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static TriggerMessageRequest Parse(String               TriggerMessageRequestText,
                                                   OnExceptionDelegate  OnException = null)
@@ -143,7 +143,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given XML representation of an OCPP trigger message request.
         /// </summary>
-        /// <param name="TriggerMessageRequestXML">The XML to parse.</param>
+        /// <param name="TriggerMessageRequestXML">The XML to be parsed.</param>
         /// <param name="TriggerMessageRequest">The parsed trigger message request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                   TriggerMessageRequestXML,
@@ -186,7 +186,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given text representation of an OCPP trigger message request.
         /// </summary>
-        /// <param name="TriggerMessageRequestText">The text to parse.</param>
+        /// <param name="TriggerMessageRequestText">The text to be parsed.</param>
         /// <param name="TriggerMessageRequest">The parsed trigger message request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                     TriggerMessageRequestText,

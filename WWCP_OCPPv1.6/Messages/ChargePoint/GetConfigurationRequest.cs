@@ -91,7 +91,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given XML representation of an OCPP get configuration request.
         /// </summary>
-        /// <param name="GetConfigurationRequestXML">The XML to parse.</param>
+        /// <param name="GetConfigurationRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static GetConfigurationRequest Parse(XElement             GetConfigurationRequestXML,
                                                     OnExceptionDelegate  OnException = null)
@@ -113,7 +113,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given text representation of an OCPP get configuration request.
         /// </summary>
-        /// <param name="GetConfigurationRequestText">The text to parse.</param>
+        /// <param name="GetConfigurationRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static GetConfigurationRequest Parse(String               GetConfigurationRequestText,
                                                     OnExceptionDelegate  OnException = null)
@@ -135,7 +135,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given XML representation of an OCPP get configuration request.
         /// </summary>
-        /// <param name="GetConfigurationRequestXML">The XML to parse.</param>
+        /// <param name="GetConfigurationRequestXML">The XML to be parsed.</param>
         /// <param name="GetConfigurationRequest">The parsed get configuration request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                     GetConfigurationRequestXML,
@@ -174,7 +174,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given text representation of an OCPP get configuration request.
         /// </summary>
-        /// <param name="GetConfigurationRequestText">The text to parse.</param>
+        /// <param name="GetConfigurationRequestText">The text to be parsed.</param>
         /// <param name="GetConfigurationRequest">The parsed get configuration request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                       GetConfigurationRequestText,

@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP heartbeat request.
+    /// A heartbeat request.
     /// </summary>
     public class HeartbeatRequest : ARequest<HeartbeatRequest>
     {
@@ -58,7 +58,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of an OCPP heartbeat request.
         /// </summary>
-        /// <param name="HeartbeatRequestXML">The XML to parse.</param>
+        /// <param name="HeartbeatRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static HeartbeatRequest Parse(XElement             HeartbeatRequestXML,
                                              OnExceptionDelegate  OnException = null)
@@ -80,7 +80,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given text representation of an OCPP heartbeat request.
         /// </summary>
-        /// <param name="HeartbeatRequestText">The text to parse.</param>
+        /// <param name="HeartbeatRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static HeartbeatRequest Parse(String               HeartbeatRequestText,
                                              OnExceptionDelegate  OnException = null)
@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of an OCPP heartbeat request.
         /// </summary>
-        /// <param name="HeartbeatRequestXML">The XML to parse.</param>
+        /// <param name="HeartbeatRequestXML">The XML to be parsed.</param>
         /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement              HeartbeatRequestXML,
@@ -137,7 +137,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given text representation of an OCPP heartbeat request.
         /// </summary>
-        /// <param name="HeartbeatRequestText">The text to parse.</param>
+        /// <param name="HeartbeatRequestText">The text to be parsed.</param>
         /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                HeartbeatRequestText,

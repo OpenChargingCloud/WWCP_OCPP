@@ -107,7 +107,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of an OCPP reserve now response.
         /// </summary>
-        /// <param name="ReserveNowResponseXML">The XML to parse.</param>
+        /// <param name="ReserveNowResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ReserveNowResponse Parse(XElement             ReserveNowResponseXML,
                                                OnExceptionDelegate  OnException = null)
@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given text representation of an OCPP reserve now response.
         /// </summary>
-        /// <param name="ReserveNowResponseText">The text to parse.</param>
+        /// <param name="ReserveNowResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ReserveNowResponse Parse(String               ReserveNowResponseText,
                                                OnExceptionDelegate  OnException = null)
@@ -151,7 +151,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of an OCPP reserve now response.
         /// </summary>
-        /// <param name="ReserveNowResponseXML">The XML to parse.</param>
+        /// <param name="ReserveNowResponseXML">The XML to be parsed.</param>
         /// <param name="ReserveNowResponse">The parsed reserve now response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                ReserveNowResponseXML,
@@ -191,7 +191,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given text representation of an OCPP reserve now response.
         /// </summary>
-        /// <param name="ReserveNowResponseText">The text to parse.</param>
+        /// <param name="ReserveNowResponseText">The text to be parsed.</param>
         /// <param name="ReserveNowResponse">The parsed reserve now response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                  ReserveNowResponseText,

@@ -87,7 +87,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of an OCPP firmware status notification request.
         /// </summary>
-        /// <param name="FirmwareStatusNotificationRequestXML">The XML to parse.</param>
+        /// <param name="FirmwareStatusNotificationRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static FirmwareStatusNotificationRequest Parse(XElement             FirmwareStatusNotificationRequestXML,
                                                               OnExceptionDelegate  OnException = null)
@@ -109,7 +109,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given text representation of an OCPP firmware status notification request.
         /// </summary>
-        /// <param name="FirmwareStatusNotificationRequestText">The text to parse.</param>
+        /// <param name="FirmwareStatusNotificationRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static FirmwareStatusNotificationRequest Parse(String               FirmwareStatusNotificationRequestText,
                                                               OnExceptionDelegate  OnException = null)
@@ -131,7 +131,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of an OCPP firmware status notification request.
         /// </summary>
-        /// <param name="FirmwareStatusNotificationRequestXML">The XML to parse.</param>
+        /// <param name="FirmwareStatusNotificationRequestXML">The XML to be parsed.</param>
         /// <param name="FirmwareStatusNotificationRequest">The parsed firmware status notification request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                               FirmwareStatusNotificationRequestXML,
@@ -171,7 +171,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given text representation of an OCPP firmware status notification request.
         /// </summary>
-        /// <param name="FirmwareStatusNotificationRequestText">The text to parse.</param>
+        /// <param name="FirmwareStatusNotificationRequestText">The text to be parsed.</param>
         /// <param name="FirmwareStatusNotificationRequest">The parsed firmware status notification request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                                 FirmwareStatusNotificationRequestText,

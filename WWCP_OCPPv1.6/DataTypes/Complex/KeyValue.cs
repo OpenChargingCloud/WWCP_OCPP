@@ -94,7 +94,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Parse the given XML representation of an OCPP configuration key value pair.
         /// </summary>
-        /// <param name="KeyValueXML">The XML to parse.</param>
+        /// <param name="KeyValueXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static KeyValue Parse(XElement             KeyValueXML,
                                      OnExceptionDelegate  OnException = null)
@@ -116,7 +116,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Parse the given text representation of an OCPP configuration key value pair.
         /// </summary>
-        /// <param name="KeyValueText">The text to parse.</param>
+        /// <param name="KeyValueText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static KeyValue Parse(String               KeyValueText,
                                      OnExceptionDelegate  OnException = null)
@@ -138,7 +138,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Try to parse the given XML representation of an OCPP configuration key value pair.
         /// </summary>
-        /// <param name="KeyValueXML">The XML to parse.</param>
+        /// <param name="KeyValueXML">The XML to be parsed.</param>
         /// <param name="KeyValue">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement             KeyValueXML,
@@ -179,7 +179,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Try to parse the given text representation of an OCPP configuration key value pair.
         /// </summary>
-        /// <param name="KeyValueText">The text to parse.</param>
+        /// <param name="KeyValueText">The text to be parsed.</param>
         /// <param name="KeyValue">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String               KeyValueText,

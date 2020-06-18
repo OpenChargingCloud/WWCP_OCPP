@@ -99,7 +99,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Parse the given XML representation of an OCPP configuration key value pair.
         /// </summary>
-        /// <param name="AuthorizationDataXML">The XML to parse.</param>
+        /// <param name="AuthorizationDataXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static AuthorizationData Parse(XElement             AuthorizationDataXML,
                                               OnExceptionDelegate  OnException = null)
@@ -121,7 +121,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Parse the given text representation of an OCPP configuration key value pair.
         /// </summary>
-        /// <param name="AuthorizationDataText">The text to parse.</param>
+        /// <param name="AuthorizationDataText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static AuthorizationData Parse(String               AuthorizationDataText,
                                               OnExceptionDelegate  OnException = null)
@@ -143,7 +143,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Try to parse the given XML representation of an OCPP configuration key value pair.
         /// </summary>
-        /// <param name="AuthorizationDataXML">The XML to parse.</param>
+        /// <param name="AuthorizationDataXML">The XML to be parsed.</param>
         /// <param name="AuthorizationData">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement               AuthorizationDataXML,
@@ -186,7 +186,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Try to parse the given text representation of an OCPP configuration key value pair.
         /// </summary>
-        /// <param name="AuthorizationDataText">The text to parse.</param>
+        /// <param name="AuthorizationDataText">The text to be parsed.</param>
         /// <param name="AuthorizationData">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                 AuthorizationDataText,

@@ -143,7 +143,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given XML representation of an OCPP start transaction response.
         /// </summary>
-        /// <param name="StartTransactionResponseXML">The XML to parse.</param>
+        /// <param name="StartTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static StartTransactionResponse Parse(XElement             StartTransactionResponseXML,
                                                      OnExceptionDelegate  OnException = null)
@@ -165,7 +165,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given text representation of an OCPP start transaction response.
         /// </summary>
-        /// <param name="StartTransactionResponseText">The text to parse.</param>
+        /// <param name="StartTransactionResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static StartTransactionResponse Parse(String               StartTransactionResponseText,
                                                      OnExceptionDelegate  OnException = null)
@@ -187,7 +187,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given XML representation of an OCPP start transaction response.
         /// </summary>
-        /// <param name="StartTransactionResponseXML">The XML to parse.</param>
+        /// <param name="StartTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="StartTransactionResponse">The parsed start transaction response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                      StartTransactionResponseXML,
@@ -230,7 +230,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given text representation of an OCPP start transaction response.
         /// </summary>
-        /// <param name="StartTransactionResponseText">The text to parse.</param>
+        /// <param name="StartTransactionResponseText">The text to be parsed.</param>
         /// <param name="StartTransactionResponse">The parsed start transaction response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                        StartTransactionResponseText,

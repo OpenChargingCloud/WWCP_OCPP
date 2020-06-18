@@ -107,7 +107,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of an OCPP clear cache response.
         /// </summary>
-        /// <param name="ClearCacheResponseXML">The XML to parse.</param>
+        /// <param name="ClearCacheResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ClearCacheResponse Parse(XElement             ClearCacheResponseXML,
                                                OnExceptionDelegate  OnException = null)
@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given text representation of an OCPP clear cache response.
         /// </summary>
-        /// <param name="ClearCacheResponseText">The text to parse.</param>
+        /// <param name="ClearCacheResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ClearCacheResponse Parse(String               ClearCacheResponseText,
                                                OnExceptionDelegate  OnException = null)
@@ -151,7 +151,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of an OCPP clear cache response.
         /// </summary>
-        /// <param name="ClearCacheResponseXML">The XML to parse.</param>
+        /// <param name="ClearCacheResponseXML">The XML to be parsed.</param>
         /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                ClearCacheResponseXML,
@@ -191,7 +191,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given text representation of an OCPP clear cache response.
         /// </summary>
-        /// <param name="ClearCacheResponseText">The text to parse.</param>
+        /// <param name="ClearCacheResponseText">The text to be parsed.</param>
         /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                  ClearCacheResponseText,

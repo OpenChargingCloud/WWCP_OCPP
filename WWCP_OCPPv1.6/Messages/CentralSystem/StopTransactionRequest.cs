@@ -176,7 +176,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of an OCPP stop transaction request.
         /// </summary>
-        /// <param name="StopTransactionRequestXML">The XML to parse.</param>
+        /// <param name="StopTransactionRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static StopTransactionRequest Parse(XElement             StopTransactionRequestXML,
                                                    OnExceptionDelegate  OnException = null)
@@ -198,7 +198,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given text representation of an OCPP stop transaction request.
         /// </summary>
-        /// <param name="StopTransactionRequestText">The text to parse.</param>
+        /// <param name="StopTransactionRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static StopTransactionRequest Parse(String               StopTransactionRequestText,
                                                    OnExceptionDelegate  OnException = null)
@@ -220,7 +220,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of an OCPP stop transaction request.
         /// </summary>
-        /// <param name="StopTransactionRequestXML">The XML to parse.</param>
+        /// <param name="StopTransactionRequestXML">The XML to be parsed.</param>
         /// <param name="StopTransactionRequest">The parsed stop transaction request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                    StopTransactionRequestXML,
@@ -275,7 +275,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given text representation of an OCPP stop transaction request.
         /// </summary>
-        /// <param name="StopTransactionRequestText">The text to parse.</param>
+        /// <param name="StopTransactionRequestText">The text to be parsed.</param>
         /// <param name="StopTransactionRequest">The parsed stop transaction request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                      StopTransactionRequestText,

@@ -87,7 +87,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given XML representation of an OCPP unlock connector request.
         /// </summary>
-        /// <param name="UnlockConnectorRequestXML">The XML to parse.</param>
+        /// <param name="UnlockConnectorRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static UnlockConnectorRequest Parse(XElement             UnlockConnectorRequestXML,
                                                    OnExceptionDelegate  OnException = null)
@@ -109,7 +109,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given text representation of an OCPP unlock connector request.
         /// </summary>
-        /// <param name="UnlockConnectorRequestText">The text to parse.</param>
+        /// <param name="UnlockConnectorRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static UnlockConnectorRequest Parse(String               UnlockConnectorRequestText,
                                                    OnExceptionDelegate  OnException = null)
@@ -131,7 +131,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given XML representation of an OCPP unlock connector request.
         /// </summary>
-        /// <param name="UnlockConnectorRequestXML">The XML to parse.</param>
+        /// <param name="UnlockConnectorRequestXML">The XML to be parsed.</param>
         /// <param name="UnlockConnectorRequest">The parsed unlock connector request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                    UnlockConnectorRequestXML,
@@ -171,7 +171,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given text representation of an OCPP unlock connector request.
         /// </summary>
-        /// <param name="UnlockConnectorRequestText">The text to parse.</param>
+        /// <param name="UnlockConnectorRequestText">The text to be parsed.</param>
         /// <param name="UnlockConnectorRequest">The parsed unlock connector request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                      UnlockConnectorRequestText,

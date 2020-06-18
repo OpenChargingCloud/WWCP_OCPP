@@ -127,7 +127,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of an OCPP start transaction request.
         /// </summary>
-        /// <param name="StartTransactionRequestXML">The XML to parse.</param>
+        /// <param name="StartTransactionRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static StartTransactionRequest Parse(XElement             StartTransactionRequestXML,
                                                     OnExceptionDelegate  OnException = null)
@@ -149,7 +149,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given text representation of an OCPP start transaction request.
         /// </summary>
-        /// <param name="StartTransactionRequestText">The text to parse.</param>
+        /// <param name="StartTransactionRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static StartTransactionRequest Parse(String               StartTransactionRequestText,
                                                     OnExceptionDelegate  OnException = null)
@@ -171,7 +171,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of an OCPP start transaction request.
         /// </summary>
-        /// <param name="StartTransactionRequestXML">The XML to parse.</param>
+        /// <param name="StartTransactionRequestXML">The XML to be parsed.</param>
         /// <param name="StartTransactionRequest">The parsed start transaction request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                     StartTransactionRequestXML,
@@ -223,7 +223,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given text representation of an OCPP start transaction request.
         /// </summary>
-        /// <param name="StartTransactionRequestText">The text to parse.</param>
+        /// <param name="StartTransactionRequestText">The text to be parsed.</param>
         /// <param name="StartTransactionRequest">The parsed start transaction request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                       StartTransactionRequestText,

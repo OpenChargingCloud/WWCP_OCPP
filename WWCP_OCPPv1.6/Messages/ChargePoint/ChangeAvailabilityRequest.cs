@@ -98,7 +98,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given XML representation of an OCPP change availability request.
         /// </summary>
-        /// <param name="ChangeAvailabilityRequestXML">The XML to parse.</param>
+        /// <param name="ChangeAvailabilityRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ChangeAvailabilityRequest Parse(XElement             ChangeAvailabilityRequestXML,
                                                       OnExceptionDelegate  OnException = null)
@@ -120,7 +120,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given text representation of an OCPP change availability request.
         /// </summary>
-        /// <param name="ChangeAvailabilityRequestText">The text to parse.</param>
+        /// <param name="ChangeAvailabilityRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ChangeAvailabilityRequest Parse(String               ChangeAvailabilityRequestText,
                                                       OnExceptionDelegate  OnException = null)
@@ -142,7 +142,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given XML representation of an OCPP change availability request.
         /// </summary>
-        /// <param name="ChangeAvailabilityRequestXML">The XML to parse.</param>
+        /// <param name="ChangeAvailabilityRequestXML">The XML to be parsed.</param>
         /// <param name="ChangeAvailabilityRequest">The parsed change availability request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                       ChangeAvailabilityRequestXML,
@@ -185,7 +185,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given text representation of an OCPP change availability request.
         /// </summary>
-        /// <param name="ChangeAvailabilityRequestText">The text to parse.</param>
+        /// <param name="ChangeAvailabilityRequestText">The text to be parsed.</param>
         /// <param name="ChangeAvailabilityRequest">The parsed change availability request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                         ChangeAvailabilityRequestText,

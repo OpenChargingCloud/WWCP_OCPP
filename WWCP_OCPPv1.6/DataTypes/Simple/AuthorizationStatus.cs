@@ -15,8 +15,88 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the authorization status.
+    /// </summary>
+    public static class AuthorizationStatusExtentions
+    {
+
+        #region AsAuthorizationStatus(Text)
+
+        public static AuthorizationStatus AsAuthorizationStatus(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Accepted":
+                    return AuthorizationStatus.Accepted;
+
+                case "Blocked":
+                    return AuthorizationStatus.Blocked;
+
+                case "Expired":
+                    return AuthorizationStatus.Expired;
+
+                case "Invalid":
+                    return AuthorizationStatus.Invalid;
+
+                case "ConcurrentTx":
+                    return AuthorizationStatus.ConcurrentTx;
+
+
+                default:
+                    return AuthorizationStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this AuthorizationStatus)
+
+        public static String AsText(this AuthorizationStatus AuthorizationStatus)
+        {
+
+            switch (AuthorizationStatus)
+            {
+
+                case AuthorizationStatus.Accepted:
+                    return "Accepted";
+
+                case AuthorizationStatus.Blocked:
+                    return "Blocked";
+
+                case AuthorizationStatus.Expired:
+                    return "Expired";
+
+                case AuthorizationStatus.Invalid:
+                    return "Invalid";
+
+                case AuthorizationStatus.ConcurrentTx:
+                    return "ConcurrentTx";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
 
     /// <summary>
     /// The status in a response to an authorize request.

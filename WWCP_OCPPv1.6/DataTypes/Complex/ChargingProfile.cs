@@ -194,7 +194,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Parse the given XML representation of an OCPP charging profile.
         /// </summary>
-        /// <param name="ChargingProfileXML">The XML to parse.</param>
+        /// <param name="ChargingProfileXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ChargingProfile Parse(XElement             ChargingProfileXML,
                                             OnExceptionDelegate  OnException = null)
@@ -216,7 +216,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Parse the given text representation of an OCPP charging profile.
         /// </summary>
-        /// <param name="ChargingProfileText">The text to parse.</param>
+        /// <param name="ChargingProfileText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ChargingProfile Parse(String               ChargingProfileText,
                                             OnExceptionDelegate  OnException = null)
@@ -238,7 +238,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Try to parse the given XML representation of an OCPP charging profile.
         /// </summary>
-        /// <param name="ChargingProfileXML">The XML to parse.</param>
+        /// <param name="ChargingProfileXML">The XML to be parsed.</param>
         /// <param name="ChargingProfile">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement             ChargingProfileXML,
@@ -302,7 +302,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Try to parse the given text representation of an OCPP charging profile.
         /// </summary>
-        /// <param name="ChargingProfileText">The text to parse.</param>
+        /// <param name="ChargingProfileText">The text to be parsed.</param>
         /// <param name="ChargingProfile">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String               ChargingProfileText,

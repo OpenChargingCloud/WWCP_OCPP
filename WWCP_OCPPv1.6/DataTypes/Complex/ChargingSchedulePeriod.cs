@@ -94,7 +94,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Parse the given XML representation of an OCPP charging schedule period.
         /// </summary>
-        /// <param name="ChargingSchedulePeriodXML">The XML to parse.</param>
+        /// <param name="ChargingSchedulePeriodXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ChargingSchedulePeriod Parse(XElement             ChargingSchedulePeriodXML,
                                        OnExceptionDelegate  OnException = null)
@@ -116,7 +116,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Parse the given text representation of an OCPP charging schedule period.
         /// </summary>
-        /// <param name="ChargingSchedulePeriodText">The text to parse.</param>
+        /// <param name="ChargingSchedulePeriodText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ChargingSchedulePeriod Parse(String               ChargingSchedulePeriodText,
                                        OnExceptionDelegate  OnException = null)
@@ -138,7 +138,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Try to parse the given XML representation of an OCPP charging schedule period.
         /// </summary>
-        /// <param name="ChargingSchedulePeriodXML">The XML to parse.</param>
+        /// <param name="ChargingSchedulePeriodXML">The XML to be parsed.</param>
         /// <param name="ChargingSchedulePeriod">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement             ChargingSchedulePeriodXML,
@@ -185,7 +185,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Try to parse the given text representation of an OCPP charging schedule period.
         /// </summary>
-        /// <param name="ChargingSchedulePeriodText">The text to parse.</param>
+        /// <param name="ChargingSchedulePeriodText">The text to be parsed.</param>
         /// <param name="ChargingSchedulePeriod">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                      ChargingSchedulePeriodText,

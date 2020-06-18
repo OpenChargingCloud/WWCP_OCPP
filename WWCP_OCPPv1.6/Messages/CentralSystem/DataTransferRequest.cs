@@ -116,7 +116,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of an OCPP data transfer request.
         /// </summary>
-        /// <param name="DataTransferRequestXML">The XML to parse.</param>
+        /// <param name="DataTransferRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static DataTransferRequest Parse(XElement             DataTransferRequestXML,
                                                 OnExceptionDelegate  OnException = null)
@@ -138,7 +138,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given text representation of an OCPP data transfer request.
         /// </summary>
-        /// <param name="DataTransferRequestText">The text to parse.</param>
+        /// <param name="DataTransferRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static DataTransferRequest Parse(String               DataTransferRequestText,
                                                 OnExceptionDelegate  OnException = null)
@@ -160,7 +160,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of an OCPP data transfer request.
         /// </summary>
-        /// <param name="DataTransferRequestXML">The XML to parse.</param>
+        /// <param name="DataTransferRequestXML">The XML to be parsed.</param>
         /// <param name="DataTransferRequest">The parsed data transfer request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                 DataTransferRequestXML,
@@ -201,7 +201,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given text representation of an OCPP data transfer request.
         /// </summary>
-        /// <param name="DataTransferRequestText">The text to parse.</param>
+        /// <param name="DataTransferRequestText">The text to be parsed.</param>
         /// <param name="DataTransferRequest">The parsed data transfer request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                   DataTransferRequestText,

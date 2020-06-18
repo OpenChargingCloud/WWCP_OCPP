@@ -127,7 +127,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given XML representation of an OCPP clear charging profile request.
         /// </summary>
-        /// <param name="ClearChargingProfileRequestXML">The XML to parse.</param>
+        /// <param name="ClearChargingProfileRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ClearChargingProfileRequest Parse(XElement             ClearChargingProfileRequestXML,
                                                         OnExceptionDelegate  OnException = null)
@@ -149,7 +149,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given text representation of an OCPP clear charging profile request.
         /// </summary>
-        /// <param name="ClearChargingProfileRequestText">The text to parse.</param>
+        /// <param name="ClearChargingProfileRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ClearChargingProfileRequest Parse(String               ClearChargingProfileRequestText,
                                                         OnExceptionDelegate  OnException = null)
@@ -171,7 +171,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given XML representation of an OCPP clear charging profile request.
         /// </summary>
-        /// <param name="ClearChargingProfileRequestXML">The XML to parse.</param>
+        /// <param name="ClearChargingProfileRequestXML">The XML to be parsed.</param>
         /// <param name="ClearChargingProfileRequest">The parsed clear charging profile request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                         ClearChargingProfileRequestXML,
@@ -220,7 +220,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given text representation of an OCPP clear charging profile request.
         /// </summary>
-        /// <param name="ClearChargingProfileRequestText">The text to parse.</param>
+        /// <param name="ClearChargingProfileRequestText">The text to be parsed.</param>
         /// <param name="ClearChargingProfileRequest">The parsed clear charging profile request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                           ClearChargingProfileRequestText,

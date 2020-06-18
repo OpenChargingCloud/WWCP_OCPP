@@ -108,7 +108,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of an OCPP get local list version response.
         /// </summary>
-        /// <param name="GetLocalListVersionResponseXML">The XML to parse.</param>
+        /// <param name="GetLocalListVersionResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static GetLocalListVersionResponse Parse(XElement             GetLocalListVersionResponseXML,
                                                         OnExceptionDelegate  OnException = null)
@@ -130,7 +130,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given text representation of an OCPP get local list version response.
         /// </summary>
-        /// <param name="GetLocalListVersionResponseText">The text to parse.</param>
+        /// <param name="GetLocalListVersionResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static GetLocalListVersionResponse Parse(String               GetLocalListVersionResponseText,
                                                         OnExceptionDelegate  OnException = null)
@@ -152,7 +152,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of an OCPP get local list version response.
         /// </summary>
-        /// <param name="GetLocalListVersionResponseXML">The XML to parse.</param>
+        /// <param name="GetLocalListVersionResponseXML">The XML to be parsed.</param>
         /// <param name="GetLocalListVersionResponse">The parsed get local list version response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                         GetLocalListVersionResponseXML,
@@ -192,7 +192,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given text representation of an OCPP get local list version response.
         /// </summary>
-        /// <param name="GetLocalListVersionResponseText">The text to parse.</param>
+        /// <param name="GetLocalListVersionResponseText">The text to be parsed.</param>
         /// <param name="GetLocalListVersionResponse">The parsed get local list version response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                           GetLocalListVersionResponseText,

@@ -142,7 +142,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given XML representation of an OCPP reserve now request.
         /// </summary>
-        /// <param name="ReserveNowRequestXML">The XML to parse.</param>
+        /// <param name="ReserveNowRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ReserveNowRequest Parse(XElement             ReserveNowRequestXML,
                                               OnExceptionDelegate  OnException = null)
@@ -164,7 +164,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given text representation of an OCPP reserve now request.
         /// </summary>
-        /// <param name="ReserveNowRequestText">The text to parse.</param>
+        /// <param name="ReserveNowRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ReserveNowRequest Parse(String               ReserveNowRequestText,
                                               OnExceptionDelegate  OnException = null)
@@ -186,7 +186,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given XML representation of an OCPP reserve now request.
         /// </summary>
-        /// <param name="ReserveNowRequestXML">The XML to parse.</param>
+        /// <param name="ReserveNowRequestXML">The XML to be parsed.</param>
         /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement               ReserveNowRequestXML,
@@ -238,7 +238,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given text representation of an OCPP reserve now request.
         /// </summary>
-        /// <param name="ReserveNowRequestText">The text to parse.</param>
+        /// <param name="ReserveNowRequestText">The text to be parsed.</param>
         /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                 ReserveNowRequestText,

@@ -107,7 +107,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of an OCPP reset response.
         /// </summary>
-        /// <param name="ResetResponseXML">The XML to parse.</param>
+        /// <param name="ResetResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ResetResponse Parse(XElement             ResetResponseXML,
                                           OnExceptionDelegate  OnException = null)
@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given text representation of an OCPP reset response.
         /// </summary>
-        /// <param name="ResetResponseText">The text to parse.</param>
+        /// <param name="ResetResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ResetResponse Parse(String               ResetResponseText,
                                           OnExceptionDelegate  OnException = null)
@@ -151,7 +151,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of an OCPP reset response.
         /// </summary>
-        /// <param name="ResetResponseXML">The XML to parse.</param>
+        /// <param name="ResetResponseXML">The XML to be parsed.</param>
         /// <param name="ResetResponse">The parsed reset response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement             ResetResponseXML,
@@ -191,7 +191,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given text representation of an OCPP reset response.
         /// </summary>
-        /// <param name="ResetResponseText">The text to parse.</param>
+        /// <param name="ResetResponseText">The text to be parsed.</param>
         /// <param name="ResetResponse">The parsed reset response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String               ResetResponseText,

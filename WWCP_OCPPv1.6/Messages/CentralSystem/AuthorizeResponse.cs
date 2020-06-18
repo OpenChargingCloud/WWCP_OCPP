@@ -20,7 +20,11 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
+using Org.BouncyCastle.Crypto.Engines;
 
 #endregion
 
@@ -28,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP authorize response.
+    /// An authorize response.
     /// </summary>
     public class AuthorizeResponse : AResponse<CP.AuthorizeRequest,
                                                   AuthorizeResponse>
@@ -43,24 +47,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region Statics
-
-        /// <summary>
-        /// The authentication failed.
-        /// </summary>
-        public static AuthorizeResponse Failed(CP.AuthorizeRequest Request)
-            => new AuthorizeResponse(Request, new IdTagInfo(AuthorizationStatus.Error));
-
-        #endregion
-
         #region Constructor(s)
 
         #region AuthorizeResponse(Request, IdTagInfo)
 
         /// <summary>
-        /// Create a new OCPP authorize response.
+        /// Create an authorize response.
         /// </summary>
-        /// <param name="Request">The related authorize request.</param>
+        /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="IdTagInfo">An identification tag info.</param>
         public AuthorizeResponse(CP.AuthorizeRequest  Request,
                                  IdTagInfo            IdTagInfo)
@@ -78,10 +72,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region AuthorizeResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP authorize response.
+        /// Create an authorize response.
         /// </summary>
-        /// <param name="Request">The related authorize request.</param>
-        /// <param name="Result">An OCPP result.</param>
+        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="Result">A result.</param>
         public AuthorizeResponse(CP.AuthorizeRequest  Request,
                                  Result               Result)
 
@@ -122,24 +116,69 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema":  "http://json-schema.org/draft-04/schema#",
+        //     "id":       "urn:OCPP:1.6:2019:12:AuthorizeResponse",
+        //     "title":    "AuthorizeResponse",
+        //     "type":     "object",
+        //     "properties": {
+        //         "idTagInfo": {
+        //             "type": "object",
+        //             "properties": {
+        //                 "expiryDate": {
+        //                     "type":      "string",
+        //                     "format":    "date-time"
+        //                 },
+        //                 "parentIdTag": {
+        //                     "type":      "string",
+        //                     "maxLength":  20
+        //                 },
+        //                 "status": {
+        //                     "type":      "string",
+        //                     "additionalProperties": false,
+        //                     "enum": [
+        //                         "Accepted",
+        //                         "Blocked",
+        //                         "Expired",
+        //                         "Invalid",
+        //                         "ConcurrentTx"
+        //                     ]
+        //                 }
+        //             },
+        //             "additionalProperties": false,
+        //             "required": [
+        //                 "status"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "idTagInfo"
+        //     ]
+        // }
+
         #endregion
 
-        #region (static) Parse(AuthorizeResponseXML,  OnException = null)
+        #region (static) Parse   (Request, AuthorizeResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP authorize response.
+        /// Parse the given XML representation of an authorize response.
         /// </summary>
-        /// <param name="AuthorizeResponseXML">The XML to parse.</param>
+        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="AuthorizeResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static AuthorizeResponse Parse(CP.AuthorizeRequest  Request,
                                               XElement             AuthorizeResponseXML,
                                               OnExceptionDelegate  OnException = null)
         {
 
-            AuthorizeResponse _AuthorizeResponse;
-
-            if (TryParse(Request, AuthorizeResponseXML, out _AuthorizeResponse, OnException))
-                return _AuthorizeResponse;
+            if (TryParse(Request,
+                         AuthorizeResponseXML,
+                         out AuthorizeResponse authorizeResponse,
+                         OnException))
+            {
+                return authorizeResponse;
+            }
 
             return null;
 
@@ -147,22 +186,55 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(AuthorizeResponseText, OnException = null)
+        #region (static) Parse   (Request, AuthorizeResponseJSON, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP authorize response.
+        /// Parse the given JSON representation of an authorize response.
         /// </summary>
-        /// <param name="AuthorizeResponseText">The text to parse.</param>
+        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="AuthorizeResponseJSON">The text to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static AuthorizeResponse Parse(CP.AuthorizeRequest  Request,
+                                              JObject              AuthorizeResponseJSON,
+                                              OnExceptionDelegate  OnException = null)
+        {
+
+
+            if (TryParse(Request,
+                         AuthorizeResponseJSON,
+                         out AuthorizeResponse authorizeResponse,
+                         OnException))
+            {
+                return authorizeResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, AuthorizeResponseText, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of an authorize response.
+        /// </summary>
+        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="AuthorizeResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static AuthorizeResponse Parse(CP.AuthorizeRequest  Request,
                                               String               AuthorizeResponseText,
                                               OnExceptionDelegate  OnException = null)
         {
 
-            AuthorizeResponse _AuthorizeResponse;
 
-            if (TryParse(Request, AuthorizeResponseText, out _AuthorizeResponse, OnException))
-                return _AuthorizeResponse;
+            if (TryParse(Request,
+                         AuthorizeResponseText,
+                         out AuthorizeResponse authorizeResponse,
+                         OnException))
+            {
+                return authorizeResponse;
+            }
 
             return null;
 
@@ -170,12 +242,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(AuthorizeResponseXML,  out AuthorizeResponse, OnException = null)
+        #region (static) TryParse(Request, AuthorizeResponseXML,  out AuthorizeResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP authorize response.
+        /// Try to parse the given XML representation of an authorize response.
         /// </summary>
-        /// <param name="AuthorizeResponseXML">The XML to parse.</param>
+        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="AuthorizeResponseXML">The XML to be parsed.</param>
         /// <param name="AuthorizeResponse">The parsed authorize response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.AuthorizeRequest    Request,
@@ -187,27 +260,68 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                var IdTagInfoXML = AuthorizeResponseXML.ElementOrFail(OCPPNS.OCPPv1_6_CS + "idTagInfo");
+                if (IdTagInfo.TryParse(AuthorizeResponseXML.ElementOrFail(OCPPNS.OCPPv1_6_CS + "idTagInfo"),
+                                       out IdTagInfo idTagInfo,
+                                       OnException))
+                {
+
+                    AuthorizeResponse = new AuthorizeResponse(Request,
+                                                              idTagInfo);
+
+                    return true;
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                OnException?.Invoke(DateTime.UtcNow, AuthorizeResponseXML, e);
+            }
+
+            AuthorizeResponse = null;
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, AuthorizeResponseJSON, out AuthorizeResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of an authorize response.
+        /// </summary>
+        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="AuthorizeResponseJSON">The JSON to be parsed.</param>
+        /// <param name="AuthorizeResponse">The parsed authorize response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CP.AuthorizeRequest    Request,
+                                       JObject                AuthorizeResponseJSON,
+                                       out AuthorizeResponse  AuthorizeResponse,
+                                       OnExceptionDelegate    OnException  = null)
+        {
+
+            try
+            {
+
+                AuthorizeResponse = null;
+
+                #region IdTagInfo
+
+                if (!AuthorizeResponseJSON.ParseMandatory("idTagInfo",
+                                                          "idTagInfo",
+                                                          OCPPv1_6.IdTagInfo.TryParse,
+                                                          out IdTagInfo  IdTagInfo,
+                                                          out String     ErrorResponse,
+                                                          OnException))
+                {
+                    return false;
+                }
+
+                #endregion
 
 
-                AuthorizeResponse = new AuthorizeResponse(
-
-                                        Request,
-
-                                        new IdTagInfo(
-
-                                            IdTagInfoXML.MapEnumValues     (OCPPNS.OCPPv1_6_CS + "status",
-                                                                            XML_IO.AsAuthorizationStatus),
-
-                                            IdTagInfoXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "expiryDate",
-                                                                            DateTime.Parse),
-
-                                            IdTagInfoXML.MapValueOrNull    (OCPPNS.OCPPv1_6_CS + "parentIdTag",
-                                                                            IdToken.Parse)
-
-                                        )
-
-                                    );
+                AuthorizeResponse = new AuthorizeResponse(Request,
+                                                          IdTagInfo);
 
                 return true;
 
@@ -215,7 +329,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, AuthorizeResponseXML, e);
+                OnException?.Invoke(DateTime.UtcNow, AuthorizeResponseJSON, e);
 
                 AuthorizeResponse = null;
                 return false;
@@ -226,12 +340,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(AuthorizeResponseText, out AuthorizeResponse, OnException = null)
+        #region (static) TryParse(Request, AuthorizeResponseText, out AuthorizeResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP authorize response.
+        /// Try to parse the given text representation of an authorize response.
         /// </summary>
-        /// <param name="AuthorizeResponseText">The text to parse.</param>
+        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="AuthorizeResponseText">The text to be parsed.</param>
         /// <param name="AuthorizeResponse">The parsed authorize response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.AuthorizeRequest    Request,
@@ -243,12 +358,29 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(Request,
-                             XDocument.Parse(AuthorizeResponseText).Root,
-                             out AuthorizeResponse,
-                             OnException))
+                AuthorizeResponseText = AuthorizeResponseText?.Trim();
 
-                    return true;
+                if (AuthorizeResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (AuthorizeResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(AuthorizeResponseText),
+                                 out AuthorizeResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(AuthorizeResponseText).Root,
+                                 out AuthorizeResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -271,20 +403,43 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public XElement ToXML()
 
             => new XElement(OCPPNS.OCPPv1_6_CS + "authorizeResponse",
-                   new XElement(OCPPNS.OCPPv1_6_CS + "idTagInfo",
-
-                       new XElement(OCPPNS.OCPPv1_6_CS + "status",             XML_IO.AsText(IdTagInfo.Status)),
-
-                       IdTagInfo.ExpiryDate.HasValue
-                           ? new XElement(OCPPNS.OCPPv1_6_CS + "expiryDate",   IdTagInfo.ExpiryDate.Value.ToIso8601())
-                           : null,
-
-                       IdTagInfo.ParentIdTag != null
-                           ? new XElement(OCPPNS.OCPPv1_6_CS + "parentIdTag",  IdTagInfo.ParentIdTag.Value)
-                           : null
-
-                   )
+                   IdTagInfo.ToXML()
                );
+
+        #endregion
+
+        #region ToJSON(CustomAuthorizeResponseSerializer = null, CustomIdTagInfoResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomAuthorizeResponseSerializer">A delegate to serialize custom authorize responses.</param>
+        /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeResponse>  CustomAuthorizeResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<IdTagInfo>          CustomIdTagInfoResponseSerializer   = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("IdTagInfo",  IdTagInfo.ToJSON())
+                       );
+
+            return CustomAuthorizeResponseSerializer != null
+                       ? CustomAuthorizeResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The authentication failed.
+        /// </summary>
+        public static AuthorizeResponse Failed(CP.AuthorizeRequest Request)
+            => new AuthorizeResponse(Request, new IdTagInfo(AuthorizationStatus.Error));
 
         #endregion
 

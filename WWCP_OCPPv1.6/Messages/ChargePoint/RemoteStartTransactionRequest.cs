@@ -162,7 +162,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given XML representation of an OCPP remote start transaction request.
         /// </summary>
-        /// <param name="RemoteStartTransactionRequestXML">The XML to parse.</param>
+        /// <param name="RemoteStartTransactionRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static RemoteStartTransactionRequest Parse(XElement             RemoteStartTransactionRequestXML,
                                                           OnExceptionDelegate  OnException = null)
@@ -184,7 +184,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given text representation of an OCPP remote start transaction request.
         /// </summary>
-        /// <param name="RemoteStartTransactionRequestText">The text to parse.</param>
+        /// <param name="RemoteStartTransactionRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static RemoteStartTransactionRequest Parse(String               RemoteStartTransactionRequestText,
                                                           OnExceptionDelegate  OnException = null)
@@ -206,7 +206,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given XML representation of an OCPP remote start transaction request.
         /// </summary>
-        /// <param name="RemoteStartTransactionRequestXML">The XML to parse.</param>
+        /// <param name="RemoteStartTransactionRequestXML">The XML to be parsed.</param>
         /// <param name="RemoteStartTransactionRequest">The parsed remote start transaction request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                           RemoteStartTransactionRequestXML,
@@ -252,7 +252,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given text representation of an OCPP remote start transaction request.
         /// </summary>
-        /// <param name="RemoteStartTransactionRequestText">The text to parse.</param>
+        /// <param name="RemoteStartTransactionRequestText">The text to be parsed.</param>
         /// <param name="RemoteStartTransactionRequest">The parsed remote start transaction request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                             RemoteStartTransactionRequestText,

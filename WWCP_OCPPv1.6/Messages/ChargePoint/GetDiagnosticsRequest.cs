@@ -145,7 +145,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given XML representation of an OCPP get diagnostics request.
         /// </summary>
-        /// <param name="GetDiagnosticsRequestXML">The XML to parse.</param>
+        /// <param name="GetDiagnosticsRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static GetDiagnosticsRequest Parse(XElement             GetDiagnosticsRequestXML,
                                                   OnExceptionDelegate  OnException = null)
@@ -167,7 +167,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given text representation of an OCPP get diagnostics request.
         /// </summary>
-        /// <param name="GetDiagnosticsRequestText">The text to parse.</param>
+        /// <param name="GetDiagnosticsRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static GetDiagnosticsRequest Parse(String               GetDiagnosticsRequestText,
                                                   OnExceptionDelegate  OnException = null)
@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given XML representation of an OCPP get diagnostics request.
         /// </summary>
-        /// <param name="GetDiagnosticsRequestXML">The XML to parse.</param>
+        /// <param name="GetDiagnosticsRequestXML">The XML to be parsed.</param>
         /// <param name="GetDiagnosticsRequest">The parsed get diagnostics request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                   GetDiagnosticsRequestXML,
@@ -240,7 +240,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given text representation of an OCPP get diagnostics request.
         /// </summary>
-        /// <param name="GetDiagnosticsRequestText">The text to parse.</param>
+        /// <param name="GetDiagnosticsRequestText">The text to be parsed.</param>
         /// <param name="GetDiagnosticsRequest">The parsed get diagnostics request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                     GetDiagnosticsRequestText,

@@ -108,7 +108,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of an OCPP remote stop transaction response.
         /// </summary>
-        /// <param name="RemoteStopTransactionResponseXML">The XML to parse.</param>
+        /// <param name="RemoteStopTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static RemoteStopTransactionResponse Parse(XElement             RemoteStopTransactionResponseXML,
                                                           OnExceptionDelegate  OnException = null)
@@ -130,7 +130,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given text representation of an OCPP remote stop transaction response.
         /// </summary>
-        /// <param name="RemoteStopTransactionResponseText">The text to parse.</param>
+        /// <param name="RemoteStopTransactionResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static RemoteStopTransactionResponse Parse(String               RemoteStopTransactionResponseText,
                                                           OnExceptionDelegate  OnException = null)
@@ -152,7 +152,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of an OCPP remote stop transaction response.
         /// </summary>
-        /// <param name="RemoteStopTransactionResponseXML">The XML to parse.</param>
+        /// <param name="RemoteStopTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="RemoteStopTransactionResponse">The parsed remote stop transaction response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                           RemoteStopTransactionResponseXML,
@@ -192,7 +192,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given text representation of an OCPP remote stop transaction response.
         /// </summary>
-        /// <param name="RemoteStopTransactionResponseText">The text to parse.</param>
+        /// <param name="RemoteStopTransactionResponseText">The text to be parsed.</param>
         /// <param name="RemoteStopTransactionResponse">The parsed remote stop transaction response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                             RemoteStopTransactionResponseText,

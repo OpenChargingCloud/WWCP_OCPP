@@ -103,7 +103,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given XML representation of an OCPP change configuration request.
         /// </summary>
-        /// <param name="ChangeConfigurationRequestXML">The XML to parse.</param>
+        /// <param name="ChangeConfigurationRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ChangeConfigurationRequest Parse(XElement             ChangeConfigurationRequestXML,
                                                        OnExceptionDelegate  OnException = null)
@@ -125,7 +125,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given text representation of an OCPP change configuration request.
         /// </summary>
-        /// <param name="ChangeConfigurationRequestText">The text to parse.</param>
+        /// <param name="ChangeConfigurationRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ChangeConfigurationRequest Parse(String               ChangeConfigurationRequestText,
                                                        OnExceptionDelegate  OnException = null)
@@ -147,7 +147,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given XML representation of an OCPP change configuration request.
         /// </summary>
-        /// <param name="ChangeConfigurationRequestXML">The XML to parse.</param>
+        /// <param name="ChangeConfigurationRequestXML">The XML to be parsed.</param>
         /// <param name="ChangeConfigurationRequest">The parsed change configuration request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                        ChangeConfigurationRequestXML,
@@ -187,7 +187,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given text representation of an OCPP change configuration request.
         /// </summary>
-        /// <param name="ChangeConfigurationRequestText">The text to parse.</param>
+        /// <param name="ChangeConfigurationRequestText">The text to be parsed.</param>
         /// <param name="ChangeConfigurationRequest">The parsed change configuration request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                          ChangeConfigurationRequestText,

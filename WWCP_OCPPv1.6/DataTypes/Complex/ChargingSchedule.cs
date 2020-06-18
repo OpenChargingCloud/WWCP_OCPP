@@ -140,7 +140,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Parse the given XML representation of an OCPP charging schedule.
         /// </summary>
-        /// <param name="ChargingScheduleXML">The XML to parse.</param>
+        /// <param name="ChargingScheduleXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ChargingSchedule Parse(XElement             ChargingScheduleXML,
                                              OnExceptionDelegate  OnException = null)
@@ -162,7 +162,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Parse the given text representation of an OCPP charging schedule.
         /// </summary>
-        /// <param name="ChargingScheduleText">The text to parse.</param>
+        /// <param name="ChargingScheduleText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ChargingSchedule Parse(String               ChargingScheduleText,
                                              OnExceptionDelegate  OnException = null)
@@ -184,7 +184,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Try to parse the given XML representation of an OCPP charging schedule.
         /// </summary>
-        /// <param name="ChargingScheduleXML">The XML to parse.</param>
+        /// <param name="ChargingScheduleXML">The XML to be parsed.</param>
         /// <param name="ChargingSchedule">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement              ChargingScheduleXML,
@@ -236,7 +236,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Try to parse the given text representation of an OCPP charging schedule.
         /// </summary>
-        /// <param name="ChargingScheduleText">The text to parse.</param>
+        /// <param name="ChargingScheduleText">The text to be parsed.</param>
         /// <param name="ChargingSchedule">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                ChargingScheduleText,

@@ -177,7 +177,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Parse the given XML representation of an OCPP SOAP header.
         /// </summary>
-        /// <param name="SOAPHeaderXML">The XML to parse.</param>
+        /// <param name="SOAPHeaderXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static SOAPHeader Parse(XElement             SOAPHeaderXML,
                                        OnExceptionDelegate  OnException = null)
@@ -199,7 +199,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Parse the given text representation of an OCPP SOAP header.
         /// </summary>
-        /// <param name="SOAPHeaderText">The text to parse.</param>
+        /// <param name="SOAPHeaderText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static SOAPHeader Parse(String               SOAPHeaderText,
                                        OnExceptionDelegate  OnException = null)
@@ -221,7 +221,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Try to parse the given XML representation of an OCPP SOAP header.
         /// </summary>
-        /// <param name="SOAPHeaderXML">The XML to parse.</param>
+        /// <param name="SOAPHeaderXML">The XML to be parsed.</param>
         /// <param name="SOAPHeader">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement             SOAPHeaderXML,
@@ -267,7 +267,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Try to parse the given text representation of an OCPP SOAP header.
         /// </summary>
-        /// <param name="SOAPHeaderText">The text to parse.</param>
+        /// <param name="SOAPHeaderText">The text to be parsed.</param>
         /// <param name="SOAPHeader">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String               SOAPHeaderText,

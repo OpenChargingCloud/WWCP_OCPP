@@ -116,7 +116,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Parse the given XML representation of an OCPP meter value.
         /// </summary>
-        /// <param name="MeterValueXML">The XML to parse.</param>
+        /// <param name="MeterValueXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static MeterValue Parse(XElement             MeterValueXML,
                                        OnExceptionDelegate  OnException = null)
@@ -138,7 +138,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Parse the given text representation of an OCPP meter value.
         /// </summary>
-        /// <param name="MeterValueText">The text to parse.</param>
+        /// <param name="MeterValueText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static MeterValue Parse(String               MeterValueText,
                                        OnExceptionDelegate  OnException = null)
@@ -160,7 +160,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Try to parse the given XML representation of an OCPP meter value.
         /// </summary>
-        /// <param name="MeterValueXML">The XML to parse.</param>
+        /// <param name="MeterValueXML">The XML to be parsed.</param>
         /// <param name="MeterValue">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement             MeterValueXML,
@@ -203,7 +203,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Try to parse the given text representation of an OCPP meter value.
         /// </summary>
-        /// <param name="MeterValueText">The text to parse.</param>
+        /// <param name="MeterValueText">The text to be parsed.</param>
         /// <param name="MeterValue">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String               MeterValueText,

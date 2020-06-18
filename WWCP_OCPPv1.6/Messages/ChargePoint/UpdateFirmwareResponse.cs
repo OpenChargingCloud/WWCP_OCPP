@@ -89,7 +89,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of an OCPP update firmware response.
         /// </summary>
-        /// <param name="UpdateFirmwareResponseXML">The XML to parse.</param>
+        /// <param name="UpdateFirmwareResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static UpdateFirmwareResponse Parse(XElement             UpdateFirmwareResponseXML,
                                                    OnExceptionDelegate  OnException = null)
@@ -111,7 +111,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given text representation of an OCPP update firmware response.
         /// </summary>
-        /// <param name="UpdateFirmwareResponseText">The text to parse.</param>
+        /// <param name="UpdateFirmwareResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static UpdateFirmwareResponse Parse(String               UpdateFirmwareResponseText,
                                                    OnExceptionDelegate  OnException = null)
@@ -133,7 +133,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of an OCPP update firmware response.
         /// </summary>
-        /// <param name="UpdateFirmwareResponseXML">The XML to parse.</param>
+        /// <param name="UpdateFirmwareResponseXML">The XML to be parsed.</param>
         /// <param name="UpdateFirmwareResponse">The parsed update firmware response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                    UpdateFirmwareResponseXML,
@@ -168,7 +168,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given text representation of an OCPP update firmware response.
         /// </summary>
-        /// <param name="UpdateFirmwareResponseText">The text to parse.</param>
+        /// <param name="UpdateFirmwareResponseText">The text to be parsed.</param>
         /// <param name="UpdateFirmwareResponse">The parsed update firmware response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                      UpdateFirmwareResponseText,

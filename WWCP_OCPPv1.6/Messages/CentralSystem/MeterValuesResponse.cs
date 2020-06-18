@@ -87,7 +87,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given XML representation of an OCPP meter values response.
         /// </summary>
-        /// <param name="MeterValuesResponseXML">The XML to parse.</param>
+        /// <param name="MeterValuesResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static MeterValuesResponse Parse(XElement             MeterValuesResponseXML,
                                                 OnExceptionDelegate  OnException = null)
@@ -109,7 +109,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given text representation of an OCPP meter values response.
         /// </summary>
-        /// <param name="MeterValuesResponseText">The text to parse.</param>
+        /// <param name="MeterValuesResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static MeterValuesResponse Parse(String               MeterValuesResponseText,
                                                 OnExceptionDelegate  OnException = null)
@@ -131,7 +131,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given XML representation of an OCPP meter values response.
         /// </summary>
-        /// <param name="MeterValuesResponseXML">The XML to parse.</param>
+        /// <param name="MeterValuesResponseXML">The XML to be parsed.</param>
         /// <param name="MeterValuesResponse">The parsed meter values response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                 MeterValuesResponseXML,
@@ -166,7 +166,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given text representation of an OCPP meter values response.
         /// </summary>
-        /// <param name="MeterValuesResponseText">The text to parse.</param>
+        /// <param name="MeterValuesResponseText">The text to be parsed.</param>
         /// <param name="MeterValuesResponse">The parsed meter values response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                   MeterValuesResponseText,

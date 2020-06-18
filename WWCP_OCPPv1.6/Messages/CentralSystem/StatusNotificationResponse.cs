@@ -87,7 +87,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given XML representation of an OCPP status notification response.
         /// </summary>
-        /// <param name="StatusNotificationResponseXML">The XML to parse.</param>
+        /// <param name="StatusNotificationResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static StatusNotificationResponse Parse(XElement             StatusNotificationResponseXML,
                                                        OnExceptionDelegate  OnException = null)
@@ -109,7 +109,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given text representation of an OCPP status notification response.
         /// </summary>
-        /// <param name="StatusNotificationResponseText">The text to parse.</param>
+        /// <param name="StatusNotificationResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static StatusNotificationResponse Parse(String               StatusNotificationResponseText,
                                                        OnExceptionDelegate  OnException = null)
@@ -131,7 +131,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given XML representation of an OCPP status notification response.
         /// </summary>
-        /// <param name="StatusNotificationResponseXML">The XML to parse.</param>
+        /// <param name="StatusNotificationResponseXML">The XML to be parsed.</param>
         /// <param name="StatusNotificationResponse">The parsed status notification response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                        StatusNotificationResponseXML,
@@ -166,7 +166,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given text representation of an OCPP status notification response.
         /// </summary>
-        /// <param name="StatusNotificationResponseText">The text to parse.</param>
+        /// <param name="StatusNotificationResponseText">The text to be parsed.</param>
         /// <param name="StatusNotificationResponse">The parsed status notification response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                          StatusNotificationResponseText,
