@@ -20,7 +20,11 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
+using org.GraphDefined.WWCP.OCPPv1_6.CP;
 
 #endregion
 
@@ -30,7 +34,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// A heartbeat response.
     /// </summary>
-    public class HeartbeatResponse : AResponse<HeartbeatResponse>
+    public class HeartbeatResponse : AResponse<CP.HeartbeatRequest,
+                                                  HeartbeatResponse>
     {
 
         #region Properties
@@ -42,27 +47,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region Statics
-
-        /// <summary>
-        /// The heartbeat failed.
-        /// </summary>
-        public static HeartbeatResponse Failed
-            => new HeartbeatResponse(DateTime.UtcNow);
-
-        #endregion
-
         #region Constructor(s)
 
-        #region HeartbeatResponse(CurrentTime)
+        #region HeartbeatResponse(Request, CurrentTime)
 
         /// <summary>
         /// Create a new heartbeat response.
         /// </summary>
+        /// <param name="Request">The heartbeat request leading to this response.</param>
         /// <param name="CurrentTime">The current time at the central system.</param>
-        public HeartbeatResponse(DateTime CurrentTime)
+        public HeartbeatResponse(CP.HeartbeatRequest  Request,
+                                 DateTime             CurrentTime)
 
-            : base(Result.OK())
+            : base(Request, Result.OK())
 
         {
 
@@ -72,14 +69,16 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region HeartbeatResponse(Result)
+        #region HeartbeatResponse(Request, Result)
 
         /// <summary>
         /// Create a new heartbeat response.
         /// </summary>
-        public HeartbeatResponse(Result Result)
+        /// <param name="Request">The heartbeat request leading to this response.</param>
+        public HeartbeatResponse(CP.HeartbeatRequest  Request,
+                                 Result               Result)
 
-            : base(Result)
+            : base(Request, Result)
 
         {
 
@@ -106,23 +105,45 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema":  "http://json-schema.org/draft-04/schema#",
+        //     "id":       "urn:OCPP:1.6:2019:12:HeartbeatResponse",
+        //     "title":    "HeartbeatResponse",
+        //     "type":     "object",
+        //     "properties": {
+        //         "currentTime": {
+        //             "type":   "string",
+        //             "format": "date-time"
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "currentTime"
+        //     ]
+        // }
+
         #endregion
 
-        #region (static) Parse(HeartbeatResponseXML,  OnException = null)
+        #region (static) Parse   (Request, HeartbeatResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP heartbeat response.
+        /// Parse the given XML representation of a heartbeat response.
         /// </summary>
+        /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="HeartbeatResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static HeartbeatResponse Parse(XElement             HeartbeatResponseXML,
+        public static HeartbeatResponse Parse(CP.HeartbeatRequest  Request,
+                                              XElement             HeartbeatResponseXML,
                                               OnExceptionDelegate  OnException = null)
         {
 
-            HeartbeatResponse _HeartbeatResponse;
-
-            if (TryParse(HeartbeatResponseXML, out _HeartbeatResponse, OnException))
-                return _HeartbeatResponse;
+            if (TryParse(Request,
+                         HeartbeatResponseXML,
+                         out HeartbeatResponse heartbeatResponse,
+                         OnException))
+            {
+                return heartbeatResponse;
+            }
 
             return null;
 
@@ -130,21 +151,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(HeartbeatResponseText, OnException = null)
+        #region (static) Parse   (Request, HeartbeatResponseJSON, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP heartbeat response.
+        /// Parse the given JSON representation of a heartbeat response.
         /// </summary>
+        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="HeartbeatResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static HeartbeatResponse Parse(CP.HeartbeatRequest  Request,
+                                              JObject              HeartbeatResponseJSON,
+                                              OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(Request,
+                         HeartbeatResponseJSON,
+                         out HeartbeatResponse heartbeatResponse,
+                         OnException))
+            {
+                return heartbeatResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, HeartbeatResponseText, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a heartbeat response.
+        /// </summary>
+        /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="HeartbeatResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static HeartbeatResponse Parse(String               HeartbeatResponseText,
+        public static HeartbeatResponse Parse(CP.HeartbeatRequest  Request,
+                                              String               HeartbeatResponseText,
                                               OnExceptionDelegate  OnException = null)
         {
 
-            HeartbeatResponse _HeartbeatResponse;
-
-            if (TryParse(HeartbeatResponseText, out _HeartbeatResponse, OnException))
-                return _HeartbeatResponse;
+            if (TryParse(Request,
+                         HeartbeatResponseText,
+                         out HeartbeatResponse heartbeatResponse,
+                         OnException))
+            {
+                return heartbeatResponse;
+            }
 
             return null;
 
@@ -152,15 +205,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(HeartbeatResponseXML,  out HeartbeatResponse, OnException = null)
+        #region (static) TryParse(Request, HeartbeatResponseXML,  out HeartbeatResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP heartbeat response.
+        /// Try to parse the given XML representation of a heartbeat response.
         /// </summary>
+        /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="HeartbeatResponseXML">The XML to be parsed.</param>
         /// <param name="HeartbeatResponse">The parsed heartbeat response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement               HeartbeatResponseXML,
+        public static Boolean TryParse(CP.HeartbeatRequest    Request,
+                                       XElement               HeartbeatResponseXML,
                                        out HeartbeatResponse  HeartbeatResponse,
                                        OnExceptionDelegate    OnException  = null)
         {
@@ -170,6 +225,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 HeartbeatResponse = new HeartbeatResponse(
 
+                                        Request,
                                         HeartbeatResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "currentTime",
                                                                             DateTime.Parse)
 
@@ -192,15 +248,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(HeartbeatResponseText, out HeartbeatResponse, OnException = null)
+        #region (static) TryParse(Request, HeartbeatResponseJSON, out HeartbeatResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP heartbeat response.
+        /// Try to parse the given JSON representation of a heartbeat response.
         /// </summary>
-        /// <param name="HeartbeatResponseText">The text to be parsed.</param>
+        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="HeartbeatResponseJSON">The JSON to be parsed.</param>
         /// <param name="HeartbeatResponse">The parsed heartbeat response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                 HeartbeatResponseText,
+        public static Boolean TryParse(CP.HeartbeatRequest    Request,
+                                       JObject                HeartbeatResponseJSON,
                                        out HeartbeatResponse  HeartbeatResponse,
                                        OnExceptionDelegate    OnException  = null)
         {
@@ -208,11 +266,82 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(HeartbeatResponseText).Root,
-                             out HeartbeatResponse,
-                             OnException))
+                HeartbeatResponse = null;
 
-                    return true;
+                #region IdTagInfo
+
+                if (!HeartbeatResponseJSON.ParseMandatory("currentTime",
+                                                          "current time",
+                                                          out DateTime  CurrentTime,
+                                                          out String    ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                HeartbeatResponse = new HeartbeatResponse(Request,
+                                                          CurrentTime);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, HeartbeatResponseJSON, e);
+
+                HeartbeatResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, HeartbeatResponseText, out HeartbeatResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a heartbeat response.
+        /// </summary>
+        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="HeartbeatResponseText">The text to be parsed.</param>
+        /// <param name="HeartbeatResponse">The parsed heartbeat response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CP.HeartbeatRequest    Request,
+                                       String                 HeartbeatResponseText,
+                                       out HeartbeatResponse  HeartbeatResponse,
+                                       OnExceptionDelegate    OnException  = null)
+        {
+
+            try
+            {
+
+                HeartbeatResponseText = HeartbeatResponseText?.Trim();
+
+                if (HeartbeatResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (HeartbeatResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(HeartbeatResponseText),
+                                 out HeartbeatResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(HeartbeatResponseText).Root,
+                                 out HeartbeatResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -240,6 +369,43 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomHeartbeatResponseSerializer = null, CustomIdTagInfoResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomHeartbeatResponseSerializer">A delegate to serialize custom authorize responses.</param>
+        /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatResponse>  CustomHeartbeatResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<IdTagInfo>          CustomIdTagInfoResponseSerializer   = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("currentTime",  CurrentTime.ToIso8601())
+                       );
+
+            return CustomHeartbeatResponseSerializer != null
+                       ? CustomHeartbeatResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The heartbeat failed.
+        /// </summary>
+        /// <param name="Request">The authorize request leading to this response.</param>
+        public static HeartbeatResponse Failed(HeartbeatRequest Request)
+
+            => new HeartbeatResponse(Request,
+                                     DateTime.UtcNow);
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -259,7 +425,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) HeartbeatResponse1 == null) || ((Object) HeartbeatResponse2 == null))
+            if ((HeartbeatResponse1 is null) || (HeartbeatResponse2 is null))
                 return false;
 
             return HeartbeatResponse1.Equals(HeartbeatResponse2);
@@ -299,12 +465,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object == null)
                 return false;
 
-            // Check if the given object is a heartbeat response.
-            var HeartbeatResponse = Object as HeartbeatResponse;
-            if ((Object) HeartbeatResponse == null)
+            if (!(Object is HeartbeatResponse HeartbeatResponse))
                 return false;
 
-            return this.Equals(HeartbeatResponse);
+            return Equals(HeartbeatResponse);
 
         }
 
@@ -320,7 +484,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(HeartbeatResponse HeartbeatResponse)
         {
 
-            if ((Object) HeartbeatResponse == null)
+            if (HeartbeatResponse is null)
                 return false;
 
             return CurrentTime.Equals(HeartbeatResponse.CurrentTime);
@@ -353,6 +517,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             => CurrentTime.ToIso8601();
 
         #endregion
+
 
     }
 

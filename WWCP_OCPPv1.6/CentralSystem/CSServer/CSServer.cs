@@ -487,7 +487,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 var _OCPPHeader        = SOAPHeader.Parse(HeaderXML);
                 var _HeartbeatRequest  = HeartbeatRequest.Parse(HeartbeatXML);
 
-                HeartbeatResponse response            = null;
+                HeartbeatResponse response  = null;
 
 
 
@@ -517,7 +517,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = HeartbeatResponse.Failed;
+                        response = HeartbeatResponse.Failed(_HeartbeatRequest);
 
                 }
 

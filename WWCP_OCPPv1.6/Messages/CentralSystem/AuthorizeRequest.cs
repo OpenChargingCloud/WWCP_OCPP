@@ -280,11 +280,24 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 AuthorizeRequestText = AuthorizeRequestText?.Trim();
 
-                if (TryParse(XDocument.Parse(AuthorizeRequestText).Root,//.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out AuthorizeRequest,
-                             OnException))
+                if (AuthorizeRequestText.IsNotNullOrEmpty())
                 {
-                    return true;
+
+                    if (AuthorizeRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(AuthorizeRequestText),
+                                 out AuthorizeRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(AuthorizeRequestText).Root,//.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
+                                 out AuthorizeRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
                 }
 
             }
@@ -445,6 +458,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             => IdTag.ToString();
 
         #endregion
+
 
     }
 

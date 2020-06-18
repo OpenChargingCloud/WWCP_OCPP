@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -51,12 +52,21 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema":    "http://json-schema.org/draft-04/schema#",
+        //     "id":         "urn:OCPP:1.6:2019:12:HeartbeatRequest",
+        //     "title":      "HeartbeatRequest",
+        //     "type":       "object",
+        //     "properties": {},
+        //     "additionalProperties": false
+        // }
+
         #endregion
 
-        #region (static) Parse(HeartbeatRequestXML,  OnException = null)
+        #region (static) Parse   (HeartbeatRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP heartbeat request.
+        /// Parse the given XML representation of a heartbeat request.
         /// </summary>
         /// <param name="HeartbeatRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -64,10 +74,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                              OnExceptionDelegate  OnException = null)
         {
 
-            HeartbeatRequest _HeartbeatRequest;
-
-            if (TryParse(HeartbeatRequestXML, out _HeartbeatRequest, OnException))
-                return _HeartbeatRequest;
+            if (TryParse(HeartbeatRequestXML,
+                         out HeartbeatRequest heartbeatRequest,
+                         OnException))
+            {
+                return heartbeatRequest;
+            }
 
             return null;
 
@@ -75,10 +87,34 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(HeartbeatRequestText, OnException = null)
+        #region (static) Parse   (HeartbeatRequestJSON,  OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP heartbeat request.
+        /// Parse the given JSON representation of a heartbeat request.
+        /// </summary>
+        /// <param name="HeartbeatRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static HeartbeatRequest Parse(JObject              HeartbeatRequestJSON,
+                                             OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(HeartbeatRequestJSON,
+                         out HeartbeatRequest heartbeatRequest,
+                         OnException))
+            {
+                return heartbeatRequest;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (HeartbeatRequestText, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a heartbeat request.
         /// </summary>
         /// <param name="HeartbeatRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -86,10 +122,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                              OnExceptionDelegate  OnException = null)
         {
 
-            HeartbeatRequest _HeartbeatRequest;
-
-            if (TryParse(HeartbeatRequestText, out _HeartbeatRequest, OnException))
-                return _HeartbeatRequest;
+            if (TryParse(HeartbeatRequestText,
+                         out HeartbeatRequest heartbeatRequest,
+                         OnException))
+            {
+                return heartbeatRequest;
+            }
 
             return null;
 
@@ -100,7 +138,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(HeartbeatRequestXML,  out HeartbeatRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP heartbeat request.
+        /// Try to parse the given XML representation of a heartbeat request.
         /// </summary>
         /// <param name="HeartbeatRequestXML">The XML to be parsed.</param>
         /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
@@ -132,10 +170,45 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParse(HeartbeatRequestJSON, out HeartbeatRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a heartbeat request.
+        /// </summary>
+        /// <param name="HeartbeatRequestJSON">The JSON to be parsed.</param>
+        /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject               HeartbeatRequestJSON,
+                                       out HeartbeatRequest  HeartbeatRequest,
+                                       OnExceptionDelegate   OnException  = null)
+        {
+
+            try
+            {
+
+                HeartbeatRequest = new HeartbeatRequest();
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, HeartbeatRequestJSON, e);
+
+                HeartbeatRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(HeartbeatRequestText, out HeartbeatRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP heartbeat request.
+        /// Try to parse the given text representation of a heartbeat request.
         /// </summary>
         /// <param name="HeartbeatRequestText">The text to be parsed.</param>
         /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
@@ -148,11 +221,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(HeartbeatRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out HeartbeatRequest,
-                             OnException))
+                HeartbeatRequestText = HeartbeatRequestText?.Trim();
 
-                    return true;
+                if (HeartbeatRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (HeartbeatRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(HeartbeatRequestText),
+                                 out HeartbeatRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(HeartbeatRequestText).Root,
+                                 out HeartbeatRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -178,6 +267,25 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region ToJSON(CustomHeartbeatRequestRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomHeartbeatRequestRequestSerializer">A delegate to serialize custom heartbeat requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatRequest> CustomHeartbeatRequestRequestSerializer = null)
+        {
+
+            var JSON = JSONObject.Create();
+
+            return CustomHeartbeatRequestRequestSerializer != null
+                       ? CustomHeartbeatRequestRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -197,7 +305,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) HeartbeatRequest1 == null) || ((Object) HeartbeatRequest2 == null))
+            if ((HeartbeatRequest1 is null) || (HeartbeatRequest2 is null))
                 return false;
 
             return HeartbeatRequest1.Equals(HeartbeatRequest2);
@@ -237,12 +345,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object == null)
                 return false;
 
-            // Check if the given object is a heartbeat request.
-            var HeartbeatRequest = Object as HeartbeatRequest;
-            if ((Object) HeartbeatRequest == null)
+            if (!(Object is HeartbeatRequest HeartbeatRequest))
                 return false;
 
-            return this.Equals(HeartbeatRequest);
+            return Equals(HeartbeatRequest);
 
         }
 
@@ -258,7 +364,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(HeartbeatRequest HeartbeatRequest)
         {
 
-            if ((Object) HeartbeatRequest == null)
+            if (HeartbeatRequest is null)
                 return false;
 
             return Object.ReferenceEquals(this, HeartbeatRequest);

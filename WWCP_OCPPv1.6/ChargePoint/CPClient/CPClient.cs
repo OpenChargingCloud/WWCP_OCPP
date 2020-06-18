@@ -715,7 +715,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             return result;
 
-
         }
 
         #endregion
@@ -778,6 +777,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
 
+            var Request = new HeartbeatRequest();
+
+
             using (var _OCPPClient = new SOAPClient(Hostname,
                                                     URIPrefix,
                                                     VirtualHostname,
@@ -794,7 +796,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    new HeartbeatRequest().ToXML()),
+                                                                    Request.ToXML()),
                                                  "Heartbeat",
                                                  RequestLogDelegate:   OnHeartbeatSOAPRequest,
                                                  ResponseLogDelegate:  OnHeartbeatSOAPResponse,
@@ -804,7 +806,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(HeartbeatResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request, HeartbeatResponse.Parse),
 
                                                  #endregion
 
@@ -816,6 +818,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<HeartbeatResponse>(httpresponse,
                                                                                                 new HeartbeatResponse(
+                                                                                                    Request,
                                                                                                     Result.Format(
                                                                                                         "Invalid SOAP => " +
                                                                                                         httpresponse.HTTPBody.ToUTF8String()
@@ -835,6 +838,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<HeartbeatResponse>(httpresponse,
                                                                                                 new HeartbeatResponse(
+                                                                                                    Request,
                                                                                                     Result.Server(
                                                                                                          httpresponse.HTTPStatusCode.ToString() +
                                                                                                          " => " +
@@ -854,6 +858,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<HeartbeatResponse>.ExceptionThrown(new HeartbeatResponse(
+                                                                                                                Request,
                                                                                                                 Result.Format(exception.Message +
                                                                                                                               " => " +
                                                                                                                               exception.StackTrace)),
@@ -868,7 +873,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<HeartbeatResponse>.OK(new HeartbeatResponse(Result.OK("Nothing to upload!")));
+                result = HTTPResponse<HeartbeatResponse>.OK(new HeartbeatResponse(Request, Result.OK("Nothing to upload!")));
 
 
             #region Send OnHeartbeatResponse event
@@ -894,7 +899,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
             return result;
-
 
         }
 
@@ -1090,7 +1094,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
             return result;
-
 
         }
 
@@ -1296,7 +1299,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
             return result;
-
 
         }
 
@@ -1513,7 +1515,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             return result;
 
-
         }
 
         #endregion
@@ -1708,7 +1709,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
             return result;
-
 
         }
 
@@ -1924,7 +1924,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             return result;
 
-
         }
 
         #endregion
@@ -2127,7 +2126,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             return result;
 
-
         }
 
         #endregion
@@ -2313,7 +2311,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             return result;
 
-
         }
 
         #endregion
@@ -2498,7 +2495,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
             return result;
-
 
         }
 

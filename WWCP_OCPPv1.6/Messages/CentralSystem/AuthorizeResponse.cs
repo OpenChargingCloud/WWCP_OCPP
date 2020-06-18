@@ -24,7 +24,6 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.JSON;
-using Org.BouncyCastle.Crypto.Engines;
 
 #endregion
 
@@ -432,7 +431,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #endregion
 
 
-
         #region Static methods
 
         /// <summary>
@@ -556,6 +554,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             => IdTagInfo.ToString();
 
         #endregion
+
 
     }
 
