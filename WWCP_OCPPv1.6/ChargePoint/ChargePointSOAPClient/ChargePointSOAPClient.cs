@@ -1601,6 +1601,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
 
+            var Request = new MeterValuesRequest(ConnectorId,
+                                                 TransactionId,
+                                                 MeterValues);
+
+
             using (var _OCPPClient = new SOAPClient(Hostname,
                                                     URLPrefix,
                                                     VirtualHostname,
@@ -1617,9 +1622,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    new MeterValuesRequest(ConnectorId,
-                                                                                           TransactionId,
-                                                                                           MeterValues).ToXML()),
+                                                                    Request.ToXML()),
                                                  "MeterValues",
                                                  RequestLogDelegate:   OnMeterValuesSOAPRequest,
                                                  ResponseLogDelegate:  OnMeterValuesSOAPResponse,
@@ -1629,7 +1632,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(MeterValuesResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                                                      MeterValuesResponse.Parse),
 
                                                  #endregion
 
@@ -1641,6 +1645,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<MeterValuesResponse>(httpresponse,
                                                                                                   new MeterValuesResponse(
+                                                                                                      Request,
                                                                                                       Result.Format(
                                                                                                           "Invalid SOAP => " +
                                                                                                           httpresponse.HTTPBody.ToUTF8String()
@@ -1660,6 +1665,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<MeterValuesResponse>(httpresponse,
                                                                                                   new MeterValuesResponse(
+                                                                                                      Request,
                                                                                                       Result.Server(
                                                                                                            httpresponse.HTTPStatusCode.ToString() +
                                                                                                            " => " +
@@ -1679,6 +1685,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<MeterValuesResponse>.ExceptionThrown(new MeterValuesResponse(
+                                                                                                                  Request,
                                                                                                                   Result.Format(exception.Message +
                                                                                                                                 " => " +
                                                                                                                                 exception.StackTrace)),
@@ -1693,7 +1700,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<MeterValuesResponse>.OK(new MeterValuesResponse(Result.OK("Nothing to upload!")));
+                result = HTTPResponse<MeterValuesResponse>.OK(new MeterValuesResponse(Request,
+                                                                                      Result.OK("Nothing to upload!")));
 
 
             #region Send OnMeterValuesResponse event

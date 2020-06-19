@@ -253,7 +253,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
             // Check if the given object is a identification token.
@@ -298,7 +298,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is a identification token.

@@ -491,7 +491,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             if (!(Object is IdTagInfo IdTagInfo))

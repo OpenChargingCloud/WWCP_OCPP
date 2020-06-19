@@ -976,7 +976,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = MeterValuesResponse.Failed;
+                        response = MeterValuesResponse.Failed(_MeterValuesRequest);
 
                 }
 

@@ -357,7 +357,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is a get diagnostics request.

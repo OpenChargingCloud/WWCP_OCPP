@@ -22,9 +22,10 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Collections.Generic;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -32,7 +33,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP meter values request.
+    /// A meter values request.
     /// </summary>
     public class MeterValuesRequest : ARequest<MeterValuesRequest>
     {
@@ -59,15 +60,22 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP MeterValues XML/SOAP request.
+        /// Create a new meter values request.
         /// </summary>
         /// <param name="ConnectorId">The connector identification at the charge point.</param>
         /// <param name="TransactionId">The charging transaction to which the given meter value samples are related to.</param>
         /// <param name="MeterValues">The sampled meter values with timestamps.</param>
         public MeterValuesRequest(Connector_Id             ConnectorId,
-                                  Transaction_Id?          TransactionId  = null,
-                                  IEnumerable<MeterValue>  MeterValues    = null)
+                                  Transaction_Id?          TransactionId   = null,
+                                  IEnumerable<MeterValue>  MeterValues     = null)
         {
+
+            #region Initial checks
+
+            if (!MeterValues.SafeAny())
+                throw new ArgumentNullException(nameof(MeterValues), "The given meter values must not be null or empty!");
+
+            #endregion
 
             this.ConnectorId    = ConnectorId;
             this.TransactionId  = TransactionId;
@@ -96,7 +104,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //          <!--Optional:-->
         //          <ns:transactionId>?</ns:transactionId>
         //
-        //          <!--Zero or more repetitions:-->
+        //          <!--One or more repetitions:-->
         //          <ns:meterValue>
         //
         //             <ns:timestamp>?</ns:timestamp>
@@ -133,12 +141,164 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id": "urn:OCPP:1.6:2019:12:MeterValuesRequest",
+        //     "title": "MeterValuesRequest",
+        //     "type": "object",
+        //     "properties": {
+        //         "connectorId": {
+        //             "type": "integer"
+        //         },
+        //         "transactionId": {
+        //             "type": "integer"
+        //         },
+        //         "meterValue": {
+        //             "type": "array",
+        //             "items": {
+        //                 "type": "object",
+        //                 "properties": {
+        //                     "timestamp": {
+        //                         "type": "string",
+        //                         "format": "date-time"
+        //                     },
+        //                     "sampledValue": {
+        //                         "type": "array",
+        //                         "items": {
+        //                             "type": "object",
+        //                             "properties": {
+        //                                 "value": {
+        //                                     "type": "string"
+        //                                 },
+        //                                 "context": {
+        //                                     "type": "string",
+        //                                     "additionalProperties": false,
+        //                                     "enum": [
+        //                                         "Interruption.Begin",
+        //                                         "Interruption.End",
+        //                                         "Sample.Clock",
+        //                                         "Sample.Periodic",
+        //                                         "Transaction.Begin",
+        //                                         "Transaction.End",
+        //                                         "Trigger",
+        //                                         "Other"
+        //                                     ]
+        //                                 },
+        //                                 "format": {
+        //                                     "type": "string",
+        //                                     "additionalProperties": false,
+        //                                     "enum": [
+        //                                         "Raw",
+        //                                         "SignedData"
+        //                                     ]
+        //                                 },
+        //                                 "measurand": {
+        //                                     "type": "string",
+        //                                     "additionalProperties": false,
+        //                                     "enum": [
+        //                                         "Energy.Active.Export.Register",
+        //                                         "Energy.Active.Import.Register",
+        //                                         "Energy.Reactive.Export.Register",
+        //                                         "Energy.Reactive.Import.Register",
+        //                                         "Energy.Active.Export.Interval",
+        //                                         "Energy.Active.Import.Interval",
+        //                                         "Energy.Reactive.Export.Interval",
+        //                                         "Energy.Reactive.Import.Interval",
+        //                                         "Power.Active.Export",
+        //                                         "Power.Active.Import",
+        //                                         "Power.Offered",
+        //                                         "Power.Reactive.Export",
+        //                                         "Power.Reactive.Import",
+        //                                         "Power.Factor",
+        //                                         "Current.Import",
+        //                                         "Current.Export",
+        //                                         "Current.Offered",
+        //                                         "Voltage",
+        //                                         "Frequency",
+        //                                         "Temperature",
+        //                                         "SoC",
+        //                                         "RPM"
+        //                                     ]
+        //                                 },
+        //                                 "phase": {
+        //                                     "type": "string",
+        //                                     "additionalProperties": false,
+        //                                     "enum": [
+        //                                         "L1",
+        //                                         "L2",
+        //                                         "L3",
+        //                                         "N",
+        //                                         "L1-N",
+        //                                         "L2-N",
+        //                                         "L3-N",
+        //                                         "L1-L2",
+        //                                         "L2-L3",
+        //                                         "L3-L1"
+        //                                     ]
+        //                                 },
+        //                                 "location": {
+        //                                     "type": "string",
+        //                                     "additionalProperties": false,
+        //                                     "enum": [
+        //                                         "Cable",
+        //                                         "EV",
+        //                                         "Inlet",
+        //                                         "Outlet",
+        //                                         "Body"
+        //                                     ]
+        //                                 },
+        //                                 "unit": {
+        //                                     "type": "string",
+        //                                     "additionalProperties": false,
+        //                                     "enum": [
+        //                                         "Wh",
+        //                                         "kWh",
+        //                                         "varh",
+        //                                         "kvarh",
+        //                                         "W",
+        //                                         "kW",
+        //                                         "VA",
+        //                                         "kVA",
+        //                                         "var",
+        //                                         "kvar",
+        //                                         "A",
+        //                                         "V",
+        //                                         "K",
+        //                                         "Celcius",
+        //                                         "Celsius",
+        //                                         "Fahrenheit",
+        //                                         "Percent"
+        //                                     ]
+        //                                 }
+        //                             },
+        //                             "additionalProperties": false,
+        //                             "required": [
+        //                                 "value"
+        //                             ]
+        //                         }
+        //                     }
+        //                 },
+        //                 "additionalProperties": false,
+        //                 "required": [
+        //                     "timestamp",
+        //                     "sampledValue"
+        //                 ]
+        //             }
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "connectorId",
+        //         "meterValue"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (MeterValuesRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP meter values request.
+        /// Parse the given XML representation of a meter values request.
         /// </summary>
         /// <param name="MeterValuesRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -146,10 +306,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                OnExceptionDelegate  OnException = null)
         {
 
-            MeterValuesRequest _MeterValuesRequest;
+            if (TryParse(MeterValuesRequestXML,
+                         out MeterValuesRequest meterValuesRequest,
+                         OnException))
+            {
+                return meterValuesRequest;
+            }
 
-            if (TryParse(MeterValuesRequestXML, out _MeterValuesRequest, OnException))
-                return _MeterValuesRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (MeterValuesRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a meter values request.
+        /// </summary>
+        /// <param name="MeterValuesRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static MeterValuesRequest Parse(JObject              MeterValuesRequestJSON,
+                                               OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(MeterValuesRequestJSON,
+                         out MeterValuesRequest meterValuesRequest,
+                         OnException))
+            {
+                return meterValuesRequest;
+            }
 
             return null;
 
@@ -160,7 +346,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (MeterValuesRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP meter values request.
+        /// Parse the given text representation of a meter values request.
         /// </summary>
         /// <param name="MeterValuesRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -168,10 +354,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                OnExceptionDelegate  OnException = null)
         {
 
-            MeterValuesRequest _MeterValuesRequest;
-
-            if (TryParse(MeterValuesRequestText, out _MeterValuesRequest, OnException))
-                return _MeterValuesRequest;
+            if (TryParse(MeterValuesRequestText,
+                         out MeterValuesRequest meterValuesRequest,
+                         OnException))
+            {
+                return meterValuesRequest;
+            }
 
             return null;
 
@@ -182,7 +370,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(MeterValuesRequestXML,  out MeterValuesRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP meter values request.
+        /// Try to parse the given XML representation of a meter values request.
         /// </summary>
         /// <param name="MeterValuesRequestXML">The XML to be parsed.</param>
         /// <param name="MeterValuesRequest">The parsed meter values request.</param>
@@ -203,7 +391,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                          MeterValuesRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "transactionId",
                                                                                   Transaction_Id.Parse),
 
-                                         MeterValuesRequestXML.MapElementsOrFail (OCPPNS.OCPPv1_6_CS + "errorCode",
+                                         MeterValuesRequestXML.MapElementsOrFail (OCPPNS.OCPPv1_6_CS + "meterValue",
                                                                                   MeterValue.Parse)
 
                                      );
@@ -225,10 +413,92 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParse(MeterValuesRequestJSON, out MeterValuesRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a meter values request.
+        /// </summary>
+        /// <param name="MeterValuesRequestJSON">The JSON to be parsed.</param>
+        /// <param name="MeterValuesRequest">The parsed meter values request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                 MeterValuesRequestJSON,
+                                       out MeterValuesRequest  MeterValuesRequest,
+                                       OnExceptionDelegate     OnException  = null)
+        {
+
+            try
+            {
+
+                MeterValuesRequest = null;
+
+                #region ConnectorId
+
+                if (!MeterValuesRequestJSON.ParseMandatory("connectorId",
+                                                           "connector identification",
+                                                           Connector_Id.TryParse,
+                                                           out Connector_Id  ConnectorId,
+                                                           out String        ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region TransactionId
+
+                if (!MeterValuesRequestJSON.ParseOptionalStruct("transactionId",
+                                                                "transaction identification",
+                                                                Transaction_Id.TryParse,
+                                                                out Transaction_Id?  TransactionId,
+                                                                out                  ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region MeterValues
+
+                if (!MeterValuesRequestJSON.ParseMandatory("meterValue",
+                                                           "meter values",
+                                                           MeterValue.TryParse,
+                                                           out IEnumerable<MeterValue>  MeterValues,
+                                                           out                          ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                MeterValuesRequest = new MeterValuesRequest(ConnectorId,
+                                                            TransactionId,
+                                                            MeterValues);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, MeterValuesRequestJSON, e);
+
+                MeterValuesRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(MeterValuesRequestText, out MeterValuesRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP meter values request.
+        /// Try to parse the given text representation of a meter values request.
         /// </summary>
         /// <param name="MeterValuesRequestText">The text to be parsed.</param>
         /// <param name="MeterValuesRequest">The parsed meter values request.</param>
@@ -241,11 +511,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(MeterValuesRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out MeterValuesRequest,
-                             OnException))
+                MeterValuesRequestText = MeterValuesRequestText?.Trim();
 
-                    return true;
+                if (MeterValuesRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (MeterValuesRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(MeterValuesRequestText),
+                                 out MeterValuesRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(MeterValuesRequestText).Root,
+                                 out MeterValuesRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -275,11 +561,47 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                        ? new XElement(OCPPNS.OCPPv1_6_CS + "transactionId",  TransactionId.Value)
                        : null,
 
-                   MeterValues.IsNullOrEmpty()
-                       ? MeterValues.Select(value => value.ToXML())
+                   MeterValues.SafeAny()
+                       ? MeterValues.Select(meterValue => meterValue.ToXML())
                        : null
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomMeterValuesRequestSerializer = null, CustomMeterValueSerializer = null, CustomSampledValueSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomMeterValuesRequestSerializer">A delegate to serialize custom meter values requests.</param>
+        /// <param name="CustomMeterValueSerializer">A delegate to serialize custom meter values.</param>
+        /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesRequest>  CustomMeterValuesRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<MeterValue>          CustomMeterValueSerializer           = null,
+                              CustomJObjectSerializerDelegate<SampledValue>        CustomSampledValueSerializer         = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("connectorId",          ConnectorId.ToString()),
+
+                           TransactionId.HasValue
+                               ? new JProperty("transactionId",  TransactionId.Value)
+                               : null,
+
+                           MeterValues.SafeAny()
+                               ? new JProperty("meterValue",     new JArray(MeterValues.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
+                                                                                                                               CustomSampledValueSerializer))))
+                               : null
+
+                       );
+
+            return CustomMeterValuesRequestSerializer != null
+                       ? CustomMeterValuesRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 
@@ -302,7 +624,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) MeterValuesRequest1 == null) || ((Object) MeterValuesRequest2 == null))
+            if ((MeterValuesRequest1 is null) || (MeterValuesRequest2 is null))
                 return false;
 
             return MeterValuesRequest1.Equals(MeterValuesRequest2);
@@ -339,15 +661,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
-            // Check if the given object is a meter values request.
-            var MeterValuesRequest = Object as MeterValuesRequest;
-            if ((Object) MeterValuesRequest == null)
+            if (!(Object is MeterValuesRequest MeterValuesRequest))
                 return false;
 
-            return this.Equals(MeterValuesRequest);
+            return Equals(MeterValuesRequest);
 
         }
 
@@ -363,7 +683,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(MeterValuesRequest MeterValuesRequest)
         {
 
-            if ((Object) MeterValuesRequest == null)
+            if (MeterValuesRequest is null)
                 return false;
 
             return ConnectorId.Equals(MeterValuesRequest.ConnectorId) &&
@@ -390,11 +710,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             unchecked
             {
 
-                return ConnectorId.GetHashCode() * 17 ^
+                return ConnectorId.GetHashCode() * 7 ^
 
                        (TransactionId.HasValue
                             ? TransactionId.GetHashCode()
-                            : 0) * 11 ^
+                            : 0) * 5 ^
 
                        MeterValues.GetHashCode();
 

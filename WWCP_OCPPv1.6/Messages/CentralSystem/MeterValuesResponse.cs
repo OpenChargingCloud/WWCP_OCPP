@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -28,41 +31,42 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP meter values response.
+    /// A meter values response.
     /// </summary>
-    public class MeterValuesResponse : AResponse<MeterValuesResponse>
+    public class MeterValuesResponse : AResponse<CP.MeterValuesRequest,
+                                                    MeterValuesResponse>
     {
-
-        #region Statics
-
-        /// <summary>
-        /// The meter values request failed.
-        /// </summary>
-        public static MeterValuesResponse Failed
-            => new MeterValuesResponse(Result.Server());
-
-        #endregion
 
         #region Constructor(s)
 
-        #region MeterValuesResponse()
+        #region MeterValuesResponse(Request)
 
         /// <summary>
-        /// Create a new OCPP meter values response.
+        /// Create a new meter values response.
         /// </summary>
-        public MeterValuesResponse()
-            : base(Result.OK())
+        /// <param name="Request">The meter values request leading to this response.</param>
+        public MeterValuesResponse(CP.MeterValuesRequest  Request)
+
+            : base(Request,
+                   Result.OK())
+
         { }
 
         #endregion
 
-        #region MeterValuesResponse(Result)
+        #region MeterValuesResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP meter values response.
+        /// Create a new meter values response.
         /// </summary>
-        public MeterValuesResponse(Result Result)
-            : base(Result)
+        /// <param name="Request">The meter values request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public MeterValuesResponse(CP.MeterValuesRequest  Request,
+                                   Result                 Result)
+
+            : base(Request,
+                   Result)
+
         { }
 
         #endregion
@@ -80,23 +84,37 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:MeterValuesResponse",
+        //     "title":   "MeterValuesResponse",
+        //     "type":    "object",
+        //     "properties": {},
+        //     "additionalProperties": false
+        // }
+
         #endregion
 
-        #region (static) Parse   (MeterValuesResponseXML,  OnException = null)
+        #region (static) Parse   (Request, MeterValuesResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP meter values response.
+        /// Parse the given XML representation of a meter values response.
         /// </summary>
+        /// <param name="Request">The MeterValues request leading to this response.</param>
         /// <param name="MeterValuesResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MeterValuesResponse Parse(XElement             MeterValuesResponseXML,
-                                                OnExceptionDelegate  OnException = null)
+        public static MeterValuesResponse Parse(CP.MeterValuesRequest  Request,
+                                                XElement               MeterValuesResponseXML,
+                                                OnExceptionDelegate    OnException = null)
         {
 
-            MeterValuesResponse _MeterValuesResponse;
-
-            if (TryParse(MeterValuesResponseXML, out _MeterValuesResponse, OnException))
-                return _MeterValuesResponse;
+            if (TryParse(Request,
+                         MeterValuesResponseXML,
+                         out MeterValuesResponse meterValuesResponse,
+                         OnException))
+            {
+                return meterValuesResponse;
+            }
 
             return null;
 
@@ -104,21 +122,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (MeterValuesResponseText, OnException = null)
+        #region (static) Parse   (Request, MeterValuesResponseJSON, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP meter values response.
+        /// Parse the given JSON representation of a meter values response.
         /// </summary>
+        /// <param name="Request">The MeterValues request leading to this response.</param>
+        /// <param name="MeterValuesResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static MeterValuesResponse Parse(CP.MeterValuesRequest  Request,
+                                                JObject                MeterValuesResponseJSON,
+                                                OnExceptionDelegate    OnException = null)
+        {
+
+            if (TryParse(Request,
+                         MeterValuesResponseJSON,
+                         out MeterValuesResponse meterValuesResponse,
+                         OnException))
+            {
+                return meterValuesResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, MeterValuesResponseText, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a meter values response.
+        /// </summary>
+        /// <param name="Request">The MeterValues request leading to this response.</param>
         /// <param name="MeterValuesResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MeterValuesResponse Parse(String               MeterValuesResponseText,
-                                                OnExceptionDelegate  OnException = null)
+        public static MeterValuesResponse Parse(CP.MeterValuesRequest  Request,
+                                                String                 MeterValuesResponseText,
+                                                OnExceptionDelegate    OnException = null)
         {
 
-            MeterValuesResponse _MeterValuesResponse;
-
-            if (TryParse(MeterValuesResponseText, out _MeterValuesResponse, OnException))
-                return _MeterValuesResponse;
+            if (TryParse(Request,
+                         MeterValuesResponseText,
+                         out MeterValuesResponse meterValuesResponse,
+                         OnException))
+            {
+                return meterValuesResponse;
+            }
 
             return null;
 
@@ -126,15 +176,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(MeterValuesResponseXML,  out MeterValuesResponse, OnException = null)
+        #region (static) TryParse(Request, MeterValuesResponseXML,  out MeterValuesResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP meter values response.
+        /// Try to parse the given XML representation of a meter values response.
         /// </summary>
+        /// <param name="Request">The MeterValues request leading to this response.</param>
         /// <param name="MeterValuesResponseXML">The XML to be parsed.</param>
         /// <param name="MeterValuesResponse">The parsed meter values response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                 MeterValuesResponseXML,
+        public static Boolean TryParse(CP.MeterValuesRequest    Request,
+                                       XElement                 MeterValuesResponseXML,
                                        out MeterValuesResponse  MeterValuesResponse,
                                        OnExceptionDelegate      OnException  = null)
         {
@@ -142,7 +194,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                MeterValuesResponse = new MeterValuesResponse();
+                MeterValuesResponse = new MeterValuesResponse(Request);
 
                 return true;
 
@@ -161,15 +213,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(MeterValuesResponseText, out MeterValuesResponse, OnException = null)
+        #region (static) TryParse(Request, MeterValuesResponseJSON, out MeterValuesResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP meter values response.
+        /// Try to parse the given JSON representation of a meter values response.
         /// </summary>
-        /// <param name="MeterValuesResponseText">The text to be parsed.</param>
+        /// <param name="Request">The MeterValues request leading to this response.</param>
+        /// <param name="MeterValuesResponseJSON">The JSON to be parsed.</param>
         /// <param name="MeterValuesResponse">The parsed meter values response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                   MeterValuesResponseText,
+        public static Boolean TryParse(CP.MeterValuesRequest    Request,
+                                       JObject                  MeterValuesResponseJSON,
                                        out MeterValuesResponse  MeterValuesResponse,
                                        OnExceptionDelegate      OnException  = null)
         {
@@ -177,11 +231,66 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(MeterValuesResponseText).Root,
-                             out MeterValuesResponse,
-                             OnException))
+                MeterValuesResponse = new MeterValuesResponse(Request);
 
-                    return true;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, MeterValuesResponseJSON, e);
+
+                MeterValuesResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, MeterValuesResponseText, out MeterValuesResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a meter values response.
+        /// </summary>
+        /// <param name="Request">The MeterValues request leading to this response.</param>
+        /// <param name="MeterValuesResponseText">The text to be parsed.</param>
+        /// <param name="MeterValuesResponse">The parsed meter values response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CP.MeterValuesRequest    Request,
+                                       String                   MeterValuesResponseText,
+                                       out MeterValuesResponse  MeterValuesResponse,
+                                       OnExceptionDelegate      OnException  = null)
+        {
+
+            try
+            {
+
+                MeterValuesResponseText = MeterValuesResponseText?.Trim();
+
+                if (MeterValuesResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (MeterValuesResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                    JObject.Parse(MeterValuesResponseText),
+                                    out MeterValuesResponse,
+                                    OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                    XDocument.Parse(MeterValuesResponseText).Root,
+                                    out MeterValuesResponse,
+                                    OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -207,6 +316,38 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomMeterValuesResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomMeterValuesResponseSerializer">A delegate to serialize custom meter values responses.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesResponse> CustomMeterValuesResponseSerializer = null)
+        {
+
+            var JSON = JSONObject.Create();
+
+            return CustomMeterValuesResponseSerializer != null
+                       ? CustomMeterValuesResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The meter values request failed.
+        /// </summary>
+        public static MeterValuesResponse Failed(CP.MeterValuesRequest Request)
+
+            => new MeterValuesResponse(Request,
+                                       Result.Server());
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -226,7 +367,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) MeterValuesResponse1 == null) || ((Object) MeterValuesResponse2 == null))
+            if ((MeterValuesResponse1 is null) || (MeterValuesResponse2 is null))
                 return false;
 
             return MeterValuesResponse1.Equals(MeterValuesResponse2);
@@ -263,15 +404,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
-            // Check if the given object is a meter values response.
-            var MeterValuesResponse = Object as MeterValuesResponse;
-            if ((Object) MeterValuesResponse == null)
+            if (!(Object is MeterValuesResponse MeterValuesResponse))
                 return false;
 
-            return this.Equals(MeterValuesResponse);
+            return Equals(MeterValuesResponse);
 
         }
 
@@ -287,7 +426,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(MeterValuesResponse MeterValuesResponse)
         {
 
-            if ((Object) MeterValuesResponse == null)
+            if (MeterValuesResponse is null)
                 return false;
 
             return Object.ReferenceEquals(this, MeterValuesResponse);
