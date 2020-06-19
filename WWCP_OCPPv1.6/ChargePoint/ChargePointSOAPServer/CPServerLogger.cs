@@ -47,7 +47,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The linked OCPP charge point SOAP server.
         /// </summary>
-        public CPServer CPServer { get; }
+        public ChargePointSOAPServer CPServer { get; }
 
         #endregion
 
@@ -61,7 +61,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="CPServer">A OCPP charge point SOAP server.</param>
         /// <param name="Context">A context of this API.</param>
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CPServerLogger(CPServer                 CPServer,
+        public CPServerLogger(ChargePointSOAPServer                 CPServer,
                                String                  Context         = DefaultContext,
                                LogfileCreatorDelegate  LogFileCreator  = null)
 
@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="LogHTTPError_toHTTPSSE">A delegate to log HTTP errors to a HTTP server sent events source.</param>
         /// 
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CPServerLogger(CPServer                    CPServer,
+        public CPServerLogger(ChargePointSOAPServer                    CPServer,
                               String                      Context,
 
                               HTTPRequestLoggerDelegate   LogHTTPRequest_toConsole,

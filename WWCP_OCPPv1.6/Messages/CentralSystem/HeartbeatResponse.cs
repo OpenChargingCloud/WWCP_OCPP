@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given XML representation of a heartbeat response.
         /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="Request">The heartbeat request leading to this response.</param>
         /// <param name="HeartbeatResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static HeartbeatResponse Parse(CP.HeartbeatRequest  Request,
@@ -156,7 +156,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given JSON representation of a heartbeat response.
         /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="Request">The heartbeat request leading to this response.</param>
         /// <param name="HeartbeatResponseJSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static HeartbeatResponse Parse(CP.HeartbeatRequest  Request,
@@ -183,7 +183,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Parse the given text representation of a heartbeat response.
         /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="Request">The heartbeat request leading to this response.</param>
         /// <param name="HeartbeatResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static HeartbeatResponse Parse(CP.HeartbeatRequest  Request,
@@ -210,7 +210,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given XML representation of a heartbeat response.
         /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="Request">The heartbeat request leading to this response.</param>
         /// <param name="HeartbeatResponseXML">The XML to be parsed.</param>
         /// <param name="HeartbeatResponse">The parsed heartbeat response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -253,7 +253,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given JSON representation of a heartbeat response.
         /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="Request">The heartbeat request leading to this response.</param>
         /// <param name="HeartbeatResponseJSON">The JSON to be parsed.</param>
         /// <param name="HeartbeatResponse">The parsed heartbeat response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -306,7 +306,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given text representation of a heartbeat response.
         /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="Request">The heartbeat request leading to this response.</param>
         /// <param name="HeartbeatResponseText">The text to be parsed.</param>
         /// <param name="HeartbeatResponse">The parsed heartbeat response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -374,7 +374,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomHeartbeatResponseSerializer">A delegate to serialize custom authorize responses.</param>
+        /// <param name="CustomHeartbeatResponseSerializer">A delegate to serialize custom heartbeat responses.</param>
         /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatResponse>  CustomHeartbeatResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<IdTagInfo>          CustomIdTagInfoResponseSerializer   = null)
@@ -398,7 +398,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The heartbeat failed.
         /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="Request">The heartbeat request leading to this response.</param>
         public static HeartbeatResponse Failed(HeartbeatRequest Request)
 
             => new HeartbeatResponse(Request,

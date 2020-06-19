@@ -15,8 +15,101 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extention methods for the reading context.
+    /// </summary>
+    public static class ReadingContextExtentions
+    {
+
+        #region AsReadingContexts(Text)
+
+        public static ReadingContexts Parse(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Interruption.Begin":
+                    return ReadingContexts.InterruptionBegin;
+
+                case "Interruption.End":
+                    return ReadingContexts.InterruptionEnd;
+
+                case "Other":
+                    return ReadingContexts.Other;
+
+                case "Sample.Clock":
+                    return ReadingContexts.SampleClock;
+
+                case "Transaction.Begin":
+                    return ReadingContexts.TransactionBegin;
+
+                case "Transaction.End":
+                    return ReadingContexts.TransactionEnd;
+
+                case "Trigger":
+                    return ReadingContexts.Trigger;
+
+
+                default:
+                    return ReadingContexts.SamplePeriodic;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this ReadingContexts)
+
+        public static String AsText(this ReadingContexts ReadingContexts)
+        {
+
+            switch (ReadingContexts)
+            {
+
+                case ReadingContexts.InterruptionBegin:
+                    return "Interruption.Begin";
+
+                case ReadingContexts.InterruptionEnd:
+                    return "Interruption.End";
+
+                case ReadingContexts.Other:
+                    return "Other";
+
+                case ReadingContexts.SampleClock:
+                    return "Sample.Clock";
+
+                case ReadingContexts.TransactionBegin:
+                    return "Transaction.Begin";
+
+                case ReadingContexts.TransactionEnd:
+                    return "Transaction.End";
+
+                case ReadingContexts.Trigger:
+                    return "Trigger";
+
+
+                default:
+                    return "Sample.Periodic";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// The values of the context field of a value in SampledValue.

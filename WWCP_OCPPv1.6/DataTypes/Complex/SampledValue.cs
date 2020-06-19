@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -28,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An OCPP sampled value.
+    /// A sampled value.
     /// </summary>
     public class SampledValue : IEquatable<SampledValue>
     {
@@ -94,15 +97,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="Location">Location of measurement. Default=”Outlet”.</param>
         /// <param name="Unit">Unit of the value. Default = “Wh” if the (default) measurand is an “Energy” type.</param>
         public SampledValue(String            Value,
-                            ReadingContexts?  Context,
-                            ValueFormats?     Format,
-                            Measurands?       Measurand,
-                            Phases?           Phase,
-                            Locations?        Location,
-                            UnitsOfMeasure?   Unit)
+                            ReadingContexts?  Context     = null,
+                            ValueFormats?     Format      = null,
+                            Measurands?       Measurand   = null,
+                            Phases?           Phase       = null,
+                            Locations?        Location    = null,
+                            UnitsOfMeasure?   Unit        = null)
         {
 
             #region Initial checks
+
+            Value = Value?.Trim();
 
             if (Value.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Value),  "The given sampled value must not be null or empty!");
@@ -111,12 +116,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             this.Value      = Value;
 
-            this.Context    = Context   ?? ReadingContexts.SamplePeriodic;
-            this.Format     = Format    ?? ValueFormats.Raw;
-            this.Measurand  = Measurand ?? Measurands.EnergyActiveImportRegister;
-            this.Phase      = Phase     ?? new Phases?();
-            this.Location   = Location  ?? Locations.Outlet;
-            this.Unit       = Unit      ?? new UnitsOfMeasure?();
+            this.Context    = Context;   //?? ReadingContexts.SamplePeriodic;
+            this.Format     = Format;    //?? ValueFormats.Raw;
+            this.Measurand  = Measurand; //?? Measurands.EnergyActiveImportRegister;
+            this.Phase      = Phase;
+            this.Location   = Location;  //?? Locations.Outlet;
+            this.Unit       = Unit;
 
         }
 
@@ -149,12 +154,127 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         //
         // </ns:sampledValue>
 
+        // {
+        //     "$schema":  "http://json-schema.org/draft-04/schema#",
+        //     "id":       "urn:OCPP:1.6:2019:12:MeterValue",
+        //     "title":    "MeterValue",
+        //     "type":     "object",
+        //     "properties": {
+        //         "value": {
+        //             "type": "string"
+        //         },
+        //         "context": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Interruption.Begin",
+        //                 "Interruption.End",
+        //                 "Sample.Clock",
+        //                 "Sample.Periodic",
+        //                 "Transaction.Begin",
+        //                 "Transaction.End",
+        //                 "Trigger",
+        //                 "Other"
+        //             ]
+        //         },  
+        //         "format": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Raw",
+        //                 "SignedData"
+        //             ]
+        //         },
+        //         "measurand": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Energy.Active.Export.Register",
+        //                 "Energy.Active.Import.Register",
+        //                 "Energy.Reactive.Export.Register",
+        //                 "Energy.Reactive.Import.Register",
+        //                 "Energy.Active.Export.Interval",
+        //                 "Energy.Active.Import.Interval",
+        //                 "Energy.Reactive.Export.Interval",
+        //                 "Energy.Reactive.Import.Interval",
+        //                 "Power.Active.Export",
+        //                 "Power.Active.Import",
+        //                 "Power.Offered",
+        //                 "Power.Reactive.Export",
+        //                 "Power.Reactive.Import",
+        //                 "Power.Factor",
+        //                 "Current.Import",
+        //                 "Current.Export",
+        //                 "Current.Offered",
+        //                 "Voltage",
+        //                 "Frequency",
+        //                 "Temperature",
+        //                 "SoC",
+        //                 "RPM"
+        //             ]
+        //         },
+        //         "phase": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "L1",
+        //                 "L2",
+        //                 "L3",
+        //                 "N",
+        //                 "L1-N",
+        //                 "L2-N",
+        //                 "L3-N",
+        //                 "L1-L2",
+        //                 "L2-L3",
+        //                 "L3-L1"
+        //             ]
+        //         },
+        //         "location": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Cable",
+        //                 "EV",
+        //                 "Inlet",
+        //                 "Outlet",
+        //                 "Body"
+        //             ]
+        //         },
+        //         "unit": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Wh",
+        //                 "kWh",
+        //                 "varh",
+        //                 "kvarh",
+        //                 "W",
+        //                 "kW",
+        //                 "VA",
+        //                 "kVA",
+        //                 "var",
+        //                 "kvar",
+        //                 "A",
+        //                 "V",
+        //                 "K",
+        //                 "Celcius",
+        //                 "Fahrenheit",
+        //                 "Percent"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "value"
+        //     ]
+        // }
+
         #endregion
 
-        #region (static) Parse(SampledValueXML,  OnException = null)
+        #region (static) Parse   (SampledValueXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP sampled value.
+        /// Parse the given XML representation of a sampled value.
         /// </summary>
         /// <param name="SampledValueXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -162,10 +282,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                          OnExceptionDelegate  OnException = null)
         {
 
-            SampledValue _SampledValue;
-
-            if (TryParse(SampledValueXML, out _SampledValue, OnException))
-                return _SampledValue;
+            if (TryParse(SampledValueXML,
+                         out SampledValue sampledValue,
+                         OnException))
+            {
+                return sampledValue;
+            }
 
             return null;
 
@@ -173,10 +295,34 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse(SampledValueText, OnException = null)
+        #region (static) Parse   (SampledValueJSON, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP sampled value.
+        /// Parse the given text representation of a sampled value.
+        /// </summary>
+        /// <param name="SampledValueJSON">The text to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static SampledValue Parse(JObject              SampledValueJSON,
+                                         OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(SampledValueJSON,
+                         out SampledValue sampledValue,
+                         OnException))
+            {
+                return sampledValue;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (SampledValueText, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a sampled value.
         /// </summary>
         /// <param name="SampledValueText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -184,10 +330,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                          OnExceptionDelegate  OnException = null)
         {
 
-            SampledValue _SampledValue;
-
-            if (TryParse(SampledValueText, out _SampledValue, OnException))
-                return _SampledValue;
+            if (TryParse(SampledValueText,
+                         out SampledValue sampledValue,
+                         OnException))
+            {
+                return sampledValue;
+            }
 
             return null;
 
@@ -198,7 +346,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) TryParse(SampledValueXML,  out SampledValue, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP sampled value.
+        /// Try to parse the given XML representation of a sampled value.
         /// </summary>
         /// <param name="SampledValueXML">The XML to be parsed.</param>
         /// <param name="SampledValue">The parsed connector type.</param>
@@ -216,22 +364,22 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                    SampledValueXML.ElementValueOrFail(OCPPNS.OCPPv1_6_CS + "value"),
 
                                    SampledValueXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "context",
-                                                                      XML_IO.AsReadingContexts),
+                                                                      ReadingContextExtentions.Parse),
 
                                    SampledValueXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "format",
-                                                                      XML_IO.AsValueFormats),
+                                                                      ValueFormatExtentions.Parse),
 
                                    SampledValueXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "measurand",
-                                                                      XML_IO.AsMeasurand),
+                                                                      MeasurandExtentions.Parse),
 
                                    SampledValueXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "phase",
-                                                                      XML_IO.AsPhases),
+                                                                      PhasesExtentions.Parse),
 
                                    SampledValueXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "location",
-                                                                      XML_IO.AsLocations),
+                                                                      LocationExtentions.Parse),
 
                                    SampledValueXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "unit",
-                                                                      XML_IO.AsUnitsOfMeasure)
+                                                                      UnitsOfMeasureExtentions.Parse)
 
                                );
 
@@ -252,10 +400,160 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
+        #region (static) TryParse(SampledValueJSON, out SampledValue, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a sampled value.
+        /// </summary>
+        /// <param name="SampledValueJSON">The text to be parsed.</param>
+        /// <param name="SampledValue">The parsed connector type.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject              SampledValueJSON,
+                                       out SampledValue     SampledValue,
+                                       OnExceptionDelegate  OnException  = null)
+        {
+
+            try
+            {
+
+                SampledValue = null;
+
+                #region Value
+
+                if (!SampledValueJSON.ParseMandatory("value",
+                                                     "value",
+                                                     out String  Value,
+                                                     out String  ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Context
+
+                if (SampledValueJSON.ParseOptional("context",
+                                                   "context",
+                                                   ReadingContextExtentions.Parse,
+                                                   out ReadingContexts  Context,
+                                                   out                  ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region Format
+
+                if (SampledValueJSON.ParseOptional("format",
+                                                   "format",
+                                                   ValueFormatExtentions.Parse,
+                                                   out ValueFormats  Format,
+                                                   out               ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region Measurand
+
+                if (SampledValueJSON.ParseOptional("measurand",
+                                                   "measurand",
+                                                   MeasurandExtentions.Parse,
+                                                   out Measurands  Measurand,
+                                                   out             ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region Phase
+
+                if (SampledValueJSON.ParseOptional("phase",
+                                                   "phase",
+                                                   PhasesExtentions.Parse,
+                                                   out Phases  Phase,
+                                                   out         ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region Location
+
+                if (SampledValueJSON.ParseOptional("location",
+                                                   "location",
+                                                   LocationExtentions.Parse,
+                                                   out Locations  Location,
+                                                   out            ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region Unit
+
+                if (SampledValueJSON.ParseOptional("unit",
+                                                   "unit",
+                                                   UnitsOfMeasureExtentions.Parse,
+                                                   out UnitsOfMeasure  Unit,
+                                                   out                 ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+
+                SampledValue = new SampledValue(Value,
+                                                Context,
+                                                Format,
+                                                Measurand,
+                                                Phase,
+                                                Location,
+                                                Unit);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                OnException?.Invoke(DateTime.UtcNow, SampledValueJSON, e);
+            }
+
+            SampledValue = null;
+            return false;
+
+        }
+
+        #endregion
+
         #region (static) TryParse(SampledValueText, out SampledValue, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP sampled value.
+        /// Try to parse the given text representation of a sampled value.
         /// </summary>
         /// <param name="SampledValueText">The text to be parsed.</param>
         /// <param name="SampledValue">The parsed connector type.</param>
@@ -268,11 +566,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             try
             {
 
-                if (TryParse(XDocument.Parse(SampledValueText).Root,
-                             out SampledValue,
-                             OnException))
+                SampledValueText = SampledValueText?.Trim();
 
-                    return true;
+                if (SampledValueText.IsNotNullOrEmpty())
+                {
+
+                    if (SampledValueText.StartsWith("{") &&
+                        TryParse(JObject.Parse(SampledValueText),
+                                 out SampledValue,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(SampledValueText).Root,
+                                 out SampledValue,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -300,30 +614,77 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                    new XElement(OCPPNS.OCPPv1_6_CS + "value",  Value),
 
                    Context.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "context",   XML_IO.AsText(Context.  Value))
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "context",     Context.  Value.AsText())
                        : null,
 
                    Format.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "format",    XML_IO.AsText(Format.   Value))
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "format",      Format.   Value.AsText())
                        : null,
 
                    Measurand.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "measurand", XML_IO.AsText(Measurand.Value))
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "measurand",   Measurand.Value.AsText())
                        : null,
 
                    Phase.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "phase",     XML_IO.AsText(Phase.    Value))
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "phase",       Phase.    Value.AsText())
                        : null,
 
                    Location.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "location",  XML_IO.AsText(Location. Value))
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "location",    Location. Value.AsText())
                        : null,
 
                    Unit.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "unit",      XML_IO.AsText(Unit.     Value))
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "unit",        Unit.     Value.AsText())
                        : null
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomSampledValueSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SampledValue>  CustomSampledValueSerializer   = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                                 new JProperty("value",      Value),
+
+                           Context.HasValue
+                               ? new JProperty("context",    Context.  Value.AsText())
+                               : null,
+
+                           Format.HasValue
+                               ? new JProperty("format",     Format.   Value.AsText())
+                               : null,
+
+                           Measurand.HasValue
+                               ? new JProperty("measurand",  Measurand.Value.AsText())
+                               : null,
+
+                           Phase.HasValue
+                               ? new JProperty("phase",      Phase.    Value.AsText())
+                               : null,
+
+                           Location.HasValue
+                               ? new JProperty("location",   Location. Value.AsText())
+                               : null,
+
+                           Unit.HasValue
+                               ? new JProperty("unit",       Unit.     Value.AsText())
+                               : null
+
+                       );
+
+            return CustomSampledValueSerializer != null
+                       ? CustomSampledValueSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 
@@ -346,7 +707,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) SampledValue1 == null) || ((Object) SampledValue2 == null))
+            if ((SampledValue1 is null) || (SampledValue2 is null))
                 return false;
 
             if ((Object) SampledValue1 == null)
@@ -385,15 +746,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
-            // Check if the given object is a id tag info.
-            var SampledValue = Object as SampledValue;
-            if ((Object) SampledValue == null)
+            if (!(Object is SampledValue SampledValue))
                 return false;
 
-            return this.Equals(SampledValue);
+            return Equals(SampledValue);
 
         }
 
@@ -409,7 +768,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         public Boolean Equals(SampledValue SampledValue)
         {
 
-            if ((Object) SampledValue == null)
+            if (SampledValue is null)
                 return false;
 
             return Value.Equals(SampledValue.Value) &&
@@ -449,10 +808,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             unchecked
             {
 
-                return Value.GetHashCode() * 31 ^
+                return Value.GetHashCode() * 23 ^
 
                        (Context.  HasValue
-                            ? Context.  GetHashCode() * 23
+                            ? Context.  GetHashCode() * 19
                             : 0) ^
 
                        (Format.   HasValue

@@ -22,7 +22,6 @@ using System.Threading;
 using System.Net.Security;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -39,10 +38,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP CP client.
+    /// The charge point SOAP client.
     /// </summary>
-    public partial class CPClient : ASOAPClient,
-                                    ICPClient
+    public partial class ChargePointSOAPClient : ASOAPClient,
+                                                 ICPClient
     {
 
         #region Data
@@ -333,10 +332,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region CPClient(ChargeBoxIdentity, Hostname, ..., LoggingContext = CPClientLogger.DefaultContext, ...)
+        #region ChargePointSOAPClient(ChargeBoxIdentity, Hostname, ..., LoggingContext = CPClientLogger.DefaultContext, ...)
 
         /// <summary>
-        /// Create a new OCPP CP client.
+        /// Create a new charge point SOAP client.
         /// </summary>
         /// <param name="ChargeBoxIdentity">The unique identification of this OCPP charge box.</param>
         /// <param name="From">The source URI of the SOAP message.</param>
@@ -347,29 +346,29 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="RemoteCertificateValidator">A delegate to verify the remote TLS certificate.</param>
         /// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
         /// <param name="HTTPVirtualHost">An optional HTTP virtual host name to use.</param>
-        /// <param name="URIPrefix">An default URI prefix.</param>
+        /// <param name="URLPrefix">An default URI prefix.</param>
         /// <param name="HTTPUserAgent">An optional HTTP user agent to use.</param>
         /// <param name="RequestTimeout">An optional timeout for upstream queries.</param>
         /// <param name="MaxNumberOfRetries">The default number of maximum transmission retries.</param>
         /// <param name="DNSClient">An optional DNS client.</param>
         /// <param name="LoggingContext">An optional context for logging client methods.</param>
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CPClient(String                               ChargeBoxIdentity,
-                        String                               From,
-                        String                               To,
+        public ChargePointSOAPClient(String                               ChargeBoxIdentity,
+                                     String                               From,
+                                     String                               To,
 
-                        HTTPHostname                         Hostname,
-                        IPPort?                              RemotePort                   = null,
-                        RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                        LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                        HTTPHostname?                        HTTPVirtualHost              = null,
-                        HTTPPath?                             URIPrefix                    = null,
-                        String                               HTTPUserAgent                = DefaultHTTPUserAgent,
-                        TimeSpan?                            RequestTimeout               = null,
-                        Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
-                        DNSClient                            DNSClient                    = null,
-                        String                               LoggingContext               = CPClientLogger.DefaultContext,
-                        LogfileCreatorDelegate               LogFileCreator               = null)
+                                     HTTPHostname                         Hostname,
+                                     IPPort?                              RemotePort                   = null,
+                                     RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
+                                     LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
+                                     HTTPHostname?                        HTTPVirtualHost              = null,
+                                     HTTPPath?                            URLPrefix                    = null,
+                                     String                               HTTPUserAgent                = DefaultHTTPUserAgent,
+                                     TimeSpan?                            RequestTimeout               = null,
+                                     Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
+                                     DNSClient                            DNSClient                    = null,
+                                     String                               LoggingContext               = CPClientLogger.DefaultContext,
+                                     LogfileCreatorDelegate               LogFileCreator               = null)
 
             : base(ChargeBoxIdentity,
                    Hostname,
@@ -377,7 +376,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                    RemoteCertificateValidator,
                    ClientCertificateSelector,
                    HTTPVirtualHost,
-                   URIPrefix ?? DefaultURIPrefix,
+                   URLPrefix ?? DefaultURLPrefix,
                    null,
                    HTTPUserAgent,
                    RequestTimeout,
@@ -411,10 +410,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region CPClient(ChargeBoxIdentity, Logger, Hostname, ...)
+        #region ChargePointSOAPClient(ChargeBoxIdentity, Logger, Hostname, ...)
 
         /// <summary>
-        /// Create a new OCPP CP client.
+        /// Create a new charge point SOAP client.
         /// </summary>
         /// <param name="ChargeBoxIdentity">A unqiue identification of this client.</param>
         /// <param name="From">The source URI of the SOAP message.</param>
@@ -425,26 +424,26 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="RemoteCertificateValidator">A delegate to verify the remote TLS certificate.</param>
         /// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
         /// <param name="HTTPVirtualHost">An optional HTTP virtual host name to use.</param>
-        /// <param name="URIPrefix">An default URI prefix.</param>
+        /// <param name="URLPrefix">An default URI prefix.</param>
         /// <param name="HTTPUserAgent">An optional HTTP user agent to use.</param>
         /// <param name="RequestTimeout">An optional timeout for upstream queries.</param>
         /// <param name="MaxNumberOfRetries">The default number of maximum transmission retries.</param>
         /// <param name="DNSClient">An optional DNS client.</param>
-        public CPClient(String                               ChargeBoxIdentity,
-                        String                               From,
-                        String                               To,
+        public ChargePointSOAPClient(String                               ChargeBoxIdentity,
+                                     String                               From,
+                                     String                               To,
 
-                        CPClientLogger                       Logger,
-                        HTTPHostname                         Hostname,
-                        IPPort?                              RemotePort                   = null,
-                        RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                        LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                        HTTPHostname?                        HTTPVirtualHost              = null,
-                        HTTPPath?                             URIPrefix                    = null,
-                        String                               HTTPUserAgent                = DefaultHTTPUserAgent,
-                        TimeSpan?                            RequestTimeout               = null,
-                        Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
-                        DNSClient                            DNSClient                    = null)
+                                     CPClientLogger                       Logger,
+                                     HTTPHostname                         Hostname,
+                                     IPPort?                              RemotePort                   = null,
+                                     RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
+                                     LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
+                                     HTTPHostname?                        HTTPVirtualHost              = null,
+                                     HTTPPath?                            URLPrefix                    = null,
+                                     String                               HTTPUserAgent                = DefaultHTTPUserAgent,
+                                     TimeSpan?                            RequestTimeout               = null,
+                                     Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
+                                     DNSClient                            DNSClient                    = null)
 
             : base(ChargeBoxIdentity,
                    Hostname,
@@ -452,7 +451,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                    RemoteCertificateValidator,
                    ClientCertificateSelector,
                    HTTPVirtualHost,
-                   URIPrefix ?? DefaultURIPrefix,
+                   URLPrefix ?? DefaultURLPrefix,
                    null,
                    HTTPUserAgent,
                    RequestTimeout,
@@ -572,7 +571,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnBootNotificationRequest));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnBootNotificationRequest));
             }
 
             #endregion
@@ -588,7 +587,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                       MeterSerialNumber);
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URIPrefix,
+                                                    URLPrefix,
                                                     VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
@@ -708,7 +707,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnBootNotificationResponse));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnBootNotificationResponse));
             }
 
             #endregion
@@ -771,7 +770,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnHeartbeatRequest));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnHeartbeatRequest));
             }
 
             #endregion
@@ -781,7 +780,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URIPrefix,
+                                                    URLPrefix,
                                                     VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
@@ -893,7 +892,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnHeartbeatResponse));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnHeartbeatResponse));
             }
 
             #endregion
@@ -966,7 +965,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnAuthorizeRequest));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnAuthorizeRequest));
             }
 
             #endregion
@@ -975,7 +974,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URIPrefix,
+                                                    URLPrefix,
                                                     VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
@@ -1088,7 +1087,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnAuthorizeResponse));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnAuthorizeResponse));
             }
 
             #endregion
@@ -1168,14 +1167,21 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnStartTransactionRequest));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnStartTransactionRequest));
             }
 
             #endregion
 
 
+            var Request = new StartTransactionRequest(ConnectorId,
+                                                      IdTag,
+                                                      TransactionTimestamp,
+                                                      MeterStart,
+                                                      ReservationId);
+
+
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URIPrefix,
+                                                    URLPrefix,
                                                     VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
@@ -1190,11 +1196,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    new StartTransactionRequest(ConnectorId,
-                                                                                                IdTag,
-                                                                                                TransactionTimestamp,
-                                                                                                MeterStart,
-                                                                                                ReservationId).ToXML()),
+                                                                    Request.ToXML()),
                                                  "StartTransaction",
                                                  RequestLogDelegate:   OnStartTransactionSOAPRequest,
                                                  ResponseLogDelegate:  OnStartTransactionSOAPResponse,
@@ -1204,7 +1206,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(StartTransactionResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request, StartTransactionResponse.Parse),
 
                                                  #endregion
 
@@ -1216,6 +1218,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StartTransactionResponse>(httpresponse,
                                                                                                        new StartTransactionResponse(
+                                                                                                           Request,
                                                                                                            Result.Format(
                                                                                                                "Invalid SOAP => " +
                                                                                                                httpresponse.HTTPBody.ToUTF8String()
@@ -1235,6 +1238,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StartTransactionResponse>(httpresponse,
                                                                                                        new StartTransactionResponse(
+                                                                                                           Request,
                                                                                                            Result.Server(
                                                                                                                 httpresponse.HTTPStatusCode.ToString() +
                                                                                                                 " => " +
@@ -1254,6 +1258,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<StartTransactionResponse>.ExceptionThrown(new StartTransactionResponse(
+                                                                                                                       Request,
                                                                                                                        Result.Format(exception.Message +
                                                                                                                                      " => " +
                                                                                                                                      exception.StackTrace)),
@@ -1268,7 +1273,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<StartTransactionResponse>.OK(new StartTransactionResponse(Result.OK("Nothing to upload!")));
+                result = HTTPResponse<StartTransactionResponse>.OK(new StartTransactionResponse(Request, Result.OK("Nothing to upload!")));
 
 
             #region Send OnStartTransactionResponse event
@@ -1293,7 +1298,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnStartTransactionResponse));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnStartTransactionResponse));
             }
 
             #endregion
@@ -1379,14 +1384,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnStatusNotificationRequest));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnStatusNotificationRequest));
             }
 
             #endregion
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URIPrefix,
+                                                    URLPrefix,
                                                     VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
@@ -1508,7 +1513,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnStatusNotificationResponse));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnStatusNotificationResponse));
             }
 
             #endregion
@@ -1582,14 +1587,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnMeterValuesRequest));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnMeterValuesRequest));
             }
 
             #endregion
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URIPrefix,
+                                                    URLPrefix,
                                                     VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
@@ -1703,7 +1708,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnMeterValuesResponse));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnMeterValuesResponse));
             }
 
             #endregion
@@ -1790,14 +1795,22 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnStopTransactionRequest));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnStopTransactionRequest));
             }
 
             #endregion
 
 
+            var Request = new StopTransactionRequest(TransactionId,
+                                                     TransactionTimestamp,
+                                                     MeterStop,
+                                                     IdTag,
+                                                     Reason,
+                                                     TransactionData);
+
+
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URIPrefix,
+                                                    URLPrefix,
                                                     VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
@@ -1812,12 +1825,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    new StopTransactionRequest(TransactionId,
-                                                                                               TransactionTimestamp,
-                                                                                               MeterStop,
-                                                                                               IdTag,
-                                                                                               Reason,
-                                                                                               TransactionData).ToXML()),
+                                                                    Request.ToXML()),
                                                  "StopTransaction",
                                                  RequestLogDelegate:   OnStopTransactionSOAPRequest,
                                                  ResponseLogDelegate:  OnStopTransactionSOAPResponse,
@@ -1827,7 +1835,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(StopTransactionResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request, StopTransactionResponse.Parse),
 
                                                  #endregion
 
@@ -1839,6 +1847,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StopTransactionResponse>(httpresponse,
                                                                                                       new StopTransactionResponse(
+                                                                                                          Request,
                                                                                                           Result.Format(
                                                                                                               "Invalid SOAP => " +
                                                                                                               httpresponse.HTTPBody.ToUTF8String()
@@ -1858,6 +1867,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StopTransactionResponse>(httpresponse,
                                                                                                       new StopTransactionResponse(
+                                                                                                          Request,
                                                                                                           Result.Server(
                                                                                                                httpresponse.HTTPStatusCode.ToString() +
                                                                                                                " => " +
@@ -1877,6 +1887,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<StopTransactionResponse>.ExceptionThrown(new StopTransactionResponse(
+                                                                                                                      Request,
                                                                                                                       Result.Format(exception.Message +
                                                                                                                                     " => " +
                                                                                                                                     exception.StackTrace)),
@@ -1891,7 +1902,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<StopTransactionResponse>.OK(new StopTransactionResponse(Result.OK("Nothing to upload!")));
+                result = HTTPResponse<StopTransactionResponse>.OK(new StopTransactionResponse(Request,
+                                                                                              Result.OK("Nothing to upload!")));
 
 
             #region Send OnStopTransactionResponse event
@@ -1917,7 +1929,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnStopTransactionResponse));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnStopTransactionResponse));
             }
 
             #endregion
@@ -1996,7 +2008,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnDataTransferRequest));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnDataTransferRequest));
             }
 
             #endregion
@@ -2007,7 +2019,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URIPrefix,
+                                                    URLPrefix,
                                                     VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
@@ -2119,7 +2131,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnDataTransferResponse));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnDataTransferResponse));
             }
 
             #endregion
@@ -2187,14 +2199,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
             }
 
             #endregion
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URIPrefix,
+                                                    URLPrefix,
                                                     VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
@@ -2304,7 +2316,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
             }
 
             #endregion
@@ -2372,14 +2384,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnFirmwareStatusNotificationRequest));
             }
 
             #endregion
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URIPrefix,
+                                                    URLPrefix,
                                                     VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
@@ -2489,7 +2501,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                e.Log(nameof(CPClient) + "." + nameof(OnFirmwareStatusNotificationResponse));
+                e.Log(nameof(ChargePointSOAPClient) + "." + nameof(OnFirmwareStatusNotificationResponse));
             }
 
             #endregion

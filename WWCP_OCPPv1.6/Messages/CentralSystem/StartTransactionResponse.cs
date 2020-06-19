@@ -20,7 +20,11 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
+using org.GraphDefined.WWCP.OCPPv1_6.CP;
 
 #endregion
 
@@ -28,9 +32,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP start transaction response.
+    /// A start transaction response.
     /// </summary>
-    public class StartTransactionResponse : AResponse<StartTransactionResponse>
+    public class StartTransactionResponse : AResponse<CP.StartTransactionRequest,
+                                                      StartTransactionResponse>
     {
 
         #region Properties
@@ -38,38 +43,31 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The transaction identification assigned by the central system.
         /// </summary>
-        public Transaction_Id  TransactionId   { get; }
+        public Transaction_Id  TransactionId    { get; }
 
         /// <summary>
         /// Information about authorization status, expiry and parent id.
         /// </summary>
-        public IdTagInfo       IdTagInfo       { get; }
-
-        #endregion
-
-        #region Statics
-
-        /// <summary>
-        /// The start transaction failed.
-        /// </summary>
-        public static StartTransactionResponse Failed
-            => new StartTransactionResponse(Result.Server());
+        public IdTagInfo       IdTagInfo        { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region StartTransactionResponse(IdTagInfo)
+        #region StartTransactionResponse(Request, IdTagInfo)
 
         /// <summary>
-        /// Create a new OCPP start transaction response.
+        /// Create a new start transaction response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="TransactionId">The transaction identification assigned by the central system.</param>
         /// <param name="IdTagInfo">Information about authorization status, expiry and parent id.</param>
-        public StartTransactionResponse(Transaction_Id  TransactionId,
-                                        IdTagInfo       IdTagInfo)
+        public StartTransactionResponse(CP.StartTransactionRequest  Request,
+                                        Transaction_Id              TransactionId,
+                                        IdTagInfo                   IdTagInfo)
 
-            : base(Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -90,14 +88,18 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region StartTransactionResponse(Result)
+        #region StartTransactionResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP start transaction response.
+        /// Create a new start transaction response.
         /// </summary>
-        public StartTransactionResponse(Result Result)
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public StartTransactionResponse(CP.StartTransactionRequest  Request,
+                                        Result                      Result)
 
-            : base(Result)
+            : base(Request,
+                   Result)
 
         {
 
@@ -136,23 +138,73 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:StartTransactionResponse",
+        //     "title":   "StartTransactionResponse",
+        //     "type":    "object",
+        //     "properties": {
+        //         "idTagInfo": {
+        //             "type": "object",
+        //             "properties": {
+        //                 "expiryDate": {
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "parentIdTag": {
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "status": {
+        //                     "type": "string",
+        //                     "additionalProperties": false,
+        //                     "enum": [
+        //                         "Accepted",
+        //                         "Blocked",
+        //                         "Expired",
+        //                         "Invalid",
+        //                         "ConcurrentTx"
+        //                     ]
+        //                 }
+        //             },
+        //             "additionalProperties": false,
+        //             "required": [
+        //                 "status"
+        //             ]
+        //         },
+        //         "transactionId": {
+        //             "type": "integer"
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "idTagInfo",
+        //         "transactionId"
+        //     ]
+        // }
+
         #endregion
 
-        #region (static) Parse(StartTransactionResponseXML,  OnException = null)
+        #region (static) Parse   (Request, StartTransactionResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP start transaction response.
+        /// Parse the given XML representation of a start transaction response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="StartTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StartTransactionResponse Parse(XElement             StartTransactionResponseXML,
-                                                     OnExceptionDelegate  OnException = null)
+        public static StartTransactionResponse Parse(StartTransactionRequest  Request,
+                                                     XElement                 StartTransactionResponseXML,
+                                                     OnExceptionDelegate      OnException = null)
         {
 
-            StartTransactionResponse _StartTransactionResponse;
-
-            if (TryParse(StartTransactionResponseXML, out _StartTransactionResponse, OnException))
-                return _StartTransactionResponse;
+            if (TryParse(Request,
+                         StartTransactionResponseXML,
+                         out StartTransactionResponse startTransactionResponse,
+                         OnException))
+            {
+                return startTransactionResponse;
+            }
 
             return null;
 
@@ -160,21 +212,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(StartTransactionResponseText, OnException = null)
+        #region (static) Parse   (Request, StartTransactionResponseJSON, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP start transaction response.
+        /// Parse the given JSON representation of an start transaction response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="StartTransactionResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static StartTransactionResponse Parse(StartTransactionRequest  Request,
+                                                     JObject                  StartTransactionResponseJSON,
+                                                     OnExceptionDelegate      OnException = null)
+        {
+
+            if (TryParse(Request,
+                         StartTransactionResponseJSON,
+                         out StartTransactionResponse startTransactionResponse,
+                         OnException))
+            {
+                return startTransactionResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, StartTransactionResponseText, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a start transaction response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="StartTransactionResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StartTransactionResponse Parse(String               StartTransactionResponseText,
-                                                     OnExceptionDelegate  OnException = null)
+        public static StartTransactionResponse Parse(StartTransactionRequest  Request,
+                                                     String                   StartTransactionResponseText,
+                                                     OnExceptionDelegate      OnException = null)
         {
 
-            StartTransactionResponse _StartTransactionResponse;
-
-            if (TryParse(StartTransactionResponseText, out _StartTransactionResponse, OnException))
-                return _StartTransactionResponse;
+            if (TryParse(Request,
+                         StartTransactionResponseText,
+                         out StartTransactionResponse startTransactionResponse,
+                         OnException))
+            {
+                return startTransactionResponse;
+            }
 
             return null;
 
@@ -182,15 +266,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(StartTransactionResponseXML,  out StartTransactionResponse, OnException = null)
+        #region (static) TryParse(Request, StartTransactionResponseXML,  out StartTransactionResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP start transaction response.
+        /// Try to parse the given XML representation of a start transaction response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="StartTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="StartTransactionResponse">The parsed start transaction response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                      StartTransactionResponseXML,
+        public static Boolean TryParse(StartTransactionRequest       Request,
+                                       XElement                      StartTransactionResponseXML,
                                        out StartTransactionResponse  StartTransactionResponse,
                                        OnExceptionDelegate           OnException  = null)
         {
@@ -199,6 +285,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             {
 
                 StartTransactionResponse = new StartTransactionResponse(
+
+                                               Request,
 
                                                StartTransactionResponseXML.MapValueOrFail  (OCPPNS.OCPPv1_6_CS + "transactionId",
                                                                                             Transaction_Id.Parse),
@@ -225,15 +313,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(StartTransactionResponseText, out StartTransactionResponse, OnException = null)
+        #region (static) TryParse(Request, StartTransactionResponseJSON, out StartTransactionResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP start transaction response.
+        /// Try to parse the given JSON representation of a start transaction response.
         /// </summary>
-        /// <param name="StartTransactionResponseText">The text to be parsed.</param>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="StartTransactionResponseJSON">The JSON to be parsed.</param>
         /// <param name="StartTransactionResponse">The parsed start transaction response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                        StartTransactionResponseText,
+        public static Boolean TryParse(StartTransactionRequest       Request,
+                                       JObject                       StartTransactionResponseJSON,
                                        out StartTransactionResponse  StartTransactionResponse,
                                        OnExceptionDelegate           OnException  = null)
         {
@@ -241,11 +331,98 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(StartTransactionResponseText).Root,
-                             out StartTransactionResponse,
-                             OnException))
+                StartTransactionResponse = null;
 
-                    return true;
+                #region TransactionId
+
+                if (!StartTransactionResponseJSON.ParseMandatory("transactionId",
+                                                                 "transaction identification",
+                                                                 Transaction_Id.TryParse,
+                                                                 out Transaction_Id  TransactionId,
+                                                                 out String          ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region IdTagInfo
+
+                if (!StartTransactionResponseJSON.ParseMandatory("idTagInfo",
+                                                                 "idTagInfo",
+                                                                 OCPPv1_6.IdTagInfo.TryParse,
+                                                                 out IdTagInfo  IdTagInfo,
+                                                                 out            ErrorResponse,
+                                                                 OnException))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                StartTransactionResponse = new StartTransactionResponse(Request,
+                                                                        TransactionId,
+                                                                        IdTagInfo);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, StartTransactionResponseJSON, e);
+
+                StartTransactionResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, StartTransactionResponseText, out StartTransactionResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a start transaction response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="StartTransactionResponseText">The text to be parsed.</param>
+        /// <param name="StartTransactionResponse">The parsed start transaction response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(StartTransactionRequest       Request,
+                                       String                        StartTransactionResponseText,
+                                       out StartTransactionResponse  StartTransactionResponse,
+                                       OnExceptionDelegate           OnException  = null)
+        {
+
+            try
+            {
+
+                StartTransactionResponseText = StartTransactionResponseText?.Trim();
+
+                if (StartTransactionResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (StartTransactionResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(StartTransactionResponseText),
+                                 out StartTransactionResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(StartTransactionResponseText).Root,
+                                 out StartTransactionResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -277,6 +454,44 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomStartTransactionResponseSerializer = null, CustomIdTagInfoResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomStartTransactionResponseSerializer">A delegate to serialize custom start transaction responses.</param>
+        /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StartTransactionResponse>  CustomStartTransactionResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<IdTagInfo>                 CustomIdTagInfoResponseSerializer          = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("transactionId",  TransactionId.ToString()),
+                           new JProperty("IdTagInfo",      IdTagInfo.    ToJSON(CustomIdTagInfoResponseSerializer))
+                       );
+
+            return CustomStartTransactionResponseSerializer != null
+                       ? CustomStartTransactionResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The start transaction failed.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        public static StartTransactionResponse Failed(StartTransactionRequest Request)
+
+            => new StartTransactionResponse(Request,
+                                            Result.Server());
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -296,7 +511,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) StartTransactionResponse1 == null) || ((Object) StartTransactionResponse2 == null))
+            if ((StartTransactionResponse1 is null) || (StartTransactionResponse2 is null))
                 return false;
 
             return StartTransactionResponse1.Equals(StartTransactionResponse2);
@@ -336,12 +551,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object == null)
                 return false;
 
-            // Check if the given object is a start transaction response.
-            var StartTransactionResponse = Object as StartTransactionResponse;
-            if ((Object) StartTransactionResponse == null)
+            if (!(Object is StartTransactionResponse StartTransactionResponse))
                 return false;
 
-            return this.Equals(StartTransactionResponse);
+            return Equals(StartTransactionResponse);
 
         }
 
@@ -357,7 +570,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(StartTransactionResponse StartTransactionResponse)
         {
 
-            if ((Object) StartTransactionResponse == null)
+            if (StartTransactionResponse is null)
                 return false;
 
             return TransactionId.Equals(StartTransactionResponse.TransactionId) &&

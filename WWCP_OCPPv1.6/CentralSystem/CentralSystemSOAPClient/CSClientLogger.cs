@@ -31,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// An OCPP CS client.
     /// </summary>
-    public partial class CSClient : ASOAPClient
+    public partial class CentralSystemSOAPClient : ASOAPClient
     {
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             /// <param name="CSClient">A OCPP CS client.</param>
             /// <param name="Context">A context of this API.</param>
             /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-            public CSClientLogger(CSClient                CSClient,
+            public CSClientLogger(CentralSystemSOAPClient                CSClient,
                                   String                  Context          = DefaultContext,
                                   LogfileCreatorDelegate  LogFileCreator   = null)
 

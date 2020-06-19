@@ -15,8 +15,122 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    public static class ReasonsExtentions
+    {
+
+        #region AsReasons(Text)
+
+        public static Reasons AsReasons(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "EmergencyStop":
+                    return Reasons.EmergencyStop;
+
+                case "EVDisconnected":
+                    return Reasons.EVDisconnected;
+
+                case "HardReset":
+                    return Reasons.HardReset;
+
+                case "Local":
+                    return Reasons.Local;
+
+                case "Other":
+                    return Reasons.Other;
+
+                case "PowerLoss":
+                    return Reasons.PowerLoss;
+
+                case "Reboot":
+                    return Reasons.Reboot;
+
+                case "Remote":
+                    return Reasons.Remote;
+
+                case "SoftReset":
+                    return Reasons.SoftReset;
+
+                case "UnlockCommand":
+                    return Reasons.UnlockCommand;
+
+                case "DeAuthorized":
+                    return Reasons.DeAuthorized;
+
+
+                default:
+                    return Reasons.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this Reasons)
+
+        public static String AsText(this Reasons Reasons)
+        {
+
+            switch (Reasons)
+            {
+
+                case Reasons.EmergencyStop:
+                    return "EmergencyStop";
+
+                case Reasons.EVDisconnected:
+                    return "EVDisconnected";
+
+                case Reasons.HardReset:
+                    return "HardReset";
+
+                case Reasons.Local:
+                    return "Local";
+
+                case Reasons.Other:
+                    return "Other";
+
+                case Reasons.PowerLoss:
+                    return "PowerLoss";
+
+                case Reasons.Reboot:
+                    return "Reboot";
+
+                case Reasons.Remote:
+                    return "Remote";
+
+                case Reasons.SoftReset:
+                    return "SoftReset";
+
+                case Reasons.UnlockCommand:
+                    return "UnlockCommand";
+
+                case Reasons.DeAuthorized:
+                    return "DeAuthorized";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// The reasons for stopping a transaction.
@@ -89,7 +203,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// status in a StartTransaction response.
         /// </summary>
         DeAuthorized
-
 
     }
 

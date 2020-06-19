@@ -53,7 +53,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     public delegate Task<BootNotificationResponse>
 
         OnBootNotificationDelegate(DateTime                       Timestamp,
-                                   CSServer                       Sender,
+                                   CentralSystemSOAPServer                       Sender,
                                    CancellationToken              CancellationToken,
                                    EventTracking_Id               EventTrackingId,
 
@@ -87,7 +87,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     public delegate Task<HeartbeatResponse>
 
         OnHeartbeatDelegate(DateTime             Timestamp,
-                            CSServer             Sender,
+                            CentralSystemSOAPServer             Sender,
                             CancellationToken    CancellationToken,
                             EventTracking_Id     EventTrackingId,
 
@@ -115,7 +115,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     public delegate Task<AuthorizeResponse>
 
         OnAuthorizeDelegate(DateTime                       Timestamp,
-                            CSServer                       Sender,
+                            CentralSystemSOAPServer                       Sender,
                             CancellationToken              CancellationToken,
                             EventTracking_Id               EventTrackingId,
 
@@ -147,7 +147,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     public delegate Task<StartTransactionResponse>
 
         OnStartTransactionDelegate(DateTime             Timestamp,
-                                   CSServer             Sender,
+                                   CentralSystemSOAPServer             Sender,
                                    CancellationToken    CancellationToken,
                                    EventTracking_Id     EventTrackingId,
 
@@ -185,7 +185,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     public delegate Task<StatusNotificationResponse>
 
         OnStatusNotificationDelegate(DateTime                 Timestamp,
-                                     CSServer                 Sender,
+                                     CentralSystemSOAPServer                 Sender,
                                      CancellationToken        CancellationToken,
                                      EventTracking_Id         EventTrackingId,
 
@@ -221,7 +221,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     public delegate Task<MeterValuesResponse>
 
         OnMeterValuesDelegate(DateTime                 Timestamp,
-                              CSServer                 Sender,
+                              CentralSystemSOAPServer                 Sender,
                               CancellationToken        CancellationToken,
                               EventTracking_Id         EventTrackingId,
 
@@ -256,7 +256,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     public delegate Task<StopTransactionResponse>
 
         OnStopTransactionDelegate(DateTime                   Timestamp,
-                                  CSServer                   Sender,
+                                  CentralSystemSOAPServer                   Sender,
                                   CancellationToken          CancellationToken,
                                   EventTracking_Id           EventTrackingId,
 
@@ -292,7 +292,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     public delegate Task<DataTransferResponse>
 
         OnDataTransferDelegate(DateTime             Timestamp,
-                               CSServer             Sender,
+                               CentralSystemSOAPServer             Sender,
                                CancellationToken    CancellationToken,
                                EventTracking_Id     EventTrackingId,
 
@@ -322,7 +322,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     public delegate Task<DiagnosticsStatusNotificationResponse>
 
         OnDiagnosticsStatusNotificationDelegate(DateTime             Timestamp,
-                                                CSServer             Sender,
+                                                CentralSystemSOAPServer             Sender,
                                                 CancellationToken    CancellationToken,
                                                 EventTracking_Id     EventTrackingId,
 
@@ -350,7 +350,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     public delegate Task<FirmwareStatusNotificationResponse>
 
         OnFirmwareStatusNotificationDelegate(DateTime             Timestamp,
-                                             CSServer             Sender,
+                                             CentralSystemSOAPServer             Sender,
                                              CancellationToken    CancellationToken,
                                              EventTracking_Id     EventTrackingId,
 

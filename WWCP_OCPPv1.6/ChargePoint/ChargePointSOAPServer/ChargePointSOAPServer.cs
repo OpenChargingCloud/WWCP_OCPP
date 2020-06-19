@@ -37,9 +37,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP HTTP/SOAP/XML Charge Point Server API.
+    /// The charge point HTTP/SOAP/XML server.
     /// </summary>
-    public class CPServer : ASOAPServer
+    public class ChargePointSOAPServer : ASOAPServer
     {
 
         #region Data
@@ -47,22 +47,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The default HTTP/SOAP/XML server name.
         /// </summary>
-        public new const           String    DefaultHTTPServerName  = "GraphDefined OCPP " + Version.Number + " HTTP/SOAP/XML Charge Point API";
+        public new const           String           DefaultHTTPServerName  = "GraphDefined OCPP " + Version.Number + " HTTP/SOAP/XML Charge Point API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server TCP port.
         /// </summary>
-        public new static readonly IPPort    DefaultHTTPServerPort  = IPPort.Parse(2010);
+        public new static readonly IPPort           DefaultHTTPServerPort  = IPPort.Parse(2010);
 
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
         /// </summary>
-        public new static readonly HTTPPath   DefaultURIPrefix       = HTTPPath.Parse("/" + Version.Number);
+        public new static readonly HTTPPath         DefaultURLPrefix       = HTTPPath.Parse("/" + Version.Number);
+
+        /// <summary>
+        /// The default HTTP/SOAP/XML content type.
+        /// </summary>
+        public new static readonly HTTPContentType  DefaultContentType     = HTTPContentType.XMLTEXT_UTF8;
 
         /// <summary>
         /// The default query timeout.
         /// </summary>
-        public new static readonly TimeSpan  DefaultQueryTimeout    = TimeSpan.FromMinutes(1);
+        public new static readonly TimeSpan         DefaultRequestTimeout  = TimeSpan.FromMinutes(1);
 
         #endregion
 
@@ -168,29 +173,31 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region CPServer(HTTPServerName, TCPPort = default, URIPrefix = default, ContentType = default, DNSClient = null, AutoStart = false)
+        #region ChargePointSOAPServer(HTTPServerName, TCPPort = default, URLPrefix = default, ContentType = default, DNSClient = null, AutoStart = false)
 
         /// <summary>
-        /// Initialize a new HTTP server for the OCPP HTTP/SOAP/XML Charge Point API.
+        /// Initialize a new HTTP server for the charge point HTTP/SOAP/XML API.
         /// </summary>
         /// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
-        /// <param name="URIPrefix">An optional prefix for the HTTP URIs.</param>
+        /// <param name="URLPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="ContentType">An optional HTTP content type to use.</param>
         /// <param name="RegisterHTTPRootService">Register HTTP root services for sending a notice to clients connecting via HTML or plain text.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CPServer(String          HTTPServerName           = DefaultHTTPServerName,
-                        IPPort?         TCPPort                  = null,
-                        HTTPPath?        URIPrefix                = null,
-                        HTTPContentType ContentType              = null,
-                        Boolean         RegisterHTTPRootService  = true,
-                        DNSClient       DNSClient                = null,
-                        Boolean         AutoStart                = false)
+        public ChargePointSOAPServer(String           HTTPServerName           = DefaultHTTPServerName,
+                                     IPPort?          TCPPort                  = null,
+                                     HTTPPath?        URLPrefix                = null,
+                                     HTTPContentType  ContentType              = null,
+                                     Boolean          RegisterHTTPRootService  = true,
+                                     DNSClient        DNSClient                = null,
+                                     Boolean          AutoStart                = false)
 
-            : base(HTTPServerName.IsNotNullOrEmpty() ? HTTPServerName : DefaultHTTPServerName,
+            : base(HTTPServerName.IsNotNullOrEmpty()
+                       ? HTTPServerName
+                       : DefaultHTTPServerName,
                    TCPPort     ?? DefaultHTTPServerPort,
-                   URIPrefix   ?? DefaultURIPrefix,
+                   URLPrefix   ?? DefaultURLPrefix,
                    ContentType ?? DefaultContentType,
                    RegisterHTTPRootService,
                    DNSClient,
@@ -198,7 +205,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         {
 
-            RegisterURITemplates();
+            RegisterURLTemplates();
 
             if (AutoStart)
                 Start();
@@ -207,22 +214,22 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region CPServer(SOAPServer, URIPrefix = DefaultURIPrefix)
+        #region ChargePointSOAPServer(SOAPServer, URLPrefix = DefaultURLPrefix)
 
         /// <summary>
-        /// Use the given HTTP server for the OCPP HTTP/SOAP/XML Charge Point API.
+        /// Use the given HTTP server for the charge point HTTP/SOAP/XML API.
         /// </summary>
         /// <param name="SOAPServer">A SOAP server.</param>
-        /// <param name="URIPrefix">An optional prefix for the HTTP URIs.</param>
-        public CPServer(SOAPServer  SOAPServer,
-                        HTTPPath?    URIPrefix = null)
+        /// <param name="URLPrefix">An optional prefix for the HTTP URLs.</param>
+        public ChargePointSOAPServer(SOAPServer  SOAPServer,
+                                     HTTPPath?   URLPrefix   = null)
 
             : base(SOAPServer,
-                   URIPrefix ?? DefaultURIPrefix)
+                   URLPrefix ?? DefaultURLPrefix)
 
         {
 
-            RegisterURITemplates();
+            RegisterURLTemplates();
 
         }
 
@@ -231,18 +238,18 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #endregion
 
 
-        #region RegisterURITemplates()
+        #region RegisterURLTemplates()
 
         /// <summary>
-        /// Register all URI templates for this SOAP API.
+        /// Register all URL templates for this SOAP API.
         /// </summary>
-        protected void RegisterURITemplates()
+        protected void RegisterURLTemplates()
         {
 
             #region / - ReserveNow
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
+                                            URLPrefix,
                                             "ReserveNow",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "reserveNowRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, ReserveNowXML) => {
@@ -259,7 +266,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CPServer) + "." + nameof(OnReserveNowSOAPRequest));
+                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnReserveNowSOAPRequest));
                 }
 
                 #endregion
@@ -290,7 +297,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                            _ReserveNowRequest.ExpiryDate,
                                            _ReserveNowRequest.IdTag,
                                            _ReserveNowRequest.ParentIdTag,
-                                           DefaultQueryTimeout)).
+                                           DefaultRequestTimeout)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -343,7 +350,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CPServer) + "." + nameof(OnReserveNowSOAPResponse));
+                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnReserveNowSOAPResponse));
                 }
 
                 #endregion
@@ -357,7 +364,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #region / - CancelReservation
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
+                                            URLPrefix,
                                             "CancelReservation",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "dataTransferRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, CancelReservationXML) => {
@@ -374,7 +381,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CPServer) + "." + nameof(OnCancelReservationSOAPRequest));
+                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnCancelReservationSOAPRequest));
                 }
 
                 #endregion
@@ -401,7 +408,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                            Request.EventTrackingId,
                                            _OCPPHeader.ChargeBoxIdentity,
                                            _CancelReservationRequest.ReservationId,
-                                           DefaultQueryTimeout)).
+                                           DefaultRequestTimeout)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -454,7 +461,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CPServer) + "." + nameof(OnCancelReservationSOAPResponse));
+                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnCancelReservationSOAPResponse));
                 }
 
                 #endregion
@@ -468,7 +475,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #region / - RemoteStartTransaction
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
+                                            URLPrefix,
                                             "RemoteStartTransaction",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "dataTransferRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, RemoteStartTransactionXML) => {
@@ -485,7 +492,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CPServer) + "." + nameof(OnRemoteStartTransactionSOAPRequest));
+                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnRemoteStartTransactionSOAPRequest));
                 }
 
                 #endregion
@@ -514,7 +521,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                            _RemoteStartTransactionRequest.IdTag,
                                            _RemoteStartTransactionRequest.ConnectorId,
                                            _RemoteStartTransactionRequest.ChargingProfile,
-                                           DefaultQueryTimeout)).
+                                           DefaultRequestTimeout)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -567,7 +574,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CPServer) + "." + nameof(OnRemoteStartTransactionSOAPResponse));
+                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnRemoteStartTransactionSOAPResponse));
                 }
 
                 #endregion
@@ -581,7 +588,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #region / - RemoteStopTransaction
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
+                                            URLPrefix,
                                             "RemoteStopTransaction",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "dataTransferRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, RemoteStopTransactionXML) => {
@@ -598,7 +605,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CPServer) + "." + nameof(OnRemoteStopTransactionSOAPRequest));
+                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnRemoteStopTransactionSOAPRequest));
                 }
 
                 #endregion
@@ -625,7 +632,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                            Request.EventTrackingId,
                                            _OCPPHeader.ChargeBoxIdentity,
                                            _RemoteStopTransactionRequest.TransactionId,
-                                           DefaultQueryTimeout)).
+                                           DefaultRequestTimeout)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -678,7 +685,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CPServer) + "." + nameof(OnRemoteStopTransactionSOAPResponse));
+                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnRemoteStopTransactionSOAPResponse));
                 }
 
                 #endregion
@@ -693,7 +700,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #region / - DataTransfer
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
+                                            URLPrefix,
                                             "DataTransfer",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "dataTransferRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, DataTransferXML) => {
@@ -710,7 +717,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CPServer) + "." + nameof(OnDataTransferSOAPRequest));
+                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnDataTransferSOAPRequest));
                 }
 
                 #endregion
@@ -739,7 +746,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                            _DataTransferRequest.VendorId,
                                            _DataTransferRequest.MessageId,
                                            _DataTransferRequest.Data,
-                                           DefaultQueryTimeout)).
+                                           DefaultRequestTimeout)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -792,7 +799,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CPServer) + "." + nameof(OnDataTransferSOAPResponse));
+                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnDataTransferSOAPResponse));
                 }
 
                 #endregion

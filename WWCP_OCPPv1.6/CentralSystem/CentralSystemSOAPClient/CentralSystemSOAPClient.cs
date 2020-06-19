@@ -21,8 +21,6 @@ using System;
 using System.Threading;
 using System.Net.Security;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -39,10 +37,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP CS client.
+    /// The central system SOAP client.
     /// </summary>
-    public partial class CSClient : ASOAPClient,
-                                    ICSClient
+    public partial class CentralSystemSOAPClient : ASOAPClient,
+                                                   ICSClient
     {
 
         #region Data
@@ -212,10 +210,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region CSClient(ChargeBoxIdentity, Hostname, ..., LoggingContext = CSClientLogger.DefaultContext, ...)
+        #region CentralSystemSOAPClient(ChargeBoxIdentity, Hostname, ..., LoggingContext = CSClientLogger.DefaultContext, ...)
 
         /// <summary>
-        /// Create a new OCPP CS client.
+        /// Create a new central system SOAP client.
         /// </summary>
         /// <param name="ChargeBoxIdentity">The unique identification of this OCPP charge box.</param>
         /// <param name="From">The source URI of the SOAP message.</param>
@@ -226,29 +224,29 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="RemoteCertificateValidator">A delegate to verify the remote TLS certificate.</param>
         /// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
         /// <param name="HTTPVirtualHost">An optional HTTP virtual host name to use.</param>
-        /// <param name="URIPrefix">An default URI prefix.</param>
+        /// <param name="URLPrefix">An default URI prefix.</param>
         /// <param name="HTTPUserAgent">An optional HTTP user agent to use.</param>
         /// <param name="RequestTimeout">An optional timeout for upstream queries.</param>
         /// <param name="MaxNumberOfRetries">The default number of maximum transmission retries.</param>
         /// <param name="DNSClient">An optional DNS client.</param>
         /// <param name="LoggingContext">An optional context for logging client methods.</param>
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CSClient(String                               ChargeBoxIdentity,
-                        String                               From,
-                        String                               To,
+        public CentralSystemSOAPClient(String                               ChargeBoxIdentity,
+                                       String                               From,
+                                       String                               To,
 
-                        HTTPHostname                         Hostname,
-                        IPPort?                              RemotePort                   = null,
-                        RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                        LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                        HTTPHostname?                        HTTPVirtualHost              = null,
-                        HTTPPath?                             URIPrefix                    = null,
-                        String                               HTTPUserAgent                = DefaultHTTPUserAgent,
-                        TimeSpan?                            RequestTimeout               = null,
-                        Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
-                        DNSClient                            DNSClient                    = null,
-                        String                               LoggingContext               = CSClientLogger.DefaultContext,
-                        LogfileCreatorDelegate               LogFileCreator               = null)
+                                       HTTPHostname                         Hostname,
+                                       IPPort?                              RemotePort                   = null,
+                                       RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
+                                       LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
+                                       HTTPHostname?                        HTTPVirtualHost              = null,
+                                       HTTPPath?                            URLPrefix                    = null,
+                                       String                               HTTPUserAgent                = DefaultHTTPUserAgent,
+                                       TimeSpan?                            RequestTimeout               = null,
+                                       Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
+                                       DNSClient                            DNSClient                    = null,
+                                       String                               LoggingContext               = CSClientLogger.DefaultContext,
+                                       LogfileCreatorDelegate               LogFileCreator               = null)
 
             : base(ChargeBoxIdentity,
                    Hostname,
@@ -256,7 +254,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                    RemoteCertificateValidator,
                    ClientCertificateSelector,
                    HTTPVirtualHost,
-                   URIPrefix ?? DefaultURIPrefix,
+                   URLPrefix ?? DefaultURLPrefix,
                    null,
                    HTTPUserAgent,
                    RequestTimeout,
@@ -290,10 +288,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region CSClient(ChargeBoxIdentity, Logger, Hostname, ...)
+        #region CentralSystemSOAPClient(ChargeBoxIdentity, Logger, Hostname, ...)
 
         /// <summary>
-        /// Create a new OCPP CS client.
+        /// Create a new central system SOAP client.
         /// </summary>
         /// <param name="ChargeBoxIdentity">A unqiue identification of this client.</param>
         /// <param name="From">The source URI of the SOAP message.</param>
@@ -304,26 +302,26 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="RemoteCertificateValidator">A delegate to verify the remote TLS certificate.</param>
         /// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
         /// <param name="HTTPVirtualHost">An optional HTTP virtual host name to use.</param>
-        /// <param name="URIPrefix">An default URI prefix.</param>
+        /// <param name="URLPrefix">An default URI prefix.</param>
         /// <param name="HTTPUserAgent">An optional HTTP user agent to use.</param>
         /// <param name="RequestTimeout">An optional timeout for upstream queries.</param>
         /// <param name="MaxNumberOfRetries">The default number of maximum transmission retries.</param>
         /// <param name="DNSClient">An optional DNS client.</param>
-        public CSClient(String                               ChargeBoxIdentity,
-                        String                               From,
-                        String                               To,
+        public CentralSystemSOAPClient(String                               ChargeBoxIdentity,
+                                       String                               From,
+                                       String                               To,
 
-                        CSClientLogger                       Logger,
-                        HTTPHostname                         Hostname,
-                        IPPort?                              RemotePort                   = null,
-                        RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                        LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                        HTTPHostname?                        HTTPVirtualHost              = null,
-                        HTTPPath?                             URIPrefix                    = null,
-                        String                               HTTPUserAgent                = DefaultHTTPUserAgent,
-                        TimeSpan?                            RequestTimeout               = null,
-                        Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
-                        DNSClient                            DNSClient                    = null)
+                                       CSClientLogger                       Logger,
+                                       HTTPHostname                         Hostname,
+                                       IPPort?                              RemotePort                   = null,
+                                       RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
+                                       LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
+                                       HTTPHostname?                        HTTPVirtualHost              = null,
+                                       HTTPPath?                            URLPrefix                    = null,
+                                       String                               HTTPUserAgent                = DefaultHTTPUserAgent,
+                                       TimeSpan?                            RequestTimeout               = null,
+                                       Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
+                                       DNSClient                            DNSClient                    = null)
 
             : base(ChargeBoxIdentity,
                    Hostname,
@@ -331,7 +329,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                    RemoteCertificateValidator,
                    ClientCertificateSelector,
                    HTTPVirtualHost,
-                   URIPrefix ?? DefaultURIPrefix,
+                   URLPrefix ?? DefaultURLPrefix,
                    null,
                    HTTPUserAgent,
                    RequestTimeout,
@@ -451,14 +449,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CSClient) + "." + nameof(OnReserveNowRequest));
+                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnReserveNowRequest));
             }
 
             #endregion
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URIPrefix,
+                                                    URLPrefix,
                                                     VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
@@ -577,7 +575,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CSClient) + "." + nameof(OnReserveNowResponse));
+                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnReserveNowResponse));
             }
 
             #endregion
@@ -653,14 +651,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CSClient) + "." + nameof(OnCancelReservationRequest));
+                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnCancelReservationRequest));
             }
 
             #endregion
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URIPrefix,
+                                                    URLPrefix,
                                                     VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
@@ -771,7 +769,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CSClient) + "." + nameof(OnCancelReservationResponse));
+                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnCancelReservationResponse));
             }
 
             #endregion
@@ -856,14 +854,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CSClient) + "." + nameof(OnRemoteStartTransactionRequest));
+                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnRemoteStartTransactionRequest));
             }
 
             #endregion
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URIPrefix,
+                                                    URLPrefix,
                                                     VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
@@ -978,7 +976,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CSClient) + "." + nameof(OnRemoteStartTransactionResponse));
+                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnRemoteStartTransactionResponse));
             }
 
             #endregion
@@ -1057,14 +1055,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CSClient) + "." + nameof(OnRemoteStopTransactionRequest));
+                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnRemoteStopTransactionRequest));
             }
 
             #endregion
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URIPrefix,
+                                                    URLPrefix,
                                                     VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
@@ -1175,7 +1173,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CSClient) + "." + nameof(OnRemoteStopTransactionResponse));
+                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnRemoteStopTransactionResponse));
             }
 
             #endregion
@@ -1255,14 +1253,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CSClient) + "." + nameof(OnDataTransferRequest));
+                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnDataTransferRequest));
             }
 
             #endregion
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URIPrefix,
+                                                    URLPrefix,
                                                     VirtualHostname,
                                                     RemotePort,
                                                     RemoteCertificateValidator,
@@ -1376,7 +1374,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CSClient) + "." + nameof(OnDataTransferResponse));
+                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnDataTransferResponse));
             }
 
             #endregion
@@ -1387,7 +1385,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         }
 
         #endregion
-
 
 
     }

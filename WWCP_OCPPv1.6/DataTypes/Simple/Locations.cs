@@ -15,8 +15,83 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extention methods for locations.
+    /// </summary>
+    public static class LocationExtentions
+    {
+
+        #region AsLocations(Text)
+
+        public static Locations Parse(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Body":
+                    return Locations.Body;
+
+                case "Cable":
+                    return Locations.Cable;
+
+                case "EV":
+                    return Locations.EV;
+
+                case "Inlet":
+                    return Locations.Inlet;
+
+
+                default:
+                    return Locations.Outlet;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this Location)
+
+        public static String AsText(this Locations Location)
+        {
+
+            switch (Location)
+            {
+
+                case Locations.Body:
+                    return "Body";
+
+                case Locations.Cable:
+                    return "Cable";
+
+                case Locations.EV:
+                    return "EV";
+
+                case Locations.Inlet:
+                    return "Inlet";
+
+
+                default:
+                    return "Outlet";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Allowable values of the optional "location" field of

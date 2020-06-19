@@ -20,11 +20,12 @@
 using System;
 using System.Linq;
 using System.Xml.Linq;
+using System.Collections.Generic;
+
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
-using System.Collections.Generic;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -32,7 +33,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP stop transaction request.
+    /// A stop transaction request.
     /// </summary>
     public class StopTransactionRequest : ARequest<StopTransactionRequest>
     {
@@ -79,7 +80,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP StartTransaction XML/SOAP request.
+        /// Create a StartTransaction XML/SOAP request.
         /// </summary>
         /// <param name="TransactionId">The transaction identification copied from the start transaction response.</param>
         /// <param name="Timestamp">The timestamp of the end of the charging transaction.</param>
@@ -169,12 +170,189 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema":  "http://json-schema.org/draft-04/schema#",
+        //     "id":       "urn:OCPP:1.6:2019:12:StopTransactionRequest",
+        //     "title":    "StopTransactionRequest",
+        //     "type":     "object",
+        //     "properties": {
+        //         "idTag": {
+        //             "type":      "string",
+        //             "maxLength":  20
+        //         },
+        //         "meterStop": {
+        //             "type":      "integer"
+        //         },
+        //         "timestamp": {
+        //             "type":      "string",
+        //             "format":    "date-time"
+        //         },
+        //         "transactionId": {
+        //             "type":      "integer"
+        //         },
+        //         "reason": {
+        //             "type":      "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "EmergencyStop",
+        //                 "EVDisconnected",
+        //                 "HardReset",
+        //                 "Local",
+        //                 "Other",
+        //                 "PowerLoss",
+        //                 "Reboot",
+        //                 "Remote",
+        //                 "SoftReset",
+        //                 "UnlockCommand",
+        //                 "DeAuthorized"
+        //             ]
+        //         },
+        //         "transactionData": {
+        //             "type": "array",
+        //             "items": {
+        //                 "type": "object",
+        //                 "properties": {
+        //                     "timestamp": {
+        //                         "type": "string",
+        //                         "format": "date-time"
+        //                     },
+        //                     "sampledValue": {
+        //                         "type": "array",
+        //                         "items": {
+        //                             "type": "object",
+        //                             "properties": {
+        //                                 "value": {
+        //                                     "type": "string"
+        //                                 },
+        //                                 "context": {
+        //                                     "type": "string",
+        //                                     "additionalProperties": false,
+        //                                     "enum": [
+        //                                         "Interruption.Begin",
+        //                                         "Interruption.End",
+        //                                         "Sample.Clock",
+        //                                         "Sample.Periodic",
+        //                                         "Transaction.Begin",
+        //                                         "Transaction.End",
+        //                                         "Trigger",
+        //                                         "Other"
+        //                                     ]
+        //                                 },  
+        //                                 "format": {
+        //                                     "type": "string",
+        //                                     "additionalProperties": false,
+        //                                     "enum": [
+        //                                         "Raw",
+        //                                         "SignedData"
+        //                                     ]
+        //                                 },
+        //                                 "measurand": {
+        //                                     "type": "string",
+        //                                     "additionalProperties": false,
+        //                                     "enum": [
+        //                                         "Energy.Active.Export.Register",
+        //                                         "Energy.Active.Import.Register",
+        //                                         "Energy.Reactive.Export.Register",
+        //                                         "Energy.Reactive.Import.Register",
+        //                                         "Energy.Active.Export.Interval",
+        //                                         "Energy.Active.Import.Interval",
+        //                                         "Energy.Reactive.Export.Interval",
+        //                                         "Energy.Reactive.Import.Interval",
+        //                                         "Power.Active.Export",
+        //                                         "Power.Active.Import",
+        //                                         "Power.Offered",
+        //                                         "Power.Reactive.Export",
+        //                                         "Power.Reactive.Import",
+        //                                         "Power.Factor",
+        //                                         "Current.Import",
+        //                                         "Current.Export",
+        //                                         "Current.Offered",
+        //                                         "Voltage",
+        //                                         "Frequency",
+        //                                         "Temperature",
+        //                                         "SoC",
+        //                                         "RPM"
+        //                                     ]
+        //                                 },
+        //                                 "phase": {
+        //                                     "type": "string",
+        //                                     "additionalProperties": false,
+        //                                     "enum": [
+        //                                         "L1",
+        //                                         "L2",
+        //                                         "L3",
+        //                                         "N",
+        //                                         "L1-N",
+        //                                         "L2-N",
+        //                                         "L3-N",
+        //                                         "L1-L2",
+        //                                         "L2-L3",
+        //                                         "L3-L1"
+        //                                     ]
+        //                                 },
+        //                                 "location": {
+        //                                     "type": "string",
+        //                                     "additionalProperties": false,
+        //                                     "enum": [
+        //                                         "Cable",
+        //                                         "EV",
+        //                                         "Inlet",
+        //                                         "Outlet",
+        //                                         "Body"
+        //                                     ]
+        //                                 },
+        //                                 "unit": {
+        //                                     "type": "string",
+        //                                     "additionalProperties": false,
+        //                                     "enum": [
+        //                                         "Wh",
+        //                                         "kWh",
+        //                                         "varh",
+        //                                         "kvarh",
+        //                                         "W",
+        //                                         "kW",
+        //                                         "VA",
+        //                                         "kVA",
+        //                                         "var",
+        //                                         "kvar",
+        //                                         "A",
+        //                                         "V",
+        //                                         "K",
+        //                                         "Celcius",
+        //                                         "Fahrenheit",
+        //                                         "Percent"
+        //                                     ]
+        //                                 }
+        //                             },
+        //                             "additionalProperties": false,
+        //                             "required": [
+        //                                 "value"
+        //                             ]
+        //                         }
+        //                     }
+        //                 },
+        //                 "additionalProperties": false,
+        //                 "required": [
+        //                     "timestamp",
+        //                     "sampledValue"
+        //                 ]
+        //             }
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "transactionId",
+        //         "timestamp",
+        //         "meterStop"
+        //     ]
+        // }
+
         #endregion
 
-        #region (static) Parse(StopTransactionRequestXML,  OnException = null)
+        #region (static) Parse   (StopTransactionRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP stop transaction request.
+        /// Parse the given XML representation of a stop transaction request.
         /// </summary>
         /// <param name="StopTransactionRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -182,10 +360,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                    OnExceptionDelegate  OnException = null)
         {
 
-            StopTransactionRequest _StopTransactionRequest;
-
-            if (TryParse(StopTransactionRequestXML, out _StopTransactionRequest, OnException))
-                return _StopTransactionRequest;
+            if (TryParse(StopTransactionRequestXML,
+                         out StopTransactionRequest stopTransactionRequest,
+                         OnException))
+            {
+                return stopTransactionRequest;
+            }
 
             return null;
 
@@ -193,10 +373,34 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(StopTransactionRequestText, OnException = null)
+        #region (static) Parse   (StopTransactionRequestJSON, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP stop transaction request.
+        /// Parse the given JSON representation of a stop transaction request.
+        /// </summary>
+        /// <param name="StopTransactionRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static StopTransactionRequest Parse(JObject              StopTransactionRequestJSON,
+                                                   OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(StopTransactionRequestJSON,
+                         out StopTransactionRequest stopTransactionRequest,
+                         OnException))
+            {
+                return stopTransactionRequest;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (StopTransactionRequestText, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a stop transaction request.
         /// </summary>
         /// <param name="StopTransactionRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -204,10 +408,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                    OnExceptionDelegate  OnException = null)
         {
 
-            StopTransactionRequest _StopTransactionRequest;
-
-            if (TryParse(StopTransactionRequestText, out _StopTransactionRequest, OnException))
-                return _StopTransactionRequest;
+            if (TryParse(StopTransactionRequestText,
+                         out StopTransactionRequest stopTransactionRequest,
+                         OnException))
+            {
+                return stopTransactionRequest;
+            }
 
             return null;
 
@@ -218,7 +424,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(StopTransactionRequestXML,  out StopTransactionRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP stop transaction request.
+        /// Try to parse the given XML representation of a stop transaction request.
         /// </summary>
         /// <param name="StopTransactionRequestXML">The XML to be parsed.</param>
         /// <param name="StopTransactionRequest">The parsed stop transaction request.</param>
@@ -246,7 +452,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                                           IdToken.Parse),
 
                                              StopTransactionRequestXML.MapEnumValues     (OCPPNS.OCPPv1_6_CS + "reason",
-                                                                                          XML_IO.AsReasons),
+                                                                                          ReasonsExtentions.AsReasons),
 
                                              StopTransactionRequestXML.MapElements       (OCPPNS.OCPPv1_6_CS + "transactionData",
                                                                                           MeterValue.Parse)
@@ -270,10 +476,154 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParse(StopTransactionRequestJSON,  out StopTransactionRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a stop transaction request.
+        /// </summary>
+        /// <param name="StopTransactionRequestJSON">The JSON to be parsed.</param>
+        /// <param name="StopTransactionRequest">The parsed stop transaction request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                     StopTransactionRequestJSON,
+                                       out StopTransactionRequest  StopTransactionRequest,
+                                       OnExceptionDelegate         OnException  = null)
+        {
+
+            try
+            {
+
+                StopTransactionRequest = null;
+
+                #region TransactionId
+
+                if (!StopTransactionRequestJSON.ParseMandatory("transactionId",
+                                                               "transaction identification",
+                                                               Transaction_Id.TryParse,
+                                                               out Transaction_Id  TransactionId,
+                                                               out String          ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Timestamp
+
+                if (!StopTransactionRequestJSON.ParseMandatory("timestamp",
+                                                               "timestamp",
+                                                               out DateTime  Timestamp,
+                                                               out           ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region MeterStop
+
+                if (!StopTransactionRequestJSON.ParseMandatory("meterStop",
+                                                               "meter stop",
+                                                               UInt64.Parse,
+                                                               out UInt64  MeterStop,
+                                                               out         ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Reason
+
+                if (StopTransactionRequestJSON.ParseOptional("reason",
+                                                             "reason",
+                                                             ReasonsExtentions.AsReasons,
+                                                             out Reasons?  Reason,
+                                                             out           ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region IdTag
+
+                if (!StopTransactionRequestJSON.ParseMandatory("idTag",
+                                                               "id tag",
+                                                               IdToken.TryParse,
+                                                               out IdToken  IdTag,
+                                                               out          ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region TransactionData
+
+                var TransactionData = new List<MeterValue>();
+
+                if (StopTransactionRequestJSON.ParseOptional("transactionData",
+                                                             "transaction data",
+                                                             out JArray  TransactionDataJSON,
+                                                             out         ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (TransactionDataJSON.SafeAny())
+                    {
+                        foreach (var meterValueJSON in TransactionDataJSON)
+                        {
+
+                            if (meterValueJSON is JObject &&
+                                MeterValue.TryParse(meterValueJSON as JObject, out MeterValue meterValue))
+                            {
+                                TransactionData.Add(meterValue);
+                            }
+
+                            else
+                                return false;
+
+                        }
+                    }
+
+                }
+
+                #endregion
+
+
+                StopTransactionRequest = new StopTransactionRequest(TransactionId,
+                                                                    Timestamp,
+                                                                    MeterStop,
+                                                                    IdTag,
+                                                                    Reason,
+                                                                    TransactionData.Any() ? TransactionData : null);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, StopTransactionRequestJSON, e);
+
+                StopTransactionRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(StopTransactionRequestText, out StopTransactionRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP stop transaction request.
+        /// Try to parse the given text representation of a stop transaction request.
         /// </summary>
         /// <param name="StopTransactionRequestText">The text to be parsed.</param>
         /// <param name="StopTransactionRequest">The parsed stop transaction request.</param>
@@ -286,11 +636,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(StopTransactionRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out StopTransactionRequest,
-                             OnException))
+                StopTransactionRequestText = StopTransactionRequestText?.Trim();
 
-                    return true;
+                if (StopTransactionRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (StopTransactionRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(StopTransactionRequestText),
+                                 out StopTransactionRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(StopTransactionRequestText).Root,
+                                 out StopTransactionRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -324,7 +690,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                    new XElement(OCPPNS.OCPPv1_6_CS + "meterStop",       MeterStop),
 
                    Reason.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "reason",    XML_IO.AsText(Reason.Value))
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "reason",    Reason.Value.AsText())
                        : null,
 
                    TransactionData.Any()
@@ -332,6 +698,48 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                        : null
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomStopTransactionRequestRequestSerializer = null, CustomMeterValueSerializer = null, CustomSampledValueSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomStopTransactionRequestRequestSerializer">A delegate to serialize custom stop transaction requests.</param>
+        /// <param name="CustomMeterValueSerializer">A delegate to serialize custom meter values.</param>
+        /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StopTransactionRequest>  CustomStopTransactionRequestRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<MeterValue>              CustomMeterValueSerializer                      = null,
+                              CustomJObjectSerializerDelegate<SampledValue>            CustomSampledValueSerializer                    = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("transactionId",          TransactionId.ToString()),
+                           new JProperty("timestamp",              Timestamp.    ToIso8601()),
+                           new JProperty("meterStop",              MeterStop),
+
+                           IdTag.HasValue
+                               ? new JProperty("idTag",            IdTag.Value.  ToString())
+                               : null,
+
+                           Reason.HasValue
+                               ? new JProperty("reason",           Reason.Value. ToString())
+                               : null,
+
+                           TransactionData.SafeAny()
+                               ? new JProperty("transactionData",  new JArray(TransactionData.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
+                                                                                                                                     CustomSampledValueSerializer))))
+                               : null
+
+                       );
+
+            return CustomStopTransactionRequestRequestSerializer != null
+                       ? CustomStopTransactionRequestRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 
@@ -354,7 +762,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) StopTransactionRequest1 == null) || ((Object) StopTransactionRequest2 == null))
+            if ((StopTransactionRequest1 is null) || (StopTransactionRequest2 is null))
                 return false;
 
             return StopTransactionRequest1.Equals(StopTransactionRequest2);
@@ -394,12 +802,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object == null)
                 return false;
 
-            // Check if the given object is a stop transaction request.
-            var StopTransactionRequest = Object as StopTransactionRequest;
-            if ((Object) StopTransactionRequest == null)
+            if (!(Object is StopTransactionRequest StopTransactionRequest))
                 return false;
 
-            return this.Equals(StopTransactionRequest);
+            return Equals(StopTransactionRequest);
 
         }
 
@@ -415,7 +821,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(StopTransactionRequest StopTransactionRequest)
         {
 
-            if ((Object) StopTransactionRequest == null)
+            if (StopTransactionRequest is null)
                 return false;
 
             return TransactionId.Equals(StopTransactionRequest.TransactionId) &&
@@ -428,6 +834,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                    ((!Reason.HasValue && !StopTransactionRequest.Reason.HasValue) ||
                      (Reason.HasValue &&  StopTransactionRequest.Reason.HasValue && Reason.Equals(StopTransactionRequest.Reason))) &&
 
+                   //FixMe!
                    TransactionData.Count().Equals(StopTransactionRequest.TransactionData.Count());
 
         }

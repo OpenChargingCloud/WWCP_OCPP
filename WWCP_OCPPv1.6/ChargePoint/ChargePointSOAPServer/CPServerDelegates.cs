@@ -50,7 +50,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     public delegate Task<ReserveNowResponse>
 
         OnReserveNowDelegate(DateTime             Timestamp,
-                             CPServer             Sender,
+                             ChargePointSOAPServer             Sender,
                              CancellationToken    CancellationToken,
                              EventTracking_Id     EventTrackingId,
 
@@ -82,7 +82,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     public delegate Task<CancelReservationResponse>
 
         OnCancelReservationDelegate(DateTime             Timestamp,
-                                    CPServer             Sender,
+                                    ChargePointSOAPServer             Sender,
                                     CancellationToken    CancellationToken,
                                     EventTracking_Id     EventTrackingId,
 
@@ -112,7 +112,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     public delegate Task<RemoteStartTransactionResponse>
 
         OnRemoteStartTransactionDelegate(DateTime             Timestamp,
-                                         CPServer             Sender,
+                                         ChargePointSOAPServer             Sender,
                                          CancellationToken    CancellationToken,
                                          EventTracking_Id     EventTrackingId,
 
@@ -142,7 +142,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     public delegate Task<RemoteStopTransactionResponse>
 
         OnRemoteStopTransactionDelegate(DateTime             Timestamp,
-                                        CPServer             Sender,
+                                        ChargePointSOAPServer             Sender,
                                         CancellationToken    CancellationToken,
                                         EventTracking_Id     EventTrackingId,
 
@@ -173,7 +173,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     public delegate Task<DataTransferResponse>
 
         OnDataTransferDelegate(DateTime             Timestamp,
-                               CPServer             Sender,
+                               ChargePointSOAPServer             Sender,
                                CancellationToken    CancellationToken,
                                EventTracking_Id     EventTrackingId,
 

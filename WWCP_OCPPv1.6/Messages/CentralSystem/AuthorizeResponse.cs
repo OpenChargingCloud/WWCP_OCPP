@@ -74,7 +74,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// Create an authorize response.
         /// </summary>
         /// <param name="Request">The authorize request leading to this response.</param>
-        /// <param name="Result">A result.</param>
+        /// <param name="Result">The result.</param>
         public AuthorizeResponse(CP.AuthorizeRequest  Request,
                                  Result               Result)
 
@@ -419,7 +419,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         {
 
             var JSON = JSONObject.Create(
-                           new JProperty("IdTagInfo",  IdTagInfo.ToJSON())
+                           new JProperty("IdTagInfo",  IdTagInfo.ToJSON(CustomIdTagInfoResponseSerializer))
                        );
 
             return CustomAuthorizeResponseSerializer != null

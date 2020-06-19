@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP start transaction request.
+    /// A start transaction request.
     /// </summary>
     public class StartTransactionRequest : ARequest<StartTransactionRequest>
     {
@@ -120,12 +121,45 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:StartTransactionRequest",
+        //     "title":   "StartTransactionRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "connectorId": {
+        //             "type": "integer"
+        //         },
+        //         "idTag": {
+        //             "type": "string",
+        //             "maxLength": 20
+        //         },
+        //         "meterStart": {
+        //             "type": "integer"
+        //         },
+        //         "reservationId": {
+        //             "type": "integer"
+        //         },
+        //         "timestamp": {
+        //             "type": "string",
+        //             "format": "date-time"
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "connectorId",
+        //         "idTag",
+        //         "meterStart",
+        //         "timestamp"
+        //     ]
+        // }
+
         #endregion
 
-        #region (static) Parse(StartTransactionRequestXML,  OnException = null)
+        #region (static) Parse   (StartTransactionRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP start transaction request.
+        /// Parse the given XML representation of a start transaction request.
         /// </summary>
         /// <param name="StartTransactionRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -133,10 +167,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                     OnExceptionDelegate  OnException = null)
         {
 
-            StartTransactionRequest _StartTransactionRequest;
-
-            if (TryParse(StartTransactionRequestXML, out _StartTransactionRequest, OnException))
-                return _StartTransactionRequest;
+            if (TryParse(StartTransactionRequestXML,
+                         out StartTransactionRequest startTransactionRequest,
+                         OnException))
+            {
+                return startTransactionRequest;
+            }
 
             return null;
 
@@ -144,10 +180,34 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(StartTransactionRequestText, OnException = null)
+        #region (static) Parse   (StartTransactionRequestJSON, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP start transaction request.
+        /// Parse the given JSON representation of a start transaction request.
+        /// </summary>
+        /// <param name="StartTransactionRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static StartTransactionRequest Parse(JObject              StartTransactionRequestJSON,
+                                                    OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(StartTransactionRequestJSON,
+                         out StartTransactionRequest startTransactionRequest,
+                         OnException))
+            {
+                return startTransactionRequest;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (StartTransactionRequestText, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a start transaction request.
         /// </summary>
         /// <param name="StartTransactionRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -155,10 +215,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                     OnExceptionDelegate  OnException = null)
         {
 
-            StartTransactionRequest _StartTransactionRequest;
-
-            if (TryParse(StartTransactionRequestText, out _StartTransactionRequest, OnException))
-                return _StartTransactionRequest;
+            if (TryParse(StartTransactionRequestText,
+                         out StartTransactionRequest startTransactionRequest,
+                         OnException))
+            {
+                return startTransactionRequest;
+            }
 
             return null;
 
@@ -169,7 +231,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(StartTransactionRequestXML,  out StartTransactionRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP start transaction request.
+        /// Try to parse the given XML representation of a start transaction request.
         /// </summary>
         /// <param name="StartTransactionRequestXML">The XML to be parsed.</param>
         /// <param name="StartTransactionRequest">The parsed start transaction request.</param>
@@ -218,10 +280,117 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParse(StartTransactionRequestJSON, out StartTransactionRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a start transaction request.
+        /// </summary>
+        /// <param name="StartTransactionRequestJSON">The text to be parsed.</param>
+        /// <param name="StartTransactionRequest">The parsed start transaction request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                      StartTransactionRequestJSON,
+                                       out StartTransactionRequest  StartTransactionRequest,
+                                       OnExceptionDelegate          OnException  = null)
+        {
+
+            try
+            {
+
+                StartTransactionRequest = null;
+
+                #region ConnectorId
+
+                if (!StartTransactionRequestJSON.ParseMandatory("connectorId",
+                                                                "connector identification",
+                                                                Connector_Id.TryParse,
+                                                                out Connector_Id  ConnectorId,
+                                                                out String        ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region IdTag
+
+                if (!StartTransactionRequestJSON.ParseMandatory("idTag",
+                                                                "id tag",
+                                                                IdToken.TryParse,
+                                                                out IdToken  IdTag,
+                                                                out          ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Timestamp
+
+                if (!StartTransactionRequestJSON.ParseMandatory("timestamp",
+                                                                "timestamp",
+                                                                out DateTime  Timestamp,
+                                                                out           ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region MeterStart
+
+                if (!StartTransactionRequestJSON.ParseMandatory("meterStart",
+                                                                "meter start",
+                                                                UInt64.Parse,
+                                                                out UInt64  MeterStart,
+                                                                out         ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region ReservationId
+
+                if (StartTransactionRequestJSON.ParseOptionalStruct("reservationId",
+                                                                    "reservation identification",
+                                                                    Reservation_Id.TryParse,
+                                                                    out Reservation_Id? ReservationId,
+                                                                    out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+
+                StartTransactionRequest = new StartTransactionRequest(ConnectorId,
+                                                                      IdTag,
+                                                                      Timestamp,
+                                                                      MeterStart,
+                                                                      ReservationId);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                OnException?.Invoke(DateTime.UtcNow, StartTransactionRequestJSON, e);
+            }
+
+            StartTransactionRequest = null;
+            return false;
+
+        }
+
+        #endregion
+
         #region (static) TryParse(StartTransactionRequestText, out StartTransactionRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP start transaction request.
+        /// Try to parse the given text representation of a start transaction request.
         /// </summary>
         /// <param name="StartTransactionRequestText">The text to be parsed.</param>
         /// <param name="StartTransactionRequest">The parsed start transaction request.</param>
@@ -234,11 +403,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(StartTransactionRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out StartTransactionRequest,
-                             OnException))
+                StartTransactionRequestText = StartTransactionRequestText?.Trim();
 
-                    return true;
+                if (StartTransactionRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (StartTransactionRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(StartTransactionRequestText),
+                                 out StartTransactionRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(StartTransactionRequestText).Root,
+                                 out StartTransactionRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -275,6 +460,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region ToJSON(CustomStartTransactionRequestRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomStartTransactionRequestRequestSerializer">A delegate to serialize custom start transaction requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StartTransactionRequest> CustomStartTransactionRequestRequestSerializer = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("connectorId",          ConnectorId.ToString()),
+                           new JProperty("idTag",                IdTag.      ToString()),
+                           new JProperty("timestamp",            Timestamp.  ToIso8601()),
+                           new JProperty("meterStart",           MeterStart),
+
+                           ReservationId.HasValue
+                               ? new JProperty("reservationId",  ReservationId.Value.ToString())
+                               : null
+
+                       );
+
+            return CustomStartTransactionRequestRequestSerializer != null
+                       ? CustomStartTransactionRequestRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -294,7 +509,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) StartTransactionRequest1 == null) || ((Object) StartTransactionRequest2 == null))
+            if ((StartTransactionRequest1 is null) || (StartTransactionRequest2 is null))
                 return false;
 
             return StartTransactionRequest1.Equals(StartTransactionRequest2);
@@ -331,15 +546,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
-            // Check if the given object is a start transaction request.
-            var StartTransactionRequest = Object as StartTransactionRequest;
-            if ((Object) StartTransactionRequest == null)
+            if (!(Object is StartTransactionRequest StartTransactionRequest))
                 return false;
 
-            return this.Equals(StartTransactionRequest);
+            return Equals(StartTransactionRequest);
 
         }
 
@@ -355,7 +568,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(StartTransactionRequest StartTransactionRequest)
         {
 
-            if ((Object) StartTransactionRequest == null)
+            if (StartTransactionRequest is null)
                 return false;
 
             return ConnectorId.Equals(StartTransactionRequest.ConnectorId) &&
@@ -383,9 +596,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             unchecked
             {
 
-                return ConnectorId.GetHashCode() * 19 ^
+                return ConnectorId.GetHashCode() * 13 ^
                        IdTag.      GetHashCode() * 11 ^
-                       Timestamp.  GetHashCode() *  6 ^
+                       Timestamp.  GetHashCode() *  7 ^
                        MeterStart. GetHashCode() *  5 ^
 
                        (ReservationId.HasValue

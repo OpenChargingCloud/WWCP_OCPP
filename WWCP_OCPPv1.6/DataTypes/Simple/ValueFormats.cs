@@ -15,8 +15,65 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extention method for the value format.
+    /// </summary>
+    public static class ValueFormatExtentions
+    {
+
+        #region AsValueFormats(Text)
+
+        public static ValueFormats Parse(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "SignedData":
+                    return ValueFormats.SignedData;
+
+
+                default:
+                    return ValueFormats.Raw;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this ValueFormat)
+
+        public static String AsText(this ValueFormats ValueFormat)
+        {
+
+            switch (ValueFormat)
+            {
+
+                case ValueFormats.SignedData:
+                    return "SignedData";
+
+
+                default:
+                    return "Raw";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the value-format-values.

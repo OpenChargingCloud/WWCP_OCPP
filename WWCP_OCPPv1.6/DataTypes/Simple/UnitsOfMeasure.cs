@@ -15,8 +15,146 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    public static class UnitsOfMeasureExtentions
+    {
+
+        #region AsUnitsOfMeasure(Text)
+
+        public static UnitsOfMeasure Parse(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Celsius":
+                    return UnitsOfMeasure.Celsius;
+
+                case "Fahrenheit":
+                    return UnitsOfMeasure.Fahrenheit;
+
+                case "kWh":
+                    return UnitsOfMeasure.kWh;
+
+                case "varh":
+                    return UnitsOfMeasure.varh;
+
+                case "kvarh":
+                    return UnitsOfMeasure.kvarh;
+
+                case "W":
+                    return UnitsOfMeasure.Watts;
+
+                case "kW":
+                    return UnitsOfMeasure.kW;
+
+                case "VA":
+                    return UnitsOfMeasure.VoltAmpere;
+
+                case "kVA":
+                    return UnitsOfMeasure.kVA;
+
+                case "var":
+                    return UnitsOfMeasure.var;
+
+                case "kvar":
+                    return UnitsOfMeasure.kvar;
+
+                case "A":
+                    return UnitsOfMeasure.Amperes;
+
+                case "V":
+                    return UnitsOfMeasure.Voltage;
+
+                case "K":
+                    return UnitsOfMeasure.Kelvin;
+
+                case "Percent":
+                    return UnitsOfMeasure.Percent;
+
+
+                default:
+                    return UnitsOfMeasure.Wh;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this UnitOfMeasure)
+
+        public static String AsText(this UnitsOfMeasure UnitOfMeasure)
+        {
+
+            switch (UnitOfMeasure)
+            {
+
+                case UnitsOfMeasure.Celsius:
+                    return "Celsius";
+
+                case UnitsOfMeasure.Fahrenheit:
+                    return "Fahrenheit";
+
+                case UnitsOfMeasure.kWh:
+                    return "kWh";
+
+                case UnitsOfMeasure.varh:
+                    return "varh";
+
+                case UnitsOfMeasure.kvarh:
+                    return "kvarh";
+
+                case UnitsOfMeasure.Watts:
+                    return "W";
+
+                case UnitsOfMeasure.kW:
+                    return "kW";
+
+                case UnitsOfMeasure.VoltAmpere:
+                    return "VA";
+
+                case UnitsOfMeasure.kVA:
+                    return "kVA";
+
+                case UnitsOfMeasure.var:
+                    return "var";
+
+                case UnitsOfMeasure.kvar:
+                    return "kvar";
+
+                case UnitsOfMeasure.Amperes:
+                    return "A";
+
+                case UnitsOfMeasure.Voltage:
+                    return "V";
+
+                case UnitsOfMeasure.Kelvin:
+                    return "K";
+
+                case UnitsOfMeasure.Percent:
+                    return "Percent";
+
+
+                default:
+                    return "Wh";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Allowable values of the optional "unit" field of a Value element,

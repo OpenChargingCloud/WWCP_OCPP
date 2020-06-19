@@ -47,18 +47,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CentralSystem\CSClient\ICSClient.cs" />
-    <Compile Include="CentralSystem\CSClient\CSClientLogger.cs" />
-    <Compile Include="CentralSystem\CSClient\CSClient.cs" />
-    <Compile Include="CentralSystem\CSClient\CSClientDelegates.cs" />
-    <Compile Include="CentralSystem\CSServer\CSServerLogger.cs" />
-    <Compile Include="ChargePoint\CPClient\ICPClient.cs" />
-    <Compile Include="ChargePoint\CPClient\CPClient.cs" />
-    <Compile Include="ChargePoint\CPClient\CPClientDelegates.cs" />
-    <Compile Include="ChargePoint\CPClient\CPClientLogger.cs" />
-    <Compile Include="ChargePoint\CPServer\CPServerDelegates.cs" />
-    <Compile Include="ChargePoint\CPServer\CPServer.cs" />
-    <Compile Include="ChargePoint\CPServer\CPServerLogger.cs" />
+    <Compile Include="CentralSystem\CentralSystemSOAPClient\ICSClient.cs" />
+    <Compile Include="CentralSystem\CentralSystemSOAPClient\CSClientLogger.cs" />
+    <Compile Include="CentralSystem\CentralSystemSOAPClient\CentralSystemSOAPClient.cs" />
+    <Compile Include="CentralSystem\CentralSystemSOAPClient\CSClientDelegates.cs" />
+    <Compile Include="CentralSystem\CentralSystemSOAPServer\CSServerLogger.cs" />
+    <Compile Include="ChargePoint\ChargePointSOAPClient\ICPClient.cs" />
+    <Compile Include="ChargePoint\ChargePointSOAPClient\ChargePointSOAPClient.cs" />
+    <Compile Include="ChargePoint\ChargePointSOAPClient\CPClientDelegates.cs" />
+    <Compile Include="ChargePoint\ChargePointSOAPClient\CPClientLogger.cs" />
+    <Compile Include="ChargePoint\ChargePointSOAPServer\CPServerDelegates.cs" />
+    <Compile Include="ChargePoint\ChargePointSOAPServer\ChargePointSOAPServer.cs" />
+    <Compile Include="ChargePoint\ChargePointSOAPServer\CPServerLogger.cs" />
     <Compile Include="DataTypes\Complex\ChargingSchedulePeriod.cs" />
     <Compile Include="DataTypes\Complex\ChargingSchedule.cs" />
     <Compile Include="DataTypes\Complex\ChargingProfile.cs" />
@@ -107,8 +107,8 @@
     <Compile Include="DataTypes\Simple\UpdateTypes.cs" />
     <Compile Include="DataTypes\Simple\ResetTypes.cs" />
     <Compile Include="DataTypes\Simple\UnlockStatus.cs" />
-    <Compile Include="CentralSystem\CSServer\CSServerDelegates.cs" />
-    <Compile Include="CentralSystem\CSServer\CSServer.cs" />
+    <Compile Include="CentralSystem\CentralSystemSOAPServer\CSServerDelegates.cs" />
+    <Compile Include="CentralSystem\CentralSystemSOAPServer\CentralSystemSOAPServer.cs" />
     <Compile Include="DataTypes\Complex\IdTagInfo.cs" />
     <Compile Include="DataTypes\Simple\IdToken.cs" />
     <Compile Include="DataTypes\Simple\AuthorizationStatus.cs" />

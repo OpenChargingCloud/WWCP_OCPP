@@ -37,7 +37,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnBootNotificationRequestDelegate (DateTime                    LogTimestamp,
                                                             DateTime                    RequestTimestamp,
-                                                            CPClient                    Sender,
+                                                            ChargePointSOAPClient                    Sender,
                                                             String                      SenderId,
                                                             EventTracking_Id            EventTrackingId,
 
@@ -57,7 +57,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnBootNotificationResponseDelegate(DateTime                    LogTimestamp,
                                                             DateTime                    RequestTimestamp,
-                                                            CPClient                    Sender,
+                                                            ChargePointSOAPClient                    Sender,
                                                             String                      SenderId,
                                                             EventTracking_Id            EventTrackingId,
 
@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnHeartbeatRequestDelegate (DateTime             LogTimestamp,
                                                      DateTime             RequestTimestamp,
-                                                     CPClient             Sender,
+                                                     ChargePointSOAPClient             Sender,
                                                      String               SenderId,
                                                      EventTracking_Id     EventTrackingId,
                                                      TimeSpan?            RequestTimeout);
@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnHeartbeatResponseDelegate(DateTime             LogTimestamp,
                                                      DateTime             RequestTimestamp,
-                                                     CPClient             Sender,
+                                                     ChargePointSOAPClient             Sender,
                                                      String               SenderId,
                                                      EventTracking_Id     EventTrackingId,
                                                      TimeSpan?            RequestTimeout,
@@ -110,7 +110,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnAuthorizeRequestDelegate (DateTime             LogTimestamp,
                                                      DateTime             RequestTimestamp,
-                                                     CPClient             Sender,
+                                                     ChargePointSOAPClient             Sender,
                                                      String               SenderId,
                                                      EventTracking_Id     EventTrackingId,
 
@@ -123,7 +123,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnAuthorizeResponseDelegate(DateTime             LogTimestamp,
                                                      DateTime             RequestTimestamp,
-                                                     CPClient             Sender,
+                                                     ChargePointSOAPClient             Sender,
                                                      String               SenderId,
                                                      EventTracking_Id     EventTrackingId,
 
@@ -142,7 +142,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnStartTransactionRequestDelegate (DateTime                    LogTimestamp,
                                                             DateTime                    RequestTimestamp,
-                                                            CPClient                    Sender,
+                                                            ChargePointSOAPClient                    Sender,
                                                             String                      SenderId,
                                                             EventTracking_Id            EventTrackingId,
 
@@ -159,7 +159,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnStartTransactionResponseDelegate(DateTime                    LogTimestamp,
                                                             DateTime                    RequestTimestamp,
-                                                            CPClient                    Sender,
+                                                            ChargePointSOAPClient                    Sender,
                                                             String                      SenderId,
                                                             EventTracking_Id            EventTrackingId,
 
@@ -182,7 +182,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnStatusNotificationRequestDelegate (DateTime                      LogTimestamp,
                                                               DateTime                      RequestTimestamp,
-                                                              CPClient                      Sender,
+                                                              ChargePointSOAPClient                      Sender,
                                                               String                        SenderId,
                                                               EventTracking_Id              EventTrackingId,
 
@@ -201,7 +201,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>s
     public delegate Task OnStatusNotificationResponseDelegate(DateTime                      LogTimestamp,
                                                               DateTime                      RequestTimestamp,
-                                                              CPClient                      Sender,
+                                                              ChargePointSOAPClient                      Sender,
                                                               String                        SenderId,
                                                               EventTracking_Id              EventTrackingId,
 
@@ -226,7 +226,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnMeterValuesRequestDelegate (DateTime                 LogTimestamp,
                                                        DateTime                 RequestTimestamp,
-                                                       CPClient                 Sender,
+                                                       ChargePointSOAPClient                 Sender,
                                                        String                   SenderId,
                                                        EventTracking_Id         EventTrackingId,
 
@@ -241,7 +241,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>s
     public delegate Task OnMeterValuesResponseDelegate(DateTime                 LogTimestamp,
                                                        DateTime                 RequestTimestamp,
-                                                       CPClient                 Sender,
+                                                       ChargePointSOAPClient                 Sender,
                                                        String                   SenderId,
                                                        EventTracking_Id         EventTrackingId,
 
@@ -262,7 +262,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnStopTransactionRequestDelegate (DateTime                   LogTimestamp,
                                                            DateTime                   RequestTimestamp,
-                                                           CPClient                   Sender,
+                                                           ChargePointSOAPClient                   Sender,
                                                            String                     SenderId,
                                                            EventTracking_Id           EventTrackingId,
 
@@ -280,7 +280,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnStopTransactionResponseDelegate(DateTime                   LogTimestamp,
                                                            DateTime                   RequestTimestamp,
-                                                           CPClient                   Sender,
+                                                           ChargePointSOAPClient                   Sender,
                                                            String                     SenderId,
                                                            EventTracking_Id           EventTrackingId,
 
@@ -305,7 +305,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnDataTransferRequestDelegate (DateTime                LogTimestamp,
                                                         DateTime                RequestTimestamp,
-                                                        CPClient                Sender,
+                                                        ChargePointSOAPClient                Sender,
                                                         String                  SenderId,
                                                         EventTracking_Id        EventTrackingId,
 
@@ -320,7 +320,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnDataTransferResponseDelegate(DateTime                LogTimestamp,
                                                         DateTime                RequestTimestamp,
-                                                        CPClient                Sender,
+                                                        ChargePointSOAPClient                Sender,
                                                         String                  SenderId,
                                                         EventTracking_Id        EventTrackingId,
 
@@ -341,7 +341,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnDiagnosticsStatusNotificationRequestDelegate (DateTime                                 LogTimestamp,
                                                                          DateTime                                 RequestTimestamp,
-                                                                         CPClient                                 Sender,
+                                                                         ChargePointSOAPClient                                 Sender,
                                                                          String                                   SenderId,
                                                                          EventTracking_Id                         EventTrackingId,
 
@@ -354,7 +354,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnDiagnosticsStatusNotificationResponseDelegate(DateTime                                 LogTimestamp,
                                                                          DateTime                                 RequestTimestamp,
-                                                                         CPClient                                 Sender,
+                                                                         ChargePointSOAPClient                                 Sender,
                                                                          String                                   SenderId,
                                                                          EventTracking_Id                         EventTrackingId,
 
@@ -373,7 +373,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnFirmwareStatusNotificationRequestDelegate (DateTime                              LogTimestamp,
                                                                       DateTime                              RequestTimestamp,
-                                                                      CPClient                              Sender,
+                                                                      ChargePointSOAPClient                              Sender,
                                                                       String                                SenderId,
                                                                       EventTracking_Id                      EventTrackingId,
 
@@ -386,7 +386,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnFirmwareStatusNotificationResponseDelegate(DateTime                              LogTimestamp,
                                                                       DateTime                              RequestTimestamp,
-                                                                      CPClient                              Sender,
+                                                                      ChargePointSOAPClient                              Sender,
                                                                       String                                SenderId,
                                                                       EventTracking_Id                      EventTrackingId,
 

@@ -61,7 +61,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Create an new identification token.
         /// </summary>
-        /// <param name="Token">A string.</param>
+        /// <param name="Token">A string (20 characters).</param>
         private IdToken(String  Token)
         {
             this.InternalId = Token;

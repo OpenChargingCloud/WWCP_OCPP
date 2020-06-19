@@ -20,7 +20,11 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
+using org.GraphDefined.WWCP.OCPPv1_6.CP;
 
 #endregion
 
@@ -28,9 +32,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP stop transaction response.
+    /// A stop transaction response.
     /// </summary>
-    public class StopTransactionResponse : AResponse<StopTransactionResponse>
+    public class StopTransactionResponse : AResponse<CP.StopTransactionRequest,
+                                                     StopTransactionResponse>
     {
 
         #region Properties
@@ -44,27 +49,20 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region Statics
-
-        /// <summary>
-        /// The stop transaction failed.
-        /// </summary>
-        public static StopTransactionResponse Failed
-            => new StopTransactionResponse(Result.Server());
-
-        #endregion
-
         #region Constructor(s)
 
-        #region StopTransactionResponse(IdTagInfo)
+        #region StopTransactionResponse(Request, IdTagInfo)
 
         /// <summary>
-        /// Create a new OCPP stop transaction response.
+        /// Create a new stop transaction response.
         /// </summary>
+        /// <param name="Request">The stop transaction request leading to this response.</param>
         /// <param name="IdTagInfo">Information about authorization status, expiry and parent id.</param>
-        public StopTransactionResponse(IdTagInfo?  IdTagInfo = null)
+        public StopTransactionResponse(CP.StopTransactionRequest  Request,
+                                       IdTagInfo?                 IdTagInfo = null)
 
-            : base(Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -74,14 +72,18 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region StopTransactionResponse(Result)
+        #region StopTransactionResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP stop transaction response.
+        /// Create a new stop transaction response.
         /// </summary>
-        public StopTransactionResponse(Result Result)
+        /// <param name="Request">The stop transaction request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public StopTransactionResponse(CP.StopTransactionRequest  Request,
+                                       Result                     Result)
 
-            : base(Result)
+            : base(Request,
+                   Result)
 
         {
 
@@ -119,23 +121,66 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema":  "http://json-schema.org/draft-04/schema#",
+        //     "id":       "urn:OCPP:1.6:2019:12:StopTransactionResponse",
+        //     "title":    "StopTransactionResponse",
+        //     "type":     "object",
+        //     "properties": {
+        //         "idTagInfo": {
+        //             "type": "object",
+        //             "properties": {
+        //                 "expiryDate": {
+        //                     "type":      "string",
+        //                     "format":    "date-time"
+        //                 },
+        //                 "parentIdTag": {
+        //                     "type":      "string",
+        //                     "maxLength":  20
+        //                 },
+        //                 "status": {
+        //                     "type":      "string",
+        //                     "additionalProperties": false,
+        //                     "enum": [
+        //                         "Accepted",
+        //                         "Blocked",
+        //                         "Expired",
+        //                         "Invalid",
+        //                         "ConcurrentTx"
+        //                     ]
+        //                 }
+        //             },
+        //             "additionalProperties": false,
+        //             "required": [
+        //                 "status"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false
+        // }
+
         #endregion
 
-        #region (static) Parse(StopTransactionResponseXML,  OnException = null)
+        #region (static) Parse   (Request, StopTransactionResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP stop transaction response.
+        /// Parse the given XML representation of a stop transaction response.
         /// </summary>
+        /// <param name="Request">The stop transaction request leading to this response.</param>
         /// <param name="StopTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StopTransactionResponse Parse(XElement             StopTransactionResponseXML,
-                                                    OnExceptionDelegate  OnException = null)
+        public static StopTransactionResponse Parse(StopTransactionRequest  Request,
+                                                    XElement                StopTransactionResponseXML,
+                                                    OnExceptionDelegate     OnException = null)
         {
 
-            StopTransactionResponse _StopTransactionResponse;
-
-            if (TryParse(StopTransactionResponseXML, out _StopTransactionResponse, OnException))
-                return _StopTransactionResponse;
+            if (TryParse(Request,
+                         StopTransactionResponseXML,
+                         out StopTransactionResponse stopTransactionResponse,
+                         OnException))
+            {
+                return stopTransactionResponse;
+            }
 
             return null;
 
@@ -143,21 +188,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(StopTransactionResponseText, OnException = null)
+        #region (static) Parse   (Request, StopTransactionResponseJSON, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP stop transaction response.
+        /// Parse the given text representation of a stop transaction response.
         /// </summary>
+        /// <param name="Request">The stop transaction request leading to this response.</param>
+        /// <param name="StopTransactionResponseJSON">The text to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static StopTransactionResponse Parse(StopTransactionRequest  Request,
+                                                    JObject                 StopTransactionResponseJSON,
+                                                    OnExceptionDelegate     OnException = null)
+        {
+
+            if (TryParse(Request,
+                         StopTransactionResponseJSON,
+                         out StopTransactionResponse stopTransactionResponse,
+                         OnException))
+            {
+                return stopTransactionResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, StopTransactionResponseText, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a stop transaction response.
+        /// </summary>
+        /// <param name="Request">The stop transaction request leading to this response.</param>
         /// <param name="StopTransactionResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StopTransactionResponse Parse(String               StopTransactionResponseText,
-                                                    OnExceptionDelegate  OnException = null)
+        public static StopTransactionResponse Parse(StopTransactionRequest  Request,
+                                                    String                  StopTransactionResponseText,
+                                                    OnExceptionDelegate     OnException = null)
         {
 
-            StopTransactionResponse _StopTransactionResponse;
-
-            if (TryParse(StopTransactionResponseText, out _StopTransactionResponse, OnException))
-                return _StopTransactionResponse;
+            if (TryParse(Request,
+                         StopTransactionResponseText,
+                         out StopTransactionResponse stopTransactionResponse,
+                         OnException))
+            {
+                return stopTransactionResponse;
+            }
 
             return null;
 
@@ -165,23 +242,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(StopTransactionResponseXML,  out StopTransactionResponse, OnException = null)
+        #region (static) TryParse(Request, StopTransactionResponseXML,  out StopTransactionResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP stop transaction response.
+        /// Try to parse the given XML representation of a stop transaction response.
         /// </summary>
+        /// <param name="Request">The stop transaction request leading to this response.</param>
         /// <param name="StopTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="StopTransactionResponse">The parsed stop transaction response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                      StopTransactionResponseXML,
+        public static Boolean TryParse(StopTransactionRequest       Request,
+                                       XElement                     StopTransactionResponseXML,
                                        out StopTransactionResponse  StopTransactionResponse,
-                                       OnExceptionDelegate           OnException  = null)
+                                       OnExceptionDelegate          OnException  = null)
         {
 
             try
             {
 
                 StopTransactionResponse = new StopTransactionResponse(
+
+                                              Request,
 
                                               StopTransactionResponseXML.MapElementOrNullable(OCPPNS.OCPPv1_6_CS + "idTagInfo",
                                                                                               OCPPv1_6.IdTagInfo.Parse)
@@ -205,15 +286,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(StopTransactionResponseText, out StopTransactionResponse, OnException = null)
+        #region (static) TryParse(Request, StopTransactionResponseJSON, out StopTransactionResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP stop transaction response.
+        /// Try to parse the given text representation of a stop transaction response.
         /// </summary>
-        /// <param name="StopTransactionResponseText">The text to be parsed.</param>
+        /// <param name="Request">The stop transaction request leading to this response.</param>
+        /// <param name="StopTransactionResponseJSON">The text to be parsed.</param>
         /// <param name="StopTransactionResponse">The parsed stop transaction response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                       StopTransactionResponseText,
+        public static Boolean TryParse(StopTransactionRequest       Request,
+                                       JObject                      StopTransactionResponseJSON,
                                        out StopTransactionResponse  StopTransactionResponse,
                                        OnExceptionDelegate          OnException  = null)
         {
@@ -221,7 +304,61 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(StopTransactionResponseText).Root,
+                StopTransactionResponse = null;
+
+                #region IdTagInfo
+
+                if (!StopTransactionResponseJSON.ParseMandatory("idTagInfo",
+                                                                "idTagInfo",
+                                                                OCPPv1_6.IdTagInfo.TryParse,
+                                                                out IdTagInfo  IdTagInfo,
+                                                                out String     ErrorResponse,
+                                                                OnException))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                StopTransactionResponse = new StopTransactionResponse(Request,
+                                                                      IdTagInfo);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                OnException?.Invoke(DateTime.UtcNow, StopTransactionResponseJSON, e);
+            }
+
+            StopTransactionResponse = null;
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, StopTransactionResponseText, out StopTransactionResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a stop transaction response.
+        /// </summary>
+        /// <param name="Request">The stop transaction request leading to this response.</param>
+        /// <param name="StopTransactionResponseText">The text to be parsed.</param>
+        /// <param name="StopTransactionResponse">The parsed stop transaction response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(StopTransactionRequest       Request,
+                                       String                       StopTransactionResponseText,
+                                       out StopTransactionResponse  StopTransactionResponse,
+                                       OnExceptionDelegate          OnException  = null)
+        {
+
+            try
+            {
+
+                if (TryParse(Request,
+                             XDocument.Parse(StopTransactionResponseText).Root,
                              out StopTransactionResponse,
                              OnException))
 
@@ -257,6 +394,47 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomStopTransactionResponseSerializer = null, CustomIdTagInfoResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomStopTransactionResponseSerializer">A delegate to serialize custom start transaction responses.</param>
+        /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StopTransactionResponse>  CustomStopTransactionResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<IdTagInfo>                CustomIdTagInfoResponseSerializer         = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           IdTagInfo.HasValue
+                               ? new JProperty("IdTagInfo",  IdTagInfo.Value.ToJSON(CustomIdTagInfoResponseSerializer))
+                               : null
+
+                       );
+
+            return CustomStopTransactionResponseSerializer != null
+                       ? CustomStopTransactionResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The stop transaction failed.
+        /// </summary>
+        /// <param name="Request">The stop transaction request leading to this response.</param>
+        public static StopTransactionResponse Failed(StopTransactionRequest Request)
+
+            => new StopTransactionResponse(Request,
+                                           Result.Server());
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -276,7 +454,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) StopTransactionResponse1 == null) || ((Object) StopTransactionResponse2 == null))
+            if ((StopTransactionResponse1 is null) || (StopTransactionResponse2 is null))
                 return false;
 
             return StopTransactionResponse1.Equals(StopTransactionResponse2);
@@ -313,15 +491,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
-            // Check if the given object is a stop transaction response.
-            var StopTransactionResponse = Object as StopTransactionResponse;
-            if ((Object) StopTransactionResponse == null)
+            if (!(Object is StopTransactionResponse StopTransactionResponse))
                 return false;
 
-            return this.Equals(StopTransactionResponse);
+            return Equals(StopTransactionResponse);
 
         }
 
@@ -337,7 +513,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(StopTransactionResponse StopTransactionResponse)
         {
 
-            if ((Object) StopTransactionResponse == null)
+            if (StopTransactionResponse is null)
                 return false;
 
             return IdTagInfo != null

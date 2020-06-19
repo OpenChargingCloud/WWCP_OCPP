@@ -31,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// An OCPP CP client.
     /// </summary>
-    public partial class CPClient : ASOAPClient
+    public partial class ChargePointSOAPClient : ASOAPClient
     {
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             /// <param name="CPClient">A OCPP CP client.</param>
             /// <param name="Context">A context of this API.</param>
             /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-            public CPClientLogger(CPClient                CPClient,
+            public CPClientLogger(ChargePointSOAPClient                CPClient,
                                   String                  Context         = DefaultContext,
                                   LogfileCreatorDelegate  LogFileCreator  = null)
 

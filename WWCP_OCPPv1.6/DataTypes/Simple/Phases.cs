@@ -15,8 +15,119 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extention methods for the phases.
+    /// </summary>
+    public static class PhasesExtentions
+    {
+
+        #region AsPhases(Text)
+
+        public static Phases Parse(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "L1":
+                    return Phases.L1;
+
+                case "L2":
+                    return Phases.L2;
+
+                case "L3":
+                    return Phases.L3;
+
+                case "N":
+                    return Phases.N;
+
+                case "L1-N":
+                    return Phases.L1_N;
+
+                case "L2-N":
+                    return Phases.L2_N;
+
+                case "L3-N":
+                    return Phases.L3_N;
+
+                case "L1-L2":
+                    return Phases.L1_L2;
+
+                case "L2-L3":
+                    return Phases.L2_L3;
+
+                case "L3-L1":
+                    return Phases.L3_L1;
+
+
+                default:
+                    return Phases.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this Phase)
+
+        public static String AsText(this Phases Phase)
+        {
+
+            switch (Phase)
+            {
+
+                case Phases.L1:
+                    return "L1";
+
+                case Phases.L2:
+                    return "L2";
+
+                case Phases.L3:
+                    return "L3";
+
+                case Phases.N:
+                    return "N";
+
+                case Phases.L1_N:
+                    return "L1-N";
+
+                case Phases.L2_N:
+                    return "L2-N";
+
+                case Phases.L3_N:
+                    return "L3-N";
+
+                case Phases.L1_L2:
+                    return "L1-L2";
+
+                case Phases.L2_L3:
+                    return "L2-L3";
+
+                case Phases.L3_L1:
+                    return "L3-L1";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Phase as used in SampledValue. Phase specifies how a measured value

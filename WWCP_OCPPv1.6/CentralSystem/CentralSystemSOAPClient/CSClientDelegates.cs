@@ -37,7 +37,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnReserveNowRequestDelegate (DateTime              LogTimestamp,
                                                       DateTime              RequestTimestamp,
-                                                      CSClient              Sender,
+                                                      CentralSystemSOAPClient              Sender,
                                                       String                SenderId,
                                                       EventTracking_Id      EventTrackingId,
 
@@ -55,7 +55,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnReserveNowResponseDelegate(DateTime              LogTimestamp,
                                                       DateTime              RequestTimestamp,
-                                                      CSClient              Sender,
+                                                      CentralSystemSOAPClient              Sender,
                                                       String                SenderId,
                                                       EventTracking_Id      EventTrackingId,
 
@@ -79,7 +79,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnCancelReservationRequestDelegate (DateTime                     LogTimestamp,
                                                              DateTime                     RequestTimestamp,
-                                                             CSClient                     Sender,
+                                                             CentralSystemSOAPClient                     Sender,
                                                              String                       SenderId,
                                                              EventTracking_Id             EventTrackingId,
 
@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnCancelReservationResponseDelegate(DateTime                     LogTimestamp,
                                                              DateTime                     RequestTimestamp,
-                                                             CSClient                     Sender,
+                                                             CentralSystemSOAPClient                     Sender,
                                                              String                       SenderId,
                                                              EventTracking_Id             EventTrackingId,
 
@@ -113,7 +113,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnRemoteStartTransactionRequestDelegate (DateTime                          LogTimestamp,
                                                                   DateTime                          RequestTimestamp,
-                                                                  CSClient                          Sender,
+                                                                  CentralSystemSOAPClient                          Sender,
                                                                   String                            SenderId,
                                                                   EventTracking_Id                  EventTrackingId,
 
@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnRemoteStartTransactionResponseDelegate(DateTime                          LogTimestamp,
                                                                   DateTime                          RequestTimestamp,
-                                                                  CSClient                          Sender,
+                                                                  CentralSystemSOAPClient                          Sender,
                                                                   String                            SenderId,
                                                                   EventTracking_Id                  EventTrackingId,
 
@@ -151,7 +151,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnRemoteStopTransactionRequestDelegate (DateTime                         LogTimestamp,
                                                                  DateTime                         RequestTimestamp,
-                                                                 CSClient                         Sender,
+                                                                 CentralSystemSOAPClient                         Sender,
                                                                  String                           SenderId,
                                                                  EventTracking_Id                 EventTrackingId,
 
@@ -165,7 +165,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnRemoteStopTransactionResponseDelegate(DateTime                         LogTimestamp,
                                                                  DateTime                         RequestTimestamp,
-                                                                 CSClient                         Sender,
+                                                                 CentralSystemSOAPClient                         Sender,
                                                                  String                           SenderId,
                                                                  EventTracking_Id                 EventTrackingId,
 
@@ -186,7 +186,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnDataTransferRequestDelegate (DateTime                   LogTimestamp,
                                                         DateTime                   RequestTimestamp,
-                                                        CSClient                   Sender,
+                                                        CentralSystemSOAPClient                   Sender,
                                                         String                     SenderId,
                                                         EventTracking_Id           EventTrackingId,
 
@@ -201,7 +201,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnDataTransferResponseDelegate(DateTime                   LogTimestamp,
                                                         DateTime                   RequestTimestamp,
-                                                        CSClient                   Sender,
+                                                        CentralSystemSOAPClient                   Sender,
                                                         String                     SenderId,
                                                         EventTracking_Id           EventTrackingId,
 

@@ -37,9 +37,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP HTTP/SOAP/XML Central System Server API.
+    /// The central system HTTP/SOAP/XML server.
     /// </summary>
-    public class CSServer : ASOAPServer
+    public class CentralSystemSOAPServer : ASOAPServer
     {
 
         #region Data
@@ -57,7 +57,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
         /// </summary>
-        public new static readonly HTTPPath         DefaultURIPrefix       = HTTPPath.Parse("/");
+        public new static readonly HTTPPath         DefaultURLPrefix       = HTTPPath.Parse("/" + Version.Number);
 
         /// <summary>
         /// The default HTTP/SOAP/XML content type.
@@ -269,29 +269,31 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region CSServer(HTTPServerName, TCPPort = default, URIPrefix = default, ContentType = default, DNSClient = null, AutoStart = false)
+        #region CentralSystemSOAPServer(HTTPServerName, TCPPort = default, URLPrefix = default, ContentType = default, DNSClient = null, AutoStart = false)
 
         /// <summary>
-        /// Initialize a new HTTP server for the OCPP HTTP/SOAP/XML Central System API.
+        /// Initialize a new HTTP server for the central system HTTP/SOAP/XML API.
         /// </summary>
         /// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
-        /// <param name="URIPrefix">An optional prefix for the HTTP URIs.</param>
+        /// <param name="URLPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="ContentType">An optional HTTP content type to use.</param>
         /// <param name="RegisterHTTPRootService">Register HTTP root services for sending a notice to clients connecting via HTML or plain text.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CSServer(String          HTTPServerName           = DefaultHTTPServerName,
-                        IPPort?         TCPPort                  = null,
-                        HTTPPath?       URIPrefix                = null,
-                        HTTPContentType ContentType              = null,
-                        Boolean         RegisterHTTPRootService  = true,
-                        DNSClient       DNSClient                = null,
-                        Boolean         AutoStart                = false)
+        public CentralSystemSOAPServer(String           HTTPServerName            = DefaultHTTPServerName,
+                                       IPPort?          TCPPort                   = null,
+                                       HTTPPath?        URLPrefix                 = null,
+                                       HTTPContentType  ContentType               = null,
+                                       Boolean          RegisterHTTPRootService   = true,
+                                       DNSClient        DNSClient                 = null,
+                                       Boolean          AutoStart                 = false)
 
-            : base(HTTPServerName.IsNotNullOrEmpty() ? HTTPServerName : DefaultHTTPServerName,
+            : base(HTTPServerName.IsNotNullOrEmpty()
+                       ? HTTPServerName
+                       : DefaultHTTPServerName,
                    TCPPort     ?? DefaultHTTPServerPort,
-                   URIPrefix   ?? DefaultURIPrefix,
+                   URLPrefix   ?? DefaultURLPrefix,
                    ContentType ?? DefaultContentType,
                    RegisterHTTPRootService,
                    DNSClient,
@@ -299,7 +301,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         {
 
-            RegisterURITemplates();
+            RegisterURLTemplates();
 
             if (AutoStart)
                 Start();
@@ -308,22 +310,22 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region CSServer(SOAPServer, URIPrefix = DefaultURIPrefix)
+        #region CentralSystemSOAPServer(SOAPServer, URLPrefix = DefaultURLPrefix)
 
         /// <summary>
-        /// Use the given HTTP server for the OCPP HTTP/SOAP/XML Central System API.
+        /// Use the given HTTP server for the central system HTTP/SOAP/XML API.
         /// </summary>
         /// <param name="SOAPServer">A SOAP server.</param>
-        /// <param name="URIPrefix">An optional prefix for the HTTP URIs.</param>
-        public CSServer(SOAPServer  SOAPServer,
-                        HTTPPath?   URIPrefix = null)
+        /// <param name="URLPrefix">An optional prefix for the HTTP URLs.</param>
+        public CentralSystemSOAPServer(SOAPServer  SOAPServer,
+                                       HTTPPath?   URLPrefix = null)
 
             : base(SOAPServer,
-                   URIPrefix ?? DefaultURIPrefix)
+                   URLPrefix ?? DefaultURLPrefix)
 
         {
 
-            RegisterURITemplates();
+            RegisterURLTemplates();
 
         }
 
@@ -332,18 +334,18 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #endregion
 
 
-        #region RegisterURITemplates()
+        #region RegisterURLTemplates()
 
         /// <summary>
-        /// Register all URI templates for this SOAP API.
+        /// Register all URL templates for this SOAP API.
         /// </summary>
-        protected void RegisterURITemplates()
+        protected void RegisterURLTemplates()
         {
 
             #region / - BootNotification
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
+                                            URLPrefix,
                                             "BootNotification",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "bootNotificationRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, BootNotificationXML) => {
@@ -360,7 +362,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnBootNotificationSOAPRequest));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationSOAPRequest));
                 }
 
                 #endregion
@@ -447,7 +449,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnBootNotificationSOAPResponse));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationSOAPResponse));
                 }
 
                 #endregion
@@ -461,7 +463,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #region / - Heartbeat
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
+                                            URLPrefix,
                                             "Heartbeat",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "heartbeatRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, HeartbeatXML) => {
@@ -478,7 +480,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnHeartbeatSOAPRequest));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnHeartbeatSOAPRequest));
                 }
 
                 #endregion
@@ -557,7 +559,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnHeartbeatSOAPResponse));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnHeartbeatSOAPResponse));
                 }
 
                 #endregion
@@ -572,7 +574,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #region / - Authorize
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
+                                            URLPrefix,
                                             "Authorize",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "authorizeRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, AuthorizeXML) => {
@@ -589,7 +591,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnAuthorizeSOAPRequest));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnAuthorizeSOAPRequest));
                 }
 
                 #endregion
@@ -669,7 +671,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnAuthorizeSOAPResponse));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnAuthorizeSOAPResponse));
                 }
 
                 #endregion
@@ -683,7 +685,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #region / - StartTransaction
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
+                                            URLPrefix,
                                             "StartTransaction",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "startTransactionRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, StartTransactionXML) => {
@@ -700,7 +702,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnStartTransactionSOAPRequest));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStartTransactionSOAPRequest));
                 }
 
                 #endregion
@@ -744,7 +746,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = StartTransactionResponse.Failed;
+                        response = StartTransactionResponse.Failed(_StartTransactionRequest);
 
                 }
 
@@ -784,7 +786,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnStartTransactionSOAPResponse));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStartTransactionSOAPResponse));
                 }
 
                 #endregion
@@ -798,7 +800,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #region / - StatusNotification
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
+                                            URLPrefix,
                                             "StatusNotification",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "statusNotificationRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, StatusNotificationXML) => {
@@ -815,7 +817,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnStatusNotificationSOAPRequest));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStatusNotificationSOAPRequest));
                 }
 
                 #endregion
@@ -901,7 +903,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnStatusNotificationSOAPResponse));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStatusNotificationSOAPResponse));
                 }
 
                 #endregion
@@ -915,7 +917,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #region / - MeterValues
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
+                                            URLPrefix,
                                             "MeterValues",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "meterValuesRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, MeterValuesXML) => {
@@ -932,7 +934,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnMeterValuesSOAPRequest));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnMeterValuesSOAPRequest));
                 }
 
                 #endregion
@@ -1014,7 +1016,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnMeterValuesSOAPResponse));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnMeterValuesSOAPResponse));
                 }
 
                 #endregion
@@ -1028,7 +1030,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #region / - StopTransaction
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
+                                            URLPrefix,
                                             "StopTransaction",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "startTransactionRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, StopTransactionXML) => {
@@ -1045,7 +1047,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnStopTransactionSOAPRequest));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStopTransactionSOAPRequest));
                 }
 
                 #endregion
@@ -1090,7 +1092,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = StopTransactionResponse.Failed;
+                        response = StopTransactionResponse.Failed(_StopTransactionRequest);
 
                 }
 
@@ -1130,7 +1132,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnStopTransactionSOAPResponse));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStopTransactionSOAPResponse));
                 }
 
                 #endregion
@@ -1145,7 +1147,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #region / - DataTransfer
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
+                                            URLPrefix,
                                             "DataTransfer",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "dataTransferRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, DataTransferXML) => {
@@ -1162,7 +1164,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnDataTransferSOAPRequest));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnDataTransferSOAPRequest));
                 }
 
                 #endregion
@@ -1244,7 +1246,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnDataTransferSOAPResponse));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnDataTransferSOAPResponse));
                 }
 
                 #endregion
@@ -1258,7 +1260,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #region / - DiagnosticsStatusNotification
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
+                                            URLPrefix,
                                             "DiagnosticsStatusNotification",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "diagnosticsStatusNotificationRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, DiagnosticsStatusNotificationXML) => {
@@ -1275,7 +1277,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnDiagnosticsStatusNotificationSOAPRequest));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationSOAPRequest));
                 }
 
                 #endregion
@@ -1355,7 +1357,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnDiagnosticsStatusNotificationSOAPResponse));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationSOAPResponse));
                 }
 
                 #endregion
@@ -1369,7 +1371,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #region / - FirmwareStatusNotification
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
-                                            URIPrefix,
+                                            URLPrefix,
                                             "FirmwareStatusNotification",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "firmwareStatusNotificationRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, FirmwareStatusNotificationXML) => {
@@ -1386,7 +1388,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnFirmwareStatusNotificationSOAPRequest));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationSOAPRequest));
                 }
 
                 #endregion
@@ -1466,7 +1468,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CSServer) + "." + nameof(OnFirmwareStatusNotificationSOAPResponse));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationSOAPResponse));
                 }
 
                 #endregion

@@ -47,7 +47,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The linked OCPP central service SOAP server.
         /// </summary>
-        public CSServer CSServer { get; }
+        public CentralSystemSOAPServer CSServer { get; }
 
         #endregion
 
@@ -61,7 +61,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="CSServer">A OCPP central service SOAP server.</param>
         /// <param name="Context">A context of this API.</param>
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CSServerLogger(CSServer                CSServer,
+        public CSServerLogger(CentralSystemSOAPServer                CSServer,
                               String                  Context         = DefaultContext,
                               LogfileCreatorDelegate  LogFileCreator  = null)
 
@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="LogHTTPError_toHTTPSSE">A delegate to log HTTP errors to a HTTP server sent events source.</param>
         /// 
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CSServerLogger(CSServer                    CSServer,
+        public CSServerLogger(CentralSystemSOAPServer                    CSServer,
                               String                      Context,
 
                               HTTPRequestLoggerDelegate   LogHTTPRequest_toConsole,
