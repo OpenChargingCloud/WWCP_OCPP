@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(SetChargingProfileResponseXML,  OnException = null)
+        #region (static) Parse   (SetChargingProfileResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP set charging profile response.
@@ -124,7 +124,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(SetChargingProfileResponseText, OnException = null)
+        #region (static) Parse   (SetChargingProfileResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP set charging profile response.

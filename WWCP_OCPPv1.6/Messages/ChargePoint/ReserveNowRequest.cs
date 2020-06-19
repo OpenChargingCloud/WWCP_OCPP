@@ -137,7 +137,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(ReserveNowRequestXML,  OnException = null)
+        #region (static) Parse   (ReserveNowRequestXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP reserve now request.
@@ -159,7 +159,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(ReserveNowRequestText, OnException = null)
+        #region (static) Parse   (ReserveNowRequestText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP reserve now request.

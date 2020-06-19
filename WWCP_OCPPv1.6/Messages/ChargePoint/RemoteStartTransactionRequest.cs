@@ -157,7 +157,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(RemoteStartTransactionRequestXML,  OnException = null)
+        #region (static) Parse   (RemoteStartTransactionRequestXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP remote start transaction request.
@@ -179,7 +179,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(RemoteStartTransactionRequestText, OnException = null)
+        #region (static) Parse   (RemoteStartTransactionRequestText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP remote start transaction request.

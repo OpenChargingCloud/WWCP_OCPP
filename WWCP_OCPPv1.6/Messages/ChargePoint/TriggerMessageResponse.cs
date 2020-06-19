@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(TriggerMessageResponseXML,  OnException = null)
+        #region (static) Parse   (TriggerMessageResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP trigger message response.
@@ -124,7 +124,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(TriggerMessageResponseText, OnException = null)
+        #region (static) Parse   (TriggerMessageResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP trigger message response.

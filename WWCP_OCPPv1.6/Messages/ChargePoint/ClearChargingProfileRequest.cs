@@ -122,7 +122,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(ClearChargingProfileRequestXML,  OnException = null)
+        #region (static) Parse   (ClearChargingProfileRequestXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP clear charging profile request.
@@ -144,7 +144,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(ClearChargingProfileRequestText, OnException = null)
+        #region (static) Parse   (ClearChargingProfileRequestText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP clear charging profile request.

@@ -103,7 +103,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(RemoteStopTransactionResponseXML,  OnException = null)
+        #region (static) Parse   (RemoteStopTransactionResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP remote stop transaction response.
@@ -125,7 +125,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(RemoteStopTransactionResponseText, OnException = null)
+        #region (static) Parse   (RemoteStopTransactionResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP remote stop transaction response.

@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(ClearCacheResponseXML,  OnException = null)
+        #region (static) Parse   (ClearCacheResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP clear cache response.
@@ -124,7 +124,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(ClearCacheResponseText, OnException = null)
+        #region (static) Parse   (ClearCacheResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP clear cache response.

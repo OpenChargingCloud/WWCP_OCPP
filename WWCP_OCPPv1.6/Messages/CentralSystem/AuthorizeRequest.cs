@@ -100,7 +100,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(AuthorizeRequestXML,  OnException = null)
+        #region (static) Parse   (AuthorizeRequestXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an authorize request.
@@ -124,7 +124,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(AuthorizeRequestText, OnException = null)
+        #region (static) Parse   (AuthorizeRequestText, OnException = null)
 
         /// <summary>
         /// Parse the given JSON representation of an authorize request.
@@ -148,7 +148,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(AuthorizeRequestText, OnException = null)
+        #region (static) Parse   (AuthorizeRequestText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a authorize request.

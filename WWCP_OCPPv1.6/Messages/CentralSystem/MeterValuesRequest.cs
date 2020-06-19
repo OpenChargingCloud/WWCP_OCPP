@@ -135,7 +135,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(MeterValuesRequestXML,  OnException = null)
+        #region (static) Parse   (MeterValuesRequestXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP meter values request.
@@ -157,7 +157,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(MeterValuesRequestText, OnException = null)
+        #region (static) Parse   (MeterValuesRequestText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP meter values request.

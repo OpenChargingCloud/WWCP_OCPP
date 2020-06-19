@@ -168,7 +168,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(GetCompositeScheduleResponseXML,  OnException = null)
+        #region (static) Parse   (GetCompositeScheduleResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP get composite schedule response.
@@ -190,7 +190,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(GetCompositeScheduleResponseText, OnException = null)
+        #region (static) Parse   (GetCompositeScheduleResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP get composite schedule response.

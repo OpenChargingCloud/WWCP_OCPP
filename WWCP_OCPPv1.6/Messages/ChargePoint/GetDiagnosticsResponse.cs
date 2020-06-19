@@ -104,7 +104,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(GetDiagnosticsResponseXML,  OnException = null)
+        #region (static) Parse   (GetDiagnosticsResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP get diagnostics response.
@@ -126,7 +126,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(GetDiagnosticsResponseText, OnException = null)
+        #region (static) Parse   (GetDiagnosticsResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP get diagnostics response.

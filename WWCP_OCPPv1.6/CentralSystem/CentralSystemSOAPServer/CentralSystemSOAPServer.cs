@@ -863,7 +863,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = StatusNotificationResponse.Failed;
+                        response = StatusNotificationResponse.Failed(_StatusNotificationRequest);
 
                 }
 

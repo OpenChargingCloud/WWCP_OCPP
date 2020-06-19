@@ -89,7 +89,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse(ChargingSchedulePeriodXML,  OnException = null)
+        #region (static) Parse   (ChargingSchedulePeriodXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP charging schedule period.
@@ -111,7 +111,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse(ChargingSchedulePeriodText, OnException = null)
+        #region (static) Parse   (ChargingSchedulePeriodText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP charging schedule period.

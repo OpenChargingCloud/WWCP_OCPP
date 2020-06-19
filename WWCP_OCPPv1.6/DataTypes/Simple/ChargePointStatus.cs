@@ -15,8 +15,113 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extention methods for the charge point status.
+    /// </summary>
+    public static class ChargePointStatusExtentions
+    {
+
+        #region AsChargePointStatus(Text)
+
+        public static ChargePointStatus Parse(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Available":
+                    return ChargePointStatus.Available;
+
+                case "Preparing":
+                    return ChargePointStatus.Preparing;
+
+                case "Charging":
+                    return ChargePointStatus.Charging;
+
+                case "SuspendedEV":
+                    return ChargePointStatus.SuspendedEV;
+
+                case "SuspendedEVSE":
+                    return ChargePointStatus.SuspendedEVSE;
+
+                case "Finishing":
+                    return ChargePointStatus.Finishing;
+
+                case "Reserved":
+                    return ChargePointStatus.Reserved;
+
+                case "Faulted":
+                    return ChargePointStatus.Faulted;
+
+                case "Unavailable":
+                    return ChargePointStatus.Unavailable;
+
+
+                default:
+                    return ChargePointStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this ChargePointStatus)
+
+        public static String AsText(this ChargePointStatus ChargePointStatus)
+        {
+
+            switch (ChargePointStatus)
+            {
+
+                case ChargePointStatus.Available:
+                    return "Available";
+
+                case ChargePointStatus.Preparing:
+                    return "Preparing";
+
+                case ChargePointStatus.Charging:
+                    return "Charging";
+
+                case ChargePointStatus.SuspendedEV:
+                    return "SuspendedEV";
+
+                case ChargePointStatus.SuspendedEVSE:
+                    return "SuspendedEVSE";
+
+                case ChargePointStatus.Finishing:
+                    return "Finishing";
+
+                case ChargePointStatus.Reserved:
+                    return "Reserved";
+
+                case ChargePointStatus.Faulted:
+                    return "Faulted";
+
+                case ChargePointStatus.Unavailable:
+                    return "Unavailable";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// The status reported in StatusNotification request. A status can be

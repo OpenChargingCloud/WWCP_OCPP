@@ -98,7 +98,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(ChangeConfigurationRequestXML,  OnException = null)
+        #region (static) Parse   (ChangeConfigurationRequestXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP change configuration request.
@@ -120,7 +120,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(ChangeConfigurationRequestText, OnException = null)
+        #region (static) Parse   (ChangeConfigurationRequestText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP change configuration request.

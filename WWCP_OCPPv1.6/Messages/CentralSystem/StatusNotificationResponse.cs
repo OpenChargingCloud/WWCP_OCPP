@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -28,41 +31,42 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP status notification response.
+    /// A status notification response.
     /// </summary>
-    public class StatusNotificationResponse : AResponse<StatusNotificationResponse>
+    public class StatusNotificationResponse : AResponse<CP.StatusNotificationRequest,
+                                                           StatusNotificationResponse>
     {
-
-        #region Statics
-
-        /// <summary>
-        /// The start transaction failed.
-        /// </summary>
-        public static StatusNotificationResponse Failed
-            => new StatusNotificationResponse(Result.Server());
-
-        #endregion
 
         #region Constructor(s)
 
-        #region StatusNotificationResponse()
+        #region StatusNotificationResponse(Request)
 
         /// <summary>
-        /// Create a new OCPP status notification response.
+        /// Create a new status notification response.
         /// </summary>
-        public StatusNotificationResponse()
-            : base(Result.OK())
+        /// <param name="Request">The authorize request leading to this response.</param>
+        public StatusNotificationResponse(CP.StatusNotificationRequest  Request)
+
+            : base(Request,
+                   Result.OK())
+
         { }
 
         #endregion
 
-        #region StatusNotificationResponse(Result)
+        #region StatusNotificationResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP status notification response.
+        /// Create a new status notification response.
         /// </summary>
-        public StatusNotificationResponse(Result Result)
-            : base(Result)
+        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public StatusNotificationResponse(CP.StatusNotificationRequest  Request,
+                                          Result                        Result)
+
+            : base(Request,
+                   Result)
+
         { }
 
         #endregion
@@ -80,23 +84,37 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:StatusNotificationResponse",
+        //     "title":   "StatusNotificationResponse",
+        //     "type":    "object",
+        //     "properties": {},
+        //     "additionalProperties": false
+        // }
+
         #endregion
 
-        #region (static) Parse(StatusNotificationResponseXML,  OnException = null)
+        #region (static) Parse   (StatusNotificationResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP status notification response.
+        /// Parse the given XML representation of a status notification response.
         /// </summary>
+        /// <param name="Request">The status notification request leading to this response.</param>
         /// <param name="StatusNotificationResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StatusNotificationResponse Parse(XElement             StatusNotificationResponseXML,
-                                                       OnExceptionDelegate  OnException = null)
+        public static StatusNotificationResponse Parse(CP.StatusNotificationRequest  Request,
+                                                       XElement                      StatusNotificationResponseXML,
+                                                       OnExceptionDelegate           OnException = null)
         {
 
-            StatusNotificationResponse _StatusNotificationResponse;
-
-            if (TryParse(StatusNotificationResponseXML, out _StatusNotificationResponse, OnException))
-                return _StatusNotificationResponse;
+            if (TryParse(Request,
+                         StatusNotificationResponseXML,
+                         out StatusNotificationResponse statusNotificationResponse,
+                         OnException))
+            {
+                return statusNotificationResponse;
+            }
 
             return null;
 
@@ -104,21 +122,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(StatusNotificationResponseText, OnException = null)
+        #region (static) Parse   (StatusNotificationResponseJSON, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP status notification response.
+        /// Parse the given JSON representation of a status notification response.
         /// </summary>
-        /// <param name="StatusNotificationResponseText">The text to be parsed.</param>
+        /// <param name="Request">The status notification request leading to this response.</param>
+        /// <param name="StatusNotificationResponseJSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StatusNotificationResponse Parse(String               StatusNotificationResponseText,
-                                                       OnExceptionDelegate  OnException = null)
+        public static StatusNotificationResponse Parse(CP.StatusNotificationRequest  Request,
+                                                       JObject                       StatusNotificationResponseJSON,
+                                                       OnExceptionDelegate           OnException = null)
         {
 
-            StatusNotificationResponse _StatusNotificationResponse;
+            if (TryParse(Request,
+                         StatusNotificationResponseJSON,
+                         out StatusNotificationResponse statusNotificationResponse,
+                         OnException))
+            {
+                return statusNotificationResponse;
+            }
 
-            if (TryParse(StatusNotificationResponseText, out _StatusNotificationResponse, OnException))
-                return _StatusNotificationResponse;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (StatusNotificationResponseText, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a status notification response.
+        /// </summary>
+        /// <param name="Request">The status notification request leading to this response.</param>
+        /// <param name="StatusNotificationResponseText">The text to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static StatusNotificationResponse Parse(CP.StatusNotificationRequest  Request,
+                                                       String                        StatusNotificationResponseText,
+                                                       OnExceptionDelegate           OnException = null)
+        {
+
+            if (TryParse(Request,
+                         StatusNotificationResponseText,
+                         out StatusNotificationResponse statusNotificationResponse,
+                         OnException))
+            {
+                return statusNotificationResponse;
+            }
 
             return null;
 
@@ -129,12 +179,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(StatusNotificationResponseXML,  out StatusNotificationResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP status notification response.
+        /// Try to parse the given XML representation of a status notification response.
         /// </summary>
+        /// <param name="Request">The status notification request leading to this response.</param>
         /// <param name="StatusNotificationResponseXML">The XML to be parsed.</param>
         /// <param name="StatusNotificationResponse">The parsed status notification response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                        StatusNotificationResponseXML,
+        public static Boolean TryParse(CP.StatusNotificationRequest    Request,
+                                       XElement                        StatusNotificationResponseXML,
                                        out StatusNotificationResponse  StatusNotificationResponse,
                                        OnExceptionDelegate             OnException  = null)
         {
@@ -142,7 +194,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                StatusNotificationResponse = new StatusNotificationResponse();
+                StatusNotificationResponse = new StatusNotificationResponse(Request);
 
                 return true;
 
@@ -161,15 +213,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(StatusNotificationResponseText, out StatusNotificationResponse, OnException = null)
+        #region (static) TryParse(StatusNotificationResponseJSON, out StatusNotificationResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP status notification response.
+        /// Try to parse the given JSON representation of a status notification response.
         /// </summary>
-        /// <param name="StatusNotificationResponseText">The text to be parsed.</param>
+        /// <param name="Request">The status notification request leading to this response.</param>
+        /// <param name="StatusNotificationResponseJSON">The JSON to be parsed.</param>
         /// <param name="StatusNotificationResponse">The parsed status notification response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                          StatusNotificationResponseText,
+        public static Boolean TryParse(CP.StatusNotificationRequest    Request,
+                                       JObject                         StatusNotificationResponseJSON,
                                        out StatusNotificationResponse  StatusNotificationResponse,
                                        OnExceptionDelegate             OnException  = null)
         {
@@ -177,11 +231,66 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(StatusNotificationResponseText).Root,
-                             out StatusNotificationResponse,
-                             OnException))
+                StatusNotificationResponse = new StatusNotificationResponse(Request);
 
-                    return true;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, StatusNotificationResponseJSON, e);
+
+                StatusNotificationResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(StatusNotificationResponseText, out StatusNotificationResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a status notification response.
+        /// </summary>
+        /// <param name="Request">The status notification request leading to this response.</param>
+        /// <param name="StatusNotificationResponseText">The text to be parsed.</param>
+        /// <param name="StatusNotificationResponse">The parsed status notification response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CP.StatusNotificationRequest    Request,
+                                       String                          StatusNotificationResponseText,
+                                       out StatusNotificationResponse  StatusNotificationResponse,
+                                       OnExceptionDelegate             OnException  = null)
+        {
+
+            try
+            {
+
+                StatusNotificationResponseText = StatusNotificationResponseText?.Trim();
+
+                if (StatusNotificationResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (StatusNotificationResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(StatusNotificationResponseText),
+                                 out StatusNotificationResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(StatusNotificationResponseText).Root,
+                                 out StatusNotificationResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -207,6 +316,38 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomStatusNotificationResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomStatusNotificationResponseSerializer">A delegate to serialize custom status notification responses.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StatusNotificationResponse> CustomStatusNotificationResponseSerializer = null)
+        {
+
+            var JSON = JSONObject.Create();
+
+            return CustomStatusNotificationResponseSerializer != null
+                       ? CustomStatusNotificationResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The start transaction failed.
+        /// </summary>
+        public static StatusNotificationResponse Failed(CP.StatusNotificationRequest Request)
+
+            => new StatusNotificationResponse(Request,
+                                              Result.Server());
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -226,7 +367,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) StatusNotificationResponse1 == null) || ((Object) StatusNotificationResponse2 == null))
+            if ((StatusNotificationResponse1 is null) || (StatusNotificationResponse2 is null))
                 return false;
 
             return StatusNotificationResponse1.Equals(StatusNotificationResponse2);
@@ -266,12 +407,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object == null)
                 return false;
 
-            // Check if the given object is a status notification response.
-            var StatusNotificationResponse = Object as StatusNotificationResponse;
-            if ((Object) StatusNotificationResponse == null)
+            if (!(Object is StatusNotificationResponse StatusNotificationResponse))
                 return false;
 
-            return this.Equals(StatusNotificationResponse);
+            return Equals(StatusNotificationResponse);
 
         }
 
@@ -287,7 +426,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(StatusNotificationResponse StatusNotificationResponse)
         {
 
-            if ((Object) StatusNotificationResponse == null)
+            if (StatusNotificationResponse is null)
                 return false;
 
             return Object.ReferenceEquals(this, StatusNotificationResponse);

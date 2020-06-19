@@ -82,7 +82,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(CancelReservationRequestXML,  OnException = null)
+        #region (static) Parse   (CancelReservationRequestXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP cancel reservation request.
@@ -104,7 +104,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(CancelReservationRequestText, OnException = null)
+        #region (static) Parse   (CancelReservationRequestText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP cancel reservation request.

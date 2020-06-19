@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP status notification request.
+    /// A status notification request.
     /// </summary>
     public class StatusNotificationRequest : ARequest<StatusNotificationRequest>
     {
@@ -78,7 +79,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP StartTransaction XML/SOAP request.
+        /// Create a status notification request.
         /// </summary>
         /// <param name="ConnectorId">The connector identification at the charge point.</param>
         /// <param name="Status">The current status of the charge point.</param>
@@ -90,20 +91,20 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public StatusNotificationRequest(Connector_Id           ConnectorId,
                                          ChargePointStatus      Status,
                                          ChargePointErrorCodes  ErrorCode,
-                                         String                 Info             = null,
-                                         DateTime?              StatusTimestamp  = null,
-                                         String                 VendorId         = null,
-                                         String                 VendorErrorCode  = null)
+                                         String                 Info              = null,
+                                         DateTime?              StatusTimestamp   = null,
+                                         String                 VendorId          = null,
+                                         String                 VendorErrorCode   = null)
         {
 
             this.ConnectorId      = ConnectorId;
             this.Status           = Status;
             this.ErrorCode        = ErrorCode;
 
-            this.Info             = Info.           Trim().IsNotNullOrEmpty() ? Info.           Trim() : "";
-            this.StatusTimestamp  = StatusTimestamp ?? new DateTime?();
-            this.VendorId         = VendorId.       Trim().IsNotNullOrEmpty() ? VendorId.       Trim() : "";
-            this.VendorErrorCode  = VendorErrorCode.Trim().IsNotNullOrEmpty() ? VendorErrorCode.Trim() : "";
+            this.Info             = Info?.           Trim(); // max  50
+            this.StatusTimestamp  = StatusTimestamp;
+            this.VendorId         = VendorId?.       Trim(); // max 255
+            this.VendorErrorCode  = VendorErrorCode?.Trim(); // max  50
 
         }
 
@@ -144,12 +145,83 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema":  "http://json-schema.org/draft-04/schema#",
+        //     "id":       "urn:OCPP:1.6:2019:12:StatusNotificationRequest",
+        //     "title":    "StatusNotificationRequest",
+        //     "type":     "object",
+        //     "properties": {
+        //         "connectorId": {
+        //             "type": "integer"
+        //         },
+        //         "errorCode": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "ConnectorLockFailure",
+        //                 "EVCommunicationError",
+        //                 "GroundFailure",
+        //                 "HighTemperature",
+        //                 "InternalError",
+        //                 "LocalListConflict",
+        //                 "NoError",
+        //                 "OtherError",
+        //                 "OverCurrentFailure",
+        //                 "PowerMeterFailure",
+        //                 "PowerSwitchFailure",
+        //                 "ReaderFailure",
+        //                 "ResetFailure",
+        //                 "UnderVoltage",
+        //                 "OverVoltage",
+        //                 "WeakSignal"
+        //             ]
+        //         },
+        //         "info": {
+        //             "type": "string",
+        //             "maxLength": 50
+        //         },
+        //         "status": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Available",
+        //                 "Preparing",
+        //                 "Charging",
+        //                 "SuspendedEVSE",
+        //                 "SuspendedEV",
+        //                 "Finishing",
+        //                 "Reserved",
+        //                 "Unavailable",
+        //                 "Faulted"
+        //             ]
+        //         },
+        //         "timestamp": {
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "vendorId": {
+        //             "type": "string",
+        //             "maxLength": 255
+        //         },
+        //         "vendorErrorCode": {
+        //             "type": "string",
+        //             "maxLength": 50
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "connectorId",
+        //         "errorCode",
+        //         "status"
+        //     ]
+        // }
+
         #endregion
 
-        #region (static) Parse(StatusNotificationRequestXML,  OnException = null)
+        #region (static) Parse   (StatusNotificationRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP status notification request.
+        /// Parse the given XML representation of a status notification request.
         /// </summary>
         /// <param name="StatusNotificationRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -157,10 +229,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                       OnExceptionDelegate  OnException = null)
         {
 
-            StatusNotificationRequest _StatusNotificationRequest;
-
-            if (TryParse(StatusNotificationRequestXML, out _StatusNotificationRequest, OnException))
-                return _StatusNotificationRequest;
+            if (TryParse(StatusNotificationRequestXML,
+                         out StatusNotificationRequest statusNotificationRequest,
+                         OnException))
+            {
+                return statusNotificationRequest;
+            }
 
             return null;
 
@@ -168,10 +242,34 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(StatusNotificationRequestText, OnException = null)
+        #region (static) Parse   (StatusNotificationRequestJSON, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP status notification request.
+        /// Parse the given JSON representation of a status notification request.
+        /// </summary>
+        /// <param name="StatusNotificationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static StatusNotificationRequest Parse(JObject              StatusNotificationRequestJSON,
+                                                      OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(StatusNotificationRequestJSON,
+                         out StatusNotificationRequest statusNotificationRequest,
+                         OnException))
+            {
+                return statusNotificationRequest;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (StatusNotificationRequestText, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a status notification request.
         /// </summary>
         /// <param name="StatusNotificationRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -179,10 +277,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                       OnExceptionDelegate  OnException = null)
         {
 
-            StatusNotificationRequest _StatusNotificationRequest;
-
-            if (TryParse(StatusNotificationRequestText, out _StatusNotificationRequest, OnException))
-                return _StatusNotificationRequest;
+            if (TryParse(StatusNotificationRequestText,
+                         out StatusNotificationRequest statusNotificationRequest,
+                         OnException))
+            {
+                return statusNotificationRequest;
+            }
 
             return null;
 
@@ -193,7 +293,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(StatusNotificationRequestXML,  out StatusNotificationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP status notification request.
+        /// Try to parse the given XML representation of a status notification request.
         /// </summary>
         /// <param name="StatusNotificationRequestXML">The XML to be parsed.</param>
         /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
@@ -212,10 +312,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                                                    Connector_Id.Parse),
 
                                                 StatusNotificationRequestXML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CS + "status",
-                                                                                                   XML_IO.AsChargePointStatus),
+                                                                                                   ChargePointStatusExtentions.Parse),
 
                                                 StatusNotificationRequestXML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CS + "errorCode",
-                                                                                                   XML_IO.AsChargePointErrorCodes),
+                                                                                                   ChargePointErrorCodeExtentions.Parse),
 
                                                 StatusNotificationRequestXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "info"),
 
@@ -245,10 +345,139 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParse(StatusNotificationRequestJSON, out StatusNotificationRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a status notification request.
+        /// </summary>
+        /// <param name="StatusNotificationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                        StatusNotificationRequestJSON,
+                                       out StatusNotificationRequest  StatusNotificationRequest,
+                                       OnExceptionDelegate            OnException  = null)
+        {
+
+            try
+            {
+
+                StatusNotificationRequest = null;
+
+                #region ConnectorId
+
+                if (!StatusNotificationRequestJSON.ParseMandatory("connectorId",
+                                                                  "connector identification",
+                                                                  Connector_Id.TryParse,
+                                                                  out Connector_Id  ConnectorId,
+                                                                  out String        ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Status
+
+                if (!StatusNotificationRequestJSON.ParseMandatory("status",
+                                                                  "status",
+                                                                  ChargePointStatusExtentions.Parse,
+                                                                  out ChargePointStatus  Status,
+                                                                  out                    ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region ErrorCode
+
+                if (!StatusNotificationRequestJSON.ParseMandatory("errorCode",
+                                                                  "error code",
+                                                                  ChargePointErrorCodeExtentions.Parse,
+                                                                  out ChargePointErrorCodes  ErrorCode,
+                                                                  out                        ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Info
+
+                if (!StatusNotificationRequestJSON.ParseOptional("info",
+                                                                 out String  Info,
+                                                                 out         ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Timestamp
+
+                if (!StatusNotificationRequestJSON.ParseMandatory("timestamp",
+                                                                  "timestamp",
+                                                                  out DateTime  Timestamp,
+                                                                  out           ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region VerndorId
+
+                if (!StatusNotificationRequestJSON.ParseOptional("verndorId",
+                                                                 out String  VerndorId,
+                                                                 out         ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region VendorErrorCode
+
+                if (!StatusNotificationRequestJSON.ParseOptional("vendorErrorCode",
+                                                                 out String  VendorErrorCode,
+                                                                 out         ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                StatusNotificationRequest = new StatusNotificationRequest(ConnectorId,
+                                                                          Status,
+                                                                          ErrorCode,
+
+                                                                          Info,
+                                                                          Timestamp,
+                                                                          VerndorId,
+                                                                          VendorErrorCode);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, StatusNotificationRequestJSON, e);
+
+                StatusNotificationRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(StatusNotificationRequestText, out StatusNotificationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP status notification request.
+        /// Try to parse the given text representation of a status notification request.
         /// </summary>
         /// <param name="StatusNotificationRequestText">The text to be parsed.</param>
         /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
@@ -261,7 +490,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(StatusNotificationRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
+                if (TryParse(XDocument.Parse(StatusNotificationRequestText).Root,
                              out StatusNotificationRequest,
                              OnException))
 
@@ -290,8 +519,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             => new XElement(OCPPNS.OCPPv1_6_CS + "statusNotificationRequest",
 
                    new XElement(OCPPNS.OCPPv1_6_CS + "connectorId",            ConnectorId.ToString()),
-                   new XElement(OCPPNS.OCPPv1_6_CS + "status",                 XML_IO.AsText(Status)),
-                   new XElement(OCPPNS.OCPPv1_6_CS + "errorCode",              XML_IO.AsText(ErrorCode)),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "status",                 Status.     AsText()),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "errorCode",              ErrorCode.  AsText()),
 
                    Info.IsNotNullOrEmpty()
                        ? new XElement(OCPPNS.OCPPv1_6_CS + "info",             Info)
@@ -310,6 +539,45 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                        : null
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomStatusNotificationRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomStatusNotificationRequestSerializer">A delegate to serialize custom StatusNotification requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StatusNotificationRequest> CustomStatusNotificationRequestSerializer = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("connectorId",             ConnectorId.ToString()),
+                           new JProperty("status",                  Status.     AsText()),
+                           new JProperty("errorCode",               ErrorCode.  AsText()),
+
+                           Info.IsNotNullOrEmpty()
+                               ? new JProperty("info",              Info)
+                               : null,
+
+                           StatusTimestamp.HasValue
+                               ? new JProperty("timestamp",         StatusTimestamp.Value.ToIso8601())
+                               : null,
+
+                           VendorId.IsNotNullOrEmpty()
+                               ? new JProperty("vendorId",          VendorId)
+                               : null,
+
+                           VendorErrorCode.IsNotNullOrEmpty()
+                               ? new JProperty("vendorErrorCode",   VendorErrorCode)
+                               : null);
+
+            return CustomStatusNotificationRequestSerializer != null
+                       ? CustomStatusNotificationRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 
@@ -332,7 +600,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) StatusNotificationRequest1 == null) || ((Object) StatusNotificationRequest2 == null))
+            if ((StatusNotificationRequest1 is null) || (StatusNotificationRequest2 is null))
                 return false;
 
             return StatusNotificationRequest1.Equals(StatusNotificationRequest2);
@@ -372,12 +640,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object == null)
                 return false;
 
-            // Check if the given object is a status notification request.
-            var StatusNotificationRequest = Object as StatusNotificationRequest;
-            if ((Object) StatusNotificationRequest == null)
+            if (!(Object is StatusNotificationRequest StatusNotificationRequest))
                 return false;
 
-            return this.Equals(StatusNotificationRequest);
+            return Equals(StatusNotificationRequest);
 
         }
 
@@ -393,7 +659,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(StatusNotificationRequest StatusNotificationRequest)
         {
 
-            if ((Object) StatusNotificationRequest == null)
+            if (StatusNotificationRequest is null)
                 return false;
 
             return ConnectorId.    Equals(StatusNotificationRequest.ConnectorId) &&
@@ -425,16 +691,16 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             unchecked
             {
 
-                return ConnectorId.GetHashCode() * 37 ^
-                       Status.     GetHashCode() * 31 ^
-                       ErrorCode.  GetHashCode() * 29 ^
-                       Info.       GetHashCode() * 23 ^
+                return ConnectorId.GetHashCode() * 17 ^
+                       Status.     GetHashCode() * 13 ^
+                       ErrorCode.  GetHashCode() * 11 ^
+                       Info.       GetHashCode() *  7 ^
 
                        (StatusTimestamp.HasValue
                             ? StatusTimestamp.GetHashCode()
                             : 0) * 19 ^
 
-                       ErrorCode.  GetHashCode() * 11 ^
+                       ErrorCode.  GetHashCode() *  5 ^
                        Info.       GetHashCode();
 
             }

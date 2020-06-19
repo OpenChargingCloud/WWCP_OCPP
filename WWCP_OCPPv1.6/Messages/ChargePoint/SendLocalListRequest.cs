@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(SendLocalListRequestXML,  OnException = null)
+        #region (static) Parse   (SendLocalListRequestXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP send local list request.
@@ -151,7 +151,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(SendLocalListRequestText, OnException = null)
+        #region (static) Parse   (SendLocalListRequestText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP send local list request.

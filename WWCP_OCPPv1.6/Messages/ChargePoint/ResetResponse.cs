@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(ResetResponseXML,  OnException = null)
+        #region (static) Parse   (ResetResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP reset response.
@@ -124,7 +124,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(ResetResponseText, OnException = null)
+        #region (static) Parse   (ResetResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP reset response.

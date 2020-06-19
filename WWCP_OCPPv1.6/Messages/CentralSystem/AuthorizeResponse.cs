@@ -437,7 +437,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// The authentication failed.
         /// </summary>
         public static AuthorizeResponse Failed(CP.AuthorizeRequest Request)
-            => new AuthorizeResponse(Request, new IdTagInfo(AuthorizationStatus.Error));
+
+            => new AuthorizeResponse(Request,
+                                     new IdTagInfo(
+                                         AuthorizationStatus.Error
+                                     ));
 
         #endregion
 

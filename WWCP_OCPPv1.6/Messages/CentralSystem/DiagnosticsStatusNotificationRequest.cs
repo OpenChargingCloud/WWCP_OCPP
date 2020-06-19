@@ -82,7 +82,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(DiagnosticsStatusNotificationRequestXML,  OnException = null)
+        #region (static) Parse   (DiagnosticsStatusNotificationRequestXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP diagnostics status notification request.
@@ -104,7 +104,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(DiagnosticsStatusNotificationRequestText, OnException = null)
+        #region (static) Parse   (DiagnosticsStatusNotificationRequestText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP diagnostics status notification request.

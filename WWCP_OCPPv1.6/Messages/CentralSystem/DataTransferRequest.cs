@@ -111,7 +111,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(DataTransferRequestXML,  OnException = null)
+        #region (static) Parse   (DataTransferRequestXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP data transfer request.
@@ -133,7 +133,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(DataTransferRequestText, OnException = null)
+        #region (static) Parse   (DataTransferRequestText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP data transfer request.

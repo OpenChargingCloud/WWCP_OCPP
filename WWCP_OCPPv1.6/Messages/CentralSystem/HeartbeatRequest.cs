@@ -87,7 +87,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (HeartbeatRequestJSON,  OnException = null)
+        #region (static) Parse   (HeartbeatRequestJSON, OnException = null)
 
         /// <summary>
         /// Parse the given JSON representation of a heartbeat request.
@@ -267,19 +267,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region ToJSON(CustomHeartbeatRequestRequestSerializer = null)
+        #region ToJSON(CustomHeartbeatRequestSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomHeartbeatRequestRequestSerializer">A delegate to serialize custom heartbeat requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatRequest> CustomHeartbeatRequestRequestSerializer = null)
+        /// <param name="CustomHeartbeatRequestSerializer">A delegate to serialize custom heartbeat requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatRequest> CustomHeartbeatRequestSerializer = null)
         {
 
             var JSON = JSONObject.Create();
 
-            return CustomHeartbeatRequestRequestSerializer != null
-                       ? CustomHeartbeatRequestRequestSerializer(this, JSON)
+            return CustomHeartbeatRequestSerializer != null
+                       ? CustomHeartbeatRequestSerializer(this, JSON)
                        : JSON;
 
         }

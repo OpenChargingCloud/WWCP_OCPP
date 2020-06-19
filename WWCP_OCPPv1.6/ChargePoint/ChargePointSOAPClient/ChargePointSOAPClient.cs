@@ -1390,6 +1390,15 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
 
+            var Request = new StatusNotificationRequest(ConnectorId,
+                                                        Status,
+                                                        ErrorCode,
+                                                        Info,
+                                                        StatusTimestamp,
+                                                        VendorId,
+                                                        VendorErrorCode);
+
+
             using (var _OCPPClient = new SOAPClient(Hostname,
                                                     URLPrefix,
                                                     VirtualHostname,
@@ -1406,13 +1415,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    new StatusNotificationRequest(ConnectorId,
-                                                                                                  Status,
-                                                                                                  ErrorCode,
-                                                                                                  Info,
-                                                                                                  StatusTimestamp,
-                                                                                                  VendorId,
-                                                                                                  VendorErrorCode).ToXML()),
+                                                                    Request.ToXML()),
                                                  "StatusNotification",
                                                  RequestLogDelegate:   OnStatusNotificationSOAPRequest,
                                                  ResponseLogDelegate:  OnStatusNotificationSOAPResponse,
@@ -1422,7 +1425,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(StatusNotificationResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                                                      StatusNotificationResponse.Parse),
 
                                                  #endregion
 
@@ -1434,6 +1438,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StatusNotificationResponse>(httpresponse,
                                                                                                          new StatusNotificationResponse(
+                                                                                                             Request,
                                                                                                              Result.Format(
                                                                                                                  "Invalid SOAP => " +
                                                                                                                  httpresponse.HTTPBody.ToUTF8String()
@@ -1453,6 +1458,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StatusNotificationResponse>(httpresponse,
                                                                                                          new StatusNotificationResponse(
+                                                                                                             Request,
                                                                                                              Result.Server(
                                                                                                                   httpresponse.HTTPStatusCode.ToString() +
                                                                                                                   " => " +
@@ -1472,6 +1478,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<StatusNotificationResponse>.ExceptionThrown(new StatusNotificationResponse(
+                                                                                                                         Request,
                                                                                                                          Result.Format(exception.Message +
                                                                                                                                        " => " +
                                                                                                                                        exception.StackTrace)),
@@ -1486,7 +1493,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<StatusNotificationResponse>.OK(new StatusNotificationResponse(Result.OK("Nothing to upload!")));
+                result = HTTPResponse<StatusNotificationResponse>.OK(new StatusNotificationResponse(Request,
+                                                                                                    Result.OK("Nothing to upload!")));
 
 
             #region Send OnStatusNotificationResponse event

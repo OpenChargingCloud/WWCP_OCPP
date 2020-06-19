@@ -94,7 +94,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse(AuthorizationDataXML,  OnException = null)
+        #region (static) Parse   (AuthorizationDataXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP configuration key value pair.
@@ -116,7 +116,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse(AuthorizationDataText, OnException = null)
+        #region (static) Parse   (AuthorizationDataText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP configuration key value pair.

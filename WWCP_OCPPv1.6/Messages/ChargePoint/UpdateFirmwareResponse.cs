@@ -84,7 +84,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(UpdateFirmwareResponseXML,  OnException = null)
+        #region (static) Parse   (UpdateFirmwareResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP update firmware response.
@@ -106,7 +106,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(UpdateFirmwareResponseText, OnException = null)
+        #region (static) Parse   (UpdateFirmwareResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP update firmware response.

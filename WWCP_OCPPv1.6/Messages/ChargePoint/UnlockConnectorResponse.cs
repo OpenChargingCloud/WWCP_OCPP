@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(UnlockConnectorResponseXML,  OnException = null)
+        #region (static) Parse   (UnlockConnectorResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP unlock connector response.
@@ -124,7 +124,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(UnlockConnectorResponseText, OnException = null)
+        #region (static) Parse   (UnlockConnectorResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP unlock connector response.

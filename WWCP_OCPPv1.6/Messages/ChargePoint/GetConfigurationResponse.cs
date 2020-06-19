@@ -131,7 +131,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(GetConfigurationResponseXML,  OnException = null)
+        #region (static) Parse   (GetConfigurationResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP get configuration response.
@@ -153,7 +153,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse(GetConfigurationResponseText, OnException = null)
+        #region (static) Parse   (GetConfigurationResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP get configuration response.

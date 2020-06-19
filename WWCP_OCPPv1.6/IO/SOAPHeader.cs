@@ -172,7 +172,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse(SOAPHeaderXML,  OnException = null)
+        #region (static) Parse   (SOAPHeaderXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP SOAP header.
@@ -194,7 +194,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse(SOAPHeaderText, OnException = null)
+        #region (static) Parse   (SOAPHeaderText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP SOAP header.

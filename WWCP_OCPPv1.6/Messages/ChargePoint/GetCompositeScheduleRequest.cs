@@ -104,7 +104,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(GetCompositeScheduleRequestXML,  OnException = null)
+        #region (static) Parse   (GetCompositeScheduleRequestXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP get composite schedule request.
@@ -126,7 +126,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(GetCompositeScheduleRequestText, OnException = null)
+        #region (static) Parse   (GetCompositeScheduleRequestText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP get composite schedule request.

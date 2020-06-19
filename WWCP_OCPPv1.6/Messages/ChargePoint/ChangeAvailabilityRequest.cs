@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(ChangeAvailabilityRequestXML,  OnException = null)
+        #region (static) Parse   (ChangeAvailabilityRequestXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP change availability request.
@@ -115,7 +115,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse(ChangeAvailabilityRequestText, OnException = null)
+        #region (static) Parse   (ChangeAvailabilityRequestText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP change availability request.

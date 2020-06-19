@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse(ChargingProfileXML,  OnException = null)
+        #region (static) Parse   (ChargingProfileXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an OCPP charging profile.
@@ -211,7 +211,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse(ChargingProfileText, OnException = null)
+        #region (static) Parse   (ChargingProfileText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of an OCPP charging profile.
