@@ -48,7 +48,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region DiagnosticsStatusNotificationResponse()
 
         /// <summary>
-        /// Create a new OCPP diagnostics status notification response.
+        /// Create a new diagnostics status notification response.
         /// </summary>
         public DiagnosticsStatusNotificationResponse()
             : base(Result.OK())
@@ -59,7 +59,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region DiagnosticsStatusNotificationResponse(Result)
 
         /// <summary>
-        /// Create a new OCPP diagnostics status notification response.
+        /// Create a new diagnostics status notification response.
         /// </summary>
         public DiagnosticsStatusNotificationResponse(Result Result)
             : base(Result)

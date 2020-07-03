@@ -134,17 +134,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a start transaction SOAP request was received.
         /// </summary>
-        public event RequestLogHandler    OnStartTransactionSOAPRequest;
+        public event RequestLogHandler           OnStartTransactionSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a start transaction request was sent.
         /// </summary>
-        public event AccessLogHandler     OnStartTransactionSOAPResponse;
+        public event AccessLogHandler            OnStartTransactionSOAPResponse;
 
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        public event OnAuthorizeDelegate  OnStartTransactionRequest;
+        public event OnStartTransactionDelegate  OnStartTransactionRequest;
 
         #endregion
 
@@ -153,17 +153,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a status notification SOAP request was received.
         /// </summary>
-        public event RequestLogHandler    OnStatusNotificationSOAPRequest;
+        public event RequestLogHandler             OnStatusNotificationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a status notification request was sent.
         /// </summary>
-        public event AccessLogHandler     OnStatusNotificationSOAPResponse;
+        public event AccessLogHandler              OnStatusNotificationSOAPResponse;
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
         /// </summary>
-        public event OnAuthorizeDelegate  OnStatusNotificationRequest;
+        public event OnStatusNotificationDelegate  OnStatusNotificationRequest;
 
         #endregion
 
@@ -172,17 +172,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a meter values SOAP request was received.
         /// </summary>
-        public event RequestLogHandler    OnMeterValuesSOAPRequest;
+        public event RequestLogHandler      OnMeterValuesSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a meter values request was sent.
         /// </summary>
-        public event AccessLogHandler     OnMeterValuesSOAPResponse;
+        public event AccessLogHandler       OnMeterValuesSOAPResponse;
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
         /// </summary>
-        public event OnAuthorizeDelegate  OnMeterValuesRequest;
+        public event OnMeterValuesDelegate  OnMeterValuesRequest;
 
         #endregion
 
