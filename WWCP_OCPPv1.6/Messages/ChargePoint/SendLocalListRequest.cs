@@ -195,7 +195,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                                                        UInt64.Parse),
 
                                            SendLocalListRequestXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "updateType",
-                                                                                       XML_IO.AsUpdateType),
+                                                                                       UpdateTypesExtentions.Parse),
 
                                            SendLocalListRequestXML.MapElements        (OCPPNS.OCPPv1_6_CP + "localAuthorizationList",
                                                                                        AuthorizationData.Parse)
@@ -269,7 +269,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                        ? LocalAuthorizationList.Select(item => item.ToXML(OCPPNS.OCPPv1_6_CP + "localAuthorizationList"))
                        : null,
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "updateType",   XML_IO.AsText(UpdateType))
+                   new XElement(OCPPNS.OCPPv1_6_CP + "updateType",  UpdateType.AsText())
 
                );
 

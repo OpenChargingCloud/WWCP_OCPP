@@ -19,8 +19,6 @@
 
 using System;
 using System.Linq;
-using System.Xml.Linq;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 using org.GraphDefined.Vanaheimr.Illias;

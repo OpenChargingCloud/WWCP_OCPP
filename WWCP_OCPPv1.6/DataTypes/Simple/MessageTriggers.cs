@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsMessageTrigger(Text)
 
-        public static MessageTriggers AsMessageTrigger(this String Text)
+        public static MessageTriggers Parse(this String Text)
         {
 
             switch (Text)

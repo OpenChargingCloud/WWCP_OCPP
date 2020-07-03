@@ -27,12 +27,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     /// <summary>
     /// Extentions methods for the reset status.
     /// </summary>
-    public static class CancelResetStatusExtentions
+    public static class ResetStatusExtentions
     {
 
         #region AsResetStatus(Text)
 
-        public static ResetStatus AsResetStatus(this String Text)
+        public static ResetStatus Parse(this String Text)
         {
 
             switch (Text)

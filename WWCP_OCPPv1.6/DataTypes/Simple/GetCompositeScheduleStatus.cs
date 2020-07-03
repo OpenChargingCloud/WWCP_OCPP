@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsGetCompositeScheduleStatus(Text)
 
-        public static GetCompositeScheduleStatus AsGetCompositeScheduleStatus(this String Text)
+        public static GetCompositeScheduleStatus Parse(this String Text)
         {
 
             switch (Text)

@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsClearCacheStatus(Text)
 
-        public static ClearCacheStatus AsClearCacheStatus(this String Text)
+        public static ClearCacheStatus Parse(this String Text)
         {
 
             switch (Text)

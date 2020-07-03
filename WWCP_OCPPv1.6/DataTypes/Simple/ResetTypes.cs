@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsResetType(Text)
 
-        public static ResetTypes AsResetType(this String Text)
+        public static ResetTypes Parse(this String Text)
         {
 
             switch (Text)

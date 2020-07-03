@@ -145,7 +145,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 ResetRequest = new ResetRequest(
 
                                    ResetRequestXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "type",
-                                                                       XML_IO.AsResetType)
+                                                                       ResetTypesExtentions.Parse)
 
                                );
 
@@ -210,7 +210,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "resetRequest",
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "type",  XML_IO.AsText(Type))
+                   new XElement(OCPPNS.OCPPv1_6_CP + "type",  Type.AsText())
 
                );
 

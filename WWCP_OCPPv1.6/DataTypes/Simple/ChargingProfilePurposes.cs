@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsChargingProfilePurpose(Text)
 
-        public static ChargingProfilePurposes AsChargingProfilePurpose(this String Text)
+        public static ChargingProfilePurposes Parse(this String Text)
         {
 
             switch (Text)

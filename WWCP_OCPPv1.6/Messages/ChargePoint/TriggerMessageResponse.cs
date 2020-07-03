@@ -165,7 +165,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 TriggerMessageResponse = new TriggerMessageResponse(
 
                                              TriggerMessageResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                                      XML_IO.AsTriggerMessageStatus)
+                                                                                      TriggerMessageStatusExtentions.Parse)
 
                                          );
 
@@ -230,7 +230,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "triggerMessageResponse",
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  XML_IO.AsText(Status))
+                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
 
                );
 

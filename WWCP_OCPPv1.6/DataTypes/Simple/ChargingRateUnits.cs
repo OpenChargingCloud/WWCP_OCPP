@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsChargingRateUnit(Text)
 
-        public static ChargingRateUnits AsChargingRateUnit(this String Text)
+        public static ChargingRateUnits Parse(this String Text)
         {
 
             switch (Text)

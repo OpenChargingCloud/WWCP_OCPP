@@ -19,8 +19,6 @@
 
 using System;
 using System.Linq;
-using System.Xml.Linq;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -421,7 +419,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = CancelReservationResponse.Failed;
+                        response = CancelReservationResponse.Failed(_CancelReservationRequest);
 
                 }
 

@@ -166,7 +166,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 RemoteStopTransactionResponse = new RemoteStopTransactionResponse(
 
                                                     RemoteStopTransactionResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                                                    XML_IO.AsRemoteStartStopStatus)
+                                                                                                    RemoteStartStopStatusExtentions.Parse)
 
                                                 );
 
@@ -230,7 +230,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public XElement ToXML()
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "remoteStopTransactionResponse",
-                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  XML_IO.AsText(Status))
+                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
                );
 
         #endregion

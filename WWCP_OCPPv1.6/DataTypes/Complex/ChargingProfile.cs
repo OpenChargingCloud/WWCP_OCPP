@@ -258,10 +258,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                                                              UInt32.Parse),
 
                                       ChargingProfileXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "chargingProfilePurpose",
-                                                                             XML_IO.AsChargingProfilePurpose),
+                                                                             ChargingProfilePurposesExtentions.Parse),
 
                                       ChargingProfileXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "chargingProfileKind",
-                                                                             XML_IO.AsChargingProfileKind),
+                                                                             ChargingProfileKindsExtentions.Parse),
 
                                       ChargingProfileXML.MapElementOrFail   (OCPPNS.OCPPv1_6_CP + "chargingSchedule",
                                                                              ChargingSchedule.Parse),
@@ -270,7 +270,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                                                              Transaction_Id.Parse),
 
                                       ChargingProfileXML.MapEnumValuesOrNull(OCPPNS.OCPPv1_6_CP + "recurrencyKind",
-                                                                             XML_IO.AsRecurrencyKind),
+                                                                             RecurrencyKindsExtentions.Parse),
 
                                       ChargingProfileXML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "validFrom",
                                                                              DateTime.Parse),
@@ -349,8 +349,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                        : null,
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "stackLevel",               StackLevel),
-                   new XElement(OCPPNS.OCPPv1_6_CP + "chargingProfilePurpose",   XML_IO.AsText(ChargingProfilePurpose)),
-                   new XElement(OCPPNS.OCPPv1_6_CP + "chargingProfileKind",      XML_IO.AsText(ChargingProfileKind)),
+                   new XElement(OCPPNS.OCPPv1_6_CP + "chargingProfilePurpose",   ChargingProfilePurpose.AsText()),
+                   new XElement(OCPPNS.OCPPv1_6_CP + "chargingProfileKind",      ChargingProfileKind.   AsText()),
 
                    ValidFrom.HasValue
                        ? new XElement(OCPPNS.OCPPv1_6_CP + "validFrom",          ValidFrom.Value.ToIso8601())
@@ -361,7 +361,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                        : null,
 
                    RecurrencyKind.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "recurrencyKind",     XML_IO.AsText(RecurrencyKind.Value))
+                       ? new XElement(OCPPNS.OCPPv1_6_CP + "recurrencyKind",     RecurrencyKind.Value.AsText())
                        : null,
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "chargingSchedule",         ChargingSchedule.ToXML())

@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsUnlockStatus(Text)
 
-        public static UnlockStatus AsUnlockStatus(this String Text)
+        public static UnlockStatus Parse(this String Text)
         {
 
             switch (Text)

@@ -182,7 +182,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 DataTransferResponse = new DataTransferResponse(
 
                                            DataTransferResponseXML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CP + "status",
-                                                                                         XML_IO.AsDataTransferStatus),
+                                                                                         DataTransferStatusExtentions.Parse),
 
                                            DataTransferResponseXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "data")
 
@@ -249,7 +249,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "dataTransferResponse",
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "status",      XML_IO.AsText(Status)),
+                   new XElement(OCPPNS.OCPPv1_6_CP + "status",      Status.AsText()),
 
                    Data.IsNullOrEmpty()
                        ? new XElement(OCPPNS.OCPPv1_6_CP + "data",  Data)

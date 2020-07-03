@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsAvailabilityStatus(Text)
 
-        public static AvailabilityStatus AsAvailabilityStatus(this String Text)
+        public static AvailabilityStatus Parse(this String Text)
         {
 
             switch (Text)

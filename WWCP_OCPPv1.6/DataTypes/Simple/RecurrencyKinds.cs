@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsRecurrencyKind(Text)
 
-        public static RecurrencyKinds AsRecurrencyKind(this String Text)
+        public static RecurrencyKinds Parse(this String Text)
         {
 
             switch (Text)

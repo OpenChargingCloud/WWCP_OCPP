@@ -165,7 +165,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 ClearChargingProfileResponse = new ClearChargingProfileResponse(
 
                                                    ClearChargingProfileResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                                                  XML_IO.AsClearChargingProfileStatus)
+                                                                                                  ClearChargingProfileStatusExtentions.Parse)
 
                                                );
 
@@ -229,7 +229,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public XElement ToXML()
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "clearChargingProfileResponse",
-                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  XML_IO.AsText(Status))
+                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
                );
 
         #endregion

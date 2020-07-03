@@ -165,7 +165,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 ReserveNowResponse = new ReserveNowResponse(
 
                                          ReserveNowResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                              XML_IO.AsReservationStatus)
+                                                                              ReservationStatusExtentions.Parse)
 
                                      );
 
@@ -229,7 +229,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public XElement ToXML()
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "reserveNowResponse",
-                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  XML_IO.AsText(Status))
+                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
                );
 
         #endregion

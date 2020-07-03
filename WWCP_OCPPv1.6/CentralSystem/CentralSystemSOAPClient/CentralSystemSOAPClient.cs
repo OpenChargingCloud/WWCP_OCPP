@@ -657,6 +657,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #endregion
 
 
+            var request = new CancelReservationRequest(ReservationId);
+
+
             using (var _OCPPClient = new SOAPClient(Hostname,
                                                     URLPrefix,
                                                     VirtualHostname,
@@ -673,7 +676,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    new CancelReservationRequest(ReservationId).ToXML()),
+                                                                    request.ToXML()),
                                                  "CancelReservation",
                                                  RequestLogDelegate:   OnCancelReservationSOAPRequest,
                                                  ResponseLogDelegate:  OnCancelReservationSOAPResponse,
@@ -683,7 +686,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(CancelReservationResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                                                                      CancelReservationResponse.Parse),
 
                                                  #endregion
 
@@ -695,6 +699,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                      return new HTTPResponse<CancelReservationResponse>(httpresponse,
                                                                                                         new CancelReservationResponse(
+                                                                                                            request,
                                                                                                             Result.Format(
                                                                                                                 "Invalid SOAP => " +
                                                                                                                 httpresponse.HTTPBody.ToUTF8String()
@@ -714,6 +719,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                      return new HTTPResponse<CancelReservationResponse>(httpresponse,
                                                                                                         new CancelReservationResponse(
+                                                                                                            request,
                                                                                                             Result.Server(
                                                                                                                  httpresponse.HTTPStatusCode.ToString() +
                                                                                                                  " => " +
@@ -733,6 +739,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<CancelReservationResponse>.ExceptionThrown(new CancelReservationResponse(
+                                                                                                                        request,
                                                                                                                         Result.Format(exception.Message +
                                                                                                                                       " => " +
                                                                                                                                       exception.StackTrace)),
@@ -747,7 +754,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
 
             if (result == null)
-                result = HTTPResponse<CancelReservationResponse>.OK(new CancelReservationResponse(Result.OK("Nothing to upload!")));
+                result = HTTPResponse<CancelReservationResponse>.OK(new CancelReservationResponse(request,
+                                                                                                  Result.OK("Nothing to upload!")));
 
 
             #region Send OnCancelReservationResponse event

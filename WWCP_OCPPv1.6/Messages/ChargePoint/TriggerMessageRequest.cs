@@ -157,7 +157,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 TriggerMessageRequest = new TriggerMessageRequest(
 
                                             TriggerMessageRequestXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "requestedMessage",
-                                                                                         XML_IO.AsMessageTrigger),
+                                                                                         MessageTriggersExtentions.Parse),
 
                                             TriggerMessageRequestXML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "connectorId",
                                                                                          Connector_Id.Parse)
@@ -225,7 +225,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "triggerMessageRequest",
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "requestedMessage",   XML_IO.AsText(RequestedMessage)),
+                   new XElement(OCPPNS.OCPPv1_6_CP + "requestedMessage",   RequestedMessage.AsText()),
 
                    ConnectorId.HasValue
                        ? new XElement(OCPPNS.OCPPv1_6_CP + "connectorId",  ConnectorId.ToString())

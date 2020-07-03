@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsReservationStatus(Text)
 
-        public static ReservationStatus AsReservationStatus(this String Text)
+        public static ReservationStatus Parse(this String Text)
         {
 
             switch (Text)

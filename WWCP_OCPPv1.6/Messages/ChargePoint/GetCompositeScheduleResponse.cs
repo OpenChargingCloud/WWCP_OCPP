@@ -231,7 +231,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 GetCompositeScheduleResponse = new GetCompositeScheduleResponse(
 
                                                    GetCompositeScheduleResponseXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                                                       XML_IO.AsGetCompositeScheduleStatus),
+                                                                                                       GetCompositeScheduleStatusExtentions.Parse),
 
                                                    GetCompositeScheduleResponseXML.MapValueOrNull     (OCPPNS.OCPPv1_6_CP + "connectorId",
                                                                                                        Connector_Id.Parse),
@@ -305,7 +305,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "getCompositeScheduleResponse",
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "status",               XML_IO.AsText(Status)),
+                   new XElement(OCPPNS.OCPPv1_6_CP + "status",               Status.AsText()),
 
                    ConnectorId != null
                        ? new XElement(OCPPNS.OCPPv1_6_CP + "connectorId",    ConnectorId.ToString())

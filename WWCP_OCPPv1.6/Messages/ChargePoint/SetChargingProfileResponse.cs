@@ -165,7 +165,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 SetChargingProfileResponse = new SetChargingProfileResponse(
 
                                                  SetChargingProfileResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                                              XML_IO.AsChargingProfileStatus)
+                                                                                              ChargingProfileStatusExtentions.Parse)
 
                                              );
 
@@ -230,7 +230,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "setChargingProfileResponse",
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  XML_IO.AsText(Status))
+                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
 
                );
 

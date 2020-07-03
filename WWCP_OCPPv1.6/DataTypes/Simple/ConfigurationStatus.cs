@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsConfigurationStatus(Text)
 
-        public static ConfigurationStatus AsConfigurationStatus(this String Text)
+        public static ConfigurationStatus Parse(this String Text)
         {
 
             switch (Text)

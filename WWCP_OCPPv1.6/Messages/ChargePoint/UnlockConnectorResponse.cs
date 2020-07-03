@@ -165,7 +165,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 UnlockConnectorResponse = new UnlockConnectorResponse(
 
                                               UnlockConnectorResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                                        XML_IO.AsUnlockStatus)
+                                                                                        UnlockStatusExtentions.Parse)
 
                                           );
 
@@ -229,7 +229,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public XElement ToXML()
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "unlockConnectorResponse",
-                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  XML_IO.AsText(Status))
+                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
                );
 
         #endregion

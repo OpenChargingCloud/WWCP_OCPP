@@ -159,7 +159,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                                                                  Connector_Id.Parse),
 
                                                 ChangeAvailabilityRequestXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "type",
-                                                                                                 XML_IO.AsAvailabilityType)
+                                                                                                 AvailabilityTypesExtentions.Parse)
 
                                             );
 
@@ -225,7 +225,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             => new XElement(OCPPNS.OCPPv1_6_CP + "changeAvailabilityRequest",
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "connectorId",  ConnectorId.ToString()),
-                   new XElement(OCPPNS.OCPPv1_6_CP + "type",         XML_IO.AsText(Type))
+                   new XElement(OCPPNS.OCPPv1_6_CP + "type",         Type.       AsText())
 
                );
 

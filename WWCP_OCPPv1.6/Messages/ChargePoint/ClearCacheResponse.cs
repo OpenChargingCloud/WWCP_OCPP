@@ -165,7 +165,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 ClearCacheResponse = new ClearCacheResponse(
 
                                          ClearCacheResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                              XML_IO.AsClearCacheStatus)
+                                                                              ClearCacheStatusExtentions.Parse)
 
                                      );
 
@@ -229,7 +229,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public XElement ToXML()
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "clearCacheResponse",
-                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  XML_IO.AsText(Status))
+                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
                );
 
         #endregion

@@ -191,7 +191,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                                                                     Connector_Id.Parse),
 
                                                   ClearChargingProfileRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "chargingProfilePurpose",
-                                                                                                    XML_IO.AsChargingProfilePurpose),
+                                                                                                    ChargingProfilePurposesExtentions.Parse),
 
                                                   ClearChargingProfileRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "stackLevel",
                                                                                                     UInt32.Parse)
@@ -268,7 +268,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                        : null,
 
                    ChargingProfilePurpose.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "chargingProfilePurpose",  XML_IO.AsText(ChargingProfilePurpose.Value))
+                       ? new XElement(OCPPNS.OCPPv1_6_CP + "chargingProfilePurpose",  ChargingProfilePurpose.Value.AsText())
                        : null,
 
                    StackLevel.HasValue

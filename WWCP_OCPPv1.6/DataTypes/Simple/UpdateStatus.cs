@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsUpdateStatus(Text)
 
-        public static UpdateStatus AsUpdateStatus(this String Text)
+        public static UpdateStatus Parse(this String Text)
         {
 
             switch (Text)

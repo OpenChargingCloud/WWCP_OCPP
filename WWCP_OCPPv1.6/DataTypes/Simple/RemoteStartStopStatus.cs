@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsRemoteStartStopStatus(Text)
 
-        public static RemoteStartStopStatus AsRemoteStartStopStatus(this String Text)
+        public static RemoteStartStopStatus Parse(this String Text)
         {
 
             switch (Text)

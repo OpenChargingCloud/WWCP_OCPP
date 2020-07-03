@@ -198,7 +198,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 ChargingSchedule = new ChargingSchedule(
 
                                        ChargingScheduleXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "chargingRateUnit",
-                                                                               XML_IO.AsChargingRateUnit),
+                                                                               ChargingRateUnitsExtentions.Parse),
 
                                        ChargingScheduleXML.MapElementsOrFail  (OCPPNS.OCPPv1_6_CP + "chargingSchedulePeriod",
                                                                                ChargingSchedulePeriod.Parse),
@@ -284,7 +284,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                        ? new XElement(OCPPNS.OCPPv1_6_CP + "startSchedule",    StartSchedule.Value.ToIso8601())
                        : null,
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "chargingRateUnit",       XML_IO.AsText(ChargingRateUnit)),
+                   new XElement(OCPPNS.OCPPv1_6_CP + "chargingRateUnit",       ChargingRateUnit.AsText()),
 
                    ChargingSchedulePeriods.Select(value => value.ToXML()),
 

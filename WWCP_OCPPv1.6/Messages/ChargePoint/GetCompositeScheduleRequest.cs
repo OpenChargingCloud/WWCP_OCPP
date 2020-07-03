@@ -173,7 +173,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                                                                     s => TimeSpan.FromSeconds(UInt32.Parse(s))),
 
                                                   GetCompositeScheduleRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "chargingRateUnit",
-                                                                                                    XML_IO.AsChargingRateUnit)
+                                                                                                    ChargingRateUnitsExtentions.Parse)
 
                                               );
 

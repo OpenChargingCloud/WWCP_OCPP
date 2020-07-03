@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsClearChargingProfileStatus(Text)
 
-        public static ClearChargingProfileStatus AsClearChargingProfileStatus(this String Text)
+        public static ClearChargingProfileStatus Parse(this String Text)
         {
 
             switch (Text)
