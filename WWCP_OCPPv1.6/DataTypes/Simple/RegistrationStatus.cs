@@ -25,26 +25,30 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// RegistrationStatus extention methods.
+    /// Extentions methods for the registration status.
     /// </summary>
     public static class RegistrationStatusExtentions
     {
 
         #region AsRegistrationStatus(Text)
 
-        public static RegistrationStatus AsRegistrationStatus(this String Text)
+        /// <summary>
+        /// Parse the given string as registration status.
+        /// </summary>
+        /// <param name="Text">A string representation of a registration status.</param>
+        public static RegistrationStatus Parse(String Text)
         {
 
-            switch (Text)
+            switch (Text?.ToLower())
             {
 
-                case "Accepted":
+                case "accepted":
                     return RegistrationStatus.Accepted;
 
-                case "Pending":
+                case "pending":
                     return RegistrationStatus.Pending;
 
-                case "Rejected":
+                case "rejected":
                     return RegistrationStatus.Rejected;
 
 
@@ -59,6 +63,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #region AsText(this RegistrationStatus)
 
+        /// <summary>
+        /// Return a string representation of the given registration status.
+        /// </summary>
+        /// <param name="RegistrationStatus">A registration status.</param>
         public static String AsText(this RegistrationStatus RegistrationStatus)
         {
 
@@ -85,6 +93,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #endregion
 
     }
+
 
     /// <summary>
     /// Result of a registration in response to a BootNotification request.

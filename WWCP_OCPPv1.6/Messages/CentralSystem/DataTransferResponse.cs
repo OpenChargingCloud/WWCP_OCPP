@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP data transfer response.
+    /// A data transfer response.
     /// </summary>
     public class DataTransferResponse : AResponse<DataTransferResponse>
     {
@@ -122,7 +122,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (DataTransferResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP data transfer response.
+        /// Parse the given XML representation of a data transfer response.
         /// </summary>
         /// <param name="DataTransferResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -144,7 +144,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (DataTransferResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP data transfer response.
+        /// Parse the given text representation of a data transfer response.
         /// </summary>
         /// <param name="DataTransferResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -166,7 +166,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(DataTransferResponseXML,  out DataTransferResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP data transfer response.
+        /// Try to parse the given XML representation of a data transfer response.
         /// </summary>
         /// <param name="DataTransferResponseXML">The XML to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
@@ -182,7 +182,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 DataTransferResponse = new DataTransferResponse(
 
                                            DataTransferResponseXML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CS + "status",
-                                                                                         XML_IO.AsDataTransferStatus),
+                                                                                         DataTransferStatusExtentions.Parse),
 
                                            DataTransferResponseXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "data")
 
@@ -208,7 +208,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(DataTransferResponseText, out DataTransferResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP data transfer response.
+        /// Try to parse the given text representation of a data transfer response.
         /// </summary>
         /// <param name="DataTransferResponseText">The text to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
@@ -249,7 +249,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             => new XElement(OCPPNS.OCPPv1_6_CS + "dataTransferResponse",
 
-                   new XElement(OCPPNS.OCPPv1_6_CS + "status",      XML_IO.AsText(Status)),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "status",  Status.AsText()),
 
                    Data.IsNullOrEmpty()
                        ? new XElement(OCPPNS.OCPPv1_6_CS + "data",  Data)
@@ -385,7 +385,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             => String.Concat(Status, " / ", Data.SubstringMax(20));
 
         #endregion
-
 
     }
 

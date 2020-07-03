@@ -15,8 +15,79 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the cancel reservation status.
+    /// </summary>
+    public static class CancelReservationStatusExtentions
+    {
+
+        #region Parse(Text)
+
+        /// <summary>
+        /// Parse the given string as a cancel reservation status.
+        /// </summary>
+        /// <param name="Text">A string representation of a cancel reservation status.</param>
+        public static CancelReservationStatus Parse(String Text)
+        {
+
+            switch (Text?.ToLower())
+            {
+
+                case "accepted":
+                    return CancelReservationStatus.Accepted;
+
+                case "rejected":
+                    return CancelReservationStatus.Rejected;
+
+
+                default:
+                    return CancelReservationStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this CancelReservationStatus)
+
+        /// <summary>
+        /// Return a string representation of the given cancel reservation status.
+        /// </summary>
+        /// <param name="CancelReservationStatus">A cancel reservation status.</param>
+        public static String AsText(this CancelReservationStatus CancelReservationStatus)
+        {
+
+            switch (CancelReservationStatus)
+            {
+
+                case CancelReservationStatus.Accepted:
+                    return "Accepted";
+
+                case CancelReservationStatus.Rejected:
+                    return "Rejected";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the cancel-reservation-status-values.

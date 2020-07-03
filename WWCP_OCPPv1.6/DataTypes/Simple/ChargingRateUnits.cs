@@ -15,8 +15,71 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the charging rate units.
+    /// </summary>
+    public static class ChargingRateUnitsExtentions
+    {
+
+        #region AsChargingRateUnit(Text)
+
+        public static ChargingRateUnits AsChargingRateUnit(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "A":
+                    return ChargingRateUnits.Amperes;
+
+                case "W":
+                    return ChargingRateUnits.Watts;
+
+
+                default:
+                    return ChargingRateUnits.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this ChargingRateUnitType)
+
+        public static String AsText(this ChargingRateUnits ChargingRateUnitType)
+        {
+
+            switch (ChargingRateUnitType)
+            {
+
+                case ChargingRateUnits.Amperes:
+                    return "A";
+
+                case ChargingRateUnits.Watts:
+                    return "W";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the charging-rate-unit-type-values.

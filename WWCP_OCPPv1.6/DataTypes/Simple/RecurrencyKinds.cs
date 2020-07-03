@@ -15,8 +15,71 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the recurrency kinds.
+    /// </summary>
+    public static class RecurrencyKindsExtentions
+    {
+
+        #region AsRecurrencyKind(Text)
+
+        public static RecurrencyKinds AsRecurrencyKind(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Daily":
+                    return RecurrencyKinds.Daily;
+
+                case "Weekly":
+                    return RecurrencyKinds.Weekly;
+
+
+                default:
+                    return RecurrencyKinds.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this RecurrencyKindType)
+
+        public static String AsText(this RecurrencyKinds RecurrencyKindType)
+        {
+
+            switch (RecurrencyKindType)
+            {
+
+                case RecurrencyKinds.Daily:
+                    return "Daily";
+
+                case RecurrencyKinds.Weekly:
+                    return "Weekly";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the recurrency-kind-type-values.

@@ -15,8 +15,91 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the data transfer status.
+    /// </summary>
+    public static class DataTransferStatusExtentions
+    {
+
+        #region AsDataTransferStatus(Text)
+
+        /// <summary>
+        /// Parse the given string as a data transfer status.
+        /// </summary>
+        /// <param name="Text">A string representation of a data transfer status.</param>
+        public static DataTransferStatus Parse(String Text)
+        {
+
+            switch (Text?.ToLower())
+            {
+
+                case "accepted":
+                    return DataTransferStatus.Accepted;
+
+                case "rejected":
+                    return DataTransferStatus.Rejected;
+
+                case "unknownmessageid":
+                    return DataTransferStatus.UnknownMessageId;
+
+                case "unknownvendorid":
+                    return DataTransferStatus.UnknownVendorId;
+
+
+                default:
+                    return DataTransferStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this DataTransferStatus)
+
+        /// <summary>
+        /// Return a string representation of the given data transfer status.
+        /// </summary>
+        /// <param name="DataTransferStatus">A data transfer status.</param>
+        public static String AsText(this DataTransferStatus DataTransferStatus)
+        {
+
+            switch (DataTransferStatus)
+            {
+
+                case DataTransferStatus.Accepted:
+                    return "Accepted";
+
+                case DataTransferStatus.Rejected:
+                    return "Rejected";
+
+                case DataTransferStatus.UnknownMessageId:
+                    return "UnknownMessageId";
+
+                case DataTransferStatus.UnknownVendorId:
+                    return "UnknownVendorId";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the result of a data transfer.

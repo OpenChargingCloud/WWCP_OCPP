@@ -15,8 +15,91 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the diagnostics status.
+    /// </summary>
+    public static class DiagnosticsStatusExtentions
+    {
+
+        #region AsDiagnosticsStatus(Text)
+
+        /// <summary>
+        /// Parse the given string as a diagnostics status.
+        /// </summary>
+        /// <param name="Text">A string representation of a diagnostics status.</param>
+        public static DiagnosticsStatus Parse(String Text)
+        {
+
+            switch (Text?.ToLower())
+            {
+
+                case "idle":
+                    return DiagnosticsStatus.Idle;
+
+                case "uploaded":
+                    return DiagnosticsStatus.Uploaded;
+
+                case "uploadfailed":
+                    return DiagnosticsStatus.UploadFailed;
+
+                case "uploading":
+                    return DiagnosticsStatus.Uploading;
+
+
+                default:
+                    return DiagnosticsStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this DiagnosticsStatus)
+
+        /// <summary>
+        /// Return a string representation of the given diagnostics status.
+        /// </summary>
+        /// <param name="DiagnosticsStatus">A diagnostics status.</param>
+        public static String AsText(this DiagnosticsStatus DiagnosticsStatus)
+        {
+
+            switch (DiagnosticsStatus)
+            {
+
+                case DiagnosticsStatus.Idle:
+                    return "Idle";
+
+                case DiagnosticsStatus.Uploaded:
+                    return "Uploaded";
+
+                case DiagnosticsStatus.UploadFailed:
+                    return "UploadFailed";
+
+                case DiagnosticsStatus.Uploading:
+                    return "Uploading";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Status in DiagnosticsStatusNotification request.

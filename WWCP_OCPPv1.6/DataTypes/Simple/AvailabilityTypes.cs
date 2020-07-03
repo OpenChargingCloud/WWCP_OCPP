@@ -15,8 +15,71 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the availability types.
+    /// </summary>
+    public static class AvailabilityTypesExtentions
+    {
+
+        #region AsAvailabilityType(Text)
+
+        public static AvailabilityTypes AsAvailabilityType(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Inoperative":
+                    return AvailabilityTypes.Inoperative;
+
+                case "Operative":
+                    return AvailabilityTypes.Operative;
+
+
+                default:
+                    return AvailabilityTypes.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this AvailabilityType)
+
+        public static String AsText(this AvailabilityTypes AvailabilityType)
+        {
+
+            switch (AvailabilityType)
+            {
+
+                case AvailabilityTypes.Inoperative:
+                    return "Inoperative";
+
+                case AvailabilityTypes.Operative:
+                    return "Operative";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the availability-type-values.

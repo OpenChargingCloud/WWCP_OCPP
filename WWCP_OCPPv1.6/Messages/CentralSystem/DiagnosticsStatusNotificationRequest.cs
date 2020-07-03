@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP diagnostics status notification request.
+    /// A diagnostics status notification request.
     /// </summary>
     public class DiagnosticsStatusNotificationRequest : ARequest<DiagnosticsStatusNotificationRequest>
     {
@@ -47,7 +47,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP DiagnosticsStatusNotification XML/SOAP request.
+        /// Create a DiagnosticsStatusNotification XML/SOAP request.
         /// </summary>
         /// <param name="Status">The status of the diagnostics upload.</param>
         public DiagnosticsStatusNotificationRequest(DiagnosticsStatus Status)
@@ -85,7 +85,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (DiagnosticsStatusNotificationRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP diagnostics status notification request.
+        /// Parse the given XML representation of a diagnostics status notification request.
         /// </summary>
         /// <param name="DiagnosticsStatusNotificationRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -107,7 +107,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (DiagnosticsStatusNotificationRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP diagnostics status notification request.
+        /// Parse the given text representation of a diagnostics status notification request.
         /// </summary>
         /// <param name="DiagnosticsStatusNotificationRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(DiagnosticsStatusNotificationRequestXML,  out DiagnosticsStatusNotificationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP diagnostics status notification request.
+        /// Try to parse the given XML representation of a diagnostics status notification request.
         /// </summary>
         /// <param name="DiagnosticsStatusNotificationRequestXML">The XML to be parsed.</param>
         /// <param name="DiagnosticsStatusNotificationRequest">The parsed diagnostics status notification request.</param>
@@ -145,7 +145,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 DiagnosticsStatusNotificationRequest = new DiagnosticsStatusNotificationRequest(
 
                                                            DiagnosticsStatusNotificationRequestXML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "status",
-                                                                                                                  XML_IO.AsDiagnosticsStatus)
+                                                                                                                  DiagnosticsStatusExtentions.Parse)
 
                                                        );
 
@@ -169,7 +169,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(DiagnosticsStatusNotificationRequestText, out DiagnosticsStatusNotificationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP diagnostics status notification request.
+        /// Try to parse the given text representation of a diagnostics status notification request.
         /// </summary>
         /// <param name="DiagnosticsStatusNotificationRequestText">The text to be parsed.</param>
         /// <param name="DiagnosticsStatusNotificationRequest">The parsed diagnostics status notification request.</param>
@@ -209,7 +209,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public XElement ToXML()
 
             => new XElement(OCPPNS.OCPPv1_6_CS + "diagnosticsStatusNotificationRequest",
-                   new XElement(OCPPNS.OCPPv1_6_CS + "status",  XML_IO.AsText(Status))
+                   new XElement(OCPPNS.OCPPv1_6_CS + "status",  Status.AsText())
                );
 
         #endregion
@@ -325,7 +325,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             => Status.ToString();
 
         #endregion
-
 
     }
 

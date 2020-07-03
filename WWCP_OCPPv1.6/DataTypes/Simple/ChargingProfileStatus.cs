@@ -15,8 +15,77 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the charging profile status.
+    /// </summary>
+    public static class ChargingProfileStatusExtentions
+    {
+
+        #region AsChargingProfileStatus(Text)
+
+        public static ChargingProfileStatus AsChargingProfileStatus(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Accepted":
+                    return ChargingProfileStatus.Accepted;
+
+                case "Rejected":
+                    return ChargingProfileStatus.Rejected;
+
+                case "NotSupported":
+                    return ChargingProfileStatus.NotSupported;
+
+
+                default:
+                    return ChargingProfileStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this ChargingProfileStatus)
+
+        public static String AsText(this ChargingProfileStatus ChargingProfileStatus)
+        {
+
+            switch (ChargingProfileStatus)
+            {
+
+                case ChargingProfileStatus.Accepted:
+                    return "Accepted";
+
+                case ChargingProfileStatus.Rejected:
+                    return "Rejected";
+
+                case ChargingProfileStatus.NotSupported:
+                    return "NotSupported";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the charging-profile-status-values.

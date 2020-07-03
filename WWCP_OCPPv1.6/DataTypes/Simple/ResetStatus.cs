@@ -15,8 +15,71 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the reset status.
+    /// </summary>
+    public static class CancelResetStatusExtentions
+    {
+
+        #region AsResetStatus(Text)
+
+        public static ResetStatus AsResetStatus(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Accepted":
+                    return ResetStatus.Accepted;
+
+                case "Rejected":
+                    return ResetStatus.Rejected;
+
+
+                default:
+                    return ResetStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this ResetStatus)
+
+        public static String AsText(this ResetStatus ResetStatus)
+        {
+
+            switch (ResetStatus)
+            {
+
+                case ResetStatus.Accepted:
+                    return "Accepted";
+
+                case ResetStatus.Rejected:
+                    return "Rejected";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the reset-status-values.

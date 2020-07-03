@@ -18,7 +18,6 @@
 #region Usings
 
 using System;
-using System.Xml.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -47,7 +46,29 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
-        #region Statics
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a new generic OCPP result.
+        /// </summary>
+        /// <param name="ResultCode">The machine-readable result code.</param>
+        /// <param name="Description">A human-readable error description.</param>
+        public Result(ResultCodes  ResultCode,
+                      String       Description = null)
+        {
+
+            this.ResultCode   = ResultCode;
+
+            this.Description  = Description.IsNotNullOrEmpty()
+                                    ? Description.Trim()
+                                    : "";
+
+        }
+
+        #endregion
+
+
+        #region Static methods
 
         /// <summary>
         /// Unknown result code.
@@ -117,27 +138,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             => new Result(ResultCodes.Unknown,
                           Description);
-
-        #endregion
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Create a new generic OCPP result.
-        /// </summary>
-        /// <param name="ResultCode">The machine-readable result code.</param>
-        /// <param name="Description">A human-readable error description.</param>
-        public Result(ResultCodes  ResultCode,
-                      String       Description = null)
-        {
-
-            this.ResultCode   = ResultCode;
-
-            this.Description  = Description.IsNotNullOrEmpty()
-                                    ? Description.Trim()
-                                    : "";
-
-        }
 
         #endregion
 

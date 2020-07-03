@@ -15,8 +15,71 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the reset types.
+    /// </summary>
+    public static class ResetTypesExtentions
+    {
+
+        #region AsResetType(Text)
+
+        public static ResetTypes AsResetType(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Hard":
+                    return ResetTypes.Hard;
+
+                case "Soft":
+                    return ResetTypes.Soft;
+
+
+                default:
+                    return ResetTypes.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this ResetType)
+
+        public static String AsText(this ResetTypes ResetType)
+        {
+
+            switch (ResetType)
+            {
+
+                case ResetTypes.Hard:
+                    return "Hard";
+
+                case ResetTypes.Soft:
+                    return "Soft";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the reset-type-values.

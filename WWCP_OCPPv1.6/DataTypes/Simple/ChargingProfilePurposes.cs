@@ -15,8 +15,71 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the charging profile purposes.
+    /// </summary>
+    public static class ChargingProfilePurposesExtentions
+    {
+
+        #region AsChargingProfilePurpose(Text)
+
+        public static ChargingProfilePurposes AsChargingProfilePurpose(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "ChargePointMaxProfile":
+                    return ChargingProfilePurposes.ChargePointMaxProfile;
+
+                case "TxProfile":
+                    return ChargingProfilePurposes.TxProfile;
+
+
+                default:
+                    return ChargingProfilePurposes.TxDefaultProfile;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this ChargingProfilePurpose)
+
+        public static String AsText(this ChargingProfilePurposes ChargingProfilePurpose)
+        {
+
+            switch (ChargingProfilePurpose)
+            {
+
+                case ChargingProfilePurposes.ChargePointMaxProfile:
+                    return "ChargePointMaxProfile";
+
+                case ChargingProfilePurposes.TxProfile:
+                    return "TxProfile";
+
+
+                default:
+                    return "TxDefaultProfile";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the charging-profile-purpose-values.

@@ -15,8 +15,71 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the trigger message status.
+    /// </summary>
+    public static class TriggerMessageStatusExtentions
+    {
+
+        #region AsTriggerMessageStatus(Text)
+
+        public static TriggerMessageStatus AsTriggerMessageStatus(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Accepted":
+                    return TriggerMessageStatus.Accepted;
+
+                case "Rejected":
+                    return TriggerMessageStatus.Rejected;
+
+
+                default:
+                    return TriggerMessageStatus.NotImplemented;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this TriggerMessageStatus)
+
+        public static String AsText(this TriggerMessageStatus TriggerMessageStatus)
+        {
+
+            switch (TriggerMessageStatus)
+            {
+
+                case TriggerMessageStatus.Accepted:
+                    return "Accepted";
+
+                case TriggerMessageStatus.Rejected:
+                    return "Rejected";
+
+
+                default:
+                    return "NotImplemented";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the trigger-message-status-values.

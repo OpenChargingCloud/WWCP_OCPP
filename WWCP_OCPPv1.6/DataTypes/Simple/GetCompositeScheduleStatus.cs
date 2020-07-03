@@ -15,8 +15,71 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the get composite schedule status.
+    /// </summary>
+    public static class GetCompositeScheduleStatusExtentions
+    {
+
+        #region AsGetCompositeScheduleStatus(Text)
+
+        public static GetCompositeScheduleStatus AsGetCompositeScheduleStatus(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Accepted":
+                    return GetCompositeScheduleStatus.Accepted;
+
+                case "Rejected":
+                    return GetCompositeScheduleStatus.Rejected;
+
+
+                default:
+                    return GetCompositeScheduleStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this GetCompositeScheduleStatus)
+
+        public static String AsText(this GetCompositeScheduleStatus GetCompositeScheduleStatus)
+        {
+
+            switch (GetCompositeScheduleStatus)
+            {
+
+                case GetCompositeScheduleStatus.Accepted:
+                    return "Accepted";
+
+                case GetCompositeScheduleStatus.Rejected:
+                    return "Rejected";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the reset-status-values.

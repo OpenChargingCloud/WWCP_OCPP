@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP data transfer request.
+    /// A data transfer request.
     /// </summary>
     public class DataTransferRequest : ARequest<DataTransferRequest>
     {
@@ -57,7 +57,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP DataTransferRequest XML/SOAP request.
+        /// Create a DataTransferRequest XML/SOAP request.
         /// </summary>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
@@ -114,7 +114,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (DataTransferRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP data transfer request.
+        /// Parse the given XML representation of a data transfer request.
         /// </summary>
         /// <param name="DataTransferRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -136,7 +136,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (DataTransferRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP data transfer request.
+        /// Parse the given text representation of a data transfer request.
         /// </summary>
         /// <param name="DataTransferRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -158,7 +158,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(DataTransferRequestXML,  out DataTransferRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP data transfer request.
+        /// Try to parse the given XML representation of a data transfer request.
         /// </summary>
         /// <param name="DataTransferRequestXML">The XML to be parsed.</param>
         /// <param name="DataTransferRequest">The parsed data transfer request.</param>
@@ -199,7 +199,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(DataTransferRequestText, out DataTransferRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP data transfer request.
+        /// Try to parse the given text representation of a data transfer request.
         /// </summary>
         /// <param name="DataTransferRequestText">The text to be parsed.</param>
         /// <param name="DataTransferRequest">The parsed data transfer request.</param>
@@ -387,7 +387,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             => String.Concat(VendorId, " / ", MessageId, " / ", Data.SubstringMax(20));
 
         #endregion
-
 
     }
 

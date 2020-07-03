@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP diagnostics status notification response.
+    /// A diagnostics status notification response.
     /// </summary>
     public class DiagnosticsStatusNotificationResponse : AResponse<DiagnosticsStatusNotificationResponse>
     {
@@ -85,7 +85,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (DiagnosticsStatusNotificationResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP diagnostics status notification response.
+        /// Parse the given XML representation of a diagnostics status notification response.
         /// </summary>
         /// <param name="DiagnosticsStatusNotificationResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -107,7 +107,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (DiagnosticsStatusNotificationResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP diagnostics status notification response.
+        /// Parse the given text representation of a diagnostics status notification response.
         /// </summary>
         /// <param name="DiagnosticsStatusNotificationResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(DiagnosticsStatusNotificationResponseXML,  out DiagnosticsStatusNotificationResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP diagnostics status notification response.
+        /// Try to parse the given XML representation of a diagnostics status notification response.
         /// </summary>
         /// <param name="DiagnosticsStatusNotificationResponseXML">The XML to be parsed.</param>
         /// <param name="DiagnosticsStatusNotificationResponse">The parsed diagnostics status notification response.</param>
@@ -164,7 +164,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(DiagnosticsStatusNotificationResponseText, out DiagnosticsStatusNotificationResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP diagnostics status notification response.
+        /// Try to parse the given text representation of a diagnostics status notification response.
         /// </summary>
         /// <param name="DiagnosticsStatusNotificationResponseText">The text to be parsed.</param>
         /// <param name="DiagnosticsStatusNotificationResponse">The parsed diagnostics status notification response.</param>
@@ -320,7 +320,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             => "DiagnosticsStatusNotificationResponse";
 
         #endregion
-
 
     }
 

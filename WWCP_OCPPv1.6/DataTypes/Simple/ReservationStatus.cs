@@ -15,8 +15,89 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the reservation status.
+    /// </summary>
+    public static class ReservationStatusExtentions
+    {
+
+        #region AsReservationStatus(Text)
+
+        public static ReservationStatus AsReservationStatus(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Accepted":
+                    return ReservationStatus.Accepted;
+
+                case "Faulted":
+                    return ReservationStatus.Faulted;
+
+                case "Occupied":
+                    return ReservationStatus.Occupied;
+
+                case "Rejected":
+                    return ReservationStatus.Rejected;
+
+                case "Unavailable":
+                    return ReservationStatus.Unavailable;
+
+
+                default:
+                    return ReservationStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this ReservationStatus)
+
+        public static String AsText(this ReservationStatus ReservationStatus)
+        {
+
+            switch (ReservationStatus)
+            {
+
+                case ReservationStatus.Accepted:
+                    return "Accepted";
+
+                case ReservationStatus.Faulted:
+                    return "Faulted";
+
+                case ReservationStatus.Occupied:
+                    return "Occupied";
+
+                case ReservationStatus.Rejected:
+                    return "Rejected";
+
+                case ReservationStatus.Unavailable:
+                    return "Unavailable";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the reservation-status-values.

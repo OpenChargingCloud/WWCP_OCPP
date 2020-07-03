@@ -33,7 +33,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// A boot notification response.
     /// </summary>
-    public class BootNotificationResponse : AResponse<CP.BootNotificationRequest, BootNotificationResponse>
+    public class BootNotificationResponse : AResponse<CP.BootNotificationRequest,
+                                                         BootNotificationResponse>
     {
 
         #region Properties
@@ -268,7 +269,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                Request,
 
                                                BootNotificationResponseXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CS + "status",
-                                                                                               RegistrationStatusExtentions.AsRegistrationStatus),
+                                                                                               RegistrationStatusExtentions.Parse),
 
                                                BootNotificationResponseXML.MapValueOrFail     (OCPPNS.OCPPv1_6_CS + "currentTime",
                                                                                                DateTime.Parse),
@@ -317,10 +318,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 #region Status
 
-                if (!BootNotificationResponseJSON.ParseMandatoryEnum<RegistrationStatus>("status",
-                                                                                         "current time",
-                                                                                         out RegistrationStatus  RegistrationStatus,
-                                                                                         out String              ErrorResponse))
+                if (!BootNotificationResponseJSON.ParseMandatory("status",
+                                                                 "current time",
+                                                                 RegistrationStatusExtentions.Parse,
+                                                                 out RegistrationStatus  RegistrationStatus,
+                                                                 out String              ErrorResponse))
                 {
                     return false;
                 }
@@ -454,7 +456,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomBootNotificationResponseSerializer">A delegate to serialize custom boot notification responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<BootNotificationResponse> CustomBootNotificationResponseSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<BootNotificationResponse> CustomBootNotificationResponseSerializer   = null)
         {
 
             var JSON = JSONObject.Create(
@@ -605,7 +607,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                    Interval.TotalSeconds, " sec(s))");
 
         #endregion
-
 
     }
 

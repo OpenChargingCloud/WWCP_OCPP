@@ -15,8 +15,65 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the clear charging profile status.
+    /// </summary>
+    public static class ClearChargingProfileStatusExtentions
+    {
+
+        #region AsClearChargingProfileStatus(Text)
+
+        public static ClearChargingProfileStatus AsClearChargingProfileStatus(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Accepted":
+                    return ClearChargingProfileStatus.Accepted;
+
+
+                default:
+                    return ClearChargingProfileStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this ClearChargingProfileStatus)
+
+        public static String AsText(this ClearChargingProfileStatus ClearChargingProfileStatus)
+        {
+
+            switch (ClearChargingProfileStatus)
+            {
+
+                case ClearChargingProfileStatus.Accepted:
+                    return "Accepted";
+
+
+                default:
+                    return "Unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the clear-charging-profile-status-values.

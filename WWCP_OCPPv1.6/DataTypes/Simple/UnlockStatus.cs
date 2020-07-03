@@ -15,8 +15,77 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the unlock status.
+    /// </summary>
+    public static class UnlockStatusExtentions
+    {
+
+        #region AsUnlockStatus(Text)
+
+        public static UnlockStatus AsUnlockStatus(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Unlocked":
+                    return UnlockStatus.Unlocked;
+
+                case "UnlockFailed":
+                    return UnlockStatus.UnlockFailed;
+
+                case "NotSupported":
+                    return UnlockStatus.NotSupported;
+
+
+                default:
+                    return UnlockStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this UnlockStatus)
+
+        public static String AsText(this UnlockStatus UnlockStatus)
+        {
+
+            switch (UnlockStatus)
+            {
+
+                case UnlockStatus.Unlocked:
+                    return "Unlocked";
+
+                case UnlockStatus.UnlockFailed:
+                    return "UnlockFailed";
+
+                case UnlockStatus.NotSupported:
+                    return "NotSupported";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// The status in a response to an unlock request.

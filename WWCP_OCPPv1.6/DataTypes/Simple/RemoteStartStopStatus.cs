@@ -15,8 +15,71 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the remote start stop status.
+    /// </summary>
+    public static class RemoteStartStopStatusExtentions
+    {
+
+        #region AsRemoteStartStopStatus(Text)
+
+        public static RemoteStartStopStatus AsRemoteStartStopStatus(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Accepted":
+                    return RemoteStartStopStatus.Accepted;
+
+                case "Rejected":
+                    return RemoteStartStopStatus.Rejected;
+
+
+                default:
+                    return RemoteStartStopStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this RemoteStartStopStatus)
+
+        public static String AsText(this RemoteStartStopStatus RemoteStartStopStatus)
+        {
+
+            switch (RemoteStartStopStatus)
+            {
+
+                case RemoteStartStopStatus.Accepted:
+                    return "Accepted";
+
+                case RemoteStartStopStatus.Rejected:
+                    return "Rejected";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the remote-start-stop-status-values.

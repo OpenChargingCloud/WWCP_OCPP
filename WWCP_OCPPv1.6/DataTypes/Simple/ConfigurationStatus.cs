@@ -15,8 +15,83 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the configuration status.
+    /// </summary>
+    public static class ConfigurationStatusExtentions
+    {
+
+        #region AsConfigurationStatus(Text)
+
+        public static ConfigurationStatus AsConfigurationStatus(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Accepted":
+                    return ConfigurationStatus.Accepted;
+
+                case "Rejected":
+                    return ConfigurationStatus.Rejected;
+
+                case "RebootRequired":
+                    return ConfigurationStatus.RebootRequired;
+
+                case "NotSupported":
+                    return ConfigurationStatus.NotSupported;
+
+
+                default:
+                    return ConfigurationStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this ConfigurationStatus)
+
+        public static String AsText(this ConfigurationStatus ConfigurationStatus)
+        {
+
+            switch (ConfigurationStatus)
+            {
+
+                case ConfigurationStatus.Accepted:
+                    return "Accepted";
+
+                case ConfigurationStatus.Rejected:
+                    return "Rejected";
+
+                case ConfigurationStatus.RebootRequired:
+                    return "RebootRequired";
+
+                case ConfigurationStatus.NotSupported:
+                    return "NotSupported";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the configuration-status-values.

@@ -115,7 +115,6 @@
     <Compile Include="IO\SOAPHeader.cs" />
     <Compile Include="IO\OCPPNS.cs" />
     <Compile Include="IO\SOAP.cs" />
-    <Compile Include="IO\XML_IO.cs" />
     <Compile Include="Messages\IResponse.cs" />
     <Compile Include="Messages\IRequest.cs" />
     <Compile Include="Messages\ARequest.cs" />

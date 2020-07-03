@@ -15,8 +15,77 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the charging profile kinds.
+    /// </summary>
+    public static class ChargingProfileKindsExtentions
+    {
+
+        #region AsChargingProfileKind(Text)
+
+        public static ChargingProfileKinds AsChargingProfileKind(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Absolute":
+                    return ChargingProfileKinds.Absolute;
+
+                case "Recurring":
+                    return ChargingProfileKinds.Recurring;
+
+                case "Relative":
+                    return ChargingProfileKinds.Relative;
+
+
+                default:
+                    return ChargingProfileKinds.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this ChargingProfileKindType)
+
+        public static String AsText(this ChargingProfileKinds ChargingProfileKindType)
+        {
+
+            switch (ChargingProfileKindType)
+            {
+
+                case ChargingProfileKinds.Absolute:
+                    return "Absolute";
+
+                case ChargingProfileKinds.Recurring:
+                    return "Recurring";
+
+                case ChargingProfileKinds.Relative:
+                    return "Relative";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the charging-profile-kind-type-values.

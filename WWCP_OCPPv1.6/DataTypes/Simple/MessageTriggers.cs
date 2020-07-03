@@ -15,8 +15,95 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the message triggers.
+    /// </summary>
+    public static class MessageTriggersExtentions
+    {
+
+        #region AsMessageTrigger(Text)
+
+        public static MessageTriggers AsMessageTrigger(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "BootNotification":
+                    return MessageTriggers.BootNotification;
+
+                case "DiagnosticsStatusNotification":
+                    return MessageTriggers.DiagnosticsStatusNotification;
+
+                case "FirmwareStatusNotification":
+                    return MessageTriggers.FirmwareStatusNotification;
+
+                case "Heartbeat":
+                    return MessageTriggers.Heartbeat;
+
+                case "MeterValues":
+                    return MessageTriggers.MeterValues;
+
+                case "StatusNotification":
+                    return MessageTriggers.StatusNotification;
+
+
+                default:
+                    return MessageTriggers.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this MessageTrigger)
+
+        public static String AsText(this MessageTriggers MessageTrigger)
+        {
+
+            switch (MessageTrigger)
+            {
+
+                case MessageTriggers.BootNotification:
+                    return "BootNotification";
+
+                case MessageTriggers.DiagnosticsStatusNotification:
+                    return "DiagnosticsStatusNotification";
+
+                case MessageTriggers.FirmwareStatusNotification:
+                    return "FirmwareStatusNotification";
+
+                case MessageTriggers.Heartbeat:
+                    return "Heartbeat";
+
+                case MessageTriggers.MeterValues:
+                    return "MeterValues";
+
+                case MessageTriggers.StatusNotification:
+                    return "StatusNotification";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the message-trigger-values.

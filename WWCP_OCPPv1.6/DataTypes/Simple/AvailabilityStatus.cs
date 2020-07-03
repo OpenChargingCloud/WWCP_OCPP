@@ -15,8 +15,77 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the availability status.
+    /// </summary>
+    public static class AvailabilityStatusExtentions
+    {
+
+        #region AsAvailabilityStatus(Text)
+
+        public static AvailabilityStatus AsAvailabilityStatus(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Accepted":
+                    return AvailabilityStatus.Accepted;
+
+                case "Rejected":
+                    return AvailabilityStatus.Rejected;
+
+                case "Scheduled":
+                    return AvailabilityStatus.Scheduled;
+
+
+                default:
+                    return AvailabilityStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this AvailabilityStatus)
+
+        public static String AsText(this AvailabilityStatus AvailabilityStatus)
+        {
+
+            switch (AvailabilityStatus)
+            {
+
+                case AvailabilityStatus.Accepted:
+                    return "Accepted";
+
+                case AvailabilityStatus.Rejected:
+                    return "Rejected";
+
+                case AvailabilityStatus.Scheduled:
+                    return "Scheduled";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the availability-status-values.

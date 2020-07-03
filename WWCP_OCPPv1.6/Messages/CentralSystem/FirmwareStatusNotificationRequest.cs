@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP firmware status notification request.
+    /// A firmware status notification request.
     /// </summary>
     public class FirmwareStatusNotificationRequest : ARequest<FirmwareStatusNotificationRequest>
     {
@@ -47,7 +47,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP FirmwareStatusNotificationRequest XML/SOAP request.
+        /// Create a FirmwareStatusNotificationRequest XML/SOAP request.
         /// </summary>
         /// <param name="Status">The current status of a firmware installation.</param>
         public FirmwareStatusNotificationRequest(FirmwareStatus Status)
@@ -85,7 +85,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (FirmwareStatusNotificationRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP firmware status notification request.
+        /// Parse the given XML representation of a firmware status notification request.
         /// </summary>
         /// <param name="FirmwareStatusNotificationRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -107,7 +107,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (FirmwareStatusNotificationRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP firmware status notification request.
+        /// Parse the given text representation of a firmware status notification request.
         /// </summary>
         /// <param name="FirmwareStatusNotificationRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(FirmwareStatusNotificationRequestXML,  out FirmwareStatusNotificationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP firmware status notification request.
+        /// Try to parse the given XML representation of a firmware status notification request.
         /// </summary>
         /// <param name="FirmwareStatusNotificationRequestXML">The XML to be parsed.</param>
         /// <param name="FirmwareStatusNotificationRequest">The parsed firmware status notification request.</param>
@@ -145,7 +145,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 FirmwareStatusNotificationRequest = new FirmwareStatusNotificationRequest(
 
                                                         FirmwareStatusNotificationRequestXML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "status",
-                                                                                                            XML_IO.AsFirmwareStatus)
+                                                                                                            FirmwareStatusExtentions.Parse)
 
                                                     );
 
@@ -169,7 +169,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(FirmwareStatusNotificationRequestText, out FirmwareStatusNotificationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP firmware status notification request.
+        /// Try to parse the given text representation of a firmware status notification request.
         /// </summary>
         /// <param name="FirmwareStatusNotificationRequestText">The text to be parsed.</param>
         /// <param name="FirmwareStatusNotificationRequest">The parsed firmware status notification request.</param>
@@ -209,7 +209,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public XElement ToXML()
 
             => new XElement(OCPPNS.OCPPv1_6_CS + "firmwareStatusNotificationRequest",
-                   new XElement(OCPPNS.OCPPv1_6_CS + "status",  XML_IO.AsText(Status))
+                   new XElement(OCPPNS.OCPPv1_6_CS + "status",  Status.AsText())
                );
 
         #endregion
@@ -325,7 +325,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             => Status.ToString();
 
         #endregion
-
 
     }
 

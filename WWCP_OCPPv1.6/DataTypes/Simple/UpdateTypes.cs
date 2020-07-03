@@ -15,8 +15,71 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the update types.
+    /// </summary>
+    public static class UpdateTypesExtentions
+    {
+
+        #region AsUpdateType(Text)
+
+        public static UpdateTypes AsUpdateType(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Differential":
+                    return UpdateTypes.Differential;
+
+                case "Full":
+                    return UpdateTypes.Full;
+
+
+                default:
+                    return UpdateTypes.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this UpdateType)
+
+        public static String AsText(this UpdateTypes UpdateType)
+        {
+
+            switch (UpdateType)
+            {
+
+                case UpdateTypes.Differential:
+                    return "Differential";
+
+                case UpdateTypes.Full:
+                    return "Full";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the update-type-values.

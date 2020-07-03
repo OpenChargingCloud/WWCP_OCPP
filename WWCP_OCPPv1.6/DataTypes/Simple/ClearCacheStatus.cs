@@ -15,8 +15,71 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the clear cache status.
+    /// </summary>
+    public static class ClearCacheStatusExtentions
+    {
+
+        #region AsClearCacheStatus(Text)
+
+        public static ClearCacheStatus AsClearCacheStatus(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Accepted":
+                    return ClearCacheStatus.Accepted;
+
+                case "Rejected":
+                    return ClearCacheStatus.Rejected;
+
+
+                default:
+                    return ClearCacheStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this ClearCacheStatus)
+
+        public static String AsText(this ClearCacheStatus ClearCacheStatus)
+        {
+
+            switch (ClearCacheStatus)
+            {
+
+                case ClearCacheStatus.Accepted:
+                    return "Accepted";
+
+                case ClearCacheStatus.Rejected:
+                    return "Rejected";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the clear-cache-status-values.

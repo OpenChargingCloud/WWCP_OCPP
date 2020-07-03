@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP cancel reservation request.
+    /// A cancel reservation request.
     /// </summary>
     public class CancelReservationRequest : ARequest<CancelReservationRequest>
     {
@@ -47,7 +48,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP CancelReservationRequest XML/SOAP request.
+        /// Create a cancel reservation request.
         /// </summary>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         public CancelReservationRequest(Reservation_Id  ReservationId)
@@ -80,12 +81,28 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:CancelReservationRequest",
+        //     "title":   "CancelReservationRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "reservationId": {
+        //             "type": "integer"
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "reservationId"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (CancelReservationRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP cancel reservation request.
+        /// Parse the given XML representation of a cancel reservation request.
         /// </summary>
         /// <param name="CancelReservationRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -93,10 +110,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                      OnExceptionDelegate  OnException = null)
         {
 
-            CancelReservationRequest _CancelReservationRequest;
+            if (TryParse(CancelReservationRequestXML,
+                         out CancelReservationRequest cancelReservationRequest,
+                         OnException))
+            {
+                return cancelReservationRequest;
+            }
 
-            if (TryParse(CancelReservationRequestXML, out _CancelReservationRequest, OnException))
-                return _CancelReservationRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (CancelReservationRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a cancel reservation request.
+        /// </summary>
+        /// <param name="CancelReservationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static CancelReservationRequest Parse(JObject              CancelReservationRequestJSON,
+                                                     OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(CancelReservationRequestJSON,
+                         out CancelReservationRequest cancelReservationRequest,
+                         OnException))
+            {
+                return cancelReservationRequest;
+            }
 
             return null;
 
@@ -107,7 +150,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (CancelReservationRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP cancel reservation request.
+        /// Parse the given text representation of a cancel reservation request.
         /// </summary>
         /// <param name="CancelReservationRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -115,10 +158,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                      OnExceptionDelegate  OnException = null)
         {
 
-            CancelReservationRequest _CancelReservationRequest;
-
-            if (TryParse(CancelReservationRequestText, out _CancelReservationRequest, OnException))
-                return _CancelReservationRequest;
+            if (TryParse(CancelReservationRequestText,
+                         out CancelReservationRequest cancelReservationRequest,
+                         OnException))
+            {
+                return cancelReservationRequest;
+            }
 
             return null;
 
@@ -129,7 +174,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(CancelReservationRequestXML,  out CancelReservationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP cancel reservation request.
+        /// Try to parse the given XML representation of a cancel reservation request.
         /// </summary>
         /// <param name="CancelReservationRequestXML">The XML to be parsed.</param>
         /// <param name="CancelReservationRequest">The parsed cancel reservation request.</param>
@@ -166,10 +211,61 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(CancelReservationRequestJSON, out CancelReservationRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a cancel reservation request.
+        /// </summary>
+        /// <param name="CancelReservationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="CancelReservationRequest">The parsed cancel reservation request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                       CancelReservationRequestJSON,
+                                       out CancelReservationRequest  CancelReservationRequest,
+                                       OnExceptionDelegate           OnException  = null)
+        {
+
+            try
+            {
+
+                CancelReservationRequest = null;
+
+                #region TransactionId
+
+                if (!CancelReservationRequestJSON.ParseMandatory("reservationId",
+                                                                 "reservation identification",
+                                                                 Reservation_Id.TryParse,
+                                                                 out Reservation_Id  ReservationId,
+                                                                 out String          ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                CancelReservationRequest = new CancelReservationRequest(ReservationId);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, CancelReservationRequestJSON, e);
+
+                CancelReservationRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(CancelReservationRequestText, out CancelReservationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP cancel reservation request.
+        /// Try to parse the given text representation of a cancel reservation request.
         /// </summary>
         /// <param name="CancelReservationRequestText">The text to be parsed.</param>
         /// <param name="CancelReservationRequest">The parsed cancel reservation request.</param>
@@ -182,11 +278,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(CancelReservationRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out CancelReservationRequest,
-                             OnException))
+                CancelReservationRequestText = CancelReservationRequestText?.Trim();
 
-                    return true;
+                if (CancelReservationRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (CancelReservationRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(CancelReservationRequestText),
+                                 out CancelReservationRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(CancelReservationRequestText).Root,
+                                 out CancelReservationRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -208,11 +320,32 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "reserveNowRequest",
+            => new XElement(OCPPNS.OCPPv1_6_CP + "cancelReservationRequest",
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "reservationId",  ReservationId.ToString())
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomCancelReservationRequestRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomCancelReservationRequestRequestSerializer">A delegate to serialize custom cancel reservation requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationRequest>  CustomCancelReservationRequestRequestSerializer   = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("reservationId",  ReservationId.ToString())
+                       );
+
+            return CustomCancelReservationRequestRequestSerializer != null
+                       ? CustomCancelReservationRequestRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 
@@ -235,7 +368,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) CancelReservationRequest1 == null) || ((Object) CancelReservationRequest2 == null))
+            if ((CancelReservationRequest1 is null) || (CancelReservationRequest2 is null))
                 return false;
 
             return CancelReservationRequest1.Equals(CancelReservationRequest2);
@@ -275,12 +408,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a cancel reservation request.
-            var CancelReservationRequest = Object as CancelReservationRequest;
-            if ((Object) CancelReservationRequest == null)
+            if (!(Object is CancelReservationRequest CancelReservationRequest))
                 return false;
 
-            return this.Equals(CancelReservationRequest);
+            return Equals(CancelReservationRequest);
 
         }
 
@@ -296,7 +427,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(CancelReservationRequest CancelReservationRequest)
         {
 
-            if ((Object) CancelReservationRequest == null)
+            if (CancelReservationRequest is null)
                 return false;
 
             return ReservationId.Equals(CancelReservationRequest.ReservationId);
@@ -314,6 +445,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => ReservationId.GetHashCode();
 
         #endregion
@@ -324,10 +456,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => ReservationId.ToString();
 
         #endregion
-
 
     }
 

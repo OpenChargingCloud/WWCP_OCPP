@@ -15,8 +15,83 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extentions methods for the update status.
+    /// </summary>
+    public static class UpdateStatusExtentions
+    {
+
+        #region AsUpdateStatus(Text)
+
+        public static UpdateStatus AsUpdateStatus(this String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Accepted":
+                    return UpdateStatus.Accepted;
+
+                case "Failed":
+                    return UpdateStatus.Failed;
+
+                case "NotSupported":
+                    return UpdateStatus.NotSupported;
+
+                case "VersionMismatch":
+                    return UpdateStatus.VersionMismatch;
+
+
+                default:
+                    return UpdateStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this UpdateStatus)
+
+        public static String AsText(this UpdateStatus UpdateStatus)
+        {
+
+            switch (UpdateStatus)
+            {
+
+                case UpdateStatus.Accepted:
+                    return "Accepted";
+
+                case UpdateStatus.Failed:
+                    return "Failed";
+
+                case UpdateStatus.NotSupported:
+                    return "NotSupported";
+
+                case UpdateStatus.VersionMismatch:
+                    return "VersionMismatch";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Defines the reset-status-values.
