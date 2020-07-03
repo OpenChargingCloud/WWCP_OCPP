@@ -25,7 +25,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An abstract generic OCPP response.
+    /// An abstract generic response.
     /// </summary>
     public abstract class AResponse<TRequest, TResponse> : AResponse<TResponse>
 
@@ -37,19 +37,24 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Properties
 
         /// <summary>
-        /// The OCHP request leading to this response.
+        /// The request leading to this response.
         /// </summary>
-        public TRequest  Request             { get; }
+        public TRequest  Request    { get; }
+
+        /// <summary>
+        /// The runtime of the request.
+        /// </summary>
+        public TimeSpan  Runtime    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new generic OCHP response.
+        /// Create a new generic response.
         /// </summary>
-        /// <param name="Request">The OCHP request leading to this result.</param>
-        /// <param name="Result">A generic OCHP result.</param>
+        /// <param name="Request">The request leading to this result.</param>
+        /// <param name="Result">A generic result.</param>
         public AResponse(TRequest  Request,
                          Result    Result)
 
@@ -57,7 +62,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         {
 
-            this.Request            = Request;
+            this.Request  = Request;
+            this.Runtime  = ResponseTimestamp - Request.RequestTimestamp;
 
         }
 
@@ -67,7 +73,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
 
     /// <summary>
-    /// An abstract generic OCPP response.
+    /// An abstract generic response.
     /// </summary>
     public abstract class AResponse<TResponse> : IResponse,
                                                  IEquatable<TResponse>
@@ -93,10 +99,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new generic OCHP response.
+        /// Create a new generic response.
         /// </summary>
-        /// <param name="Result">A generic OCHP result.</param>
-        public AResponse(Result    Result)
+        /// <param name="Result">A generic result.</param>
+        public AResponse(Result  Result)
         {
 
             this.Result             = Result;
@@ -125,7 +131,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) AResponse1 == null) || ((Object) AResponse2 == null))
+            if ((AResponse1 is null) || (AResponse2 is null))
                 return false;
 
             return AResponse1.Equals(AResponse2);
@@ -165,12 +171,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if (Object is null)
                 return false;
 
-            // Check if the given object is a response.
-            var AResponse = Object as AResponse<TResponse>;
-            if ((Object) AResponse == null)
+            if (!(Object is AResponse<TResponse> AResponse))
                 return false;
 
-            return this.Equals(AResponse);
+            return Equals(AResponse);
 
         }
 
@@ -186,10 +190,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         public Boolean Equals(AResponse<TResponse> AResponse)
         {
 
-            if ((Object) AResponse == null)
+            if (AResponse is null)
                 return false;
 
-            return this.Result.Equals(AResponse.Result);
+            return Result.Equals(AResponse.Result);
 
         }
 
@@ -200,7 +204,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// Compare two responses for equality.
         /// </summary>
-        /// <param name="AResponse">Another abstract generic OCPP response.</param>
+        /// <param name="AResponse">Another abstract generic response.</param>
         public abstract Boolean Equals(TResponse AResponse);
 
         #endregion

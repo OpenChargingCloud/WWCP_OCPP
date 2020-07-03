@@ -37,7 +37,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnBootNotificationRequestDelegate (DateTime                    LogTimestamp,
                                                             DateTime                    RequestTimestamp,
-                                                            ChargePointSOAPClient                    Sender,
+                                                            ChargePointSOAPClient       Sender,
                                                             String                      SenderId,
                                                             EventTracking_Id            EventTrackingId,
 
@@ -57,7 +57,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnBootNotificationResponseDelegate(DateTime                    LogTimestamp,
                                                             DateTime                    RequestTimestamp,
-                                                            ChargePointSOAPClient                    Sender,
+                                                            ChargePointSOAPClient       Sender,
                                                             String                      SenderId,
                                                             EventTracking_Id            EventTrackingId,
 
@@ -72,7 +72,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                             TimeSpan?                   RequestTimeout,
                                                             BootNotificationResponse    Result,
-                                                            TimeSpan                    Duration);
+                                                            TimeSpan                    Runtime);
 
     #endregion
 
@@ -81,24 +81,24 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a heartbeat request will be send to the central system.
     /// </summary>
-    public delegate Task OnHeartbeatRequestDelegate (DateTime             LogTimestamp,
-                                                     DateTime             RequestTimestamp,
-                                                     ChargePointSOAPClient             Sender,
-                                                     String               SenderId,
-                                                     EventTracking_Id     EventTrackingId,
-                                                     TimeSpan?            RequestTimeout);
+    public delegate Task OnHeartbeatRequestDelegate (DateTime               LogTimestamp,
+                                                     DateTime               RequestTimestamp,
+                                                     ChargePointSOAPClient  Sender,
+                                                     String                 SenderId,
+                                                     EventTracking_Id       EventTrackingId,
+                                                     TimeSpan?              RequestTimeout);
 
     /// <summary>
     /// A delegate called whenever a response to a heartbeat request was received.
     /// </summary>
-    public delegate Task OnHeartbeatResponseDelegate(DateTime             LogTimestamp,
-                                                     DateTime             RequestTimestamp,
-                                                     ChargePointSOAPClient             Sender,
-                                                     String               SenderId,
-                                                     EventTracking_Id     EventTrackingId,
-                                                     TimeSpan?            RequestTimeout,
-                                                     HeartbeatResponse    Result,
-                                                     TimeSpan             Duration);
+    public delegate Task OnHeartbeatResponseDelegate(DateTime               LogTimestamp,
+                                                     DateTime               RequestTimestamp,
+                                                     ChargePointSOAPClient  Sender,
+                                                     String                 SenderId,
+                                                     EventTracking_Id       EventTrackingId,
+                                                     TimeSpan?              RequestTimeout,
+                                                     HeartbeatResponse      Result,
+                                                     TimeSpan               Runtime);
 
     #endregion
 
@@ -108,30 +108,30 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever an authorize request will be send to the central system.
     /// </summary>
-    public delegate Task OnAuthorizeRequestDelegate (DateTime             LogTimestamp,
-                                                     DateTime             RequestTimestamp,
-                                                     ChargePointSOAPClient             Sender,
-                                                     String               SenderId,
-                                                     EventTracking_Id     EventTrackingId,
+    public delegate Task OnAuthorizeRequestDelegate (DateTime               LogTimestamp,
+                                                     DateTime               RequestTimestamp,
+                                                     ChargePointSOAPClient  Sender,
+                                                     String                 SenderId,
+                                                     EventTracking_Id       EventTrackingId,
 
-                                                     IdToken              IdTag,
+                                                     IdToken                IdTag,
 
-                                                     TimeSpan?            RequestTimeout);
+                                                     TimeSpan?              RequestTimeout);
 
     /// <summary>
     /// A delegate called whenever a response to an authorize request was received.
     /// </summary>
-    public delegate Task OnAuthorizeResponseDelegate(DateTime             LogTimestamp,
-                                                     DateTime             RequestTimestamp,
-                                                     ChargePointSOAPClient             Sender,
-                                                     String               SenderId,
-                                                     EventTracking_Id     EventTrackingId,
+    public delegate Task OnAuthorizeResponseDelegate(DateTime               LogTimestamp,
+                                                     DateTime               RequestTimestamp,
+                                                     ChargePointSOAPClient  Sender,
+                                                     String                 SenderId,
+                                                     EventTracking_Id       EventTrackingId,
 
-                                                     IdToken              IdTag,
+                                                     IdToken                IdTag,
 
-                                                     TimeSpan?            RequestTimeout,
-                                                     AuthorizeResponse    Result,
-                                                     TimeSpan             Duration);
+                                                     TimeSpan?              RequestTimeout,
+                                                     AuthorizeResponse      Result,
+                                                     TimeSpan               Runtime);
 
     #endregion
 
@@ -142,7 +142,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnStartTransactionRequestDelegate (DateTime                    LogTimestamp,
                                                             DateTime                    RequestTimestamp,
-                                                            ChargePointSOAPClient                    Sender,
+                                                            ChargePointSOAPClient       Sender,
                                                             String                      SenderId,
                                                             EventTracking_Id            EventTrackingId,
 
@@ -159,7 +159,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnStartTransactionResponseDelegate(DateTime                    LogTimestamp,
                                                             DateTime                    RequestTimestamp,
-                                                            ChargePointSOAPClient                    Sender,
+                                                            ChargePointSOAPClient       Sender,
                                                             String                      SenderId,
                                                             EventTracking_Id            EventTrackingId,
 
@@ -171,7 +171,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                             TimeSpan?                   RequestTimeout,
                                                             StartTransactionResponse    Result,
-                                                            TimeSpan                    Duration);
+                                                            TimeSpan                    Runtime);
 
     #endregion
 
@@ -182,7 +182,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnStatusNotificationRequestDelegate (DateTime                      LogTimestamp,
                                                               DateTime                      RequestTimestamp,
-                                                              ChargePointSOAPClient                      Sender,
+                                                              ChargePointSOAPClient         Sender,
                                                               String                        SenderId,
                                                               EventTracking_Id              EventTrackingId,
 
@@ -201,7 +201,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>s
     public delegate Task OnStatusNotificationResponseDelegate(DateTime                      LogTimestamp,
                                                               DateTime                      RequestTimestamp,
-                                                              ChargePointSOAPClient                      Sender,
+                                                              ChargePointSOAPClient         Sender,
                                                               String                        SenderId,
                                                               EventTracking_Id              EventTrackingId,
 
@@ -215,7 +215,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                               TimeSpan?                     RequestTimeout,
                                                               StatusNotificationResponse    Result,
-                                                              TimeSpan                      Duration);
+                                                              TimeSpan                      Runtime);
 
     #endregion
 
@@ -226,7 +226,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnMeterValuesRequestDelegate (DateTime                 LogTimestamp,
                                                        DateTime                 RequestTimestamp,
-                                                       ChargePointSOAPClient                 Sender,
+                                                       ChargePointSOAPClient    Sender,
                                                        String                   SenderId,
                                                        EventTracking_Id         EventTrackingId,
 
@@ -241,7 +241,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>s
     public delegate Task OnMeterValuesResponseDelegate(DateTime                 LogTimestamp,
                                                        DateTime                 RequestTimestamp,
-                                                       ChargePointSOAPClient                 Sender,
+                                                       ChargePointSOAPClient    Sender,
                                                        String                   SenderId,
                                                        EventTracking_Id         EventTrackingId,
 
@@ -251,7 +251,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                        TimeSpan?                RequestTimeout,
                                                        MeterValuesResponse      Result,
-                                                       TimeSpan                 Duration);
+                                                       TimeSpan                 Runtime);
 
     #endregion
 
@@ -262,7 +262,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnStopTransactionRequestDelegate (DateTime                   LogTimestamp,
                                                            DateTime                   RequestTimestamp,
-                                                           ChargePointSOAPClient                   Sender,
+                                                           ChargePointSOAPClient      Sender,
                                                            String                     SenderId,
                                                            EventTracking_Id           EventTrackingId,
 
@@ -280,7 +280,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnStopTransactionResponseDelegate(DateTime                   LogTimestamp,
                                                            DateTime                   RequestTimestamp,
-                                                           ChargePointSOAPClient                   Sender,
+                                                           ChargePointSOAPClient      Sender,
                                                            String                     SenderId,
                                                            EventTracking_Id           EventTrackingId,
 
@@ -293,7 +293,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                            TimeSpan?                  RequestTimeout,
                                                            StopTransactionResponse    Result,
-                                                           TimeSpan                   Duration);
+                                                           TimeSpan                   Runtime);
 
     #endregion
 
@@ -305,7 +305,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnDataTransferRequestDelegate (DateTime                LogTimestamp,
                                                         DateTime                RequestTimestamp,
-                                                        ChargePointSOAPClient                Sender,
+                                                        ChargePointSOAPClient   Sender,
                                                         String                  SenderId,
                                                         EventTracking_Id        EventTrackingId,
 
@@ -320,7 +320,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnDataTransferResponseDelegate(DateTime                LogTimestamp,
                                                         DateTime                RequestTimestamp,
-                                                        ChargePointSOAPClient                Sender,
+                                                        ChargePointSOAPClient   Sender,
                                                         String                  SenderId,
                                                         EventTracking_Id        EventTrackingId,
 
@@ -330,7 +330,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                         TimeSpan?               RequestTimeout,
                                                         DataTransferResponse    Result,
-                                                        TimeSpan                Duration);
+                                                        TimeSpan                Runtime);
 
     #endregion
 
@@ -341,7 +341,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnDiagnosticsStatusNotificationRequestDelegate (DateTime                                 LogTimestamp,
                                                                          DateTime                                 RequestTimestamp,
-                                                                         ChargePointSOAPClient                                 Sender,
+                                                                         ChargePointSOAPClient                    Sender,
                                                                          String                                   SenderId,
                                                                          EventTracking_Id                         EventTrackingId,
 
@@ -354,7 +354,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnDiagnosticsStatusNotificationResponseDelegate(DateTime                                 LogTimestamp,
                                                                          DateTime                                 RequestTimestamp,
-                                                                         ChargePointSOAPClient                                 Sender,
+                                                                         ChargePointSOAPClient                    Sender,
                                                                          String                                   SenderId,
                                                                          EventTracking_Id                         EventTrackingId,
 
@@ -362,7 +362,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                                          TimeSpan?                                RequestTimeout,
                                                                          DiagnosticsStatusNotificationResponse    Result,
-                                                                         TimeSpan                                 Duration);
+                                                                         TimeSpan                                 Runtime);
 
     #endregion
 
@@ -373,7 +373,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnFirmwareStatusNotificationRequestDelegate (DateTime                              LogTimestamp,
                                                                       DateTime                              RequestTimestamp,
-                                                                      ChargePointSOAPClient                              Sender,
+                                                                      ChargePointSOAPClient                 Sender,
                                                                       String                                SenderId,
                                                                       EventTracking_Id                      EventTrackingId,
 
@@ -386,7 +386,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// </summary>
     public delegate Task OnFirmwareStatusNotificationResponseDelegate(DateTime                              LogTimestamp,
                                                                       DateTime                              RequestTimestamp,
-                                                                      ChargePointSOAPClient                              Sender,
+                                                                      ChargePointSOAPClient                 Sender,
                                                                       String                                SenderId,
                                                                       EventTracking_Id                      EventTrackingId,
 
@@ -394,7 +394,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                                       TimeSpan?                             RequestTimeout,
                                                                       FirmwareStatusNotificationResponse    Result,
-                                                                      TimeSpan                              Duration);
+                                                                      TimeSpan                              Runtime);
 
     #endregion
 

@@ -35,40 +35,40 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <summary>
     /// A delegate called whenever a reserve now request will be send to a charge point.
     /// </summary>
-    public delegate Task OnReserveNowRequestDelegate (DateTime              LogTimestamp,
-                                                      DateTime              RequestTimestamp,
-                                                      CentralSystemSOAPClient              Sender,
-                                                      String                SenderId,
-                                                      EventTracking_Id      EventTrackingId,
+    public delegate Task OnReserveNowRequestDelegate (DateTime                 LogTimestamp,
+                                                      DateTime                 RequestTimestamp,
+                                                      CentralSystemSOAPClient  Sender,
+                                                      String                   SenderId,
+                                                      EventTracking_Id         EventTrackingId,
 
-                                                      ChargeBox_Id          ChargeBoxIdentity,
-                                                      Connector_Id          ConnectorId,
-                                                      Reservation_Id        ReservationId,
-                                                      DateTime              ExpiryDate,
-                                                      IdToken               IdTag,
-                                                      IdToken?              ParentIdTag,
+                                                      ChargeBox_Id             ChargeBoxIdentity,
+                                                      Connector_Id             ConnectorId,
+                                                      Reservation_Id           ReservationId,
+                                                      DateTime                 ExpiryDate,
+                                                      IdToken                  IdTag,
+                                                      IdToken?                 ParentIdTag,
 
-                                                      TimeSpan?             RequestTimeout);
+                                                      TimeSpan?                RequestTimeout);
 
     /// <summary>
     /// A delegate called whenever a response to a reserve now request was received.
     /// </summary>
-    public delegate Task OnReserveNowResponseDelegate(DateTime              LogTimestamp,
-                                                      DateTime              RequestTimestamp,
-                                                      CentralSystemSOAPClient              Sender,
-                                                      String                SenderId,
-                                                      EventTracking_Id      EventTrackingId,
+    public delegate Task OnReserveNowResponseDelegate(DateTime                 LogTimestamp,
+                                                      DateTime                 RequestTimestamp,
+                                                      CentralSystemSOAPClient  Sender,
+                                                      String                   SenderId,
+                                                      EventTracking_Id         EventTrackingId,
 
-                                                      ChargeBox_Id          ChargeBoxIdentity,
-                                                      Connector_Id          ConnectorId,
-                                                      Reservation_Id        ReservationId,
-                                                      DateTime              ExpiryDate,
-                                                      IdToken               IdTag,
-                                                      IdToken?              ParentIdTag,
+                                                      ChargeBox_Id             ChargeBoxIdentity,
+                                                      Connector_Id             ConnectorId,
+                                                      Reservation_Id           ReservationId,
+                                                      DateTime                 ExpiryDate,
+                                                      IdToken                  IdTag,
+                                                      IdToken?                 ParentIdTag,
 
-                                                      TimeSpan?             RequestTimeout,
-                                                      ReserveNowResponse    Result,
-                                                      TimeSpan              Duration);
+                                                      TimeSpan?                RequestTimeout,
+                                                      ReserveNowResponse       Result,
+                                                      TimeSpan                 Runtime);
 
     #endregion
 
@@ -79,7 +79,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnCancelReservationRequestDelegate (DateTime                     LogTimestamp,
                                                              DateTime                     RequestTimestamp,
-                                                             CentralSystemSOAPClient                     Sender,
+                                                             CentralSystemSOAPClient      Sender,
                                                              String                       SenderId,
                                                              EventTracking_Id             EventTrackingId,
 
@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnCancelReservationResponseDelegate(DateTime                     LogTimestamp,
                                                              DateTime                     RequestTimestamp,
-                                                             CentralSystemSOAPClient                     Sender,
+                                                             CentralSystemSOAPClient      Sender,
                                                              String                       SenderId,
                                                              EventTracking_Id             EventTrackingId,
 
@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                              TimeSpan?                    RequestTimeout,
                                                              CancelReservationResponse    Result,
-                                                             TimeSpan                     Duration);
+                                                             TimeSpan                     Runtime);
 
     #endregion
 
@@ -113,7 +113,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnRemoteStartTransactionRequestDelegate (DateTime                          LogTimestamp,
                                                                   DateTime                          RequestTimestamp,
-                                                                  CentralSystemSOAPClient                          Sender,
+                                                                  CentralSystemSOAPClient           Sender,
                                                                   String                            SenderId,
                                                                   EventTracking_Id                  EventTrackingId,
 
@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnRemoteStartTransactionResponseDelegate(DateTime                          LogTimestamp,
                                                                   DateTime                          RequestTimestamp,
-                                                                  CentralSystemSOAPClient                          Sender,
+                                                                  CentralSystemSOAPClient           Sender,
                                                                   String                            SenderId,
                                                                   EventTracking_Id                  EventTrackingId,
 
@@ -140,7 +140,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                                   TimeSpan?                         RequestTimeout,
                                                                   RemoteStartTransactionResponse    Result,
-                                                                  TimeSpan                          Duration);
+                                                                  TimeSpan                          Runtime);
 
     #endregion
 
@@ -151,7 +151,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnRemoteStopTransactionRequestDelegate (DateTime                         LogTimestamp,
                                                                  DateTime                         RequestTimestamp,
-                                                                 CentralSystemSOAPClient                         Sender,
+                                                                 CentralSystemSOAPClient          Sender,
                                                                  String                           SenderId,
                                                                  EventTracking_Id                 EventTrackingId,
 
@@ -165,7 +165,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnRemoteStopTransactionResponseDelegate(DateTime                         LogTimestamp,
                                                                  DateTime                         RequestTimestamp,
-                                                                 CentralSystemSOAPClient                         Sender,
+                                                                 CentralSystemSOAPClient          Sender,
                                                                  String                           SenderId,
                                                                  EventTracking_Id                 EventTrackingId,
 
@@ -174,7 +174,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                                  TimeSpan?                        RequestTimeout,
                                                                  RemoteStopTransactionResponse    Result,
-                                                                 TimeSpan                         Duration);
+                                                                 TimeSpan                         Runtime);
 
     #endregion
 
@@ -186,7 +186,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnDataTransferRequestDelegate (DateTime                   LogTimestamp,
                                                         DateTime                   RequestTimestamp,
-                                                        CentralSystemSOAPClient                   Sender,
+                                                        CentralSystemSOAPClient    Sender,
                                                         String                     SenderId,
                                                         EventTracking_Id           EventTrackingId,
 
@@ -201,7 +201,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// </summary>
     public delegate Task OnDataTransferResponseDelegate(DateTime                   LogTimestamp,
                                                         DateTime                   RequestTimestamp,
-                                                        CentralSystemSOAPClient                   Sender,
+                                                        CentralSystemSOAPClient    Sender,
                                                         String                     SenderId,
                                                         EventTracking_Id           EventTrackingId,
 
@@ -211,7 +211,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                         TimeSpan?                  RequestTimeout,
                                                         CP.DataTransferResponse    Result,
-                                                        TimeSpan                   Duration);
+                                                        TimeSpan                   Runtime);
 
     #endregion
 

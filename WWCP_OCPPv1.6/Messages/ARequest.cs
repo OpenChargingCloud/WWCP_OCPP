@@ -46,7 +46,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new generic OCHP request message.
+        /// Create a new generic OCPP request message.
         /// </summary>
         public ARequest()
         {

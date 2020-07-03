@@ -49,19 +49,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<ReserveNowResponse>
 
-        OnReserveNowDelegate(DateTime             Timestamp,
-                             ChargePointSOAPServer             Sender,
-                             CancellationToken    CancellationToken,
-                             EventTracking_Id     EventTrackingId,
+        OnReserveNowDelegate(DateTime               Timestamp,
+                             ChargePointSOAPServer  Sender,
+                             CancellationToken      CancellationToken,
+                             EventTracking_Id       EventTrackingId,
 
-                             ChargeBox_Id         ChargeBoxIdentity,
-                             Connector_Id         ConnectorId,
-                             Reservation_Id       ReservationId,
-                             DateTime             ExpiryDate,
-                             IdToken              IdTag,
-                             IdToken?             ParentIdTag,
+                             ChargeBox_Id           ChargeBoxIdentity,
+                             Connector_Id           ConnectorId,
+                             Reservation_Id         ReservationId,
+                             DateTime               ExpiryDate,
+                             IdToken                IdTag,
+                             IdToken?               ParentIdTag,
 
-                             TimeSpan?            RequestTimeout = null);
+                             TimeSpan?              RequestTimeout = null);
 
     #endregion
 
@@ -81,15 +81,15 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<CancelReservationResponse>
 
-        OnCancelReservationDelegate(DateTime             Timestamp,
-                                    ChargePointSOAPServer             Sender,
-                                    CancellationToken    CancellationToken,
-                                    EventTracking_Id     EventTrackingId,
+        OnCancelReservationDelegate(DateTime               Timestamp,
+                                    ChargePointSOAPServer  Sender,
+                                    CancellationToken      CancellationToken,
+                                    EventTracking_Id       EventTrackingId,
 
-                                    ChargeBox_Id         ChargeBoxIdentity,
-                                    Reservation_Id       ReservationId,
+                                    ChargeBox_Id           ChargeBoxIdentity,
+                                    Reservation_Id         ReservationId,
 
-                                    TimeSpan?            RequestTimeout = null);
+                                    TimeSpan?              RequestTimeout = null);
 
     #endregion
 
@@ -111,17 +111,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<RemoteStartTransactionResponse>
 
-        OnRemoteStartTransactionDelegate(DateTime             Timestamp,
-                                         ChargePointSOAPServer             Sender,
-                                         CancellationToken    CancellationToken,
-                                         EventTracking_Id     EventTrackingId,
+        OnRemoteStartTransactionDelegate(DateTime               Timestamp,
+                                         ChargePointSOAPServer  Sender,
+                                         CancellationToken      CancellationToken,
+                                         EventTracking_Id       EventTrackingId,
 
-                                         ChargeBox_Id         ChargeBoxIdentity,
-                                         IdToken              IdTag,
-                                         Connector_Id?        ConnectorId,
-                                         ChargingProfile      ChargingProfile,
+                                         ChargeBox_Id           ChargeBoxIdentity,
+                                         IdToken                IdTag,
+                                         Connector_Id?          ConnectorId,
+                                         ChargingProfile        ChargingProfile,
 
-                                         TimeSpan?            RequestTimeout = null);
+                                         TimeSpan?              RequestTimeout = null);
 
     #endregion
 
@@ -141,15 +141,15 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<RemoteStopTransactionResponse>
 
-        OnRemoteStopTransactionDelegate(DateTime             Timestamp,
-                                        ChargePointSOAPServer             Sender,
-                                        CancellationToken    CancellationToken,
-                                        EventTracking_Id     EventTrackingId,
+        OnRemoteStopTransactionDelegate(DateTime               Timestamp,
+                                        ChargePointSOAPServer  Sender,
+                                        CancellationToken      CancellationToken,
+                                        EventTracking_Id       EventTrackingId,
 
-                                        ChargeBox_Id         ChargeBoxIdentity,
-                                        Transaction_Id       TransactionId,
+                                        ChargeBox_Id           ChargeBoxIdentity,
+                                        Transaction_Id         TransactionId,
 
-                                        TimeSpan?            RequestTimeout = null);
+                                        TimeSpan?              RequestTimeout = null);
 
     #endregion
 
@@ -172,17 +172,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<DataTransferResponse>
 
-        OnDataTransferDelegate(DateTime             Timestamp,
-                               ChargePointSOAPServer             Sender,
-                               CancellationToken    CancellationToken,
-                               EventTracking_Id     EventTrackingId,
+        OnDataTransferDelegate(DateTime               Timestamp,
+                               ChargePointSOAPServer  Sender,
+                               CancellationToken      CancellationToken,
+                               EventTracking_Id       EventTrackingId,
 
-                               ChargeBox_Id         ChargeBoxIdentity,
-                               String               VendorId,
-                               String               MessageId,
-                               String               Data,
+                               ChargeBox_Id           ChargeBoxIdentity,
+                               String                 VendorId,
+                               String                 MessageId,
+                               String                 Data,
 
-                               TimeSpan?            RequestTimeout = null);
+                               TimeSpan?              RequestTimeout = null);
 
     #endregion
 

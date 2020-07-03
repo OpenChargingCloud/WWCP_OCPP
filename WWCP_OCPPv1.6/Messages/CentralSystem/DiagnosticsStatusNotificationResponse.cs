@@ -33,16 +33,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     public class DiagnosticsStatusNotificationResponse : AResponse<DiagnosticsStatusNotificationResponse>
     {
 
-        #region Statics
-
-        /// <summary>
-        /// The diagnostics status notification request failed.
-        /// </summary>
-        public static DiagnosticsStatusNotificationResponse Failed
-            => new DiagnosticsStatusNotificationResponse(Result.Server());
-
-        #endregion
-
         #region Constructor(s)
 
         #region DiagnosticsStatusNotificationResponse()
@@ -204,6 +194,18 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public XElement ToXML()
 
             => new XElement(OCPPNS.OCPPv1_6_CS + "diagnosticsStatusNotificationResponse");
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The diagnostics status notification request failed.
+        /// </summary>
+        public static DiagnosticsStatusNotificationResponse Failed
+
+            => new DiagnosticsStatusNotificationResponse(Result.Server());
 
         #endregion
 

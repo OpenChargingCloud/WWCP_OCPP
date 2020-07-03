@@ -25,7 +25,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// The common interface of an OCPP request message.
+    /// The common interface of a request message.
     /// </summary>
     public interface IRequest
     {

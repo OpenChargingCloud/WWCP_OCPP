@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// A generic OCPP result.
+    /// A general OCPP result.
     /// </summary>
     public class Result : IEquatable<Result>
     {

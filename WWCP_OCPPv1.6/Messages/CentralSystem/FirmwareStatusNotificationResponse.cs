@@ -33,16 +33,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     public class FirmwareStatusNotificationResponse : AResponse<FirmwareStatusNotificationResponse>
     {
 
-        #region Statics
-
-        /// <summary>
-        /// The firmware status notification request failed.
-        /// </summary>
-        public static FirmwareStatusNotificationResponse Failed
-            => new FirmwareStatusNotificationResponse(Result.Server());
-
-        #endregion
-
         #region Constructor(s)
 
         #region FirmwareStatusNotificationResponse()
@@ -204,6 +194,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public XElement ToXML()
 
             => new XElement(OCPPNS.OCPPv1_6_CS + "firmwareStatusNotificationResponse");
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The firmware status notification request failed.
+        /// </summary>
+        public static FirmwareStatusNotificationResponse Failed
+            => new FirmwareStatusNotificationResponse(Result.Server());
 
         #endregion
 

@@ -17,17 +17,15 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
-
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.WWCP.OCPPv1_6.CP;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -76,17 +74,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a boot notification SOAP request was received.
         /// </summary>
-        public event RequestLogHandler           OnBootNotificationSOAPRequest;
+        public event RequestLogHandler                 OnBootNotificationSOAPRequest;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a boot notification was sent.
+        /// An event sent whenever a boot notification request was received.
         /// </summary>
-        public event AccessLogHandler            OnBootNotificationSOAPResponse;
+        public event BootNotificationRequestDelegate   OnBootNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a boot notification was received.
         /// </summary>
-        public event OnBootNotificationDelegate  OnBootNotificationRequest;
+        public event BootNotificationDelegate          OnBootNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a boot notification was sent.
+        /// </summary>
+        public event BootNotificationResponseDelegate  OnBootNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a boot notification was sent.
+        /// </summary>
+        public event AccessLogHandler                  OnBootNotificationSOAPResponse;
 
         #endregion
 
@@ -95,17 +103,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a heartbeat SOAP request was received.
         /// </summary>
-        public event RequestLogHandler    OnHeartbeatSOAPRequest;
+        public event RequestLogHandler          OnHeartbeatSOAPRequest;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a heartbeat was sent.
+        /// An event sent whenever a heartbeat request was received.
         /// </summary>
-        public event AccessLogHandler     OnHeartbeatSOAPResponse;
+        public event HeartbeatRequestDelegate   OnHeartbeatRequest;
 
         /// <summary>
         /// An event sent whenever a heartbeat was received.
         /// </summary>
-        public event OnHeartbeatDelegate  OnHeartbeatRequest;
+        public event HeartbeatDelegate          OnHeartbeat;
+
+        /// <summary>
+        /// An event sent whenever a response to a heartbeat was sent.
+        /// </summary>
+        public event HeartbeatResponseDelegate  OnHeartbeatResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a heartbeat was sent.
+        /// </summary>
+        public event AccessLogHandler           OnHeartbeatSOAPResponse;
 
         #endregion
 
@@ -221,7 +239,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnDataTransferDelegate  OnDataTransferRequest;
+        public event OnIncomingDataTransferDelegate  OnDataTransferRequest;
 
         #endregion
 
@@ -374,14 +392,43 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var OCPPHeader               = SOAPHeader.Parse(HeaderXML);
                     var bootNotificationRequest  = BootNotificationRequest.Parse(BootNotificationXML);
 
+                    #region Send OnBootNotificationRequest event
+
+                    try
+                    {
+
+                        OnBootNotificationRequest?.Invoke(bootNotificationRequest.RequestTimestamp,
+                                                          this,
+                                                          Request.EventTrackingId,
+
+                                                          OCPPHeader.ChargeBoxIdentity,
+
+                                                          bootNotificationRequest.ChargePointVendor,
+                                                          bootNotificationRequest.ChargePointModel,
+                                                          bootNotificationRequest.ChargePointSerialNumber,
+                                                          bootNotificationRequest.ChargeBoxSerialNumber,
+                                                          bootNotificationRequest.FirmwareVersion,
+                                                          bootNotificationRequest.Iccid,
+                                                          bootNotificationRequest.IMSI,
+                                                          bootNotificationRequest.MeterType,
+                                                          bootNotificationRequest.MeterSerialNumber);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationRequest));
+                    }
+
+                    #endregion
+
                     #region Call async subscribers
 
                     if (response == null)
                     {
 
-                        var results = OnBootNotificationRequest?.
+                        var results = OnBootNotification?.
                                           GetInvocationList()?.
-                                          SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)
+                                          SafeSelect(subscriber => (subscriber as BootNotificationDelegate)
                                               (DateTime.UtcNow,
                                                this,
                                                Request.CancellationToken,
@@ -406,7 +453,43 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     #endregion
 
-                    #region Create SOAPResponse
+                    #region Send OnBootNotificationResponse event
+
+                    try
+                    {
+
+                        OnBootNotificationResponse?.Invoke(response.ResponseTimestamp,
+                                                           this,
+                                                           Request.EventTrackingId,
+
+                                                           OCPPHeader.ChargeBoxIdentity,
+
+                                                           bootNotificationRequest.ChargePointVendor,
+                                                           bootNotificationRequest.ChargePointModel,
+                                                           bootNotificationRequest.ChargePointSerialNumber,
+                                                           bootNotificationRequest.ChargeBoxSerialNumber,
+                                                           bootNotificationRequest.FirmwareVersion,
+                                                           bootNotificationRequest.Iccid,
+                                                           bootNotificationRequest.IMSI,
+                                                           bootNotificationRequest.MeterType,
+                                                           bootNotificationRequest.MeterSerialNumber,
+
+                                                           response.Result,
+                                                           response.Status,
+                                                           response.CurrentTime,
+                                                           response.Interval,
+                                                           response.Runtime);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationResponse));
+                    }
+
+                    #endregion
+
+
+                    #region Create HTTP Response
 
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
@@ -423,7 +506,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     };
 
                     #endregion
-
 
                 }
                 catch (Exception e)
@@ -490,14 +572,33 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var OCPPHeader        = SOAPHeader.Parse(HeaderXML);
                     var heartbeatRequest  = HeartbeatRequest.Parse(HeartbeatXML);
 
+                    #region Send OnHeartbeatRequest event
+
+                    try
+                    {
+
+                        OnHeartbeatRequest?.Invoke(heartbeatRequest.RequestTimestamp,
+                                                   this,
+                                                   Request.EventTrackingId,
+
+                                                   OCPPHeader.ChargeBoxIdentity);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnHeartbeatRequest));
+                    }
+
+                    #endregion
+
                     #region Call async subscribers
 
                     if (response == null)
                     {
 
-                        var results = OnHeartbeatRequest?.
+                        var results = OnHeartbeat?.
                                           GetInvocationList()?.
-                                          SafeSelect(subscriber => (subscriber as OnHeartbeatDelegate)
+                                          SafeSelect(subscriber => (subscriber as HeartbeatDelegate)
                                               (DateTime.UtcNow,
                                                this,
                                                Request.CancellationToken,
@@ -522,7 +623,31 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     #endregion
 
-                    #region Create SOAPResponse
+                    #region Send OnHeartbeatResponse event
+
+                    try
+                    {
+
+                        OnHeartbeatResponse?.Invoke(response.ResponseTimestamp,
+                                                    this,
+                                                    Request.EventTrackingId,
+
+                                                    OCPPHeader.ChargeBoxIdentity,
+
+                                                    response.Result,
+                                                    response.CurrentTime,
+                                                    response.Runtime);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnHeartbeatResponse));
+                    }
+
+                    #endregion
+
+
+                    #region Create HTTP Response
 
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
@@ -638,7 +763,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     #endregion
 
-                    #region Create SOAPResponse
+                    #region Create HTTP Response
 
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
@@ -753,7 +878,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     #endregion
 
-                    #region Create SOAPResponse
+                    #region Create HTTP Response
 
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
@@ -868,7 +993,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     #endregion
 
-                    #region Create SOAPResponse
+                    #region Create HTTP Response
 
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
@@ -983,7 +1108,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     #endregion
 
-                    #region Create SOAPResponse
+                    #region Create HTTP Response
 
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
@@ -1098,7 +1223,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     #endregion
 
-                    #region Create SOAPResponse
+                    #region Create HTTP Response
 
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
@@ -1190,7 +1315,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                         var results = OnDataTransferRequest?.
                                           GetInvocationList()?.
-                                          SafeSelect(subscriber => (subscriber as OnDataTransferDelegate)
+                                          SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
                                               (DateTime.UtcNow,
                                                this,
                                                Request.CancellationToken,
@@ -1215,7 +1340,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     #endregion
 
-                    #region Create SOAPResponse
+                    #region Create HTTP Response
 
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
@@ -1331,7 +1456,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     #endregion
 
-                    #region Create SOAPResponse
+                    #region Create HTTP Response
 
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
@@ -1447,7 +1572,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                     #endregion
 
-                    #region Create SOAPResponse
+                    #region Create HTTP Response
 
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,

@@ -25,7 +25,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// The common interface of an OCPP response message.
+    /// The common interface of a response message.
     /// </summary>
     public interface IResponse
     {
@@ -33,12 +33,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// The machine-readable result code.
         /// </summary>
-        Result    Result              { get; }
+        Result    Result               { get; }
 
         /// <summary>
         /// The timestamp of the response message creation.
         /// </summary>
-        DateTime  ResponseTimestamp   { get; }
+        DateTime  ResponseTimestamp    { get; }
 
     }
 
