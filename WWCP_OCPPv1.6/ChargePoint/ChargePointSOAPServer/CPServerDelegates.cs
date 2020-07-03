@@ -46,7 +46,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <param name="IdTag">The identifier for which the charge point has to reserve a connector.</param>
     /// <param name="ParentIdTag">An optional ParentIdTag.</param>
     /// 
-    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<ReserveNowResponse>
 
         OnReserveNowDelegate(DateTime             Timestamp,
@@ -61,7 +61,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                              IdToken              IdTag,
                              IdToken?             ParentIdTag,
 
-                             TimeSpan?            QueryTimeout = null);
+                             TimeSpan?            RequestTimeout = null);
 
     #endregion
 
@@ -78,7 +78,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
     /// <param name="ReservationId">The unique identification of this reservation.</param>
     /// 
-    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<CancelReservationResponse>
 
         OnCancelReservationDelegate(DateTime             Timestamp,
@@ -89,7 +89,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                     ChargeBox_Id         ChargeBoxIdentity,
                                     Reservation_Id       ReservationId,
 
-                                    TimeSpan?            QueryTimeout = null);
+                                    TimeSpan?            RequestTimeout = null);
 
     #endregion
 
@@ -108,7 +108,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <param name="ConnectorId">An optional connector identification on which the charging transaction should be started (SHALL be > 0).</param>
     /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
     /// 
-    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<RemoteStartTransactionResponse>
 
         OnRemoteStartTransactionDelegate(DateTime             Timestamp,
@@ -121,7 +121,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                          Connector_Id?        ConnectorId,
                                          ChargingProfile      ChargingProfile,
 
-                                         TimeSpan?            QueryTimeout = null);
+                                         TimeSpan?            RequestTimeout = null);
 
     #endregion
 
@@ -138,7 +138,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
     /// <param name="TransactionId">The identification of the transaction which the charge point is requested to stop.</param>
     /// 
-    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<RemoteStopTransactionResponse>
 
         OnRemoteStopTransactionDelegate(DateTime             Timestamp,
@@ -149,7 +149,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                         ChargeBox_Id         ChargeBoxIdentity,
                                         Transaction_Id       TransactionId,
 
-                                        TimeSpan?            QueryTimeout = null);
+                                        TimeSpan?            RequestTimeout = null);
 
     #endregion
 
@@ -169,7 +169,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <param name="MessageId">The charge point model identification.</param>
     /// <param name="Data">The serial number of the charge point.</param>
     /// 
-    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<DataTransferResponse>
 
         OnDataTransferDelegate(DateTime             Timestamp,
@@ -182,7 +182,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                String               MessageId,
                                String               Data,
 
-                               TimeSpan?            QueryTimeout = null);
+                               TimeSpan?            RequestTimeout = null);
 
     #endregion
 
