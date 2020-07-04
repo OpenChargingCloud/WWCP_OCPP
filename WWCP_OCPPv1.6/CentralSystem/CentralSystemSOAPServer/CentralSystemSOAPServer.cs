@@ -133,17 +133,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever an authorize SOAP request was received.
         /// </summary>
-        public event RequestLogHandler    OnAuthorizeSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever an authorize SOAP response was sent.
-        /// </summary>
-        public event AccessLogHandler     OnAuthorizeSOAPResponse;
+        public event RequestLogHandler            OnAuthorizeSOAPRequest;
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
         /// </summary>
-        public event OnAuthorizeDelegate  OnAuthorizeRequest;
+        public event OnAuthorizeRequestDelegate   OnAuthorizeRequest;
+
+        /// <summary>
+        /// An event sent whenever an authorize request was received.
+        /// </summary>
+        public event OnAuthorizeDelegate          OnAuthorize;
+
+        /// <summary>
+        /// An event sent whenever an authorize response was sent.
+        /// </summary>
+        public event OnAuthorizeResponseDelegate  OnAuthorizeResponse;
+
+        /// <summary>
+        /// An event sent whenever an authorize SOAP response was sent.
+        /// </summary>
+        public event AccessLogHandler             OnAuthorizeSOAPResponse;
 
         #endregion
 
@@ -152,17 +162,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a start transaction SOAP request was received.
         /// </summary>
-        public event RequestLogHandler           OnStartTransactionSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever a SOAP response to a start transaction request was sent.
-        /// </summary>
-        public event AccessLogHandler            OnStartTransactionSOAPResponse;
+        public event RequestLogHandler                   OnStartTransactionSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        public event OnStartTransactionDelegate  OnStartTransactionRequest;
+        public event OnStartTransactionRequestDelegate   OnStartTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a start transaction request was received.
+        /// </summary>
+        public event OnStartTransactionDelegate          OnStartTransaction;
+
+        /// <summary>
+        /// An event sent whenever a response to a start transaction request was sent.
+        /// </summary>
+        public event OnStartTransactionResponseDelegate  OnStartTransactionResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a start transaction request was sent.
+        /// </summary>
+        public event AccessLogHandler                    OnStartTransactionSOAPResponse;
 
         #endregion
 
@@ -171,17 +191,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a status notification SOAP request was received.
         /// </summary>
-        public event RequestLogHandler             OnStatusNotificationSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever a SOAP response to a status notification request was sent.
-        /// </summary>
-        public event AccessLogHandler              OnStatusNotificationSOAPResponse;
+        public event RequestLogHandler                     OnStatusNotificationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
         /// </summary>
-        public event OnStatusNotificationDelegate  OnStatusNotificationRequest;
+        public event OnStatusNotificationRequestDelegate   OnStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a status notification request was received.
+        /// </summary>
+        public event OnStatusNotificationDelegate          OnStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a status notification request was sent.
+        /// </summary>
+        public event OnStatusNotificationResponseDelegate  OnStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a status notification request was sent.
+        /// </summary>
+        public event AccessLogHandler                      OnStatusNotificationSOAPResponse;
 
         #endregion
 
@@ -190,17 +220,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a meter values SOAP request was received.
         /// </summary>
-        public event RequestLogHandler      OnMeterValuesSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever a SOAP response to a meter values request was sent.
-        /// </summary>
-        public event AccessLogHandler       OnMeterValuesSOAPResponse;
+        public event RequestLogHandler              OnMeterValuesSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
         /// </summary>
-        public event OnMeterValuesDelegate  OnMeterValuesRequest;
+        public event OnMeterValuesRequestDelegate   OnMeterValuesRequest;
+
+        /// <summary>
+        /// An event sent whenever a meter values request was received.
+        /// </summary>
+        public event OnMeterValuesDelegate          OnMeterValues;
+
+        /// <summary>
+        /// An event sent whenever a response to a meter values request was sent.
+        /// </summary>
+        public event OnMeterValuesResponseDelegate  OnMeterValuesResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a meter values request was sent.
+        /// </summary>
+        public event AccessLogHandler               OnMeterValuesSOAPResponse;
 
         #endregion
 
@@ -209,17 +249,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a stop transaction SOAP request was received.
         /// </summary>
-        public event RequestLogHandler          OnStopTransactionSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever a SOAP response to a stop transaction request was sent.
-        /// </summary>
-        public event AccessLogHandler           OnStopTransactionSOAPResponse;
+        public event RequestLogHandler                  OnStopTransactionSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
         /// </summary>
-        public event OnStopTransactionDelegate  OnStopTransactionRequest;
+        public event OnStopTransactionRequestDelegate   OnStopTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a stop transaction request was received.
+        /// </summary>
+        public event OnStopTransactionDelegate          OnStopTransaction;
+
+        /// <summary>
+        /// An event sent whenever a response to a stop transaction request was sent.
+        /// </summary>
+        public event OnStopTransactionResponseDelegate  OnStopTransactionResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a stop transaction request was sent.
+        /// </summary>
+        public event AccessLogHandler                   OnStopTransactionSOAPResponse;
 
         #endregion
 
@@ -229,17 +279,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a data transfer SOAP request was received.
         /// </summary>
-        public event RequestLogHandler       OnDataTransferSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever a SOAP response to a data transfer request was sent.
-        /// </summary>
-        public event AccessLogHandler        OnDataTransferSOAPResponse;
+        public event RequestLogHandler                       OnIncomingDataTransferSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferDelegate  OnDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a data transfer request was received.
+        /// </summary>
+        public event OnIncomingDataTransferDelegate          OnIncomingDataTransfer;
+
+        /// <summary>
+        /// An event sent whenever a response to a data transfer request was sent.
+        /// </summary>
+        public event OnIncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a data transfer request was sent.
+        /// </summary>
+        public event AccessLogHandler                        OnIncomingDataTransferSOAPResponse;
 
         #endregion
 
@@ -248,17 +308,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a diagnostics status notification SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                        OnDiagnosticsStatusNotificationSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever a SOAP response to a diagnostics status notification request was sent.
-        /// </summary>
-        public event AccessLogHandler                         OnDiagnosticsStatusNotificationSOAPResponse;
+        public event RequestLogHandler                                OnDiagnosticsStatusNotificationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationDelegate  OnDiagnosticsStatusNotificationRequest;
+        public event OnDiagnosticsStatusNotificationRequestDelegate   OnDiagnosticsStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a diagnostics status notification request was received.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationDelegate          OnDiagnosticsStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a diagnostics status notification request was sent.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a diagnostics status notification request was sent.
+        /// </summary>
+        public event AccessLogHandler                                 OnDiagnosticsStatusNotificationSOAPResponse;
 
         #endregion
 
@@ -267,17 +337,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a firmware status notification SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                     OnFirmwareStatusNotificationSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever a SOAP response to a firmware status notification request was sent.
-        /// </summary>
-        public event AccessLogHandler                      OnFirmwareStatusNotificationSOAPResponse;
+        public event RequestLogHandler                             OnFirmwareStatusNotificationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationDelegate  OnFirmwareStatusNotificationRequest;
+        public event OnFirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        public event OnFirmwareStatusNotificationDelegate          OnFirmwareStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a firmware status notification request was sent.
+        /// </summary>
+        public event OnFirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a firmware status notification request was sent.
+        /// </summary>
+        public event AccessLogHandler                              OnFirmwareStatusNotificationSOAPResponse;
 
         #endregion
 
@@ -731,12 +811,33 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var OCPPHeader        = SOAPHeader.Parse(HeaderXML);
                     var authorizeRequest  = AuthorizeRequest.Parse(AuthorizeXML);
 
+                    #region Send OnAuthorizeRequest event
+
+                    try
+                    {
+
+                        OnAuthorizeRequest?.Invoke(authorizeRequest.RequestTimestamp,
+                                                   this,
+                                                   Request.EventTrackingId,
+
+                                                   OCPPHeader.ChargeBoxIdentity,
+
+                                                   authorizeRequest.IdTag);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnAuthorizeRequest));
+                    }
+
+                    #endregion
+
                     #region Call async subscribers
 
                     if (response == null)
                     {
 
-                        var results = OnAuthorizeRequest?.
+                        var results = OnAuthorize?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)
                                               (DateTime.UtcNow,
@@ -762,6 +863,32 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     }
 
                     #endregion
+
+                    #region Send OnAuthorizeResponse event
+
+                    try
+                    {
+
+                        OnAuthorizeResponse?.Invoke(response.ResponseTimestamp,
+                                                    this,
+                                                    Request.EventTrackingId,
+
+                                                    OCPPHeader.ChargeBoxIdentity,
+
+                                                    authorizeRequest.IdTag,
+
+                                                    response.Result,
+                                                    response.IdTagInfo,
+                                                    response.Runtime);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnAuthorizeResponse));
+                    }
+
+                    #endregion
+
 
                     #region Create HTTP Response
 
@@ -846,12 +973,37 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var OCPPHeader               = SOAPHeader.Parse(HeaderXML);
                     var startTransactionRequest  = StartTransactionRequest.Parse(StartTransactionXML);
 
+                    #region Send OnStartTransactionRequest event
+
+                    try
+                    {
+
+                        OnStartTransactionRequest?.Invoke(startTransactionRequest.RequestTimestamp,
+                                                          this,
+                                                          Request.EventTrackingId,
+
+                                                          OCPPHeader.ChargeBoxIdentity,
+
+                                                          startTransactionRequest.ConnectorId,
+                                                          startTransactionRequest.IdTag,
+                                                          startTransactionRequest.StartTimestamp,
+                                                          startTransactionRequest.MeterStart,
+                                                          startTransactionRequest.ReservationId);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStartTransactionRequest));
+                    }
+
+                    #endregion
+
                     #region Call async subscribers
 
                     if (response == null)
                     {
 
-                        var results = OnStartTransactionRequest?.
+                        var results = OnStartTransaction?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnStartTransactionDelegate)
                                               (DateTime.UtcNow,
@@ -877,6 +1029,37 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     }
 
                     #endregion
+
+                    #region Send OnStartTransactionResponse event
+
+                    try
+                    {
+
+                        OnStartTransactionResponse?.Invoke(response.ResponseTimestamp,
+                                                           this,
+                                                           Request.EventTrackingId,
+
+                                                           OCPPHeader.ChargeBoxIdentity,
+
+                                                           startTransactionRequest.ConnectorId,
+                                                           startTransactionRequest.IdTag,
+                                                           startTransactionRequest.StartTimestamp,
+                                                           startTransactionRequest.MeterStart,
+                                                           startTransactionRequest.ReservationId,
+
+                                                           response.Result,
+                                                           response.TransactionId,
+                                                           response.IdTagInfo,
+                                                           response.Runtime);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStartTransactionResponse));
+                    }
+
+                    #endregion
+
 
                     #region Create HTTP Response
 
@@ -961,12 +1144,39 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var OCPPHeader                 = SOAPHeader.Parse(HeaderXML);
                     var statusNotificationRequest  = StatusNotificationRequest.Parse(StatusNotificationXML);
 
+                    #region Send OnStatusNotificationRequest event
+
+                    try
+                    {
+
+                        OnStatusNotificationRequest?.Invoke(statusNotificationRequest.RequestTimestamp,
+                                                            this,
+                                                            Request.EventTrackingId,
+
+                                                            OCPPHeader.ChargeBoxIdentity,
+
+                                                            statusNotificationRequest.ConnectorId,
+                                                            statusNotificationRequest.Status,
+                                                            statusNotificationRequest.ErrorCode,
+                                                            statusNotificationRequest.Info,
+                                                            statusNotificationRequest.StatusTimestamp,
+                                                            statusNotificationRequest.VendorId,
+                                                            statusNotificationRequest.VendorErrorCode);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStatusNotificationRequest));
+                    }
+
+                    #endregion
+
                     #region Call async subscribers
 
                     if (response == null)
                     {
 
-                        var results = OnStatusNotificationRequest?.
+                        var results = OnStatusNotification?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)
                                               (DateTime.UtcNow,
@@ -992,6 +1202,37 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     }
 
                     #endregion
+
+                    #region Send OnStatusNotificationResponse event
+
+                    try
+                    {
+
+                        OnStatusNotificationResponse?.Invoke(response.ResponseTimestamp,
+                                                             this,
+                                                             Request.EventTrackingId,
+
+                                                             OCPPHeader.ChargeBoxIdentity,
+
+                                                             statusNotificationRequest.ConnectorId,
+                                                             statusNotificationRequest.Status,
+                                                             statusNotificationRequest.ErrorCode,
+                                                             statusNotificationRequest.Info,
+                                                             statusNotificationRequest.StatusTimestamp,
+                                                             statusNotificationRequest.VendorId,
+                                                             statusNotificationRequest.VendorErrorCode,
+
+                                                             response.Result,
+                                                             response.Runtime);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStatusNotificationResponse));
+                    }
+
+                    #endregion
+
 
                     #region Create HTTP Response
 
@@ -1076,12 +1317,35 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var OCPPHeader          = SOAPHeader.Parse(HeaderXML);
                     var meterValuesRequest  = MeterValuesRequest.Parse(MeterValuesXML);
 
+                    #region Send OnMeterValuesRequest event
+
+                    try
+                    {
+
+                        OnMeterValuesRequest?.Invoke(meterValuesRequest.RequestTimestamp,
+                                                     this,
+                                                     Request.EventTrackingId,
+
+                                                     OCPPHeader.ChargeBoxIdentity,
+
+                                                     meterValuesRequest.ConnectorId,
+                                                     meterValuesRequest.TransactionId,
+                                                     meterValuesRequest.MeterValues);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnMeterValuesRequest));
+                    }
+
+                    #endregion
+
                     #region Call async subscribers
 
                     if (response == null)
                     {
 
-                        var results = OnMeterValuesRequest?.
+                        var results = OnMeterValues?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)
                                               (DateTime.UtcNow,
@@ -1107,6 +1371,33 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     }
 
                     #endregion
+
+                    #region Send OnMeterValuesResponse event
+
+                    try
+                    {
+
+                        OnMeterValuesResponse?.Invoke(response.ResponseTimestamp,
+                                                      this,
+                                                      Request.EventTrackingId,
+
+                                                      OCPPHeader.ChargeBoxIdentity,
+
+                                                      meterValuesRequest.ConnectorId,
+                                                      meterValuesRequest.TransactionId,
+                                                      meterValuesRequest.MeterValues,
+
+                                                      response.Result,
+                                                      response.Runtime);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnMeterValuesResponse));
+                    }
+
+                    #endregion
+
 
                     #region Create HTTP Response
 
@@ -1191,12 +1482,38 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var OCPPHeader              = SOAPHeader.Parse(HeaderXML);
                     var stopTransactionRequest  = StopTransactionRequest.Parse(StopTransactionXML);
 
+                    #region Send OnStopTransactionRequest event
+
+                    try
+                    {
+
+                        OnStopTransactionRequest?.Invoke(stopTransactionRequest.RequestTimestamp,
+                                                         this,
+                                                         Request.EventTrackingId,
+
+                                                         OCPPHeader.ChargeBoxIdentity,
+
+                                                         stopTransactionRequest.TransactionId,
+                                                         stopTransactionRequest.Timestamp,
+                                                         stopTransactionRequest.MeterStop,
+                                                         stopTransactionRequest.IdTag,
+                                                         stopTransactionRequest.Reason,
+                                                         stopTransactionRequest.TransactionData);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStopTransactionRequest));
+                    }
+
+                    #endregion
+
                     #region Call async subscribers
 
                     if (response == null)
                     {
 
-                        var results = OnStopTransactionRequest?.
+                        var results = OnStopTransaction?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnStopTransactionDelegate)
                                               (DateTime.UtcNow,
@@ -1222,6 +1539,37 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     }
 
                     #endregion
+
+                    #region Send OnStopTransactionResponse event
+
+                    try
+                    {
+
+                        OnStopTransactionResponse?.Invoke(response.ResponseTimestamp,
+                                                          this,
+                                                          Request.EventTrackingId,
+
+                                                          OCPPHeader.ChargeBoxIdentity,
+
+                                                          stopTransactionRequest.TransactionId,
+                                                          stopTransactionRequest.Timestamp,
+                                                          stopTransactionRequest.MeterStop,
+                                                          stopTransactionRequest.IdTag,
+                                                          stopTransactionRequest.Reason,
+                                                          stopTransactionRequest.TransactionData,
+
+                                                          response.Result,
+                                                          response.IdTagInfo,
+                                                          response.Runtime);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStopTransactionResponse));
+                    }
+
+                    #endregion
+
 
                     #region Create HTTP Response
 
@@ -1273,7 +1621,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #endregion
 
 
-            #region / - DataTransfer
+            #region / - IncomingDataTransfer
 
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
                                             URLPrefix,
@@ -1281,26 +1629,26 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "dataTransferRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, DataTransferXML) => {
 
-                #region Send OnDataTransferSOAPRequest event
+                #region Send OnIncomingDataTransferSOAPRequest event
 
                 try
                 {
 
-                    OnDataTransferSOAPRequest?.Invoke(DateTime.UtcNow,
-                                                      SOAPServer.HTTPServer,
-                                                      Request);
+                    OnIncomingDataTransferSOAPRequest?.Invoke(DateTime.UtcNow,
+                                                              SOAPServer.HTTPServer,
+                                                              Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnDataTransferSOAPRequest));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnIncomingDataTransferSOAPRequest));
                 }
 
                 #endregion
 
 
                 DataTransferResponse response      = null;
-                HTTPResponse         HTTPResponse  = null;
+                HTTPResponse                 HTTPResponse  = null;
 
                 try
                 {
@@ -1308,12 +1656,35 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var OCPPHeader           = SOAPHeader.Parse(HeaderXML);
                     var dataTransferRequest  = CP.DataTransferRequest.Parse(DataTransferXML);
 
+                    #region Send OnIncomingDataTransferRequest event
+
+                    try
+                    {
+
+                        OnIncomingDataTransferRequest?.Invoke(dataTransferRequest.RequestTimestamp,
+                                                              this,
+                                                              Request.EventTrackingId,
+
+                                                              OCPPHeader.ChargeBoxIdentity,
+
+                                                              dataTransferRequest.VendorId,
+                                                              dataTransferRequest.MessageId,
+                                                              dataTransferRequest.Data);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnIncomingDataTransferRequest));
+                    }
+
+                    #endregion
+
                     #region Call async subscribers
 
                     if (response == null)
                     {
 
-                        var results = OnDataTransferRequest?.
+                        var results = OnIncomingDataTransfer?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
                                               (DateTime.UtcNow,
@@ -1334,11 +1705,40 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                         }
 
                         if (results.Length == 0 || response == null)
-                            response = DataTransferResponse.Failed;
+                            response = DataTransferResponse.Failed(dataTransferRequest);
 
                     }
 
                     #endregion
+
+                    #region Send OnIncomingDataTransferResponse event
+
+                    try
+                    {
+
+                        OnIncomingDataTransferResponse?.Invoke(response.ResponseTimestamp,
+                                                               this,
+                                                               Request.EventTrackingId,
+
+                                                               OCPPHeader.ChargeBoxIdentity,
+
+                                                               dataTransferRequest.VendorId,
+                                                               dataTransferRequest.Data,
+                                                               dataTransferRequest.MessageId,
+
+                                                               response.Result,
+                                                               response.Status,
+                                                               response.Data,
+                                                               response.Runtime);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnIncomingDataTransferResponse));
+                    }
+
+                    #endregion
+
 
                     #region Create HTTP Response
 
@@ -1365,20 +1765,20 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 }
 
 
-                #region Send OnDataTransferSOAPResponse event
+                #region Send OnIncomingDataTransferSOAPResponse event
 
                 try
                 {
 
-                    OnDataTransferSOAPResponse?.Invoke(HTTPResponse.Timestamp,
-                                                       SOAPServer.HTTPServer,
-                                                       Request,
-                                                       HTTPResponse);
+                    OnIncomingDataTransferSOAPResponse?.Invoke(HTTPResponse.Timestamp,
+                                                               SOAPServer.HTTPServer,
+                                                               Request,
+                                                               HTTPResponse);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnDataTransferSOAPResponse));
+                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnIncomingDataTransferSOAPResponse));
                 }
 
                 #endregion
@@ -1424,12 +1824,33 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var OCPPHeader                            = SOAPHeader.Parse(HeaderXML);
                     var diagnosticsStatusNotificationRequest  = DiagnosticsStatusNotificationRequest.Parse(DiagnosticsStatusNotificationXML);
 
+                    #region Send OnDiagnosticsStatusNotificationRequest event
+
+                    try
+                    {
+
+                        OnDiagnosticsStatusNotificationRequest?.Invoke(diagnosticsStatusNotificationRequest.RequestTimestamp,
+                                                                       this,
+                                                                       Request.EventTrackingId,
+
+                                                                       OCPPHeader.ChargeBoxIdentity,
+
+                                                                       diagnosticsStatusNotificationRequest.Status);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
+                    }
+
+                    #endregion
+
                     #region Call async subscribers
 
                     if (response == null)
                     {
 
-                        var results = OnDiagnosticsStatusNotificationRequest?.
+                        var results = OnDiagnosticsStatusNotification?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationDelegate)
                                               (DateTime.UtcNow,
@@ -1450,11 +1871,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                         }
 
                         if (results.Length == 0 || response == null)
-                            response = DiagnosticsStatusNotificationResponse.Failed;
+                            response = DiagnosticsStatusNotificationResponse.Failed(diagnosticsStatusNotificationRequest);
 
                     }
 
                     #endregion
+
+                    #region Send OnDiagnosticsStatusNotificationResponse event
+
+                    try
+                    {
+
+                        OnDiagnosticsStatusNotificationResponse?.Invoke(response.ResponseTimestamp,
+                                                                        this,
+                                                                        Request.EventTrackingId,
+
+                                                                        OCPPHeader.ChargeBoxIdentity,
+
+                                                                        diagnosticsStatusNotificationRequest.Status,
+
+                                                                        response.Result,
+                                                                        response.Runtime);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
+                    }
+
+                    #endregion
+
 
                     #region Create HTTP Response
 
@@ -1540,12 +1986,33 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var OCPPHeader                         = SOAPHeader.Parse(HeaderXML);
                     var firmwareStatusNotificationRequest  = FirmwareStatusNotificationRequest.Parse(FirmwareStatusNotificationXML);
 
+                    #region Send OnFirmwareStatusNotificationRequest event
+
+                    try
+                    {
+
+                        OnFirmwareStatusNotificationRequest?.Invoke(firmwareStatusNotificationRequest.RequestTimestamp,
+                                                                    this,
+                                                                    Request.EventTrackingId,
+
+                                                                    OCPPHeader.ChargeBoxIdentity,
+
+                                                                    firmwareStatusNotificationRequest.Status);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                    }
+
+                    #endregion
+
                     #region Call async subscribers
 
                     if (response == null)
                     {
 
-                        var results = OnFirmwareStatusNotificationRequest?.
+                        var results = OnFirmwareStatusNotification?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)
                                               (DateTime.UtcNow,
@@ -1566,11 +2033,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                         }
 
                         if (results.Length == 0 || response == null)
-                            response = FirmwareStatusNotificationResponse.Failed;
+                            response = FirmwareStatusNotificationResponse.Failed(firmwareStatusNotificationRequest);
 
                     }
 
                     #endregion
+
+                    #region Send OnFirmwareStatusNotificationResponse event
+
+                    try
+                    {
+
+                        OnFirmwareStatusNotificationResponse?.Invoke(response.ResponseTimestamp,
+                                                                     this,
+                                                                     Request.EventTrackingId,
+
+                                                                     OCPPHeader.ChargeBoxIdentity,
+
+                                                                     firmwareStatusNotificationRequest.Status,
+
+                                                                     response.Result,
+                                                                     response.Runtime);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationResponse));
+                    }
+
+                    #endregion
+
 
                     #region Create HTTP Response
 

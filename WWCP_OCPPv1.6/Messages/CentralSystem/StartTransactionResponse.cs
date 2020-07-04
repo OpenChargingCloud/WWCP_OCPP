@@ -1,4 +1,4 @@
-﻿/*/*
+﻿/*
  * Copyright (c) 2014-2020 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
@@ -24,7 +24,6 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.JSON;
-using org.GraphDefined.WWCP.OCPPv1_6.CP;
 
 #endregion
 
@@ -35,7 +34,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// A start transaction response.
     /// </summary>
     public class StartTransactionResponse : AResponse<CP.StartTransactionRequest,
-                                                      StartTransactionResponse>
+                                                         StartTransactionResponse>
     {
 
         #region Properties
@@ -193,9 +192,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="StartTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StartTransactionResponse Parse(StartTransactionRequest  Request,
-                                                     XElement                 StartTransactionResponseXML,
-                                                     OnExceptionDelegate      OnException = null)
+        public static StartTransactionResponse Parse(CP.StartTransactionRequest  Request,
+                                                     XElement                    StartTransactionResponseXML,
+                                                     OnExceptionDelegate         OnException = null)
         {
 
             if (TryParse(Request,
@@ -220,9 +219,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="StartTransactionResponseJSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StartTransactionResponse Parse(StartTransactionRequest  Request,
-                                                     JObject                  StartTransactionResponseJSON,
-                                                     OnExceptionDelegate      OnException = null)
+        public static StartTransactionResponse Parse(CP.StartTransactionRequest  Request,
+                                                     JObject                     StartTransactionResponseJSON,
+                                                     OnExceptionDelegate         OnException = null)
         {
 
             if (TryParse(Request,
@@ -247,9 +246,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="StartTransactionResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StartTransactionResponse Parse(StartTransactionRequest  Request,
-                                                     String                   StartTransactionResponseText,
-                                                     OnExceptionDelegate      OnException = null)
+        public static StartTransactionResponse Parse(CP.StartTransactionRequest  Request,
+                                                     String                      StartTransactionResponseText,
+                                                     OnExceptionDelegate         OnException = null)
         {
 
             if (TryParse(Request,
@@ -275,7 +274,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="StartTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="StartTransactionResponse">The parsed start transaction response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(StartTransactionRequest       Request,
+        public static Boolean TryParse(CP.StartTransactionRequest    Request,
                                        XElement                      StartTransactionResponseXML,
                                        out StartTransactionResponse  StartTransactionResponse,
                                        OnExceptionDelegate           OnException  = null)
@@ -322,7 +321,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="StartTransactionResponseJSON">The JSON to be parsed.</param>
         /// <param name="StartTransactionResponse">The parsed start transaction response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(StartTransactionRequest       Request,
+        public static Boolean TryParse(CP.StartTransactionRequest    Request,
                                        JObject                       StartTransactionResponseJSON,
                                        out StartTransactionResponse  StartTransactionResponse,
                                        OnExceptionDelegate           OnException  = null)
@@ -391,7 +390,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="StartTransactionResponseText">The text to be parsed.</param>
         /// <param name="StartTransactionResponse">The parsed start transaction response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(StartTransactionRequest       Request,
+        public static Boolean TryParse(CP.StartTransactionRequest    Request,
                                        String                        StartTransactionResponseText,
                                        out StartTransactionResponse  StartTransactionResponse,
                                        OnExceptionDelegate           OnException  = null)
@@ -485,7 +484,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// The start transaction failed.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        public static StartTransactionResponse Failed(StartTransactionRequest Request)
+        public static StartTransactionResponse Failed(CP.StartTransactionRequest Request)
 
             => new StartTransactionResponse(Request,
                                             Result.Server());

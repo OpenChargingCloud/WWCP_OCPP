@@ -1,4 +1,4 @@
-﻿/*/*
+﻿/*
  * Copyright (c) 2014-2020 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
@@ -24,7 +24,6 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.JSON;
-using org.GraphDefined.WWCP.OCPPv1_6.CP;
 
 #endregion
 
@@ -59,7 +58,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public HeartbeatResponse(CP.HeartbeatRequest  Request,
                                  DateTime             CurrentTime)
 
-            : base(Request, Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -75,10 +75,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// Create a new heartbeat response.
         /// </summary>
         /// <param name="Request">The heartbeat request leading to this response.</param>
+        /// <param name="Result">The result.</param>
         public HeartbeatResponse(CP.HeartbeatRequest  Request,
                                  Result               Result)
 
-            : base(Request, Result)
+            : base(Request,
+                   Result)
 
         {
 
@@ -399,7 +401,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// The heartbeat failed.
         /// </summary>
         /// <param name="Request">The heartbeat request leading to this response.</param>
-        public static HeartbeatResponse Failed(HeartbeatRequest Request)
+        public static HeartbeatResponse Failed(CP.HeartbeatRequest Request)
 
             => new HeartbeatResponse(Request,
                                      DateTime.UtcNow);

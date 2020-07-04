@@ -486,7 +486,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #endregion
 
 
-        #region BootNotification(ChargePointVendor, ChargePointModel, ...)
+        #region BootNotification             (ChargePointVendor, ChargePointModel, ...)
 
         /// <summary>
         /// Send a boot notification.
@@ -577,7 +577,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
 
-            var Request = new BootNotificationRequest(ChargePointVendor,
+            var request = new BootNotificationRequest(ChargePointVendor,
                                                       ChargePointModel,
                                                       ChargePointSerialNumber,
                                                       FirmwareVersion,
@@ -585,6 +585,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                       IMSI,
                                                       MeterType,
                                                       MeterSerialNumber);
+
 
             using (var _OCPPClient = new SOAPClient(Hostname,
                                                     URLPrefix,
@@ -602,7 +603,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    Request.ToXML()),
+                                                                    request.ToXML()),
                                                  "BootNotification",
                                                  RequestLogDelegate:   OnBootNotificationSOAPRequest,
                                                  ResponseLogDelegate:  OnBootNotificationSOAPResponse,
@@ -612,7 +613,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request, BootNotificationResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request, BootNotificationResponse.Parse),
 
                                                  #endregion
 
@@ -624,7 +625,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<BootNotificationResponse>(httpresponse,
                                                                                                        new BootNotificationResponse(
-                                                                                                           Request,
+                                                                                                           request,
                                                                                                            Result.Format(
                                                                                                                "Invalid SOAP => " +
                                                                                                                httpresponse.HTTPBody.ToUTF8String()
@@ -644,7 +645,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<BootNotificationResponse>(httpresponse,
                                                                                                        new BootNotificationResponse(
-                                                                                                           Request,
+                                                                                                           request,
                                                                                                            Result.Server(
                                                                                                                 httpresponse.HTTPStatusCode.ToString() +
                                                                                                                 " => " +
@@ -664,7 +665,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<BootNotificationResponse>.ExceptionThrown(new BootNotificationResponse(
-                                                                                                                       Request,
+                                                                                                                       request,
                                                                                                                        Result.Format(exception.Message +
                                                                                                                                      " => " +
                                                                                                                                      exception.StackTrace)),
@@ -679,7 +680,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<BootNotificationResponse>.OK(new BootNotificationResponse(Request, Result.OK("Nothing to upload!")));
+                result = HTTPResponse<BootNotificationResponse>.OK(new BootNotificationResponse(request, Result.OK("Nothing to upload!")));
 
 
             #region Send OnBootNotificationResponse event
@@ -718,7 +719,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region Heartbeat(...)
+        #region Heartbeat                    (...)
 
         /// <summary>
         /// Send a heartbeat.
@@ -776,7 +777,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
 
-            var Request = new HeartbeatRequest();
+            var request = new HeartbeatRequest();
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
@@ -795,7 +796,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    Request.ToXML()),
+                                                                    request.ToXML()),
                                                  "Heartbeat",
                                                  RequestLogDelegate:   OnHeartbeatSOAPRequest,
                                                  ResponseLogDelegate:  OnHeartbeatSOAPResponse,
@@ -805,7 +806,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request, HeartbeatResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request, HeartbeatResponse.Parse),
 
                                                  #endregion
 
@@ -817,7 +818,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<HeartbeatResponse>(httpresponse,
                                                                                                 new HeartbeatResponse(
-                                                                                                    Request,
+                                                                                                    request,
                                                                                                     Result.Format(
                                                                                                         "Invalid SOAP => " +
                                                                                                         httpresponse.HTTPBody.ToUTF8String()
@@ -837,7 +838,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<HeartbeatResponse>(httpresponse,
                                                                                                 new HeartbeatResponse(
-                                                                                                    Request,
+                                                                                                    request,
                                                                                                     Result.Server(
                                                                                                          httpresponse.HTTPStatusCode.ToString() +
                                                                                                          " => " +
@@ -857,7 +858,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<HeartbeatResponse>.ExceptionThrown(new HeartbeatResponse(
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 Result.Format(exception.Message +
                                                                                                                               " => " +
                                                                                                                               exception.StackTrace)),
@@ -872,7 +873,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<HeartbeatResponse>.OK(new HeartbeatResponse(Request, Result.OK("Nothing to upload!")));
+                result = HTTPResponse<HeartbeatResponse>.OK(new HeartbeatResponse(request, Result.OK("Nothing to upload!")));
 
 
             #region Send OnHeartbeatResponse event
@@ -904,7 +905,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #endregion
 
 
-        #region Authorize         (IdTag, ...)
+        #region Authorize                    (IdTag, ...)
 
         /// <summary>
         /// Authorize the given token.
@@ -970,7 +971,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             #endregion
 
-            var Request = new AuthorizeRequest(IdTag);
+
+            var request = new AuthorizeRequest(IdTag);
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
@@ -989,7 +991,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    Request.ToXML()),
+                                                                    request.ToXML()),
                                                  "Authorize",
                                                  RequestLogDelegate:   OnAuthorizeSOAPRequest,
                                                  ResponseLogDelegate:  OnAuthorizeSOAPResponse,
@@ -999,7 +1001,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request, AuthorizeResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request, AuthorizeResponse.Parse),
 
                                                  #endregion
 
@@ -1011,7 +1013,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<AuthorizeResponse>(httpresponse,
                                                                                                 new AuthorizeResponse(
-                                                                                                    Request,
+                                                                                                    request,
                                                                                                     Result.Format(
                                                                                                         "Invalid SOAP => " +
                                                                                                         httpresponse.HTTPBody.ToUTF8String()
@@ -1031,7 +1033,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<AuthorizeResponse>(httpresponse,
                                                                                                 new AuthorizeResponse(
-                                                                                                    Request,
+                                                                                                    request,
                                                                                                     Result.Server(
                                                                                                          httpresponse.HTTPStatusCode.ToString() +
                                                                                                          " => " +
@@ -1051,7 +1053,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<AuthorizeResponse>.ExceptionThrown(new AuthorizeResponse(
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 Result.Format(exception.Message +
                                                                                                                               " => " +
                                                                                                                               exception.StackTrace)),
@@ -1066,7 +1068,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<AuthorizeResponse>.OK(new AuthorizeResponse(Request, Result.OK("Nothing to upload!")));
+                result = HTTPResponse<AuthorizeResponse>.OK(new AuthorizeResponse(request, Result.OK("Nothing to upload!")));
 
 
             #region Send OnAuthorizeResponse event
@@ -1098,7 +1100,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region StartTransaction  (ConnectorId, IdTag, TransactionTimestamp, MeterStart, ReservationId = null, ...)
+        #region StartTransaction             (ConnectorId, IdTag, TransactionTimestamp, MeterStart, ReservationId = null, ...)
 
         /// <summary>
         /// Start a charging process at the given connector.
@@ -1173,7 +1175,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
 
-            var Request = new StartTransactionRequest(ConnectorId,
+            var request = new StartTransactionRequest(ConnectorId,
                                                       IdTag,
                                                       TransactionTimestamp,
                                                       MeterStart,
@@ -1196,7 +1198,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    Request.ToXML()),
+                                                                    request.ToXML()),
                                                  "StartTransaction",
                                                  RequestLogDelegate:   OnStartTransactionSOAPRequest,
                                                  ResponseLogDelegate:  OnStartTransactionSOAPResponse,
@@ -1206,7 +1208,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request, StartTransactionResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request, StartTransactionResponse.Parse),
 
                                                  #endregion
 
@@ -1218,7 +1220,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StartTransactionResponse>(httpresponse,
                                                                                                        new StartTransactionResponse(
-                                                                                                           Request,
+                                                                                                           request,
                                                                                                            Result.Format(
                                                                                                                "Invalid SOAP => " +
                                                                                                                httpresponse.HTTPBody.ToUTF8String()
@@ -1238,7 +1240,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StartTransactionResponse>(httpresponse,
                                                                                                        new StartTransactionResponse(
-                                                                                                           Request,
+                                                                                                           request,
                                                                                                            Result.Server(
                                                                                                                 httpresponse.HTTPStatusCode.ToString() +
                                                                                                                 " => " +
@@ -1258,7 +1260,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<StartTransactionResponse>.ExceptionThrown(new StartTransactionResponse(
-                                                                                                                       Request,
+                                                                                                                       request,
                                                                                                                        Result.Format(exception.Message +
                                                                                                                                      " => " +
                                                                                                                                      exception.StackTrace)),
@@ -1273,7 +1275,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<StartTransactionResponse>.OK(new StartTransactionResponse(Request, Result.OK("Nothing to upload!")));
+                result = HTTPResponse<StartTransactionResponse>.OK(new StartTransactionResponse(request, Result.OK("Nothing to upload!")));
 
 
             #region Send OnStartTransactionResponse event
@@ -1309,7 +1311,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region StatusNotification(ConnectorId, Status, ErrorCode, ...)
+        #region StatusNotification           (ConnectorId, Status, ErrorCode, ...)
 
         /// <summary>
         /// Send a status notification for the given connector.
@@ -1390,7 +1392,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
 
-            var Request = new StatusNotificationRequest(ConnectorId,
+            var request = new StatusNotificationRequest(ConnectorId,
                                                         Status,
                                                         ErrorCode,
                                                         Info,
@@ -1415,7 +1417,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    Request.ToXML()),
+                                                                    request.ToXML()),
                                                  "StatusNotification",
                                                  RequestLogDelegate:   OnStatusNotificationSOAPRequest,
                                                  ResponseLogDelegate:  OnStatusNotificationSOAPResponse,
@@ -1425,7 +1427,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
                                                                                                       StatusNotificationResponse.Parse),
 
                                                  #endregion
@@ -1438,7 +1440,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StatusNotificationResponse>(httpresponse,
                                                                                                          new StatusNotificationResponse(
-                                                                                                             Request,
+                                                                                                             request,
                                                                                                              Result.Format(
                                                                                                                  "Invalid SOAP => " +
                                                                                                                  httpresponse.HTTPBody.ToUTF8String()
@@ -1458,7 +1460,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StatusNotificationResponse>(httpresponse,
                                                                                                          new StatusNotificationResponse(
-                                                                                                             Request,
+                                                                                                             request,
                                                                                                              Result.Server(
                                                                                                                   httpresponse.HTTPStatusCode.ToString() +
                                                                                                                   " => " +
@@ -1478,7 +1480,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<StatusNotificationResponse>.ExceptionThrown(new StatusNotificationResponse(
-                                                                                                                         Request,
+                                                                                                                         request,
                                                                                                                          Result.Format(exception.Message +
                                                                                                                                        " => " +
                                                                                                                                        exception.StackTrace)),
@@ -1493,7 +1495,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<StatusNotificationResponse>.OK(new StatusNotificationResponse(Request,
+                result = HTTPResponse<StatusNotificationResponse>.OK(new StatusNotificationResponse(request,
                                                                                                     Result.OK("Nothing to upload!")));
 
 
@@ -1532,7 +1534,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region MeterValues       (ConnectorId, TransactionId = null, MeterValues = null, ...)
+        #region MeterValues                  (ConnectorId, TransactionId = null, MeterValues = null, ...)
 
         /// <summary>
         /// Send a meter values for the given connector.
@@ -1601,7 +1603,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
 
-            var Request = new MeterValuesRequest(ConnectorId,
+            var request = new MeterValuesRequest(ConnectorId,
                                                  TransactionId,
                                                  MeterValues);
 
@@ -1622,7 +1624,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    Request.ToXML()),
+                                                                    request.ToXML()),
                                                  "MeterValues",
                                                  RequestLogDelegate:   OnMeterValuesSOAPRequest,
                                                  ResponseLogDelegate:  OnMeterValuesSOAPResponse,
@@ -1632,7 +1634,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
                                                                                                       MeterValuesResponse.Parse),
 
                                                  #endregion
@@ -1645,7 +1647,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<MeterValuesResponse>(httpresponse,
                                                                                                   new MeterValuesResponse(
-                                                                                                      Request,
+                                                                                                      request,
                                                                                                       Result.Format(
                                                                                                           "Invalid SOAP => " +
                                                                                                           httpresponse.HTTPBody.ToUTF8String()
@@ -1665,7 +1667,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<MeterValuesResponse>(httpresponse,
                                                                                                   new MeterValuesResponse(
-                                                                                                      Request,
+                                                                                                      request,
                                                                                                       Result.Server(
                                                                                                            httpresponse.HTTPStatusCode.ToString() +
                                                                                                            " => " +
@@ -1685,7 +1687,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<MeterValuesResponse>.ExceptionThrown(new MeterValuesResponse(
-                                                                                                                  Request,
+                                                                                                                  request,
                                                                                                                   Result.Format(exception.Message +
                                                                                                                                 " => " +
                                                                                                                                 exception.StackTrace)),
@@ -1700,7 +1702,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<MeterValuesResponse>.OK(new MeterValuesResponse(Request,
+                result = HTTPResponse<MeterValuesResponse>.OK(new MeterValuesResponse(request,
                                                                                       Result.OK("Nothing to upload!")));
 
 
@@ -1735,7 +1737,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region StopTransaction   (TransactionId, TransactionTimestamp, MeterStop, ...)
+        #region StopTransaction              (TransactionId, TransactionTimestamp, MeterStop, ...)
 
         /// <summary>
         /// Stop a charging process at the given connector.
@@ -1817,7 +1819,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
 
-            var Request = new StopTransactionRequest(TransactionId,
+            var request = new StopTransactionRequest(TransactionId,
                                                      TransactionTimestamp,
                                                      MeterStop,
                                                      IdTag,
@@ -1841,7 +1843,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    Request.ToXML()),
+                                                                    request.ToXML()),
                                                  "StopTransaction",
                                                  RequestLogDelegate:   OnStopTransactionSOAPRequest,
                                                  ResponseLogDelegate:  OnStopTransactionSOAPResponse,
@@ -1851,7 +1853,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request, StopTransactionResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request, StopTransactionResponse.Parse),
 
                                                  #endregion
 
@@ -1863,7 +1865,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StopTransactionResponse>(httpresponse,
                                                                                                       new StopTransactionResponse(
-                                                                                                          Request,
+                                                                                                          request,
                                                                                                           Result.Format(
                                                                                                               "Invalid SOAP => " +
                                                                                                               httpresponse.HTTPBody.ToUTF8String()
@@ -1883,7 +1885,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StopTransactionResponse>(httpresponse,
                                                                                                       new StopTransactionResponse(
-                                                                                                          Request,
+                                                                                                          request,
                                                                                                           Result.Server(
                                                                                                                httpresponse.HTTPStatusCode.ToString() +
                                                                                                                " => " +
@@ -1903,7 +1905,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<StopTransactionResponse>.ExceptionThrown(new StopTransactionResponse(
-                                                                                                                      Request,
+                                                                                                                      request,
                                                                                                                       Result.Format(exception.Message +
                                                                                                                                     " => " +
                                                                                                                                     exception.StackTrace)),
@@ -1918,7 +1920,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<StopTransactionResponse>.OK(new StopTransactionResponse(Request,
+                result = HTTPResponse<StopTransactionResponse>.OK(new StopTransactionResponse(request,
                                                                                               Result.OK("Nothing to upload!")));
 
 
@@ -1957,7 +1959,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #endregion
 
 
-        #region DataTransfer(VendorId, MessageId = null, Data = null, ...)
+        #region DataTransfer                 (VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Send the given vendor-specific data to the central system.
@@ -2029,9 +2031,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
             #endregion
 
-            var Request = new DataTransferRequest(VendorId,
-                                                  MessageId,
-                                                  Data);
+
+            var request = new DataTransferRequest(VendorId,
+                                                          MessageId,
+                                                          Data);
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
@@ -2050,7 +2053,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    Request.ToXML()),
+                                                                    request.ToXML()),
                                                  "DataTransfer",
                                                  RequestLogDelegate:   OnDataTransferSOAPRequest,
                                                  ResponseLogDelegate:  OnDataTransferSOAPResponse,
@@ -2221,6 +2224,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
 
+            var request = new DiagnosticsStatusNotificationRequest(Status);
+
+
             using (var _OCPPClient = new SOAPClient(Hostname,
                                                     URLPrefix,
                                                     VirtualHostname,
@@ -2237,7 +2243,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    new DiagnosticsStatusNotificationRequest(Status).ToXML()),
+                                                                    request.ToXML()),
                                                  "DiagnosticsStatusNotification",
                                                  RequestLogDelegate:   OnDiagnosticsStatusNotificationSOAPRequest,
                                                  ResponseLogDelegate:  OnDiagnosticsStatusNotificationSOAPResponse,
@@ -2247,7 +2253,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(DiagnosticsStatusNotificationResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                                                                      DiagnosticsStatusNotificationResponse.Parse),
 
                                                  #endregion
 
@@ -2259,6 +2266,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<DiagnosticsStatusNotificationResponse>(httpresponse,
                                                                                                                     new DiagnosticsStatusNotificationResponse(
+                                                                                                                        request,
                                                                                                                         Result.Format(
                                                                                                                             "Invalid SOAP => " +
                                                                                                                             httpresponse.HTTPBody.ToUTF8String()
@@ -2278,6 +2286,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<DiagnosticsStatusNotificationResponse>(httpresponse,
                                                                                                                     new DiagnosticsStatusNotificationResponse(
+                                                                                                                        request,
                                                                                                                         Result.Server(
                                                                                                                              httpresponse.HTTPStatusCode.ToString() +
                                                                                                                              " => " +
@@ -2297,6 +2306,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<DiagnosticsStatusNotificationResponse>.ExceptionThrown(new DiagnosticsStatusNotificationResponse(
+                                                                                                                                    request,
                                                                                                                                     Result.Format(exception.Message +
                                                                                                                                                   " => " +
                                                                                                                                                   exception.StackTrace)),
@@ -2311,7 +2321,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<DiagnosticsStatusNotificationResponse>.OK(new DiagnosticsStatusNotificationResponse(Result.OK("Nothing to upload!")));
+                result = HTTPResponse<DiagnosticsStatusNotificationResponse>.OK(new DiagnosticsStatusNotificationResponse(request,
+                                                                                                                          Result.OK("Nothing to upload!")));
 
 
             #region Send OnDiagnosticsStatusNotificationResponse event
@@ -2406,6 +2417,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
 
+            var request = new FirmwareStatusNotificationRequest(Status);
+
+
             using (var _OCPPClient = new SOAPClient(Hostname,
                                                     URLPrefix,
                                                     VirtualHostname,
@@ -2422,7 +2436,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    new FirmwareStatusNotificationRequest(Status).ToXML()),
+                                                                    request.ToXML()),
                                                  "FirmwareStatusNotification",
                                                  RequestLogDelegate:   OnFirmwareStatusNotificationSOAPRequest,
                                                  ResponseLogDelegate:  OnFirmwareStatusNotificationSOAPResponse,
@@ -2432,7 +2446,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(FirmwareStatusNotificationResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                                                                      FirmwareStatusNotificationResponse.Parse),
 
                                                  #endregion
 
@@ -2444,6 +2459,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<FirmwareStatusNotificationResponse>(httpresponse,
                                                                                                                  new FirmwareStatusNotificationResponse(
+                                                                                                                     request,
                                                                                                                      Result.Format(
                                                                                                                          "Invalid SOAP => " +
                                                                                                                          httpresponse.HTTPBody.ToUTF8String()
@@ -2463,6 +2479,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<FirmwareStatusNotificationResponse>(httpresponse,
                                                                                                                  new FirmwareStatusNotificationResponse(
+                                                                                                                     request,
                                                                                                                      Result.Server(
                                                                                                                           httpresponse.HTTPStatusCode.ToString() +
                                                                                                                           " => " +
@@ -2482,6 +2499,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<FirmwareStatusNotificationResponse>.ExceptionThrown(new FirmwareStatusNotificationResponse(
+                                                                                                                                 request,
                                                                                                                                  Result.Format(exception.Message +
                                                                                                                                                " => " +
                                                                                                                                                exception.StackTrace)),
@@ -2496,7 +2514,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<FirmwareStatusNotificationResponse>.OK(new FirmwareStatusNotificationResponse(Result.OK("Nothing to upload!")));
+                result = HTTPResponse<FirmwareStatusNotificationResponse>.OK(new FirmwareStatusNotificationResponse(request,
+                                                                                                                    Result.OK("Nothing to upload!")));
 
 
             #region Send OnFirmwareStatusNotificationResponse event

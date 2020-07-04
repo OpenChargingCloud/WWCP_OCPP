@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -40,14 +41,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The status of the diagnostics upload.
         /// </summary>
-        public DiagnosticsStatus  Status   { get; }
+        public DiagnosticsStatus  Status    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a DiagnosticsStatusNotification XML/SOAP request.
+        /// Create a diagnostics status notification request.
         /// </summary>
         /// <param name="Status">The status of the diagnostics upload.</param>
         public DiagnosticsStatusNotificationRequest(DiagnosticsStatus Status)
@@ -80,6 +81,30 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:DiagnosticsStatusNotificationRequest",
+        //     "title":   "DiagnosticsStatusNotificationRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "status": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Idle",
+        //                 "Uploaded",
+        //                 "UploadFailed",
+        //                 "Uploading"
+        //             ]
+        //     }
+        // },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
+        // 
+
         #endregion
 
         #region (static) Parse   (DiagnosticsStatusNotificationRequestXML,  OnException = null)
@@ -93,10 +118,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                  OnExceptionDelegate  OnException = null)
         {
 
-            DiagnosticsStatusNotificationRequest _DiagnosticsStatusNotificationRequest;
+            if (TryParse(DiagnosticsStatusNotificationRequestXML,
+                         out DiagnosticsStatusNotificationRequest diagnosticsStatusNotificationRequest,
+                         OnException))
+            {
+                return diagnosticsStatusNotificationRequest;
+            }
 
-            if (TryParse(DiagnosticsStatusNotificationRequestXML, out _DiagnosticsStatusNotificationRequest, OnException))
-                return _DiagnosticsStatusNotificationRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (DiagnosticsStatusNotificationRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a diagnostics status notification request.
+        /// </summary>
+        /// <param name="DiagnosticsStatusNotificationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static DiagnosticsStatusNotificationRequest Parse(JObject              DiagnosticsStatusNotificationRequestJSON,
+                                                                 OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(DiagnosticsStatusNotificationRequestJSON,
+                         out DiagnosticsStatusNotificationRequest diagnosticsStatusNotificationRequest,
+                         OnException))
+            {
+                return diagnosticsStatusNotificationRequest;
+            }
 
             return null;
 
@@ -115,10 +166,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                                  OnExceptionDelegate  OnException = null)
         {
 
-            DiagnosticsStatusNotificationRequest _DiagnosticsStatusNotificationRequest;
-
-            if (TryParse(DiagnosticsStatusNotificationRequestText, out _DiagnosticsStatusNotificationRequest, OnException))
-                return _DiagnosticsStatusNotificationRequest;
+            if (TryParse(DiagnosticsStatusNotificationRequestText,
+                         out DiagnosticsStatusNotificationRequest diagnosticsStatusNotificationRequest,
+                         OnException))
+            {
+                return diagnosticsStatusNotificationRequest;
+            }
 
             return null;
 
@@ -166,6 +219,57 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParse(DiagnosticsStatusNotificationRequestJSON, out DiagnosticsStatusNotificationRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a diagnostics status notification request.
+        /// </summary>
+        /// <param name="DiagnosticsStatusNotificationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="DiagnosticsStatusNotificationRequest">The parsed diagnostics status notification request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                                   DiagnosticsStatusNotificationRequestJSON,
+                                       out DiagnosticsStatusNotificationRequest  DiagnosticsStatusNotificationRequest,
+                                       OnExceptionDelegate                       OnException  = null)
+        {
+
+            try
+            {
+
+                DiagnosticsStatusNotificationRequest = null;
+
+                #region DiagnosticsStatus
+
+                if (!DiagnosticsStatusNotificationRequestJSON.ParseMandatory("status",
+                                                                             "diagnostics status",
+                                                                             DiagnosticsStatusExtentions.Parse,
+                                                                             out DiagnosticsStatus DiagnosticsStatus,
+                                                                             out String ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                DiagnosticsStatusNotificationRequest = new DiagnosticsStatusNotificationRequest(DiagnosticsStatus);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, DiagnosticsStatusNotificationRequestJSON, e);
+
+                DiagnosticsStatusNotificationRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(DiagnosticsStatusNotificationRequestText, out DiagnosticsStatusNotificationRequest, OnException = null)
 
         /// <summary>
@@ -182,11 +286,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(DiagnosticsStatusNotificationRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out DiagnosticsStatusNotificationRequest,
-                             OnException))
+                DiagnosticsStatusNotificationRequestText = DiagnosticsStatusNotificationRequestText?.Trim();
 
-                    return true;
+                if (DiagnosticsStatusNotificationRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (DiagnosticsStatusNotificationRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(DiagnosticsStatusNotificationRequestText),
+                                 out DiagnosticsStatusNotificationRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(DiagnosticsStatusNotificationRequestText).Root,//.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
+                                 out DiagnosticsStatusNotificationRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -214,6 +334,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region ToJSON(CustomDiagnosticsStatusNotificationRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomDiagnosticsStatusNotificationRequestSerializer">A delegate to serialize custom diagnostics status notification requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DiagnosticsStatusNotificationRequest> CustomDiagnosticsStatusNotificationRequestSerializer   = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("status",  Status.AsText())
+                       );
+
+            return CustomDiagnosticsStatusNotificationRequestSerializer != null
+                       ? CustomDiagnosticsStatusNotificationRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -233,7 +374,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) DiagnosticsStatusNotificationRequest1 == null) || ((Object) DiagnosticsStatusNotificationRequest2 == null))
+            if ((DiagnosticsStatusNotificationRequest1 is null) || (DiagnosticsStatusNotificationRequest2 is null))
                 return false;
 
             return DiagnosticsStatusNotificationRequest1.Equals(DiagnosticsStatusNotificationRequest2);
@@ -273,12 +414,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object is null)
                 return false;
 
-            // Check if the given object is a diagnostics status notification request.
-            var DiagnosticsStatusNotificationRequest = Object as DiagnosticsStatusNotificationRequest;
-            if ((Object) DiagnosticsStatusNotificationRequest == null)
+            if (!(Object is DiagnosticsStatusNotificationRequest DiagnosticsStatusNotificationRequest))
                 return false;
 
-            return this.Equals(DiagnosticsStatusNotificationRequest);
+            return Equals(DiagnosticsStatusNotificationRequest);
 
         }
 
@@ -294,7 +433,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(DiagnosticsStatusNotificationRequest DiagnosticsStatusNotificationRequest)
         {
 
-            if ((Object) DiagnosticsStatusNotificationRequest == null)
+            if (DiagnosticsStatusNotificationRequest is null)
                 return false;
 
             return Status.Equals(DiagnosticsStatusNotificationRequest.Status);
@@ -312,6 +451,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => Status.GetHashCode();
 
         #endregion
@@ -322,6 +462,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => Status.ToString();
 
         #endregion

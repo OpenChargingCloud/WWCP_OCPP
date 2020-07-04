@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -38,18 +39,18 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region Properties
 
         /// <summary>
-        /// The current status of a firmware installation.
+        /// The status of the diagnostics upload.
         /// </summary>
-        public FirmwareStatus  Status   { get; }
+        public FirmwareStatus  Status    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a FirmwareStatusNotificationRequest XML/SOAP request.
+        /// Create a firmware status notification request.
         /// </summary>
-        /// <param name="Status">The current status of a firmware installation.</param>
+        /// <param name="Status">The status of the diagnostics upload.</param>
         public FirmwareStatusNotificationRequest(FirmwareStatus Status)
         {
 
@@ -80,6 +81,33 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:FirmwareStatusStatusNotificationRequest",
+        //     "title":   "FirmwareStatusStatusNotificationRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "status": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Downloaded",
+        //                 "DownloadFailed",
+        //                 "Downloading",
+        //                 "Idle",
+        //                 "InstallationFailed",
+        //                 "Installing",
+        //                 "Installed"
+        //             ]
+        //     }
+        // },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
+
+
         #endregion
 
         #region (static) Parse   (FirmwareStatusNotificationRequestXML,  OnException = null)
@@ -93,10 +121,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                               OnExceptionDelegate  OnException = null)
         {
 
-            FirmwareStatusNotificationRequest _FirmwareStatusNotificationRequest;
+            if (TryParse(FirmwareStatusNotificationRequestXML,
+                         out FirmwareStatusNotificationRequest diagnosticsStatusNotificationRequest,
+                         OnException))
+            {
+                return diagnosticsStatusNotificationRequest;
+            }
 
-            if (TryParse(FirmwareStatusNotificationRequestXML, out _FirmwareStatusNotificationRequest, OnException))
-                return _FirmwareStatusNotificationRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (FirmwareStatusNotificationRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a firmware status notification request.
+        /// </summary>
+        /// <param name="FirmwareStatusNotificationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static FirmwareStatusNotificationRequest Parse(JObject              FirmwareStatusNotificationRequestJSON,
+                                                              OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(FirmwareStatusNotificationRequestJSON,
+                         out FirmwareStatusNotificationRequest diagnosticsStatusNotificationRequest,
+                         OnException))
+            {
+                return diagnosticsStatusNotificationRequest;
+            }
 
             return null;
 
@@ -115,10 +169,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                               OnExceptionDelegate  OnException = null)
         {
 
-            FirmwareStatusNotificationRequest _FirmwareStatusNotificationRequest;
-
-            if (TryParse(FirmwareStatusNotificationRequestText, out _FirmwareStatusNotificationRequest, OnException))
-                return _FirmwareStatusNotificationRequest;
+            if (TryParse(FirmwareStatusNotificationRequestText,
+                         out FirmwareStatusNotificationRequest diagnosticsStatusNotificationRequest,
+                         OnException))
+            {
+                return diagnosticsStatusNotificationRequest;
+            }
 
             return null;
 
@@ -144,10 +200,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 FirmwareStatusNotificationRequest = new FirmwareStatusNotificationRequest(
 
-                                                        FirmwareStatusNotificationRequestXML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "status",
-                                                                                                            FirmwareStatusExtentions.Parse)
+                                                           FirmwareStatusNotificationRequestXML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "status",
+                                                                                                               FirmwareStatusExtentions.Parse)
 
-                                                    );
+                                                       );
 
                 return true;
 
@@ -156,6 +212,57 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             {
 
                 OnException?.Invoke(DateTime.UtcNow, FirmwareStatusNotificationRequestXML, e);
+
+                FirmwareStatusNotificationRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(FirmwareStatusNotificationRequestJSON, out FirmwareStatusNotificationRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a firmware status notification request.
+        /// </summary>
+        /// <param name="FirmwareStatusNotificationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="FirmwareStatusNotificationRequest">The parsed firmware status notification request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                                FirmwareStatusNotificationRequestJSON,
+                                       out FirmwareStatusNotificationRequest  FirmwareStatusNotificationRequest,
+                                       OnExceptionDelegate                    OnException  = null)
+        {
+
+            try
+            {
+
+                FirmwareStatusNotificationRequest = null;
+
+                #region FirmwareStatus
+
+                if (!FirmwareStatusNotificationRequestJSON.ParseMandatory("status",
+                                                                          "firmware status",
+                                                                          FirmwareStatusExtentions.Parse,
+                                                                          out FirmwareStatus FirmwareStatus,
+                                                                          out String ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                FirmwareStatusNotificationRequest = new FirmwareStatusNotificationRequest(FirmwareStatus);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, FirmwareStatusNotificationRequestJSON, e);
 
                 FirmwareStatusNotificationRequest = null;
                 return false;
@@ -182,11 +289,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(FirmwareStatusNotificationRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out FirmwareStatusNotificationRequest,
-                             OnException))
+                FirmwareStatusNotificationRequestText = FirmwareStatusNotificationRequestText?.Trim();
 
-                    return true;
+                if (FirmwareStatusNotificationRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (FirmwareStatusNotificationRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(FirmwareStatusNotificationRequestText),
+                                 out FirmwareStatusNotificationRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(FirmwareStatusNotificationRequestText).Root,//.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
+                                 out FirmwareStatusNotificationRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -208,9 +331,30 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CS + "firmwareStatusNotificationRequest",
+            => new XElement(OCPPNS.OCPPv1_6_CS + "diagnosticsStatusNotificationRequest",
                    new XElement(OCPPNS.OCPPv1_6_CS + "status",  Status.AsText())
                );
+
+        #endregion
+
+        #region ToJSON(CustomFirmwareStatusNotificationRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomFirmwareStatusNotificationRequestSerializer">A delegate to serialize custom firmware status notification requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<FirmwareStatusNotificationRequest> CustomFirmwareStatusNotificationRequestSerializer   = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("status",  Status.AsText())
+                       );
+
+            return CustomFirmwareStatusNotificationRequestSerializer != null
+                       ? CustomFirmwareStatusNotificationRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 
@@ -233,7 +377,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) FirmwareStatusNotificationRequest1 == null) || ((Object) FirmwareStatusNotificationRequest2 == null))
+            if ((FirmwareStatusNotificationRequest1 is null) || (FirmwareStatusNotificationRequest2 is null))
                 return false;
 
             return FirmwareStatusNotificationRequest1.Equals(FirmwareStatusNotificationRequest2);
@@ -273,12 +417,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object is null)
                 return false;
 
-            // Check if the given object is a firmware status notification request.
-            var FirmwareStatusNotificationRequest = Object as FirmwareStatusNotificationRequest;
-            if ((Object) FirmwareStatusNotificationRequest == null)
+            if (!(Object is FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest))
                 return false;
 
-            return this.Equals(FirmwareStatusNotificationRequest);
+            return Equals(FirmwareStatusNotificationRequest);
 
         }
 
@@ -294,7 +436,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest)
         {
 
-            if ((Object) FirmwareStatusNotificationRequest == null)
+            if (FirmwareStatusNotificationRequest is null)
                 return false;
 
             return Status.Equals(FirmwareStatusNotificationRequest.Status);
@@ -312,6 +454,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => Status.GetHashCode();
 
         #endregion
@@ -322,6 +465,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => Status.ToString();
 
         #endregion

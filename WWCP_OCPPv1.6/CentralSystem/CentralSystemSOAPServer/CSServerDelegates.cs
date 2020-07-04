@@ -611,13 +611,15 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// 
     /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
     /// 
-    /// <param name="Result">The general OCPP result.</param>
     /// <param name="TransactionId">The transaction identification copied from the start transaction response.</param>
     /// <param name="StopTimestamp">The timestamp of the end of the charging transaction.</param>
     /// <param name="MeterStop">The energy meter value in Wh for the connector at end of the charging transaction.</param>
     /// <param name="IdTag">An optional identifier which requested to stop the charging. It is optional because a charge point may terminate charging without the presence of an idTag, e.g. in case of a reset.</param>
     /// <param name="Reason">An optional reason why the transaction had been stopped. MAY only be omitted when the Reason is "Local".</param>
     /// <param name="TransactionData">Optional transaction usage details relevant for billing purposes.</param>
+    /// 
+    /// <param name="Result">The general OCPP result.</param>
+    /// <param name="IdTagInfo">An identification tag info.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
@@ -627,13 +629,15 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                           ChargeBox_Id             ChargeBoxIdentity,
 
-                                          Result                   Result,
                                           Transaction_Id           TransactionId,
                                           DateTime                 StopTimestamp,
                                           UInt64                   MeterStop,
                                           IdToken?                 IdTag,
                                           Reasons?                 Reason,
                                           IEnumerable<MeterValue>  TransactionData,
+
+                                          Result                   Result,
+                                          IdTagInfo?               IdTagInfo,
                                           TimeSpan                 Runtime);
 
     #endregion
@@ -678,13 +682,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="DataTransferRequest">A data transfer request.</param>
     public delegate Task<DataTransferResponse>
 
-        OnIncomingDataTransferDelegate(DateTime                 Timestamp,
-                                       CentralSystemSOAPServer  Sender,
-                                       CancellationToken        CancellationToken,
-                                       EventTracking_Id         EventTrackingId,
+        OnIncomingDataTransferDelegate(DateTime                        Timestamp,
+                                       CentralSystemSOAPServer         Sender,
+                                       CancellationToken               CancellationToken,
+                                       EventTracking_Id                EventTrackingId,
 
-                                       ChargeBox_Id             ChargeBoxIdentity,
-                                       CP.DataTransferRequest   DataTransferRequest);
+                                       ChargeBox_Id                    ChargeBoxIdentity,
+                                       CP.DataTransferRequest  DataTransferRequest);
 
 
     /// <summary>

@@ -41,54 +41,54 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The connector identification at the charge point.
         /// </summary>
-        public Connector_Id     ConnectorId      { get; }
+        public Connector_Id     ConnectorId       { get; }
 
         /// <summary>
         /// The identifier for which a transaction has to be started.
         /// </summary>
-        public IdToken          IdTag            { get; }
+        public IdToken          IdTag             { get; }
 
         /// <summary>
         /// The timestamp of the transaction start.
         /// </summary>
-        public DateTime         Timestamp        { get; }
+        public DateTime         StartTimestamp    { get; }
 
         /// <summary>
         /// The energy meter value in Wh for the connector at start
         /// of the transaction.
         /// </summary>
-        public UInt64           MeterStart       { get; }
+        public UInt64           MeterStart        { get; }
 
         /// <summary>
         /// An optional identification of the reservation that will
         /// terminate as a result of this transaction.
         /// </summary>
-        public Reservation_Id?  ReservationId    { get; }
+        public Reservation_Id?  ReservationId     { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP StartTransaction XML/SOAP request.
+        /// Create a start transaction request.
         /// </summary>
         /// <param name="ConnectorId">The connector identification at the charge point.</param>
         /// <param name="IdTag">The identifier for which a transaction has to be started.</param>
-        /// <param name="Timestamp">The timestamp of the transaction start.</param>
+        /// <param name="StartTimestamp">The timestamp of the transaction start.</param>
         /// <param name="MeterStart">The energy meter value in Wh for the connector at start of the transaction.</param>
         /// <param name="ReservationId">An optional identification of the reservation that will terminate as a result of this transaction.</param>
         public StartTransactionRequest(Connector_Id     ConnectorId,
                                        IdToken          IdTag,
-                                       DateTime         Timestamp,
+                                       DateTime         StartTimestamp,
                                        UInt64           MeterStart,
                                        Reservation_Id?  ReservationId = null)
         {
 
-            this.ConnectorId    = ConnectorId;
-            this.IdTag          = IdTag;
-            this.Timestamp      = Timestamp;
-            this.MeterStart     = MeterStart;
-            this.ReservationId  = ReservationId;
+            this.ConnectorId     = ConnectorId;
+            this.IdTag           = IdTag;
+            this.StartTimestamp  = StartTimestamp;
+            this.MeterStart      = MeterStart;
+            this.ReservationId   = ReservationId;
 
         }
 
@@ -449,7 +449,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                    new XElement(OCPPNS.OCPPv1_6_CS + "connectorId",          ConnectorId),
                    new XElement(OCPPNS.OCPPv1_6_CS + "idTag",                IdTag.ToString()),
-                   new XElement(OCPPNS.OCPPv1_6_CS + "timestamp",            Timestamp.ToIso8601()),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "timestamp",            StartTimestamp.ToIso8601()),
                    new XElement(OCPPNS.OCPPv1_6_CS + "meterStart",           MeterStart),
 
                    ReservationId.HasValue
@@ -473,7 +473,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                            new JProperty("connectorId",          ConnectorId.ToString()),
                            new JProperty("idTag",                IdTag.      ToString()),
-                           new JProperty("timestamp",            Timestamp.  ToIso8601()),
+                           new JProperty("timestamp",            StartTimestamp.  ToIso8601()),
                            new JProperty("meterStart",           MeterStart),
 
                            ReservationId.HasValue
@@ -571,10 +571,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (StartTransactionRequest is null)
                 return false;
 
-            return ConnectorId.Equals(StartTransactionRequest.ConnectorId) &&
-                   IdTag.      Equals(StartTransactionRequest.IdTag)       &&
-                   Timestamp.  Equals(StartTransactionRequest.Timestamp)   &&
-                   MeterStart. Equals(StartTransactionRequest.MeterStart)  &&
+            return ConnectorId.   Equals(StartTransactionRequest.ConnectorId)    &&
+                   IdTag.         Equals(StartTransactionRequest.IdTag)          &&
+                   StartTimestamp.Equals(StartTransactionRequest.StartTimestamp) &&
+                   MeterStart.    Equals(StartTransactionRequest.MeterStart)     &&
 
                    ((!ReservationId.HasValue && !StartTransactionRequest.ReservationId.HasValue) ||
                      (ReservationId.HasValue &&  StartTransactionRequest.ReservationId.HasValue && ReservationId.Equals(StartTransactionRequest.ReservationId)));
@@ -598,7 +598,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 return ConnectorId.GetHashCode() * 13 ^
                        IdTag.      GetHashCode() * 11 ^
-                       Timestamp.  GetHashCode() *  7 ^
+                       StartTimestamp.  GetHashCode() *  7 ^
                        MeterStart. GetHashCode() *  5 ^
 
                        (ReservationId.HasValue

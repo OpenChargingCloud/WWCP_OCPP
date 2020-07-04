@@ -1,4 +1,4 @@
-﻿/*/*
+﻿/*
  * Copyright (c) 2014-2020 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
@@ -24,7 +24,6 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.JSON;
-using org.GraphDefined.WWCP.OCPPv1_6.CP;
 
 #endregion
 
@@ -35,7 +34,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// A stop transaction response.
     /// </summary>
     public class StopTransactionResponse : AResponse<CP.StopTransactionRequest,
-                                                     StopTransactionResponse>
+                                                        StopTransactionResponse>
     {
 
         #region Properties
@@ -169,9 +168,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="Request">The stop transaction request leading to this response.</param>
         /// <param name="StopTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StopTransactionResponse Parse(StopTransactionRequest  Request,
-                                                    XElement                StopTransactionResponseXML,
-                                                    OnExceptionDelegate     OnException = null)
+        public static StopTransactionResponse Parse(CP.StopTransactionRequest  Request,
+                                                    XElement                   StopTransactionResponseXML,
+                                                    OnExceptionDelegate        OnException = null)
         {
 
             if (TryParse(Request,
@@ -196,9 +195,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="Request">The stop transaction request leading to this response.</param>
         /// <param name="StopTransactionResponseJSON">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StopTransactionResponse Parse(StopTransactionRequest  Request,
-                                                    JObject                 StopTransactionResponseJSON,
-                                                    OnExceptionDelegate     OnException = null)
+        public static StopTransactionResponse Parse(CP.StopTransactionRequest  Request,
+                                                    JObject                    StopTransactionResponseJSON,
+                                                    OnExceptionDelegate        OnException = null)
         {
 
             if (TryParse(Request,
@@ -223,9 +222,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="Request">The stop transaction request leading to this response.</param>
         /// <param name="StopTransactionResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StopTransactionResponse Parse(StopTransactionRequest  Request,
-                                                    String                  StopTransactionResponseText,
-                                                    OnExceptionDelegate     OnException = null)
+        public static StopTransactionResponse Parse(CP.StopTransactionRequest  Request,
+                                                    String                     StopTransactionResponseText,
+                                                    OnExceptionDelegate        OnException = null)
         {
 
             if (TryParse(Request,
@@ -251,7 +250,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="StopTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="StopTransactionResponse">The parsed stop transaction response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(StopTransactionRequest       Request,
+        public static Boolean TryParse(CP.StopTransactionRequest    Request,
                                        XElement                     StopTransactionResponseXML,
                                        out StopTransactionResponse  StopTransactionResponse,
                                        OnExceptionDelegate          OnException  = null)
@@ -295,7 +294,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="StopTransactionResponseJSON">The text to be parsed.</param>
         /// <param name="StopTransactionResponse">The parsed stop transaction response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(StopTransactionRequest       Request,
+        public static Boolean TryParse(CP.StopTransactionRequest    Request,
                                        JObject                      StopTransactionResponseJSON,
                                        out StopTransactionResponse  StopTransactionResponse,
                                        OnExceptionDelegate          OnException  = null)
@@ -348,7 +347,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="StopTransactionResponseText">The text to be parsed.</param>
         /// <param name="StopTransactionResponse">The parsed stop transaction response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(StopTransactionRequest       Request,
+        public static Boolean TryParse(CP.StopTransactionRequest    Request,
                                        String                       StopTransactionResponseText,
                                        out StopTransactionResponse  StopTransactionResponse,
                                        OnExceptionDelegate          OnException  = null)
@@ -428,7 +427,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// The stop transaction failed.
         /// </summary>
         /// <param name="Request">The stop transaction request leading to this response.</param>
-        public static StopTransactionResponse Failed(StopTransactionRequest Request)
+        public static StopTransactionResponse Failed(CP.StopTransactionRequest Request)
 
             => new StopTransactionResponse(Request,
                                            Result.Server());

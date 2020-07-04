@@ -1,4 +1,4 @@
-﻿/*/*
+﻿/*
  * Copyright (c) 2014-2020 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
@@ -58,7 +58,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public AuthorizeResponse(CP.AuthorizeRequest  Request,
                                  IdTagInfo            IdTagInfo)
 
-            : base(Request, Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -78,7 +79,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public AuthorizeResponse(CP.AuthorizeRequest  Request,
                                  Result               Result)
 
-            : base(Request, Result)
+            : base(Request,
+                   Result)
 
         {
 
@@ -436,6 +438,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The authentication failed.
         /// </summary>
+        /// <param name="Request">The authorize request leading to this response.</param>
         public static AuthorizeResponse Failed(CP.AuthorizeRequest Request)
 
             => new AuthorizeResponse(Request,

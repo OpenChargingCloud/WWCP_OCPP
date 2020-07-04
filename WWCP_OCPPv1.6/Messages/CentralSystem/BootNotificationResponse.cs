@@ -1,4 +1,4 @@
-﻿/*/*
+﻿/*
  * Copyright (c) 2014-2020 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
@@ -76,7 +76,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                         DateTime                    CurrentTime,
                                         TimeSpan                    Interval)
 
-            : base(Request, Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -98,7 +99,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public BootNotificationResponse(CP.BootNotificationRequest  Request,
                                         Result                      Result)
 
-            : base(Request, Result)
+            : base(Request,
+                   Result)
 
         {
 
@@ -319,7 +321,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 #region Status
 
                 if (!BootNotificationResponseJSON.ParseMandatory("status",
-                                                                 "current time",
+                                                                 "registration status",
                                                                  RegistrationStatusExtentions.Parse,
                                                                  out RegistrationStatus  RegistrationStatus,
                                                                  out String              ErrorResponse))
