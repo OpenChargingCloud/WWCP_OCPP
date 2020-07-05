@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP set charging profile response.
+    /// A set charging profile response.
     /// </summary>
     public class SetChargingProfileResponse : AResponse<SetChargingProfileResponse>
     {
@@ -105,7 +105,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (SetChargingProfileResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP set charging profile response.
+        /// Parse the given XML representation of a set charging profile response.
         /// </summary>
         /// <param name="SetChargingProfileResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -127,7 +127,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (SetChargingProfileResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP set charging profile response.
+        /// Parse the given text representation of a set charging profile response.
         /// </summary>
         /// <param name="SetChargingProfileResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -149,7 +149,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(SetChargingProfileResponseXML,  out SetChargingProfileResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP set charging profile response.
+        /// Try to parse the given XML representation of a set charging profile response.
         /// </summary>
         /// <param name="SetChargingProfileResponseXML">The XML to be parsed.</param>
         /// <param name="SetChargingProfileResponse">The parsed set charging profile response.</param>
@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(SetChargingProfileResponseText, out SetChargingProfileResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP set charging profile response.
+        /// Try to parse the given text representation of a set charging profile response.
         /// </summary>
         /// <param name="SetChargingProfileResponseText">The text to be parsed.</param>
         /// <param name="SetChargingProfileResponse">The parsed set charging profile response.</param>

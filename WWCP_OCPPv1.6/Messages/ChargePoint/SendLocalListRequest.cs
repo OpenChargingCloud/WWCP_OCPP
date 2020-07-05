@@ -22,9 +22,10 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Collections.Generic;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -32,7 +33,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP send local list request.
+    /// A send local list request.
     /// </summary>
     public class SendLocalListRequest : ARequest<SendLocalListRequest>
     {
@@ -44,12 +45,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// full list. In case of a differential update it is the
         /// version number of the list after the update has been applied.
         /// </summary>
-        public UInt64                          ListVersion              { get; }
+        public UInt64                          ListVersion               { get; }
 
         /// <summary>
         /// The type of update (full or differential).
         /// </summary>
-        public UpdateTypes                     UpdateType               { get; }
+        public UpdateTypes                     UpdateType                { get; }
 
         /// <summary>
         /// In case of a full update this contains the list of values that
@@ -59,21 +60,21 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// Maximum number of AuthorizationData elements is available in
         /// the configuration key: SendLocalListMaxLength.
         /// </summary>
-        public IEnumerable<AuthorizationData>  LocalAuthorizationList   { get; }
+        public IEnumerable<AuthorizationData>  LocalAuthorizationList    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP SendLocalListRequest XML/SOAP request.
+        /// Create a send local list request.
         /// </summary>
         /// <param name="ListVersion">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
         /// <param name="UpdateType">The type of update (full or differential).</param>
         /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charge point. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
         public SendLocalListRequest(UInt64                          ListVersion,
                                     UpdateTypes                     UpdateType,
-                                    IEnumerable<AuthorizationData>  LocalAuthorizationList = null)
+                                    IEnumerable<AuthorizationData>  LocalAuthorizationList  = null)
         {
 
             this.ListVersion             = ListVersion;
@@ -127,12 +128,81 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:SendLocalListRequest",
+        //     "title":   "SendLocalListRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "listVersion": {
+        //             "type": "integer"
+        //         },
+        //         "localAuthorizationList": {
+        //             "type": "array",
+        //             "items": {
+        //                 "type": "object",
+        //                 "properties": {
+        //                     "idTag": {
+        //                         "type": "string",
+        //                         "maxLength": 20
+        //                     },
+        //                     "idTagInfo": {
+        //                         "type": "object",
+        //                         "properties": {
+        //                             "expiryDate": {
+        //                                 "type": "string",
+        //                                 "format": "date-time"
+        //                             },
+        //                             "parentIdTag": {
+        //                                 "type": "string",
+        //                                 "maxLength": 20
+        //                             },
+        //                             "status": {
+        //                                 "type": "string",
+        //                                 "additionalProperties": false,
+        //                                 "enum": [
+        //                                     "Accepted",
+        //                                     "Blocked",
+        //                                     "Expired",
+        //                                     "Invalid",
+        //                                     "ConcurrentTx"
+        //                                 ]
+        //                             }
+        //                         },
+        //                         "additionalProperties": false,
+        //                         "required": [
+        //                             "status"
+        //                         ]
+        //                     }
+        //                 },
+        //                 "additionalProperties": false,
+        //                 "required": [
+        //                     "idTag"
+        //                 ]
+        //             }
+        //         },
+        //         "updateType": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Differential",
+        //                 "Full"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "listVersion",
+        //         "updateType"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (SendLocalListRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP send local list request.
+        /// Parse the given XML representation of a send local list request.
         /// </summary>
         /// <param name="SendLocalListRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -140,10 +210,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                  OnExceptionDelegate  OnException = null)
         {
 
-            SendLocalListRequest _SendLocalListRequest;
+            if (TryParse(SendLocalListRequestXML,
+                         out SendLocalListRequest sendLocalListRequest,
+                         OnException))
+            {
+                return sendLocalListRequest;
+            }
 
-            if (TryParse(SendLocalListRequestXML, out _SendLocalListRequest, OnException))
-                return _SendLocalListRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (SendLocalListRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a send local list request.
+        /// </summary>
+        /// <param name="SendLocalListRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static SendLocalListRequest Parse(JObject              SendLocalListRequestJSON,
+                                                 OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(SendLocalListRequestJSON,
+                         out SendLocalListRequest sendLocalListRequest,
+                         OnException))
+            {
+                return sendLocalListRequest;
+            }
 
             return null;
 
@@ -154,7 +250,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (SendLocalListRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP send local list request.
+        /// Parse the given text representation of a send local list request.
         /// </summary>
         /// <param name="SendLocalListRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -162,10 +258,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                  OnExceptionDelegate  OnException = null)
         {
 
-            SendLocalListRequest _SendLocalListRequest;
-
-            if (TryParse(SendLocalListRequestText, out _SendLocalListRequest, OnException))
-                return _SendLocalListRequest;
+            if (TryParse(SendLocalListRequestText,
+                         out SendLocalListRequest sendLocalListRequest,
+                         OnException))
+            {
+                return sendLocalListRequest;
+            }
 
             return null;
 
@@ -176,7 +274,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(SendLocalListRequestXML,  out SendLocalListRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP send local list request.
+        /// Try to parse the given XML representation of a send local list request.
         /// </summary>
         /// <param name="SendLocalListRequestXML">The XML to be parsed.</param>
         /// <param name="SendLocalListRequest">The parsed send local list request.</param>
@@ -219,10 +317,90 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(SendLocalListRequestJSON, out SendLocalListRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a send local list request.
+        /// </summary>
+        /// <param name="SendLocalListRequestJSON">The JSON to be parsed.</param>
+        /// <param name="SendLocalListRequest">The parsed send local list request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                   SendLocalListRequestJSON,
+                                       out SendLocalListRequest  SendLocalListRequest,
+                                       OnExceptionDelegate       OnException  = null)
+        {
+
+            try
+            {
+
+                SendLocalListRequest = null;
+
+                #region ListVersion
+
+                if (!SendLocalListRequestJSON.ParseMandatory("listVersion",
+                                                             "list version",
+                                                             UInt64.TryParse,
+                                                             out UInt64  ListVersion,
+                                                             out String  ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region UpdateType
+
+                if (!SendLocalListRequestJSON.MapMandatory("updateType",
+                                                           "update type",
+                                                           UpdateTypesExtentions.Parse,
+                                                           out UpdateTypes  UpdateType,
+                                                           out              ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region LocalAuthorizationList
+
+                if (!SendLocalListRequestJSON.ParseOptionalHashSet("localAuthorizationList",
+                                                                   "local authorization list",
+                                                                   AuthorizationData.TryParse,
+                                                                   out HashSet<AuthorizationData>  LocalAuthorizationList,
+                                                                   out                             ErrorResponse,
+                                                                   OnException))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                SendLocalListRequest = new SendLocalListRequest(ListVersion,
+                                                                UpdateType,
+                                                                LocalAuthorizationList);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, SendLocalListRequestJSON, e);
+
+                SendLocalListRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(SendLocalListRequestText, out SendLocalListRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP send local list request.
+        /// Try to parse the given text representation of a send local list request.
         /// </summary>
         /// <param name="SendLocalListRequestText">The text to be parsed.</param>
         /// <param name="SendLocalListRequest">The parsed send local list request.</param>
@@ -235,11 +413,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(SendLocalListRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out SendLocalListRequest,
-                             OnException))
+                SendLocalListRequestText = SendLocalListRequestText?.Trim();
 
-                    return true;
+                if (SendLocalListRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (SendLocalListRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(SendLocalListRequestText),
+                                 out SendLocalListRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(SendLocalListRequestText).Root,
+                                 out SendLocalListRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -275,6 +469,39 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomSendLocalListRequestSerializer = null, CustomAuthorizationDataSerializer = null, CustomIdTagInfoResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomSendLocalListRequestSerializer">A delegate to serialize custom start transaction requests.</param>
+        /// <param name="CustomAuthorizationDataSerializer">A delegate to serialize custom start transaction requests.</param>
+        /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SendLocalListRequest> CustomSendLocalListRequestSerializer  = null,
+                              CustomJObjectSerializerDelegate<AuthorizationData>    CustomAuthorizationDataSerializer     = null,
+                              CustomJObjectSerializerDelegate<IdTagInfo>            CustomIdTagInfoResponseSerializer     = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("listVersion",                   ListVersion),
+                           new JProperty("updateType",                    UpdateType.AsText()),
+
+                           LocalAuthorizationList.IsNeitherNullNorEmpty()
+                               ? new JProperty("localAuthorizationList",  new JArray(LocalAuthorizationList.Select(item => item.ToJSON(CustomAuthorizationDataSerializer,
+                                                                                                                                       CustomIdTagInfoResponseSerializer))))
+                               : null
+
+                       );
+
+            return CustomSendLocalListRequestSerializer != null
+                       ? CustomSendLocalListRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -294,7 +521,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) SendLocalListRequest1 == null) || ((Object) SendLocalListRequest2 == null))
+            if ((SendLocalListRequest1 is null) || (SendLocalListRequest2 is null))
                 return false;
 
             return SendLocalListRequest1.Equals(SendLocalListRequest2);
@@ -334,12 +561,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a send local list request.
-            var SendLocalListRequest = Object as SendLocalListRequest;
-            if ((Object) SendLocalListRequest == null)
+            if (!(Object is SendLocalListRequest SendLocalListRequest))
                 return false;
 
-            return this.Equals(SendLocalListRequest);
+            return Equals(SendLocalListRequest);
 
         }
 
@@ -355,7 +580,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(SendLocalListRequest SendLocalListRequest)
         {
 
-            if ((Object) SendLocalListRequest == null)
+            if (SendLocalListRequest is null)
                 return false;
 
             return ListVersion.                   Equals(SendLocalListRequest.ListVersion) &&
@@ -379,8 +604,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             unchecked
             {
 
-                return ListVersion.           GetHashCode() * 7 ^
-                       UpdateType.            GetHashCode() * 5 ^
+                return ListVersion.           GetHashCode() * 5 ^
+                       UpdateType.            GetHashCode() * 3 ^
                        LocalAuthorizationList.GetHashCode();
 
             }
@@ -401,7 +626,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                              LocalAuthorizationList.Count(), " authorization list entries");
 
         #endregion
-
 
     }
 

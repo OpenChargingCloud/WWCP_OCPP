@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP send local list response.
+    /// A send local list response.
     /// </summary>
     public class SendLocalListResponse : AResponse<SendLocalListResponse>
     {
@@ -105,7 +105,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (SendLocalListResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP send local list response.
+        /// Parse the given XML representation of a send local list response.
         /// </summary>
         /// <param name="SendLocalListResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -127,7 +127,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (SendLocalListResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP send local list response.
+        /// Parse the given text representation of a send local list response.
         /// </summary>
         /// <param name="SendLocalListResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -149,7 +149,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(SendLocalListResponseXML,  out SendLocalListResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP send local list response.
+        /// Try to parse the given XML representation of a send local list response.
         /// </summary>
         /// <param name="SendLocalListResponseXML">The XML to be parsed.</param>
         /// <param name="SendLocalListResponse">The parsed send local list response.</param>
@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(SendLocalListResponseText, out SendLocalListResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP send local list response.
+        /// Try to parse the given text representation of a send local list response.
         /// </summary>
         /// <param name="SendLocalListResponseText">The text to be parsed.</param>
         /// <param name="SendLocalListResponse">The parsed send local list response.</param>

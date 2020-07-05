@@ -19,8 +19,12 @@
 
 using System;
 using System.Xml.Linq;
+using System.Collections.Generic;
+
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -28,7 +32,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// OCPP authorization data.
+    /// Authorization data.
     /// </summary>
     public struct AuthorizationData : IEquatable<AuthorizationData>
     {
@@ -38,7 +42,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// The identifier to which this authorization applies.
         /// </summary>
-        public IdToken    IdTag       { get; }
+        public IdToken     IdTag        { get; }
 
         /// <summary>
         /// Information about authorization status, expiry and parent id.
@@ -48,19 +52,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// entry for this idtag in the Local Authorization List SHALL be
         /// deleted.
         /// </summary>
-        public IdTagInfo  IdTagInfo   { get; }
+        public IdTagInfo?  IdTagInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new OCPP configuration key value pair.
+        /// Create new authorization data.
         /// </summary>
         /// <param name="IdTag">The identifier to which this authorization applies.</param>
         /// <param name="IdTagInfo">Information about authorization status, expiry and parent id. For a Differential update the following applies: If this element is present, then this entry SHALL be added or updated in the Local Authorization List. If this element is absent, than the entry for this idtag in the Local Authorization List SHALL be deleted.</param>
-        public AuthorizationData(IdToken    IdTag,
-                                 IdTagInfo  IdTagInfo)
+        public AuthorizationData(IdToken     IdTag,
+                                 IdTagInfo?  IdTagInfo)
         {
 
             this.IdTag      = IdTag;
@@ -92,12 +96,57 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         //
         // </ns:authorizationData>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:SendLocalListRequest",
+        //     "title":   "localAuthorizationList",
+        //     "type":    "object",
+        //     "properties": {
+        //         "idTag": {
+        //             "type": "string",
+        //             "maxLength": 20
+        //         },
+        //         "idTagInfo": {
+        //             "type": "object",
+        //             "properties": {
+        //                 "expiryDate": {
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "parentIdTag": {
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "status": {
+        //                     "type": "string",
+        //                     "additionalProperties": false,
+        //                     "enum": [
+        //                         "Accepted",
+        //                         "Blocked",
+        //                         "Expired",
+        //                         "Invalid",
+        //                         "ConcurrentTx"
+        //                     ]
+        //                 }
+        //             },
+        //             "additionalProperties": false,
+        //             "required": [
+        //                 "status"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "idTag"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (AuthorizationDataXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP configuration key value pair.
+        /// Parse the given XML representation of a configuration key value pair.
         /// </summary>
         /// <param name="AuthorizationDataXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -105,12 +154,38 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                               OnExceptionDelegate  OnException = null)
         {
 
-            AuthorizationData _AuthorizationData;
+            if (TryParse(AuthorizationDataXML,
+                         out AuthorizationData authorizationData,
+                         OnException))
+            {
+                return authorizationData;
+            }
 
-            if (TryParse(AuthorizationDataXML, out _AuthorizationData, OnException))
-                return _AuthorizationData;
+            return default;
 
-            return default(AuthorizationData);
+        }
+
+        #endregion
+
+        #region (static) Parse   (AuthorizationDataJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a configuration key value pair.
+        /// </summary>
+        /// <param name="AuthorizationDataJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static AuthorizationData Parse(JObject              AuthorizationDataJSON,
+                                              OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(AuthorizationDataJSON,
+                         out AuthorizationData authorizationData,
+                         OnException))
+            {
+                return authorizationData;
+            }
+
+            return default;
 
         }
 
@@ -119,7 +194,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) Parse   (AuthorizationDataText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP configuration key value pair.
+        /// Parse the given text representation of a configuration key value pair.
         /// </summary>
         /// <param name="AuthorizationDataText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -127,12 +202,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                               OnExceptionDelegate  OnException = null)
         {
 
-            AuthorizationData _AuthorizationData;
+            if (TryParse(AuthorizationDataText,
+                         out AuthorizationData authorizationData,
+                         OnException))
+            {
+                return authorizationData;
+            }
 
-            if (TryParse(AuthorizationDataText, out _AuthorizationData, OnException))
-                return _AuthorizationData;
-
-            return default(AuthorizationData);
+            return default;
 
         }
 
@@ -141,7 +218,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) TryParse(AuthorizationDataXML,  out AuthorizationData, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP configuration key value pair.
+        /// Try to parse the given XML representation of a configuration key value pair.
         /// </summary>
         /// <param name="AuthorizationDataXML">The XML to be parsed.</param>
         /// <param name="AuthorizationData">The parsed connector type.</param>
@@ -160,7 +237,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                                                             IdToken.Parse),
 
                                         AuthorizationDataXML.MapElement    (OCPPNS.OCPPv1_6_CP + "idTagInfo",
-                                                                            IdTagInfo.Parse)
+                                                                            OCPPv1_6.IdTagInfo.Parse)
 
                                     );
 
@@ -181,10 +258,79 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
+        #region (static) TryParse(AuthorizationDataJSON,  out AuthorizationData, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a configuration key value pair.
+        /// </summary>
+        /// <param name="AuthorizationDataJSON">The JSON to be parsed.</param>
+        /// <param name="AuthorizationData">The parsed connector type.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                AuthorizationDataJSON,
+                                       out AuthorizationData  AuthorizationData,
+                                       OnExceptionDelegate    OnException  = null)
+        {
+
+            try
+            {
+
+                AuthorizationData = default;
+
+                #region IdTag
+
+                if (!AuthorizationDataJSON.ParseMandatory("idTag",
+                                                          "identification tag",
+                                                          IdToken.TryParse,
+                                                          out IdToken  IdTag,
+                                                          out String   ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region IdTagInfo
+
+                if (AuthorizationDataJSON.ParseOptionalStruct("idTagInfo",
+                                                              "identification tag information",
+                                                              OCPPv1_6.IdTagInfo.TryParse,
+                                                              out IdTagInfo?  IdTagInfo,
+                                                              out             ErrorResponse,
+                                                              OnException))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+
+                AuthorizationData = new AuthorizationData(IdTag,
+                                                          IdTagInfo);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, AuthorizationDataJSON, e);
+
+                AuthorizationData = default;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(AuthorizationDataText, out AuthorizationData, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP configuration key value pair.
+        /// Try to parse the given text representation of a configuration key value pair.
         /// </summary>
         /// <param name="AuthorizationDataText">The text to be parsed.</param>
         /// <param name="AuthorizationData">The parsed connector type.</param>
@@ -197,11 +343,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             try
             {
 
-                if (TryParse(XDocument.Parse(AuthorizationDataText).Root,
-                             out AuthorizationData,
-                             OnException))
+                AuthorizationDataText = AuthorizationDataText?.Trim();
 
-                    return true;
+                if (AuthorizationDataText.IsNotNullOrEmpty())
+                {
+
+                    if (AuthorizationDataText.StartsWith("{") &&
+                        TryParse(JObject.Parse(AuthorizationDataText),
+                                 out AuthorizationData,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(AuthorizationDataText).Root,
+                                 out AuthorizationData,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -228,11 +390,40 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "idTag",  IdTag.ToString()),
 
-                   IdTagInfo != null
-                       ? IdTagInfo.ToXML()
+                   IdTagInfo.HasValue
+                       ? IdTagInfo.Value.ToXML()
                        : null
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomAuthorizationDataSerializer = null, CustomIdTagInfoResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomAuthorizationDataSerializer">A delegate to serialize custom start transaction requests.</param>
+        /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizationData> CustomAuthorizationDataSerializer   = null,
+                              CustomJObjectSerializerDelegate<IdTagInfo>         CustomIdTagInfoResponseSerializer   = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("idTag",            IdTag.          ToString()),
+
+                           IdTagInfo.HasValue
+                               ? new JProperty("idTagInfo",  IdTagInfo.Value.ToJSON(CustomIdTagInfoResponseSerializer))
+                               : null
+
+                       );
+
+            return CustomAuthorizationDataSerializer != null
+                       ? CustomAuthorizationDataSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 
@@ -297,11 +488,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if (Object is null)
                 return false;
 
-            // Check if the given object is a AuthorizationData.
-            if (!(Object is AuthorizationData))
+            if (!(Object is AuthorizationData AuthorizationData))
                 return false;
 
-            return this.Equals((AuthorizationData) Object);
+            return Equals(AuthorizationData);
 
         }
 
@@ -367,7 +557,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                  : "");
 
         #endregion
-
 
     }
 

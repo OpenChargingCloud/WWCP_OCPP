@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -28,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An OCPP charging profile.
+    /// A charging profile.
     /// </summary>
     public class ChargingProfile : IEquatable<ChargingProfile>
     {
@@ -38,61 +41,61 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// The unique identification of this profile.
         /// </summary>
-        public ChargingProfile_Id       ChargingProfileId       { get; }
+        public ChargingProfile_Id       ChargingProfileId        { get; }
 
 
         /// <summary>
         /// Value determining level in hierarchy stack of profiles. Higher values
         /// have precedence over lower values. Lowest level is 0.
         /// </summary>
-        public UInt32                   StackLevel               { get; }
+        public UInt32                   StackLevel                { get; }
 
         /// <summary>
         /// Defines the purpose of the schedule transferred by this message.
         /// </summary>
-        public ChargingProfilePurposes  ChargingProfilePurpose   { get; }
+        public ChargingProfilePurposes  ChargingProfilePurpose    { get; }
 
         /// <summary>
         /// Indicates the kind of schedule.
         /// </summary>
-        public ChargingProfileKinds     ChargingProfileKind      { get; }
+        public ChargingProfileKinds     ChargingProfileKind       { get; }
 
         /// <summary>
         /// Contains limits for the available power or current over time.
         /// </summary>
-        public ChargingSchedule         ChargingSchedule         { get; }
+        public ChargingSchedule         ChargingSchedule          { get; }
 
         /// <summary>
         /// When the ChargingProfilePurpose is set to TxProfile, this value MAY
         /// be used to match the profile to a specific charging transaction.
         /// </summary>
-        public Transaction_Id?          TransactionId            { get; }
+        public Transaction_Id?          TransactionId             { get; }
 
         /// <summary>
         /// An optional indication of the start point of a recurrence.
         /// </summary>
-        public RecurrencyKinds?         RecurrencyKind           { get; }
+        public RecurrencyKinds?         RecurrencyKind            { get; }
 
         /// <summary>
         /// An optional timestamp at which the profile starts to be valid. If absent,
         /// the profile is valid as soon as it is received by the charge point. Not
         /// allowed to be used when ChargingProfilePurpose is TxProfile.
         /// </summary>
-        public DateTime?                ValidFrom                { get; }
+        public DateTime?                ValidFrom                 { get; }
 
         /// <summary>
         /// An optional timestamp at which the profile stops to be valid. If absent,
         /// the profile is valid until it is replaced by another profile. Not allowed
         /// to be used when ChargingProfilePurpose is TxProfile.
         /// </summary>
-        public DateTime?                ValidTo                  { get; }
+        public DateTime?                ValidTo                   { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new OCPP charging profile.
+        /// Create an new charging profile.
         /// </summary>
         /// <param name="ChargingProfileId">The unique identification of this profile.</param>
         /// <param name="StackLevel">Value determining level in hierarchy stack of profiles. Higher values have precedence over lower values. Lowest level is 0.</param>
@@ -117,23 +120,16 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         {
 
-            #region Initial checks
-
-            if (ChargingSchedule  == null)
-                throw new ArgumentNullException(nameof(ChargingSchedule),   "The given charging schedule must not be null!");
-
-            #endregion
-
             this.ChargingProfileId       = ChargingProfileId;
             this.StackLevel              = StackLevel;
             this.ChargingProfilePurpose  = ChargingProfilePurpose;
             this.ChargingProfileKind     = ChargingProfileKind;
-            this.ChargingSchedule        = ChargingSchedule;
+            this.ChargingSchedule        = ChargingSchedule ?? throw new ArgumentNullException(nameof(ChargingSchedule),   "The given charging schedule must not be null!");
 
-            this.TransactionId           = TransactionId  ?? new Transaction_Id?();
-            this.RecurrencyKind          = RecurrencyKind ?? new RecurrencyKinds?();
-            this.ValidFrom               = ValidFrom      ?? new DateTime?();
-            this.ValidTo                 = ValidTo        ?? new DateTime?();
+            this.TransactionId           = TransactionId    ?? new Transaction_Id?();
+            this.RecurrencyKind          = RecurrencyKind   ?? new RecurrencyKinds?();
+            this.ValidFrom               = ValidFrom        ?? new DateTime?();
+            this.ValidTo                 = ValidTo          ?? new DateTime?();
 
         }
 
@@ -187,12 +183,124 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         //    </ns:chargingSchedule>
         // </ns:chargingProfile>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:RemoteStartTransactionRequest",
+        //     "title":   "chargingProfile",
+        //     "type":    "object",
+        //     "properties": {
+        //         "chargingProfileId": {
+        //             "type": "integer"
+        //         },
+        //         "transactionId": {
+        //             "type": "integer"
+        //         },
+        //         "stackLevel": {
+        //             "type": "integer"
+        //         },
+        //         "chargingProfilePurpose": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "ChargePointMaxProfile",
+        //                 "TxDefaultProfile",
+        //                 "TxProfile"
+        //             ]
+        //         },
+        //         "chargingProfileKind": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Absolute",
+        //                 "Recurring",
+        //                 "Relative"
+        //             ]
+        //         },
+        //         "recurrencyKind": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Daily",
+        //                 "Weekly"
+        //             ]
+        //         },
+        //         "validFrom": {
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "validTo": {
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "chargingSchedule": {
+        //             "type": "object",
+        //             "properties": {
+        //                 "duration": {
+        //                     "type": "integer"
+        //                 },
+        //                 "startSchedule": {
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "chargingRateUnit": {
+        //                     "type": "string",
+        //                     "additionalProperties": false,
+        //                     "enum": [
+        //                         "A",
+        //                         "W"
+        //                     ]
+        //                 },
+        //                 "chargingSchedulePeriod": {
+        //                     "type": "array",
+        //                     "items": {
+        //                         "type": "object",
+        //                         "properties": {
+        //                             "startPeriod": {
+        //                                 "type": "integer"
+        //                             },
+        //                             "limit": {
+        //                                 "type": "number",
+        //                                 "multipleOf" : 0.1
+        //                             },
+        //                             "numberPhases": {
+        //                                 "type": "integer"
+        //                             }
+        //                         },
+        //                         "additionalProperties": false,
+        //                         "required": [
+        //                             "startPeriod",
+        //                             "limit"
+        //                         ]
+        //                     }
+        //                 },
+        //                 "minChargingRate": {
+        //                     "type": "number",
+        //                     "multipleOf" : 0.1
+        //                 }
+        //             },
+        //             "additionalProperties": false,
+        //             "required": [
+        //                 "chargingRateUnit",
+        //                 "chargingSchedulePeriod"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "chargingProfileId",
+        //         "stackLevel",
+        //         "chargingProfilePurpose",
+        //         "chargingProfileKind",
+        //         "chargingSchedule"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (ChargingProfileXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP charging profile.
+        /// Parse the given XML representation of a charging profile.
         /// </summary>
         /// <param name="ChargingProfileXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -200,10 +308,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                             OnExceptionDelegate  OnException = null)
         {
 
-            ChargingProfile _ChargingProfile;
+            if (TryParse(ChargingProfileXML,
+                         out ChargingProfile chargingProfile,
+                         OnException))
+            {
+                return chargingProfile;
+            }
 
-            if (TryParse(ChargingProfileXML, out _ChargingProfile, OnException))
-                return _ChargingProfile;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (ChargingProfileJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a charging profile.
+        /// </summary>
+        /// <param name="ChargingProfileJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static ChargingProfile Parse(JObject              ChargingProfileJSON,
+                                            OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(ChargingProfileJSON,
+                         out ChargingProfile chargingProfile,
+                         OnException))
+            {
+                return chargingProfile;
+            }
 
             return null;
 
@@ -214,7 +348,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) Parse   (ChargingProfileText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP charging profile.
+        /// Parse the given text representation of a charging profile.
         /// </summary>
         /// <param name="ChargingProfileText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -222,10 +356,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                             OnExceptionDelegate  OnException = null)
         {
 
-            ChargingProfile _ChargingProfile;
-
-            if (TryParse(ChargingProfileText, out _ChargingProfile, OnException))
-                return _ChargingProfile;
+            if (TryParse(ChargingProfileText,
+                         out ChargingProfile chargingProfile,
+                         OnException))
+            {
+                return chargingProfile;
+            }
 
             return null;
 
@@ -236,7 +372,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) TryParse(ChargingProfileXML,  out ChargingProfile, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP charging profile.
+        /// Try to parse the given XML representation of a charging profile.
         /// </summary>
         /// <param name="ChargingProfileXML">The XML to be parsed.</param>
         /// <param name="ChargingProfile">The parsed connector type.</param>
@@ -297,10 +433,184 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
+        #region (static) TryParse(ChargingProfileJSON, out ChargingProfile, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a charging profile.
+        /// </summary>
+        /// <param name="ChargingProfileJSON">The JSON to be parsed.</param>
+        /// <param name="ChargingProfile">The parsed connector type.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject              ChargingProfileJSON,
+                                       out ChargingProfile  ChargingProfile,
+                                       OnExceptionDelegate  OnException   = null)
+        {
+
+            try
+            {
+
+                ChargingProfile = null;
+
+                #region ChargingProfileId
+
+                if (!ChargingProfileJSON.ParseMandatory("chargingProfileId",
+                                                        "charging profile id",
+                                                        ChargingProfile_Id.TryParse,
+                                                        out ChargingProfile_Id  ChargingProfileId,
+                                                        out String              ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region StackLevel
+
+                if (!ChargingProfileJSON.ParseMandatory("stackLevel",
+                                                        "stack level",
+                                                        UInt32.TryParse,
+                                                        out UInt32  StackLevel,
+                                                        out         ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region ChargingProfilePurpose
+
+                if (!ChargingProfileJSON.MapMandatory("chargingProfilePurpose",
+                                                      "charging profile purpose",
+                                                      ChargingProfilePurposesExtentions.Parse,
+                                                      out ChargingProfilePurposes  ChargingProfilePurpose,
+                                                      out                          ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region ChargingProfileKind
+
+                if (!ChargingProfileJSON.MapMandatory("chargingProfileKind",
+                                                      "charging profile kind",
+                                                      ChargingProfileKindsExtentions.Parse,
+                                                      out ChargingProfileKinds  ChargingProfileKind,
+                                                      out                       ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region ChargingSchedule
+
+                if (!ChargingProfileJSON.ParseMandatoryN("chargingSchedule",
+                                                        "charging schedule",
+                                                        OCPPv1_6.ChargingSchedule.TryParse,
+                                                        out ChargingSchedule  ChargingSchedule,
+                                                        out                   ErrorResponse,
+                                                        OnException))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region TransactionId
+
+                if (ChargingProfileJSON.ParseOptional("transactionId",
+                                                      "transaction identifier",
+                                                      Transaction_Id.TryParse,
+                                                      out Transaction_Id  TransactionId,
+                                                      out                 ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region RecurrencyKind
+
+                if (ChargingProfileJSON.ParseOptional("recurrencyKind",
+                                                      "recurrency kind",
+                                                      RecurrencyKindsExtentions.Parse,
+                                                      out RecurrencyKinds  RecurrencyKind,
+                                                      out                  ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region ValidFrom
+
+                if (ChargingProfileJSON.ParseOptional("validFrom",
+                                                      "valid from",
+                                                      out DateTime?  ValidFrom,
+                                                      out            ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region ValidTo
+
+                if (ChargingProfileJSON.ParseOptional("validTo",
+                                                      "valid to",
+                                                      out DateTime?  ValidTo,
+                                                      out            ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+
+                ChargingProfile = new ChargingProfile(ChargingProfileId,
+                                                      StackLevel,
+                                                      ChargingProfilePurpose,
+                                                      ChargingProfileKind,
+                                                      ChargingSchedule,
+                                                      TransactionId,
+                                                      RecurrencyKind,
+                                                      ValidFrom,
+                                                      ValidTo);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, ChargingProfileJSON, e);
+
+                ChargingProfile = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(ChargingProfileText, out ChargingProfile, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP charging profile.
+        /// Try to parse the given text representation of a charging profile.
         /// </summary>
         /// <param name="ChargingProfileText">The text to be parsed.</param>
         /// <param name="ChargingProfile">The parsed connector type.</param>
@@ -313,11 +623,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             try
             {
 
-                if (TryParse(XDocument.Parse(ChargingProfileText).Root,
-                             out ChargingProfile,
-                             OnException))
+                ChargingProfileText = ChargingProfileText?.Trim();
 
-                    return true;
+                if (ChargingProfileText.IsNotNullOrEmpty())
+                {
+
+                    if (ChargingProfileText.StartsWith("{") &&
+                        TryParse(JObject.Parse(ChargingProfileText),
+                                 out ChargingProfile,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(ChargingProfileText).Root,
+                                 out ChargingProfile,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -370,6 +696,56 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
+        #region ToJSON(CustomChargingProfileSerializer = null, CustomChargingScheduleSerializer = null, CustomChargingSchedulePeriodSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomChargingProfileSerializer">A delegate to serialize custom charging profiles.</param>
+        /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedule requests.</param>
+        /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingProfile>         CustomChargingProfileSerializer          = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedule>        CustomChargingScheduleSerializer         = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>  CustomChargingSchedulePeriodSerializer   = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("chargingProfileId",       ChargingProfileId.ToString()),
+
+                           TransactionId != null
+                               ? new JProperty("transactionId",     TransactionId.    ToString())
+                               : null,
+
+                           new JProperty("stackLevel",              StackLevel),
+                           new JProperty("chargingProfilePurpose",  ChargingProfilePurpose.AsText()),
+                           new JProperty("chargingProfileKind",     ChargingProfileKind.   AsText()),
+
+                           ValidFrom.HasValue
+                               ? new JProperty("validFrom",         ValidFrom.     Value.ToIso8601())
+                               : null,
+
+                           ValidTo.HasValue
+                               ? new JProperty("validTo",           ValidTo.       Value.ToIso8601())
+                               : null,
+
+                           RecurrencyKind.HasValue
+                               ? new JProperty("recurrencyKind",    RecurrencyKind.Value.AsText())
+                               : null,
+
+                           new JProperty("chargingSchedule",        ChargingSchedule.ToJSON(CustomChargingScheduleSerializer,
+                                                                                            CustomChargingSchedulePeriodSerializer))
+
+                       );
+
+            return CustomChargingProfileSerializer != null
+                       ? CustomChargingProfileSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -389,11 +765,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChargingProfile1 == null) || ((Object) ChargingProfile2 == null))
+            if ((ChargingProfile1 is null) || (ChargingProfile2 is null))
                 return false;
-
-            if ((Object) ChargingProfile1 == null)
-                throw new ArgumentNullException(nameof(ChargingProfile1),  "The given id tag info must not be null!");
 
             return ChargingProfile1.Equals(ChargingProfile2);
 
@@ -431,12 +804,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if (Object is null)
                 return false;
 
-            // Check if the given object is a id tag info.
-            var ChargingProfile = Object as ChargingProfile;
-            if ((Object) ChargingProfile == null)
+            if (!(Object is ChargingProfile ChargingProfile))
                 return false;
 
-            return this.Equals(ChargingProfile);
+            return Equals(ChargingProfile);
 
         }
 
@@ -452,7 +823,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         public Boolean Equals(ChargingProfile ChargingProfile)
         {
 
-            if ((Object) ChargingProfile == null)
+            if (ChargingProfile is null)
                 return false;
 
             return ChargingProfileId.     Equals(ChargingProfile.ChargingProfileId)      &&
@@ -529,7 +900,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                              StackLevel);
 
         #endregion
-
 
     }
 

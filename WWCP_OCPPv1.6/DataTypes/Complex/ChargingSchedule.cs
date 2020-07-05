@@ -22,7 +22,10 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Collections.Generic;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +33,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An OCPP charging schedule.
+    /// A charging schedule.
     /// </summary>
     public class ChargingSchedule : IEquatable<ChargingSchedule>
     {
@@ -40,26 +43,26 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <summary>
         /// The unit of measure the limit is expressed in.
         /// </summary>
-        public ChargingRateUnits                ChargingRateUnit          { get; }
+        public ChargingRateUnits                    ChargingRateUnit           { get; }
 
         /// <summary>
         /// An enumeration of ChargingSchedulePeriods defining maximum power or current
         /// usage over time.
         /// </summary>
-        public IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods   { get; }
+        public IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods    { get; }
 
         /// <summary>
-        /// The optional duration of the charging schedule in seconds. If the duration is
+        /// The optional duration of the charging schedule. If the duration is
         /// no defined, the last period will continue indefinitely or until end of the
         /// transaction in case startSchedule is also undefined.
         /// </summary>
-        public UInt32?                              Duration                  { get; }
+        public TimeSpan?                            Duration                   { get; }
 
         /// <summary>
         /// The optional starting point of an absolute schedule. If absent the schedule
         /// will be relative to start of charging.
         /// </summary>
-        public DateTime?                            StartSchedule             { get; }
+        public DateTime?                            StartSchedule              { get; }
 
         /// <summary>
         /// An optional minimum charging rate supported by the electric vehicle. The unit
@@ -67,23 +70,23 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// be used by a local smart charging algorithm to optimize the power allocation
         /// for in the case a charging process is inefficient at lower charging rates.
         /// </summary>
-        public Decimal?                             MinChargingRate           { get; }
+        public Decimal?                             MinChargingRate            { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new OCPP charging schedule.
+        /// Create a charging schedule.
         /// </summary>
         /// <param name="ChargingRateUnit">The unit of measure the limit is expressed in.</param>
         /// <param name="ChargingSchedulePeriods">An enumeration of ChargingSchedulePeriods defining maximum power or current usage over time.</param>
-        /// <param name="Duration">The optional duration of the charging schedule in seconds. If the duration is no defined, the last period will continue indefinitely or until end of the transaction in case startSchedule is also undefined.</param>
+        /// <param name="Duration">The optional duration of the charging schedule. If the duration is no defined, the last period will continue indefinitely or until end of the transaction in case startSchedule is also undefined.</param>
         /// <param name="StartSchedule">The optional starting point of an absolute schedule. If absent the schedule will be relative to start of charging.</param>
         /// <param name="MinChargingRate">An optional minimum charging rate supported by the electric vehicle. The unit of measure is defined by the chargingRateUnit. This parameter is intended to be used by a local smart charging algorithm to optimize the power allocation for in the case a charging process is inefficient at lower charging rates.</param>
-        public ChargingSchedule(ChargingRateUnits                ChargingRateUnit,
+        public ChargingSchedule(ChargingRateUnits                    ChargingRateUnit,
                                 IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods,
-                                UInt32?                              Duration         = null,
+                                TimeSpan?                            Duration         = null,
                                 DateTime?                            StartSchedule    = null,
                                 Decimal?                             MinChargingRate  = null)
         {
@@ -133,12 +136,68 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         //
         // </ns:chargingSchedule>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:RemoteStartTransactionRequest",
+        //     "title":   "chargingSchedule",
+        //     "type":    "object",
+        //     "properties": {
+        //         "duration": {
+        //             "type": "integer"
+        //         },
+        //         "startSchedule": {
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "chargingRateUnit": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "A",
+        //                 "W"
+        //             ]
+        //         },
+        //         "chargingSchedulePeriod": {
+        //             "type": "array",
+        //             "items": {
+        //                 "type": "object",
+        //                 "properties": {
+        //                     "startPeriod": {
+        //                         "type": "integer"
+        //                     },
+        //                     "limit": {
+        //                         "type": "number",
+        //                         "multipleOf" : 0.1
+        //                     },
+        //                     "numberPhases": {
+        //                         "type": "integer"
+        //                     }
+        //                 },
+        //                 "additionalProperties": false,
+        //                 "required": [
+        //                     "startPeriod",
+        //                     "limit"
+        //                 ]
+        //             }
+        //         },
+        //         "minChargingRate": {
+        //             "type": "number",
+        //             "multipleOf" : 0.1
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "chargingRateUnit",
+        //         "chargingSchedulePeriod"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (ChargingScheduleXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP charging schedule.
+        /// Parse the given XML representation of a charging schedule.
         /// </summary>
         /// <param name="ChargingScheduleXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -146,10 +205,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                              OnExceptionDelegate  OnException = null)
         {
 
-            ChargingSchedule _ChargingSchedule;
+            if (TryParse(ChargingScheduleXML,
+                         out ChargingSchedule chargingSchedule,
+                         OnException))
+            {
+                return chargingSchedule;
+            }
 
-            if (TryParse(ChargingScheduleXML, out _ChargingSchedule, OnException))
-                return _ChargingSchedule;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (ChargingScheduleJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a charging schedule.
+        /// </summary>
+        /// <param name="ChargingScheduleJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static ChargingSchedule Parse(JObject              ChargingScheduleJSON,
+                                             OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(ChargingScheduleJSON,
+                         out ChargingSchedule chargingSchedule,
+                         OnException))
+            {
+                return chargingSchedule;
+            }
 
             return null;
 
@@ -160,7 +245,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) Parse   (ChargingScheduleText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP charging schedule.
+        /// Parse the given text representation of a charging schedule.
         /// </summary>
         /// <param name="ChargingScheduleText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -168,10 +253,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                              OnExceptionDelegate  OnException = null)
         {
 
-            ChargingSchedule _ChargingSchedule;
-
-            if (TryParse(ChargingScheduleText, out _ChargingSchedule, OnException))
-                return _ChargingSchedule;
+            if (TryParse(ChargingScheduleText,
+                         out ChargingSchedule chargingSchedule,
+                         OnException))
+            {
+                return chargingSchedule;
+            }
 
             return null;
 
@@ -182,7 +269,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) TryParse(ChargingScheduleXML,  out ChargingSchedule, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP charging schedule.
+        /// Try to parse the given XML representation of a charging schedule.
         /// </summary>
         /// <param name="ChargingScheduleXML">The XML to be parsed.</param>
         /// <param name="ChargingSchedule">The parsed connector type.</param>
@@ -204,7 +291,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                                                                ChargingSchedulePeriod.Parse),
 
                                        ChargingScheduleXML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "duration",
-                                                                               UInt32.Parse),
+                                                                               s => TimeSpan.FromSeconds(UInt32.Parse(s))),
 
                                        ChargingScheduleXML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "startSchedule",
                                                                                DateTime.Parse),
@@ -231,10 +318,125 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
+        #region (static) TryParse(ChargingScheduleJSON, out ChargingSchedule, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a charging schedule.
+        /// </summary>
+        /// <param name="ChargingScheduleJSON">The JSON to be parsed.</param>
+        /// <param name="ChargingSchedule">The parsed connector type.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject               ChargingScheduleJSON,
+                                       out ChargingSchedule  ChargingSchedule,
+                                       OnExceptionDelegate   OnException  = null)
+        {
+
+            try
+            {
+
+                ChargingSchedule = null;
+
+                #region ChargingRateUnit
+
+                if (!ChargingScheduleJSON.MapMandatory("chargingRateUnit",
+                                                       "charging rate unit",
+                                                       ChargingRateUnitsExtentions.Parse,
+                                                       out ChargingRateUnits  ChargingRateUnit,
+                                                       out String             ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region ChargingSchedulePeriods
+
+                if (!ChargingScheduleJSON.ParseMandatory("chargingSchedulePeriod",
+                                                         "charging schedule period",
+                                                         ChargingSchedulePeriod.TryParse,
+                                                         out IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods,
+                                                         out                                      ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Duration
+
+                if (ChargingScheduleJSON.ParseOptional("duration",
+                                                       "duration",
+                                                       s => TimeSpan.FromSeconds(UInt32.Parse(s)),
+                                                       out TimeSpan?  Duration,
+                                                       out            ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region StartSchedule
+
+                if (ChargingScheduleJSON.ParseOptional("startSchedule",
+                                                       "start schedule",
+                                                       out DateTime?  StartSchedule,
+                                                       out            ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region MinChargingRate
+
+                if (ChargingScheduleJSON.ParseOptionalStruct("min charging rate",
+                                                             "min charging rate",
+                                                             Decimal.TryParse,
+                                                             out Decimal?  MinChargingRate,
+                                                             out           ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+
+                ChargingSchedule = new ChargingSchedule(ChargingRateUnit,
+                                                        ChargingSchedulePeriods,
+                                                        Duration,
+                                                        StartSchedule,
+                                                        MinChargingRate);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, ChargingScheduleJSON, e);
+
+                ChargingSchedule = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(ChargingScheduleText, out ChargingSchedule, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP charging schedule.
+        /// Try to parse the given text representation of a charging schedule.
         /// </summary>
         /// <param name="ChargingScheduleText">The text to be parsed.</param>
         /// <param name="ChargingSchedule">The parsed connector type.</param>
@@ -247,11 +449,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             try
             {
 
-                if (TryParse(XDocument.Parse(ChargingScheduleText).Root,
-                             out ChargingSchedule,
-                             OnException))
+                ChargingScheduleText = ChargingScheduleText?.Trim();
 
-                    return true;
+                if (ChargingScheduleText.IsNotNullOrEmpty())
+                {
+
+                    if (ChargingScheduleText.StartsWith("{") &&
+                        TryParse(JObject.Parse(ChargingScheduleText),
+                                 out ChargingSchedule,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(ChargingScheduleText).Root,
+                                 out ChargingSchedule,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -296,6 +514,45 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
         #endregion
 
+        #region ToJSON(CustomChargingScheduleSerializer = null, CustomChargingSchedulePeriodSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedule requests.</param>
+        /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingSchedule>        CustomChargingScheduleSerializer         = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>  CustomChargingSchedulePeriodSerializer   = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           Duration.HasValue
+                               ? new JProperty("duration",          Duration.Value)
+                               : null,
+
+                           StartSchedule.HasValue
+                               ? new JProperty("startSchedule",     StartSchedule.Value.ToIso8601())
+                               : null,
+
+                           new JProperty("chargingRateUnit",        ChargingRateUnit.AsText()),
+
+                           new JProperty("chargingSchedulePeriod",  ChargingSchedulePeriods.Select(value => value.ToJSON(CustomChargingSchedulePeriodSerializer))),
+
+                           Duration.HasValue
+                               ? new JProperty("minChargingRate",   MinChargingRate.Value.ToString("0.#"))
+                               : null
+
+                       );
+
+            return CustomChargingScheduleSerializer != null
+                       ? CustomChargingScheduleSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -315,11 +572,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChargingSchedule1 == null) || ((Object) ChargingSchedule2 == null))
+            if ((ChargingSchedule1 is null) || (ChargingSchedule2 is null))
                 return false;
-
-            if ((Object) ChargingSchedule1 == null)
-                throw new ArgumentNullException(nameof(ChargingSchedule1),  "The given id tag info must not be null!");
 
             return ChargingSchedule1.Equals(ChargingSchedule2);
 
@@ -357,12 +611,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             if (Object is null)
                 return false;
 
-            // Check if the given object is a id tag info.
-            var ChargingSchedule = Object as ChargingSchedule;
-            if ((Object) ChargingSchedule == null)
+            if (!(Object is ChargingSchedule ChargingSchedule))
                 return false;
 
-            return this.Equals(ChargingSchedule);
+            return Equals(ChargingSchedule);
 
         }
 
@@ -378,7 +630,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         public Boolean Equals(ChargingSchedule ChargingSchedule)
         {
 
-            if ((Object) ChargingSchedule == null)
+            if (ChargingSchedule is null)
                 return false;
 
             return ChargingRateUnit.Equals(ChargingSchedule.ChargingRateUnit) &&
@@ -411,19 +663,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             unchecked
             {
 
-                return ChargingRateUnit.       GetHashCode() * 19 ^
-                       ChargingSchedulePeriods.GetHashCode() * 17 ^
+                return ChargingRateUnit.       GetHashCode() * 13 ^
+                       ChargingSchedulePeriods.GetHashCode() * 11 ^
 
                        (Duration.HasValue
-                            ? Duration.       GetHashCode() * 11
+                            ? Duration.        GetHashCode() * 7
                             : 0) ^
 
                        (StartSchedule.HasValue
-                            ? StartSchedule.  GetHashCode() * 7
+                            ? StartSchedule.   GetHashCode() * 5
                             : 0) ^
 
                        (MinChargingRate.HasValue
-                            ? MinChargingRate.GetHashCode() * 5
+                            ? MinChargingRate. GetHashCode() * 3
                             : 0);
 
             }
@@ -444,7 +696,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                              " charging schedule period(s)");
 
         #endregion
-
 
     }
 

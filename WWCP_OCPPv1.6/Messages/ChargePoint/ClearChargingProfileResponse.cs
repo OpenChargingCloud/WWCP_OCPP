@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP clear charging profile response.
+    /// A clear charging profile response.
     /// </summary>
     public class ClearChargingProfileResponse : AResponse<ClearChargingProfileResponse>
     {
@@ -105,7 +105,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (ClearChargingProfileResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP clear charging profile response.
+        /// Parse the given XML representation of a clear charging profile response.
         /// </summary>
         /// <param name="ClearChargingProfileResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -127,7 +127,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (ClearChargingProfileResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP clear charging profile response.
+        /// Parse the given text representation of a clear charging profile response.
         /// </summary>
         /// <param name="ClearChargingProfileResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -149,7 +149,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(ClearChargingProfileResponseXML,  out ClearChargingProfileResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP clear charging profile response.
+        /// Try to parse the given XML representation of a clear charging profile response.
         /// </summary>
         /// <param name="ClearChargingProfileResponseXML">The XML to be parsed.</param>
         /// <param name="ClearChargingProfileResponse">The parsed clear charging profile response.</param>
@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(ClearChargingProfileResponseText, out ClearChargingProfileResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP clear charging profile response.
+        /// Try to parse the given text representation of a clear charging profile response.
         /// </summary>
         /// <param name="ClearChargingProfileResponseText">The text to be parsed.</param>
         /// <param name="ClearChargingProfileResponse">The parsed clear charging profile response.</param>

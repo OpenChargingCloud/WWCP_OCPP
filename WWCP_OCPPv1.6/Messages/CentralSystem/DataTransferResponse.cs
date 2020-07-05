@@ -295,11 +295,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 #region Status
 
-                if (!DataTransferResponseJSON.ParseMandatory("status",
-                                                             "data transfer status",
-                                                             DataTransferStatusExtentions.Parse,
-                                                             out DataTransferStatus DataTransferStatus,
-                                                             out String ErrorResponse))
+                if (!DataTransferResponseJSON.MapMandatory("status",
+                                                           "data transfer status",
+                                                           DataTransferStatusExtentions.Parse,
+                                                           out DataTransferStatus DataTransferStatus,
+                                                           out String ErrorResponse))
                 {
                     return false;
                 }

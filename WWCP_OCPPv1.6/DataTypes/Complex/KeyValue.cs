@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An OCPP configuration key value pair.
+    /// A configuration key value pair.
     /// </summary>
     public struct KeyValue : IEquatable<KeyValue>
     {
@@ -92,7 +92,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) Parse   (KeyValueXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP configuration key value pair.
+        /// Parse the given XML representation of a configuration key value pair.
         /// </summary>
         /// <param name="KeyValueXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -114,7 +114,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) Parse   (KeyValueText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP configuration key value pair.
+        /// Parse the given text representation of a configuration key value pair.
         /// </summary>
         /// <param name="KeyValueText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -136,7 +136,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) TryParse(KeyValueXML,  out KeyValue, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP configuration key value pair.
+        /// Try to parse the given XML representation of a configuration key value pair.
         /// </summary>
         /// <param name="KeyValueXML">The XML to be parsed.</param>
         /// <param name="KeyValue">The parsed connector type.</param>
@@ -177,7 +177,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) TryParse(KeyValueText, out KeyValue, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP configuration key value pair.
+        /// Try to parse the given text representation of a configuration key value pair.
         /// </summary>
         /// <param name="KeyValueText">The text to be parsed.</param>
         /// <param name="KeyValue">The parsed connector type.</param>

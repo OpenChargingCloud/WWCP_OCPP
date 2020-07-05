@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP unlock connector response.
+    /// A unlock connector response.
     /// </summary>
     public class UnlockConnectorResponse : AResponse<UnlockConnectorResponse>
     {
@@ -105,7 +105,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (UnlockConnectorResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP unlock connector response.
+        /// Parse the given XML representation of a unlock connector response.
         /// </summary>
         /// <param name="UnlockConnectorResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -127,7 +127,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (UnlockConnectorResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP unlock connector response.
+        /// Parse the given text representation of a unlock connector response.
         /// </summary>
         /// <param name="UnlockConnectorResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -149,7 +149,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(UnlockConnectorResponseXML,  out UnlockConnectorResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP unlock connector response.
+        /// Try to parse the given XML representation of a unlock connector response.
         /// </summary>
         /// <param name="UnlockConnectorResponseXML">The XML to be parsed.</param>
         /// <param name="UnlockConnectorResponse">The parsed unlock connector response.</param>
@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(UnlockConnectorResponseText, out UnlockConnectorResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP unlock connector response.
+        /// Try to parse the given text representation of a unlock connector response.
         /// </summary>
         /// <param name="UnlockConnectorResponseText">The text to be parsed.</param>
         /// <param name="UnlockConnectorResponse">The parsed unlock connector response.</param>

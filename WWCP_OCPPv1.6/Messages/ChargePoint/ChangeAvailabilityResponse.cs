@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP change availability response.
+    /// A change availability response.
     /// </summary>
     public class ChangeAvailabilityResponse : AResponse<ChangeAvailabilityResponse>
     {
@@ -105,7 +105,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (ChangeAvailabilityResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP change availability response.
+        /// Parse the given XML representation of a change availability response.
         /// </summary>
         /// <param name="ChangeAvailabilityResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -127,7 +127,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (ChangeAvailabilityResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP change availability response.
+        /// Parse the given text representation of a change availability response.
         /// </summary>
         /// <param name="ChangeAvailabilityResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -149,7 +149,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(ChangeAvailabilityResponseXML,  out ChangeAvailabilityResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP change availability response.
+        /// Try to parse the given XML representation of a change availability response.
         /// </summary>
         /// <param name="ChangeAvailabilityResponseXML">The XML to be parsed.</param>
         /// <param name="ChangeAvailabilityResponse">The parsed change availability response.</param>
@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(ChangeAvailabilityResponseText, out ChangeAvailabilityResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP change availability response.
+        /// Try to parse the given text representation of a change availability response.
         /// </summary>
         /// <param name="ChangeAvailabilityResponseText">The text to be parsed.</param>
         /// <param name="ChangeAvailabilityResponse">The parsed change availability response.</param>

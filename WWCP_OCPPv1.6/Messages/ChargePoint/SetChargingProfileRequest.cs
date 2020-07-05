@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP set charging profile request.
+    /// A set charging profile request.
     /// </summary>
     public class SetChargingProfileRequest : ARequest<SetChargingProfileRequest>
     {
@@ -42,19 +43,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// If connectorId = 0, the message contains an overall
         /// limit for the charge point.
         /// </summary>
-        public Connector_Id     ConnectorId       { get; }
+        public Connector_Id     ConnectorId        { get; }
 
         /// <summary>
         /// The charging profile to be set.
         /// </summary>
-        public ChargingProfile  ChargingProfile   { get; }
+        public ChargingProfile  ChargingProfile    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP SetChargingProfileRequest XML/SOAP request.
+        /// Create a set charging profile request.
         /// </summary>
         /// <param name="ConnectorId">The connector to which the charging profile applies. If connectorId = 0, the message contains an overall limit for the charge point.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
@@ -62,15 +63,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                          ChargingProfile  ChargingProfile)
         {
 
-            #region Initial checks
-
-            if (ChargingProfile == null)
-                throw new ArgumentNullException(nameof(ChargingProfile),  "The given charging profile must not be null!");
-
-            #endregion
-
             this.ConnectorId      = ConnectorId;
-            this.ChargingProfile  = ChargingProfile;
+            this.ChargingProfile  = ChargingProfile ?? throw new ArgumentNullException(nameof(ChargingProfile),  "The given charging profile must not be null!");
 
         }
 
@@ -145,12 +139,137 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:SetChargingProfileRequest",
+        //     "title":   "SetChargingProfileRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "connectorId": {
+        //             "type": "integer"
+        //         },
+        //         "csChargingProfiles": {
+        //             "type": "object",
+        //             "properties": {
+        //                 "chargingProfileId": {
+        //                     "type": "integer"
+        //                 },
+        //                 "transactionId": {
+        //                     "type": "integer"
+        //                 },
+        //                 "stackLevel": {
+        //                     "type": "integer"
+        //                 },
+        //                 "chargingProfilePurpose": {
+        //                     "type": "string",
+        //                     "additionalProperties": false,
+        //                     "enum": [
+        //                         "ChargePointMaxProfile",
+        //                         "TxDefaultProfile",
+        //                         "TxProfile"
+        //                     ]
+        //                 },
+        //                 "chargingProfileKind": {
+        //                     "type": "string",
+        //                     "additionalProperties": false,
+        //                     "enum": [
+        //                         "Absolute",
+        //                         "Recurring",
+        //                         "Relative"
+        //                     ]
+        //                 },
+        //                 "recurrencyKind": {
+        //                     "type": "string",
+        //                     "additionalProperties": false,
+        //                     "enum": [
+        //                         "Daily",
+        //                         "Weekly"
+        //                     ]
+        //                 },
+        //                 "validFrom": {
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "validTo": {
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "chargingSchedule": {
+        //                     "type": "object",
+        //                     "properties": {
+        //                         "duration": {
+        //                             "type": "integer"
+        //                         },
+        //                         "startSchedule": {
+        //                             "type": "string",
+        //                             "format": "date-time"
+        //                         },
+        //                         "chargingRateUnit": {
+        //                             "type": "string",
+        //                             "additionalProperties": false,
+        //                             "enum": [
+        //                                 "A",
+        //                                 "W"
+        //                             ]
+        //                         },
+        //                         "chargingSchedulePeriod": {
+        //                             "type": "array",
+        //                             "items": {
+        //                                 "type": "object",
+        //                                 "properties": {
+        //                                     "startPeriod": {
+        //                                         "type": "integer"
+        //                                     },
+        //                                 "limit": {
+        //                                     "type": "number",
+        //                                     "multipleOf" : 0.1
+        //                                 },
+        //                                 "numberPhases": {
+        //                                         "type": "integer"
+        //                                     }
+        //                                 },
+        //                                 "additionalProperties": false,
+        //                                 "required": [
+        //                                     "startPeriod",
+        //                                     "limit"
+        //                                 ]
+        //                             }
+        //                         },
+        //                         "minChargingRate": {
+        //                             "type": "number",
+        //                             "multipleOf" : 0.1
+        //                         }
+        //                     },
+        //                     "additionalProperties": false,
+        //                     "required": [
+        //                         "chargingRateUnit",
+        //                         "chargingSchedulePeriod"
+        //                     ]
+        //                 }
+        //             },
+        //             "additionalProperties": false,
+        //             "required": [
+        //                 "chargingProfileId",
+        //                 "stackLevel",
+        //                 "chargingProfilePurpose",
+        //                 "chargingProfileKind",
+        //                 "chargingSchedule"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "connectorId",
+        //         "csChargingProfiles"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (SetChargingProfileRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP set charging profile request.
+        /// Parse the given XML representation of a set charging profile request.
         /// </summary>
         /// <param name="SetChargingProfileRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -158,10 +277,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                       OnExceptionDelegate  OnException = null)
         {
 
-            SetChargingProfileRequest _SetChargingProfileRequest;
+            if (TryParse(SetChargingProfileRequestXML,
+                         out SetChargingProfileRequest setChargingProfileRequest,
+                         OnException))
+            {
+                return setChargingProfileRequest;
+            }
 
-            if (TryParse(SetChargingProfileRequestXML, out _SetChargingProfileRequest, OnException))
-                return _SetChargingProfileRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (SetChargingProfileRequestJSON,  OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a set charging profile request.
+        /// </summary>
+        /// <param name="SetChargingProfileRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static SetChargingProfileRequest Parse(JObject              SetChargingProfileRequestJSON,
+                                                      OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(SetChargingProfileRequestJSON,
+                         out SetChargingProfileRequest setChargingProfileRequest,
+                         OnException))
+            {
+                return setChargingProfileRequest;
+            }
 
             return null;
 
@@ -172,7 +317,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (SetChargingProfileRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP set charging profile request.
+        /// Parse the given text representation of a set charging profile request.
         /// </summary>
         /// <param name="SetChargingProfileRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -180,10 +325,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                       OnExceptionDelegate  OnException = null)
         {
 
-            SetChargingProfileRequest _SetChargingProfileRequest;
-
-            if (TryParse(SetChargingProfileRequestText, out _SetChargingProfileRequest, OnException))
-                return _SetChargingProfileRequest;
+            if (TryParse(SetChargingProfileRequestText,
+                         out SetChargingProfileRequest setChargingProfileRequest,
+                         OnException))
+            {
+                return setChargingProfileRequest;
+            }
 
             return null;
 
@@ -194,7 +341,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(SetChargingProfileRequestXML,  out SetChargingProfileRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP set charging profile request.
+        /// Try to parse the given XML representation of a set charging profile request.
         /// </summary>
         /// <param name="SetChargingProfileRequestXML">The XML to be parsed.</param>
         /// <param name="SetChargingProfileRequest">The parsed set charging profile request.</param>
@@ -234,10 +381,76 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(SetChargingProfileRequestJSON,  out SetChargingProfileRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a set charging profile request.
+        /// </summary>
+        /// <param name="SetChargingProfileRequestJSON">The JSON to be parsed.</param>
+        /// <param name="SetChargingProfileRequest">The parsed set charging profile request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                        SetChargingProfileRequestJSON,
+                                       out SetChargingProfileRequest  SetChargingProfileRequest,
+                                       OnExceptionDelegate            OnException  = null)
+        {
+
+            try
+            {
+
+                SetChargingProfileRequest = null;
+
+                #region ConnectorId
+
+                if (!SetChargingProfileRequestJSON.ParseMandatory("connectorId",
+                                                                  "connector identification",
+                                                                  Connector_Id.TryParse,
+                                                                  out Connector_Id  ConnectorId,
+                                                                  out String        ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region ChargingProfile
+
+                if (!SetChargingProfileRequestJSON.ParseMandatory("csChargingProfiles",
+                                                                  "charging station charging profiles",
+                                                                  OCPPv1_6.ChargingProfile.TryParse,
+                                                                  out ChargingProfile  ChargingProfile,
+                                                                  out                  ErrorResponse,
+                                                                  OnException))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                SetChargingProfileRequest = new SetChargingProfileRequest(ConnectorId,
+                                                                          ChargingProfile);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, SetChargingProfileRequestJSON, e);
+
+                SetChargingProfileRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(SetChargingProfileRequestText, out SetChargingProfileRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP set charging profile request.
+        /// Try to parse the given text representation of a set charging profile request.
         /// </summary>
         /// <param name="SetChargingProfileRequestText">The text to be parsed.</param>
         /// <param name="SetChargingProfileRequest">The parsed set charging profile request.</param>
@@ -250,11 +463,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(SetChargingProfileRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out SetChargingProfileRequest,
-                             OnException))
+                SetChargingProfileRequestText = SetChargingProfileRequestText?.Trim();
 
-                    return true;
+                if (SetChargingProfileRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (SetChargingProfileRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(SetChargingProfileRequestText),
+                                 out SetChargingProfileRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(SetChargingProfileRequestText).Root,
+                                 out SetChargingProfileRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -285,6 +514,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomSetChargingProfileRequestSerializer = null, ...)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomSetChargingProfileRequestSerializer">A delegate to serialize custom start transaction requests.</param>
+        /// <param name="CustomChargingProfileSerializer">A delegate to serialize custom charging profiles.</param>
+        /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedule requests.</param>
+        /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SetChargingProfileRequest> CustomSetChargingProfileRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<ChargingProfile>           CustomChargingProfileSerializer             = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedule>          CustomChargingScheduleSerializer            = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>    CustomChargingSchedulePeriodSerializer      = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("connectorId",         ConnectorId.    ToString()),
+                           new JProperty("csChargingProfiles",  ChargingProfile.ToJSON(CustomChargingProfileSerializer,
+                                                                                       CustomChargingScheduleSerializer,
+                                                                                       CustomChargingSchedulePeriodSerializer))
+                       );
+
+            return CustomSetChargingProfileRequestSerializer != null
+                       ? CustomSetChargingProfileRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -304,7 +563,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) SetChargingProfileRequest1 == null) || ((Object) SetChargingProfileRequest2 == null))
+            if ((SetChargingProfileRequest1 is null) || (SetChargingProfileRequest2 is null))
                 return false;
 
             return SetChargingProfileRequest1.Equals(SetChargingProfileRequest2);
@@ -344,12 +603,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a set charging profile request.
-            var SetChargingProfileRequest = Object as SetChargingProfileRequest;
-            if ((Object) SetChargingProfileRequest == null)
+            if (!(Object is SetChargingProfileRequest SetChargingProfileRequest))
                 return false;
 
-            return this.Equals(SetChargingProfileRequest);
+            return Equals(SetChargingProfileRequest);
 
         }
 
@@ -365,7 +622,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(SetChargingProfileRequest SetChargingProfileRequest)
         {
 
-            if ((Object) SetChargingProfileRequest == null)
+            if (SetChargingProfileRequest is null)
                 return false;
 
             return ConnectorId.    Equals(SetChargingProfileRequest.ConnectorId) &&
@@ -407,7 +664,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                              " set ", ChargingProfile.ChargingProfileId.ToString());
 
         #endregion
-
 
     }
 

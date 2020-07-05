@@ -75,7 +75,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// Create a new cancel reservation response.
         /// </summary>
         /// <param name="Request">The cancel reservation request leading to this response.</param>
-        /// <param name="Result">An OCPP result.</param>
+        /// <param name="Result">A result.</param>
         public CancelReservationResponse(CS.CancelReservationRequest  Request,
                                          Result                       Result)
 
@@ -273,11 +273,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region IdTagInfo
 
-                if (!CancelReservationResponseJSON.ParseMandatory("status",
-                                                                  "cancel reservation status",
-                                                                  CancelReservationStatusExtentions.Parse,
-                                                                  out CancelReservationStatus Status,
-                                                                  out String ErrorResponse))
+                if (!CancelReservationResponseJSON.MapMandatory("status",
+                                                                "cancel reservation status",
+                                                                CancelReservationStatusExtentions.Parse,
+                                                                out CancelReservationStatus Status,
+                                                                out String ErrorResponse))
                 {
                     return false;
                 }

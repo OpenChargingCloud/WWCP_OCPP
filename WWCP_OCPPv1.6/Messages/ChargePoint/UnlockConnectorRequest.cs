@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP unlock connector request.
+    /// A unlock connector request.
     /// </summary>
     public class UnlockConnectorRequest : ARequest<UnlockConnectorRequest>
     {
@@ -40,21 +41,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The identifier of the connector to be unlocked.
         /// </summary>
-        public Connector_Id  ConnectorId   { get; }
+        public Connector_Id  ConnectorId    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP UnlockConnectorRequest XML/SOAP request.
+        /// Create an unlock connector request.
         /// </summary>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
         public UnlockConnectorRequest(Connector_Id ConnectorId)
         {
-
             this.ConnectorId = ConnectorId;
-
         }
 
         #endregion
@@ -80,12 +79,28 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:UnlockConnectorRequest",
+        //     "title":   "UnlockConnectorRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "connectorId": {
+        //             "type": "integer"
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "connectorId"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (UnlockConnectorRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP unlock connector request.
+        /// Parse the given XML representation of a unlock connector request.
         /// </summary>
         /// <param name="UnlockConnectorRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -93,10 +108,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                    OnExceptionDelegate  OnException = null)
         {
 
-            UnlockConnectorRequest _UnlockConnectorRequest;
+            if (TryParse(UnlockConnectorRequestXML,
+                         out UnlockConnectorRequest unlockConnectorRequest,
+                         OnException))
+            {
+                return unlockConnectorRequest;
+            }
 
-            if (TryParse(UnlockConnectorRequestXML, out _UnlockConnectorRequest, OnException))
-                return _UnlockConnectorRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (UnlockConnectorRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a unlock connector request.
+        /// </summary>
+        /// <param name="UnlockConnectorRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static UnlockConnectorRequest Parse(XElement             UnlockConnectorRequestJSON,
+                                                   OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(UnlockConnectorRequestJSON,
+                         out UnlockConnectorRequest unlockConnectorRequest,
+                         OnException))
+            {
+                return unlockConnectorRequest;
+            }
 
             return null;
 
@@ -107,7 +148,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (UnlockConnectorRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP unlock connector request.
+        /// Parse the given text representation of a unlock connector request.
         /// </summary>
         /// <param name="UnlockConnectorRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -115,10 +156,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                    OnExceptionDelegate  OnException = null)
         {
 
-            UnlockConnectorRequest _UnlockConnectorRequest;
-
-            if (TryParse(UnlockConnectorRequestText, out _UnlockConnectorRequest, OnException))
-                return _UnlockConnectorRequest;
+            if (TryParse(UnlockConnectorRequestText,
+                         out UnlockConnectorRequest unlockConnectorRequest,
+                         OnException))
+            {
+                return unlockConnectorRequest;
+            }
 
             return null;
 
@@ -129,7 +172,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(UnlockConnectorRequestXML,  out UnlockConnectorRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP unlock connector request.
+        /// Try to parse the given XML representation of a unlock connector request.
         /// </summary>
         /// <param name="UnlockConnectorRequestXML">The XML to be parsed.</param>
         /// <param name="UnlockConnectorRequest">The parsed unlock connector request.</param>
@@ -166,10 +209,61 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(UnlockConnectorRequestJSON,  out UnlockConnectorRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a unlock connector request.
+        /// </summary>
+        /// <param name="UnlockConnectorRequestJSON">The JSON to be parsed.</param>
+        /// <param name="UnlockConnectorRequest">The parsed unlock connector request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                     UnlockConnectorRequestJSON,
+                                       out UnlockConnectorRequest  UnlockConnectorRequest,
+                                       OnExceptionDelegate         OnException  = null)
+        {
+
+            try
+            {
+
+                UnlockConnectorRequest = null;
+
+                #region ConnectorId
+
+                if (!UnlockConnectorRequestJSON.ParseMandatory("connectorId",
+                                                               "connector identification",
+                                                               Connector_Id.TryParse,
+                                                               out Connector_Id  ConnectorId,
+                                                               out String        ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                UnlockConnectorRequest = new UnlockConnectorRequest(ConnectorId);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, UnlockConnectorRequestJSON, e);
+
+                UnlockConnectorRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(UnlockConnectorRequestText, out UnlockConnectorRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP unlock connector request.
+        /// Try to parse the given text representation of a unlock connector request.
         /// </summary>
         /// <param name="UnlockConnectorRequestText">The text to be parsed.</param>
         /// <param name="UnlockConnectorRequest">The parsed unlock connector request.</param>
@@ -182,11 +276,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(UnlockConnectorRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out UnlockConnectorRequest,
-                             OnException))
+                UnlockConnectorRequestText = UnlockConnectorRequestText?.Trim();
 
-                    return true;
+                if (UnlockConnectorRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (UnlockConnectorRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(UnlockConnectorRequestText),
+                                 out UnlockConnectorRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(UnlockConnectorRequestText).Root,
+                                 out UnlockConnectorRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -216,6 +326,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomUnlockConnectorRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomUnlockConnectorRequestSerializer">A delegate to serialize custom unlock connector requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<UnlockConnectorRequest> CustomUnlockConnectorRequestSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("connectorId",  ConnectorId.ToString())
+                       );
+
+            return CustomUnlockConnectorRequestSerializer != null
+                       ? CustomUnlockConnectorRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -235,7 +366,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) UnlockConnectorRequest1 == null) || ((Object) UnlockConnectorRequest2 == null))
+            if ((UnlockConnectorRequest1 is null) || (UnlockConnectorRequest2 is null))
                 return false;
 
             return UnlockConnectorRequest1.Equals(UnlockConnectorRequest2);
@@ -275,12 +406,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a unlock connector request.
-            var UnlockConnectorRequest = Object as UnlockConnectorRequest;
-            if ((Object) UnlockConnectorRequest == null)
+            if (!(Object is UnlockConnectorRequest UnlockConnectorRequest))
                 return false;
 
-            return this.Equals(UnlockConnectorRequest);
+            return Equals(UnlockConnectorRequest);
 
         }
 
@@ -296,7 +425,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(UnlockConnectorRequest UnlockConnectorRequest)
         {
 
-            if ((Object) UnlockConnectorRequest == null)
+            if (UnlockConnectorRequest is null)
                 return false;
 
             return ConnectorId.Equals(UnlockConnectorRequest.ConnectorId);
@@ -314,6 +443,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => ConnectorId.GetHashCode();
 
         #endregion
@@ -324,10 +454,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => ConnectorId.ToString();
 
         #endregion
-
 
     }
 

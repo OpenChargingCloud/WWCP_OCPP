@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP clear cache request.
+    /// A clear cache request.
     /// </summary>
     public class ClearCacheRequest : ARequest<ClearCacheRequest>
     {
@@ -53,12 +54,21 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:ClearCacheRequest",
+        //     "title":   "ClearCacheRequest",
+        //     "type":    "object",
+        //     "properties": {},
+        //     "additionalProperties": false
+        // }
+
         #endregion
 
         #region (static) Parse   (ClearCacheRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP clear cache request.
+        /// Parse the given XML representation of a clear cache request.
         /// </summary>
         /// <param name="ClearCacheRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -66,10 +76,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                               OnExceptionDelegate  OnException = null)
         {
 
-            ClearCacheRequest _ClearCacheRequest;
+            if (TryParse(ClearCacheRequestXML,
+                         out ClearCacheRequest clearCacheRequest,
+                         OnException))
+            {
+                return clearCacheRequest;
+            }
 
-            if (TryParse(ClearCacheRequestXML, out _ClearCacheRequest, OnException))
-                return _ClearCacheRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (ClearCacheRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a clear cache request.
+        /// </summary>
+        /// <param name="ClearCacheRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static ClearCacheRequest Parse(JObject              ClearCacheRequestJSON,
+                                              OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(ClearCacheRequestJSON,
+                         out ClearCacheRequest clearCacheRequest,
+                         OnException))
+            {
+                return clearCacheRequest;
+            }
 
             return null;
 
@@ -80,7 +116,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (ClearCacheRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP clear cache request.
+        /// Parse the given text representation of a clear cache request.
         /// </summary>
         /// <param name="ClearCacheRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -88,10 +124,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                               OnExceptionDelegate  OnException = null)
         {
 
-            ClearCacheRequest _ClearCacheRequest;
-
-            if (TryParse(ClearCacheRequestText, out _ClearCacheRequest, OnException))
-                return _ClearCacheRequest;
+            if (TryParse(ClearCacheRequestText,
+                         out ClearCacheRequest clearCacheRequest,
+                         OnException))
+            {
+                return clearCacheRequest;
+            }
 
             return null;
 
@@ -102,7 +140,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(ClearCacheRequestXML,  out ClearCacheRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP clear cache request.
+        /// Try to parse the given XML representation of a clear cache request.
         /// </summary>
         /// <param name="ClearCacheRequestXML">The XML to be parsed.</param>
         /// <param name="ClearCacheRequest">The parsed clear cache request.</param>
@@ -134,10 +172,45 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(ClearCacheRequestJSON, out ClearCacheRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a clear cache request.
+        /// </summary>
+        /// <param name="ClearCacheRequestJSON">The JSON to be parsed.</param>
+        /// <param name="ClearCacheRequest">The parsed clear cache request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                ClearCacheRequestJSON,
+                                       out ClearCacheRequest  ClearCacheRequest,
+                                       OnExceptionDelegate    OnException  = null)
+        {
+
+            try
+            {
+
+                ClearCacheRequest = new ClearCacheRequest();
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, ClearCacheRequestJSON, e);
+
+                ClearCacheRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(ClearCacheRequestText, out ClearCacheRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP clear cache request.
+        /// Try to parse the given text representation of a clear cache request.
         /// </summary>
         /// <param name="ClearCacheRequestText">The text to be parsed.</param>
         /// <param name="ClearCacheRequest">The parsed clear cache request.</param>
@@ -150,11 +223,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(ClearCacheRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out ClearCacheRequest,
-                             OnException))
+                ClearCacheRequestText = ClearCacheRequestText?.Trim();
 
-                    return true;
+                if (ClearCacheRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (ClearCacheRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(ClearCacheRequestText),
+                                 out ClearCacheRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(ClearCacheRequestText).Root,
+                                 out ClearCacheRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -180,6 +269,25 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomClearCacheRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomClearCacheRequestSerializer">A delegate to serialize custom clear cache requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearCacheRequest> CustomClearCacheRequestSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create();
+
+            return CustomClearCacheRequestSerializer != null
+                       ? CustomClearCacheRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -199,7 +307,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ClearCacheRequest1 == null) || ((Object) ClearCacheRequest2 == null))
+            if ((ClearCacheRequest1 is null) || (ClearCacheRequest2 is null))
                 return false;
 
             return ClearCacheRequest1.Equals(ClearCacheRequest2);
@@ -239,12 +347,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a clear cache request.
-            var ClearCacheRequest = Object as ClearCacheRequest;
-            if ((Object) ClearCacheRequest == null)
+            if (!(Object is ClearCacheRequest ClearCacheRequest))
                 return false;
 
-            return this.Equals(ClearCacheRequest);
+            return Equals(ClearCacheRequest);
 
         }
 
@@ -260,7 +366,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(ClearCacheRequest ClearCacheRequest)
         {
 
-            if ((Object) ClearCacheRequest == null)
+            if (ClearCacheRequest is null)
                 return false;
 
             return Object.ReferenceEquals(this, ClearCacheRequest);

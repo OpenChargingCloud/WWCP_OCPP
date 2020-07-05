@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An OCPP transaction identification.
+    /// A transaction identification.
     /// </summary>
     public struct Transaction_Id : IId,
                                    IEquatable<Transaction_Id>,
@@ -73,7 +73,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an OCPP transaction identification.
+        /// Parse the given string as a transaction identification.
         /// </summary>
         public static Transaction_Id Parse(String Text)
             => new Transaction_Id(UInt64.Parse(Text));
@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Parse(Integer)
 
         /// <summary>
-        /// Parse the given integer as an OCPP transaction identification.
+        /// Parse the given integer as a transaction identification.
         /// </summary>
         public static Transaction_Id Parse(UInt64 Integer)
             => new Transaction_Id(Integer);
@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region TryParse(Text,    out TransactionId)
 
         /// <summary>
-        /// Parse the given string as an OCPP transaction identification.
+        /// Parse the given string as a transaction identification.
         /// </summary>
         public static Boolean TryParse(String Text, out Transaction_Id TransactionId)
         {
@@ -116,7 +116,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region TryParse(Integer, out TransactionId)
 
         /// <summary>
-        /// Parse the given integer as an OCPP transaction identification.
+        /// Parse the given integer as a transaction identification.
         /// </summary>
         public static Boolean TryParse(UInt64 Integer, out Transaction_Id TransactionId)
         {

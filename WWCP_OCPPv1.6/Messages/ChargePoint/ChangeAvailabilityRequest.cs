@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP change availability request.
+    /// A change availability request.
     /// </summary>
     public class ChangeAvailabilityRequest : ARequest<ChangeAvailabilityRequest>
     {
@@ -42,19 +43,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// should be changed. Id '0' (zero) is used if the availability of
         /// the entire charge point and all its connectors should be changed.
         /// </summary>
-        public Connector_Id       ConnectorId   { get; }
+        public Connector_Id       ConnectorId    { get; }
 
         /// <summary>
         /// The new availability of the charge point or charge point connector.
         /// </summary>
-        public AvailabilityTypes  Type          { get; }
+        public AvailabilityTypes  Type           { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP ChangeAvailabilityRequest XML/SOAP request.
+        /// Create a change availability request.
         /// </summary>
         /// <param name="ConnectorId">The identification of the connector for which its availability should be changed. Id '0' (zero) is used if the availability of the entire charge point and all its connectors should be changed.</param>
         /// <param name="Type">The new availability of the charge point or charge point connector.</param>
@@ -91,12 +92,37 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:ChangeAvailabilityRequest",
+        //     "title":   "ChangeAvailabilityRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "connectorId": {
+        //             "type": "integer"
+        //         },
+        //         "type": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Inoperative",
+        //                 "Operative"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "connectorId",
+        //         "type"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (ChangeAvailabilityRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP change availability request.
+        /// Parse the given XML representation of a change availability request.
         /// </summary>
         /// <param name="ChangeAvailabilityRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -104,10 +130,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                       OnExceptionDelegate  OnException = null)
         {
 
-            ChangeAvailabilityRequest _ChangeAvailabilityRequest;
+            if (TryParse(ChangeAvailabilityRequestXML,
+                         out ChangeAvailabilityRequest changeAvailabilityRequest,
+                         OnException))
+            {
+                return changeAvailabilityRequest;
+            }
 
-            if (TryParse(ChangeAvailabilityRequestXML, out _ChangeAvailabilityRequest, OnException))
-                return _ChangeAvailabilityRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (ChangeAvailabilityRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a change availability request.
+        /// </summary>
+        /// <param name="ChangeAvailabilityRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static ChangeAvailabilityRequest Parse(JObject              ChangeAvailabilityRequestJSON,
+                                                      OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(ChangeAvailabilityRequestJSON,
+                         out ChangeAvailabilityRequest changeAvailabilityRequest,
+                         OnException))
+            {
+                return changeAvailabilityRequest;
+            }
 
             return null;
 
@@ -118,7 +170,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (ChangeAvailabilityRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP change availability request.
+        /// Parse the given text representation of a change availability request.
         /// </summary>
         /// <param name="ChangeAvailabilityRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -126,10 +178,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                       OnExceptionDelegate  OnException = null)
         {
 
-            ChangeAvailabilityRequest _ChangeAvailabilityRequest;
-
-            if (TryParse(ChangeAvailabilityRequestText, out _ChangeAvailabilityRequest, OnException))
-                return _ChangeAvailabilityRequest;
+            if (TryParse(ChangeAvailabilityRequestText,
+                         out ChangeAvailabilityRequest changeAvailabilityRequest,
+                         OnException))
+            {
+                return changeAvailabilityRequest;
+            }
 
             return null;
 
@@ -140,7 +194,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(ChangeAvailabilityRequestXML,  out ChangeAvailabilityRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP change availability request.
+        /// Try to parse the given XML representation of a change availability request.
         /// </summary>
         /// <param name="ChangeAvailabilityRequestXML">The XML to be parsed.</param>
         /// <param name="ChangeAvailabilityRequest">The parsed change availability request.</param>
@@ -180,10 +234,75 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(ChangeAvailabilityRequestJSON, out ChangeAvailabilityRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a change availability request.
+        /// </summary>
+        /// <param name="ChangeAvailabilityRequestJSON">The JSON to be parsed.</param>
+        /// <param name="ChangeAvailabilityRequest">The parsed change availability request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                        ChangeAvailabilityRequestJSON,
+                                       out ChangeAvailabilityRequest  ChangeAvailabilityRequest,
+                                       OnExceptionDelegate            OnException  = null)
+        {
+
+            try
+            {
+
+                ChangeAvailabilityRequest = null;
+
+                #region ConnectorId
+
+                if (!ChangeAvailabilityRequestJSON.ParseMandatory("connectorId",
+                                                                  "connector identification",
+                                                                  Connector_Id.TryParse,
+                                                                  out Connector_Id ConnectorId,
+                                                                  out String ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Type
+
+                if (!ChangeAvailabilityRequestJSON.MapMandatory("type",
+                                                                "availability type",
+                                                                AvailabilityTypesExtentions.Parse,
+                                                                out AvailabilityTypes Type,
+                                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                ChangeAvailabilityRequest = new ChangeAvailabilityRequest(ConnectorId,
+                                                                          Type);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, ChangeAvailabilityRequestJSON, e);
+
+                ChangeAvailabilityRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(ChangeAvailabilityRequestText, out ChangeAvailabilityRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP change availability request.
+        /// Try to parse the given text representation of a change availability request.
         /// </summary>
         /// <param name="ChangeAvailabilityRequestText">The text to be parsed.</param>
         /// <param name="ChangeAvailabilityRequest">The parsed change availability request.</param>
@@ -196,11 +315,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(ChangeAvailabilityRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out ChangeAvailabilityRequest,
-                             OnException))
+                ChangeAvailabilityRequestText = ChangeAvailabilityRequestText?.Trim();
 
-                    return true;
+                if (ChangeAvailabilityRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (ChangeAvailabilityRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(ChangeAvailabilityRequestText),
+                                 out ChangeAvailabilityRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(ChangeAvailabilityRequestText).Root,
+                                 out ChangeAvailabilityRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -231,6 +366,28 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomChangeAvailabiliyRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomChangeAvailabiliyRequestSerializer">A delegate to serialize custom change availability requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeAvailabilityRequest> CustomChangeAvailabiliyRequestSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("connectorId",  ConnectorId.ToString()),
+                           new JProperty("type",         Type.AsText())
+                       );
+
+            return CustomChangeAvailabiliyRequestSerializer != null
+                       ? CustomChangeAvailabiliyRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -250,7 +407,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChangeAvailabilityRequest1 == null) || ((Object) ChangeAvailabilityRequest2 == null))
+            if ((ChangeAvailabilityRequest1 is null) || (ChangeAvailabilityRequest2 is null))
                 return false;
 
             return ChangeAvailabilityRequest1.Equals(ChangeAvailabilityRequest2);
@@ -290,12 +447,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a change availability request.
-            var ChangeAvailabilityRequest = Object as ChangeAvailabilityRequest;
-            if ((Object) ChangeAvailabilityRequest == null)
+            if (!(Object is ChangeAvailabilityRequest ChangeAvailabilityRequest))
                 return false;
 
-            return this.Equals(ChangeAvailabilityRequest);
+            return Equals(ChangeAvailabilityRequest);
 
         }
 
@@ -311,7 +466,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(ChangeAvailabilityRequest ChangeAvailabilityRequest)
         {
 
-            if ((Object) ChangeAvailabilityRequest == null)
+            if (ChangeAvailabilityRequest is null)
                 return false;
 
             return ConnectorId.Equals(ChangeAvailabilityRequest.ConnectorId) &&
@@ -354,7 +509,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                              Type);
 
         #endregion
-
 
     }
 

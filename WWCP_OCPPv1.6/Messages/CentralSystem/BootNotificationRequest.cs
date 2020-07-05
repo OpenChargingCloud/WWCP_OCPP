@@ -400,10 +400,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region ChargePointVendor
 
-                if (!BootNotificationRequestJSON.ParseMandatory("chargePointVendor",
-                                                                "charge point vendor",
-                                                                out String  ChargePointVendor,
-                                                                out String  ErrorResponse))
+                if (!BootNotificationRequestJSON.ParseMandatoryText("chargePointVendor",
+                                                                    "charge point vendor",
+                                                                    out String  ChargePointVendor,
+                                                                    out String  ErrorResponse))
                 {
                     return false;
                 }
@@ -412,10 +412,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region ChargePointModel
 
-                if (!BootNotificationRequestJSON.ParseMandatory("chargePointModel",
-                                                                "charge point model",
-                                                                out String  ChargePointModel,
-                                                                out         ErrorResponse))
+                if (!BootNotificationRequestJSON.ParseMandatoryText("chargePointModel",
+                                                                    "charge point model",
+                                                                    out String  ChargePointModel,
+                                                                    out         ErrorResponse))
                 {
                     return false;
                 }

@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP get composite schedule response.
+    /// A get composite schedule response.
     /// </summary>
     public class GetCompositeScheduleResponse : AResponse<GetCompositeScheduleResponse>
     {
@@ -171,7 +171,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (GetCompositeScheduleResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP get composite schedule response.
+        /// Parse the given XML representation of a get composite schedule response.
         /// </summary>
         /// <param name="GetCompositeScheduleResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -193,7 +193,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (GetCompositeScheduleResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP get composite schedule response.
+        /// Parse the given text representation of a get composite schedule response.
         /// </summary>
         /// <param name="GetCompositeScheduleResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -215,7 +215,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(GetCompositeScheduleResponseXML,  out GetCompositeScheduleResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP get composite schedule response.
+        /// Try to parse the given XML representation of a get composite schedule response.
         /// </summary>
         /// <param name="GetCompositeScheduleResponseXML">The XML to be parsed.</param>
         /// <param name="GetCompositeScheduleResponse">The parsed get composite schedule response.</param>
@@ -264,7 +264,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(GetCompositeScheduleResponseText, out GetCompositeScheduleResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP get composite schedule response.
+        /// Try to parse the given text representation of a get composite schedule response.
         /// </summary>
         /// <param name="GetCompositeScheduleResponseText">The text to be parsed.</param>
         /// <param name="GetCompositeScheduleResponse">The parsed get composite schedule response.</param>

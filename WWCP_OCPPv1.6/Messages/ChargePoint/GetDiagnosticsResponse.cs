@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP get diagnostics response.
+    /// A get diagnostics response.
     /// </summary>
     public class GetDiagnosticsResponse : AResponse<GetDiagnosticsResponse>
     {
@@ -107,7 +107,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (GetDiagnosticsResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP get diagnostics response.
+        /// Parse the given XML representation of a get diagnostics response.
         /// </summary>
         /// <param name="GetDiagnosticsResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (GetDiagnosticsResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP get diagnostics response.
+        /// Parse the given text representation of a get diagnostics response.
         /// </summary>
         /// <param name="GetDiagnosticsResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -151,7 +151,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(GetDiagnosticsResponseXML,  out GetDiagnosticsResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP get diagnostics response.
+        /// Try to parse the given XML representation of a get diagnostics response.
         /// </summary>
         /// <param name="GetDiagnosticsResponseXML">The XML to be parsed.</param>
         /// <param name="GetDiagnosticsResponse">The parsed get diagnostics response.</param>
@@ -190,7 +190,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(GetDiagnosticsResponseText, out GetDiagnosticsResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP get diagnostics response.
+        /// Try to parse the given text representation of a get diagnostics response.
         /// </summary>
         /// <param name="GetDiagnosticsResponseText">The text to be parsed.</param>
         /// <param name="GetDiagnosticsResponse">The parsed get diagnostics response.</param>

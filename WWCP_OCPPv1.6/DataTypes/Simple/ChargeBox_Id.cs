@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An OCPP charge box identification.
+    /// A charge box identification.
     /// </summary>
     public struct ChargeBox_Id : IId,
                                  IEquatable<ChargeBox_Id>,
@@ -73,7 +73,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an OCPP charge box identification.
+        /// Parse the given string as a charge box identification.
         /// </summary>
         public static ChargeBox_Id Parse(String Text)
             => new ChargeBox_Id(Text);
@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region TryParse(Text, out ChargeBoxId)
 
         /// <summary>
-        /// Parse the given string as an OCPP charge box identification.
+        /// Parse the given string as a charge box identification.
         /// </summary>
         public static Boolean TryParse(String Text, out ChargeBox_Id ChargeBoxId)
         {

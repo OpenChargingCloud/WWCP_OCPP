@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP reset request.
+    /// A reset request.
     /// </summary>
     public class ResetRequest : ARequest<ResetRequest>
     {
@@ -40,21 +41,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The type of reset that the charge point should perform.
         /// </summary>
-        public ResetTypes  Type   { get; }
+        public ResetTypes  Type    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP ResetRequest XML/SOAP request.
+        /// Create a reset request.
         /// </summary>
         /// <param name="Type">The type of reset that the charge point should perform.</param>
         public ResetRequest(ResetTypes Type)
         {
-
             this.Type = Type;
-
         }
 
         #endregion
@@ -80,12 +79,33 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:ResetRequest",
+        //     "title":   "ResetRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "type": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Hard",
+        //                 "Soft"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "type"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (ResetRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP reset request.
+        /// Parse the given XML representation of a reset request.
         /// </summary>
         /// <param name="ResetRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -93,10 +113,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                          OnExceptionDelegate  OnException = null)
         {
 
-            ResetRequest _ResetRequest;
+            if (TryParse(ResetRequestXML,
+                         out ResetRequest resetRequest,
+                         OnException))
+            {
+                return resetRequest;
+            }
 
-            if (TryParse(ResetRequestXML, out _ResetRequest, OnException))
-                return _ResetRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (ResetRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a reset request.
+        /// </summary>
+        /// <param name="ResetRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static ResetRequest Parse(JObject              ResetRequestJSON,
+                                         OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(ResetRequestJSON,
+                         out ResetRequest resetRequest,
+                         OnException))
+            {
+                return resetRequest;
+            }
 
             return null;
 
@@ -107,7 +153,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (ResetRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP reset request.
+        /// Parse the given text representation of a reset request.
         /// </summary>
         /// <param name="ResetRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -115,10 +161,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                          OnExceptionDelegate  OnException = null)
         {
 
-            ResetRequest _ResetRequest;
-
-            if (TryParse(ResetRequestText, out _ResetRequest, OnException))
-                return _ResetRequest;
+            if (TryParse(ResetRequestText,
+                         out ResetRequest resetRequest,
+                         OnException))
+            {
+                return resetRequest;
+            }
 
             return null;
 
@@ -129,7 +177,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(ResetRequestXML,  out ResetRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP reset request.
+        /// Try to parse the given XML representation of a reset request.
         /// </summary>
         /// <param name="ResetRequestXML">The XML to be parsed.</param>
         /// <param name="ResetRequest">The parsed reset request.</param>
@@ -166,10 +214,61 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(ResetRequestJSON, out ResetRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a reset request.
+        /// </summary>
+        /// <param name="ResetRequestJSON">The JSON to be parsed.</param>
+        /// <param name="ResetRequest">The parsed reset request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject              ResetRequestJSON,
+                                       out ResetRequest     ResetRequest,
+                                       OnExceptionDelegate  OnException  = null)
+        {
+
+            try
+            {
+
+                ResetRequest = null;
+
+                #region ResetType
+
+                if (!ResetRequestJSON.MapMandatory("type",
+                                                   "reset type",
+                                                   ResetTypesExtentions.Parse,
+                                                   out ResetTypes  ResetType,
+                                                   out String      ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                ResetRequest = new ResetRequest(ResetType);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, ResetRequestJSON, e);
+
+                ResetRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(ResetRequestText, out ResetRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP reset request.
+        /// Try to parse the given text representation of a reset request.
         /// </summary>
         /// <param name="ResetRequestText">The text to be parsed.</param>
         /// <param name="ResetRequest">The parsed reset request.</param>
@@ -182,11 +281,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(ResetRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out ResetRequest,
-                             OnException))
+                ResetRequestText = ResetRequestText?.Trim();
 
-                    return true;
+                if (ResetRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (ResetRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(ResetRequestText),
+                                 out ResetRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(ResetRequestText).Root,
+                                 out ResetRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -216,6 +331,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomResetRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomResetRequestSerializer">A delegate to serialize custom reset requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ResetRequest> CustomResetRequestSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("type",  Type.AsText())
+                       );
+
+            return CustomResetRequestSerializer != null
+                       ? CustomResetRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -235,7 +371,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ResetRequest1 == null) || ((Object) ResetRequest2 == null))
+            if ((ResetRequest1 is null) || (ResetRequest2 is null))
                 return false;
 
             return ResetRequest1.Equals(ResetRequest2);
@@ -275,12 +411,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a reset request.
-            var ResetRequest = Object as ResetRequest;
-            if ((Object) ResetRequest == null)
+            if (!(Object is ResetRequest ResetRequest))
                 return false;
 
-            return this.Equals(ResetRequest);
+            return Equals(ResetRequest);
 
         }
 
@@ -296,7 +430,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(ResetRequest ResetRequest)
         {
 
-            if ((Object) ResetRequest == null)
+            if (ResetRequest is null)
                 return false;
 
             return Type.Equals(ResetRequest.Type);
@@ -314,6 +448,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => Type.GetHashCode();
 
         #endregion
@@ -324,10 +459,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => Type.ToString();
 
         #endregion
-
 
     }
 

@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP remote start transaction request.
+    /// A remote start transaction request.
     /// </summary>
     public class RemoteStartTransactionRequest : ARequest<RemoteStartTransactionRequest>
     {
@@ -40,39 +41,39 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The identification tag to start the charging transaction.
         /// </summary>
-        public IdToken          IdTag             { get; }
+        public IdToken          IdTag              { get; }
 
         /// <summary>
         /// An optional connector identification on which the charging
         /// transaction should be started (SHALL be > 0).
         /// </summary>
-        public Connector_Id?    ConnectorId       { get; }
+        public Connector_Id?    ConnectorId        { get; }
 
         /// <summary>
         /// An optional charging profile to be used by the charge point
         /// for the requested charging transaction.
         /// The 'ChargingProfilePurpose' MUST be set to 'TxProfile'.
         /// </summary>
-        public ChargingProfile  ChargingProfile   { get; }
+        public ChargingProfile  ChargingProfile    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP RemoteStartTransaction XML/SOAP request.
+        /// Create a RemoteStartTransaction XML/SOAP request.
         /// </summary>
         /// <param name="IdTag">The identification tag to start the charging transaction.</param>
         /// <param name="ConnectorId">An optional connector identification on which the charging transaction should be started (SHALL be > 0).</param>
         /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
         public RemoteStartTransactionRequest(IdToken          IdTag,
-                                             Connector_Id?    ConnectorId      = null,
-                                             ChargingProfile  ChargingProfile  = null)
+                                             Connector_Id?    ConnectorId       = null,
+                                             ChargingProfile  ChargingProfile   = null)
         {
 
             #region Initial checks
 
-            if (IdTag == null)
+            if (IdTag.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(IdTag),  "The given identification tag must not be null!");
 
             #endregion
@@ -155,12 +156,140 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:RemoteStartTransactionRequest",
+        //     "title":   "RemoteStartTransactionRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "connectorId": {
+        //             "type": "integer"
+        //         },
+        //         "idTag": {
+        //             "type": "string",
+        //             "maxLength": 20
+        //         },
+        //         "chargingProfile": {
+        //             "type": "object",
+        //             "properties": {
+        //                 "chargingProfileId": {
+        //                     "type": "integer"
+        //                 },
+        //                 "transactionId": {
+        //                     "type": "integer"
+        //                 },
+        //                 "stackLevel": {
+        //                     "type": "integer"
+        //                 },
+        //                 "chargingProfilePurpose": {
+        //                     "type": "string",
+        //                     "additionalProperties": false,
+        //                     "enum": [
+        //                         "ChargePointMaxProfile",
+        //                         "TxDefaultProfile",
+        //                         "TxProfile"
+        //                     ]
+        //                 },
+        //                 "chargingProfileKind": {
+        //                     "type": "string",
+        //                     "additionalProperties": false,
+        //                     "enum": [
+        //                         "Absolute",
+        //                         "Recurring",
+        //                         "Relative"
+        //                     ]
+        //                 },
+        //                 "recurrencyKind": {
+        //                     "type": "string",
+        //                     "additionalProperties": false,
+        //                     "enum": [
+        //                         "Daily",
+        //                         "Weekly"
+        //                     ]
+        //                 },
+        //                 "validFrom": {
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "validTo": {
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "chargingSchedule": {
+        //                     "type": "object",
+        //                     "properties": {
+        //                         "duration": {
+        //                             "type": "integer"
+        //                         },
+        //                         "startSchedule": {
+        //                             "type": "string",
+        //                             "format": "date-time"
+        //                         },
+        //                         "chargingRateUnit": {
+        //                             "type": "string",
+        //                             "additionalProperties": false,
+        //                             "enum": [
+        //                                 "A",
+        //                                 "W"
+        //                             ]
+        //                         },
+        //                         "chargingSchedulePeriod": {
+        //                             "type": "array",
+        //                             "items": {
+        //                                 "type": "object",
+        //                                 "properties": {
+        //                                     "startPeriod": {
+        //                                         "type": "integer"
+        //                                     },
+        //                                     "limit": {
+        //                                         "type": "number",
+        //                                         "multipleOf" : 0.1
+        //                                     },
+        //                                     "numberPhases": {
+        //                                         "type": "integer"
+        //                                     }
+        //                                 },
+        //                                 "additionalProperties": false,
+        //                                 "required": [
+        //                                     "startPeriod",
+        //                                     "limit"
+        //                                 ]
+        //                             }
+        //                         },
+        //                         "minChargingRate": {
+        //                             "type": "number",
+        //                             "multipleOf" : 0.1
+        //                         }
+        //                     },
+        //                     "additionalProperties": false,
+        //                     "required": [
+        //                         "chargingRateUnit",
+        //                         "chargingSchedulePeriod"
+        //                     ]
+        //                 }
+        //             },
+        //             "additionalProperties": false,
+        //             "required": [
+        //                 "chargingProfileId",
+        //                 "stackLevel",
+        //                 "chargingProfilePurpose",
+        //                 "chargingProfileKind",
+        //                 "chargingSchedule"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "idTag"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (RemoteStartTransactionRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP remote start transaction request.
+        /// Parse the given XML representation of a remote start transaction request.
         /// </summary>
         /// <param name="RemoteStartTransactionRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -168,10 +297,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                           OnExceptionDelegate  OnException = null)
         {
 
-            RemoteStartTransactionRequest _RemoteStartTransactionRequest;
+            if (TryParse(RemoteStartTransactionRequestXML,
+                         out RemoteStartTransactionRequest remoteStartTransactionRequest,
+                         OnException))
+            {
+                return remoteStartTransactionRequest;
+            }
 
-            if (TryParse(RemoteStartTransactionRequestXML, out _RemoteStartTransactionRequest, OnException))
-                return _RemoteStartTransactionRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (RemoteStartTransactionRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a remote start transaction request.
+        /// </summary>
+        /// <param name="RemoteStartTransactionRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static RemoteStartTransactionRequest Parse(JObject              RemoteStartTransactionRequestJSON,
+                                                          OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(RemoteStartTransactionRequestJSON,
+                         out RemoteStartTransactionRequest remoteStartTransactionRequest,
+                         OnException))
+            {
+                return remoteStartTransactionRequest;
+            }
 
             return null;
 
@@ -182,7 +337,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (RemoteStartTransactionRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP remote start transaction request.
+        /// Parse the given text representation of a remote start transaction request.
         /// </summary>
         /// <param name="RemoteStartTransactionRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -190,10 +345,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                           OnExceptionDelegate  OnException = null)
         {
 
-            RemoteStartTransactionRequest _RemoteStartTransactionRequest;
-
-            if (TryParse(RemoteStartTransactionRequestText, out _RemoteStartTransactionRequest, OnException))
-                return _RemoteStartTransactionRequest;
+            if (TryParse(RemoteStartTransactionRequestText,
+                         out RemoteStartTransactionRequest remoteStartTransactionRequest,
+                         OnException))
+            {
+                return remoteStartTransactionRequest;
+            }
 
             return null;
 
@@ -204,7 +361,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(RemoteStartTransactionRequestXML,  out RemoteStartTransactionRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP remote start transaction request.
+        /// Try to parse the given XML representation of a remote start transaction request.
         /// </summary>
         /// <param name="RemoteStartTransactionRequestXML">The XML to be parsed.</param>
         /// <param name="RemoteStartTransactionRequest">The parsed remote start transaction request.</param>
@@ -247,10 +404,96 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(RemoteStartTransactionRequestJSON, out RemoteStartTransactionRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a remote start transaction request.
+        /// </summary>
+        /// <param name="RemoteStartTransactionRequestJSON">The JSON to be parsed.</param>
+        /// <param name="RemoteStartTransactionRequest">The parsed remote start transaction request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                            RemoteStartTransactionRequestJSON,
+                                       out RemoteStartTransactionRequest  RemoteStartTransactionRequest,
+                                       OnExceptionDelegate                OnException  = null)
+        {
+
+            try
+            {
+
+                RemoteStartTransactionRequest = null;
+
+                #region IdTag
+
+                if (!RemoteStartTransactionRequestJSON.ParseMandatory("idTag",
+                                                                      "identification tag",
+                                                                      IdToken.TryParse,
+                                                                      out IdToken  IdTag,
+                                                                      out String   ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region ConnectorId
+
+                if (RemoteStartTransactionRequestJSON.ParseOptionalStruct("connectorId",
+                                                                          "connector identification",
+                                                                          Connector_Id.TryParse,
+                                                                          out Connector_Id?  ConnectorId,
+                                                                          out                ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region ChargingProfile
+
+                if (RemoteStartTransactionRequestJSON.ParseOptional("chargingProfile",
+                                                                    "charging profile",
+                                                                    OCPPv1_6.ChargingProfile.TryParse,
+                                                                    out ChargingProfile  ChargingProfile,
+                                                                    out                  ErrorResponse,
+                                                                    OnException))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+
+                RemoteStartTransactionRequest = new RemoteStartTransactionRequest(IdTag,
+                                                                                  ConnectorId,
+                                                                                  ChargingProfile);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, RemoteStartTransactionRequestJSON, e);
+
+                RemoteStartTransactionRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(RemoteStartTransactionRequestText, out RemoteStartTransactionRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP remote start transaction request.
+        /// Try to parse the given text representation of a remote start transaction request.
         /// </summary>
         /// <param name="RemoteStartTransactionRequestText">The text to be parsed.</param>
         /// <param name="RemoteStartTransactionRequest">The parsed remote start transaction request.</param>
@@ -263,11 +506,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(RemoteStartTransactionRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out RemoteStartTransactionRequest,
-                             OnException))
+                RemoteStartTransactionRequestText = RemoteStartTransactionRequestText?.Trim();
 
-                    return true;
+                if (RemoteStartTransactionRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (RemoteStartTransactionRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(RemoteStartTransactionRequestText),
+                                 out RemoteStartTransactionRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(RemoteStartTransactionRequestText).Root,
+                                 out RemoteStartTransactionRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -297,11 +556,48 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "idTag",              IdTag.ToString()),
 
-                   ChargingProfile != null
-                       ? ChargingProfile.ToXML()
-                       : null
+                   ChargingProfile?.ToXML()
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomRemoteStartTransactionRequestSerializer = null, CustomChargingProfileSerializer = null, CustomChargingScheduleSerializer = null, CustomChargingSchedulePeriodSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomRemoteStartTransactionRequestSerializer">A delegate to serialize custom remote start transaction requests.</param>
+        /// <param name="CustomChargingProfileSerializer">A delegate to serialize custom charging profiles.</param>
+        /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedule requests.</param>
+        /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<RemoteStartTransactionRequest> CustomRemoteStartTransactionRequestSerializer  = null,
+                              CustomJObjectSerializerDelegate<ChargingProfile>               CustomChargingProfileSerializer                = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedule>              CustomChargingScheduleSerializer               = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>        CustomChargingSchedulePeriodSerializer         = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           ConnectorId.HasValue
+                                  ? new JProperty("connectorId",   ConnectorId.Value.ToString())
+                                  : null,
+
+                           new JProperty("idTag",                  IdTag.            ToString()),
+
+                           ChargingProfile != null
+                               ? new JProperty("chargingProfile",  ChargingProfile.  ToJSON(CustomChargingProfileSerializer,
+                                                                                            CustomChargingScheduleSerializer,
+                                                                                            CustomChargingSchedulePeriodSerializer))
+                               : null
+
+                       );
+
+            return CustomRemoteStartTransactionRequestSerializer != null
+                       ? CustomRemoteStartTransactionRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 
@@ -324,7 +620,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) RemoteStartTransactionRequest1 == null) || ((Object) RemoteStartTransactionRequest2 == null))
+            if ((RemoteStartTransactionRequest1 is null) || (RemoteStartTransactionRequest2 is null))
                 return false;
 
             return RemoteStartTransactionRequest1.Equals(RemoteStartTransactionRequest2);
@@ -364,12 +660,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a remote start transaction request.
-            var RemoteStartTransactionRequest = Object as RemoteStartTransactionRequest;
-            if ((Object) RemoteStartTransactionRequest == null)
+            if (!(Object is RemoteStartTransactionRequest RemoteStartTransactionRequest))
                 return false;
 
-            return this.Equals(RemoteStartTransactionRequest);
+            return Equals(RemoteStartTransactionRequest);
 
         }
 
@@ -385,7 +679,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(RemoteStartTransactionRequest RemoteStartTransactionRequest)
         {
 
-            if ((Object) RemoteStartTransactionRequest == null)
+            if (RemoteStartTransactionRequest is null)
                 return false;
 
             return IdTag.Equals(RemoteStartTransactionRequest.IdTag) &&
@@ -446,8 +740,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-
     }
 
 }
-

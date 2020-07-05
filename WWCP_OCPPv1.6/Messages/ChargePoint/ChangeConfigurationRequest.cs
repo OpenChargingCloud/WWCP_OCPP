@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP change configuration request.
+    /// A change configuration request.
     /// </summary>
     public class ChangeConfigurationRequest : ARequest<ChangeConfigurationRequest>
     {
@@ -40,19 +41,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The name of the configuration setting to change.
         /// </summary>
-        public String  Key     { get; }
+        public String  Key      { get; }
 
         /// <summary>
         /// The new value as string for the setting.
         /// </summary>
-        public String  Value   { get; }
+        public String  Value    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP ChangeConfigurationRequest XML/SOAP request.
+        /// Create a change configuration request.
         /// </summary>
         /// <param name="Key">The name of the configuration setting to change.</param>
         /// <param name="Value">The new value as string for the setting.</param>
@@ -60,14 +61,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                           String  Value)
         {
 
-            #region Initial checks
+            Key = Key?.Trim();
 
-            if (Key.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Key),  "The given configuration key must not be null or empty!");
-
-            #endregion
-
-            this.Key    = Key;
+            this.Key    = Key ?? throw new ArgumentNullException(nameof(Key), "The given configuration key must not be null or empty!");
             this.Value  = Value;
 
         }
@@ -96,12 +92,34 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:ChangeConfigurationRequest",
+        //     "title":   "ChangeConfigurationRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "key": {
+        //             "type": "string",
+        //             "maxLength": 50
+        //         },
+        //         "value": {
+        //             "type": "string",
+        //             "maxLength": 500
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "key",
+        //         "value"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (ChangeConfigurationRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP change configuration request.
+        /// Parse the given XML representation of a change configuration request.
         /// </summary>
         /// <param name="ChangeConfigurationRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -109,10 +127,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                        OnExceptionDelegate  OnException = null)
         {
 
-            ChangeConfigurationRequest _ChangeConfigurationRequest;
+            if (TryParse(ChangeConfigurationRequestXML,
+                         out ChangeConfigurationRequest changeConfigurationRequest,
+                         OnException))
+            {
+                return changeConfigurationRequest;
+            }
 
-            if (TryParse(ChangeConfigurationRequestXML, out _ChangeConfigurationRequest, OnException))
-                return _ChangeConfigurationRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (ChangeConfigurationRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a change configuration request.
+        /// </summary>
+        /// <param name="ChangeConfigurationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static ChangeConfigurationRequest Parse(JObject              ChangeConfigurationRequestJSON,
+                                                       OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(ChangeConfigurationRequestJSON,
+                         out ChangeConfigurationRequest changeConfigurationRequest,
+                         OnException))
+            {
+                return changeConfigurationRequest;
+            }
 
             return null;
 
@@ -123,7 +167,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (ChangeConfigurationRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP change configuration request.
+        /// Parse the given text representation of a change configuration request.
         /// </summary>
         /// <param name="ChangeConfigurationRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -131,10 +175,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                        OnExceptionDelegate  OnException = null)
         {
 
-            ChangeConfigurationRequest _ChangeConfigurationRequest;
-
-            if (TryParse(ChangeConfigurationRequestText, out _ChangeConfigurationRequest, OnException))
-                return _ChangeConfigurationRequest;
+            if (TryParse(ChangeConfigurationRequestText,
+                         out ChangeConfigurationRequest changeConfigurationRequest,
+                         OnException))
+            {
+                return changeConfigurationRequest;
+            }
 
             return null;
 
@@ -145,7 +191,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(ChangeConfigurationRequestXML,  out ChangeConfigurationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP change configuration request.
+        /// Try to parse the given XML representation of a change configuration request.
         /// </summary>
         /// <param name="ChangeConfigurationRequestXML">The XML to be parsed.</param>
         /// <param name="ChangeConfigurationRequest">The parsed change configuration request.</param>
@@ -182,10 +228,61 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(ChangeConfigurationRequestJSON, out ChangeConfigurationRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a change configuration request.
+        /// </summary>
+        /// <param name="ChangeConfigurationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="ChangeConfigurationRequest">The parsed change configuration request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                         ChangeConfigurationRequestJSON,
+                                       out ChangeConfigurationRequest  ChangeConfigurationRequest,
+                                       OnExceptionDelegate             OnException  = null)
+        {
+
+            try
+            {
+
+                ChangeConfigurationRequest = null;
+
+                #region Key
+
+                var Key   = ChangeConfigurationRequestJSON.GetString("key");
+
+                #endregion
+
+                #region Value
+
+                var Value = ChangeConfigurationRequestJSON.GetString("value");
+
+                #endregion
+
+
+                ChangeConfigurationRequest = new ChangeConfigurationRequest(Key,
+                                                                            Value);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, ChangeConfigurationRequestJSON, e);
+
+                ChangeConfigurationRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(ChangeConfigurationRequestText, out ChangeConfigurationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP change configuration request.
+        /// Try to parse the given text representation of a change configuration request.
         /// </summary>
         /// <param name="ChangeConfigurationRequestText">The text to be parsed.</param>
         /// <param name="ChangeConfigurationRequest">The parsed change configuration request.</param>
@@ -198,11 +295,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(ChangeConfigurationRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out ChangeConfigurationRequest,
-                             OnException))
+                ChangeConfigurationRequestText = ChangeConfigurationRequestText?.Trim();
 
-                    return true;
+                if (ChangeConfigurationRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (ChangeConfigurationRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(ChangeConfigurationRequestText),
+                                 out ChangeConfigurationRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(ChangeConfigurationRequestText).Root,
+                                 out ChangeConfigurationRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -233,6 +346,28 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomChangeConfigurationRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomChangeConfigurationRequestSerializer">A delegate to serialize custom change configuration requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeConfigurationRequest> CustomChangeConfigurationRequestSerializer = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("key",    Key),
+                           new JProperty("value",  Value)
+                       );
+
+            return CustomChangeConfigurationRequestSerializer != null
+                       ? CustomChangeConfigurationRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -252,7 +387,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChangeConfigurationRequest1 == null) || ((Object) ChangeConfigurationRequest2 == null))
+            if ((ChangeConfigurationRequest1 is null) || (ChangeConfigurationRequest2 is null))
                 return false;
 
             return ChangeConfigurationRequest1.Equals(ChangeConfigurationRequest2);
@@ -292,12 +427,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a change configuration request.
-            var ChangeConfigurationRequest = Object as ChangeConfigurationRequest;
-            if ((Object) ChangeConfigurationRequest == null)
+            if (!(Object is ChangeConfigurationRequest ChangeConfigurationRequest))
                 return false;
 
-            return this.Equals(ChangeConfigurationRequest);
+            return Equals(ChangeConfigurationRequest);
 
         }
 
@@ -313,7 +446,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(ChangeConfigurationRequest ChangeConfigurationRequest)
         {
 
-            if ((Object) ChangeConfigurationRequest == null)
+            if (ChangeConfigurationRequest is null)
                 return false;
 
             return Key.  Equals(ChangeConfigurationRequest.Key) &&
@@ -358,10 +491,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             => String.Concat(Key,
                              " = ",
-                             Value != null ? Value : "");
+                             Value);
 
         #endregion
-
 
     }
 

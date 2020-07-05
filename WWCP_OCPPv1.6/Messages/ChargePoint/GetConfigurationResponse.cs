@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP get configuration response.
+    /// A get configuration response.
     /// </summary>
     public class GetConfigurationResponse : AResponse<GetConfigurationResponse>
     {
@@ -134,7 +134,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (GetConfigurationResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP get configuration response.
+        /// Parse the given XML representation of a get configuration response.
         /// </summary>
         /// <param name="GetConfigurationResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -156,7 +156,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (GetConfigurationResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP get configuration response.
+        /// Parse the given text representation of a get configuration response.
         /// </summary>
         /// <param name="GetConfigurationResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -178,7 +178,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(GetConfigurationResponseXML,  out GetConfigurationResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP get configuration response.
+        /// Try to parse the given XML representation of a get configuration response.
         /// </summary>
         /// <param name="GetConfigurationResponseXML">The XML to be parsed.</param>
         /// <param name="GetConfigurationResponse">The parsed get configuration response.</param>
@@ -220,7 +220,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(GetConfigurationResponseText, out GetConfigurationResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP get configuration response.
+        /// Try to parse the given text representation of a get configuration response.
         /// </summary>
         /// <param name="GetConfigurationResponseText">The text to be parsed.</param>
         /// <param name="GetConfigurationResponse">The parsed get configuration response.</param>

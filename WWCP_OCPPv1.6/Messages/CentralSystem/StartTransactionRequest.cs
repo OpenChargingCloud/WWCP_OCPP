@@ -314,7 +314,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 #region IdTag
 
                 if (!StartTransactionRequestJSON.ParseMandatory("idTag",
-                                                                "id tag",
+                                                                "identification tag",
                                                                 IdToken.TryParse,
                                                                 out IdToken  IdTag,
                                                                 out          ErrorResponse))
@@ -340,7 +340,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 if (!StartTransactionRequestJSON.ParseMandatory("meterStart",
                                                                 "meter start",
-                                                                UInt64.Parse,
+                                                                UInt64.TryParse,
                                                                 out UInt64  MeterStart,
                                                                 out         ErrorResponse))
                 {
@@ -460,13 +460,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region ToJSON(CustomStartTransactionRequestRequestSerializer = null)
+        #region ToJSON(CustomStartTransactionRequestSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomStartTransactionRequestRequestSerializer">A delegate to serialize custom start transaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<StartTransactionRequest> CustomStartTransactionRequestRequestSerializer = null)
+        /// <param name="CustomStartTransactionRequestSerializer">A delegate to serialize custom start transaction requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StartTransactionRequest> CustomStartTransactionRequestSerializer  = null)
         {
 
             var JSON = JSONObject.Create(
@@ -482,8 +482,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                        );
 
-            return CustomStartTransactionRequestRequestSerializer != null
-                       ? CustomStartTransactionRequestRequestSerializer(this, JSON)
+            return CustomStartTransactionRequestSerializer != null
+                       ? CustomStartTransactionRequestSerializer(this, JSON)
                        : JSON;
 
         }

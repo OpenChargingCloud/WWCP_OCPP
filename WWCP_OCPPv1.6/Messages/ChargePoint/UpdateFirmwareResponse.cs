@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP update firmware response.
+    /// A update firmware response.
     /// </summary>
     public class UpdateFirmwareResponse : AResponse<UpdateFirmwareResponse>
     {
@@ -87,7 +87,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (UpdateFirmwareResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP update firmware response.
+        /// Parse the given XML representation of a update firmware response.
         /// </summary>
         /// <param name="UpdateFirmwareResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -109,7 +109,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (UpdateFirmwareResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP update firmware response.
+        /// Parse the given text representation of a update firmware response.
         /// </summary>
         /// <param name="UpdateFirmwareResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -131,7 +131,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(UpdateFirmwareResponseXML,  out UpdateFirmwareResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP update firmware response.
+        /// Try to parse the given XML representation of a update firmware response.
         /// </summary>
         /// <param name="UpdateFirmwareResponseXML">The XML to be parsed.</param>
         /// <param name="UpdateFirmwareResponse">The parsed update firmware response.</param>
@@ -166,7 +166,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(UpdateFirmwareResponseText, out UpdateFirmwareResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP update firmware response.
+        /// Try to parse the given text representation of a update firmware response.
         /// </summary>
         /// <param name="UpdateFirmwareResponseText">The text to be parsed.</param>
         /// <param name="UpdateFirmwareResponse">The parsed update firmware response.</param>

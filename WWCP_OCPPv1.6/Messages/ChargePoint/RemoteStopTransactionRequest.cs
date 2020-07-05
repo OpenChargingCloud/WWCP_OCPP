@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP remote stop transaction request.
+    /// A remote stop transaction request.
     /// </summary>
     public class RemoteStopTransactionRequest : ARequest<RemoteStopTransactionRequest>
     {
@@ -41,14 +42,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// The identification of the transaction which the charge
         /// point is requested to stop.
         /// </summary>
-        public Transaction_Id  TransactionId   { get; }
+        public Transaction_Id  TransactionId    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP RemoteStopTransaction XML/SOAP request.
+        /// Create a remote stop transaction request.
         /// </summary>
         /// <param name="TransactionId">The identification of the transaction which the charge point is requested to stop.</param>
         public RemoteStopTransactionRequest(Transaction_Id TransactionId)
@@ -56,7 +57,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             #region Initial checks
 
-            if (TransactionId == null)
+            if (TransactionId.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(TransactionId),  "The given transaction identification must not be null!");
 
             #endregion
@@ -88,12 +89,28 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:RemoteStopTransactionRequest",
+        //     "title":   "RemoteStopTransactionRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "transactionId": {
+        //             "type": "integer"
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "transactionId"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (RemoteStopTransactionRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP remote stop transaction request.
+        /// Parse the given XML representation of a remote stop transaction request.
         /// </summary>
         /// <param name="RemoteStopTransactionRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -101,10 +118,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                          OnExceptionDelegate  OnException = null)
         {
 
-            RemoteStopTransactionRequest _RemoteStopTransactionRequest;
+            if (TryParse(RemoteStopTransactionRequestXML,
+                         out RemoteStopTransactionRequest remoteStopTransactionRequest,
+                         OnException))
+            {
+                return remoteStopTransactionRequest;
+            }
 
-            if (TryParse(RemoteStopTransactionRequestXML, out _RemoteStopTransactionRequest, OnException))
-                return _RemoteStopTransactionRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (RemoteStopTransactionRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a remote stop transaction request.
+        /// </summary>
+        /// <param name="RemoteStopTransactionRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static RemoteStopTransactionRequest Parse(JObject              RemoteStopTransactionRequestJSON,
+                                                         OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(RemoteStopTransactionRequestJSON,
+                         out RemoteStopTransactionRequest remoteStopTransactionRequest,
+                         OnException))
+            {
+                return remoteStopTransactionRequest;
+            }
 
             return null;
 
@@ -115,7 +158,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (RemoteStopTransactionRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP remote stop transaction request.
+        /// Parse the given text representation of a remote stop transaction request.
         /// </summary>
         /// <param name="RemoteStopTransactionRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -123,10 +166,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                          OnExceptionDelegate  OnException = null)
         {
 
-            RemoteStopTransactionRequest _RemoteStopTransactionRequest;
-
-            if (TryParse(RemoteStopTransactionRequestText, out _RemoteStopTransactionRequest, OnException))
-                return _RemoteStopTransactionRequest;
+            if (TryParse(RemoteStopTransactionRequestText,
+                         out RemoteStopTransactionRequest remoteStopTransactionRequest,
+                         OnException))
+            {
+                return remoteStopTransactionRequest;
+            }
 
             return null;
 
@@ -137,7 +182,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(RemoteStopTransactionRequestXML,  out RemoteStopTransactionRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP remote stop transaction request.
+        /// Try to parse the given XML representation of a remote stop transaction request.
         /// </summary>
         /// <param name="RemoteStopTransactionRequestXML">The XML to be parsed.</param>
         /// <param name="RemoteStopTransactionRequest">The parsed remote stop transaction request.</param>
@@ -174,10 +219,61 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(RemoteStopTransactionRequestJSON, out RemoteStopTransactionRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a remote stop transaction request.
+        /// </summary>
+        /// <param name="RemoteStopTransactionRequestJSON">The JSON to be parsed.</param>
+        /// <param name="RemoteStopTransactionRequest">The parsed remote stop transaction request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                           RemoteStopTransactionRequestJSON,
+                                       out RemoteStopTransactionRequest  RemoteStopTransactionRequest,
+                                       OnExceptionDelegate               OnException  = null)
+        {
+
+            try
+            {
+
+                RemoteStopTransactionRequest = null;
+
+                #region TransactionId
+
+                if (!RemoteStopTransactionRequestJSON.ParseMandatory("transactionId",
+                                                                     "transaction identification",
+                                                                     Transaction_Id.TryParse,
+                                                                     out Transaction_Id  TransactionId,
+                                                                     out String          ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                RemoteStopTransactionRequest = new RemoteStopTransactionRequest(TransactionId);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, RemoteStopTransactionRequestJSON, e);
+
+                RemoteStopTransactionRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(RemoteStopTransactionRequestText, out RemoteStopTransactionRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP remote stop transaction request.
+        /// Try to parse the given text representation of a remote stop transaction request.
         /// </summary>
         /// <param name="RemoteStopTransactionRequestText">The text to be parsed.</param>
         /// <param name="RemoteStopTransactionRequest">The parsed remote stop transaction request.</param>
@@ -190,11 +286,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(RemoteStopTransactionRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out RemoteStopTransactionRequest,
-                             OnException))
+                RemoteStopTransactionRequestText = RemoteStopTransactionRequestText?.Trim();
 
-                    return true;
+                if (RemoteStopTransactionRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (RemoteStopTransactionRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(RemoteStopTransactionRequestText),
+                                 out RemoteStopTransactionRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(RemoteStopTransactionRequestText).Root,
+                                 out RemoteStopTransactionRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -224,6 +336,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomRemoteStopTransactionRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomRemoteStopTransactionRequestSerializer">A delegate to serialize custom remote stop transaction requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<RemoteStopTransactionRequest> CustomRemoteStopTransactionRequestSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("transactionId",  TransactionId.ToString())
+                       );
+
+            return CustomRemoteStopTransactionRequestSerializer != null
+                       ? CustomRemoteStopTransactionRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -243,7 +376,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) RemoteStopTransactionRequest1 == null) || ((Object) RemoteStopTransactionRequest2 == null))
+            if ((RemoteStopTransactionRequest1 is null) || (RemoteStopTransactionRequest2 is null))
                 return false;
 
             return RemoteStopTransactionRequest1.Equals(RemoteStopTransactionRequest2);
@@ -283,12 +416,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a remote stop transaction request.
-            var RemoteStopTransactionRequest = Object as RemoteStopTransactionRequest;
-            if ((Object) RemoteStopTransactionRequest == null)
+            if (!(Object is RemoteStopTransactionRequest RemoteStopTransactionRequest))
                 return false;
 
-            return this.Equals(RemoteStopTransactionRequest);
+            return Equals(RemoteStopTransactionRequest);
 
         }
 
@@ -304,7 +435,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(RemoteStopTransactionRequest RemoteStopTransactionRequest)
         {
 
-            if ((Object) RemoteStopTransactionRequest == null)
+            if (RemoteStopTransactionRequest is null)
                 return false;
 
             return TransactionId.Equals(RemoteStopTransactionRequest.TransactionId);
@@ -322,6 +453,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => TransactionId.GetHashCode();
 
         #endregion
@@ -332,10 +464,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => TransactionId.ToString();
 
         #endregion
-
 
     }
 

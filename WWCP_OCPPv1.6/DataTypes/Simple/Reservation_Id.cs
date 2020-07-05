@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An OCPP reservation identification.
+    /// A reservation identification.
     /// </summary>
     public struct Reservation_Id : IId,
                                    IEquatable<Reservation_Id>,
@@ -73,7 +73,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an OCPP reservation identification.
+        /// Parse the given string as a reservation identification.
         /// </summary>
         public static Reservation_Id Parse(String Text)
             => new Reservation_Id(UInt64.Parse(Text));
@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Parse(Integer)
 
         /// <summary>
-        /// Parse the given integer as an OCPP reservation identification.
+        /// Parse the given integer as a reservation identification.
         /// </summary>
         public static Reservation_Id Parse(UInt64 Integer)
             => new Reservation_Id(Integer);
@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region TryParse(Text,    out ReservationId)
 
         /// <summary>
-        /// Parse the given string as an OCPP reservation identification.
+        /// Parse the given string as a reservation identification.
         /// </summary>
         public static Boolean TryParse(String Text, out Reservation_Id ReservationId)
         {
@@ -116,7 +116,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region TryParse(Integer, out ReservationId)
 
         /// <summary>
-        /// Parse the given integer as an OCPP reservation identification.
+        /// Parse the given integer as a reservation identification.
         /// </summary>
         public static Boolean TryParse(UInt64 Integer, out Reservation_Id ReservationId)
         {

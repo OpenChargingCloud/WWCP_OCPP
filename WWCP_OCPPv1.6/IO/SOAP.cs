@@ -36,9 +36,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
     {
 
         /// <summary>
-        /// Encapsulate the given XML within an OCPP XML SOAP frame.
+        /// Encapsulate the given XML within a XML SOAP frame.
         /// </summary>
-        /// <param name="SOAPHeader">An OCPP SOAP header.</param>
+        /// <param name="SOAPHeader">A SOAP header.</param>
         /// <param name="SOAPBody">The internal XML for the SOAP body.</param>
         /// <param name="XMLNamespaces">An optional delegate to process the XML namespaces.</param>
         public static XElement Encapsulation(SOAPHeader             SOAPHeader,
@@ -56,7 +56,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
 
         /// <summary>
-        /// Encapsulate the given XML within an OCPP XML SOAP frame.
+        /// Encapsulate the given XML within a XML SOAP frame.
         /// </summary>
         /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
         /// <param name="Action">The SOAP action.</param>
@@ -84,7 +84,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
 
         /// <summary>
-        /// Encapsulate the given XML within an OCPP XML SOAP frame.
+        /// Encapsulate the given XML within a XML SOAP frame.
         /// </summary>
         /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
         /// <param name="Action">The SOAP action.</param>

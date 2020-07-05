@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP get local list version request.
+    /// A get local list version request.
     /// </summary>
     public class GetLocalListVersionRequest : ARequest<GetLocalListVersionRequest>
     {
@@ -53,12 +54,21 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:GetLocalListVersionRequest",
+        //     "title":   "GetLocalListVersionRequest",
+        //     "type":    "object",
+        //     "properties": {},
+        //     "additionalProperties": false
+        // }
+
         #endregion
 
         #region (static) Parse   (GetLocalListVersionRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP get local list version request.
+        /// Parse the given XML representation of a get local list version request.
         /// </summary>
         /// <param name="GetLocalListVersionRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -66,10 +76,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                        OnExceptionDelegate  OnException = null)
         {
 
-            GetLocalListVersionRequest _GetLocalListVersionRequest;
+            if (TryParse(GetLocalListVersionRequestXML,
+                         out GetLocalListVersionRequest getLocalListVersionRequest,
+                         OnException))
+            {
+                return getLocalListVersionRequest;
+            }
 
-            if (TryParse(GetLocalListVersionRequestXML, out _GetLocalListVersionRequest, OnException))
-                return _GetLocalListVersionRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (GetLocalListVersionRequestJSON,  OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a get local list version request.
+        /// </summary>
+        /// <param name="GetLocalListVersionRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static GetLocalListVersionRequest Parse(JObject              GetLocalListVersionRequestJSON,
+                                                       OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(GetLocalListVersionRequestJSON,
+                         out GetLocalListVersionRequest getLocalListVersionRequest,
+                         OnException))
+            {
+                return getLocalListVersionRequest;
+            }
 
             return null;
 
@@ -80,7 +116,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (GetLocalListVersionRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP get local list version request.
+        /// Parse the given text representation of a get local list version request.
         /// </summary>
         /// <param name="GetLocalListVersionRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -88,10 +124,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                        OnExceptionDelegate  OnException = null)
         {
 
-            GetLocalListVersionRequest _GetLocalListVersionRequest;
-
-            if (TryParse(GetLocalListVersionRequestText, out _GetLocalListVersionRequest, OnException))
-                return _GetLocalListVersionRequest;
+            if (TryParse(GetLocalListVersionRequestText,
+                         out GetLocalListVersionRequest getLocalListVersionRequest,
+                         OnException))
+            {
+                return getLocalListVersionRequest;
+            }
 
             return null;
 
@@ -102,7 +140,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(GetLocalListVersionRequestXML,  out GetLocalListVersionRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP get local list version request.
+        /// Try to parse the given XML representation of a get local list version request.
         /// </summary>
         /// <param name="GetLocalListVersionRequestXML">The XML to be parsed.</param>
         /// <param name="GetLocalListVersionRequest">The parsed get local list version request.</param>
@@ -134,10 +172,45 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(GetLocalListVersionRequestJSON,  out GetLocalListVersionRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a get local list version request.
+        /// </summary>
+        /// <param name="GetLocalListVersionRequestJSON">The JSON to be parsed.</param>
+        /// <param name="GetLocalListVersionRequest">The parsed get local list version request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                         GetLocalListVersionRequestJSON,
+                                       out GetLocalListVersionRequest  GetLocalListVersionRequest,
+                                       OnExceptionDelegate             OnException  = null)
+        {
+
+            try
+            {
+
+                GetLocalListVersionRequest = new GetLocalListVersionRequest();
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, GetLocalListVersionRequestJSON, e);
+
+                GetLocalListVersionRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(GetLocalListVersionRequestText, out GetLocalListVersionRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP get local list version request.
+        /// Try to parse the given text representation of a get local list version request.
         /// </summary>
         /// <param name="GetLocalListVersionRequestText">The text to be parsed.</param>
         /// <param name="GetLocalListVersionRequest">The parsed get local list version request.</param>
@@ -150,11 +223,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(GetLocalListVersionRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out GetLocalListVersionRequest,
-                             OnException))
+                GetLocalListVersionRequestText = GetLocalListVersionRequestText?.Trim();
 
-                    return true;
+                if (GetLocalListVersionRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (GetLocalListVersionRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(GetLocalListVersionRequestText),
+                                 out GetLocalListVersionRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(GetLocalListVersionRequestText).Root,
+                                 out GetLocalListVersionRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -180,6 +269,25 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomGetLocalListVersionRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomGetLocalListVersionRequestSerializer">A delegate to serialize custom get local list version requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetLocalListVersionRequest> CustomGetLocalListVersionRequestSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create();
+
+            return CustomGetLocalListVersionRequestSerializer != null
+                       ? CustomGetLocalListVersionRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -199,7 +307,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) GetLocalListVersionRequest1 == null) || ((Object) GetLocalListVersionRequest2 == null))
+            if ((GetLocalListVersionRequest1 is null) || (GetLocalListVersionRequest2 is null))
                 return false;
 
             return GetLocalListVersionRequest1.Equals(GetLocalListVersionRequest2);
@@ -239,12 +347,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a get local list version request.
-            var GetLocalListVersionRequest = Object as GetLocalListVersionRequest;
-            if ((Object) GetLocalListVersionRequest == null)
+            if (!(Object is GetLocalListVersionRequest GetLocalListVersionRequest))
                 return false;
 
-            return this.Equals(GetLocalListVersionRequest);
+            return Equals(GetLocalListVersionRequest);
 
         }
 
@@ -260,7 +366,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(GetLocalListVersionRequest GetLocalListVersionRequest)
         {
 
-            if ((Object) GetLocalListVersionRequest == null)
+            if (GetLocalListVersionRequest is null)
                 return false;
 
             return Object.ReferenceEquals(this, GetLocalListVersionRequest);
@@ -293,7 +399,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             => "GetLocalListVersionRequest";
 
         #endregion
-
 
     }
 

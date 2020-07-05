@@ -242,11 +242,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region FirmwareStatus
 
-                if (!FirmwareStatusNotificationRequestJSON.ParseMandatory("status",
-                                                                          "firmware status",
-                                                                          FirmwareStatusExtentions.Parse,
-                                                                          out FirmwareStatus FirmwareStatus,
-                                                                          out String ErrorResponse))
+                if (!FirmwareStatusNotificationRequestJSON.MapMandatory("status",
+                                                                        "firmware status",
+                                                                        FirmwareStatusExtentions.Parse,
+                                                                        out FirmwareStatus FirmwareStatus,
+                                                                        out String ErrorResponse))
                 {
                     return false;
                 }

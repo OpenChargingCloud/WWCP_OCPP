@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An OCPP charging profile identification.
+    /// A charging profile identification.
     /// </summary>
     public struct ChargingProfile_Id : IId,
                                        IEquatable<ChargingProfile_Id>,
@@ -73,7 +73,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an OCPP charging profile identification.
+        /// Parse the given string as a charging profile identification.
         /// </summary>
         public static ChargingProfile_Id Parse(String Text)
             => new ChargingProfile_Id(UInt64.Parse(Text));
@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Parse(Integer)
 
         /// <summary>
-        /// Parse the given integer as an OCPP charging profile identification.
+        /// Parse the given integer as a charging profile identification.
         /// </summary>
         public static ChargingProfile_Id Parse(UInt64 Integer)
             => new ChargingProfile_Id(Integer);
@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region TryParse(Text,    out ChargingProfileId)
 
         /// <summary>
-        /// Parse the given string as an OCPP charging profile identification.
+        /// Parse the given string as a charging profile identification.
         /// </summary>
         public static Boolean TryParse(String Text, out ChargingProfile_Id ChargingProfileId)
         {
@@ -116,7 +116,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region TryParse(Integer, out ChargingProfileId)
 
         /// <summary>
-        /// Parse the given integer as an OCPP charging profile identification.
+        /// Parse the given integer as a charging profile identification.
         /// </summary>
         public static Boolean TryParse(UInt64 Integer, out ChargingProfile_Id ChargingProfileId)
         {

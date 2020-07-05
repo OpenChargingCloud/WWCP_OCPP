@@ -95,7 +95,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// Create a new boot notification response.
         /// </summary>
         /// <param name="Request">The authorize request.</param>
-        /// <param name="Result">An OCPP result.</param>
+        /// <param name="Result">A result.</param>
         public BootNotificationResponse(CP.BootNotificationRequest  Request,
                                         Result                      Result)
 
@@ -320,11 +320,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 #region Status
 
-                if (!BootNotificationResponseJSON.ParseMandatory("status",
-                                                                 "registration status",
-                                                                 RegistrationStatusExtentions.Parse,
-                                                                 out RegistrationStatus  RegistrationStatus,
-                                                                 out String              ErrorResponse))
+                if (!BootNotificationResponseJSON.MapMandatory("status",
+                                                               "registration status",
+                                                               RegistrationStatusExtentions.Parse,
+                                                               out RegistrationStatus  RegistrationStatus,
+                                                               out String              ErrorResponse))
                 {
                     return false;
                 }

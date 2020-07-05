@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP reserve now request.
+    /// A reserve now request.
     /// </summary>
     public class ReserveNowRequest : ARequest<ReserveNowRequest>
     {
@@ -70,7 +71,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP ReserveNowRequest XML/SOAP request.
+        /// Create a reserve now request.
         /// </summary>
         /// <param name="ConnectorId">The identification of the connector to be reserved. A value of 0 means that the reservation is not for a specific connector.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
@@ -86,10 +87,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             #region Initial checks
 
-            if (ConnectorId   == null)
+            if (ConnectorId.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(ConnectorId),    "The given unique connector identification must not be null!");
 
-            if (ReservationId == null)
+            if (ReservationId.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(ReservationId),  "The given unique reservation identification must not be null!");
 
             if (IdTag         == null)
@@ -135,12 +136,46 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:ReserveNowRequest",
+        //     "title":   "ReserveNowRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "connectorId": {
+        //             "type": "integer"
+        //         },
+        //         "expiryDate": {
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "idTag": {
+        //             "type": "string",
+        //             "maxLength": 20
+        //         },
+        //         "parentIdTag": {
+        //             "type": "string",
+        //             "maxLength": 20
+        //         },
+        //         "reservationId": {
+        //             "type": "integer"
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "connectorId",
+        //         "expiryDate",
+        //         "idTag",
+        //         "reservationId"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (ReserveNowRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP reserve now request.
+        /// Parse the given XML representation of a reserve now request.
         /// </summary>
         /// <param name="ReserveNowRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -148,10 +183,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                               OnExceptionDelegate  OnException = null)
         {
 
-            ReserveNowRequest _ReserveNowRequest;
+            if (TryParse(ReserveNowRequestXML,
+                         out ReserveNowRequest reserveNowRequest,
+                         OnException))
+            {
+                return reserveNowRequest;
+            }
 
-            if (TryParse(ReserveNowRequestXML, out _ReserveNowRequest, OnException))
-                return _ReserveNowRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (ReserveNowRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a reserve now request.
+        /// </summary>
+        /// <param name="ReserveNowRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static ReserveNowRequest Parse(JObject              ReserveNowRequestJSON,
+                                              OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(ReserveNowRequestJSON,
+                         out ReserveNowRequest reserveNowRequest,
+                         OnException))
+            {
+                return reserveNowRequest;
+            }
 
             return null;
 
@@ -162,7 +223,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (ReserveNowRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP reserve now request.
+        /// Parse the given text representation of a reserve now request.
         /// </summary>
         /// <param name="ReserveNowRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -170,10 +231,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                               OnExceptionDelegate  OnException = null)
         {
 
-            ReserveNowRequest _ReserveNowRequest;
-
-            if (TryParse(ReserveNowRequestText, out _ReserveNowRequest, OnException))
-                return _ReserveNowRequest;
+            if (TryParse(ReserveNowRequestText,
+                         out ReserveNowRequest reserveNowRequest,
+                         OnException))
+            {
+                return reserveNowRequest;
+            }
 
             return null;
 
@@ -184,7 +247,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(ReserveNowRequestXML,  out ReserveNowRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP reserve now request.
+        /// Try to parse the given XML representation of a reserve now request.
         /// </summary>
         /// <param name="ReserveNowRequestXML">The XML to be parsed.</param>
         /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
@@ -233,10 +296,119 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(ReserveNowRequestJSON, out ReserveNowRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a reserve now request.
+        /// </summary>
+        /// <param name="ReserveNowRequestJSON">The JSON to be parsed.</param>
+        /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                ReserveNowRequestJSON,
+                                       out ReserveNowRequest  ReserveNowRequest,
+                                       OnExceptionDelegate    OnException  = null)
+        {
+
+            try
+            {
+
+                ReserveNowRequest = null;
+
+                #region ConnectorId
+
+                if (!ReserveNowRequestJSON.ParseMandatory("connectorId",
+                                                          "connector identification",
+                                                          Connector_Id.TryParse,
+                                                          out Connector_Id  ConnectorId,
+                                                          out String        ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region ReservationId
+
+                if (!ReserveNowRequestJSON.ParseMandatory("reservationId",
+                                                          "reservation identification",
+                                                          Reservation_Id.TryParse,
+                                                          out Reservation_Id  ReservationId,
+                                                          out                 ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region ExpiryDate
+
+                if (!ReserveNowRequestJSON.ParseMandatory("expiryDate",
+                                                          "expiry date",
+                                                          out DateTime  ExpiryDate,
+                                                          out           ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region IdTag
+
+                if (!ReserveNowRequestJSON.ParseMandatory("idTag",
+                                                          "identification tag",
+                                                          IdToken.TryParse,
+                                                          out IdToken  IdTag,
+                                                          out          ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region ParentIdTag
+
+                if (ReserveNowRequestJSON.ParseOptional("parentIdTag",
+                                                        "parent identification tag",
+                                                        IdToken.TryParse,
+                                                        out IdToken  ParentIdTag,
+                                                        out          ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+
+                ReserveNowRequest = new ReserveNowRequest(ConnectorId,
+                                                          ReservationId,
+                                                          ExpiryDate,
+                                                          IdTag,
+                                                          ParentIdTag);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, ReserveNowRequestJSON, e);
+
+                ReserveNowRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(ReserveNowRequestText, out ReserveNowRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP reserve now request.
+        /// Try to parse the given text representation of a reserve now request.
         /// </summary>
         /// <param name="ReserveNowRequestText">The text to be parsed.</param>
         /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
@@ -249,11 +421,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(ReserveNowRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out ReserveNowRequest,
-                             OnException))
+                ReserveNowRequestText = ReserveNowRequestText?.Trim();
 
-                    return true;
+                if (ReserveNowRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (ReserveNowRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(ReserveNowRequestText),
+                                 out ReserveNowRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(ReserveNowRequestText).Root,
+                                 out ReserveNowRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -277,17 +465,47 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "reserveNowRequest",
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "connectorId",        ConnectorId.  ToString()),
-                   new XElement(OCPPNS.OCPPv1_6_CP + "expiryDate",         ExpiryDate.   ToIso8601()),
-                   new XElement(OCPPNS.OCPPv1_6_CP + "idTag",              IdTag.        ToString()),
+                   new XElement(OCPPNS.OCPPv1_6_CP + "connectorId",        ConnectorId.      ToString()),
+                   new XElement(OCPPNS.OCPPv1_6_CP + "expiryDate",         ExpiryDate.       ToIso8601()),
+                   new XElement(OCPPNS.OCPPv1_6_CP + "idTag",              IdTag.            ToString()),
 
                    ParentIdTag.HasValue
                        ? new XElement(OCPPNS.OCPPv1_6_CP + "parentIdTag",  ParentIdTag.Value.ToString())
                        : null,
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "reservationId",      ReservationId.ToString())
+                   new XElement(OCPPNS.OCPPv1_6_CP + "reservationId",      ReservationId.    ToString())
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomReserveNowRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomReserveNowRequestSerializer">A delegate to serialize custom reserve now requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowRequest> CustomReserveNowRequestSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("connectorId",        ConnectorId.      ToString()),
+                           new JProperty("expiryDate",         ExpiryDate.       ToIso8601()),
+                           new JProperty("idTag",              IdTag.            ToString()),
+                           new JProperty("reservationId",      ReservationId.    ToString()),
+
+                           ParentIdTag.HasValue
+                               ? new JProperty("parentIdTag",  ParentIdTag.Value.ToString())
+                               : null
+
+                       );
+
+            return CustomReserveNowRequestSerializer != null
+                       ? CustomReserveNowRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 
@@ -310,7 +528,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ReserveNowRequest1 == null) || ((Object) ReserveNowRequest2 == null))
+            if ((ReserveNowRequest1 is null) || (ReserveNowRequest2 is null))
                 return false;
 
             return ReserveNowRequest1.Equals(ReserveNowRequest2);
@@ -350,12 +568,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a reserve now request.
-            var ReserveNowRequest = Object as ReserveNowRequest;
-            if ((Object) ReserveNowRequest == null)
+            if (!(Object is ReserveNowRequest ReserveNowRequest))
                 return false;
 
-            return this.Equals(ReserveNowRequest);
+            return Equals(ReserveNowRequest);
 
         }
 
@@ -371,7 +587,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(ReserveNowRequest ReserveNowRequest)
         {
 
-            if ((Object) ReserveNowRequest == null)
+            if (ReserveNowRequest is null)
                 return false;
 
             return ReservationId.Equals(ReserveNowRequest.ReservationId) &&
@@ -427,7 +643,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                              " (", ReservationId, ")");
 
         #endregion
-
 
     }
 

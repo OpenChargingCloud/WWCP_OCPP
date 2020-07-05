@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP data transfer response.
+    /// A data transfer response.
     /// </summary>
     public class DataTransferResponse : AResponse<DataTransferResponse>
     {
@@ -122,7 +122,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (DataTransferResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP data transfer response.
+        /// Parse the given XML representation of a data transfer response.
         /// </summary>
         /// <param name="DataTransferResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -144,7 +144,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (DataTransferResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP data transfer response.
+        /// Parse the given text representation of a data transfer response.
         /// </summary>
         /// <param name="DataTransferResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -166,7 +166,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(DataTransferResponseXML,  out DataTransferResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP data transfer response.
+        /// Try to parse the given XML representation of a data transfer response.
         /// </summary>
         /// <param name="DataTransferResponseXML">The XML to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
@@ -208,7 +208,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(DataTransferResponseText, out DataTransferResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP data transfer response.
+        /// Try to parse the given text representation of a data transfer response.
         /// </summary>
         /// <param name="DataTransferResponseText">The text to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>

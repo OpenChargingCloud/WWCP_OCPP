@@ -348,7 +348,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 #region IdTagInfo
 
                 if (!StartTransactionResponseJSON.ParseMandatory("idTagInfo",
-                                                                 "idTagInfo",
+                                                                 "identification tag information",
                                                                  OCPPv1_6.IdTagInfo.TryParse,
                                                                  out IdTagInfo  IdTagInfo,
                                                                  out            ErrorResponse,

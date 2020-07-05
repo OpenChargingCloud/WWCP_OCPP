@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An OCPP connector identification.
+    /// A connector identification.
     /// </summary>
     public struct Connector_Id : IId,
                                  IEquatable<Connector_Id>,
@@ -73,7 +73,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an OCPP connector identification.
+        /// Parse the given string as a connector identification.
         /// </summary>
         public static Connector_Id Parse(String Text)
             => new Connector_Id(UInt64.Parse(Text));
@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Parse(Integer)
 
         /// <summary>
-        /// Parse the given integer as an OCPP connector identification.
+        /// Parse the given integer as a connector identification.
         /// </summary>
         public static Connector_Id Parse(UInt64 Integer)
             => new Connector_Id(Integer);
@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region TryParse(Text,    out ConnectorId)
 
         /// <summary>
-        /// Parse the given string as an OCPP connector identification.
+        /// Parse the given string as a connector identification.
         /// </summary>
         public static Boolean TryParse(String Text, out Connector_Id ConnectorId)
         {
@@ -116,7 +116,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region TryParse(Integer, out ConnectorId)
 
         /// <summary>
-        /// Parse the given integer as an OCPP connector identification.
+        /// Parse the given integer as a connector identification.
         /// </summary>
         public static Boolean TryParse(UInt64 Integer, out Connector_Id ConnectorId)
         {

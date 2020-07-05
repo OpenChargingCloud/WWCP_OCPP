@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP clear cache response.
+    /// A clear cache response.
     /// </summary>
     public class ClearCacheResponse : AResponse<ClearCacheResponse>
     {
@@ -105,7 +105,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (ClearCacheResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP clear cache response.
+        /// Parse the given XML representation of a clear cache response.
         /// </summary>
         /// <param name="ClearCacheResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -127,7 +127,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (ClearCacheResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP clear cache response.
+        /// Parse the given text representation of a clear cache response.
         /// </summary>
         /// <param name="ClearCacheResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -149,7 +149,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(ClearCacheResponseXML,  out ClearCacheResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP clear cache response.
+        /// Try to parse the given XML representation of a clear cache response.
         /// </summary>
         /// <param name="ClearCacheResponseXML">The XML to be parsed.</param>
         /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(ClearCacheResponseText, out ClearCacheResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP clear cache response.
+        /// Try to parse the given text representation of a clear cache response.
         /// </summary>
         /// <param name="ClearCacheResponseText">The text to be parsed.</param>
         /// <param name="ClearCacheResponse">The parsed clear cache response.</param>

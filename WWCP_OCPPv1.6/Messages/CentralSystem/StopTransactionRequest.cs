@@ -521,11 +521,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region MeterStop
 
-                if (!StopTransactionRequestJSON.ParseMandatory("meterStop",
-                                                               "meter stop",
-                                                               UInt64.Parse,
-                                                               out UInt64  MeterStop,
-                                                               out         ErrorResponse))
+                if (!StopTransactionRequestJSON.MapMandatory("meterStop",
+                                                             "meter stop",
+                                                             UInt64.Parse,
+                                                             out UInt64  MeterStop,
+                                                             out         ErrorResponse))
                 {
                     return false;
                 }
@@ -551,7 +551,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 #region IdTag
 
                 if (!StopTransactionRequestJSON.ParseMandatory("idTag",
-                                                               "id tag",
+                                                               "identification tag",
                                                                IdToken.TryParse,
                                                                out IdToken  IdTag,
                                                                out          ErrorResponse))

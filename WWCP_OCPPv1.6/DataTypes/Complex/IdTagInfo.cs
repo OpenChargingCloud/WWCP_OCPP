@@ -263,11 +263,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 #region Status
 
-                if (!IdTagInfoJSON.ParseMandatory("status",
-                                                  "authorization status",
-                                                  AuthorizationStatusExtentions.AsAuthorizationStatus,
-                                                  out AuthorizationStatus  Status,
-                                                  out String               ErrorString))
+                if (!IdTagInfoJSON.MapMandatory("status",
+                                                "authorization status",
+                                                AuthorizationStatusExtentions.AsAuthorizationStatus,
+                                                out AuthorizationStatus  Status,
+                                                out String               ErrorString))
                 {
                     return false;
                 }

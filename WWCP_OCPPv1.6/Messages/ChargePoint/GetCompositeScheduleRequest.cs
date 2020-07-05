@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP get composite schedule request.
+    /// A get composite schedule request.
     /// </summary>
     public class GetCompositeScheduleRequest : ARequest<GetCompositeScheduleRequest>
     {
@@ -42,36 +43,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// Connector identification 0 will calculate the expected consumption
         /// for the grid connection.
         /// </summary>
-        public Connector_Id        ConnectorId        { get; }
+        public Connector_Id        ConnectorId         { get; }
 
         /// <summary>
         /// The length of requested schedule.
         /// </summary>
-        public TimeSpan            Duration           { get; }
+        public TimeSpan            Duration            { get; }
 
         /// <summary>
         /// Can optionally be used to force a power or current profile.
         /// </summary>
-        public ChargingRateUnits?  ChargingRateUnit   { get; }
+        public ChargingRateUnits?  ChargingRateUnit    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP GetCompositeScheduleRequest XML/SOAP request.
+        /// Create a get composite schedule request.
         /// </summary>
         /// <param name="ConnectorId">The connector identification for which the schedule is requested. Connector identification 0 will calculate the expected consumption for the grid connection.</param>
         /// <param name="Duration">The length of requested schedule.</param>
         /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
         public GetCompositeScheduleRequest(Connector_Id        ConnectorId,
                                            TimeSpan            Duration,
-                                           ChargingRateUnits?  ChargingRateUnit = null)
+                                           ChargingRateUnits?  ChargingRateUnit   = null)
         {
 
             this.ConnectorId       = ConnectorId;
             this.Duration          = Duration;
-            this.ChargingRateUnit  = ChargingRateUnit ?? new ChargingRateUnits?();
+            this.ChargingRateUnit  = ChargingRateUnit;
 
         }
 
@@ -102,12 +103,40 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:GetCompositeScheduleRequest",
+        //     "title":   "GetCompositeScheduleRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "connectorId": {
+        //             "type": "integer"
+        //         },
+        //     "duration": {
+        //         "type": "integer"
+        //     },
+        //     "chargingRateUnit": {
+        //         "type": "string",
+        //         "additionalProperties": false,
+        //         "enum": [
+        //             "A",
+        //             "W"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "connectorId",
+        //         "duration"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (GetCompositeScheduleRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP get composite schedule request.
+        /// Parse the given XML representation of a get composite schedule request.
         /// </summary>
         /// <param name="GetCompositeScheduleRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -115,10 +144,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                         OnExceptionDelegate  OnException = null)
         {
 
-            GetCompositeScheduleRequest _GetCompositeScheduleRequest;
+            if (TryParse(GetCompositeScheduleRequestXML,
+                         out GetCompositeScheduleRequest getCompositeScheduleRequest,
+                         OnException))
+            {
+                return getCompositeScheduleRequest;
+            }
 
-            if (TryParse(GetCompositeScheduleRequestXML, out _GetCompositeScheduleRequest, OnException))
-                return _GetCompositeScheduleRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (GetCompositeScheduleRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a get composite schedule request.
+        /// </summary>
+        /// <param name="GetCompositeScheduleRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static GetCompositeScheduleRequest Parse(JObject              GetCompositeScheduleRequestJSON,
+                                                        OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(GetCompositeScheduleRequestJSON,
+                         out GetCompositeScheduleRequest getCompositeScheduleRequest,
+                         OnException))
+            {
+                return getCompositeScheduleRequest;
+            }
 
             return null;
 
@@ -129,7 +184,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (GetCompositeScheduleRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP get composite schedule request.
+        /// Parse the given text representation of a get composite schedule request.
         /// </summary>
         /// <param name="GetCompositeScheduleRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -137,10 +192,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                         OnExceptionDelegate  OnException = null)
         {
 
-            GetCompositeScheduleRequest _GetCompositeScheduleRequest;
-
-            if (TryParse(GetCompositeScheduleRequestText, out _GetCompositeScheduleRequest, OnException))
-                return _GetCompositeScheduleRequest;
+            if (TryParse(GetCompositeScheduleRequestText,
+                         out GetCompositeScheduleRequest getCompositeScheduleRequest,
+                         OnException))
+            {
+                return getCompositeScheduleRequest;
+            }
 
             return null;
 
@@ -151,7 +208,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(GetCompositeScheduleRequestXML,  out GetCompositeScheduleRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP get composite schedule request.
+        /// Try to parse the given XML representation of a get composite schedule request.
         /// </summary>
         /// <param name="GetCompositeScheduleRequestXML">The XML to be parsed.</param>
         /// <param name="GetCompositeScheduleRequest">The parsed get composite schedule request.</param>
@@ -194,10 +251,92 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(GetCompositeScheduleRequestJSON, out GetCompositeScheduleRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a get composite schedule request.
+        /// </summary>
+        /// <param name="GetCompositeScheduleRequestJSON">The JSON to be parsed.</param>
+        /// <param name="GetCompositeScheduleRequest">The parsed get composite schedule request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                          GetCompositeScheduleRequestJSON,
+                                       out GetCompositeScheduleRequest  GetCompositeScheduleRequest,
+                                       OnExceptionDelegate              OnException  = null)
+        {
+
+            try
+            {
+
+                GetCompositeScheduleRequest = null;
+
+                #region ConnectorId
+
+                if (!GetCompositeScheduleRequestJSON.ParseMandatory("connectorId",
+                                                                    "connector identification",
+                                                                    Connector_Id.TryParse,
+                                                                    out Connector_Id  ConnectorId,
+                                                                    out String        ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Duration
+
+                if (!GetCompositeScheduleRequestJSON.MapMandatory("duration",
+                                                                  "duration",
+                                                                  s => TimeSpan.FromSeconds(UInt32.Parse(s)),
+                                                                  out TimeSpan  Duration,
+                                                                  out           ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region ChargingRateUnit
+
+                if (GetCompositeScheduleRequestJSON.ParseOptional("chargingRateUnit",
+                                                                  "charging rate unit",
+                                                                  ChargingRateUnitsExtentions.Parse,
+                                                                  out ChargingRateUnits?  ChargingRateUnit,
+                                                                  out                     ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+
+                GetCompositeScheduleRequest = new GetCompositeScheduleRequest(ConnectorId,
+                                                                              Duration,
+                                                                              ChargingRateUnit);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, GetCompositeScheduleRequestJSON, e);
+
+                GetCompositeScheduleRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(GetCompositeScheduleRequestText, out GetCompositeScheduleRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP get composite schedule request.
+        /// Try to parse the given text representation of a get composite schedule request.
         /// </summary>
         /// <param name="GetCompositeScheduleRequestText">The text to be parsed.</param>
         /// <param name="GetCompositeScheduleRequest">The parsed get composite schedule request.</param>
@@ -210,11 +349,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(GetCompositeScheduleRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out GetCompositeScheduleRequest,
-                             OnException))
+                GetCompositeScheduleRequestText = GetCompositeScheduleRequestText?.Trim();
 
-                    return true;
+                if (GetCompositeScheduleRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (GetCompositeScheduleRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(GetCompositeScheduleRequestText),
+                                 out GetCompositeScheduleRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(GetCompositeScheduleRequestText).Root,
+                                 out GetCompositeScheduleRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -239,13 +394,41 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             => new XElement(OCPPNS.OCPPv1_6_CP + "getCompositeScheduleRequest",
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "connectorId",             ConnectorId.ToString()),
-                   new XElement(OCPPNS.OCPPv1_6_CP + "duration",                Duration.TotalSeconds),
+                   new XElement(OCPPNS.OCPPv1_6_CP + "duration",                (UInt64) Duration.TotalSeconds),
 
                    ChargingRateUnit.HasValue
                        ? new XElement(OCPPNS.OCPPv1_6_CP + "chargingRateUnit",  ChargingRateUnit.Value)
                        : null
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomGetCompositeScheduleRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomGetCompositeScheduleRequestSerializer">A delegate to serialize custom start transaction requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleRequest> CustomGetCompositeScheduleRequestSerializer = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("connectorId",             ConnectorId.ToString()),
+                           new JProperty("duration",                (UInt64) Duration.TotalSeconds),
+
+                           ChargingRateUnit.HasValue
+                               ? new JProperty("chargingRateUnit",  ChargingRateUnit.Value.AsText())
+                               : null
+
+                       );
+
+            return CustomGetCompositeScheduleRequestSerializer != null
+                       ? CustomGetCompositeScheduleRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 
@@ -268,7 +451,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) GetCompositeScheduleRequest1 == null) || ((Object) GetCompositeScheduleRequest2 == null))
+            if ((GetCompositeScheduleRequest1 is null) || (GetCompositeScheduleRequest2 is null))
                 return false;
 
             return GetCompositeScheduleRequest1.Equals(GetCompositeScheduleRequest2);
@@ -308,12 +491,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a get composite schedule request.
-            var GetCompositeScheduleRequest = Object as GetCompositeScheduleRequest;
-            if ((Object) GetCompositeScheduleRequest == null)
+            if (!(Object is GetCompositeScheduleRequest GetCompositeScheduleRequest))
                 return false;
 
-            return this.Equals(GetCompositeScheduleRequest);
+            return Equals(GetCompositeScheduleRequest);
 
         }
 
@@ -329,7 +510,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(GetCompositeScheduleRequest GetCompositeScheduleRequest)
         {
 
-            if ((Object) GetCompositeScheduleRequest == null)
+            if (GetCompositeScheduleRequest is null)
                 return false;
 
             return ConnectorId.Equals(GetCompositeScheduleRequest.ConnectorId) &&
@@ -383,7 +564,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                  : "");
 
         #endregion
-
 
     }
 

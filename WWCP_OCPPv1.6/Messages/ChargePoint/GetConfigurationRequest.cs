@@ -22,9 +22,10 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Collections.Generic;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -32,7 +33,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP get configuration request.
+    /// A get configuration request.
     /// </summary>
     public class GetConfigurationRequest : ARequest<GetConfigurationRequest>
     {
@@ -43,20 +44,22 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// An enumeration of keys for which the configuration is requested.
         /// Return all keys if empty.
         /// </summary>
-        public IEnumerable<String>  Keys   { get; }
+        public IEnumerable<String>  Keys    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP GetConfigurationRequest XML/SOAP request.
+        /// Create a get configuration request.
         /// </summary>
         /// <param name="Keys">An enumeration of keys for which the configuration is requested. Return all keys if empty.</param>
-        public GetConfigurationRequest(IEnumerable<String> Keys = null)
+        public GetConfigurationRequest(IEnumerable<String> Keys  = null)
         {
 
-            this.Keys = Keys ?? new String[0];
+            this.Keys = (Keys ?? new String[0]).
+                            SafeSelect(key => key?.Trim()?.SubstringMax(50)).
+                            SafeWhere (key => key.IsNotNullOrEmpty());
 
         }
 
@@ -84,12 +87,29 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:GetConfigurationRequest",
+        //     "title":   "GetConfigurationRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "key": {
+        //             "type": "array",
+        //             "items": {
+        //                 "type": "string",
+        //                 "maxLength": 50
+        //             }
+        //         }
+        //     },
+        //     "additionalProperties": false
+        // }
+
         #endregion
 
         #region (static) Parse   (GetConfigurationRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP get configuration request.
+        /// Parse the given XML representation of a get configuration request.
         /// </summary>
         /// <param name="GetConfigurationRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -97,10 +117,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                     OnExceptionDelegate  OnException = null)
         {
 
-            GetConfigurationRequest _GetConfigurationRequest;
+            if (TryParse(GetConfigurationRequestXML,
+                         out GetConfigurationRequest getConfigurationRequest,
+                         OnException))
+            {
+                return getConfigurationRequest;
+            }
 
-            if (TryParse(GetConfigurationRequestXML, out _GetConfigurationRequest, OnException))
-                return _GetConfigurationRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (GetConfigurationRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a get configuration request.
+        /// </summary>
+        /// <param name="GetConfigurationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static GetConfigurationRequest Parse(JObject              GetConfigurationRequestJSON,
+                                                    OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(GetConfigurationRequestJSON,
+                         out GetConfigurationRequest getConfigurationRequest,
+                         OnException))
+            {
+                return getConfigurationRequest;
+            }
 
             return null;
 
@@ -111,7 +157,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (GetConfigurationRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP get configuration request.
+        /// Parse the given text representation of a get configuration request.
         /// </summary>
         /// <param name="GetConfigurationRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -119,10 +165,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                     OnExceptionDelegate  OnException = null)
         {
 
-            GetConfigurationRequest _GetConfigurationRequest;
-
-            if (TryParse(GetConfigurationRequestText, out _GetConfigurationRequest, OnException))
-                return _GetConfigurationRequest;
+            if (TryParse(GetConfigurationRequestText,
+                         out GetConfigurationRequest getConfigurationRequest,
+                         OnException))
+            {
+                return getConfigurationRequest;
+            }
 
             return null;
 
@@ -133,7 +181,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(GetConfigurationRequestXML,  out GetConfigurationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP get configuration request.
+        /// Try to parse the given XML representation of a get configuration request.
         /// </summary>
         /// <param name="GetConfigurationRequestXML">The XML to be parsed.</param>
         /// <param name="GetConfigurationRequest">The parsed get configuration request.</param>
@@ -169,10 +217,60 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(GetConfigurationRequestJSON, out GetConfigurationRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a get configuration request.
+        /// </summary>
+        /// <param name="GetConfigurationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="GetConfigurationRequest">The parsed get configuration request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                      GetConfigurationRequestJSON,
+                                       out GetConfigurationRequest  GetConfigurationRequest,
+                                       OnExceptionDelegate          OnException  = null)
+        {
+
+            try
+            {
+
+                GetConfigurationRequest = null;
+
+                #region Keys
+
+                if (GetConfigurationRequestJSON.GetOptional("key",
+                                                            "configuration keys",
+                                                            out IEnumerable<String>  Keys,
+                                                            out String               ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                GetConfigurationRequest = new GetConfigurationRequest(Keys);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, GetConfigurationRequestJSON, e);
+
+                GetConfigurationRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(GetConfigurationRequestText, out GetConfigurationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP get configuration request.
+        /// Try to parse the given text representation of a get configuration request.
         /// </summary>
         /// <param name="GetConfigurationRequestText">The text to be parsed.</param>
         /// <param name="GetConfigurationRequest">The parsed get configuration request.</param>
@@ -185,11 +283,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(GetConfigurationRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out GetConfigurationRequest,
-                             OnException))
+                GetConfigurationRequestText = GetConfigurationRequestText?.Trim();
 
-                    return true;
+                if (GetConfigurationRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (GetConfigurationRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(GetConfigurationRequestText),
+                                 out GetConfigurationRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(GetConfigurationRequestText).Root,
+                                 out GetConfigurationRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -221,6 +335,31 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomGetConfigurationRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomGetConfigurationRequestSerializer">A delegate to serialize custom start transaction requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetConfigurationRequest> CustomGetConfigurationRequestSerializer = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           Keys.Any()
+                               ? new JProperty("key",  new JArray(Keys))
+                               : null
+
+                       );
+
+            return CustomGetConfigurationRequestSerializer != null
+                       ? CustomGetConfigurationRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -240,7 +379,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) GetConfigurationRequest1 == null) || ((Object) GetConfigurationRequest2 == null))
+            if ((GetConfigurationRequest1 is null) || (GetConfigurationRequest2 is null))
                 return false;
 
             return GetConfigurationRequest1.Equals(GetConfigurationRequest2);
@@ -280,12 +419,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a get configuration request.
-            var GetConfigurationRequest = Object as GetConfigurationRequest;
-            if ((Object) GetConfigurationRequest == null)
+            if (!(Object is GetConfigurationRequest GetConfigurationRequest))
                 return false;
 
-            return this.Equals(GetConfigurationRequest);
+            return Equals(GetConfigurationRequest);
 
         }
 
@@ -301,7 +438,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(GetConfigurationRequest GetConfigurationRequest)
         {
 
-            if ((Object) GetConfigurationRequest == null)
+            if (GetConfigurationRequest is null)
                 return false;
 
             return (Keys == null && GetConfigurationRequest.Keys == null) ||
@@ -321,9 +458,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => Keys != null
-                   ? Keys.GetHashCode()
-                   : base.GetHashCode();
+            => Keys.GetHashCode();
 
         #endregion
 
@@ -334,12 +469,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => (Keys != null
-                    ? Keys.Count().ToString()
-                    : "0") + " configuration key(s)";
+            => Keys.Count() + " configuration key(s)";
 
         #endregion
-
 
     }
 

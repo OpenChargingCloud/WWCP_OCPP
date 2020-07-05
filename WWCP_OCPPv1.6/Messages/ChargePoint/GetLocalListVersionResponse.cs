@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP get local list version response.
+    /// A get local list version response.
     /// </summary>
     public class GetLocalListVersionResponse : AResponse<GetLocalListVersionResponse>
     {
@@ -106,7 +106,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (GetLocalListVersionResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP get local list version response.
+        /// Parse the given XML representation of a get local list version response.
         /// </summary>
         /// <param name="GetLocalListVersionResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -128,7 +128,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (GetLocalListVersionResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP get local list version response.
+        /// Parse the given text representation of a get local list version response.
         /// </summary>
         /// <param name="GetLocalListVersionResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -150,7 +150,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(GetLocalListVersionResponseXML,  out GetLocalListVersionResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP get local list version response.
+        /// Try to parse the given XML representation of a get local list version response.
         /// </summary>
         /// <param name="GetLocalListVersionResponseXML">The XML to be parsed.</param>
         /// <param name="GetLocalListVersionResponse">The parsed get local list version response.</param>
@@ -190,7 +190,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(GetLocalListVersionResponseText, out GetLocalListVersionResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP get local list version response.
+        /// Try to parse the given text representation of a get local list version response.
         /// </summary>
         /// <param name="GetLocalListVersionResponseText">The text to be parsed.</param>
         /// <param name="GetLocalListVersionResponse">The parsed get local list version response.</param>

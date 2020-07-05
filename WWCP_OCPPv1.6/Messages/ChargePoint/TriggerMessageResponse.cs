@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP trigger message response.
+    /// A trigger message response.
     /// </summary>
     public class TriggerMessageResponse : AResponse<TriggerMessageResponse>
     {
@@ -105,7 +105,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (TriggerMessageResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP trigger message response.
+        /// Parse the given XML representation of a trigger message response.
         /// </summary>
         /// <param name="TriggerMessageResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -127,7 +127,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (TriggerMessageResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP trigger message response.
+        /// Parse the given text representation of a trigger message response.
         /// </summary>
         /// <param name="TriggerMessageResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -149,7 +149,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(TriggerMessageResponseXML,  out TriggerMessageResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP trigger message response.
+        /// Try to parse the given XML representation of a trigger message response.
         /// </summary>
         /// <param name="TriggerMessageResponseXML">The XML to be parsed.</param>
         /// <param name="TriggerMessageResponse">The parsed trigger message response.</param>
@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(TriggerMessageResponseText, out TriggerMessageResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP trigger message response.
+        /// Try to parse the given text representation of a trigger message response.
         /// </summary>
         /// <param name="TriggerMessageResponseText">The text to be parsed.</param>
         /// <param name="TriggerMessageResponse">The parsed trigger message response.</param>

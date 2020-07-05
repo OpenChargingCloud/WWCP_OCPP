@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP reserve now response.
+    /// A reserve now response.
     /// </summary>
     public class ReserveNowResponse : AResponse<ReserveNowResponse>
     {
@@ -105,7 +105,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (ReserveNowResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP reserve now response.
+        /// Parse the given XML representation of a reserve now response.
         /// </summary>
         /// <param name="ReserveNowResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -127,7 +127,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (ReserveNowResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP reserve now response.
+        /// Parse the given text representation of a reserve now response.
         /// </summary>
         /// <param name="ReserveNowResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -149,7 +149,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(ReserveNowResponseXML,  out ReserveNowResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP reserve now response.
+        /// Try to parse the given XML representation of a reserve now response.
         /// </summary>
         /// <param name="ReserveNowResponseXML">The XML to be parsed.</param>
         /// <param name="ReserveNowResponse">The parsed reserve now response.</param>
@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(ReserveNowResponseText, out ReserveNowResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP reserve now response.
+        /// Try to parse the given text representation of a reserve now response.
         /// </summary>
         /// <param name="ReserveNowResponseText">The text to be parsed.</param>
         /// <param name="ReserveNowResponse">The parsed reserve now response.</param>

@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -28,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An OCPP charging schedule period.
+    /// A charging schedule period.
     /// </summary>
     public struct ChargingSchedulePeriod : IEquatable<ChargingSchedulePeriod>
     {
@@ -39,31 +42,31 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// The start of the period, in seconds from the start of schedule.
         /// This value also defines the stop time of the previous period.
         /// </summary>
-        public UInt32   StartPeriod    { get; }
+        public UInt32   StartPeriod     { get; }
 
         /// <summary>
         /// Power limit during the schedule period in Amperes.
         /// </summary>
-        public Decimal  Limit          { get; }
+        public Decimal  Limit           { get; }
 
         /// <summary>
         /// The number of phases that can be used for charging.
         /// </summary>
-        public Byte     NumberPhases   { get; }
+        public Byte?    NumberPhases    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new OCPP charging schedule period.
+        /// Create an new charging schedule period.
         /// </summary>
         /// <param name="StartPeriod">The start of the period, in seconds from the start of schedule. This value also defines the stop time of the previous period.</param>
         /// <param name="Limit">Power limit during the schedule period in Amperes.</param>
         /// <param name="NumberPhases">The number of phases that can be used for charging.</param>
         public ChargingSchedulePeriod(UInt32   StartPeriod,
                                       Decimal  Limit,
-                                      Byte     NumberPhases = 3)
+                                      Byte?    NumberPhases  = null)
         {
 
             this.StartPeriod   = StartPeriod;
@@ -87,25 +90,78 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         //
         // </ns:chargingSchedulePeriod>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:RemoteStartTransactionRequest",
+        //     "title":   "chargingSchedulePeriod",
+        //     "type": "array",
+        //     "items": {
+        //         "type": "object",
+        //         "properties": {
+        //             "startPeriod": {
+        //                 "type": "integer"
+        //             },
+        //             "limit": {
+        //                 "type": "number",
+        //                 "multipleOf" : 0.1
+        //             },
+        //             "numberPhases": {
+        //                 "type": "integer"
+        //             }
+        //         },
+        //         "additionalProperties": false,
+        //         "required": [
+        //             "startPeriod",
+        //             "limit"
+        //         ]
+        //     }
+        // }
+
         #endregion
 
         #region (static) Parse   (ChargingSchedulePeriodXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP charging schedule period.
+        /// Parse the given XML representation of a charging schedule period.
         /// </summary>
         /// <param name="ChargingSchedulePeriodXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ChargingSchedulePeriod Parse(XElement             ChargingSchedulePeriodXML,
-                                       OnExceptionDelegate  OnException = null)
+                                                   OnExceptionDelegate  OnException = null)
         {
 
-            ChargingSchedulePeriod _ChargingSchedulePeriod;
+            if (TryParse(ChargingSchedulePeriodXML,
+                         out ChargingSchedulePeriod chargingSchedulePeriod,
+                         OnException))
+            {
+                return chargingSchedulePeriod;
+            }
 
-            if (TryParse(ChargingSchedulePeriodXML, out _ChargingSchedulePeriod, OnException))
-                return _ChargingSchedulePeriod;
+            return default;
 
-            return default(ChargingSchedulePeriod);
+        }
+
+        #endregion
+
+        #region (static) Parse   (ChargingSchedulePeriodJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a charging schedule period.
+        /// </summary>
+        /// <param name="ChargingSchedulePeriodJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static ChargingSchedulePeriod Parse(JObject              ChargingSchedulePeriodJSON,
+                                                   OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(ChargingSchedulePeriodJSON,
+                         out ChargingSchedulePeriod chargingSchedulePeriod,
+                         OnException))
+            {
+                return chargingSchedulePeriod;
+            }
+
+            return default;
 
         }
 
@@ -114,20 +170,22 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) Parse   (ChargingSchedulePeriodText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP charging schedule period.
+        /// Parse the given text representation of a charging schedule period.
         /// </summary>
         /// <param name="ChargingSchedulePeriodText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ChargingSchedulePeriod Parse(String               ChargingSchedulePeriodText,
-                                       OnExceptionDelegate  OnException = null)
+                                                   OnExceptionDelegate  OnException = null)
         {
 
-            ChargingSchedulePeriod _ChargingSchedulePeriod;
+            if (TryParse(ChargingSchedulePeriodText,
+                         out ChargingSchedulePeriod chargingSchedulePeriod,
+                         OnException))
+            {
+                return chargingSchedulePeriod;
+            }
 
-            if (TryParse(ChargingSchedulePeriodText, out _ChargingSchedulePeriod, OnException))
-                return _ChargingSchedulePeriod;
-
-            return default(ChargingSchedulePeriod);
+            return default;
 
         }
 
@@ -136,14 +194,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) TryParse(ChargingSchedulePeriodXML,  out ChargingSchedulePeriod, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP charging schedule period.
+        /// Try to parse the given XML representation of a charging schedule period.
         /// </summary>
         /// <param name="ChargingSchedulePeriodXML">The XML to be parsed.</param>
         /// <param name="ChargingSchedulePeriod">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement             ChargingSchedulePeriodXML,
-                                       out ChargingSchedulePeriod       ChargingSchedulePeriod,
-                                       OnExceptionDelegate  OnException  = null)
+        public static Boolean TryParse(XElement                    ChargingSchedulePeriodXML,
+                                       out ChargingSchedulePeriod  ChargingSchedulePeriod,
+                                       OnExceptionDelegate         OnException  = null)
         {
 
             try
@@ -151,15 +209,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 ChargingSchedulePeriod = new ChargingSchedulePeriod(
 
-                                             ChargingSchedulePeriodXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CP + "startPeriod",
-                                                                                         UInt32.Parse),
+                                             ChargingSchedulePeriodXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "startPeriod",
+                                                                                          UInt32.Parse),
 
-                                             ChargingSchedulePeriodXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CP + "limit",
-                                                                                         Decimal.Parse),
+                                             ChargingSchedulePeriodXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "limit",
+                                                                                          Decimal.Parse),
 
-                                             ChargingSchedulePeriodXML.MapValueOrDefault(OCPPNS.OCPPv1_6_CP + "numberPhases",
-                                                                                         Byte.Parse,
-                                                                                         (Byte) 3)
+                                             ChargingSchedulePeriodXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "numberPhases",
+                                                                                          Byte.Parse)
 
                                          );
 
@@ -171,7 +228,89 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 OnException?.Invoke(DateTime.UtcNow, ChargingSchedulePeriodXML, e);
 
-                ChargingSchedulePeriod = default(ChargingSchedulePeriod);
+                ChargingSchedulePeriod = default;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(ChargingSchedulePeriodJSON, out ChargingSchedulePeriod, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a charging schedule period.
+        /// </summary>
+        /// <param name="ChargingSchedulePeriodJSON">The JSON to be parsed.</param>
+        /// <param name="ChargingSchedulePeriod">The parsed connector type.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                     ChargingSchedulePeriodJSON,
+                                       out ChargingSchedulePeriod  ChargingSchedulePeriod,
+                                       OnExceptionDelegate         OnException  = null)
+        {
+
+            try
+            {
+
+                ChargingSchedulePeriod = default;
+
+                #region StartPeriod
+
+                if (!ChargingSchedulePeriodJSON.ParseMandatory("startPeriod",
+                                                               "start period",
+                                                               UInt32.TryParse,
+                                                               out UInt32  StartPeriod,
+                                                               out String  ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Limit
+
+                if (!ChargingSchedulePeriodJSON.ParseMandatory("limit",
+                                                               "limit",
+                                                               Decimal.TryParse,
+                                                               out Decimal  Limit,
+                                                               out          ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region NumberPhases
+
+                if (ChargingSchedulePeriodJSON.ParseOptionalStruct("numberPhases",
+                                                                   "numberPhases",
+                                                                   Byte.TryParse,
+                                                                   out Byte?  NumberPhases,
+                                                                   out        ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                       return false;
+
+                }
+
+                #endregion
+
+
+                ChargingSchedulePeriod = new ChargingSchedulePeriod(StartPeriod,
+                                                                    Limit,
+                                                                    NumberPhases);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, ChargingSchedulePeriodJSON, e);
+
+                ChargingSchedulePeriod = default;
                 return false;
 
             }
@@ -183,7 +322,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) TryParse(ChargingSchedulePeriodText, out ChargingSchedulePeriod, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP charging schedule period.
+        /// Try to parse the given text representation of a charging schedule period.
         /// </summary>
         /// <param name="ChargingSchedulePeriodText">The text to be parsed.</param>
         /// <param name="ChargingSchedulePeriod">The parsed connector type.</param>
@@ -196,11 +335,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             try
             {
 
-                if (TryParse(XDocument.Parse(ChargingSchedulePeriodText).Root,
-                             out ChargingSchedulePeriod,
-                             OnException))
+                ChargingSchedulePeriodText = ChargingSchedulePeriodText?.Trim();
 
-                    return true;
+                if (ChargingSchedulePeriodText.IsNotNullOrEmpty())
+                {
+
+                    if (ChargingSchedulePeriodText.StartsWith("{") &&
+                        TryParse(JObject.Parse(ChargingSchedulePeriodText),
+                                 out ChargingSchedulePeriod,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(ChargingSchedulePeriodText).Root,
+                                 out ChargingSchedulePeriod,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -230,6 +385,34 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                    new XElement(OCPPNS.OCPPv1_6_CP + "numberPhases",  NumberPhases)
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomChargingSchedulePeriodSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingSchedulePeriod> CustomChargingSchedulePeriodSerializer = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("startPeriod",         StartPeriod.ToString()),
+                           new JProperty("limit",               Limit.      ToString("0.#")),
+
+                           NumberPhases.HasValue
+                               ? new JProperty("numberPhases",  NumberPhases)
+                               : null
+
+                       );
+
+            return CustomChargingSchedulePeriodSerializer != null
+                       ? CustomChargingSchedulePeriodSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 
@@ -319,7 +502,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
             return StartPeriod. Equals(ChargingSchedulePeriod.StartPeriod) &&
                    Limit.       Equals(ChargingSchedulePeriod.Limit)       &&
-                   NumberPhases.Equals(ChargingSchedulePeriod.NumberPhases);
+
+                   ((!NumberPhases.HasValue && !ChargingSchedulePeriod.NumberPhases.HasValue) ||
+                     (NumberPhases.HasValue &&  ChargingSchedulePeriod.NumberPhases.HasValue && NumberPhases.Value.Equals(ChargingSchedulePeriod.NumberPhases.Value)));
 
         }
 
@@ -338,9 +523,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
             unchecked
             {
 
-                return StartPeriod. GetHashCode() * 17 ^
-                       Limit.       GetHashCode() * 11 ^
-                       NumberPhases.GetHashCode();
+                return StartPeriod.       GetHashCode() * 7 ^
+                       Limit.             GetHashCode() * 5 ^
+
+                       (NumberPhases.HasValue
+                           ? NumberPhases.GetHashCode() * 3
+                           : 0);
 
             }
         }
@@ -360,7 +548,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                              NumberPhases, " phases");
 
         #endregion
-
 
     }
 

@@ -29,7 +29,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 {
 
     /// <summary>
-    /// An OCPP SOAP header.
+    /// A SOAP header.
     /// </summary>
     public class SOAPHeader
     {
@@ -37,7 +37,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region Properties
 
         /// <summary>
-        /// The unique identification of an OCPP charge box.
+        /// The unique identification of a charge box.
         /// </summary>
         public ChargeBox_Id  ChargeBoxIdentity   { get; }
 
@@ -175,7 +175,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) Parse   (SOAPHeaderXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP SOAP header.
+        /// Parse the given XML representation of a SOAP header.
         /// </summary>
         /// <param name="SOAPHeaderXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -197,7 +197,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) Parse   (SOAPHeaderText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP SOAP header.
+        /// Parse the given text representation of a SOAP header.
         /// </summary>
         /// <param name="SOAPHeaderText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -219,7 +219,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) TryParse(SOAPHeaderXML,  out SOAPHeader, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP SOAP header.
+        /// Try to parse the given XML representation of a SOAP header.
         /// </summary>
         /// <param name="SOAPHeaderXML">The XML to be parsed.</param>
         /// <param name="SOAPHeader">The parsed connector type.</param>
@@ -265,7 +265,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         #region (static) TryParse(SOAPHeaderText, out SOAPHeader, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP SOAP header.
+        /// Try to parse the given text representation of a SOAP header.
         /// </summary>
         /// <param name="SOAPHeaderText">The text to be parsed.</param>
         /// <param name="SOAPHeader">The parsed connector type.</param>

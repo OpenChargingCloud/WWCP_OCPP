@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP data transfer request.
+    /// A data transfer request.
     /// </summary>
     public class DataTransferRequest : ARequest<DataTransferRequest>
     {
@@ -40,41 +41,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The vendor identification or namespace of the given message.
         /// </summary>
-        public String  VendorId    { get; }
+        public String  VendorId     { get; }
 
         /// <summary>
         /// An optional message identification field.
         /// </summary>
-        public String  MessageId   { get; }
+        public String  MessageId    { get; }
 
         /// <summary>
         /// Optional message data as text without specified length or format.
         /// </summary>
-        public String  Data        { get; }
+        public String  Data         { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP DataTransferRequest XML/SOAP request.
+        /// Create a data transfer request.
         /// </summary>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
         public DataTransferRequest(String VendorId,
-                                   String MessageId  = null,
-                                   String Data       = null)
+                                   String MessageId   = null,
+                                   String Data        = null)
         {
 
-            #region Initial checks
+            VendorId = VendorId?.Trim();
 
-            if (VendorId.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(VendorId),  "The given vendor identification must not be null or empty!");
-
-            #endregion
-
-            this.VendorId   = VendorId;
+            this.VendorId   = VendorId ?? throw new ArgumentNullException(nameof(VendorId), "The given vendor identification must not be null or empty!");
             this.MessageId  = MessageId;
             this.Data       = Data;
 
@@ -109,12 +105,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:DataTransferRequest",
+        //     "title":   "DataTransferRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "vendorId": {
+        //             "type": "string",
+        //             "maxLength": 255
+        //         },
+        //         "messageId": {
+        //             "type": "string",
+        //             "maxLength": 50
+        //         },
+        //         "data": {
+        //             "type": "string"
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "vendorId"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (DataTransferRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP data transfer request.
+        /// Parse the given XML representation of a data transfer request.
         /// </summary>
         /// <param name="DataTransferRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -122,10 +142,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                 OnExceptionDelegate  OnException = null)
         {
 
-            DataTransferRequest _DataTransferRequest;
+            if (TryParse(DataTransferRequestXML,
+                         out DataTransferRequest dataTransferRequest,
+                         OnException))
+            {
+                return dataTransferRequest;
+            }
 
-            if (TryParse(DataTransferRequestXML, out _DataTransferRequest, OnException))
-                return _DataTransferRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (DataTransferRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a data transfer request.
+        /// </summary>
+        /// <param name="DataTransferRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static DataTransferRequest Parse(JObject              DataTransferRequestJSON,
+                                                OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(DataTransferRequestJSON,
+                         out DataTransferRequest dataTransferRequest,
+                         OnException))
+            {
+                return dataTransferRequest;
+            }
 
             return null;
 
@@ -136,7 +182,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (DataTransferRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP data transfer request.
+        /// Parse the given text representation of a data transfer request.
         /// </summary>
         /// <param name="DataTransferRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -144,10 +190,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                 OnExceptionDelegate  OnException = null)
         {
 
-            DataTransferRequest _DataTransferRequest;
-
-            if (TryParse(DataTransferRequestText, out _DataTransferRequest, OnException))
-                return _DataTransferRequest;
+            if (TryParse(DataTransferRequestText,
+                         out DataTransferRequest dataTransferRequest,
+                         OnException))
+            {
+                return dataTransferRequest;
+            }
 
             return null;
 
@@ -158,7 +206,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(DataTransferRequestXML,  out DataTransferRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP data transfer request.
+        /// Try to parse the given XML representation of a data transfer request.
         /// </summary>
         /// <param name="DataTransferRequestXML">The XML to be parsed.</param>
         /// <param name="DataTransferRequest">The parsed data transfer request.</param>
@@ -196,10 +244,68 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(DataTransferRequestJSON, out DataTransferRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a data transfer request.
+        /// </summary>
+        /// <param name="DataTransferRequestJSON">The JSON to be parsed.</param>
+        /// <param name="DataTransferRequest">The parsed data transfer request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                  DataTransferRequestJSON,
+                                       out DataTransferRequest  DataTransferRequest,
+                                       OnExceptionDelegate      OnException  = null)
+        {
+
+            try
+            {
+
+                DataTransferRequest = null;
+
+                #region VendorId
+
+                var VendorId = DataTransferRequestJSON.GetString("vendorId");
+
+                #endregion
+
+                #region MessageId
+
+                var MessageId = DataTransferRequestJSON.GetString("messageId");
+
+                #endregion
+
+                #region Data
+
+                var Data = DataTransferRequestJSON.GetString("data");
+
+                #endregion
+
+
+                DataTransferRequest = new DataTransferRequest(VendorId,
+                                                                      MessageId,
+                                                                      Data);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, DataTransferRequestJSON, e);
+
+                DataTransferRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(DataTransferRequestText, out DataTransferRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP data transfer request.
+        /// Try to parse the given text representation of a data transfer request.
         /// </summary>
         /// <param name="DataTransferRequestText">The text to be parsed.</param>
         /// <param name="DataTransferRequest">The parsed data transfer request.</param>
@@ -212,11 +318,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(DataTransferRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out DataTransferRequest,
-                             OnException))
+                DataTransferRequestText = DataTransferRequestText?.Trim();
 
-                    return true;
+                if (DataTransferRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (DataTransferRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(DataTransferRequestText),
+                                 out DataTransferRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(DataTransferRequestText).Root,
+                                 out DataTransferRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -254,6 +376,37 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomDataTransferSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomDataTransferSerializer">A delegate to serialize custom data transfer requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest> CustomDataTransferSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("vendorId",         VendorId),
+
+                           MessageId.IsNotNullOrEmpty()
+                               ? new JProperty("messageId",  MessageId)
+                               : null,
+
+                           Data.IsNotNullOrEmpty()
+                               ? new JProperty("data",       Data)
+                               : null
+
+                       );
+
+            return CustomDataTransferSerializer != null
+                       ? CustomDataTransferSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -273,7 +426,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) DataTransferRequest1 == null) || ((Object) DataTransferRequest2 == null))
+            if ((DataTransferRequest1 is null) || (DataTransferRequest2 is null))
                 return false;
 
             return DataTransferRequest1.Equals(DataTransferRequest2);
@@ -313,12 +466,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a data transfer request.
-            var DataTransferRequest = Object as DataTransferRequest;
-            if ((Object) DataTransferRequest == null)
+            if (!(Object is DataTransferRequest DataTransferRequest))
                 return false;
 
-            return this.Equals(DataTransferRequest);
+            return Equals(DataTransferRequest);
 
         }
 
@@ -334,7 +485,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(DataTransferRequest DataTransferRequest)
         {
 
-            if ((Object) DataTransferRequest == null)
+            if (DataTransferRequest is null)
                 return false;
 
             return VendorId.Equals(DataTransferRequest.VendorId) &&
@@ -387,7 +538,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             => String.Concat(VendorId, " / ", MessageId, " / ", Data.SubstringMax(20));
 
         #endregion
-
 
     }
 

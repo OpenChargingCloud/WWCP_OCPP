@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP remote start transaction response.
+    /// A remote start transaction response.
     /// </summary>
     public class RemoteStartTransactionResponse : AResponse<RemoteStartTransactionResponse>
     {
@@ -106,7 +106,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (RemoteStartTransactionResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP remote start transaction response.
+        /// Parse the given XML representation of a remote start transaction response.
         /// </summary>
         /// <param name="RemoteStartTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -128,7 +128,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (RemoteStartTransactionResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP remote start transaction response.
+        /// Parse the given text representation of a remote start transaction response.
         /// </summary>
         /// <param name="RemoteStartTransactionResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -150,7 +150,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(RemoteStartTransactionResponseXML,  out RemoteStartTransactionResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP remote start transaction response.
+        /// Try to parse the given XML representation of a remote start transaction response.
         /// </summary>
         /// <param name="RemoteStartTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="RemoteStartTransactionResponse">The parsed remote start transaction response.</param>
@@ -190,7 +190,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(RemoteStartTransactionResponseText, out RemoteStartTransactionResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP remote start transaction response.
+        /// Try to parse the given text representation of a remote start transaction response.
         /// </summary>
         /// <param name="RemoteStartTransactionResponseText">The text to be parsed.</param>
         /// <param name="RemoteStartTransactionResponse">The parsed remote start transaction response.</param>

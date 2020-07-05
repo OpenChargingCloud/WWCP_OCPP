@@ -233,7 +233,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 #region IdTag
 
                 if (!AuthorizeRequestJSON.ParseMandatory("idTag",
-                                                         "id tag",
+                                                         "identification tag",
                                                          IdToken.TryParse,
                                                          out IdToken IdTag,
                                                          out String ErrorResponse))

@@ -378,11 +378,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region Status
 
-                if (!StatusNotificationRequestJSON.ParseMandatory("status",
-                                                                  "status",
-                                                                  ChargePointStatusExtentions.Parse,
-                                                                  out ChargePointStatus  Status,
-                                                                  out                    ErrorResponse))
+                if (!StatusNotificationRequestJSON.MapMandatory("status",
+                                                                "status",
+                                                                ChargePointStatusExtentions.Parse,
+                                                                out ChargePointStatus  Status,
+                                                                out                    ErrorResponse))
                 {
                     return false;
                 }
@@ -391,11 +391,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region ErrorCode
 
-                if (!StatusNotificationRequestJSON.ParseMandatory("errorCode",
-                                                                  "error code",
-                                                                  ChargePointErrorCodeExtentions.Parse,
-                                                                  out ChargePointErrorCodes  ErrorCode,
-                                                                  out                        ErrorResponse))
+                if (!StatusNotificationRequestJSON.MapMandatory("errorCode",
+                                                                "error code",
+                                                                ChargePointErrorCodeExtentions.Parse,
+                                                                out ChargePointErrorCodes  ErrorCode,
+                                                                out                        ErrorResponse))
                 {
                     return false;
                 }

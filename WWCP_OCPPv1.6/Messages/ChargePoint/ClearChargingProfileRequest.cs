@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP clear charging profile request.
+    /// A clear charging profile request.
     /// </summary>
     public class ClearChargingProfileRequest : ARequest<ClearChargingProfileRequest>
     {
@@ -40,7 +41,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The optional identification of the charging profile to clear.
         /// </summary>
-        public ChargingProfile_Id        ChargingProfileId        { get; }
+        public ChargingProfile_Id?       ChargingProfileId         { get; }
 
         /// <summary>
         /// The optional connector for which to clear the charging profiles.
@@ -49,41 +50,41 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// applies to all charging profiles that match the other criteria in
         /// the request.
         /// </summary>
-        public Connector_Id              ConnectorId              { get; }
+        public Connector_Id?             ConnectorId               { get; }
 
         /// <summary>
         /// The optional purpose of the charging profiles that will be cleared,
         /// if they meet the other criteria in the request.
         /// </summary>
-        public ChargingProfilePurposes?  ChargingProfilePurpose   { get; }
+        public ChargingProfilePurposes?  ChargingProfilePurpose    { get; }
 
         /// <summary>
         /// The optional stack level for which charging profiles will be cleared,
         /// if they meet the other criteria in the request.
         /// </summary>
-        public UInt32?                   StackLevel               { get; }
+        public UInt32?                   StackLevel                { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP ClearChargingProfileRequest XML/SOAP request.
+        /// Create a clear charging profile request.
         /// </summary>
         /// <param name="ChargingProfileId">The optional identification of the charging profile to clear.</param>
         /// <param name="ConnectorId">The optional connector for which to clear the charging profiles. Connector identification 0 specifies the charging profile for the overall charge point. Absence of this parameter means the clearing applies to all charging profiles that match the other criteria in the request.</param>
         /// <param name="ChargingProfilePurpose">The optional purpose of the charging profiles that will be cleared, if they meet the other criteria in the request.</param>
         /// <param name="StackLevel">The optional stack level for which charging profiles will be cleared, if they meet the other criteria in the request.</param>
-        public ClearChargingProfileRequest(ChargingProfile_Id        ChargingProfileId,
-                                           Connector_Id              ConnectorId,
-                                           ChargingProfilePurposes?  ChargingProfilePurpose,
-                                           UInt32?                   StackLevel)
+        public ClearChargingProfileRequest(ChargingProfile_Id?       ChargingProfileId        = null,
+                                           Connector_Id?             ConnectorId              = null,
+                                           ChargingProfilePurposes?  ChargingProfilePurpose   = null,
+                                           UInt32?                   StackLevel               = null)
         {
 
             this.ChargingProfileId       = ChargingProfileId;
             this.ConnectorId             = ConnectorId;
-            this.ChargingProfilePurpose  = ChargingProfilePurpose ?? new ChargingProfilePurposes?();
-            this.StackLevel              = StackLevel             ?? new UInt32?();
+            this.ChargingProfilePurpose  = ChargingProfilePurpose;
+            this.StackLevel              = StackLevel;
 
         }
 
@@ -120,12 +121,40 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:ClearChargingProfileRequest",
+        //     "title":   "ClearChargingProfileRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "id": {
+        //             "type": "integer"
+        //         },
+        //         "connectorId": {
+        //             "type": "integer"
+        //         },
+        //         "chargingProfilePurpose": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "ChargePointMaxProfile",
+        //                 "TxDefaultProfile",
+        //                 "TxProfile"
+        //             ]
+        //         },
+        //         "stackLevel": {
+        //             "type": "integer"
+        //         }
+        //     },
+        //     "additionalProperties": false
+        // }
+
         #endregion
 
         #region (static) Parse   (ClearChargingProfileRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP clear charging profile request.
+        /// Parse the given XML representation of a clear charging profile request.
         /// </summary>
         /// <param name="ClearChargingProfileRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -133,10 +162,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                         OnExceptionDelegate  OnException = null)
         {
 
-            ClearChargingProfileRequest _ClearChargingProfileRequest;
+            if (TryParse(ClearChargingProfileRequestXML,
+                         out ClearChargingProfileRequest clearChargingProfileRequest,
+                         OnException))
+            {
+                return clearChargingProfileRequest;
+            }
 
-            if (TryParse(ClearChargingProfileRequestXML, out _ClearChargingProfileRequest, OnException))
-                return _ClearChargingProfileRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (ClearChargingProfileRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a clear charging profile request.
+        /// </summary>
+        /// <param name="ClearChargingProfileRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static ClearChargingProfileRequest Parse(JObject              ClearChargingProfileRequestJSON,
+                                                        OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(ClearChargingProfileRequestJSON,
+                         out ClearChargingProfileRequest clearChargingProfileRequest,
+                         OnException))
+            {
+                return clearChargingProfileRequest;
+            }
 
             return null;
 
@@ -147,7 +202,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (ClearChargingProfileRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP clear charging profile request.
+        /// Parse the given text representation of a clear charging profile request.
         /// </summary>
         /// <param name="ClearChargingProfileRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -155,10 +210,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                         OnExceptionDelegate  OnException = null)
         {
 
-            ClearChargingProfileRequest _ClearChargingProfileRequest;
-
-            if (TryParse(ClearChargingProfileRequestText, out _ClearChargingProfileRequest, OnException))
-                return _ClearChargingProfileRequest;
+            if (TryParse(ClearChargingProfileRequestText,
+                         out ClearChargingProfileRequest clearChargingProfileRequest,
+                         OnException))
+            {
+                return clearChargingProfileRequest;
+            }
 
             return null;
 
@@ -169,7 +226,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(ClearChargingProfileRequestXML,  out ClearChargingProfileRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP clear charging profile request.
+        /// Try to parse the given XML representation of a clear charging profile request.
         /// </summary>
         /// <param name="ClearChargingProfileRequestXML">The XML to be parsed.</param>
         /// <param name="ClearChargingProfileRequest">The parsed clear charging profile request.</param>
@@ -215,10 +272,112 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(ClearChargingProfileRequestJSON, out ClearChargingProfileRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a clear charging profile request.
+        /// </summary>
+        /// <param name="ClearChargingProfileRequestJSON">The JSON to be parsed.</param>
+        /// <param name="ClearChargingProfileRequest">The parsed clear charging profile request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                          ClearChargingProfileRequestJSON,
+                                       out ClearChargingProfileRequest  ClearChargingProfileRequest,
+                                       OnExceptionDelegate              OnException  = null)
+        {
+
+            try
+            {
+
+                ClearChargingProfileRequest = null;
+
+                #region ChargingProfileId
+
+                if (ClearChargingProfileRequestJSON.ParseOptionalStruct("chargingProfileId",
+                                                                        "charging profile identification",
+                                                                        ChargingProfile_Id.TryParse,
+                                                                        out ChargingProfile_Id?  ChargingProfileId,
+                                                                        out String               ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region ConnectorId
+
+                if (ClearChargingProfileRequestJSON.ParseOptionalStruct("connectorId",
+                                                                        "connector identification",
+                                                                        Connector_Id.TryParse,
+                                                                        out Connector_Id?  ConnectorId,
+                                                                        out                ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region ChargingProfilePurpose
+
+                if (ClearChargingProfileRequestJSON.ParseOptional("chargingProfilePurpose",
+                                                                  "charging profile purpose",
+                                                                  ChargingProfilePurposesExtentions.Parse,
+                                                                  out ChargingProfilePurposes?  ChargingProfilePurpose,
+                                                                  out                           ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region StackLevel
+
+                if (!ClearChargingProfileRequestJSON.ParseOptionalStruct("StackLevel",
+                                                                         "stack level",
+                                                                         UInt32.TryParse,
+                                                                         out UInt32?  StackLevel,
+                                                                         out          ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                ClearChargingProfileRequest = new ClearChargingProfileRequest(ChargingProfileId,
+                                                                              ConnectorId,
+                                                                              ChargingProfilePurpose,
+                                                                              StackLevel);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, ClearChargingProfileRequestJSON, e);
+
+                ClearChargingProfileRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(ClearChargingProfileRequestText, out ClearChargingProfileRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP clear charging profile request.
+        /// Try to parse the given text representation of a clear charging profile request.
         /// </summary>
         /// <param name="ClearChargingProfileRequestText">The text to be parsed.</param>
         /// <param name="ClearChargingProfileRequest">The parsed clear charging profile request.</param>
@@ -231,11 +390,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(ClearChargingProfileRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out ClearChargingProfileRequest,
-                             OnException))
+                ClearChargingProfileRequestText = ClearChargingProfileRequestText?.Trim();
 
-                    return true;
+                if (ClearChargingProfileRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (ClearChargingProfileRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(ClearChargingProfileRequestText),
+                                 out ClearChargingProfileRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(ClearChargingProfileRequestText).Root,
+                                 out ClearChargingProfileRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -259,11 +434,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "clearChargingProfileRequest",
 
-                   ChargingProfileId != null
+                   ChargingProfileId.HasValue
                        ? new XElement(OCPPNS.OCPPv1_6_CP + "id",                      ChargingProfileId.ToString())
                        : null,
 
-                   ConnectorId       != null
+                   ConnectorId.HasValue
                        ? new XElement(OCPPNS.OCPPv1_6_CP + "connectorId",             ConnectorId.      ToString())
                        : null,
 
@@ -276,6 +451,43 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                        : null
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomClearChargingProfileRequestRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomClearChargingProfileRequestRequestSerializer">A delegate to serialize custom clear charging profile requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileRequest> CustomClearChargingProfileRequestRequestSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           ChargingProfileId.HasValue
+                               ? new JProperty("chargingProfileId",       ChargingProfileId.     Value.ToString())
+                               : null,
+
+                           ConnectorId.HasValue
+                               ? new JProperty("connectorId",             ConnectorId.           Value.ToString())
+                               : null,
+
+                           ChargingProfilePurpose.HasValue
+                               ? new JProperty("chargingProfilePurpose",  ChargingProfilePurpose.Value.ToString())
+                               : null,
+
+                           StackLevel.HasValue
+                               ? new JProperty("stackLevel",              StackLevel.            Value.ToString())
+                               : null
+
+                       );
+
+            return CustomClearChargingProfileRequestRequestSerializer != null
+                       ? CustomClearChargingProfileRequestRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 
@@ -298,7 +510,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ClearChargingProfileRequest1 == null) || ((Object) ClearChargingProfileRequest2 == null))
+            if ((ClearChargingProfileRequest1 is null) || (ClearChargingProfileRequest2 is null))
                 return false;
 
             return ClearChargingProfileRequest1.Equals(ClearChargingProfileRequest2);
@@ -338,12 +550,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a clear charging profile request.
-            var ClearChargingProfileRequest = Object as ClearChargingProfileRequest;
-            if ((Object) ClearChargingProfileRequest == null)
+            if (!(Object is ClearChargingProfileRequest ClearChargingProfileRequest))
                 return false;
 
-            return this.Equals(ClearChargingProfileRequest);
+            return Equals(ClearChargingProfileRequest);
 
         }
 
@@ -359,7 +569,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(ClearChargingProfileRequest ClearChargingProfileRequest)
         {
 
-            if ((Object) ClearChargingProfileRequest == null)
+            if (ClearChargingProfileRequest is null)
                 return false;
 
             return ((ChargingProfileId == null && ClearChargingProfileRequest.ChargingProfileId == null) ||
@@ -392,19 +602,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             {
 
                 return (ChargingProfileId != null
-                            ? ChargingProfileId.     GetHashCode() * 19
+                            ? ChargingProfileId.     GetHashCode() * 11
                             : 0) ^
 
                        (ConnectorId != null
-                            ? ConnectorId.           GetHashCode() * 11
+                            ? ConnectorId.           GetHashCode() * 7
                             : 0) ^
 
                        (ChargingProfilePurpose.HasValue
-                            ? ChargingProfilePurpose.GetHashCode() * 7
+                            ? ChargingProfilePurpose.GetHashCode() * 5
                             : 0) ^
 
                        (StackLevel.HasValue
-                            ? StackLevel.            GetHashCode() * 5
+                            ? StackLevel.            GetHashCode() * 3
                             : 0);
 
             }
@@ -436,7 +646,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                  : "");
 
         #endregion
-
 
     }
 

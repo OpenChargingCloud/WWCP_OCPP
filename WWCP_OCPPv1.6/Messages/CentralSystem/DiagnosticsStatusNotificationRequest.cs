@@ -239,11 +239,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region DiagnosticsStatus
 
-                if (!DiagnosticsStatusNotificationRequestJSON.ParseMandatory("status",
-                                                                             "diagnostics status",
-                                                                             DiagnosticsStatusExtentions.Parse,
-                                                                             out DiagnosticsStatus DiagnosticsStatus,
-                                                                             out String ErrorResponse))
+                if (!DiagnosticsStatusNotificationRequestJSON.MapMandatory("status",
+                                                                           "diagnostics status",
+                                                                           DiagnosticsStatusExtentions.Parse,
+                                                                           out DiagnosticsStatus DiagnosticsStatus,
+                                                                           out String ErrorResponse))
                 {
                     return false;
                 }

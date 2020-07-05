@@ -29,13 +29,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP CS client.
+    /// A CS client.
     /// </summary>
     public partial class CentralSystemSOAPClient : ASOAPClient
     {
 
         /// <summary>
-        /// An OCPP CS client (HTTP/SOAP client) logger.
+        /// A CS client (HTTP/SOAP client) logger.
         /// </summary>
         public class CSClientLogger : HTTPClientLogger
         {

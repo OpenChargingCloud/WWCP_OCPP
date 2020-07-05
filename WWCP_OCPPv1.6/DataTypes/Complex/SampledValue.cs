@@ -420,10 +420,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 #region Value
 
-                if (!SampledValueJSON.ParseMandatory("value",
-                                                     "value",
-                                                     out String  Value,
-                                                     out String  ErrorResponse))
+                if (!SampledValueJSON.ParseMandatoryText("value",
+                                                         "value",
+                                                         out String  Value,
+                                                         out String  ErrorResponse))
                 {
                     return false;
                 }

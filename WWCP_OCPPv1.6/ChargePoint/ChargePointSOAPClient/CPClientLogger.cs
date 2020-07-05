@@ -29,13 +29,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP CP client.
+    /// A CP client.
     /// </summary>
     public partial class ChargePointSOAPClient : ASOAPClient
     {
 
         /// <summary>
-        /// An OCPP CP client (HTTP/SOAP client) logger.
+        /// A CP client (HTTP/SOAP client) logger.
         /// </summary>
         public class CPClientLogger : HTTPClientLogger
         {

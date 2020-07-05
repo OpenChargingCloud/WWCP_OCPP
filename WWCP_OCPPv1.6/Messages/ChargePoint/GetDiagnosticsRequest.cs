@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP get diagnostics request.
+    /// A get diagnostics request.
     /// </summary>
     public class GetDiagnosticsRequest : ARequest<GetDiagnosticsRequest>
     {
@@ -40,19 +41,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The URI where the diagnostics file shall be uploaded to.
         /// </summary>
-        public String     Location        { get; }
+        public String     Location         { get; }
 
         /// <summary>
         /// The timestamp of the oldest logging information to include in
         /// the diagnostics.
         /// </summary>
-        public DateTime?  StartTime       { get; }
+        public DateTime?  StartTime        { get; }
 
         /// <summary>
         /// The timestamp of the latest logging information to include in
         /// the diagnostics.
         /// </summary>
-        public DateTime?  StopTime        { get; }
+        public DateTime?  StopTime         { get; }
 
         /// <summary>
         /// The optional number of retries of a charge point for trying to
@@ -60,35 +61,37 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// present, it is left to the charge point to decide how many times
         /// it wants to retry.
         /// </summary>
-        public Byte?      Retries         { get; }
+        public Byte?      Retries          { get; }
 
         /// <summary>
         /// The interval after which a retry may be attempted. If this field
         /// is not present, it is left to charge point to decide how long to
         /// wait between attempts.
         /// </summary>
-        public TimeSpan?  RetryInterval   { get; }
+        public TimeSpan?  RetryInterval    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP GetDiagnosticsRequest XML/SOAP request.
+        /// Create a GetDiagnostics request.
         /// </summary>
         /// <param name="Location">The URI where the diagnostics file shall be uploaded to.</param>
         /// <param name="StartTime">The timestamp of the oldest logging information to include in the diagnostics.</param>
         /// <param name="StopTime">The timestamp of the latest logging information to include in the diagnostics.</param>
         /// <param name="Retries">The optional number of retries of a charge point for trying to upload the diagnostics before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
-        public GetDiagnosticsRequest(String    Location,
-                                     DateTime? StartTime      = null,
-                                     DateTime? StopTime       = null,
-                                     Byte?     Retries        = null,
-                                     TimeSpan? RetryInterval  = null)
+        public GetDiagnosticsRequest(String     Location,
+                                     DateTime?  StartTime       = null,
+                                     DateTime?  StopTime        = null,
+                                     Byte?      Retries         = null,
+                                     TimeSpan?  RetryInterval   = null)
         {
 
             #region Initial checks
+
+            Location = Location?.Trim();
 
             if (Location.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Location),  "The given location must not be null or empty!");
@@ -96,10 +99,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #endregion
 
             this.Location       = Location;
-            this.StartTime      = StartTime     ?? new DateTime?();
-            this.StopTime       = StopTime      ?? new DateTime?();
-            this.Retries        = Retries       ?? new Byte?();
-            this.RetryInterval  = RetryInterval ?? new TimeSpan?();
+            this.StartTime      = StartTime;
+            this.StopTime       = StopTime;
+            this.Retries        = Retries;
+            this.RetryInterval  = RetryInterval;
 
         }
 
@@ -138,12 +141,43 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:GetDiagnosticsRequest",
+        //     "title":   "GetDiagnosticsRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "location": {
+        //             "type": "string",
+        //             "format": "uri"
+        //         },
+        //         "retries": {
+        //             "type": "integer"
+        //         },
+        //         "retryInterval": {
+        //             "type": "integer"
+        //         },
+        //         "startTime": {
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "stopTime": {
+        //             "type": "string",
+        //             "format": "date-time"
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "location"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (GetDiagnosticsRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP get diagnostics request.
+        /// Parse the given XML representation of a get diagnostics request.
         /// </summary>
         /// <param name="GetDiagnosticsRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -151,10 +185,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                   OnExceptionDelegate  OnException = null)
         {
 
-            GetDiagnosticsRequest _GetDiagnosticsRequest;
+            if (TryParse(GetDiagnosticsRequestXML,
+                         out GetDiagnosticsRequest getDiagnosticsRequest,
+                         OnException))
+            {
+                return getDiagnosticsRequest;
+            }
 
-            if (TryParse(GetDiagnosticsRequestXML, out _GetDiagnosticsRequest, OnException))
-                return _GetDiagnosticsRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (GetDiagnosticsRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a get diagnostics request.
+        /// </summary>
+        /// <param name="GetDiagnosticsRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static GetDiagnosticsRequest Parse(JObject              GetDiagnosticsRequestJSON,
+                                                  OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(GetDiagnosticsRequestJSON,
+                         out GetDiagnosticsRequest getDiagnosticsRequest,
+                         OnException))
+            {
+                return getDiagnosticsRequest;
+            }
 
             return null;
 
@@ -165,7 +225,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (GetDiagnosticsRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP get diagnostics request.
+        /// Parse the given text representation of a get diagnostics request.
         /// </summary>
         /// <param name="GetDiagnosticsRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -173,10 +233,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                   OnExceptionDelegate  OnException = null)
         {
 
-            GetDiagnosticsRequest _GetDiagnosticsRequest;
-
-            if (TryParse(GetDiagnosticsRequestText, out _GetDiagnosticsRequest, OnException))
-                return _GetDiagnosticsRequest;
+            if (TryParse(GetDiagnosticsRequestText,
+                         out GetDiagnosticsRequest getDiagnosticsRequest,
+                         OnException))
+            {
+                return getDiagnosticsRequest;
+            }
 
             return null;
 
@@ -187,7 +249,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(GetDiagnosticsRequestXML,  out GetDiagnosticsRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP get diagnostics request.
+        /// Try to parse the given XML representation of a get diagnostics request.
         /// </summary>
         /// <param name="GetDiagnosticsRequestXML">The XML to be parsed.</param>
         /// <param name="GetDiagnosticsRequest">The parsed get diagnostics request.</param>
@@ -235,10 +297,120 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(GetDiagnosticsRequestJSON, out GetDiagnosticsRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a get diagnostics request.
+        /// </summary>
+        /// <param name="GetDiagnosticsRequestJSON">The JSON to be parsed.</param>
+        /// <param name="GetDiagnosticsRequest">The parsed get diagnostics request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                    GetDiagnosticsRequestJSON,
+                                       out GetDiagnosticsRequest  GetDiagnosticsRequest,
+                                       OnExceptionDelegate        OnException  = null)
+        {
+
+            try
+            {
+
+                GetDiagnosticsRequest = null;
+
+                #region Location
+
+                var Location = GetDiagnosticsRequestJSON.GetString("location");
+
+                #endregion
+
+                #region StartTime
+
+                if (GetDiagnosticsRequestJSON.ParseOptional("startTime",
+                                                            "start time",
+                                                            out DateTime?  StartTime,
+                                                            out String     ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region StopTime
+
+                if (GetDiagnosticsRequestJSON.ParseOptional("stopTime",
+                                                            "stop time",
+                                                            out DateTime?  StopTime,
+                                                            out            ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region Retries
+
+                if (GetDiagnosticsRequestJSON.ParseOptional("retries",
+                                                            "retries",
+                                                            Byte.Parse,
+                                                            out Byte?  Retries,
+                                                            out        ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region RetryInterval
+
+                if (GetDiagnosticsRequestJSON.ParseOptional("retryInterval",
+                                                            "retry interval",
+                                                            s => TimeSpan.FromSeconds(UInt32.Parse(s)),
+                                                            out TimeSpan?  RetryInterval,
+                                                            out            ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+
+                GetDiagnosticsRequest = new GetDiagnosticsRequest(Location,
+                                                                  StartTime,
+                                                                  StopTime,
+                                                                  Retries,
+                                                                  RetryInterval);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, GetDiagnosticsRequestJSON, e);
+
+                GetDiagnosticsRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(GetDiagnosticsRequestText, out GetDiagnosticsRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP get diagnostics request.
+        /// Try to parse the given text representation of a get diagnostics request.
         /// </summary>
         /// <param name="GetDiagnosticsRequestText">The text to be parsed.</param>
         /// <param name="GetDiagnosticsRequest">The parsed get diagnostics request.</param>
@@ -251,11 +423,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(GetDiagnosticsRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out GetDiagnosticsRequest,
-                             OnException))
+                GetDiagnosticsRequestText = GetDiagnosticsRequestText?.Trim();
 
-                    return true;
+                if (GetDiagnosticsRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (GetDiagnosticsRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(GetDiagnosticsRequestText),
+                                 out GetDiagnosticsRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(GetDiagnosticsRequestText).Root,
+                                 out GetDiagnosticsRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -301,6 +489,45 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomGetDiagnosticsRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomGetDiagnosticsRequestSerializer">A delegate to serialize custom start transaction requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetDiagnosticsRequest> CustomGetDiagnosticsRequestSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("location",             Location),
+
+                           StartTime.HasValue
+                               ? new JProperty("startTime",      StartTime.Value.ToIso8601())
+                               : null,
+
+                           StopTime.HasValue
+                               ? new JProperty("stopTime",       StopTime. Value.ToIso8601())
+                               : null,
+
+                           Retries.HasValue
+                               ? new JProperty("retries",        Retries.  Value.ToString())
+                               : null,
+
+                           RetryInterval.HasValue
+                               ? new JProperty("retryInterval",  (UInt64) RetryInterval.Value.TotalSeconds)
+                               : null
+
+                       );
+
+            return CustomGetDiagnosticsRequestSerializer != null
+                       ? CustomGetDiagnosticsRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -320,7 +547,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) GetDiagnosticsRequest1 == null) || ((Object) GetDiagnosticsRequest2 == null))
+            if ((GetDiagnosticsRequest1 is null) || (GetDiagnosticsRequest2 is null))
                 return false;
 
             return GetDiagnosticsRequest1.Equals(GetDiagnosticsRequest2);
@@ -360,12 +587,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a get diagnostics request.
-            var GetDiagnosticsRequest = Object as GetDiagnosticsRequest;
-            if ((Object) GetDiagnosticsRequest == null)
+            if (!(Object is GetDiagnosticsRequest GetDiagnosticsRequest))
                 return false;
 
-            return this.Equals(GetDiagnosticsRequest);
+            return Equals(GetDiagnosticsRequest);
 
         }
 
@@ -381,7 +606,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(GetDiagnosticsRequest GetDiagnosticsRequest)
         {
 
-            if ((Object) GetDiagnosticsRequest == null)
+            if (GetDiagnosticsRequest is null)
                 return false;
 
             return Location.Equals(GetDiagnosticsRequest.Location) &&
@@ -415,18 +640,18 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             unchecked
             {
 
-                return Location.GetHashCode() * 17 ^
+                return Location.GetHashCode() * 11 ^
 
                        (StartTime.HasValue
-                            ? StartTime.    GetHashCode() * 11
+                            ? StartTime.    GetHashCode() * 7
                             : 0) ^
 
                        (StopTime.HasValue
-                            ? StopTime.     GetHashCode() * 7
+                            ? StopTime.     GetHashCode() * 5
                             : 0) ^
 
                        (Retries.HasValue
-                            ? Retries.      GetHashCode() * 5
+                            ? Retries.      GetHashCode() * 3
                             : 0) ^
 
                        (RetryInterval.HasValue
@@ -464,7 +689,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                  : "");
 
         #endregion
-
 
     }
 

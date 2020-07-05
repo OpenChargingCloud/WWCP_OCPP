@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP update firmware request.
+    /// A update firmware request.
     /// </summary>
     public class UpdateFirmwareRequest : ARequest<UpdateFirmwareRequest>
     {
@@ -40,13 +41,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The URI where to download the firmware.
         /// </summary>
-        public String     Location        { get; }
+        public String     Location         { get; }
 
         /// <summary>
         /// The timestamp after which the charge point must retrieve the
         /// firmware.
         /// </summary>
-        public DateTime   RetrieveDate    { get; }
+        public DateTime   RetrieveDate     { get; }
 
         /// <summary>
         /// The optional number of retries of a charge point for trying to
@@ -54,21 +55,21 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// present, it is left to the charge point to decide how many times
         /// it wants to retry.
         /// </summary>
-        public Byte?      Retries         { get; }
+        public Byte?      Retries          { get; }
 
         /// <summary>
         /// The interval after which a retry may be attempted. If this field
         /// is not present, it is left to charge point to decide how long to
         /// wait between attempts.
         /// </summary>
-        public TimeSpan?  RetryInterval   { get; }
+        public TimeSpan?  RetryInterval    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP UpdateFirmwareRequest XML/SOAP request.
+        /// Create a UpdateFirmware request.
         /// </summary>
         /// <param name="Location">The URI where to download the firmware.</param>
         /// <param name="RetrieveDate">The timestamp after which the charge point must retrieve the firmware.</param>
@@ -124,12 +125,40 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:UpdateFirmwareRequest",
+        //     "title":   "UpdateFirmwareRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "location": {
+        //             "type": "string",
+        //             "format": "uri"
+        //         },
+        //         "retries": {
+        //             "type": "integer"
+        //         },
+        //         "retrieveDate": {
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "retryInterval": {
+        //             "type": "integer"
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "location",
+        //         "retrieveDate"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (UpdateFirmwareRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP update firmware request.
+        /// Parse the given XML representation of a update firmware request.
         /// </summary>
         /// <param name="UpdateFirmwareRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -137,10 +166,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                   OnExceptionDelegate  OnException = null)
         {
 
-            UpdateFirmwareRequest _UpdateFirmwareRequest;
+            if (TryParse(UpdateFirmwareRequestXML,
+                         out UpdateFirmwareRequest updateFirmwareRequest,
+                         OnException))
+            {
+                return updateFirmwareRequest;
+            }
 
-            if (TryParse(UpdateFirmwareRequestXML, out _UpdateFirmwareRequest, OnException))
-                return _UpdateFirmwareRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (UpdateFirmwareRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a update firmware request.
+        /// </summary>
+        /// <param name="UpdateFirmwareRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static UpdateFirmwareRequest Parse(XElement             UpdateFirmwareRequestJSON,
+                                                  OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(UpdateFirmwareRequestJSON,
+                         out UpdateFirmwareRequest updateFirmwareRequest,
+                         OnException))
+            {
+                return updateFirmwareRequest;
+            }
 
             return null;
 
@@ -151,7 +206,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (UpdateFirmwareRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP update firmware request.
+        /// Parse the given text representation of a update firmware request.
         /// </summary>
         /// <param name="UpdateFirmwareRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -159,10 +214,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                   OnExceptionDelegate  OnException = null)
         {
 
-            UpdateFirmwareRequest _UpdateFirmwareRequest;
-
-            if (TryParse(UpdateFirmwareRequestText, out _UpdateFirmwareRequest, OnException))
-                return _UpdateFirmwareRequest;
+            if (TryParse(UpdateFirmwareRequestText,
+                         out UpdateFirmwareRequest updateFirmwareRequest,
+                         OnException))
+            {
+                return updateFirmwareRequest;
+            }
 
             return null;
 
@@ -173,7 +230,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(UpdateFirmwareRequestXML,  out UpdateFirmwareRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP update firmware request.
+        /// Try to parse the given XML representation of a update firmware request.
         /// </summary>
         /// <param name="UpdateFirmwareRequestXML">The XML to be parsed.</param>
         /// <param name="UpdateFirmwareRequest">The parsed update firmware request.</param>
@@ -218,10 +275,101 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(UpdateFirmwareRequestJSON,  out UpdateFirmwareRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a update firmware request.
+        /// </summary>
+        /// <param name="UpdateFirmwareRequestJSON">The JSON to be parsed.</param>
+        /// <param name="UpdateFirmwareRequest">The parsed update firmware request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                    UpdateFirmwareRequestJSON,
+                                       out UpdateFirmwareRequest  UpdateFirmwareRequest,
+                                       OnExceptionDelegate        OnException  = null)
+        {
+
+            try
+            {
+
+                UpdateFirmwareRequest = null;
+
+                #region Location
+
+                var Location = UpdateFirmwareRequestJSON.GetString("location");
+
+                #endregion
+
+                #region RetrieveDate
+
+                if (!UpdateFirmwareRequestJSON.ParseMandatory("retrieveDate",
+                                                              "retrieve date",
+                                                              out DateTime  RetrieveDate,
+                                                              out String    ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Retries
+
+                if (UpdateFirmwareRequestJSON.ParseOptionalStruct("retries",
+                                                                  "retries",
+                                                                  Byte.TryParse,
+                                                                  out Byte?  Retries,
+                                                                  out        ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region RetryInterval
+
+                if (UpdateFirmwareRequestJSON.ParseOptional("retryInterval",
+                                                            "retry interval",
+                                                            s => TimeSpan.FromSeconds(UInt32.Parse(s)),
+                                                            out TimeSpan?  RetryInterval,
+                                                            out            ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+
+                UpdateFirmwareRequest = new UpdateFirmwareRequest(Location,
+                                                                  RetrieveDate,
+                                                                  Retries,
+                                                                  RetryInterval);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, UpdateFirmwareRequestJSON, e);
+
+                UpdateFirmwareRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(UpdateFirmwareRequestText, out UpdateFirmwareRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP update firmware request.
+        /// Try to parse the given text representation of a update firmware request.
         /// </summary>
         /// <param name="UpdateFirmwareRequestText">The text to be parsed.</param>
         /// <param name="UpdateFirmwareRequest">The parsed update firmware request.</param>
@@ -234,11 +382,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(UpdateFirmwareRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out UpdateFirmwareRequest,
-                             OnException))
+                UpdateFirmwareRequestText = UpdateFirmwareRequestText?.Trim();
 
-                    return true;
+                if (UpdateFirmwareRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (UpdateFirmwareRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(UpdateFirmwareRequestText),
+                                 out UpdateFirmwareRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(UpdateFirmwareRequestText).Root,
+                                 out UpdateFirmwareRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -270,10 +434,42 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                        : null,
 
                    RetryInterval.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "retryInterval",  RetryInterval.Value.TotalSeconds)
+                       ? new XElement(OCPPNS.OCPPv1_6_CP + "retryInterval",  (UInt64) RetryInterval.Value.TotalSeconds)
                        : null
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomUpdateFirmwareRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomUpdateFirmwareRequestSerializer">A delegate to serialize custom start transaction requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateFirmwareRequest> CustomUpdateFirmwareRequestSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("retrieveDate",         RetrieveDate.ToIso8601()),
+                           new JProperty("location",             Location),
+
+                           Retries.HasValue
+                               ? new JProperty("retries",        Retries.Value)
+                               : null,
+
+                           RetryInterval.HasValue
+                               ? new JProperty("retryInterval",  (UInt64) RetryInterval.Value.TotalSeconds)
+                               : null
+
+                       );
+
+            return CustomUpdateFirmwareRequestSerializer != null
+                       ? CustomUpdateFirmwareRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 
@@ -296,7 +492,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) UpdateFirmwareRequest1 == null) || ((Object) UpdateFirmwareRequest2 == null))
+            if ((UpdateFirmwareRequest1 is null) || (UpdateFirmwareRequest2 is null))
                 return false;
 
             return UpdateFirmwareRequest1.Equals(UpdateFirmwareRequest2);
@@ -336,12 +532,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a update firmware request.
-            var UpdateFirmwareRequest = Object as UpdateFirmwareRequest;
-            if ((Object) UpdateFirmwareRequest == null)
+            if (!(Object is UpdateFirmwareRequest UpdateFirmwareRequest))
                 return false;
 
-            return this.Equals(UpdateFirmwareRequest);
+            return Equals(UpdateFirmwareRequest);
 
         }
 
@@ -357,7 +551,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(UpdateFirmwareRequest UpdateFirmwareRequest)
         {
 
-            if ((Object) UpdateFirmwareRequest == null)
+            if (UpdateFirmwareRequest is null)
                 return false;
 
             return Location.    Equals(UpdateFirmwareRequest.Location) &&
@@ -422,7 +616,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                  : "");
 
         #endregion
-
 
     }
 

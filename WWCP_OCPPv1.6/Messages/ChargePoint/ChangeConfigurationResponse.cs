@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP change configuration response.
+    /// A change configuration response.
     /// </summary>
     public class ChangeConfigurationResponse : AResponse<ChangeConfigurationResponse>
     {
@@ -105,7 +105,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (ChangeConfigurationResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP change configuration response.
+        /// Parse the given XML representation of a change configuration response.
         /// </summary>
         /// <param name="ChangeConfigurationResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -127,7 +127,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (ChangeConfigurationResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP change configuration response.
+        /// Parse the given text representation of a change configuration response.
         /// </summary>
         /// <param name="ChangeConfigurationResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -149,7 +149,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(ChangeConfigurationResponseXML,  out ChangeConfigurationResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP change configuration response.
+        /// Try to parse the given XML representation of a change configuration response.
         /// </summary>
         /// <param name="ChangeConfigurationResponseXML">The XML to be parsed.</param>
         /// <param name="ChangeConfigurationResponse">The parsed change configuration response.</param>
@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(ChangeConfigurationResponseText, out ChangeConfigurationResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP change configuration response.
+        /// Try to parse the given text representation of a change configuration response.
         /// </summary>
         /// <param name="ChangeConfigurationResponseText">The text to be parsed.</param>
         /// <param name="ChangeConfigurationResponse">The parsed change configuration response.</param>

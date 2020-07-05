@@ -64,18 +64,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
         public DataTransferRequest(String VendorId,
-                                           String MessageId   = null,
-                                           String Data        = null)
+                                   String MessageId   = null,
+                                   String Data        = null)
         {
 
-            #region Initial checks
+            VendorId = VendorId?.Trim();
 
-            if (VendorId.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(VendorId),  "The given vendor identification must not be null or empty!");
-
-            #endregion
-
-            this.VendorId   = VendorId;
+            this.VendorId   = VendorId ?? throw new ArgumentNullException(nameof(VendorId), "The given vendor identification must not be null or empty!");
             this.MessageId  = MessageId;
             this.Data       = Data;
 
@@ -249,7 +244,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(DataTransferRequestJSON,  out DataTransferRequest, OnException = null)
+        #region (static) TryParse(DataTransferRequestJSON, out DataTransferRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a data transfer request.
@@ -387,7 +382,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomDataTransferSerializer">A delegate to serialize custom data transfer requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest> CustomDataTransferSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest> CustomDataTransferSerializer  = null)
         {
 
             var JSON = JSONObject.Create(

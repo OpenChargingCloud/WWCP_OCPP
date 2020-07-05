@@ -20,9 +20,10 @@
 using System;
 using System.Xml.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
-using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// An OCPP trigger message request.
+    /// A trigger message request.
     /// </summary>
     public class TriggerMessageRequest : ARequest<TriggerMessageRequest>
     {
@@ -40,20 +41,20 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <summary>
         /// The message to trigger.
         /// </summary>
-        public MessageTriggers  RequestedMessage   { get; }
+        public MessageTriggers  RequestedMessage    { get; }
 
         /// <summary>
         /// Optional connector identification whenever the message
         /// applies to a specific connector.
         /// </summary>
-        public Connector_Id?    ConnectorId        { get; }
+        public Connector_Id?    ConnectorId         { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an OCPP TriggerMessageRequest XML/SOAP request.
+        /// Create a trigger message request.
         /// </summary>
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="ConnectorId">Optional connector identification whenever the message applies to a specific connector.</param>
@@ -62,7 +63,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         {
 
             this.RequestedMessage  = RequestedMessage;
-            this.ConnectorId       = ConnectorId ?? new Connector_Id?();
+            this.ConnectorId       = ConnectorId;
 
         }
 
@@ -92,12 +93,40 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:TriggerMessageRequest",
+        //     "title":   "TriggerMessageRequest",
+        //     "type":    "object",
+        //     "properties": {
+        //         "requestedMessage": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "BootNotification",
+        //                 "DiagnosticsStatusNotification",
+        //                 "FirmwareStatusNotification",
+        //                 "Heartbeat",
+        //                 "MeterValues",
+        //                 "StatusNotification"
+        //             ]
+        //         },
+        //         "connectorId": {
+        //             "type": "integer"
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "requestedMessage"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (TriggerMessageRequestXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP trigger message request.
+        /// Parse the given XML representation of a trigger message request.
         /// </summary>
         /// <param name="TriggerMessageRequestXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -105,10 +134,36 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                   OnExceptionDelegate  OnException = null)
         {
 
-            TriggerMessageRequest _TriggerMessageRequest;
+            if (TryParse(TriggerMessageRequestXML,
+                         out TriggerMessageRequest triggerMessageRequest,
+                         OnException))
+            {
+                return triggerMessageRequest;
+            }
 
-            if (TryParse(TriggerMessageRequestXML, out _TriggerMessageRequest, OnException))
-                return _TriggerMessageRequest;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (TriggerMessageRequestJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a trigger message request.
+        /// </summary>
+        /// <param name="TriggerMessageRequestJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static TriggerMessageRequest Parse(JObject              TriggerMessageRequestJSON,
+                                                  OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(TriggerMessageRequestJSON,
+                         out TriggerMessageRequest triggerMessageRequest,
+                         OnException))
+            {
+                return triggerMessageRequest;
+            }
 
             return null;
 
@@ -119,7 +174,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) Parse   (TriggerMessageRequestText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP trigger message request.
+        /// Parse the given text representation of a trigger message request.
         /// </summary>
         /// <param name="TriggerMessageRequestText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -127,10 +182,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                   OnExceptionDelegate  OnException = null)
         {
 
-            TriggerMessageRequest _TriggerMessageRequest;
-
-            if (TryParse(TriggerMessageRequestText, out _TriggerMessageRequest, OnException))
-                return _TriggerMessageRequest;
+            if (TryParse(TriggerMessageRequestText,
+                         out TriggerMessageRequest triggerMessageRequest,
+                         OnException))
+            {
+                return triggerMessageRequest;
+            }
 
             return null;
 
@@ -141,7 +198,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region (static) TryParse(TriggerMessageRequestXML,  out TriggerMessageRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP trigger message request.
+        /// Try to parse the given XML representation of a trigger message request.
         /// </summary>
         /// <param name="TriggerMessageRequestXML">The XML to be parsed.</param>
         /// <param name="TriggerMessageRequest">The parsed trigger message request.</param>
@@ -181,10 +238,81 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParse(TriggerMessageRequestJSON,  out TriggerMessageRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a trigger message request.
+        /// </summary>
+        /// <param name="TriggerMessageRequestJSON">The JSON to be parsed.</param>
+        /// <param name="TriggerMessageRequest">The parsed trigger message request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(JObject                    TriggerMessageRequestJSON,
+                                       out TriggerMessageRequest  TriggerMessageRequest,
+                                       OnExceptionDelegate        OnException  = null)
+        {
+
+            try
+            {
+
+                TriggerMessageRequest = null;
+
+                #region MessageTriggers
+
+                if (!TriggerMessageRequestJSON.MapMandatory("requestedMessage",
+                                                            "requested message",
+                                                            MessageTriggersExtentions.Parse,
+                                                            out MessageTriggers  MessageTriggers,
+                                                            out String           ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region ConnectorId
+
+                if (TriggerMessageRequestJSON.ParseOptional("connectorId",
+                                                            "connector identification",
+                                                            Connector_Id.TryParse,
+                                                            out Connector_Id  ConnectorId,
+                                                            out               ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+
+                TriggerMessageRequest = new TriggerMessageRequest(MessageTriggers,
+                                                                  ConnectorId);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, TriggerMessageRequestJSON, e);
+
+                TriggerMessageRequest = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region (static) TryParse(TriggerMessageRequestText, out TriggerMessageRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP trigger message request.
+        /// Try to parse the given text representation of a trigger message request.
         /// </summary>
         /// <param name="TriggerMessageRequestText">The text to be parsed.</param>
         /// <param name="TriggerMessageRequest">The parsed trigger message request.</param>
@@ -197,11 +325,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             try
             {
 
-                if (TryParse(XDocument.Parse(TriggerMessageRequestText).Root.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                             out TriggerMessageRequest,
-                             OnException))
+                TriggerMessageRequestText = TriggerMessageRequestText?.Trim();
 
-                    return true;
+                if (TriggerMessageRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (TriggerMessageRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(TriggerMessageRequestText),
+                                 out TriggerMessageRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(TriggerMessageRequestText).Root,
+                                 out TriggerMessageRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -235,6 +379,33 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
+        #region ToJSON(CustomTriggerMessageRequestSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomTriggerMessageRequestSerializer">A delegate to serialize custom trigger message requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<TriggerMessageRequest> CustomTriggerMessageRequestSerializer = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("requestedMessage",   RequestedMessage.AsText()),
+
+                           ConnectorId.HasValue
+                               ? new JProperty("connectorId",  ConnectorId.Value.ToString())
+                               : null
+
+                       );
+
+            return CustomTriggerMessageRequestSerializer != null
+                       ? CustomTriggerMessageRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -254,7 +425,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) TriggerMessageRequest1 == null) || ((Object) TriggerMessageRequest2 == null))
+            if ((TriggerMessageRequest1 is null) || (TriggerMessageRequest2 is null))
                 return false;
 
             return TriggerMessageRequest1.Equals(TriggerMessageRequest2);
@@ -294,12 +465,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             if (Object is null)
                 return false;
 
-            // Check if the given object is a trigger message request.
-            var TriggerMessageRequest = Object as TriggerMessageRequest;
-            if ((Object) TriggerMessageRequest == null)
+            if (!(Object is TriggerMessageRequest TriggerMessageRequest))
                 return false;
 
-            return this.Equals(TriggerMessageRequest);
+            return Equals(TriggerMessageRequest);
 
         }
 
@@ -315,7 +484,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         public override Boolean Equals(TriggerMessageRequest TriggerMessageRequest)
         {
 
-            if ((Object) TriggerMessageRequest == null)
+            if (TriggerMessageRequest is null)
                 return false;
 
             return RequestedMessage.Equals(TriggerMessageRequest.RequestedMessage) &&
@@ -365,7 +534,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                  : "");
 
         #endregion
-
 
     }
 

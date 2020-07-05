@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An OCPP remote stop transaction response.
+    /// A remote stop transaction response.
     /// </summary>
     public class RemoteStopTransactionResponse : AResponse<RemoteStopTransactionResponse>
     {
@@ -106,7 +106,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (RemoteStopTransactionResponseXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an OCPP remote stop transaction response.
+        /// Parse the given XML representation of a remote stop transaction response.
         /// </summary>
         /// <param name="RemoteStopTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -128,7 +128,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) Parse   (RemoteStopTransactionResponseText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of an OCPP remote stop transaction response.
+        /// Parse the given text representation of a remote stop transaction response.
         /// </summary>
         /// <param name="RemoteStopTransactionResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -150,7 +150,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(RemoteStopTransactionResponseXML,  out RemoteStopTransactionResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an OCPP remote stop transaction response.
+        /// Try to parse the given XML representation of a remote stop transaction response.
         /// </summary>
         /// <param name="RemoteStopTransactionResponseXML">The XML to be parsed.</param>
         /// <param name="RemoteStopTransactionResponse">The parsed remote stop transaction response.</param>
@@ -190,7 +190,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region (static) TryParse(RemoteStopTransactionResponseText, out RemoteStopTransactionResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an OCPP remote stop transaction response.
+        /// Try to parse the given text representation of a remote stop transaction response.
         /// </summary>
         /// <param name="RemoteStopTransactionResponseText">The text to be parsed.</param>
         /// <param name="RemoteStopTransactionResponse">The parsed remote stop transaction response.</param>
