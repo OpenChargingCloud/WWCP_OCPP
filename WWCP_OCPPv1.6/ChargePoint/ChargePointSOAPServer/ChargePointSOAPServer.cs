@@ -114,17 +114,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a remote start transaction SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                 OnRemoteStartTransactionSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever a SOAP response to a remote start transaction request was sent.
-        /// </summary>
-        public event AccessLogHandler                  OnRemoteStartTransactionSOAPResponse;
+        public event RequestLogHandler                         OnRemoteStartTransactionSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a remote start transaction request was received.
         /// </summary>
-        public event OnRemoteStartTransactionDelegate  OnRemoteStartTransactionRequest;
+        public event OnRemoteStartTransactionRequestDelegate   OnRemoteStartTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a remote start transaction was received.
+        /// </summary>
+        public event OnRemoteStartTransactionDelegate          OnRemoteStartTransaction;
+
+        /// <summary>
+        /// An event sent whenever a response to a remote start transaction request was sent.
+        /// </summary>
+        public event OnRemoteStartTransactionResponseDelegate  OnRemoteStartTransactionResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a remote start transaction request was sent.
+        /// </summary>
+        public event AccessLogHandler                          OnRemoteStartTransactionSOAPResponse;
 
         #endregion
 
@@ -133,17 +143,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a remote stop transaction SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                OnRemoteStopTransactionSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever a SOAP response to a remote stop transaction request was sent.
-        /// </summary>
-        public event AccessLogHandler                 OnRemoteStopTransactionSOAPResponse;
+        public event RequestLogHandler                        OnRemoteStopTransactionSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a remote stop transaction request was received.
         /// </summary>
-        public event OnRemoteStopTransactionDelegate  OnRemoteStopTransactionRequest;
+        public event OnRemoteStopTransactionRequestDelegate   OnRemoteStopTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a remote stop transaction was received.
+        /// </summary>
+        public event OnRemoteStopTransactionDelegate          OnRemoteStopTransaction;
+
+        /// <summary>
+        /// An event sent whenever a response to a remote stop transaction request was sent.
+        /// </summary>
+        public event OnRemoteStopTransactionResponseDelegate  OnRemoteStopTransactionResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a remote stop transaction request was sent.
+        /// </summary>
+        public event AccessLogHandler                         OnRemoteStopTransactionSOAPResponse;
 
         #endregion
 
@@ -236,6 +256,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #endregion
 
 
+        private String NextMessageId()
+            => Guid.NewGuid().ToString();
+
         #region RegisterURLTemplates()
 
         /// <summary>
@@ -249,7 +272,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
                                             URLPrefix,
                                             "ReserveNow",
-                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "reserveNowRequest").FirstOrDefault(),
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CP + "reserveNowRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, ReserveNowXML) => {
 
                 #region Send OnReserveNowSOAPRequest event
@@ -364,7 +387,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
                                             URLPrefix,
                                             "CancelReservation",
-                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "dataTransferRequest").FirstOrDefault(),
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CP + "cancelReservationRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, CancelReservationXML) => {
 
                 #region Send OnCancelReservationSOAPRequest event
@@ -475,7 +498,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
                                             URLPrefix,
                                             "RemoteStartTransaction",
-                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "dataTransferRequest").FirstOrDefault(),
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CP + "remoteStartTransactionRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, RemoteStartTransactionXML) => {
 
                 #region Send OnRemoteStartTransactionSOAPRequest event
@@ -508,18 +531,15 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 if (response == null)
                 {
 
-                    var results = OnRemoteStartTransactionRequest?.
+                    var results = OnRemoteStartTransaction?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnRemoteStartTransactionDelegate)
                                           (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
-                                           _OCPPHeader.ChargeBoxIdentity,
-                                           _RemoteStartTransactionRequest.IdTag,
-                                           _RemoteStartTransactionRequest.ConnectorId,
-                                           _RemoteStartTransactionRequest.ChargingProfile,
-                                           DefaultRequestTimeout)).
+                                           //_OCPPHeader.ChargeBoxIdentity,
+                                           _RemoteStartTransactionRequest)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -549,7 +569,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/RemoteStartTransactionResponse",
-                                                         null,
+                                                         NextMessageId(),
                                                          _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
                                                          _OCPPHeader.To,         // Fake it!
                                                          _OCPPHeader.From,       // Fake it!
@@ -588,7 +608,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
                                             URLPrefix,
                                             "RemoteStopTransaction",
-                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "dataTransferRequest").FirstOrDefault(),
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CP + "remoteStopTransactionRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, RemoteStopTransactionXML) => {
 
                 #region Send OnRemoteStopTransactionSOAPRequest event
@@ -621,16 +641,15 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 if (response == null)
                 {
 
-                    var results = OnRemoteStopTransactionRequest?.
+                    var results = OnRemoteStopTransaction?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnRemoteStopTransactionDelegate)
                                           (DateTime.UtcNow,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
-                                           _OCPPHeader.ChargeBoxIdentity,
-                                           _RemoteStopTransactionRequest.TransactionId,
-                                           DefaultRequestTimeout)).
+                                           //_OCPPHeader.ChargeBoxIdentity,
+                                           _RemoteStopTransactionRequest)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -700,7 +719,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
                                             URLPrefix,
                                             "DataTransfer",
-                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "dataTransferRequest").FirstOrDefault(),
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CP + "dataTransferRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, DataTransferXML) => {
 
                 #region Send OnDataTransferSOAPRequest event

@@ -284,7 +284,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 ChargingSchedule = new ChargingSchedule(
 
-                                       ChargingScheduleXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "chargingRateUnit",
+                                       ChargingScheduleXML.MapValueOrFail     (OCPPNS.OCPPv1_6_CP + "chargingRateUnit",
                                                                                ChargingRateUnitsExtentions.Parse),
 
                                        ChargingScheduleXML.MapElementsOrFail  (OCPPNS.OCPPv1_6_CP + "chargingSchedulePeriod",
@@ -296,7 +296,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                        ChargingScheduleXML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "startSchedule",
                                                                                DateTime.Parse),
 
-                                       ChargingScheduleXML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "minChargingRate ",
+                                       ChargingScheduleXML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "minChargingRate",
                                                                                Decimal.Parse)
 
                                    );
@@ -351,11 +351,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 #region ChargingSchedulePeriods
 
-                if (!ChargingScheduleJSON.ParseMandatory("chargingSchedulePeriod",
-                                                         "charging schedule period",
-                                                         ChargingSchedulePeriod.TryParse,
-                                                         out IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods,
-                                                         out                                      ErrorResponse))
+                if (!ChargingScheduleJSON.ParseMandatoryJSON("chargingSchedulePeriod",
+                                                             "charging schedule period",
+                                                             ChargingSchedulePeriod.TryParse,
+                                                             out IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods,
+                                                             out                                      ErrorResponse))
                 {
                     return false;
                 }

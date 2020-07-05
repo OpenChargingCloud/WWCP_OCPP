@@ -322,11 +322,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region ConfigurationKey
 
-                if (!GetConfigurationResponseJSON.ParseMandatory("configurationKey",
-                                                                 "configuration keys",
-                                                                 ConfigurationKey.TryParse,
-                                                                 out IEnumerable<ConfigurationKey>  ConfigurationKeys,
-                                                                 out String                         ErrorResponse))
+                if (!GetConfigurationResponseJSON.ParseMandatoryJSON("configurationKey",
+                                                                     "configuration keys",
+                                                                     ConfigurationKey.TryParse,
+                                                                     out IEnumerable<ConfigurationKey>  ConfigurationKeys,
+                                                                     out String                         ErrorResponse))
                 {
                     return false;
                 }

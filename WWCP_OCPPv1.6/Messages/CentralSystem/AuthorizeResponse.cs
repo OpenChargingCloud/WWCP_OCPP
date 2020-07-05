@@ -308,12 +308,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 #region IdTagInfo
 
-                if (!AuthorizeResponseJSON.ParseMandatory("idTagInfo",
-                                                          "identification tag information",
-                                                          OCPPv1_6.IdTagInfo.TryParse,
-                                                          out IdTagInfo  IdTagInfo,
-                                                          out String     ErrorResponse,
-                                                          OnException))
+                if (!AuthorizeResponseJSON.ParseMandatoryJSON("idTagInfo",
+                                                              "identification tag information",
+                                                              OCPPv1_6.IdTagInfo.TryParse,
+                                                              out IdTagInfo  IdTagInfo,
+                                                              out String     ErrorResponse,
+                                                              OnException))
                 {
                     return false;
                 }

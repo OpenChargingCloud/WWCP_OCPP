@@ -104,24 +104,76 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// 
     /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+    /// 
+    /// <param name="IdTag">The identification tag to start the charging transaction.</param>
+    /// <param name="ConnectorId">An optional connector identification on which the charging transaction should be started (SHALL be > 0).</param>
+    /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
+    public delegate Task
+
+        OnRemoteStartTransactionRequestDelegate(DateTime               Timestamp,
+                                                ChargePointSOAPServer  Sender,
+                                                CancellationToken      CancellationToken,
+                                                EventTracking_Id       EventTrackingId,
+
+                                                ChargeBox_Id           ChargeBoxIdentity,
+
+                                                IdToken                IdTag,
+                                                Connector_Id?          ConnectorId,
+                                                ChargingProfile        ChargingProfile);
+
+
+    /// <summary>
+    /// Start a charging transaction.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// 
+    /// <param name="RemoteStartTransactionRequest">A remote start transaction request.</param>
+    public delegate Task<RemoteStartTransactionResponse>
+
+        OnRemoteStartTransactionDelegate(DateTime                          Timestamp,
+                                         ChargePointSOAPServer             Sender,
+                                         CancellationToken                 CancellationToken,
+                                         EventTracking_Id                  EventTrackingId,
+
+                                         CS.RemoteStartTransactionRequest  RemoteStartTransactionRequest);
+
+
+    /// <summary>
+    /// Start a charging transaction.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// 
+    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+    /// 
     /// <param name="IdTag">The identification tag to start the charging transaction.</param>
     /// <param name="ConnectorId">An optional connector identification on which the charging transaction should be started (SHALL be > 0).</param>
     /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
     /// 
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<RemoteStartTransactionResponse>
+    /// <param name="Result">The general OCPP result.</param>
+    /// <param name="Status">The status indicating whether the charge point accepts the request to start a charging transaction.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task
 
-        OnRemoteStartTransactionDelegate(DateTime               Timestamp,
-                                         ChargePointSOAPServer  Sender,
-                                         CancellationToken      CancellationToken,
-                                         EventTracking_Id       EventTrackingId,
+        OnRemoteStartTransactionResponseDelegate(DateTime               Timestamp,
+                                                 ChargePointSOAPServer  Sender,
+                                                 CancellationToken      CancellationToken,
+                                                 EventTracking_Id       EventTrackingId,
 
-                                         ChargeBox_Id           ChargeBoxIdentity,
-                                         IdToken                IdTag,
-                                         Connector_Id?          ConnectorId,
-                                         ChargingProfile        ChargingProfile,
+                                                 ChargeBox_Id           ChargeBoxIdentity,
 
-                                         TimeSpan?              RequestTimeout = null);
+                                                 IdToken                IdTag,
+                                                 Connector_Id?          ConnectorId,
+                                                 ChargingProfile        ChargingProfile,
+
+                                                 Result                 Result,
+                                                 RemoteStartStopStatus  Status,
+                                                 TimeSpan               Runtime);
 
     #endregion
 
@@ -137,19 +189,63 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// 
     /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
     /// <param name="TransactionId">The identification of the transaction which the charge point is requested to stop.</param>
-    /// 
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<RemoteStopTransactionResponse>
 
-        OnRemoteStopTransactionDelegate(DateTime               Timestamp,
-                                        ChargePointSOAPServer  Sender,
-                                        CancellationToken      CancellationToken,
-                                        EventTracking_Id       EventTrackingId,
+        OnRemoteStopTransactionRequestDelegate(DateTime               Timestamp,
+                                               ChargePointSOAPServer  Sender,
+                                               CancellationToken      CancellationToken,
+                                               EventTracking_Id       EventTrackingId,
 
-                                        ChargeBox_Id           ChargeBoxIdentity,
-                                        Transaction_Id         TransactionId,
+                                               ChargeBox_Id           ChargeBoxIdentity,
+                                               Transaction_Id         TransactionId);
 
-                                        TimeSpan?              RequestTimeout = null);
+
+    /// <summary>
+    /// Stop a charging transaction.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// 
+    /// <param name="RemoteStopTransactionRequest">A remote stop transaction request.</param>
+    public delegate Task<RemoteStopTransactionResponse>
+
+        OnRemoteStopTransactionDelegate(DateTime                         Timestamp,
+                                        ChargePointSOAPServer            Sender,
+                                        CancellationToken                CancellationToken,
+                                        EventTracking_Id                 EventTrackingId,
+
+                                        CS.RemoteStopTransactionRequest  RemoteStopTransactionRequest);
+
+
+    /// <summary>
+    /// Stop a charging transaction.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// 
+    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+    /// <param name="TransactionId">The identification of the transaction which the charge point is requested to stop.</param>
+    /// 
+    /// <param name="Result">The general OCPP result.</param>
+    /// <param name="Status">The status indicating whether the charge point accepts the request to stop a charging transaction.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task<RemoteStopTransactionResponse>
+
+        OnRemoteStopTransactionResponseDelegate(DateTime               Timestamp,
+                                                ChargePointSOAPServer  Sender,
+                                                CancellationToken      CancellationToken,
+                                                EventTracking_Id       EventTrackingId,
+
+                                                ChargeBox_Id           ChargeBoxIdentity,
+                                                Transaction_Id         TransactionId,
+
+                                                Result                 Result,
+                                                RemoteStartStopStatus  Status,
+                                                TimeSpan               Runtime);
 
     #endregion
 

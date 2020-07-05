@@ -40,8 +40,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region Properties
 
         /// <summary>
-        /// The status indicating whether the charge point accepts
-        /// the request to stop the charging transaction.
+        /// The status indicating whether the charge point accepts the request to stop the charging transaction.
         /// </summary>
         public RemoteStartStopStatus  Status    { get; }
 

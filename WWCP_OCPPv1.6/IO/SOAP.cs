@@ -166,7 +166,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                    MessageId.IsNotNullOrEmpty() ? MessageId : "uuid:" + Guid.NewGuid().ToString(),
                                    RelatesTo,
                                    From,
-                                   To),
+                                   To).ToXML(),
 
                     new XElement(SOAPNS.v1_2.NS.SOAPEnvelope + "Body",   SOAPBody)
 

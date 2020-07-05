@@ -364,6 +364,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #endregion
 
 
+        private String NextMessageId()
+            => Guid.NewGuid().ToString();
+
+
         #region ReserveNow            (ChargeBoxIdentity, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
 
         /// <summary>
@@ -469,13 +473,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     UserAgent,
+                                                    false,
                                                     RequestTimeout,
                                                     DNSClient))
             {
 
                 result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
                                                                     "/ReserveNow",
-                                                                    null,
+                                                                    NextMessageId(),
                                                                     From,
                                                                     To,
                                                                     request.ToXML()),
@@ -675,13 +680,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     UserAgent,
+                                                    false,
                                                     RequestTimeout,
                                                     DNSClient))
             {
 
                 result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
                                                                     "/CancelReservation",
-                                                                    null,
+                                                                    NextMessageId(),
                                                                     From,
                                                                     To,
                                                                     request.ToXML()),
@@ -888,17 +894,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     UserAgent,
+                                                    false,
                                                     RequestTimeout,
                                                     DNSClient))
             {
 
                 result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
                                                                     "/RemoteStartTransaction",
-                                                                    null,
+                                                                    NextMessageId(),
                                                                     From,
                                                                     To,
                                                                     request.ToXML()),
                                                  "RemoteStartTransaction",
+                                                 ContentType:          HTTPContentType.XMLTEXT_UTF8,
                                                  RequestLogDelegate:   OnRemoteStartTransactionSOAPRequest,
                                                  ResponseLogDelegate:  OnRemoteStartTransactionSOAPResponse,
                                                  CancellationToken:    CancellationToken,
@@ -1094,13 +1102,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     UserAgent,
+                                                    false,
                                                     RequestTimeout,
                                                     DNSClient))
             {
 
                 result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
                                                                     "/RemoteStopTransaction",
-                                                                    null,
+                                                                    NextMessageId(),
                                                                     From,
                                                                     To,
                                                                     request.ToXML()),
@@ -1302,13 +1311,14 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     UserAgent,
+                                                    false,
                                                     RequestTimeout,
                                                     DNSClient))
             {
 
                 result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
                                                                     "/DataTransfer",
-                                                                    null,
+                                                                    NextMessageId(),
                                                                     From,
                                                                     To,
                                                                     request.ToXML()),

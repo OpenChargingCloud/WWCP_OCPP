@@ -112,6 +112,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         //
         //             <!--Optional:-->
         //             <ns:transactionId>?</ns:transactionId>
+        //
         //             <ns:stackLevel>?</ns:stackLevel>
         //             <ns:chargingProfilePurpose>?</ns:chargingProfilePurpose>
         //             <ns:chargingProfileKind>?</ns:chargingProfileKind>

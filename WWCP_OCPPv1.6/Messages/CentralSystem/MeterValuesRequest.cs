@@ -462,11 +462,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region MeterValues
 
-                if (!MeterValuesRequestJSON.ParseMandatory("meterValue",
-                                                           "meter values",
-                                                           MeterValue.TryParse,
-                                                           out IEnumerable<MeterValue>  MeterValues,
-                                                           out                          ErrorResponse))
+                if (!MeterValuesRequestJSON.ParseMandatoryJSON("meterValue",
+                                                               "meter values",
+                                                               MeterValue.TryParse,
+                                                               out IEnumerable<MeterValue>  MeterValues,
+                                                               out                          ErrorResponse))
                 {
                     return false;
                 }

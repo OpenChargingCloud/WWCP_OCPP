@@ -387,32 +387,32 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 ChargingProfile = new ChargingProfile(
 
-                                      ChargingProfileXML.MapValueOrFail     (OCPPNS.OCPPv1_6_CP + "chargingProfileId",
-                                                                             ChargingProfile_Id.Parse),
+                                      ChargingProfileXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "chargingProfileId",
+                                                                            ChargingProfile_Id.Parse),
 
-                                      ChargingProfileXML.MapValueOrFail     (OCPPNS.OCPPv1_6_CP + "stackLevel",
-                                                                             UInt32.Parse),
+                                      ChargingProfileXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "stackLevel",
+                                                                            UInt32.Parse),
 
-                                      ChargingProfileXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "chargingProfilePurpose",
-                                                                             ChargingProfilePurposesExtentions.Parse),
+                                      ChargingProfileXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "chargingProfilePurpose",
+                                                                            ChargingProfilePurposesExtentions.Parse),
 
-                                      ChargingProfileXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "chargingProfileKind",
-                                                                             ChargingProfileKindsExtentions.Parse),
+                                      ChargingProfileXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "chargingProfileKind",
+                                                                            ChargingProfileKindsExtentions.Parse),
 
-                                      ChargingProfileXML.MapElementOrFail   (OCPPNS.OCPPv1_6_CP + "chargingSchedule",
-                                                                             ChargingSchedule.Parse),
+                                      ChargingProfileXML.MapElementOrFail  (OCPPNS.OCPPv1_6_CP + "chargingSchedule",
+                                                                            ChargingSchedule.Parse),
 
-                                      ChargingProfileXML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "transactionId",
-                                                                             Transaction_Id.Parse),
+                                      ChargingProfileXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "transactionId",
+                                                                            Transaction_Id.Parse),
 
-                                      ChargingProfileXML.MapEnumValuesOrNull(OCPPNS.OCPPv1_6_CP + "recurrencyKind",
-                                                                             RecurrencyKindsExtentions.Parse),
+                                      ChargingProfileXML.MapValueOrNull    (OCPPNS.OCPPv1_6_CP + "recurrencyKind",
+                                                                            RecurrencyKindsExtentions.Parse),
 
-                                      ChargingProfileXML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "validFrom",
-                                                                             DateTime.Parse),
+                                      ChargingProfileXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "validFrom",
+                                                                            DateTime.Parse),
 
-                                      ChargingProfileXML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "validTo",
-                                                                             DateTime.Parse)
+                                      ChargingProfileXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "validTo",
+                                                                            DateTime.Parse)
 
                                   );
 
@@ -504,12 +504,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 #region ChargingSchedule
 
-                if (!ChargingProfileJSON.ParseMandatoryN("chargingSchedule",
-                                                        "charging schedule",
-                                                        OCPPv1_6.ChargingSchedule.TryParse,
-                                                        out ChargingSchedule  ChargingSchedule,
-                                                        out                   ErrorResponse,
-                                                        OnException))
+                if (!ChargingProfileJSON.ParseMandatoryJSON("chargingSchedule",
+                                                            "charging schedule",
+                                                            OCPPv1_6.ChargingSchedule.TryParse,
+                                                            out ChargingSchedule  ChargingSchedule,
+                                                            out                   ErrorResponse,
+                                                            OnException))
                 {
                     return false;
                 }
@@ -689,7 +689,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                        ? new XElement(OCPPNS.OCPPv1_6_CP + "recurrencyKind",     RecurrencyKind.Value.AsText())
                        : null,
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "chargingSchedule",         ChargingSchedule.ToXML())
+                   ChargingSchedule.ToXML()
 
                );
 

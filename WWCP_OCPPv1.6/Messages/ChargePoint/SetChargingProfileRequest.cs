@@ -414,12 +414,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 #region ChargingProfile
 
-                if (!SetChargingProfileRequestJSON.ParseMandatory("csChargingProfiles",
-                                                                  "charging station charging profiles",
-                                                                  OCPPv1_6.ChargingProfile.TryParse,
-                                                                  out ChargingProfile  ChargingProfile,
-                                                                  out                  ErrorResponse,
-                                                                  OnException))
+                if (!SetChargingProfileRequestJSON.ParseMandatoryJSON("csChargingProfiles",
+                                                                      "charging station charging profiles",
+                                                                      OCPPv1_6.ChargingProfile.TryParse,
+                                                                      out ChargingProfile  ChargingProfile,
+                                                                      out                  ErrorResponse,
+                                                                      OnException))
                 {
                     return false;
                 }

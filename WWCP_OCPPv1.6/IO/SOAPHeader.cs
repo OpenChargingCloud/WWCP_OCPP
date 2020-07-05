@@ -183,10 +183,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                        OnExceptionDelegate  OnException = null)
         {
 
-            SOAPHeader _SOAPHeader;
-
-            if (TryParse(SOAPHeaderXML, out _SOAPHeader, OnException))
-                return _SOAPHeader;
+            if (TryParse(SOAPHeaderXML,
+                         out SOAPHeader SOAPHeader,
+                         OnException))
+            {
+                return SOAPHeader;
+            }
 
             return null;
 
@@ -205,10 +207,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                        OnExceptionDelegate  OnException = null)
         {
 
-            SOAPHeader _SOAPHeader;
-
-            if (TryParse(SOAPHeaderText, out _SOAPHeader, OnException))
-                return _SOAPHeader;
+            if (TryParse(SOAPHeaderText,
+                         out SOAPHeader SOAPHeader,
+                         OnException))
+            {
+                return SOAPHeader;
+            }
 
             return null;
 
@@ -225,7 +229,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
         /// <param name="SOAPHeader">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement             SOAPHeaderXML,
-                                       out SOAPHeader        SOAPHeader,
+                                       out SOAPHeader       SOAPHeader,
                                        OnExceptionDelegate  OnException  = null)
         {
 
@@ -237,11 +241,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                                  SOAPHeaderXML.MapValueOrFail       (OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity",
                                                                      ChargeBox_Id.Parse),
 
-                                 SOAPHeaderXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "Action"),
-                                 SOAPHeaderXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "MessageID"),
-                                 SOAPHeaderXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "RelatesTo"),
-                                 SOAPHeaderXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "From"),
-                                 SOAPHeaderXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "To")
+                                 SOAPHeaderXML.ElementValueOrFail   (SOAPNS.v1_2.NS.SOAPAdressing + "Action"),
+                                 SOAPHeaderXML.ElementValueOrFail   (SOAPNS.v1_2.NS.SOAPAdressing + "MessageID"),
+                                 SOAPHeaderXML.ElementValueOrDefault(SOAPNS.v1_2.NS.SOAPAdressing + "RelatesTo"),
+                                 SOAPHeaderXML.ElementValueOrFail   (SOAPNS.v1_2.NS.SOAPAdressing + "From"),
+                                 SOAPHeaderXML.ElementValueOrFail   (SOAPNS.v1_2.NS.SOAPAdressing + "To")
 
                              );
 
