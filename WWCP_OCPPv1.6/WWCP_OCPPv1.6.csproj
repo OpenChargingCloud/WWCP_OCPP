@@ -63,7 +63,7 @@
     <Compile Include="DataTypes\Complex\ChargingSchedule.cs" />
     <Compile Include="DataTypes\Complex\ChargingProfile.cs" />
     <Compile Include="DataTypes\Complex\AuthorizationData.cs" />
-    <Compile Include="DataTypes\Complex\KeyValue.cs" />
+    <Compile Include="DataTypes\Complex\ConfigurationKey.cs" />
     <Compile Include="DataTypes\Complex\MeterValue.cs" />
     <Compile Include="DataTypes\Complex\SampledValue.cs" />
     <Compile Include="DataTypes\Simple\ChargingProfilePurposes.cs" />

@@ -22,7 +22,10 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Collections.Generic;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -32,7 +35,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// A get configuration response.
     /// </summary>
-    public class GetConfigurationResponse : AResponse<GetConfigurationResponse>
+    public class GetConfigurationResponse : AResponse<CS.GetConfigurationRequest,
+                                                         GetConfigurationResponse>
     {
 
         #region Properties
@@ -40,61 +44,58 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// An enumeration of (requested and) known configuration keys.
         /// </summary>
-        public IEnumerable<KeyValue>  ConfigurationKeys    { get; }
+        public IEnumerable<ConfigurationKey>  ConfigurationKeys    { get; }
 
         /// <summary>
         /// An enumeration of (requested but) unknown configuration keys.
         /// </summary>
-        public IEnumerable<String>    UnknownKeys          { get; }
-
-        #endregion
-
-        #region Static methods
-
-        /// <summary>
-        /// The get configuration request failed.
-        /// </summary>
-        public static GetConfigurationResponse Failed
-            => new GetConfigurationResponse(Result.Server());
+        public IEnumerable<String>            UnknownKeys          { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region GetConfigurationResponse(ConfigurationKeys, UnknownKeys)
+        #region GetConfigurationResponse(Request, ConfigurationKeys, UnknownKeys)
 
         /// <summary>
         /// Create a new get configuration response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ConfigurationKeys">An enumeration of (requested and) known configuration keys.</param>
         /// <param name="UnknownKeys">An enumeration of (requested but) unknown configuration keys.</param>
-        public GetConfigurationResponse(IEnumerable<KeyValue>  ConfigurationKeys,
-                                        IEnumerable<String>    UnknownKeys)
+        public GetConfigurationResponse(CS.GetConfigurationRequest     Request,
+                                        IEnumerable<ConfigurationKey>  ConfigurationKeys,
+                                        IEnumerable<String>            UnknownKeys)
 
-            : base(Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
-            this.ConfigurationKeys = ConfigurationKeys ?? new KeyValue[0];
-            this.UnknownKeys       = UnknownKeys       ?? new String[0];
+            this.ConfigurationKeys  = ConfigurationKeys ?? new ConfigurationKey[0];
+            this.UnknownKeys        = UnknownKeys       ?? new String[0];
 
         }
 
         #endregion
 
-        #region GetConfigurationResponse(Result)
+        #region GetConfigurationResponse(Request, Result)
 
         /// <summary>
         /// Create a new get configuration response.
         /// </summary>
-        public GetConfigurationResponse(Result Result)
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public GetConfigurationResponse(CS.GetConfigurationRequest  Request,
+                                        Result                      Result)
 
-            : base(Result)
+            : base(Request,
+                   Result)
 
         {
 
-            this.ConfigurationKeys = new KeyValue[0];
-            this.UnknownKeys       = new String[0];
+            this.ConfigurationKeys  = new ConfigurationKey[0];
+            this.UnknownKeys        = new String[0];
 
         }
 
@@ -129,23 +130,69 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:GetConfigurationResponse",
+        //     "title":   "GetConfigurationResponse",
+        //     "type":    "object",
+        //     "properties": {
+        //         "configurationKey": {
+        //             "type": "array",
+        //             "items": {
+        //                 "type": "object",
+        //                 "properties": {
+        //                     "key": {
+        //                         "type": "string",
+        //                         "maxLength": 50
+        //                     },
+        //                     "readonly": {
+        //                         "type": "boolean"
+        //                     },
+        //                     "value": {
+        //                         "type": "string",
+        //                         "maxLength": 500
+        //                     }
+        //                 },
+        //                 "additionalProperties": false,
+        //                 "required": [
+        //                     "key",
+        //                     "readonly"
+        //                 ]
+        //             }
+        //         },
+        //         "unknownKey": {
+        //             "type": "array",
+        //             "items": {
+        //                 "type": "string",
+        //                 "maxLength": 50
+        //             }
+        //         }
+        //     },
+        //     "additionalProperties": false
+        // }
+
         #endregion
 
-        #region (static) Parse   (GetConfigurationResponseXML,  OnException = null)
+        #region (static) Parse   (Request, GetConfigurationResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a get configuration response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="GetConfigurationResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetConfigurationResponse Parse(XElement             GetConfigurationResponseXML,
-                                                     OnExceptionDelegate  OnException = null)
+        public static GetConfigurationResponse Parse(CS.GetConfigurationRequest  Request,
+                                                     XElement                    GetConfigurationResponseXML,
+                                                     OnExceptionDelegate         OnException = null)
         {
 
-            GetConfigurationResponse _GetConfigurationResponse;
-
-            if (TryParse(GetConfigurationResponseXML, out _GetConfigurationResponse, OnException))
-                return _GetConfigurationResponse;
+            if (TryParse(Request,
+                         GetConfigurationResponseXML,
+                         out GetConfigurationResponse getConfigurationResponse,
+                         OnException))
+            {
+                return getConfigurationResponse;
+            }
 
             return null;
 
@@ -153,21 +200,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (GetConfigurationResponseText, OnException = null)
+        #region (static) Parse   (Request, GetConfigurationResponseJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a get configuration response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="GetConfigurationResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static GetConfigurationResponse Parse(CS.GetConfigurationRequest  Request,
+                                                     JObject                     GetConfigurationResponseJSON,
+                                                     OnExceptionDelegate         OnException = null)
+        {
+
+            if (TryParse(Request,
+                         GetConfigurationResponseJSON,
+                         out GetConfigurationResponse getConfigurationResponse,
+                         OnException))
+            {
+                return getConfigurationResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, GetConfigurationResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a get configuration response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="GetConfigurationResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetConfigurationResponse Parse(String               GetConfigurationResponseText,
-                                                     OnExceptionDelegate  OnException = null)
+        public static GetConfigurationResponse Parse(CS.GetConfigurationRequest  Request,
+                                                     String                      GetConfigurationResponseText,
+                                                     OnExceptionDelegate         OnException = null)
         {
 
-            GetConfigurationResponse _GetConfigurationResponse;
-
-            if (TryParse(GetConfigurationResponseText, out _GetConfigurationResponse, OnException))
-                return _GetConfigurationResponse;
+            if (TryParse(Request,
+                         GetConfigurationResponseText,
+                         out GetConfigurationResponse getConfigurationResponse,
+                         OnException))
+            {
+                return getConfigurationResponse;
+            }
 
             return null;
 
@@ -175,15 +254,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(GetConfigurationResponseXML,  out GetConfigurationResponse, OnException = null)
+        #region (static) TryParse(Request, GetConfigurationResponseXML,  out GetConfigurationResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a get configuration response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="GetConfigurationResponseXML">The XML to be parsed.</param>
         /// <param name="GetConfigurationResponse">The parsed get configuration response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                      GetConfigurationResponseXML,
+        public static Boolean TryParse(CS.GetConfigurationRequest    Request,
+                                       XElement                      GetConfigurationResponseXML,
                                        out GetConfigurationResponse  GetConfigurationResponse,
                                        OnExceptionDelegate           OnException  = null)
         {
@@ -193,8 +274,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 GetConfigurationResponse = new GetConfigurationResponse(
 
+                                               Request,
+
                                                GetConfigurationResponseXML.MapElements  (OCPPNS.OCPPv1_6_CP + "configurationKey",
-                                                                                         KeyValue.Parse),
+                                                                                         ConfigurationKey.Parse),
 
                                                GetConfigurationResponseXML.ElementValues(OCPPNS.OCPPv1_6_CP + "unknownKey")
 
@@ -217,15 +300,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(GetConfigurationResponseText, out GetConfigurationResponse, OnException = null)
+        #region (static) TryParse(Request, GetConfigurationResponseJSON, out GetConfigurationResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a get configuration response.
+        /// Try to parse the given JSON representation of a get configuration response.
         /// </summary>
-        /// <param name="GetConfigurationResponseText">The text to be parsed.</param>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="GetConfigurationResponseJSON">The JSON to be parsed.</param>
         /// <param name="GetConfigurationResponse">The parsed get configuration response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                        GetConfigurationResponseText,
+        public static Boolean TryParse(CS.GetConfigurationRequest    Request,
+                                       JObject                       GetConfigurationResponseJSON,
                                        out GetConfigurationResponse  GetConfigurationResponse,
                                        OnExceptionDelegate           OnException  = null)
         {
@@ -233,11 +318,96 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(GetConfigurationResponseText).Root,
-                             out GetConfigurationResponse,
-                             OnException))
+                GetConfigurationResponse = null;
 
-                    return true;
+                #region ConfigurationKey
+
+                if (!GetConfigurationResponseJSON.ParseMandatory("configurationKey",
+                                                                 "configuration keys",
+                                                                 ConfigurationKey.TryParse,
+                                                                 out IEnumerable<ConfigurationKey>  ConfigurationKeys,
+                                                                 out String                         ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region UnknownKeys
+
+                if (!GetConfigurationResponseJSON.ParseMandatory("unknownKey",
+                                                                 "unknown keys",
+                                                                 out IEnumerable<String>  UnknownKeys,
+                                                                 out                      ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                GetConfigurationResponse = new GetConfigurationResponse(Request,
+                                                                        ConfigurationKeys,
+                                                                        UnknownKeys);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, GetConfigurationResponseJSON, e);
+
+                GetConfigurationResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, GetConfigurationResponseText, out GetConfigurationResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a get configuration response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="GetConfigurationResponseText">The text to be parsed.</param>
+        /// <param name="GetConfigurationResponse">The parsed get configuration response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CS.GetConfigurationRequest    Request,
+                                       String                        GetConfigurationResponseText,
+                                       out GetConfigurationResponse  GetConfigurationResponse,
+                                       OnExceptionDelegate           OnException  = null)
+        {
+
+            try
+            {
+
+                GetConfigurationResponseText = GetConfigurationResponseText?.Trim();
+
+                if (GetConfigurationResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (GetConfigurationResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(GetConfigurationResponseText),
+                                 out GetConfigurationResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(GetConfigurationResponseText).Root,
+                                 out GetConfigurationResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -262,9 +432,54 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             => new XElement(OCPPNS.OCPPv1_6_CP + "getConfigurationResponse",
 
                    ConfigurationKeys.SafeSelect(key => key.ToXML()),
-                   UnknownKeys.      SafeSelect(key => new XElement(OCPPNS.OCPPv1_6_CP + "unknownKey",  key))
+                   UnknownKeys.      SafeSelect(key => new XElement(OCPPNS.OCPPv1_6_CP + "unknownKey",  key.SubstringMax(ConfigurationKey.MaxConfigurationKeyLength)))
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomGetConfigurationResponseSerializer = null, CustomConfigurationKeySerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomGetConfigurationResponseSerializer">A delegate to serialize custom get configuration responses.</param>
+        /// <param name="CustomConfigurationKeySerializer">A delegate to serialize custom configuration keys.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetConfigurationResponse>  CustomGetConfigurationResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<ConfigurationKey>          CustomConfigurationKeySerializer           = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           ConfigurationKeys.SafeAny()
+                               ? new JProperty("configurationKey",  new JArray(ConfigurationKeys.Select(key => key.ToJSON(CustomConfigurationKeySerializer))))
+                               : null,
+
+                           UnknownKeys.SafeAny()
+                               ? new JProperty("unknownKey",        new JArray(UnknownKeys.Select(key => key.SubstringMax(ConfigurationKey.MaxConfigurationKeyLength))))
+                               : null
+
+                       );
+
+            return CustomGetConfigurationResponseSerializer != null
+                       ? CustomGetConfigurationResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The get configuration request failed.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        public static GetConfigurationResponse Failed(CS.GetConfigurationRequest Request)
+
+            => new GetConfigurationResponse(Request,
+                                            Result.Server());
 
         #endregion
 
@@ -287,7 +502,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) GetConfigurationResponse1 == null) || ((Object) GetConfigurationResponse2 == null))
+            if ((GetConfigurationResponse1 is null) || (GetConfigurationResponse2 is null))
                 return false;
 
             return GetConfigurationResponse1.Equals(GetConfigurationResponse2);
@@ -327,12 +542,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object is null)
                 return false;
 
-            // Check if the given object is a get configuration response.
-            var GetConfigurationResponse = Object as GetConfigurationResponse;
-            if ((Object) GetConfigurationResponse == null)
+            if (!(Object is GetConfigurationResponse GetConfigurationResponse))
                 return false;
 
-            return this.Equals(GetConfigurationResponse);
+            return Equals(GetConfigurationResponse);
 
         }
 
@@ -348,7 +561,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(GetConfigurationResponse GetConfigurationResponse)
         {
 
-            if ((Object) GetConfigurationResponse == null)
+            if (GetConfigurationResponse is null)
                 return false;
 
             return ConfigurationKeys.Count().Equals(GetConfigurationResponse.ConfigurationKeys.Count()) &&
@@ -391,7 +604,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                              UnknownKeys.Count(), " unknown key(s)");
 
         #endregion
-
 
     }
 

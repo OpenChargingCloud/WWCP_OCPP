@@ -405,6 +405,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 #region Info
 
                 if (!StatusNotificationRequestJSON.ParseOptional("info",
+                                                                 "info",
                                                                  out String  Info,
                                                                  out         ErrorResponse))
                 {
@@ -428,6 +429,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 #region VerndorId
 
                 if (!StatusNotificationRequestJSON.ParseOptional("verndorId",
+                                                                 "verndor identification",
                                                                  out String  VerndorId,
                                                                  out         ErrorResponse))
                 {
@@ -439,6 +441,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 #region VendorErrorCode
 
                 if (!StatusNotificationRequestJSON.ParseOptional("vendorErrorCode",
+                                                                 "vendor error code",
                                                                  out String  VendorErrorCode,
                                                                  out         ErrorResponse))
                 {

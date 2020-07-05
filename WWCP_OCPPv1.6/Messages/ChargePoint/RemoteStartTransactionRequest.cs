@@ -453,12 +453,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 #region ChargingProfile
 
-                if (RemoteStartTransactionRequestJSON.ParseOptional("chargingProfile",
-                                                                    "charging profile",
-                                                                    OCPPv1_6.ChargingProfile.TryParse,
-                                                                    out ChargingProfile  ChargingProfile,
-                                                                    out                  ErrorResponse,
-                                                                    OnException))
+                if (RemoteStartTransactionRequestJSON.ParseOptionalJSON("chargingProfile",
+                                                                        "charging profile",
+                                                                        OCPPv1_6.ChargingProfile.TryParse,
+                                                                        out ChargingProfile  ChargingProfile,
+                                                                        out                  ErrorResponse,
+                                                                        OnException))
                 {
 
                     if (ErrorResponse != null)
