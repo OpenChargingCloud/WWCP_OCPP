@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +33,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// A send local list response.
     /// </summary>
-    public class SendLocalListResponse : AResponse<SendLocalListResponse>
+    public class SendLocalListResponse : AResponse<CS.SendLocalListRequest,
+                                                      SendLocalListResponse>
     {
 
         #region Properties
@@ -38,31 +42,24 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The success or failure of the send local list command.
         /// </summary>
-        public UpdateStatus  Status   { get; }
-
-        #endregion
-
-        #region Statics
-
-        /// <summary>
-        /// The send local list command failed.
-        /// </summary>
-        public static SendLocalListResponse Failed
-            => new SendLocalListResponse(Result.Server());
+        public UpdateStatus  Status    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region SendLocalListResponse(Status)
+        #region SendLocalListResponse(Request, Status)
 
         /// <summary>
-        /// Create a new OCPP send local list response.
+        /// Create a new send local list response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="Status">The success or failure of the send local list command.</param>
-        public SendLocalListResponse(UpdateStatus Status)
+        public SendLocalListResponse(CS.SendLocalListRequest  Request,
+                                     UpdateStatus             Status)
 
-            : base(Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -72,13 +69,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region SendLocalListResponse(Result)
+        #region SendLocalListResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP send local list response.
+        /// Create a new send local list response.
         /// </summary>
-        public SendLocalListResponse(Result Result)
-            : base(Result)
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public SendLocalListResponse(CS.SendLocalListRequest  Request,
+                                     Result                   Result)
+
+            : base(Request,
+                   Result)
+
         { }
 
         #endregion
@@ -100,23 +103,51 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:SendLocalListResponse",
+        //     "title":   "SendLocalListResponse",
+        //     "type":    "object",
+        //     "properties": {
+        //         "status": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Failed",
+        //                 "NotSupported",
+        //                 "VersionMismatch"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
+
         #endregion
 
-        #region (static) Parse   (SendLocalListResponseXML,  OnException = null)
+        #region (static) Parse   (Request, SendLocalListResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a send local list response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="SendLocalListResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SendLocalListResponse Parse(XElement             SendLocalListResponseXML,
-                                                  OnExceptionDelegate  OnException = null)
+        public static SendLocalListResponse Parse(CS.SendLocalListRequest  Request,
+                                                  XElement                 SendLocalListResponseXML,
+                                                  OnExceptionDelegate      OnException = null)
         {
 
-            SendLocalListResponse _SendLocalListResponse;
-
-            if (TryParse(SendLocalListResponseXML, out _SendLocalListResponse, OnException))
-                return _SendLocalListResponse;
+            if (TryParse(Request,
+                         SendLocalListResponseXML,
+                         out SendLocalListResponse sendLocalListResponse,
+                         OnException))
+            {
+                return sendLocalListResponse;
+            }
 
             return null;
 
@@ -124,21 +155,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (SendLocalListResponseText, OnException = null)
+        #region (static) Parse   (Request, SendLocalListResponseJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a send local list response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="SendLocalListResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static SendLocalListResponse Parse(CS.SendLocalListRequest  Request,
+                                                  JObject                  SendLocalListResponseJSON,
+                                                  OnExceptionDelegate      OnException = null)
+        {
+
+            if (TryParse(Request,
+                         SendLocalListResponseJSON,
+                         out SendLocalListResponse sendLocalListResponse,
+                         OnException))
+            {
+                return sendLocalListResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, SendLocalListResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a send local list response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="SendLocalListResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SendLocalListResponse Parse(String               SendLocalListResponseText,
-                                                  OnExceptionDelegate  OnException = null)
+        public static SendLocalListResponse Parse(CS.SendLocalListRequest  Request,
+                                                  String                   SendLocalListResponseText,
+                                                  OnExceptionDelegate      OnException = null)
         {
 
-            SendLocalListResponse _SendLocalListResponse;
-
-            if (TryParse(SendLocalListResponseText, out _SendLocalListResponse, OnException))
-                return _SendLocalListResponse;
+            if (TryParse(Request,
+                         SendLocalListResponseText,
+                         out SendLocalListResponse sendLocalListResponse,
+                         OnException))
+            {
+                return sendLocalListResponse;
+            }
 
             return null;
 
@@ -146,15 +209,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(SendLocalListResponseXML,  out SendLocalListResponse, OnException = null)
+        #region (static) TryParse(Request, SendLocalListResponseXML,  out SendLocalListResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a send local list response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="SendLocalListResponseXML">The XML to be parsed.</param>
         /// <param name="SendLocalListResponse">The parsed send local list response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                   SendLocalListResponseXML,
+        public static Boolean TryParse(CS.SendLocalListRequest    Request,
+                                       XElement                   SendLocalListResponseXML,
                                        out SendLocalListResponse  SendLocalListResponse,
                                        OnExceptionDelegate        OnException  = null)
         {
@@ -163,6 +228,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             {
 
                 SendLocalListResponse = new SendLocalListResponse(
+
+                                            Request,
 
                                             SendLocalListResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
                                                                                     UpdateStatusExtentions.Parse)
@@ -186,15 +253,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(SendLocalListResponseText, out SendLocalListResponse, OnException = null)
+        #region (static) TryParse(Request, SendLocalListResponseJSON, out SendLocalListResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a send local list response.
+        /// Try to parse the given JSON representation of a send local list response.
         /// </summary>
-        /// <param name="SendLocalListResponseText">The text to be parsed.</param>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="SendLocalListResponseJSON">The JSON to be parsed.</param>
         /// <param name="SendLocalListResponse">The parsed send local list response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                     SendLocalListResponseText,
+        public static Boolean TryParse(CS.SendLocalListRequest    Request,
+                                       JObject                    SendLocalListResponseJSON,
                                        out SendLocalListResponse  SendLocalListResponse,
                                        OnExceptionDelegate        OnException  = null)
         {
@@ -202,11 +271,83 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(SendLocalListResponseText).Root,
-                             out SendLocalListResponse,
-                             OnException))
+                SendLocalListResponse = null;
 
-                    return true;
+                #region UpdateStatus
+
+                if (!SendLocalListResponseJSON.MapMandatory("status",
+                                                            "update status",
+                                                            UpdateStatusExtentions.Parse,
+                                                            out UpdateStatus  UpdateStatus,
+                                                            out String        ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                SendLocalListResponse = new SendLocalListResponse(Request,
+                                                                  UpdateStatus);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, SendLocalListResponseJSON, e);
+
+                SendLocalListResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, SendLocalListResponseText, out SendLocalListResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a send local list response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="SendLocalListResponseText">The text to be parsed.</param>
+        /// <param name="SendLocalListResponse">The parsed send local list response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CS.SendLocalListRequest    Request,
+                                       String                     SendLocalListResponseText,
+                                       out SendLocalListResponse  SendLocalListResponse,
+                                       OnExceptionDelegate        OnException  = null)
+        {
+
+            try
+            {
+
+                SendLocalListResponseText = SendLocalListResponseText?.Trim();
+
+                if (SendLocalListResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (SendLocalListResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(SendLocalListResponseText),
+                                 out SendLocalListResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(SendLocalListResponseText).Root,
+                                 out SendLocalListResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -237,6 +378,20 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #endregion
 
 
+        #region Static methods
+
+        /// <summary>
+        /// The send local list command failed.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        public static SendLocalListResponse Failed(CS.SendLocalListRequest  Request)
+
+            => new SendLocalListResponse(Request,
+                                         Result.Server());
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (SendLocalListResponse1, SendLocalListResponse2)
@@ -255,7 +410,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) SendLocalListResponse1 == null) || ((Object) SendLocalListResponse2 == null))
+            if ((SendLocalListResponse1 is null) || (SendLocalListResponse2 is null))
                 return false;
 
             return SendLocalListResponse1.Equals(SendLocalListResponse2);
@@ -295,12 +450,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object is null)
                 return false;
 
-            // Check if the given object is a send local list response.
-            var SendLocalListResponse = Object as SendLocalListResponse;
-            if ((Object) SendLocalListResponse == null)
+            if (!(Object is SendLocalListResponse SendLocalListResponse))
                 return false;
 
-            return this.Equals(SendLocalListResponse);
+            return Equals(SendLocalListResponse);
 
         }
 
@@ -316,7 +469,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(SendLocalListResponse SendLocalListResponse)
         {
 
-            if ((Object) SendLocalListResponse == null)
+            if (SendLocalListResponse is null)
                 return false;
 
             return Status.Equals(SendLocalListResponse.Status);
@@ -334,6 +487,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => Status.GetHashCode();
 
         #endregion
@@ -344,10 +498,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => Status.ToString();
 
         #endregion
-
 
     }
 

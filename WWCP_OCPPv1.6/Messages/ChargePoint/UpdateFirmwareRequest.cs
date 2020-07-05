@@ -313,11 +313,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 #region Retries
 
-                if (UpdateFirmwareRequestJSON.ParseOptionalStruct("retries",
-                                                                  "retries",
-                                                                  Byte.TryParse,
-                                                                  out Byte?  Retries,
-                                                                  out        ErrorResponse))
+                if (UpdateFirmwareRequestJSON.ParseOptional("retries",
+                                                            "retries",
+                                                            out Byte?  Retries,
+                                                            out        ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -331,7 +330,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 if (UpdateFirmwareRequestJSON.ParseOptional("retryInterval",
                                                             "retry interval",
-                                                            s => TimeSpan.FromSeconds(UInt32.Parse(s)),
                                                             out TimeSpan?  RetryInterval,
                                                             out            ErrorResponse))
                 {

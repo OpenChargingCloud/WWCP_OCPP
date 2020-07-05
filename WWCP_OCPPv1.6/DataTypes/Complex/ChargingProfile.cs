@@ -468,7 +468,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 if (!ChargingProfileJSON.ParseMandatory("stackLevel",
                                                         "stack level",
-                                                        UInt32.TryParse,
                                                         out UInt32  StackLevel,
                                                         out         ErrorResponse))
                 {

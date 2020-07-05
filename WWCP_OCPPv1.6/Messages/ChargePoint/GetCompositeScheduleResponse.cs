@@ -38,29 +38,29 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The result of the request.
         /// </summary>
-        public GetCompositeScheduleStatus  Status             { get; }
+        public GetCompositeScheduleStatus  Status              { get; }
 
         /// <summary>
         /// The charging schedule contained in this notification
         /// applies to a specific connector.
         /// </summary>
-        public Connector_Id                ConnectorId        { get; }
+        public Connector_Id                ConnectorId         { get; }
 
         /// <summary>
         /// The periods contained in the charging profile are relative
         /// to this timestamp.
         /// </summary>
-        public DateTime?                   ScheduleStart      { get; }
+        public DateTime?                   ScheduleStart       { get; }
 
         /// <summary>
         /// The planned composite charging schedule, the energy consumption
         /// over time. Always relative to ScheduleStart.
         /// </summary>
-        public ChargingSchedule            ChargingSchedule   { get;  }
+        public ChargingSchedule            ChargingSchedule    { get;  }
 
         #endregion
 
-        #region Statics
+        #region Static methods
 
         /// <summary>
         /// The get composite schedule request failed.
@@ -75,7 +75,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region GetCompositeScheduleResponse(Status, ConnectorId, ScheduleStart, ChargingSchedule)
 
         /// <summary>
-        /// Create a new OCPP get composite schedule response.
+        /// Create a new get composite schedule response.
         /// </summary>
         /// <param name="Status">The result of the request.</param>
         /// <param name="ConnectorId">The charging schedule contained in this notification applies to a specific connector.</param>
@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region GetCompositeScheduleResponse(Result)
 
         /// <summary>
-        /// Create a new OCPP get composite schedule response.
+        /// Create a new get composite schedule response.
         /// </summary>
         public GetCompositeScheduleResponse(Result Result)
 

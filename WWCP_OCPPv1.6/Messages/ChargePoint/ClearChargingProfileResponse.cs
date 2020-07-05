@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +33,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// A clear charging profile response.
     /// </summary>
-    public class ClearChargingProfileResponse : AResponse<ClearChargingProfileResponse>
+    public class ClearChargingProfileResponse : AResponse<CS.ClearChargingProfileRequest,
+                                                             ClearChargingProfileResponse>
     {
 
         #region Properties
@@ -38,31 +42,24 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The success or failure of the clear charging profile command.
         /// </summary>
-        public ClearChargingProfileStatus  Status   { get; }
-
-        #endregion
-
-        #region Statics
-
-        /// <summary>
-        /// The clear charging profile command failed.
-        /// </summary>
-        public static ClearChargingProfileResponse Failed
-            => new ClearChargingProfileResponse(Result.Server());
+        public ClearChargingProfileStatus  Status    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region ClearChargingProfileResponse(Status)
+        #region ClearChargingProfileResponse(Request, Status)
 
         /// <summary>
-        /// Create a new OCPP clear charging profile response.
+        /// Create a new clear charging profile response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="Status">The success or failure of the reset command.</param>
-        public ClearChargingProfileResponse(ClearChargingProfileStatus Status)
+        public ClearChargingProfileResponse(CS.ClearChargingProfileRequest  Request,
+                                            ClearChargingProfileStatus      Status)
 
-            : base(Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -72,13 +69,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region ClearChargingProfileResponse(Result)
+        #region ClearChargingProfileResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP clear charging profile response.
+        /// Create a new clear charging profile response.
         /// </summary>
-        public ClearChargingProfileResponse(Result Result)
-            : base(Result)
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public ClearChargingProfileResponse(CS.ClearChargingProfileRequest  Request,
+                                            Result                          Result)
+
+            : base(Request,
+                   Result)
+
         { }
 
         #endregion
@@ -102,21 +105,26 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (ClearChargingProfileResponseXML,  OnException = null)
+        #region (static) Parse   (Request, ClearChargingProfileResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a clear charging profile response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ClearChargingProfileResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearChargingProfileResponse Parse(XElement             ClearChargingProfileResponseXML,
-                                                         OnExceptionDelegate  OnException = null)
+        public static ClearChargingProfileResponse Parse(CS.ClearChargingProfileRequest  Request,
+                                                         XElement                        ClearChargingProfileResponseXML,
+                                                         OnExceptionDelegate             OnException = null)
         {
 
-            ClearChargingProfileResponse _ClearChargingProfileResponse;
-
-            if (TryParse(ClearChargingProfileResponseXML, out _ClearChargingProfileResponse, OnException))
-                return _ClearChargingProfileResponse;
+            if (TryParse(Request,
+                         ClearChargingProfileResponseXML,
+                         out ClearChargingProfileResponse clearChargingProfileResponse,
+                         OnException))
+            {
+                return clearChargingProfileResponse;
+            }
 
             return null;
 
@@ -124,21 +132,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (ClearChargingProfileResponseText, OnException = null)
+        #region (static) Parse   (Request, ClearChargingProfileResponseJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a clear charging profile response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="ClearChargingProfileResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static ClearChargingProfileResponse Parse(CS.ClearChargingProfileRequest  Request,
+                                                         JObject                         ClearChargingProfileResponseJSON,
+                                                         OnExceptionDelegate             OnException = null)
+        {
+
+            if (TryParse(Request,
+                         ClearChargingProfileResponseJSON,
+                         out ClearChargingProfileResponse clearChargingProfileResponse,
+                         OnException))
+            {
+                return clearChargingProfileResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, ClearChargingProfileResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a clear charging profile response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ClearChargingProfileResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearChargingProfileResponse Parse(String               ClearChargingProfileResponseText,
-                                                         OnExceptionDelegate  OnException = null)
+        public static ClearChargingProfileResponse Parse(CS.ClearChargingProfileRequest  Request,
+                                                         String                          ClearChargingProfileResponseText,
+                                                         OnExceptionDelegate             OnException = null)
         {
 
-            ClearChargingProfileResponse _ClearChargingProfileResponse;
-
-            if (TryParse(ClearChargingProfileResponseText, out _ClearChargingProfileResponse, OnException))
-                return _ClearChargingProfileResponse;
+            if (TryParse(Request,
+                         ClearChargingProfileResponseText,
+                         out ClearChargingProfileResponse clearChargingProfileResponse,
+                         OnException))
+            {
+                return clearChargingProfileResponse;
+            }
 
             return null;
 
@@ -146,15 +186,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(ClearChargingProfileResponseXML,  out ClearChargingProfileResponse, OnException = null)
+        #region (static) TryParse(Request, ClearChargingProfileResponseXML,  out ClearChargingProfileResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a clear charging profile response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ClearChargingProfileResponseXML">The XML to be parsed.</param>
         /// <param name="ClearChargingProfileResponse">The parsed clear charging profile response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                          ClearChargingProfileResponseXML,
+        public static Boolean TryParse(CS.ClearChargingProfileRequest    Request,
+                                       XElement                          ClearChargingProfileResponseXML,
                                        out ClearChargingProfileResponse  ClearChargingProfileResponse,
                                        OnExceptionDelegate               OnException  = null)
         {
@@ -163,6 +205,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             {
 
                 ClearChargingProfileResponse = new ClearChargingProfileResponse(
+
+                                                   Request,
 
                                                    ClearChargingProfileResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
                                                                                                   ClearChargingProfileStatusExtentions.Parse)
@@ -186,15 +230,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(ClearChargingProfileResponseText, out ClearChargingProfileResponse, OnException = null)
+        #region (static) TryParse(Request, ClearChargingProfileResponseJSON, out ClearChargingProfileResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a clear charging profile response.
+        /// Try to parse the given JSON representation of a clear charging profile response.
         /// </summary>
-        /// <param name="ClearChargingProfileResponseText">The text to be parsed.</param>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="ClearChargingProfileResponseJSON">The JSON to be parsed.</param>
         /// <param name="ClearChargingProfileResponse">The parsed clear charging profile response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                            ClearChargingProfileResponseText,
+        public static Boolean TryParse(CS.ClearChargingProfileRequest    Request,
+                                       JObject                           ClearChargingProfileResponseJSON,
                                        out ClearChargingProfileResponse  ClearChargingProfileResponse,
                                        OnExceptionDelegate               OnException  = null)
         {
@@ -202,11 +248,83 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(ClearChargingProfileResponseText).Root,
-                             out ClearChargingProfileResponse,
-                             OnException))
+                ClearChargingProfileResponse = null;
 
-                    return true;
+                #region ClearChargingProfileStatus
+
+                if (!ClearChargingProfileResponseJSON.MapMandatory("status",
+                                                                   "clear charging profile status",
+                                                                   ClearChargingProfileStatusExtentions.Parse,
+                                                                   out ClearChargingProfileStatus  ClearChargingProfileStatus,
+                                                                   out String                      ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                ClearChargingProfileResponse = new ClearChargingProfileResponse(Request,
+                                                                                ClearChargingProfileStatus);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, ClearChargingProfileResponseJSON, e);
+
+                ClearChargingProfileResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, ClearChargingProfileResponseText, out ClearChargingProfileResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a clear charging profile response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="ClearChargingProfileResponseText">The text to be parsed.</param>
+        /// <param name="ClearChargingProfileResponse">The parsed clear charging profile response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CS.ClearChargingProfileRequest    Request,
+                                       String                            ClearChargingProfileResponseText,
+                                       out ClearChargingProfileResponse  ClearChargingProfileResponse,
+                                       OnExceptionDelegate               OnException  = null)
+        {
+
+            try
+            {
+
+                ClearChargingProfileResponseText = ClearChargingProfileResponseText?.Trim();
+
+                if (ClearChargingProfileResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (ClearChargingProfileResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(ClearChargingProfileResponseText),
+                                 out ClearChargingProfileResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(ClearChargingProfileResponseText).Root,
+                                 out ClearChargingProfileResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -234,6 +352,41 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region ToJSON(CustomClearChargingProfileResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomClearChargingProfileResponseSerializer">A delegate to serialize custom clear charging profile responses.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileResponse>  CustomClearChargingProfileResponseSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("status",  Status.AsText())
+                       );
+
+            return CustomClearChargingProfileResponseSerializer != null
+                       ? CustomClearChargingProfileResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The clear charging profile command failed.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        public static ClearChargingProfileResponse Failed(CS.ClearChargingProfileRequest Request)
+
+            => new ClearChargingProfileResponse(Request,
+                                                Result.Server());
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -253,7 +406,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ClearChargingProfileResponse1 == null) || ((Object) ClearChargingProfileResponse2 == null))
+            if ((ClearChargingProfileResponse1 is null) || (ClearChargingProfileResponse2 is null))
                 return false;
 
             return ClearChargingProfileResponse1.Equals(ClearChargingProfileResponse2);
@@ -293,12 +446,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object is null)
                 return false;
 
-            // Check if the given object is a clear charging profile response.
-            var ClearChargingProfileResponse = Object as ClearChargingProfileResponse;
-            if ((Object) ClearChargingProfileResponse == null)
+            if (!(Object is ClearChargingProfileResponse ClearChargingProfileResponse))
                 return false;
 
-            return this.Equals(ClearChargingProfileResponse);
+            return Equals(ClearChargingProfileResponse);
 
         }
 
@@ -314,7 +465,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(ClearChargingProfileResponse ClearChargingProfileResponse)
         {
 
-            if ((Object) ClearChargingProfileResponse == null)
+            if (ClearChargingProfileResponse is null)
                 return false;
 
             return Status.Equals(ClearChargingProfileResponse.Status);
@@ -332,6 +483,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => Status.GetHashCode();
 
         #endregion
@@ -342,10 +494,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => Status.ToString();
 
         #endregion
-
 
     }
 

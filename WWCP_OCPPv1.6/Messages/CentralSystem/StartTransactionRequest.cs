@@ -340,7 +340,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 if (!StartTransactionRequestJSON.ParseMandatory("meterStart",
                                                                 "meter start",
-                                                                UInt64.TryParse,
                                                                 out UInt64  MeterStart,
                                                                 out         ErrorResponse))
                 {

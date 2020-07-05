@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +33,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// A set charging profile response.
     /// </summary>
-    public class SetChargingProfileResponse : AResponse<SetChargingProfileResponse>
+    public class SetChargingProfileResponse : AResponse<CS.SetChargingProfileRequest,
+                                                           SetChargingProfileResponse>
     {
 
         #region Properties
@@ -38,31 +42,24 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The success or failure of the set charging profile command.
         /// </summary>
-        public ChargingProfileStatus  Status   { get; }
-
-        #endregion
-
-        #region Statics
-
-        /// <summary>
-        /// The set charging profile command failed.
-        /// </summary>
-        public static SetChargingProfileResponse Failed
-            => new SetChargingProfileResponse(Result.Server());
+        public ChargingProfileStatus  Status    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region SetChargingProfileResponse(Status)
+        #region SetChargingProfileResponse(Request, Status)
 
         /// <summary>
-        /// Create a new OCPP set charging profile response.
+        /// Create a new set charging profile response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="Status">The success or failure of the set charging profile command.</param>
-        public SetChargingProfileResponse(ChargingProfileStatus Status)
+        public SetChargingProfileResponse(CS.SetChargingProfileRequest  Request,
+                                          ChargingProfileStatus         Status)
 
-            : base(Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -72,13 +69,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region SetChargingProfileResponse(Result)
+        #region SetChargingProfileResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP set charging profile response.
+        /// Create a new set charging profile response.
         /// </summary>
-        public SetChargingProfileResponse(Result Result)
-            : base(Result)
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public SetChargingProfileResponse(CS.SetChargingProfileRequest  Request,
+                                          Result                        Result)
+
+            : base(Request,
+                   Result)
+
         { }
 
         #endregion
@@ -100,23 +103,50 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:SetChargingProfileResponse",
+        //     "title":   "SetChargingProfileResponse",
+        //     "type":    "object",
+        //     "properties": {
+        //         "status": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected",
+        //                 "NotSupported"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
+
         #endregion
 
-        #region (static) Parse   (SetChargingProfileResponseXML,  OnException = null)
+        #region (static) Parse   (Request, SetChargingProfileResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a set charging profile response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="SetChargingProfileResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SetChargingProfileResponse Parse(XElement             SetChargingProfileResponseXML,
-                                                       OnExceptionDelegate  OnException = null)
+        public static SetChargingProfileResponse Parse(CS.SetChargingProfileRequest  Request,
+                                                       XElement                      SetChargingProfileResponseXML,
+                                                       OnExceptionDelegate           OnException = null)
         {
 
-            SetChargingProfileResponse _SetChargingProfileResponse;
-
-            if (TryParse(SetChargingProfileResponseXML, out _SetChargingProfileResponse, OnException))
-                return _SetChargingProfileResponse;
+            if (TryParse(Request,
+                         SetChargingProfileResponseXML,
+                         out SetChargingProfileResponse setChargingProfileResponse,
+                         OnException))
+            {
+                return setChargingProfileResponse;
+            }
 
             return null;
 
@@ -124,21 +154,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (SetChargingProfileResponseText, OnException = null)
+        #region (static) Parse   (Request, SetChargingProfileResponseJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a set charging profile response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="SetChargingProfileResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static SetChargingProfileResponse Parse(CS.SetChargingProfileRequest  Request,
+                                                       JObject                       SetChargingProfileResponseJSON,
+                                                       OnExceptionDelegate           OnException = null)
+        {
+
+            if (TryParse(Request,
+                         SetChargingProfileResponseJSON,
+                         out SetChargingProfileResponse setChargingProfileResponse,
+                         OnException))
+            {
+                return setChargingProfileResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, SetChargingProfileResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a set charging profile response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="SetChargingProfileResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SetChargingProfileResponse Parse(String               SetChargingProfileResponseText,
-                                                       OnExceptionDelegate  OnException = null)
+        public static SetChargingProfileResponse Parse(CS.SetChargingProfileRequest  Request,
+                                                       String                        SetChargingProfileResponseText,
+                                                       OnExceptionDelegate           OnException = null)
         {
 
-            SetChargingProfileResponse _SetChargingProfileResponse;
-
-            if (TryParse(SetChargingProfileResponseText, out _SetChargingProfileResponse, OnException))
-                return _SetChargingProfileResponse;
+            if (TryParse(Request,
+                         SetChargingProfileResponseText,
+                         out SetChargingProfileResponse setChargingProfileResponse,
+                         OnException))
+            {
+                return setChargingProfileResponse;
+            }
 
             return null;
 
@@ -146,15 +208,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(SetChargingProfileResponseXML,  out SetChargingProfileResponse, OnException = null)
+        #region (static) TryParse(Request, SetChargingProfileResponseXML,  out SetChargingProfileResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a set charging profile response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="SetChargingProfileResponseXML">The XML to be parsed.</param>
         /// <param name="SetChargingProfileResponse">The parsed set charging profile response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                        SetChargingProfileResponseXML,
+        public static Boolean TryParse(CS.SetChargingProfileRequest    Request,
+                                       XElement                        SetChargingProfileResponseXML,
                                        out SetChargingProfileResponse  SetChargingProfileResponse,
                                        OnExceptionDelegate             OnException  = null)
         {
@@ -163,6 +227,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             {
 
                 SetChargingProfileResponse = new SetChargingProfileResponse(
+
+                                                 Request,
 
                                                  SetChargingProfileResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
                                                                                               ChargingProfileStatusExtentions.Parse)
@@ -186,15 +252,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(SetChargingProfileResponseText, out SetChargingProfileResponse, OnException = null)
+        #region (static) TryParse(Request, SetChargingProfileResponseJSON,  out SetChargingProfileResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a set charging profile response.
+        /// Try to parse the given JSON representation of a set charging profile response.
         /// </summary>
-        /// <param name="SetChargingProfileResponseText">The text to be parsed.</param>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="SetChargingProfileResponseJSON">The JSON to be parsed.</param>
         /// <param name="SetChargingProfileResponse">The parsed set charging profile response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                          SetChargingProfileResponseText,
+        public static Boolean TryParse(CS.SetChargingProfileRequest    Request,
+                                       JObject                         SetChargingProfileResponseJSON,
                                        out SetChargingProfileResponse  SetChargingProfileResponse,
                                        OnExceptionDelegate             OnException  = null)
         {
@@ -202,11 +270,83 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(SetChargingProfileResponseText).Root,
-                             out SetChargingProfileResponse,
-                             OnException))
+                SetChargingProfileResponse = null;
 
-                    return true;
+                #region ChargingProfileStatus
+
+                if (!SetChargingProfileResponseJSON.MapMandatory("status",
+                                                                 "charging profile status",
+                                                                 ChargingProfileStatusExtentions.Parse,
+                                                                 out ChargingProfileStatus  ChargingProfileStatus,
+                                                                 out String                 ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                SetChargingProfileResponse = new SetChargingProfileResponse(Request,
+                                                                            ChargingProfileStatus);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, SetChargingProfileResponseJSON, e);
+
+                SetChargingProfileResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, SetChargingProfileResponseText, out SetChargingProfileResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a set charging profile response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="SetChargingProfileResponseText">The text to be parsed.</param>
+        /// <param name="SetChargingProfileResponse">The parsed set charging profile response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CS.SetChargingProfileRequest    Request,
+                                       String                          SetChargingProfileResponseText,
+                                       out SetChargingProfileResponse  SetChargingProfileResponse,
+                                       OnExceptionDelegate             OnException  = null)
+        {
+
+            try
+            {
+
+                SetChargingProfileResponseText = SetChargingProfileResponseText?.Trim();
+
+                if (SetChargingProfileResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (SetChargingProfileResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(SetChargingProfileResponseText),
+                                 out SetChargingProfileResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(SetChargingProfileResponseText).Root,
+                                 out SetChargingProfileResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -236,6 +376,41 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region ToJSON(CustomSetChargingProfileResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomSetChargingProfileResponseSerializer">A delegate to serialize custom charging profile responses.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SetChargingProfileResponse>  CustomSetChargingProfileResponseSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("status",  Status.AsText())
+                       );
+
+            return CustomSetChargingProfileResponseSerializer != null
+                       ? CustomSetChargingProfileResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The set charging profile command failed.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        public static SetChargingProfileResponse Failed(CS.SetChargingProfileRequest Request)
+
+            => new SetChargingProfileResponse(Request,
+                                              Result.Server());
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -255,7 +430,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) SetChargingProfileResponse1 == null) || ((Object) SetChargingProfileResponse2 == null))
+            if ((SetChargingProfileResponse1 is null) || (SetChargingProfileResponse2 is null))
                 return false;
 
             return SetChargingProfileResponse1.Equals(SetChargingProfileResponse2);
@@ -295,12 +470,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object is null)
                 return false;
 
-            // Check if the given object is a set charging profile response.
-            var SetChargingProfileResponse = Object as SetChargingProfileResponse;
-            if ((Object) SetChargingProfileResponse == null)
+            if (!(Object is SetChargingProfileResponse SetChargingProfileResponse))
                 return false;
 
-            return this.Equals(SetChargingProfileResponse);
+            return Equals(SetChargingProfileResponse);
 
         }
 
@@ -316,7 +489,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(SetChargingProfileResponse SetChargingProfileResponse)
         {
 
-            if ((Object) SetChargingProfileResponse == null)
+            if (SetChargingProfileResponse is null)
                 return false;
 
             return Status.Equals(SetChargingProfileResponse.Status);
@@ -334,6 +507,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => Status.GetHashCode();
 
         #endregion
@@ -344,10 +518,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => Status.ToString();
 
         #endregion
-
 
     }
 

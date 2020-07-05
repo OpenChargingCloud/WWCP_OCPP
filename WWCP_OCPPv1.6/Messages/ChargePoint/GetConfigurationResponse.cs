@@ -40,16 +40,16 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// An enumeration of (requested and) known configuration keys.
         /// </summary>
-        public IEnumerable<KeyValue>  ConfigurationKeys   { get; }
+        public IEnumerable<KeyValue>  ConfigurationKeys    { get; }
 
         /// <summary>
         /// An enumeration of (requested but) unknown configuration keys.
         /// </summary>
-        public IEnumerable<String>    UnknownKeys         { get; }
+        public IEnumerable<String>    UnknownKeys          { get; }
 
         #endregion
 
-        #region Statics
+        #region Static methods
 
         /// <summary>
         /// The get configuration request failed.
@@ -64,7 +64,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region GetConfigurationResponse(ConfigurationKeys, UnknownKeys)
 
         /// <summary>
-        /// Create a new OCPP get configuration response.
+        /// Create a new get configuration response.
         /// </summary>
         /// <param name="ConfigurationKeys">An enumeration of (requested and) known configuration keys.</param>
         /// <param name="UnknownKeys">An enumeration of (requested but) unknown configuration keys.</param>
@@ -85,7 +85,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region GetConfigurationResponse(Result)
 
         /// <summary>
-        /// Create a new OCPP get configuration response.
+        /// Create a new get configuration response.
         /// </summary>
         public GetConfigurationResponse(Result Result)
 

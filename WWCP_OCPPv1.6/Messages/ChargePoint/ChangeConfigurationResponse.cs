@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +33,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// A change configuration response.
     /// </summary>
-    public class ChangeConfigurationResponse : AResponse<ChangeConfigurationResponse>
+    public class ChangeConfigurationResponse : AResponse<CS.ChangeConfigurationRequest,
+                                                            ChangeConfigurationResponse>
     {
 
         #region Properties
@@ -38,17 +42,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The success or failure of the change configuration command.
         /// </summary>
-        public ConfigurationStatus  Status   { get; }
-
-        #endregion
-
-        #region Statics
-
-        /// <summary>
-        /// The change configuration command failed.
-        /// </summary>
-        public static ChangeConfigurationResponse Failed
-            => new ChangeConfigurationResponse(Result.Server());
+        public ConfigurationStatus  Status    { get; }
 
         #endregion
 
@@ -57,12 +51,15 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region ChangeConfigurationResponse(Status)
 
         /// <summary>
-        /// Create a new OCPP change configuration response.
+        /// Create a new change configuration response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="Status">The success or failure of the change configuration command.</param>
-        public ChangeConfigurationResponse(ConfigurationStatus Status)
+        public ChangeConfigurationResponse(CS.ChangeConfigurationRequest  Request,
+                                           ConfigurationStatus            Status)
 
-            : base(Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -75,10 +72,16 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #region ChangeConfigurationResponse(Result)
 
         /// <summary>
-        /// Create a new OCPP change configuration response.
+        /// Create a new change configuration response.
         /// </summary>
-        public ChangeConfigurationResponse(Result Result)
-            : base(Result)
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public ChangeConfigurationResponse(CS.ChangeConfigurationRequest  Request,
+                                           Result                         Result)
+
+            : base(Request,
+                   Result)
+
         { }
 
         #endregion
@@ -100,23 +103,51 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:ChangeConfigurationResponse",
+        //     "title":   "ChangeConfigurationResponse",
+        //     "type":    "object",
+        //     "properties": {
+        //         "status": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected",
+        //                 "RebootRequired",
+        //                 "NotSupported"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
+
         #endregion
 
-        #region (static) Parse   (ChangeConfigurationResponseXML,  OnException = null)
+        #region (static) Parse   (Request, ChangeConfigurationResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a change configuration response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ChangeConfigurationResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChangeConfigurationResponse Parse(XElement             ChangeConfigurationResponseXML,
-                                                        OnExceptionDelegate  OnException = null)
+        public static ChangeConfigurationResponse Parse(CS.ChangeConfigurationRequest  Request,
+                                                        XElement                       ChangeConfigurationResponseXML,
+                                                        OnExceptionDelegate            OnException = null)
         {
 
-            ChangeConfigurationResponse _ChangeConfigurationResponse;
-
-            if (TryParse(ChangeConfigurationResponseXML, out _ChangeConfigurationResponse, OnException))
-                return _ChangeConfigurationResponse;
+            if (TryParse(Request,
+                         ChangeConfigurationResponseXML,
+                         out ChangeConfigurationResponse changeConfigurationResponse,
+                         OnException))
+            {
+                return changeConfigurationResponse;
+            }
 
             return null;
 
@@ -124,21 +155,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (ChangeConfigurationResponseText, OnException = null)
+        #region (static) Parse   (Request, ChangeConfigurationResponseJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a change configuration response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="ChangeConfigurationResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static ChangeConfigurationResponse Parse(CS.ChangeConfigurationRequest  Request,
+                                                        JObject                        ChangeConfigurationResponseJSON,
+                                                        OnExceptionDelegate            OnException = null)
+        {
+
+            if (TryParse(Request,
+                         ChangeConfigurationResponseJSON,
+                         out ChangeConfigurationResponse changeConfigurationResponse,
+                         OnException))
+            {
+                return changeConfigurationResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, ChangeConfigurationResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a change configuration response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ChangeConfigurationResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChangeConfigurationResponse Parse(String               ChangeConfigurationResponseText,
-                                                        OnExceptionDelegate  OnException = null)
+        public static ChangeConfigurationResponse Parse(CS.ChangeConfigurationRequest  Request,
+                                                        String                         ChangeConfigurationResponseText,
+                                                        OnExceptionDelegate            OnException = null)
         {
 
-            ChangeConfigurationResponse _ChangeConfigurationResponse;
-
-            if (TryParse(ChangeConfigurationResponseText, out _ChangeConfigurationResponse, OnException))
-                return _ChangeConfigurationResponse;
+            if (TryParse(Request,
+                         ChangeConfigurationResponseText,
+                         out ChangeConfigurationResponse changeConfigurationResponse,
+                         OnException))
+            {
+                return changeConfigurationResponse;
+            }
 
             return null;
 
@@ -146,15 +209,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(ChangeConfigurationResponseXML,  out ChangeConfigurationResponse, OnException = null)
+        #region (static) TryParse(Request, ChangeConfigurationResponseXML,  out ChangeConfigurationResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a change configuration response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ChangeConfigurationResponseXML">The XML to be parsed.</param>
         /// <param name="ChangeConfigurationResponse">The parsed change configuration response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                         ChangeConfigurationResponseXML,
+        public static Boolean TryParse(CS.ChangeConfigurationRequest    Request,
+                                       XElement                         ChangeConfigurationResponseXML,
                                        out ChangeConfigurationResponse  ChangeConfigurationResponse,
                                        OnExceptionDelegate              OnException  = null)
         {
@@ -163,6 +228,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             {
 
                 ChangeConfigurationResponse = new ChangeConfigurationResponse(
+
+                                                  Request,
 
                                                   ChangeConfigurationResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
                                                                                                 ConfigurationStatusExtentions.Parse)
@@ -186,15 +253,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(ChangeConfigurationResponseText, out ChangeConfigurationResponse, OnException = null)
+        #region (static) TryParse(Request, ChangeConfigurationResponseJSON, out ChangeConfigurationResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a change configuration response.
+        /// Try to parse the given JSON representation of a change configuration response.
         /// </summary>
-        /// <param name="ChangeConfigurationResponseText">The text to be parsed.</param>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="ChangeConfigurationResponseJSON">The JSON to be parsed.</param>
         /// <param name="ChangeConfigurationResponse">The parsed change configuration response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                           ChangeConfigurationResponseText,
+        public static Boolean TryParse(CS.ChangeConfigurationRequest    Request,
+                                       JObject                          ChangeConfigurationResponseJSON,
                                        out ChangeConfigurationResponse  ChangeConfigurationResponse,
                                        OnExceptionDelegate              OnException  = null)
         {
@@ -202,11 +271,83 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(ChangeConfigurationResponseText).Root,
-                             out ChangeConfigurationResponse,
-                             OnException))
+                ChangeConfigurationResponse = null;
 
-                    return true;
+                #region ConfigurationStatus
+
+                if (!ChangeConfigurationResponseJSON.MapMandatory("status",
+                                                                  "configuration status",
+                                                                  ConfigurationStatusExtentions.Parse,
+                                                                  out ConfigurationStatus  ConfigurationStatus,
+                                                                  out String               ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                ChangeConfigurationResponse = new ChangeConfigurationResponse(Request,
+                                                                              ConfigurationStatus);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, ChangeConfigurationResponseJSON, e);
+
+                ChangeConfigurationResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, ChangeConfigurationResponseText, out ChangeConfigurationResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a change configuration response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="ChangeConfigurationResponseText">The text to be parsed.</param>
+        /// <param name="ChangeConfigurationResponse">The parsed change configuration response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CS.ChangeConfigurationRequest    Request,
+                                       String                           ChangeConfigurationResponseText,
+                                       out ChangeConfigurationResponse  ChangeConfigurationResponse,
+                                       OnExceptionDelegate              OnException  = null)
+        {
+
+            try
+            {
+
+                ChangeConfigurationResponseText = ChangeConfigurationResponseText?.Trim();
+
+                if (ChangeConfigurationResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (ChangeConfigurationResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(ChangeConfigurationResponseText),
+                                 out ChangeConfigurationResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(ChangeConfigurationResponseText).Root,
+                                 out ChangeConfigurationResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -234,6 +375,41 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region ToJSON(CustomChangeConfigurationResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomChangeConfigurationResponseSerializer">A delegate to serialize custom change configuration responses.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeConfigurationResponse>  CustomChangeConfigurationResponseSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("status",  Status.AsText())
+                       );
+
+            return CustomChangeConfigurationResponseSerializer != null
+                       ? CustomChangeConfigurationResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The change availability command failed.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        public static ChangeConfigurationResponse Failed(CS.ChangeConfigurationRequest Request)
+
+            => new ChangeConfigurationResponse(Request,
+                                               Result.Server());
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -253,7 +429,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChangeConfigurationResponse1 == null) || ((Object) ChangeConfigurationResponse2 == null))
+            if ((ChangeConfigurationResponse1 is null) || (ChangeConfigurationResponse2 is null))
                 return false;
 
             return ChangeConfigurationResponse1.Equals(ChangeConfigurationResponse2);
@@ -293,12 +469,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object is null)
                 return false;
 
-            // Check if the given object is a change configuration response.
-            var ChangeConfigurationResponse = Object as ChangeConfigurationResponse;
-            if ((Object) ChangeConfigurationResponse == null)
+            if (!(Object is ChangeConfigurationResponse ChangeConfigurationResponse))
                 return false;
 
-            return this.Equals(ChangeConfigurationResponse);
+            return Equals(ChangeConfigurationResponse);
 
         }
 
@@ -314,7 +488,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(ChangeConfigurationResponse ChangeConfigurationResponse)
         {
 
-            if ((Object) ChangeConfigurationResponse == null)
+            if (ChangeConfigurationResponse is null)
                 return false;
 
             return Status.Equals(ChangeConfigurationResponse.Status);
@@ -332,6 +506,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => Status.GetHashCode();
 
         #endregion
@@ -342,10 +517,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => Status.ToString();
 
         #endregion
-
 
     }
 

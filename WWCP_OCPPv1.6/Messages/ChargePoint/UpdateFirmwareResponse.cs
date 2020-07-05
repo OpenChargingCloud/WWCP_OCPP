@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,39 +33,40 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// A update firmware response.
     /// </summary>
-    public class UpdateFirmwareResponse : AResponse<UpdateFirmwareResponse>
+    public class UpdateFirmwareResponse : AResponse<CS.UpdateFirmwareRequest,
+                                                       UpdateFirmwareResponse>
     {
-
-        #region Statics
-
-        /// <summary>
-        /// The update firmware command failed.
-        /// </summary>
-        public static UpdateFirmwareResponse Failed
-            => new UpdateFirmwareResponse(Result.Server());
-
-        #endregion
 
         #region Constructor(s)
 
-        #region UpdateFirmwareResponse()
+        #region UpdateFirmwareResponse(Request)
 
         /// <summary>
-        /// Create a new OCPP update firmware response.
+        /// Create a new update firmware response.
         /// </summary>
-        public UpdateFirmwareResponse()
-            : base(Result.OK())
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        public UpdateFirmwareResponse(CS.UpdateFirmwareRequest  Request)
+
+            : base(Request,
+                   Result.OK())
+
         { }
 
         #endregion
 
-        #region UpdateFirmwareResponse(Result)
+        #region UpdateFirmwareResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP update firmware response.
+        /// Create a new update firmware response.
         /// </summary>
-        public UpdateFirmwareResponse(Result Result)
-            : base(Result)
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public UpdateFirmwareResponse(CS.UpdateFirmwareRequest  Request,
+                                      Result                    Result)
+
+            : base(Request,
+                   Result)
+
         { }
 
         #endregion
@@ -82,23 +86,37 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:UpdateFirmwareResponse",
+        //     "title":   "UpdateFirmwareResponse",
+        //     "type":    "object",
+        //     "properties": {},
+        //     "additionalProperties": false
+        // }
+
         #endregion
 
-        #region (static) Parse   (UpdateFirmwareResponseXML,  OnException = null)
+        #region (static) Parse   (Request, UpdateFirmwareResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a update firmware response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="UpdateFirmwareResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static UpdateFirmwareResponse Parse(XElement             UpdateFirmwareResponseXML,
-                                                   OnExceptionDelegate  OnException = null)
+        public static UpdateFirmwareResponse Parse(CS.UpdateFirmwareRequest  Request,
+                                                   XElement                  UpdateFirmwareResponseXML,
+                                                   OnExceptionDelegate       OnException = null)
         {
 
-            UpdateFirmwareResponse _UpdateFirmwareResponse;
-
-            if (TryParse(UpdateFirmwareResponseXML, out _UpdateFirmwareResponse, OnException))
-                return _UpdateFirmwareResponse;
+            if (TryParse(Request,
+                         UpdateFirmwareResponseXML,
+                         out UpdateFirmwareResponse updateFirmwareResponse,
+                         OnException))
+            {
+                return updateFirmwareResponse;
+            }
 
             return null;
 
@@ -106,21 +124,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (UpdateFirmwareResponseText, OnException = null)
+        #region (static) Parse   (Request, UpdateFirmwareResponseJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a update firmware response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="UpdateFirmwareResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static UpdateFirmwareResponse Parse(CS.UpdateFirmwareRequest  Request,
+                                                   JObject                   UpdateFirmwareResponseJSON,
+                                                   OnExceptionDelegate       OnException = null)
+        {
+
+            if (TryParse(Request,
+                         UpdateFirmwareResponseJSON,
+                         out UpdateFirmwareResponse updateFirmwareResponse,
+                         OnException))
+            {
+                return updateFirmwareResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, UpdateFirmwareResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a update firmware response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="UpdateFirmwareResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static UpdateFirmwareResponse Parse(String               UpdateFirmwareResponseText,
-                                                   OnExceptionDelegate  OnException = null)
+        public static UpdateFirmwareResponse Parse(CS.UpdateFirmwareRequest  Request,
+                                                   String                    UpdateFirmwareResponseText,
+                                                   OnExceptionDelegate       OnException = null)
         {
 
-            UpdateFirmwareResponse _UpdateFirmwareResponse;
-
-            if (TryParse(UpdateFirmwareResponseText, out _UpdateFirmwareResponse, OnException))
-                return _UpdateFirmwareResponse;
+            if (TryParse(Request,
+                         UpdateFirmwareResponseText,
+                         out UpdateFirmwareResponse updateFirmwareResponse,
+                         OnException))
+            {
+                return updateFirmwareResponse;
+            }
 
             return null;
 
@@ -128,15 +178,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(UpdateFirmwareResponseXML,  out UpdateFirmwareResponse, OnException = null)
+        #region (static) TryParse(Request, UpdateFirmwareResponseXML,  out UpdateFirmwareResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a update firmware response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="UpdateFirmwareResponseXML">The XML to be parsed.</param>
         /// <param name="UpdateFirmwareResponse">The parsed update firmware response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                    UpdateFirmwareResponseXML,
+        public static Boolean TryParse(CS.UpdateFirmwareRequest    Request,
+                                       XElement                    UpdateFirmwareResponseXML,
                                        out UpdateFirmwareResponse  UpdateFirmwareResponse,
                                        OnExceptionDelegate         OnException  = null)
         {
@@ -144,7 +196,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                UpdateFirmwareResponse = new UpdateFirmwareResponse();
+                UpdateFirmwareResponse = new UpdateFirmwareResponse(Request);
 
                 return true;
 
@@ -163,15 +215,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(UpdateFirmwareResponseText, out UpdateFirmwareResponse, OnException = null)
+        #region (static) TryParse(Request, UpdateFirmwareResponseJSON, out UpdateFirmwareResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a update firmware response.
+        /// Try to parse the given JSON representation of a update firmware response.
         /// </summary>
-        /// <param name="UpdateFirmwareResponseText">The text to be parsed.</param>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="UpdateFirmwareResponseJSON">The JSON to be parsed.</param>
         /// <param name="UpdateFirmwareResponse">The parsed update firmware response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                      UpdateFirmwareResponseText,
+        public static Boolean TryParse(CS.UpdateFirmwareRequest    Request,
+                                       JObject                     UpdateFirmwareResponseJSON,
                                        out UpdateFirmwareResponse  UpdateFirmwareResponse,
                                        OnExceptionDelegate         OnException  = null)
         {
@@ -179,11 +233,66 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(UpdateFirmwareResponseText).Root,
-                             out UpdateFirmwareResponse,
-                             OnException))
+                UpdateFirmwareResponse = new UpdateFirmwareResponse(Request);
 
-                    return true;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, UpdateFirmwareResponseJSON, e);
+
+                UpdateFirmwareResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, UpdateFirmwareResponseText, out UpdateFirmwareResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a update firmware response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="UpdateFirmwareResponseText">The text to be parsed.</param>
+        /// <param name="UpdateFirmwareResponse">The parsed update firmware response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CS.UpdateFirmwareRequest    Request,
+                                       String                      UpdateFirmwareResponseText,
+                                       out UpdateFirmwareResponse  UpdateFirmwareResponse,
+                                       OnExceptionDelegate         OnException  = null)
+        {
+
+            try
+            {
+
+                UpdateFirmwareResponseText = UpdateFirmwareResponseText?.Trim();
+
+                if (UpdateFirmwareResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (UpdateFirmwareResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(UpdateFirmwareResponseText),
+                                 out UpdateFirmwareResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(UpdateFirmwareResponseText).Root,
+                                 out UpdateFirmwareResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -206,6 +315,39 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public XElement ToXML()
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "updateFirmwareResponse");
+
+        #endregion
+
+        #region ToJSON(CustomUpdateFirmwareResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomUpdateFirmwareResponseSerializer">A delegate to serialize custom update firmware responses.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateFirmwareResponse>  CustomUpdateFirmwareResponseSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create();
+
+            return CustomUpdateFirmwareResponseSerializer != null
+                       ? CustomUpdateFirmwareResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The update firmware command failed.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        public static UpdateFirmwareResponse Failed(CS.UpdateFirmwareRequest Request)
+
+            => new UpdateFirmwareResponse(Request,
+                                          Result.Server());
 
         #endregion
 
@@ -320,7 +462,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             => "UpdateFirmwareResponse";
 
         #endregion
-
 
     }
 

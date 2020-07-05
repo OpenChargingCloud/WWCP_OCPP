@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +33,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// A reset response.
     /// </summary>
-    public class ResetResponse : AResponse<ResetResponse>
+    public class ResetResponse : AResponse<CS.ResetRequest,
+                                              ResetResponse>
     {
 
         #region Properties
@@ -38,31 +42,24 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The success or failure of the reset command.
         /// </summary>
-        public ResetStatus  Status   { get; }
-
-        #endregion
-
-        #region Statics
-
-        /// <summary>
-        /// The reset command failed.
-        /// </summary>
-        public static ResetResponse Failed
-            => new ResetResponse(Result.Server());
+        public ResetStatus  Status    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region ResetResponse(Status)
+        #region ResetResponse(Request, Status)
 
         /// <summary>
-        /// Create a new OCPP reset response.
+        /// Create a new reset response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="Status">The success or failure of the reset command.</param>
-        public ResetResponse(ResetStatus Status)
+        public ResetResponse(CS.ResetRequest  Request,
+                             ResetStatus      Status)
 
-            : base(Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -72,13 +69,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region ResetResponse(Result)
+        #region ResetResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP reset response.
+        /// Create a new reset response.
         /// </summary>
-        public ResetResponse(Result Result)
-            : base(Result)
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public ResetResponse(CS.ResetRequest  Request,
+                             Result           Result)
+
+            : base(Request,
+                   Result)
+
         { }
 
         #endregion
@@ -100,23 +103,49 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:ResetResponse",
+        //     "title":   "ResetResponse",
+        //     "type":    "object",
+        //     "properties": {
+        //         "status": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
+
         #endregion
 
-        #region (static) Parse   (ResetResponseXML,  OnException = null)
+        #region (static) Parse   (Request, ResetResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a reset response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ResetResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ResetResponse Parse(XElement             ResetResponseXML,
+        public static ResetResponse Parse(CS.ResetRequest      Request,
+                                          XElement             ResetResponseXML,
                                           OnExceptionDelegate  OnException = null)
         {
 
-            ResetResponse _ResetResponse;
-
-            if (TryParse(ResetResponseXML, out _ResetResponse, OnException))
-                return _ResetResponse;
+            if (TryParse(Request,
+                         ResetResponseXML,
+                         out ResetResponse resetResponse,
+                         OnException))
+            {
+                return resetResponse;
+            }
 
             return null;
 
@@ -124,21 +153,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (ResetResponseText, OnException = null)
+        #region (static) Parse   (Request, ResetResponseJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a reset response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="ResetResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static ResetResponse Parse(CS.ResetRequest      Request,
+                                          JObject              ResetResponseJSON,
+                                          OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(Request,
+                         ResetResponseJSON,
+                         out ResetResponse resetResponse,
+                         OnException))
+            {
+                return resetResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, ResetResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a reset response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ResetResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ResetResponse Parse(String               ResetResponseText,
+        public static ResetResponse Parse(CS.ResetRequest      Request,
+                                          String               ResetResponseText,
                                           OnExceptionDelegate  OnException = null)
         {
 
-            ResetResponse _ResetResponse;
-
-            if (TryParse(ResetResponseText, out _ResetResponse, OnException))
-                return _ResetResponse;
+            if (TryParse(Request,
+                         ResetResponseText,
+                         out ResetResponse resetResponse,
+                         OnException))
+            {
+                return resetResponse;
+            }
 
             return null;
 
@@ -146,15 +207,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(ResetResponseXML,  out ResetResponse, OnException = null)
+        #region (static) TryParse(Request, ResetResponseXML,  out ResetResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a reset response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ResetResponseXML">The XML to be parsed.</param>
         /// <param name="ResetResponse">The parsed reset response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement             ResetResponseXML,
+        public static Boolean TryParse(CS.ResetRequest      Request,
+                                       XElement             ResetResponseXML,
                                        out ResetResponse    ResetResponse,
                                        OnExceptionDelegate  OnException  = null)
         {
@@ -163,6 +226,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             {
 
                 ResetResponse = new ResetResponse(
+
+                                    Request,
 
                                     ResetResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
                                                                     ResetStatusExtentions.Parse)
@@ -186,15 +251,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(ResetResponseText, out ResetResponse, OnException = null)
+        #region (static) TryParse(Request, ResetResponseJSON, out ResetResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a reset response.
+        /// Try to parse the given JSON representation of a reset response.
         /// </summary>
-        /// <param name="ResetResponseText">The text to be parsed.</param>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="ResetResponseJSON">The JSON to be parsed.</param>
         /// <param name="ResetResponse">The parsed reset response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               ResetResponseText,
+        public static Boolean TryParse(CS.ResetRequest      Request,
+                                       JObject              ResetResponseJSON,
                                        out ResetResponse    ResetResponse,
                                        OnExceptionDelegate  OnException  = null)
         {
@@ -202,11 +269,83 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(ResetResponseText).Root,
-                             out ResetResponse,
-                             OnException))
+                ResetResponse = null;
 
-                    return true;
+                #region ResetStatus
+
+                if (!ResetResponseJSON.MapMandatory("status",
+                                                    "reset status",
+                                                    ResetStatusExtentions.Parse,
+                                                    out ResetStatus  ResetStatus,
+                                                    out String       ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                ResetResponse = new ResetResponse(Request,
+                                                  ResetStatus);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, ResetResponseJSON, e);
+
+                ResetResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, ResetResponseText, out ResetResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a reset response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="ResetResponseText">The text to be parsed.</param>
+        /// <param name="ResetResponse">The parsed reset response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CS.ResetRequest      Request,
+                                       String               ResetResponseText,
+                                       out ResetResponse    ResetResponse,
+                                       OnExceptionDelegate  OnException  = null)
+        {
+
+            try
+            {
+
+                ResetResponseText = ResetResponseText?.Trim();
+
+                if (ResetResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (ResetResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(ResetResponseText),
+                                 out ResetResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(ResetResponseText).Root,
+                                 out ResetResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -236,6 +375,41 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region ToJSON(CustomResetResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomResetResponseSerializer">A delegate to serialize custom reset responses.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ResetResponse>  CustomResetResponseSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("status",  Status.AsText())
+                       );
+
+            return CustomResetResponseSerializer != null
+                       ? CustomResetResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The reset command failed.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        public static ResetResponse Failed(CS.ResetRequest Request)
+
+            => new ResetResponse(Request,
+                                 Result.Server());
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -255,7 +429,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ResetResponse1 == null) || ((Object) ResetResponse2 == null))
+            if ((ResetResponse1 is null) || (ResetResponse2 is null))
                 return false;
 
             return ResetResponse1.Equals(ResetResponse2);
@@ -295,12 +469,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object is null)
                 return false;
 
-            // Check if the given object is a reset response.
-            var ResetResponse = Object as ResetResponse;
-            if ((Object) ResetResponse == null)
+            if (!(Object is ResetResponse ResetResponse))
                 return false;
 
-            return this.Equals(ResetResponse);
+            return Equals(ResetResponse);
 
         }
 
@@ -316,7 +488,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(ResetResponse ResetResponse)
         {
 
-            if ((Object) ResetResponse == null)
+            if (ResetResponse is null)
                 return false;
 
             return Status.Equals(ResetResponse.Status);
@@ -334,6 +506,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => Status.GetHashCode();
 
         #endregion
@@ -344,10 +517,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => Status.ToString();
 
         #endregion
-
 
     }
 

@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +33,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// A get local list version response.
     /// </summary>
-    public class GetLocalListVersionResponse : AResponse<GetLocalListVersionResponse>
+    public class GetLocalListVersionResponse : AResponse<CS.GetLocalListVersionRequest,
+                                                            GetLocalListVersionResponse>
     {
 
         #region Properties
@@ -39,31 +43,24 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// The current version number of the local authorization
         /// list in the charge point.
         /// </summary>
-        public UInt64  ListVersion   { get; }
-
-        #endregion
-
-        #region Statics
-
-        /// <summary>
-        /// The get local list version failed.
-        /// </summary>
-        public static GetLocalListVersionResponse Failed
-            => new GetLocalListVersionResponse(Result.Server());
+        public UInt64  ListVersion    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region GetLocalListVersionResponse(ListVersion)
+        #region GetLocalListVersionResponse(Request, ListVersion)
 
         /// <summary>
-        /// Create a new OCPP get local list version response.
+        /// Create a new get local list version response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ListVersion">The current version number of the local authorization list in the charge point.</param>
-        public GetLocalListVersionResponse(UInt64 ListVersion)
+        public GetLocalListVersionResponse(CS.GetLocalListVersionRequest  Request,
+                                           UInt64                         ListVersion)
 
-            : base(Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -73,13 +70,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region GetLocalListVersionResponse(Result)
+        #region GetLocalListVersionResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP get local list version response.
+        /// Create a new get local list version response.
         /// </summary>
-        public GetLocalListVersionResponse(Result Result)
-            : base(Result)
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public GetLocalListVersionResponse(CS.GetLocalListVersionRequest  Request,
+                                           Result                         Result)
+
+            : base(Request,
+                   Result)
+
         { }
 
         #endregion
@@ -108,16 +111,48 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of a get local list version response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="GetLocalListVersionResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetLocalListVersionResponse Parse(XElement             GetLocalListVersionResponseXML,
-                                                        OnExceptionDelegate  OnException = null)
+        public static GetLocalListVersionResponse Parse(CS.GetLocalListVersionRequest  Request,
+                                                        XElement                       GetLocalListVersionResponseXML,
+                                                        OnExceptionDelegate            OnException = null)
         {
 
-            GetLocalListVersionResponse _GetLocalListVersionResponse;
+            if (TryParse(Request,
+                         GetLocalListVersionResponseXML,
+                         out GetLocalListVersionResponse getLocalListVersionResponse,
+                         OnException))
+            {
+                return getLocalListVersionResponse;
+            }
 
-            if (TryParse(GetLocalListVersionResponseXML, out _GetLocalListVersionResponse, OnException))
-                return _GetLocalListVersionResponse;
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (GetLocalListVersionResponseJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a get local list version response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="GetLocalListVersionResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static GetLocalListVersionResponse Parse(CS.GetLocalListVersionRequest  Request,
+                                                        JObject                        GetLocalListVersionResponseJSON,
+                                                        OnExceptionDelegate            OnException = null)
+        {
+
+            if (TryParse(Request,
+                         GetLocalListVersionResponseJSON,
+                         out GetLocalListVersionResponse getLocalListVersionResponse,
+                         OnException))
+            {
+                return getLocalListVersionResponse;
+            }
 
             return null;
 
@@ -130,16 +165,21 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Parse the given text representation of a get local list version response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="GetLocalListVersionResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetLocalListVersionResponse Parse(String               GetLocalListVersionResponseText,
-                                                        OnExceptionDelegate  OnException = null)
+        public static GetLocalListVersionResponse Parse(CS.GetLocalListVersionRequest  Request,
+                                                        String                         GetLocalListVersionResponseText,
+                                                        OnExceptionDelegate            OnException = null)
         {
 
-            GetLocalListVersionResponse _GetLocalListVersionResponse;
-
-            if (TryParse(GetLocalListVersionResponseText, out _GetLocalListVersionResponse, OnException))
-                return _GetLocalListVersionResponse;
+            if (TryParse(Request,
+                         GetLocalListVersionResponseText,
+                         out GetLocalListVersionResponse getLocalListVersionResponse,
+                         OnException))
+            {
+                return getLocalListVersionResponse;
+            }
 
             return null;
 
@@ -152,10 +192,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of a get local list version response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="GetLocalListVersionResponseXML">The XML to be parsed.</param>
         /// <param name="GetLocalListVersionResponse">The parsed get local list version response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                         GetLocalListVersionResponseXML,
+        public static Boolean TryParse(CS.GetLocalListVersionRequest    Request,
+                                       XElement                         GetLocalListVersionResponseXML,
                                        out GetLocalListVersionResponse  GetLocalListVersionResponse,
                                        OnExceptionDelegate              OnException  = null)
         {
@@ -164,6 +206,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             {
 
                 GetLocalListVersionResponse = new GetLocalListVersionResponse(
+
+                                                  Request,
 
                                                   GetLocalListVersionResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "listVersion",
                                                                                                 UInt64.Parse)
@@ -187,15 +231,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(GetLocalListVersionResponseText, out GetLocalListVersionResponse, OnException = null)
+        #region (static) TryParse(GetLocalListVersionResponseJSON, out GetLocalListVersionResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a get local list version response.
+        /// Try to parse the given JSON representation of a get local list version response.
         /// </summary>
-        /// <param name="GetLocalListVersionResponseText">The text to be parsed.</param>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="GetLocalListVersionResponseJSON">The JSON to be parsed.</param>
         /// <param name="GetLocalListVersionResponse">The parsed get local list version response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                           GetLocalListVersionResponseText,
+        public static Boolean TryParse(CS.GetLocalListVersionRequest    Request,
+                                       JObject                          GetLocalListVersionResponseJSON,
                                        out GetLocalListVersionResponse  GetLocalListVersionResponse,
                                        OnExceptionDelegate              OnException  = null)
         {
@@ -203,11 +249,82 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(GetLocalListVersionResponseText).Root,
-                             out GetLocalListVersionResponse,
-                             OnException))
+                GetLocalListVersionResponse = null;
 
-                    return true;
+                #region ListVersion
+
+                if (!GetLocalListVersionResponseJSON.ParseMandatory("listVersion",
+                                                                    "availability status",
+                                                                    out UInt64  ListVersion,
+                                                                    out String  ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                GetLocalListVersionResponse = new GetLocalListVersionResponse(Request,
+                                                                              ListVersion);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, GetLocalListVersionResponseJSON, e);
+
+                GetLocalListVersionResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(GetLocalListVersionResponseText, out GetLocalListVersionResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a get local list version response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="GetLocalListVersionResponseText">The text to be parsed.</param>
+        /// <param name="GetLocalListVersionResponse">The parsed get local list version response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CS.GetLocalListVersionRequest    Request,
+                                       String                           GetLocalListVersionResponseText,
+                                       out GetLocalListVersionResponse  GetLocalListVersionResponse,
+                                       OnExceptionDelegate              OnException  = null)
+        {
+
+            try
+            {
+
+                GetLocalListVersionResponseText = GetLocalListVersionResponseText?.Trim();
+
+                if (GetLocalListVersionResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (GetLocalListVersionResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(GetLocalListVersionResponseText),
+                                 out GetLocalListVersionResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(GetLocalListVersionResponseText).Root,
+                                 out GetLocalListVersionResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -236,6 +353,20 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #endregion
 
 
+        #region Static methods
+
+        /// <summary>
+        /// The get local list version failed.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        public static GetLocalListVersionResponse Failed(CS.GetLocalListVersionRequest Request)
+
+            => new GetLocalListVersionResponse(Request,
+                                               Result.Server());
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (GetLocalListVersionResponse1, GetLocalListVersionResponse2)
@@ -254,7 +385,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) GetLocalListVersionResponse1 == null) || ((Object) GetLocalListVersionResponse2 == null))
+            if ((GetLocalListVersionResponse1 is null) || (GetLocalListVersionResponse2 is null))
                 return false;
 
             return GetLocalListVersionResponse1.Equals(GetLocalListVersionResponse2);
@@ -294,12 +425,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object is null)
                 return false;
 
-            // Check if the given object is a get local list version response.
-            var GetLocalListVersionResponse = Object as GetLocalListVersionResponse;
-            if ((Object) GetLocalListVersionResponse == null)
+            if (!(Object is GetLocalListVersionResponse GetLocalListVersionResponse))
                 return false;
 
-            return this.Equals(GetLocalListVersionResponse);
+            return Equals(GetLocalListVersionResponse);
 
         }
 
@@ -315,7 +444,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(GetLocalListVersionResponse GetLocalListVersionResponse)
         {
 
-            if ((Object) GetLocalListVersionResponse == null)
+            if (GetLocalListVersionResponse is null)
                 return false;
 
             return ListVersion.Equals(GetLocalListVersionResponse.ListVersion);
@@ -333,6 +462,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => ListVersion.GetHashCode();
 
         #endregion
@@ -343,10 +473,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => "List version " + ListVersion.ToString();
 
         #endregion
-
 
     }
 

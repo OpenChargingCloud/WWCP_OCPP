@@ -231,7 +231,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="DNSClient">An optional DNS client.</param>
         /// <param name="LoggingContext">An optional context for logging client methods.</param>
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CentralSystemSOAPClient(String                               ChargeBoxIdentity,
+        public CentralSystemSOAPClient(ChargeBox_Id                         ChargeBoxIdentity,
                                        String                               From,
                                        String                               To,
 
@@ -248,7 +248,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                        String                               LoggingContext               = CSClientLogger.DefaultContext,
                                        LogfileCreatorDelegate               LogFileCreator               = null)
 
-            : base(ChargeBoxIdentity,
+            : base(ChargeBoxIdentity.ToString(),
                    Hostname,
                    RemotePort ?? DefaultRemotePort,
                    RemoteCertificateValidator,
@@ -266,7 +266,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             #region Initial checks
 
-            if (ChargeBoxIdentity.IsNullOrEmpty())
+            if (ChargeBoxIdentity.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(ChargeBoxIdentity),  "The given charge box identification must not be null or empty!");
 
             if (From.IsNullOrEmpty())
@@ -307,7 +307,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="RequestTimeout">An optional timeout for upstream queries.</param>
         /// <param name="MaxNumberOfRetries">The default number of maximum transmission retries.</param>
         /// <param name="DNSClient">An optional DNS client.</param>
-        public CentralSystemSOAPClient(String                               ChargeBoxIdentity,
+        public CentralSystemSOAPClient(ChargeBox_Id                         ChargeBoxIdentity,
                                        String                               From,
                                        String                               To,
 
@@ -323,7 +323,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                        Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
                                        DNSClient                            DNSClient                    = null)
 
-            : base(ChargeBoxIdentity,
+            : base(ChargeBoxIdentity.ToString(),
                    Hostname,
                    RemotePort ?? DefaultRemotePort,
                    RemoteCertificateValidator,
@@ -341,7 +341,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
             #region Initial checks
 
-            if (ChargeBoxIdentity.IsNullOrEmpty())
+            if (ChargeBoxIdentity.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(ChargeBoxIdentity),  "The given charge box identification must not be null or empty!");
 
             if (From.IsNullOrEmpty())
@@ -455,6 +455,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #endregion
 
 
+            var request = new ReserveNowRequest(ConnectorId,
+                                                ReservationId,
+                                                ExpiryDate,
+                                                IdTag,
+                                                ParentIdTag);
+
+
             using (var _OCPPClient = new SOAPClient(Hostname,
                                                     URLPrefix,
                                                     VirtualHostname,
@@ -471,11 +478,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    new ReserveNowRequest(ConnectorId,
-                                                                                          ReservationId,
-                                                                                          ExpiryDate,
-                                                                                          IdTag,
-                                                                                          ParentIdTag).ToXML()),
+                                                                    request.ToXML()),
                                                  "ReserveNow",
                                                  RequestLogDelegate:   OnReserveNowSOAPRequest,
                                                  ResponseLogDelegate:  OnReserveNowSOAPResponse,
@@ -485,7 +488,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(ReserveNowResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                                                                      ReserveNowResponse.Parse),
 
                                                  #endregion
 
@@ -497,6 +501,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                      return new HTTPResponse<ReserveNowResponse>(httpresponse,
                                                                                                  new ReserveNowResponse(
+                                                                                                     request,
                                                                                                      Result.Format(
                                                                                                          "Invalid SOAP => " +
                                                                                                          httpresponse.HTTPBody.ToUTF8String()
@@ -516,6 +521,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                      return new HTTPResponse<ReserveNowResponse>(httpresponse,
                                                                                                  new ReserveNowResponse(
+                                                                                                     request,
                                                                                                      Result.Server(
                                                                                                           httpresponse.HTTPStatusCode.ToString() +
                                                                                                           " => " +
@@ -535,6 +541,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<ReserveNowResponse>.ExceptionThrown(new ReserveNowResponse(
+                                                                                                                 request,
                                                                                                                  Result.Format(exception.Message +
                                                                                                                                " => " +
                                                                                                                                exception.StackTrace)),
@@ -549,7 +556,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
 
             if (result == null)
-                result = HTTPResponse<ReserveNowResponse>.OK(new ReserveNowResponse(Result.OK("Nothing to upload!")));
+                result = HTTPResponse<ReserveNowResponse>.OK(new ReserveNowResponse(request,
+                                                                                    Result.OK("Nothing to upload!")));
 
 
             #region Send OnReserveNowResponse event
@@ -868,6 +876,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #endregion
 
 
+            var request = new RemoteStartTransactionRequest(IdTag,
+                                                            ConnectorId,
+                                                            ChargingProfile);
+
+
             using (var _OCPPClient = new SOAPClient(Hostname,
                                                     URLPrefix,
                                                     VirtualHostname,
@@ -884,9 +897,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    new RemoteStartTransactionRequest(IdTag,
-                                                                                                      ConnectorId,
-                                                                                                      ChargingProfile).ToXML()),
+                                                                    request.ToXML()),
                                                  "RemoteStartTransaction",
                                                  RequestLogDelegate:   OnRemoteStartTransactionSOAPRequest,
                                                  ResponseLogDelegate:  OnRemoteStartTransactionSOAPResponse,
@@ -896,7 +907,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(RemoteStartTransactionResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                                                                      RemoteStartTransactionResponse.Parse),
 
                                                  #endregion
 
@@ -908,6 +920,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                      return new HTTPResponse<RemoteStartTransactionResponse>(httpresponse,
                                                                                                              new RemoteStartTransactionResponse(
+                                                                                                                 request,
                                                                                                                  Result.Format(
                                                                                                                      "Invalid SOAP => " +
                                                                                                                      httpresponse.HTTPBody.ToUTF8String()
@@ -927,6 +940,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                      return new HTTPResponse<RemoteStartTransactionResponse>(httpresponse,
                                                                                                              new RemoteStartTransactionResponse(
+                                                                                                                 request,
                                                                                                                  Result.Server(
                                                                                                                       httpresponse.HTTPStatusCode.ToString() +
                                                                                                                       " => " +
@@ -946,6 +960,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<RemoteStartTransactionResponse>.ExceptionThrown(new RemoteStartTransactionResponse(
+                                                                                                                             request,
                                                                                                                              Result.Format(exception.Message +
                                                                                                                                            " => " +
                                                                                                                                            exception.StackTrace)),
@@ -960,7 +975,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
 
             if (result == null)
-                result = HTTPResponse<RemoteStartTransactionResponse>.OK(new RemoteStartTransactionResponse(Result.OK("Nothing to upload!")));
+                result = HTTPResponse<RemoteStartTransactionResponse>.OK(new RemoteStartTransactionResponse(request,
+                                                                                                            Result.OK("Nothing to upload!")));
 
 
             #region Send OnRemoteStartTransactionResponse event
@@ -990,7 +1006,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #endregion
 
             return result;
-
 
         }
 
@@ -1069,6 +1084,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #endregion
 
 
+            var request = new RemoteStopTransactionRequest(TransactionId);
+
+
             using (var _OCPPClient = new SOAPClient(Hostname,
                                                     URLPrefix,
                                                     VirtualHostname,
@@ -1085,7 +1103,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    new RemoteStopTransactionRequest(TransactionId).ToXML()),
+                                                                    request.ToXML()),
                                                  "RemoteStopTransaction",
                                                  RequestLogDelegate:   OnRemoteStopTransactionSOAPRequest,
                                                  ResponseLogDelegate:  OnRemoteStopTransactionSOAPResponse,
@@ -1095,7 +1113,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(RemoteStopTransactionResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                                                                      RemoteStopTransactionResponse.Parse),
 
                                                  #endregion
 
@@ -1107,6 +1126,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                      return new HTTPResponse<RemoteStopTransactionResponse>(httpresponse,
                                                                                                             new RemoteStopTransactionResponse(
+                                                                                                                request,
                                                                                                                 Result.Format(
                                                                                                                     "Invalid SOAP => " +
                                                                                                                     httpresponse.HTTPBody.ToUTF8String()
@@ -1126,6 +1146,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                      return new HTTPResponse<RemoteStopTransactionResponse>(httpresponse,
                                                                                                             new RemoteStopTransactionResponse(
+                                                                                                                request,
                                                                                                                 Result.Server(
                                                                                                                      httpresponse.HTTPStatusCode.ToString() +
                                                                                                                      " => " +
@@ -1145,6 +1166,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<RemoteStopTransactionResponse>.ExceptionThrown(new RemoteStopTransactionResponse(
+                                                                                                                            request,
                                                                                                                             Result.Format(exception.Message +
                                                                                                                                           " => " +
                                                                                                                                           exception.StackTrace)),
@@ -1159,7 +1181,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
 
             if (result == null)
-                result = HTTPResponse<RemoteStopTransactionResponse>.OK(new RemoteStopTransactionResponse(Result.OK("Nothing to upload!")));
+                result = HTTPResponse<RemoteStopTransactionResponse>.OK(new RemoteStopTransactionResponse(request,
+                                                                                                          Result.OK("Nothing to upload!")));
 
 
             #region Send OnRemoteStopTransactionResponse event
@@ -1267,6 +1290,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             #endregion
 
 
+            var request = new DataTransferRequest(VendorId,
+                                                  MessageId,
+                                                  Data);
+
+
             using (var _OCPPClient = new SOAPClient(Hostname,
                                                     URLPrefix,
                                                     VirtualHostname,
@@ -1283,9 +1311,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    new DataTransferRequest(VendorId,
-                                                                                            MessageId,
-                                                                                            Data).ToXML()),
+                                                                    request.ToXML()),
                                                  "DataTransfer",
                                                  RequestLogDelegate:   OnDataTransferSOAPRequest,
                                                  ResponseLogDelegate:  OnDataTransferSOAPResponse,
@@ -1295,7 +1321,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(CP.DataTransferResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                                                                      CP.DataTransferResponse.Parse),
 
                                                  #endregion
 
@@ -1307,6 +1334,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                      return new HTTPResponse<CP.DataTransferResponse>(httpresponse,
                                                                                                       new CP.DataTransferResponse(
+                                                                                                          request,
                                                                                                           Result.Format(
                                                                                                               "Invalid SOAP => " +
                                                                                                               httpresponse.HTTPBody.ToUTF8String()
@@ -1326,6 +1354,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                      return new HTTPResponse<CP.DataTransferResponse>(httpresponse,
                                                                                                       new CP.DataTransferResponse(
+                                                                                                          request,
                                                                                                           Result.Server(
                                                                                                                httpresponse.HTTPStatusCode.ToString() +
                                                                                                                " => " +
@@ -1345,6 +1374,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<CP.DataTransferResponse>.ExceptionThrown(new CP.DataTransferResponse(
+                                                                                                                      request,
                                                                                                                       Result.Format(exception.Message +
                                                                                                                                     " => " +
                                                                                                                                     exception.StackTrace)),
@@ -1359,7 +1389,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
             }
 
             if (result == null)
-                result = HTTPResponse<CP.DataTransferResponse>.OK(new CP.DataTransferResponse(Result.OK("Nothing to upload!")));
+                result = HTTPResponse<CP.DataTransferResponse>.OK(new CP.DataTransferResponse(request,
+                                                                                              Result.OK("Nothing to upload!")));
 
 
             #region Send OnDataTransferResponse event

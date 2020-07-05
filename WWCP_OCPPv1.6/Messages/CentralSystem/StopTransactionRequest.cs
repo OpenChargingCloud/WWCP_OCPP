@@ -521,11 +521,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                 #region MeterStop
 
-                if (!StopTransactionRequestJSON.MapMandatory("meterStop",
-                                                             "meter stop",
-                                                             UInt64.Parse,
-                                                             out UInt64  MeterStop,
-                                                             out         ErrorResponse))
+                if (!StopTransactionRequestJSON.ParseMandatory("meterStop",
+                                                               "meter stop",
+                                                               out UInt64  MeterStop,
+                                                               out         ErrorResponse))
                 {
                     return false;
                 }

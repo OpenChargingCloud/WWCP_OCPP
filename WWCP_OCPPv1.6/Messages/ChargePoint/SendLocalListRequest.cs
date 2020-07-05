@@ -339,7 +339,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 if (!SendLocalListRequestJSON.ParseMandatory("listVersion",
                                                              "list version",
-                                                             UInt64.TryParse,
                                                              out UInt64  ListVersion,
                                                              out String  ErrorResponse))
                 {

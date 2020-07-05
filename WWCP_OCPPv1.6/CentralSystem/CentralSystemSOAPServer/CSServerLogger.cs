@@ -56,7 +56,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region CSServerLogger(CSServer, Context = DefaultContext, LogFileCreator = null)
 
         /// <summary>
-        /// Create a new OCPP central service SOAP server logger using the default logging delegates.
+        /// Create a new central service SOAP server logger using the default logging delegates.
         /// </summary>
         /// <param name="CSServer">A OCPP central service SOAP server.</param>
         /// <param name="Context">A context of this API.</param>
@@ -81,7 +81,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region CSServerLogger(CSServer, Context, ... Logging delegates ...)
 
         /// <summary>
-        /// Create a new OCPP central service SOAP server logger using the given logging delegates.
+        /// Create a new central service SOAP server logger using the given logging delegates.
         /// </summary>
         /// <param name="CSServer">A OCPP central service SOAP server.</param>
         /// <param name="Context">A context of this API.</param>

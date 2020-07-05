@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +33,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// A data transfer response.
     /// </summary>
-    public class DataTransferResponse : AResponse<DataTransferResponse>
+    public class DataTransferResponse : AResponse<CS.DataTransferRequest,
+                                                     DataTransferResponse>
     {
 
         #region Properties
@@ -38,38 +42,31 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The success or failure status of the data transfer.
         /// </summary>
-        public DataTransferStatus  Status   { get; }
+        public DataTransferStatus  Status    { get; }
 
         /// <summary>
         /// Optional response data.
         /// </summary>
-        public String              Data     { get; }
-
-        #endregion
-
-        #region Statics
-
-        /// <summary>
-        /// The data transfer failed.
-        /// </summary>
-        public static DataTransferResponse Failed
-            => new DataTransferResponse(Result.Server());
+        public String              Data      { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region DataTransferResponse(IdTagInfo)
+        #region DataTransferResponse(Request, Status, Data = null)
 
         /// <summary>
-        /// Create a new OCPP data transfer response.
+        /// Create a new data transfer response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="Status">The success or failure status of the data transfer.</param>
         /// <param name="Data">Optional response data.</param>
-        public DataTransferResponse(DataTransferStatus  Status,
-                                    String              Data)
+        public DataTransferResponse(CS.DataTransferRequest  Request,
+                                    DataTransferStatus      Status,
+                                    String                  Data  = null)
 
-            : base(Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -80,14 +77,18 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region DataTransferResponse(Result)
+        #region DataTransferResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP data transfer response.
+        /// Create a new data transfer response.
         /// </summary>
-        public DataTransferResponse(Result Result)
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public DataTransferResponse(CS.DataTransferRequest  Request,
+                                    Result                  Result)
 
-            : base(Result)
+            : base(Request,
+                   Result)
 
         {
 
@@ -117,23 +118,54 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:DataTransferResponse",
+        //     "title":   "DataTransferResponse",
+        //     "type":    "object",
+        //     "properties": {
+        //         "status": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected",
+        //                 "UnknownMessageId",
+        //                 "UnknownVendorId"
+        //             ]
+        //         },
+        //         "data": {
+        //             "type": "string"
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
+
         #endregion
 
-        #region (static) Parse   (DataTransferResponseXML,  OnException = null)
+        #region (static) Parse   (Request, DataTransferResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a data transfer response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="DataTransferResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static DataTransferResponse Parse(XElement             DataTransferResponseXML,
-                                                 OnExceptionDelegate  OnException = null)
+        public static DataTransferResponse Parse(CS.DataTransferRequest  Request,
+                                                 XElement                DataTransferResponseXML,
+                                                 OnExceptionDelegate     OnException = null)
         {
 
-            DataTransferResponse _DataTransferResponse;
-
-            if (TryParse(DataTransferResponseXML, out _DataTransferResponse, OnException))
-                return _DataTransferResponse;
+            if (TryParse(Request,
+                         DataTransferResponseXML,
+                         out DataTransferResponse dataTransferResponse,
+                         OnException))
+            {
+                return dataTransferResponse;
+            }
 
             return null;
 
@@ -141,21 +173,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (DataTransferResponseText, OnException = null)
+        #region (static) Parse   (Request, DataTransferResponseJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a data transfer response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="DataTransferResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static DataTransferResponse Parse(CS.DataTransferRequest  Request,
+                                                 JObject                 DataTransferResponseJSON,
+                                                 OnExceptionDelegate     OnException = null)
+        {
+
+            if (TryParse(Request,
+                         DataTransferResponseJSON,
+                         out DataTransferResponse dataTransferResponse,
+                         OnException))
+            {
+                return dataTransferResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, DataTransferResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a data transfer response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="DataTransferResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static DataTransferResponse Parse(String               DataTransferResponseText,
-                                                 OnExceptionDelegate  OnException = null)
+        public static DataTransferResponse Parse(CS.DataTransferRequest  Request,
+                                                 String                  DataTransferResponseText,
+                                                 OnExceptionDelegate     OnException = null)
         {
 
-            DataTransferResponse _DataTransferResponse;
-
-            if (TryParse(DataTransferResponseText, out _DataTransferResponse, OnException))
-                return _DataTransferResponse;
+            if (TryParse(Request,
+                         DataTransferResponseText,
+                         out DataTransferResponse dataTransferResponse,
+                         OnException))
+            {
+                return dataTransferResponse;
+            }
 
             return null;
 
@@ -163,15 +227,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(DataTransferResponseXML,  out DataTransferResponse, OnException = null)
+        #region (static) TryParse(Request, DataTransferResponseXML,  out DataTransferResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a data transfer response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="DataTransferResponseXML">The XML to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                  DataTransferResponseXML,
+        public static Boolean TryParse(CS.DataTransferRequest    Request,
+                                       XElement                  DataTransferResponseXML,
                                        out DataTransferResponse  DataTransferResponse,
                                        OnExceptionDelegate       OnException  = null)
         {
@@ -180,6 +246,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             {
 
                 DataTransferResponse = new DataTransferResponse(
+
+                                           Request,
 
                                            DataTransferResponseXML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CP + "status",
                                                                                          DataTransferStatusExtentions.Parse),
@@ -205,15 +273,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(DataTransferResponseText, out DataTransferResponse, OnException = null)
+        #region (static) TryParse(Request, DataTransferResponseJSON, out DataTransferResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a data transfer response.
+        /// Try to parse the given JSON representation of a data transfer response.
         /// </summary>
-        /// <param name="DataTransferResponseText">The text to be parsed.</param>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="DataTransferResponseJSON">The JSON to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                    DataTransferResponseText,
+        public static Boolean TryParse(CS.DataTransferRequest    Request,
+                                       JObject                   DataTransferResponseJSON,
                                        out DataTransferResponse  DataTransferResponse,
                                        OnExceptionDelegate       OnException  = null)
         {
@@ -221,11 +291,90 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(DataTransferResponseText).Root,
-                             out DataTransferResponse,
-                             OnException))
+                DataTransferResponse = null;
 
-                    return true;
+                #region DataTransferStatus
+
+                if (!DataTransferResponseJSON.MapMandatory("status",
+                                                           "data transfer status",
+                                                           DataTransferStatusExtentions.Parse,
+                                                           out DataTransferStatus  DataTransferStatus,
+                                                           out String              ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Data
+
+                var Data = DataTransferResponseJSON.GetString("data")?.Trim();
+
+                #endregion
+
+
+                DataTransferResponse = new DataTransferResponse(Request,
+                                                                DataTransferStatus,
+                                                                Data);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, DataTransferResponseJSON, e);
+
+                DataTransferResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, DataTransferResponseText, out DataTransferResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a data transfer response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="DataTransferResponseText">The text to be parsed.</param>
+        /// <param name="DataTransferResponse">The parsed data transfer response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CS.DataTransferRequest    Request,
+                                       String                    DataTransferResponseText,
+                                       out DataTransferResponse  DataTransferResponse,
+                                       OnExceptionDelegate       OnException  = null)
+        {
+
+            try
+            {
+
+                DataTransferResponseText = DataTransferResponseText?.Trim();
+
+                if (DataTransferResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (DataTransferResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(DataTransferResponseText),
+                                 out DataTransferResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(DataTransferResponseText).Root,
+                                 out DataTransferResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -259,6 +408,41 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region ToJSON(CustomDataTransferResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomDataTransferResponseSerializer">A delegate to serialize custom data transfer responses.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferResponse>  CustomDataTransferResponseSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("status",  Status.AsText())
+                       );
+
+            return CustomDataTransferResponseSerializer != null
+                       ? CustomDataTransferResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The data transfer failed.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        public static DataTransferResponse Failed(CS.DataTransferRequest  Request)
+
+            => new DataTransferResponse(Request,
+                                        Result.Server());
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -278,7 +462,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) DataTransferResponse1 == null) || ((Object) DataTransferResponse2 == null))
+            if ((DataTransferResponse1 is null) || (DataTransferResponse2 is null))
                 return false;
 
             return DataTransferResponse1.Equals(DataTransferResponse2);
@@ -318,12 +502,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object is null)
                 return false;
 
-            // Check if the given object is a data transfer response.
-            var DataTransferResponse = Object as DataTransferResponse;
-            if ((Object) DataTransferResponse == null)
+            if (!(Object is DataTransferResponse DataTransferResponse))
                 return false;
 
-            return this.Equals(DataTransferResponse);
+            return Equals(DataTransferResponse);
 
         }
 
@@ -339,7 +521,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(DataTransferResponse DataTransferResponse)
         {
 
-            if ((Object) DataTransferResponse == null)
+            if (DataTransferResponse is null)
                 return false;
 
             return Status.Equals(DataTransferResponse.Status) &&
@@ -385,7 +567,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             => String.Concat(Status, " / ", Data.SubstringMax(20));
 
         #endregion
-
 
     }
 

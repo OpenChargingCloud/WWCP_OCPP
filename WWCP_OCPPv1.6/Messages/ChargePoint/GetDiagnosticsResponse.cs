@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,8 +33,18 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// A get diagnostics response.
     /// </summary>
-    public class GetDiagnosticsResponse : AResponse<GetDiagnosticsResponse>
+    public class GetDiagnosticsResponse : AResponse<CS.GetDiagnosticsRequest,
+                                                       GetDiagnosticsResponse>
     {
+
+        #region Data
+
+        /// <summary>
+        /// The maximum length of the name of the file with diagnostic information.
+        /// </summary>
+        public const UInt32  MaxFileNameLength  = 255;
+
+        #endregion
 
         #region Properties
 
@@ -40,31 +53,24 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// be uploaded. This field is not present when no diagnostic
         /// information is available.
         /// </summary>
-        public String  FileName   { get; }
-
-        #endregion
-
-        #region Statics
-
-        /// <summary>
-        /// The get diagnostics command failed.
-        /// </summary>
-        public static GetDiagnosticsResponse Failed
-            => new GetDiagnosticsResponse(Result.Server());
+        public String  FileName    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region GetDiagnosticsResponse(Status)
+        #region GetDiagnosticsResponse(Request, Status)
 
         /// <summary>
-        /// Create a new OCPP get diagnostics response.
+        /// Create a new get diagnostics response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="FileName">The name of the file with diagnostic information that will be uploaded. This field is not present when no diagnostic information is available.</param>
-        public GetDiagnosticsResponse(String FileName = null)
+        public GetDiagnosticsResponse(CS.GetDiagnosticsRequest  Request,
+                                      String                    FileName = null)
 
-            : base(Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -74,13 +80,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region GetDiagnosticsResponse(Result)
+        #region GetDiagnosticsResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP get diagnostics response.
+        /// Create a new get diagnostics response.
         /// </summary>
-        public GetDiagnosticsResponse(Result Result)
-            : base(Result)
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public GetDiagnosticsResponse(CS.GetDiagnosticsRequest  Request,
+                                      Result                    Result)
+
+            : base(Request,
+                   Result)
+
         { }
 
         #endregion
@@ -102,23 +114,42 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:GetDiagnosticsResponse",
+        //     "title":   "GetDiagnosticsResponse",
+        //     "type":    "object",
+        //     "properties": {
+        //         "fileName": {
+        //             "type": "string",
+        //             "maxLength": 255
+        //         }
+        //     },
+        //     "additionalProperties": false
+        // }
+
         #endregion
 
-        #region (static) Parse   (GetDiagnosticsResponseXML,  OnException = null)
+        #region (static) Parse   (Request, GetDiagnosticsResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a get diagnostics response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="GetDiagnosticsResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetDiagnosticsResponse Parse(XElement             GetDiagnosticsResponseXML,
-                                                   OnExceptionDelegate  OnException = null)
+        public static GetDiagnosticsResponse Parse(CS.GetDiagnosticsRequest  Request,
+                                                   XElement                  GetDiagnosticsResponseXML,
+                                                   OnExceptionDelegate       OnException = null)
         {
 
-            GetDiagnosticsResponse _GetDiagnosticsResponse;
-
-            if (TryParse(GetDiagnosticsResponseXML, out _GetDiagnosticsResponse, OnException))
-                return _GetDiagnosticsResponse;
+            if (TryParse(Request,
+                         GetDiagnosticsResponseXML,
+                         out GetDiagnosticsResponse getDiagnosticsResponse,
+                         OnException))
+            {
+                return getDiagnosticsResponse;
+            }
 
             return null;
 
@@ -126,21 +157,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (GetDiagnosticsResponseText, OnException = null)
+        #region (static) Parse   (Request, GetDiagnosticsResponseJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a get diagnostics response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="GetDiagnosticsResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static GetDiagnosticsResponse Parse(CS.GetDiagnosticsRequest  Request,
+                                                   JObject                   GetDiagnosticsResponseJSON,
+                                                   OnExceptionDelegate       OnException = null)
+        {
+
+            if (TryParse(Request,
+                         GetDiagnosticsResponseJSON,
+                         out GetDiagnosticsResponse getDiagnosticsResponse,
+                         OnException))
+            {
+                return getDiagnosticsResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, GetDiagnosticsResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a get diagnostics response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="GetDiagnosticsResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetDiagnosticsResponse Parse(String               GetDiagnosticsResponseText,
-                                                   OnExceptionDelegate  OnException = null)
+        public static GetDiagnosticsResponse Parse(CS.GetDiagnosticsRequest  Request,
+                                                   String                    GetDiagnosticsResponseText,
+                                                   OnExceptionDelegate       OnException = null)
         {
 
-            GetDiagnosticsResponse _GetDiagnosticsResponse;
-
-            if (TryParse(GetDiagnosticsResponseText, out _GetDiagnosticsResponse, OnException))
-                return _GetDiagnosticsResponse;
+            if (TryParse(Request,
+                         GetDiagnosticsResponseText,
+                         out GetDiagnosticsResponse getDiagnosticsResponse,
+                         OnException))
+            {
+                return getDiagnosticsResponse;
+            }
 
             return null;
 
@@ -148,15 +211,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(GetDiagnosticsResponseXML,  out GetDiagnosticsResponse, OnException = null)
+        #region (static) TryParse(Request, GetDiagnosticsResponseXML,  out GetDiagnosticsResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a get diagnostics response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="GetDiagnosticsResponseXML">The XML to be parsed.</param>
         /// <param name="GetDiagnosticsResponse">The parsed get diagnostics response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                    GetDiagnosticsResponseXML,
+        public static Boolean TryParse(CS.GetDiagnosticsRequest    Request,
+                                       XElement                    GetDiagnosticsResponseXML,
                                        out GetDiagnosticsResponse  GetDiagnosticsResponse,
                                        OnExceptionDelegate         OnException  = null)
         {
@@ -165,6 +230,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             {
 
                 GetDiagnosticsResponse = new GetDiagnosticsResponse(
+
+                                             Request,
 
                                              GetDiagnosticsResponseXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "fileName")
 
@@ -187,15 +254,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(GetDiagnosticsResponseText, out GetDiagnosticsResponse, OnException = null)
+        #region (static) TryParse(Request, GetDiagnosticsResponseJSON, out GetDiagnosticsResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a get diagnostics response.
+        /// Try to parse the given JSON representation of a get diagnostics response.
         /// </summary>
-        /// <param name="GetDiagnosticsResponseText">The text to be parsed.</param>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="GetDiagnosticsResponseJSON">The JSON to be parsed.</param>
         /// <param name="GetDiagnosticsResponse">The parsed get diagnostics response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                      GetDiagnosticsResponseText,
+        public static Boolean TryParse(CS.GetDiagnosticsRequest    Request,
+                                       JObject                     GetDiagnosticsResponseJSON,
                                        out GetDiagnosticsResponse  GetDiagnosticsResponse,
                                        OnExceptionDelegate         OnException  = null)
         {
@@ -203,11 +272,76 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(GetDiagnosticsResponseText).Root,
-                             out GetDiagnosticsResponse,
-                             OnException))
+                GetDiagnosticsResponse = null;
 
-                    return true;
+                #region FileName
+
+                var FileName = GetDiagnosticsResponseJSON.GetString("fileName");
+
+                #endregion
+
+
+                GetDiagnosticsResponse = new GetDiagnosticsResponse(Request,
+                                                                    FileName);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, GetDiagnosticsResponseJSON, e);
+
+                GetDiagnosticsResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, GetDiagnosticsResponseText, out GetDiagnosticsResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a get diagnostics response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="GetDiagnosticsResponseText">The text to be parsed.</param>
+        /// <param name="GetDiagnosticsResponse">The parsed get diagnostics response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CS.GetDiagnosticsRequest    Request,
+                                       String                      GetDiagnosticsResponseText,
+                                       out GetDiagnosticsResponse  GetDiagnosticsResponse,
+                                       OnExceptionDelegate         OnException  = null)
+        {
+
+            try
+            {
+
+                GetDiagnosticsResponseText = GetDiagnosticsResponseText?.Trim();
+
+                if (GetDiagnosticsResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (GetDiagnosticsResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(GetDiagnosticsResponseText),
+                                 out GetDiagnosticsResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(GetDiagnosticsResponseText).Root,
+                                 out GetDiagnosticsResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -232,10 +366,45 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             => new XElement(OCPPNS.OCPPv1_6_CP + "getDiagnosticsResponse",
 
                    FileName != null
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "fileName",  FileName)
+                       ? new XElement(OCPPNS.OCPPv1_6_CP + "fileName",  FileName.SubstringMax(MaxFileNameLength))
                        : null
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomGetDiagnosticsResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomGetDiagnosticsResponseSerializer">A delegate to serialize custom get diagnostics responses.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetDiagnosticsResponse>  CustomGetDiagnosticsResponseSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("fileName",  FileName.SubstringMax(MaxFileNameLength))
+                       );
+
+            return CustomGetDiagnosticsResponseSerializer != null
+                       ? CustomGetDiagnosticsResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The get diagnostics command failed.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        public static GetDiagnosticsResponse Failed(CS.GetDiagnosticsRequest  Request)
+
+            => new GetDiagnosticsResponse(Request,
+                                          Result.Server());
 
         #endregion
 
@@ -258,7 +427,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) GetDiagnosticsResponse1 == null) || ((Object) GetDiagnosticsResponse2 == null))
+            if ((GetDiagnosticsResponse1 is null) || (GetDiagnosticsResponse2 is null))
                 return false;
 
             return GetDiagnosticsResponse1.Equals(GetDiagnosticsResponse2);
@@ -298,12 +467,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object is null)
                 return false;
 
-            // Check if the given object is a get diagnostics response.
-            var GetDiagnosticsResponse = Object as GetDiagnosticsResponse;
-            if ((Object) GetDiagnosticsResponse == null)
+            if (!(Object is GetDiagnosticsResponse GetDiagnosticsResponse))
                 return false;
 
-            return this.Equals(GetDiagnosticsResponse);
+            return Equals(GetDiagnosticsResponse);
 
         }
 
@@ -319,7 +486,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(GetDiagnosticsResponse GetDiagnosticsResponse)
         {
 
-            if ((Object) GetDiagnosticsResponse == null)
+            if (GetDiagnosticsResponse is null)
                 return false;
 
             return (FileName == null && GetDiagnosticsResponse.FileName == null) ||
@@ -352,12 +519,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         public override String ToString()
 
-            => FileName != null
-                   ? FileName
-                   : "GetDiagnosticsResponse";
+            => FileName ?? "GetDiagnosticsResponse";
 
         #endregion
-
 
     }
 

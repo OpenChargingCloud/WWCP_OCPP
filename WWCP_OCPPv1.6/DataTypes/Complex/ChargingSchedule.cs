@@ -366,7 +366,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 if (ChargingScheduleJSON.ParseOptional("duration",
                                                        "duration",
-                                                       s => TimeSpan.FromSeconds(UInt32.Parse(s)),
                                                        out TimeSpan?  Duration,
                                                        out            ErrorResponse))
                 {
@@ -395,11 +394,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 #region MinChargingRate
 
-                if (ChargingScheduleJSON.ParseOptionalStruct("min charging rate",
-                                                             "min charging rate",
-                                                             Decimal.TryParse,
-                                                             out Decimal?  MinChargingRate,
-                                                             out           ErrorResponse))
+                if (ChargingScheduleJSON.ParseOptional("min charging rate",
+                                                       "min charging rate",
+                                                       out Decimal?  MinChargingRate,
+                                                       out           ErrorResponse))
                 {
 
                     if (ErrorResponse != null)

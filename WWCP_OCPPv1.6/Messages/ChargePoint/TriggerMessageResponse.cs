@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +33,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// A trigger message response.
     /// </summary>
-    public class TriggerMessageResponse : AResponse<TriggerMessageResponse>
+    public class TriggerMessageResponse : AResponse<CS.TriggerMessageRequest,
+                                                       TriggerMessageResponse>
     {
 
         #region Properties
@@ -42,27 +46,20 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region Statics
-
-        /// <summary>
-        /// The trigger message command failed.
-        /// </summary>
-        public static TriggerMessageResponse Failed
-            => new TriggerMessageResponse(Result.Server());
-
-        #endregion
-
         #region Constructor(s)
 
-        #region TriggerMessageResponse(Status)
+        #region TriggerMessageResponse(Request, Status)
 
         /// <summary>
-        /// Create a new OCPP trigger message response.
+        /// Create a new trigger message response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="Status">The success or failure of the trigger message command.</param>
-        public TriggerMessageResponse(TriggerMessageStatus Status)
+        public TriggerMessageResponse(CS.TriggerMessageRequest  Request,
+                                      TriggerMessageStatus      Status)
 
-            : base(Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -72,13 +69,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region TriggerMessageResponse(Result)
+        #region TriggerMessageResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP trigger message response.
+        /// Create a new trigger message response.
         /// </summary>
-        public TriggerMessageResponse(Result Result)
-            : base(Result)
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public TriggerMessageResponse(CS.TriggerMessageRequest  Request,
+                                      Result                    Result)
+
+            : base(Request,
+                   Result)
+
         { }
 
         #endregion
@@ -100,23 +103,50 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:TriggerMessageResponse",
+        //     "title":   "TriggerMessageResponse",
+        //     "type":    "object",
+        //     "properties": {
+        //         "status": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected",
+        //                 "NotImplemented"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
+
         #endregion
 
-        #region (static) Parse   (TriggerMessageResponseXML,  OnException = null)
+        #region (static) Parse   (Request, TriggerMessageResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a trigger message response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="TriggerMessageResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static TriggerMessageResponse Parse(XElement             TriggerMessageResponseXML,
-                                                   OnExceptionDelegate  OnException = null)
+        public static TriggerMessageResponse Parse(CS.TriggerMessageRequest  Request,
+                                                   XElement                  TriggerMessageResponseXML,
+                                                   OnExceptionDelegate       OnException = null)
         {
 
-            TriggerMessageResponse _TriggerMessageResponse;
-
-            if (TryParse(TriggerMessageResponseXML, out _TriggerMessageResponse, OnException))
-                return _TriggerMessageResponse;
+            if (TryParse(Request,
+                         TriggerMessageResponseXML,
+                         out TriggerMessageResponse triggerMessageResponse,
+                         OnException))
+            {
+                return triggerMessageResponse;
+            }
 
             return null;
 
@@ -124,21 +154,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (TriggerMessageResponseText, OnException = null)
+        #region (static) Parse   (Request, TriggerMessageResponseJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a trigger message response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="TriggerMessageResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static TriggerMessageResponse Parse(CS.TriggerMessageRequest  Request,
+                                                   JObject                   TriggerMessageResponseJSON,
+                                                   OnExceptionDelegate       OnException = null)
+        {
+
+            if (TryParse(Request,
+                         TriggerMessageResponseJSON,
+                         out TriggerMessageResponse triggerMessageResponse,
+                         OnException))
+            {
+                return triggerMessageResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, TriggerMessageResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a trigger message response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="TriggerMessageResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static TriggerMessageResponse Parse(String               TriggerMessageResponseText,
-                                                   OnExceptionDelegate  OnException = null)
+        public static TriggerMessageResponse Parse(CS.TriggerMessageRequest  Request,
+                                                   String                    TriggerMessageResponseText,
+                                                   OnExceptionDelegate       OnException = null)
         {
 
-            TriggerMessageResponse _TriggerMessageResponse;
-
-            if (TryParse(TriggerMessageResponseText, out _TriggerMessageResponse, OnException))
-                return _TriggerMessageResponse;
+            if (TryParse(Request,
+                         TriggerMessageResponseText,
+                         out TriggerMessageResponse triggerMessageResponse,
+                         OnException))
+            {
+                return triggerMessageResponse;
+            }
 
             return null;
 
@@ -146,15 +208,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(TriggerMessageResponseXML,  out TriggerMessageResponse, OnException = null)
+        #region (static) TryParse(Request, TriggerMessageResponseXML,  out TriggerMessageResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a trigger message response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="TriggerMessageResponseXML">The XML to be parsed.</param>
         /// <param name="TriggerMessageResponse">The parsed trigger message response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                    TriggerMessageResponseXML,
+        public static Boolean TryParse(CS.TriggerMessageRequest    Request,
+                                       XElement                    TriggerMessageResponseXML,
                                        out TriggerMessageResponse  TriggerMessageResponse,
                                        OnExceptionDelegate         OnException  = null)
         {
@@ -163,6 +227,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             {
 
                 TriggerMessageResponse = new TriggerMessageResponse(
+
+                                             Request,
 
                                              TriggerMessageResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
                                                                                       TriggerMessageStatusExtentions.Parse)
@@ -186,15 +252,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(TriggerMessageResponseText, out TriggerMessageResponse, OnException = null)
+        #region (static) TryParse(Request, TriggerMessageResponseJSON, out TriggerMessageResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a trigger message response.
+        /// Try to parse the given JSON representation of a trigger message response.
         /// </summary>
-        /// <param name="TriggerMessageResponseText">The text to be parsed.</param>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="TriggerMessageResponseJSON">The JSON to be parsed.</param>
         /// <param name="TriggerMessageResponse">The parsed trigger message response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                      TriggerMessageResponseText,
+        public static Boolean TryParse(CS.TriggerMessageRequest    Request,
+                                       JObject                     TriggerMessageResponseJSON,
                                        out TriggerMessageResponse  TriggerMessageResponse,
                                        OnExceptionDelegate         OnException  = null)
         {
@@ -202,11 +270,83 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(TriggerMessageResponseText).Root,
-                             out TriggerMessageResponse,
-                             OnException))
+                TriggerMessageResponse = null;
 
-                    return true;
+                #region TriggerMessageStatus
+
+                if (!TriggerMessageResponseJSON.MapMandatory("status",
+                                                             "trigger message status",
+                                                             TriggerMessageStatusExtentions.Parse,
+                                                             out TriggerMessageStatus  TriggerMessageStatus,
+                                                             out String                ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                TriggerMessageResponse = new TriggerMessageResponse(Request,
+                                                                    TriggerMessageStatus);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, TriggerMessageResponseJSON, e);
+
+                TriggerMessageResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, TriggerMessageResponseText, out TriggerMessageResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a trigger message response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="TriggerMessageResponseText">The text to be parsed.</param>
+        /// <param name="TriggerMessageResponse">The parsed trigger message response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CS.TriggerMessageRequest    Request,
+                                       String                      TriggerMessageResponseText,
+                                       out TriggerMessageResponse  TriggerMessageResponse,
+                                       OnExceptionDelegate         OnException  = null)
+        {
+
+            try
+            {
+
+                TriggerMessageResponseText = TriggerMessageResponseText?.Trim();
+
+                if (TriggerMessageResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (TriggerMessageResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(TriggerMessageResponseText),
+                                 out TriggerMessageResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(TriggerMessageResponseText).Root,
+                                 out TriggerMessageResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -236,6 +376,41 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region ToJSON(CustomTriggerMessageResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomTriggerMessageResponseSerializer">A delegate to serialize custom trigger message responses.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<TriggerMessageResponse>  CustomTriggerMessageResponseSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("status",  Status.AsText())
+                       );
+
+            return CustomTriggerMessageResponseSerializer != null
+                       ? CustomTriggerMessageResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The trigger message command failed.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        public static TriggerMessageResponse Failed(CS.TriggerMessageRequest  Request)
+
+            => new TriggerMessageResponse(Request,
+                                          Result.Server());
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -255,7 +430,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) TriggerMessageResponse1 == null) || ((Object) TriggerMessageResponse2 == null))
+            if ((TriggerMessageResponse1 is null) || (TriggerMessageResponse2 is null))
                 return false;
 
             return TriggerMessageResponse1.Equals(TriggerMessageResponse2);
@@ -295,12 +470,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object is null)
                 return false;
 
-            // Check if the given object is a trigger message response.
-            var TriggerMessageResponse = Object as TriggerMessageResponse;
-            if ((Object) TriggerMessageResponse == null)
+            if (!(Object is TriggerMessageResponse TriggerMessageResponse))
                 return false;
 
-            return this.Equals(TriggerMessageResponse);
+            return Equals(TriggerMessageResponse);
 
         }
 
@@ -316,7 +489,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(TriggerMessageResponse TriggerMessageResponse)
         {
 
-            if ((Object) TriggerMessageResponse == null)
+            if (TriggerMessageResponse is null)
                 return false;
 
             return Status.Equals(TriggerMessageResponse.Status);
@@ -334,6 +507,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => Status.GetHashCode();
 
         #endregion
@@ -344,10 +518,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => Status.ToString();
 
         #endregion
-
 
     }
 

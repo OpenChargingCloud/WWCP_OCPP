@@ -20,7 +20,10 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +33,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// A reserve now response.
     /// </summary>
-    public class ReserveNowResponse : AResponse<ReserveNowResponse>
+    public class ReserveNowResponse : AResponse<CS.ReserveNowRequest,
+                                                   ReserveNowResponse>
     {
 
         #region Properties
@@ -38,31 +42,24 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The success or failure of the reservation.
         /// </summary>
-        public ReservationStatus  Status   { get; }
-
-        #endregion
-
-        #region Statics
-
-        /// <summary>
-        /// The reserve now failed.
-        /// </summary>
-        public static ReserveNowResponse Failed
-            => new ReserveNowResponse(Result.Server());
+        public ReservationStatus  Status    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region ReserveNowResponse(Status)
+        #region ReserveNowResponse(Request, Status)
 
         /// <summary>
-        /// Create a new OCPP reserve now response.
+        /// Create a new reserve now response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="Status">The success or failure of the reservation.</param>
-        public ReserveNowResponse(ReservationStatus Status)
+        public ReserveNowResponse(CS.ReserveNowRequest  Request,
+                                  ReservationStatus     Status)
 
-            : base(Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -72,13 +69,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region ReserveNowResponse(Result)
+        #region ReserveNowResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP reserve now response.
+        /// Create a new reserve now response.
         /// </summary>
-        public ReserveNowResponse(Result Result)
-            : base(Result)
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public ReserveNowResponse(CS.ReserveNowRequest  Request,
+                                  Result                Result)
+
+            : base(Request,
+                   Result)
+
         { }
 
         #endregion
@@ -100,23 +103,52 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:ReserveNowResponse",
+        //     "title":   "ReserveNowResponse",
+        //     "type":    "object",
+        //     "properties": {
+        //         "status": {
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Faulted",
+        //                 "Occupied",
+        //                 "Rejected",
+        //                 "Unavailable"
+        //             ]
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
+
         #endregion
 
-        #region (static) Parse   (ReserveNowResponseXML,  OnException = null)
+        #region (static) Parse   (Request, ReserveNowResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a reserve now response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ReserveNowResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ReserveNowResponse Parse(XElement             ReserveNowResponseXML,
-                                               OnExceptionDelegate  OnException = null)
+        public static ReserveNowResponse Parse(CS.ReserveNowRequest  Request,
+                                               XElement              ReserveNowResponseXML,
+                                               OnExceptionDelegate   OnException = null)
         {
 
-            ReserveNowResponse _ReserveNowResponse;
-
-            if (TryParse(ReserveNowResponseXML, out _ReserveNowResponse, OnException))
-                return _ReserveNowResponse;
+            if (TryParse(Request,
+                         ReserveNowResponseXML,
+                         out ReserveNowResponse reserveNowResponse,
+                         OnException))
+            {
+                return reserveNowResponse;
+            }
 
             return null;
 
@@ -124,21 +156,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (ReserveNowResponseText, OnException = null)
+        #region (static) Parse   (Request, ReserveNowResponseJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a reserve now response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="ReserveNowResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static ReserveNowResponse Parse(CS.ReserveNowRequest  Request,
+                                               JObject               ReserveNowResponseJSON,
+                                               OnExceptionDelegate   OnException = null)
+        {
+
+            if (TryParse(Request,
+                         ReserveNowResponseJSON,
+                         out ReserveNowResponse reserveNowResponse,
+                         OnException))
+            {
+                return reserveNowResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, ReserveNowResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a reserve now response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ReserveNowResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ReserveNowResponse Parse(String               ReserveNowResponseText,
-                                               OnExceptionDelegate  OnException = null)
+        public static ReserveNowResponse Parse(CS.ReserveNowRequest  Request,
+                                               String                ReserveNowResponseText,
+                                               OnExceptionDelegate   OnException = null)
         {
 
-            ReserveNowResponse _ReserveNowResponse;
-
-            if (TryParse(ReserveNowResponseText, out _ReserveNowResponse, OnException))
-                return _ReserveNowResponse;
+            if (TryParse(Request,
+                         ReserveNowResponseText,
+                         out ReserveNowResponse reserveNowResponse,
+                         OnException))
+            {
+                return reserveNowResponse;
+            }
 
             return null;
 
@@ -146,15 +210,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(ReserveNowResponseXML,  out ReserveNowResponse, OnException = null)
+        #region (static) TryParse(Request, ReserveNowResponseXML,  out ReserveNowResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a reserve now response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ReserveNowResponseXML">The XML to be parsed.</param>
         /// <param name="ReserveNowResponse">The parsed reserve now response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                ReserveNowResponseXML,
+        public static Boolean TryParse(CS.ReserveNowRequest    Request,
+                                       XElement                ReserveNowResponseXML,
                                        out ReserveNowResponse  ReserveNowResponse,
                                        OnExceptionDelegate     OnException  = null)
         {
@@ -163,6 +229,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             {
 
                 ReserveNowResponse = new ReserveNowResponse(
+
+                                         Request,
 
                                          ReserveNowResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
                                                                               ReservationStatusExtentions.Parse)
@@ -186,15 +254,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(ReserveNowResponseText, out ReserveNowResponse, OnException = null)
+        #region (static) TryParse(Request, ReserveNowResponseJSON, out ReserveNowResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a reserve now response.
+        /// Try to parse the given JSON representation of a reserve now response.
         /// </summary>
-        /// <param name="ReserveNowResponseText">The text to be parsed.</param>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="ReserveNowResponseJSON">The JSON to be parsed.</param>
         /// <param name="ReserveNowResponse">The parsed reserve now response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                  ReserveNowResponseText,
+        public static Boolean TryParse(CS.ReserveNowRequest    Request,
+                                       JObject                 ReserveNowResponseJSON,
                                        out ReserveNowResponse  ReserveNowResponse,
                                        OnExceptionDelegate     OnException  = null)
         {
@@ -202,11 +272,83 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(ReserveNowResponseText).Root,
-                             out ReserveNowResponse,
-                             OnException))
+                ReserveNowResponse = null;
 
-                    return true;
+                #region ReservationStatus
+
+                if (!ReserveNowResponseJSON.MapMandatory("status",
+                                                         "reservation status",
+                                                         ReservationStatusExtentions.Parse,
+                                                         out ReservationStatus  ReservationStatus,
+                                                         out String             ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                ReserveNowResponse = new ReserveNowResponse(Request,
+                                                            ReservationStatus);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, ReserveNowResponseJSON, e);
+
+                ReserveNowResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, ReserveNowResponseText, out ReserveNowResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a reserve now response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="ReserveNowResponseText">The text to be parsed.</param>
+        /// <param name="ReserveNowResponse">The parsed reserve now response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CS.ReserveNowRequest    Request,
+                                       String                  ReserveNowResponseText,
+                                       out ReserveNowResponse  ReserveNowResponse,
+                                       OnExceptionDelegate     OnException  = null)
+        {
+
+            try
+            {
+
+                ReserveNowResponseText = ReserveNowResponseText?.Trim();
+
+                if (ReserveNowResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (ReserveNowResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(ReserveNowResponseText),
+                                 out ReserveNowResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(ReserveNowResponseText).Root,
+                                 out ReserveNowResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -234,6 +376,41 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region ToJSON(CustomReserveNowResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomReserveNowResponseSerializer">A delegate to serialize custom reserve now responses.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowResponse>  CustomReserveNowResponseSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("status",  Status.AsText())
+                       );
+
+            return CustomReserveNowResponseSerializer != null
+                       ? CustomReserveNowResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The reserve now failed.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        public static ReserveNowResponse Failed(CS.ReserveNowRequest Request)
+
+            => new ReserveNowResponse(Request,
+                                      Result.Server());
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -253,7 +430,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ReserveNowResponse1 == null) || ((Object) ReserveNowResponse2 == null))
+            if ((ReserveNowResponse1 is null) || (ReserveNowResponse2 is null))
                 return false;
 
             return ReserveNowResponse1.Equals(ReserveNowResponse2);
@@ -293,12 +470,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object is null)
                 return false;
 
-            // Check if the given object is a reserve now response.
-            var ReserveNowResponse = Object as ReserveNowResponse;
-            if ((Object) ReserveNowResponse == null)
+            if (!(Object is ReserveNowResponse ReserveNowResponse))
                 return false;
 
-            return this.Equals(ReserveNowResponse);
+            return Equals(ReserveNowResponse);
 
         }
 
@@ -314,7 +489,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(ReserveNowResponse ReserveNowResponse)
         {
 
-            if ((Object) ReserveNowResponse == null)
+            if (ReserveNowResponse is null)
                 return false;
 
             return Status.Equals(ReserveNowResponse.Status);
@@ -332,6 +507,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => Status.GetHashCode();
 
         #endregion
@@ -342,10 +518,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => Status.ToString();
 
         #endregion
-
 
     }
 

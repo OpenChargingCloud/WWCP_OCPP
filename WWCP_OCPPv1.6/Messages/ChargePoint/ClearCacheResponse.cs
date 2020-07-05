@@ -20,7 +20,11 @@
 using System;
 using System.Xml.Linq;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
+using Org.BouncyCastle.Ocsp;
 
 #endregion
 
@@ -30,7 +34,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
     /// <summary>
     /// A clear cache response.
     /// </summary>
-    public class ClearCacheResponse : AResponse<ClearCacheResponse>
+    public class ClearCacheResponse : AResponse<CS.ClearCacheRequest,
+                                                   ClearCacheResponse>
     {
 
         #region Properties
@@ -38,31 +43,24 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <summary>
         /// The success or failure of the clear cache command.
         /// </summary>
-        public ClearCacheStatus  Status   { get; }
-
-        #endregion
-
-        #region Statics
-
-        /// <summary>
-        /// The clear cache command failed.
-        /// </summary>
-        public static ClearCacheResponse Failed
-            => new ClearCacheResponse(Result.Server());
+        public ClearCacheStatus  Status    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region ClearCacheResponse(Status)
+        #region ClearCacheResponse(Request, Status)
 
         /// <summary>
-        /// Create a new OCPP clear cache response.
+        /// Create a new clear cache response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="Status">The success or failure of the clear cache command.</param>
-        public ClearCacheResponse(ClearCacheStatus Status)
+        public ClearCacheResponse(CS.ClearCacheRequest  Request,
+                                  ClearCacheStatus      Status)
 
-            : base(Result.OK())
+            : base(Request,
+                   Result.OK())
 
         {
 
@@ -72,13 +70,19 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region ClearCacheResponse(Result)
+        #region ClearCacheResponse(Request, Result)
 
         /// <summary>
-        /// Create a new OCPP clear cache response.
+        /// Create a new clear cache response.
         /// </summary>
-        public ClearCacheResponse(Result Result)
-            : base(Result)
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public ClearCacheResponse(CS.ClearCacheRequest  Request,
+                                  Result                Result)
+
+            : base(Request,
+                   Result)
+
         { }
 
         #endregion
@@ -102,21 +106,26 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (ClearCacheResponseXML,  OnException = null)
+        #region (static) Parse   (Request, ClearCacheResponseXML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a clear cache response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ClearCacheResponseXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearCacheResponse Parse(XElement             ClearCacheResponseXML,
-                                               OnExceptionDelegate  OnException = null)
+        public static ClearCacheResponse Parse(CS.ClearCacheRequest  Request,
+                                               XElement              ClearCacheResponseXML,
+                                               OnExceptionDelegate   OnException = null)
         {
 
-            ClearCacheResponse _ClearCacheResponse;
-
-            if (TryParse(ClearCacheResponseXML, out _ClearCacheResponse, OnException))
-                return _ClearCacheResponse;
+            if (TryParse(Request,
+                         ClearCacheResponseXML,
+                         out ClearCacheResponse clearCacheResponse,
+                         OnException))
+            {
+                return clearCacheResponse;
+            }
 
             return null;
 
@@ -124,21 +133,53 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (ClearCacheResponseText, OnException = null)
+        #region (static) Parse   (Request, ClearCacheResponseJSON, OnException = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a clear cache response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="ClearCacheResponseJSON">The JSON to be parsed.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static ClearCacheResponse Parse(CS.ClearCacheRequest  Request,
+                                               JObject               ClearCacheResponseJSON,
+                                               OnExceptionDelegate   OnException = null)
+        {
+
+            if (TryParse(Request,
+                         ClearCacheResponseJSON,
+                         out ClearCacheResponse clearCacheResponse,
+                         OnException))
+            {
+                return clearCacheResponse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Request, ClearCacheResponseText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a clear cache response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ClearCacheResponseText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearCacheResponse Parse(String               ClearCacheResponseText,
-                                               OnExceptionDelegate  OnException = null)
+        public static ClearCacheResponse Parse(CS.ClearCacheRequest  Request,
+                                               String                ClearCacheResponseText,
+                                               OnExceptionDelegate   OnException = null)
         {
 
-            ClearCacheResponse _ClearCacheResponse;
-
-            if (TryParse(ClearCacheResponseText, out _ClearCacheResponse, OnException))
-                return _ClearCacheResponse;
+            if (TryParse(Request,
+                         ClearCacheResponseText,
+                         out ClearCacheResponse clearCacheResponse,
+                         OnException))
+            {
+                return clearCacheResponse;
+            }
 
             return null;
 
@@ -146,15 +187,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(ClearCacheResponseXML,  out ClearCacheResponse, OnException = null)
+        #region (static) TryParse(Request, ClearCacheResponseXML,  out ClearCacheResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a clear cache response.
         /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="ClearCacheResponseXML">The XML to be parsed.</param>
         /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                ClearCacheResponseXML,
+        public static Boolean TryParse(CS.ClearCacheRequest    Request,
+                                       XElement                ClearCacheResponseXML,
                                        out ClearCacheResponse  ClearCacheResponse,
                                        OnExceptionDelegate     OnException  = null)
         {
@@ -163,6 +206,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             {
 
                 ClearCacheResponse = new ClearCacheResponse(
+
+                                         Request,
 
                                          ClearCacheResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
                                                                               ClearCacheStatusExtentions.Parse)
@@ -186,15 +231,17 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(ClearCacheResponseText, out ClearCacheResponse, OnException = null)
+        #region (static) TryParse(Request, ClearCacheResponseJSON, out ClearCacheResponse, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a clear cache response.
+        /// Try to parse the given JSON representation of a clear cache response.
         /// </summary>
-        /// <param name="ClearCacheResponseText">The text to be parsed.</param>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="ClearCacheResponseJSON">The JSON to be parsed.</param>
         /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                  ClearCacheResponseText,
+        public static Boolean TryParse(CS.ClearCacheRequest    Request,
+                                       JObject                 ClearCacheResponseJSON,
                                        out ClearCacheResponse  ClearCacheResponse,
                                        OnExceptionDelegate     OnException  = null)
         {
@@ -202,11 +249,83 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(ClearCacheResponseText).Root,
-                             out ClearCacheResponse,
-                             OnException))
+                ClearCacheResponse = null;
 
-                    return true;
+                #region ClearCacheStatus
+
+                if (!ClearCacheResponseJSON.MapMandatory("status",
+                                                         "clear cache status",
+                                                         ClearCacheStatusExtentions.Parse,
+                                                         out ClearCacheStatus  ClearCacheStatus,
+                                                         out String            ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                ClearCacheResponse = new ClearCacheResponse(Request,
+                                                            ClearCacheStatus);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow, ClearCacheResponseJSON, e);
+
+                ClearCacheResponse = null;
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, ClearCacheResponseText, out ClearCacheResponse, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a clear cache response.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="ClearCacheResponseText">The text to be parsed.</param>
+        /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(CS.ClearCacheRequest    Request,
+                                       String                  ClearCacheResponseText,
+                                       out ClearCacheResponse  ClearCacheResponse,
+                                       OnExceptionDelegate     OnException  = null)
+        {
+
+            try
+            {
+
+                ClearCacheResponseText = ClearCacheResponseText?.Trim();
+
+                if (ClearCacheResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (ClearCacheResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(ClearCacheResponseText),
+                                 out ClearCacheResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(ClearCacheResponseText).Root,
+                                 out ClearCacheResponse,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
@@ -234,6 +353,41 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
         #endregion
 
+        #region ToJSON(CustomClearCacheResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomClearCacheResponseSerializer">A delegate to serialize custom clear cache responses.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearCacheResponse>  CustomClearCacheResponseSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("status",  Status.AsText())
+                       );
+
+            return CustomClearCacheResponseSerializer != null
+                       ? CustomClearCacheResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The clear cache command failed.
+        /// </summary>
+        /// <param name="Request">The start transaction request leading to this response.</param>
+        public static ClearCacheResponse Failed(CS.ClearCacheRequest Request)
+
+            => new ClearCacheResponse(Request,
+                                      Result.Server());
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -253,7 +407,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ClearCacheResponse1 == null) || ((Object) ClearCacheResponse2 == null))
+            if ((ClearCacheResponse1 is null) || (ClearCacheResponse2 is null))
                 return false;
 
             return ClearCacheResponse1.Equals(ClearCacheResponse2);
@@ -293,12 +447,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             if (Object is null)
                 return false;
 
-            // Check if the given object is a clear cache response.
-            var ClearCacheResponse = Object as ClearCacheResponse;
-            if ((Object) ClearCacheResponse == null)
+            if (!(Object is ClearCacheResponse ClearCacheResponse))
                 return false;
 
-            return this.Equals(ClearCacheResponse);
+            return Equals(ClearCacheResponse);
 
         }
 
@@ -314,7 +466,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         public override Boolean Equals(ClearCacheResponse ClearCacheResponse)
         {
 
-            if ((Object) ClearCacheResponse == null)
+            if (ClearCacheResponse is null)
                 return false;
 
             return Status.Equals(ClearCacheResponse.Status);
@@ -332,6 +484,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => Status.GetHashCode();
 
         #endregion
@@ -342,10 +495,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => Status.ToString();
 
         #endregion
-
 
     }
 

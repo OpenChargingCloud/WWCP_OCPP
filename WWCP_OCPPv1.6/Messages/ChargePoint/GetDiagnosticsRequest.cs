@@ -355,7 +355,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 if (GetDiagnosticsRequestJSON.ParseOptional("retries",
                                                             "retries",
-                                                            Byte.Parse,
                                                             out Byte?  Retries,
                                                             out        ErrorResponse))
                 {
@@ -371,7 +370,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 if (GetDiagnosticsRequestJSON.ParseOptional("retryInterval",
                                                             "retry interval",
-                                                            s => TimeSpan.FromSeconds(UInt32.Parse(s)),
                                                             out TimeSpan?  RetryInterval,
                                                             out            ErrorResponse))
                 {

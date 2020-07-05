@@ -63,7 +63,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #region CPClientLogger(CPClient, Context = DefaultContext, LogFileCreator = null)
 
             /// <summary>
-            /// Create a new OCPP CP client logger using the default logging delegates.
+            /// Create a new CP client logger using the default logging delegates.
             /// </summary>
             /// <param name="CPClient">A OCPP CP client.</param>
             /// <param name="Context">A context of this API.</param>
@@ -88,7 +88,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #region CPClientLogger(CPClient, Context, ... Logging delegates ...)
 
             /// <summary>
-            /// Create a new OCPP CP client logger using the given logging delegates.
+            /// Create a new CP client logger using the given logging delegates.
             /// </summary>
             /// <param name="CPClient">A OCPP CP client.</param>
             /// <param name="Context">A context of this API.</param>

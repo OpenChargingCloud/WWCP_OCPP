@@ -2033,9 +2033,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             #endregion
 
 
-            var request = new DataTransferRequest(VendorId,
-                                                          MessageId,
-                                                          Data);
+            var request = new CS.DataTransferRequest(VendorId,
+                                                     MessageId,
+                                                     Data);
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
@@ -2064,7 +2064,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(DataTransferResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                                                                      DataTransferResponse.Parse),
 
                                                  #endregion
 
@@ -2076,6 +2077,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<DataTransferResponse>(httpresponse,
                                                                                                    new DataTransferResponse(
+                                                                                                       request,
                                                                                                        Result.Format(
                                                                                                            "Invalid SOAP => " +
                                                                                                            httpresponse.HTTPBody.ToUTF8String()
@@ -2095,6 +2097,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                      return new HTTPResponse<DataTransferResponse>(httpresponse,
                                                                                                    new DataTransferResponse(
+                                                                                                       request,
                                                                                                        Result.Server(
                                                                                                             httpresponse.HTTPStatusCode.ToString() +
                                                                                                             " => " +
@@ -2114,6 +2117,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<DataTransferResponse>.ExceptionThrown(new DataTransferResponse(
+                                                                                                                   request,
                                                                                                                    Result.Format(exception.Message +
                                                                                                                                  " => " +
                                                                                                                                  exception.StackTrace)),
@@ -2128,7 +2132,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<DataTransferResponse>.OK(new DataTransferResponse(Result.OK("Nothing to upload!")));
+                result = HTTPResponse<DataTransferResponse>.OK(new DataTransferResponse(request,
+                                                                                        Result.OK("Nothing to upload!")));
 
 
             #region Send OnDataTransferResponse event

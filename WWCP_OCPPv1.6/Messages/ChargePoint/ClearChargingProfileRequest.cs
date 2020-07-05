@@ -340,11 +340,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                 #region StackLevel
 
-                if (!ClearChargingProfileRequestJSON.ParseOptionalStruct("StackLevel",
-                                                                         "stack level",
-                                                                         UInt32.TryParse,
-                                                                         out UInt32?  StackLevel,
-                                                                         out          ErrorResponse))
+                if (!ClearChargingProfileRequestJSON.ParseOptional("StackLevel",
+                                                                   "stack level",
+                                                                   out UInt32?  StackLevel,
+                                                                   out          ErrorResponse))
                 {
                     return false;
                 }

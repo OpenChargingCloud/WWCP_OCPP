@@ -259,7 +259,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 if (!ChargingSchedulePeriodJSON.ParseMandatory("startPeriod",
                                                                "start period",
-                                                               UInt32.TryParse,
                                                                out UInt32  StartPeriod,
                                                                out String  ErrorResponse))
                 {
@@ -271,8 +270,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 #region Limit
 
                 if (!ChargingSchedulePeriodJSON.ParseMandatory("limit",
-                                                               "limit",
-                                                               Decimal.TryParse,
+                                                               "power limit",
                                                                out Decimal  Limit,
                                                                out          ErrorResponse))
                 {
@@ -283,11 +281,10 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 #region NumberPhases
 
-                if (ChargingSchedulePeriodJSON.ParseOptionalStruct("numberPhases",
-                                                                   "numberPhases",
-                                                                   Byte.TryParse,
-                                                                   out Byte?  NumberPhases,
-                                                                   out        ErrorResponse))
+                if (ChargingSchedulePeriodJSON.ParseOptional("numberPhases",
+                                                             "number of phases",
+                                                             out Byte?  NumberPhases,
+                                                             out        ErrorResponse))
                 {
 
                     if (ErrorResponse != null)

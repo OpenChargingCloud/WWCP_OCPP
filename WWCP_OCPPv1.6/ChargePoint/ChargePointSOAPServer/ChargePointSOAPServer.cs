@@ -308,7 +308,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = ReserveNowResponse.Failed;
+                        response = ReserveNowResponse.Failed(_ReserveNowRequest);
 
                 }
 
@@ -532,7 +532,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = RemoteStartTransactionResponse.Failed;
+                        response = RemoteStartTransactionResponse.Failed(_RemoteStartTransactionRequest);
 
                 }
 
@@ -643,7 +643,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = RemoteStopTransactionResponse.Failed;
+                        response = RemoteStopTransactionResponse.Failed(_RemoteStopTransactionRequest);
 
                 }
 
@@ -722,9 +722,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
 
                 var _OCPPHeader           = SOAPHeader.Parse(HeaderXML);
-                var _DataTransferRequest  = DataTransferRequest.Parse(DataTransferXML);
+                var _DataTransferRequest  = CS.DataTransferRequest.Parse(DataTransferXML);
 
-                DataTransferResponse response            = null;
+                CP.DataTransferResponse response            = null;
 
 
 
@@ -757,7 +757,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = DataTransferResponse.Failed;
+                        response = DataTransferResponse.Failed(_DataTransferRequest);
 
                 }
 
