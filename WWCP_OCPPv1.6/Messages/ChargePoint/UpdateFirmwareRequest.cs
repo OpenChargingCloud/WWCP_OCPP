@@ -186,7 +186,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="UpdateFirmwareRequestJSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static UpdateFirmwareRequest Parse(XElement             UpdateFirmwareRequestJSON,
+        public static UpdateFirmwareRequest Parse(JObject              UpdateFirmwareRequestJSON,
                                                   OnExceptionDelegate  OnException = null)
         {
 

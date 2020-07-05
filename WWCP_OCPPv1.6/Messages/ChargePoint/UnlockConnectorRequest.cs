@@ -128,7 +128,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="UnlockConnectorRequestJSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static UnlockConnectorRequest Parse(XElement             UnlockConnectorRequestJSON,
+        public static UnlockConnectorRequest Parse(JObject              UnlockConnectorRequestJSON,
                                                    OnExceptionDelegate  OnException = null)
         {
 
