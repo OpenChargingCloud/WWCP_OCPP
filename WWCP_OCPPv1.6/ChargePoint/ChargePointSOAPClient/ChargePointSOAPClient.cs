@@ -23,13 +23,13 @@ using System.Net.Security;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using org.GraphDefined.WWCP.OCPPv1_6.CS;
+
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
-
-using org.GraphDefined.WWCP.OCPPv1_6.CS;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP.v1_2;
 
 #endregion
@@ -1001,7 +1001,8 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request, AuthorizeResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                                                                      AuthorizeResponse.Parse),
 
                                                  #endregion
 

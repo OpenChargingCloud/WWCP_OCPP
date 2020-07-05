@@ -22,13 +22,13 @@ using System.Threading;
 using System.Net.Security;
 using System.Threading.Tasks;
 
+using org.GraphDefined.WWCP.OCPPv1_6.CP;
+
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
-
-using org.GraphDefined.WWCP.OCPPv1_6.CP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP.v1_2;
 
 #endregion
