@@ -104,6 +104,22 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         //    </soap:Body>
         // </soap:Envelope>
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-04/schema#",
+        //     "id":      "urn:OCPP:1.6:2019:12:GetLocalListVersionResponse",
+        //     "title":   "GetLocalListVersionResponse",
+        //     "type":    "object",
+        //     "properties": {
+        //         "listVersion": {
+        //             "type": "integer"
+        //         }
+        //     },
+        //     "additionalProperties": false,
+        //     "required": [
+        //         "listVersion"
+        //     ]
+        // }
+
         #endregion
 
         #region (static) Parse   (GetLocalListVersionResponseXML,  OnException = null)
@@ -349,6 +365,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
             => new XElement(OCPPNS.OCPPv1_6_CP + "getLocalListVersionResponse",
                    new XElement(OCPPNS.OCPPv1_6_CP + "listVersion",  ListVersion)
                );
+
+        #endregion
+
+        #region ToJSON(CustomGetLocalListVersionResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomGetLocalListVersionResponseSerializer">A delegate to serialize custom get local list version responses.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetLocalListVersionResponse>  CustomGetLocalListVersionResponseSerializer  = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("listVersion",  ListVersion)
+                       );
+
+            return CustomGetLocalListVersionResponseSerializer != null
+                       ? CustomGetLocalListVersionResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 

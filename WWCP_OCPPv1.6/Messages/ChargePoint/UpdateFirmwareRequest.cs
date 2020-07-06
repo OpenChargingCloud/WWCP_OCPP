@@ -69,7 +69,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a UpdateFirmware request.
+        /// Create a update firmware request.
         /// </summary>
         /// <param name="Location">The URI where to download the firmware.</param>
         /// <param name="RetrieveDate">The timestamp after which the charge point must retrieve the firmware.</param>

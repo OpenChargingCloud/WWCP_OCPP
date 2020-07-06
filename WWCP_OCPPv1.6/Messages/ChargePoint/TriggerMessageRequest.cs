@@ -59,7 +59,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="ConnectorId">Optional connector identification whenever the message applies to a specific connector.</param>
         public TriggerMessageRequest(MessageTriggers  RequestedMessage,
-                                     Connector_Id?    ConnectorId)
+                                     Connector_Id?    ConnectorId  = null)
         {
 
             this.RequestedMessage  = RequestedMessage;

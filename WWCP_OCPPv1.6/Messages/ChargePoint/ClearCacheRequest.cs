@@ -400,7 +400,6 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         #endregion
 
-
     }
 
 }

@@ -486,6 +486,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         #endregion
 
 
+        // <cs:chargeBoxIdentity se:mustUnderstand="true">CP1234</cs:chargeBoxIdentity>
+
+
         #region BootNotification             (ChargePointVendor, ChargePointModel, ...)
 
         /// <summary>
