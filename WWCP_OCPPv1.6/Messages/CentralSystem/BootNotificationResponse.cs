@@ -46,6 +46,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
         /// <summary>
         /// The current time at the central system.
+        /// Should be UTC!
         /// </summary>
         public DateTime            CurrentTime   { get; }
 
@@ -69,7 +70,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The boot notification request leading to this response.</param>
         /// <param name="Status">The registration status.</param>
-        /// <param name="CurrentTime">The current time at the central system.</param>
+        /// <param name="CurrentTime">The current time at the central system. Should be UTC!</param>
         /// <param name="Interval">When the registration status is 'accepted', the interval defines the heartbeat interval in seconds. In all other cases, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.</param>
         public BootNotificationResponse(CP.BootNotificationRequest  Request,
                                         RegistrationStatus          Status,
@@ -270,14 +271,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 
                                                Request,
 
-                                               BootNotificationResponseXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CS + "status",
-                                                                                               RegistrationStatusExtentions.Parse),
+                                               BootNotificationResponseXML.MapValueOrFail      (OCPPNS.OCPPv1_6_CS + "status",
+                                                                                                RegistrationStatusExtentions.Parse),
 
-                                               BootNotificationResponseXML.MapValueOrFail     (OCPPNS.OCPPv1_6_CS + "currentTime",
-                                                                                               DateTime.Parse),
+                                               BootNotificationResponseXML.ParseTimestampOrFail(OCPPNS.OCPPv1_6_CS + "currentTime"),
 
-                                               BootNotificationResponseXML.MapValueOrNull     (OCPPNS.OCPPv1_6_CS + "interval",
-                                                                                               s => TimeSpan.FromSeconds(UInt32.Parse(s)))
+                                               BootNotificationResponseXML.ParseTimeSpanOrFail (OCPPNS.OCPPv1_6_CS + "interval")
 
                                            );
 
@@ -326,6 +325,12 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                                                out RegistrationStatus  RegistrationStatus,
                                                                out String              ErrorResponse))
                 {
+                    return false;
+                }
+
+                if (RegistrationStatus == RegistrationStatus.Unknown)
+                {
+                    ErrorResponse = "Unknown registration status '" + BootNotificationResponseJSON["status"].Value<String>() + "' received!";
                     return false;
                 }
 

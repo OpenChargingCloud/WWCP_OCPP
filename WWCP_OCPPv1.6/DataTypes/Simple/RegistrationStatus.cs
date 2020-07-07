@@ -108,21 +108,21 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
 
         /// <summary>
-        /// Charge point is accepted by Central System.
+        /// Charge point is accepted by the central system.
         /// </summary>
         Accepted,
 
         /// <summary>
-        /// Central System is not yet ready to accept the
-        /// Charge Point. Central System may send messages
-        /// to retrieve information or prepare the Charge Point.
+        /// The central system is not yet ready to accept the
+        /// charge point. The central system may send messages
+        /// to retrieve information or prepare the charge point.
         /// </summary>
         Pending,
 
         /// <summary>
-        /// Charge point is not accepted by Central System.
-        /// This may happen when the Charge Point id is not
-        /// known by Central System.
+        /// Charge point is not accepted by the central system.
+        /// This may happen when the charge point identification
+        /// is not (yet) known by the central system.
         /// </summary>
         Rejected
 
