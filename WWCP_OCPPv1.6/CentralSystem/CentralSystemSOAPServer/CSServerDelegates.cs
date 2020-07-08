@@ -51,21 +51,21 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="MeterSerialNumber">The serial number of the main power meter of the charge point.</param>
     public delegate Task
 
-        BootNotificationRequestDelegate(DateTime                    Timestamp,
-                                        CentralSystemSOAPServer     Sender,
-                                        EventTracking_Id            EventTrackingId,
+        BootNotificationRequestDelegate(DateTime          Timestamp,
+                                        Object            Sender,
+                                        EventTracking_Id  EventTrackingId,
 
-                                        ChargeBox_Id                ChargeBoxIdentity,
+                                        ChargeBox_Id      ChargeBoxIdentity,
 
-                                        String                      ChargePointVendor,
-                                        String                      ChargePointModel,
-                                        String                      ChargePointSerialNumber,
-                                        String                      ChargeBoxSerialNumber,
-                                        String                      FirmwareVersion,
-                                        String                      Iccid,
-                                        String                      IMSI,
-                                        String                      MeterType,
-                                        String                      MeterSerialNumber);
+                                        String            ChargePointVendor,
+                                        String            ChargePointModel,
+                                        String            ChargePointSerialNumber,
+                                        String            ChargeBoxSerialNumber,
+                                        String            FirmwareVersion,
+                                        String            Iccid,
+                                        String            IMSI,
+                                        String            MeterType,
+                                        String            MeterSerialNumber);
 
 
     /// <summary>
@@ -81,7 +81,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     public delegate Task<BootNotificationResponse>
 
         BootNotificationDelegate(DateTime                    Timestamp,
-                                 CentralSystemSOAPServer     Sender,
+                                 Object                      Sender,
                                  CancellationToken           CancellationToken,
                                  EventTracking_Id            EventTrackingId,
 
@@ -115,27 +115,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        BootNotificationResponseDelegate(DateTime                 Timestamp,
-                                         CentralSystemSOAPServer  Sender,
-                                         EventTracking_Id         EventTrackingId,
+        BootNotificationResponseDelegate(DateTime            Timestamp,
+                                         Object              Sender,
+                                         EventTracking_Id    EventTrackingId,
 
-                                         ChargeBox_Id             ChargeBoxIdentity,
+                                         ChargeBox_Id        ChargeBoxIdentity,
 
-                                         String                   ChargePointVendor,
-                                         String                   ChargePointModel,
-                                         String                   ChargePointSerialNumber,
-                                         String                   ChargeBoxSerialNumber,
-                                         String                   FirmwareVersion,
-                                         String                   Iccid,
-                                         String                   IMSI,
-                                         String                   MeterType,
-                                         String                   MeterSerialNumber,
+                                         String              ChargePointVendor,
+                                         String              ChargePointModel,
+                                         String              ChargePointSerialNumber,
+                                         String              ChargeBoxSerialNumber,
+                                         String              FirmwareVersion,
+                                         String              Iccid,
+                                         String              IMSI,
+                                         String              MeterType,
+                                         String              MeterSerialNumber,
 
-                                         Result                   Result,
-                                         RegistrationStatus       Status,
-                                         DateTime                 CurrentTime,
-                                         TimeSpan                 Interval,
-                                         TimeSpan                 Runtime);
+                                         Result              Result,
+                                         RegistrationStatus  Status,
+                                         DateTime            CurrentTime,
+                                         TimeSpan            Interval,
+                                         TimeSpan            Runtime);
 
     #endregion
 

@@ -52,6 +52,7 @@
     <Compile Include="CentralSystem\CentralSystemSOAPClient\CentralSystemSOAPClient.cs" />
     <Compile Include="CentralSystem\CentralSystemSOAPClient\CSClientDelegates.cs" />
     <Compile Include="CentralSystem\CentralSystemSOAPServer\CSServerLogger.cs" />
+    <Compile Include="CentralSystem\CentralSystem\CentralSystemWSServer.cs" />
     <Compile Include="ChargePoint\ChargePointSOAPClient\ICPClient.cs" />
     <Compile Include="ChargePoint\ChargePointSOAPClient\ChargePointSOAPClient.cs" />
     <Compile Include="ChargePoint\ChargePointSOAPClient\CPClientDelegates.cs" />
@@ -197,6 +198,7 @@
       <Name>Styx</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
