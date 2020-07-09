@@ -52,7 +52,12 @@
     <Compile Include="CentralSystem\CentralSystemSOAPClient\CentralSystemSOAPClient.cs" />
     <Compile Include="CentralSystem\CentralSystemSOAPClient\CSClientDelegates.cs" />
     <Compile Include="CentralSystem\CentralSystemSOAPServer\CSServerLogger.cs" />
-    <Compile Include="CentralSystem\CentralSystem\CentralSystemWSServer.cs" />
+    <Compile Include="IO\WSErrorMessage.cs" />
+    <Compile Include="IO\WSErrorCodes.cs" />
+    <Compile Include="IO\WSResponseMessage.cs" />
+    <Compile Include="IO\WSMessageTypes.cs" />
+    <Compile Include="IO\WSRequest.cs" />
+    <Compile Include="CentralSystem\CentralSystemWS\CentralSystemWSServer.cs" />
     <Compile Include="ChargePoint\ChargePointSOAPClient\ICPClient.cs" />
     <Compile Include="ChargePoint\ChargePointSOAPClient\ChargePointSOAPClient.cs" />
     <Compile Include="ChargePoint\ChargePointSOAPClient\CPClientDelegates.cs" />

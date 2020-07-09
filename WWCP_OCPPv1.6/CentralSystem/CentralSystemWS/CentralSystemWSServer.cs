@@ -31,241 +31,12 @@ using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using Newtonsoft.Json.Linq;
 using System.Threading;
+using org.GraphDefined.WWCP.OCPPv1_6.WebSockets;
 
 #endregion
 
 namespace org.GraphDefined.WWCP.OCPPv1_6.CS
 {
-
-    public enum MessageTypes : Byte
-    {
-
-        CALL         = 2,
-
-        CALLRESULT   = 3,
-
-        CALLERROR    = 4
-
-    }
-
-    public class OCPPResponseMessage
-    {
-
-        public MessageTypes  MessageType         { get; }
-
-        public String        RequestId           { get; }
-
-        public JObject       Data                { get; }
-
-
-        public OCPPResponseMessage(MessageTypes  MessageType,
-                                   String        RequestId,
-                                   JObject       Data)
-        {
-
-            this.MessageType       = MessageType;
-            this.RequestId         = RequestId;
-            this.Data              = Data;
-
-        }
-
-
-        public JArray ToJSON()
-        {
-
-            var JSON = new JArray((Byte) MessageType,
-                                  RequestId,
-                                  Data);
-
-            return JSON;
-
-        }
-
-        public override String ToString()
-
-            => String.Concat(RequestId,
-                             " => ",
-                             Data.ToString());
-
-    }
-
-    public enum OCPPErrorCodes
-    {
-
-        /// <summary>
-        /// Requested Action is not known by receiver.
-        /// </summary>
-        NotImplemented,
-
-        /// <summary>
-        /// Requested Action is recognized but not supported by the receiver.
-        /// </summary>
-        NotSupported,
-
-        /// <summary>
-        /// An internal error occurred and the receiver was not able to process the requested Action successfully.
-        /// </summary>
-        InternalError,
-
-        /// <summary>
-        /// Payload for Action is incomplete.
-        /// </summary>
-        ProtocolError,
-
-        /// <summary>
-        /// During the processing of Action a security issue occurred preventing receiver from completing the Action successfully.
-        /// </summary>
-        SecurityError,
-
-        /// <summary>
-        /// Payload for Action is syntactically incorrect or not conform the PDU structure for Action.
-        /// </summary>
-        FormationViolation,
-
-        /// <summary>
-        /// Payload is syntactically correct but at least one field contains an invalid value.
-        /// </summary>
-        PropertyConstraintViolation,
-
-        /// <summary>
-        /// Payload for Action is syntactically correct but at least one of the fields violates occurence constraints.
-        /// </summary>
-        OccurenceConstraintViolation,
-
-        /// <summary>
-        /// Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12).
-        /// </summary>
-        TypeConstraintViolation,
-
-        /// <summary>
-        /// Any other error not covered by the previous ones.
-        /// </summary>
-        GenericError
-
-    }
-
-    public class OCPPErrorMessage
-    {
-
-        public Byte            MessageType         { get; }
-
-        public String          RequestId           { get; }
-
-        public OCPPErrorCodes  ErrorCode           { get; }
-
-        public String          ErrorDescription    { get; }
-
-        public JObject         ErrorDetails        { get; }
-
-
-        public OCPPErrorMessage(String          RequestId,
-                                OCPPErrorCodes  ErrorCode,
-                                String          ErrorDescription   = null,
-                                JObject         ErrorDetails       = null)
-
-        {
-
-            this.MessageType       = 4;
-            this.RequestId         = RequestId;
-            this.ErrorCode         = ErrorCode;
-            this.ErrorDescription  = ErrorDescription ?? "";
-            this.ErrorDetails      = ErrorDetails     ?? new JObject();
-
-        }
-
-
-        #region Documentation
-
-        // [
-        //     4,            // MessageType: CALLERROR (Server-to-Client)
-        //    "19223201",    // RequestId from request
-        //    "<errorCode>",
-        //    "<errorDescription>",
-        //    {
-        //        <errorDetails>
-        //    }
-        // ]
-
-        // Error Code                    Description
-        // -----------------------------------------------------------------------------------------------
-        // NotImplemented                Requested Action is not known by receiver
-        // NotSupported                  Requested Action is recognized but not supported by the receiver
-        // InternalError                 An internal error occurred and the receiver was not able to process the requested Action successfully
-        // ProtocolError                 Payload for Action is incomplete
-        // SecurityError                 During the processing of Action a security issue occurred preventing receiver from completing the Action successfully
-        // FormationViolation            Payload for Action is syntactically incorrect or not conform the PDU structure for Action
-        // PropertyConstraintViolation   Payload is syntactically correct but at least one field contains an invalid value
-        // OccurenceConstraintViolation  Payload for Action is syntactically correct but at least one of the fields violates occurence constraints
-        // TypeConstraintViolation       Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12)
-        // GenericError                  Any other error not covered by the previous ones
-
-        #endregion
-
-
-        public JArray ToJSON()
-        {
-
-            var JSON = new JArray(MessageType,
-                                  RequestId,
-                                  ErrorCode.ToString(),
-                                  ErrorDescription,
-                                  ErrorDetails);
-
-            return JSON;
-
-        }
-
-        public override String ToString()
-
-            => String.Concat(RequestId,
-                             " => ",
-                             ErrorCode.ToString());
-
-
-    }
-
-
-    //public class OCPPRequest : OCPPMessage
-    //{
-
-    //    public     String        Action         { get; }
-
-    //    public OCPPRequest(String   RequestId,
-    //                       String   Action,
-    //                       JObject  Data,
-    //                       String   ErrorMessage = null)
-
-    //        : base((Byte) MessageTypes.CALL,
-    //               RequestId,
-    //               Data,
-    //               ErrorMessage)
-
-    //    {
-
-    //        this.Action        = Action;
-
-    //    }
-
-    //}
-
-    //public class OCPPResponse : OCPPMessage
-    //{
-
-    //    public OCPPResponse(String   RequestId,
-    //                        JObject  Data,
-    //                        String   ErrorMessage = null)
-
-    //        : base((Byte) MessageTypes.CALLRESULT,
-    //               RequestId,
-    //               Data,
-    //               ErrorMessage)
-
-    //    {
-
-    //    }
-
-    //}
-
 
     /// <summary>
     /// The central system HTTP/WebSocket/JSON server.
@@ -667,20 +438,25 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         #endregion
 
 
-        #region RegisterMessages(Timestamp, Sender, Message)
+        #region (protected) ProcessTextMessages(RequestTimestamp, Connection, EventTrackingId, CancellationToken, TextMessage)
 
         /// <summary>
-        /// Process all messages for this web socket API.
+        /// Process all text messages of this web socket API.
         /// </summary>
+        /// <param name="RequestTimestamp">The timestamp of the request.</param>
+        /// <param name="Connection">The web socket connection.</param>
+        /// <param name="EventTrackingId">The event tracking identification.</param>
+        /// <param name="CancellationToken">The cancellation token.</param>
+        /// <param name="TextMessage">The received text message.</param>
         protected async Task<WebSocketTextMessageRespose> ProcessTextMessages(DateTime             RequestTimestamp,
-                                                                              WebSocketConnection  Sender,
+                                                                              WebSocketConnection  Connection,
                                                                               EventTracking_Id     EventTrackingId,
                                                                               CancellationToken    CancellationToken,
                                                                               String               TextMessage)
         {
 
-            JArray           JSON           = null;
-            OCPPErrorMessage ErrorMessage   = null;
+            JArray         JSON           = null;
+            WSErrorMessage ErrorMessage   = null;
 
             try
             {
@@ -714,18 +490,18 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                     var RequestData  = JSON[3].Value<JObject>();
 
                     if (RequestId.IsNullOrEmpty())
-                        ErrorMessage  = new OCPPErrorMessage(
+                        ErrorMessage  = new WSErrorMessage(
                                             RequestId,
-                                            OCPPErrorCodes.ProtocolError,
+                                            WSErrorCodes.ProtocolError,
                                             "The given 'request identification' must not be null or empty!",
                                             new JObject(
                                                 new JProperty("request", TextMessage)
                                             ));
 
                     else if (Action.IsNullOrEmpty())
-                        ErrorMessage  = new OCPPErrorMessage(
+                        ErrorMessage  = new WSErrorMessage(
                                             RequestId,
-                                            OCPPErrorCodes.ProtocolError,
+                                            WSErrorCodes.ProtocolError,
                                             "The given 'action' must not be null or empty!",
                                             new JObject(
                                                 new JProperty("request", TextMessage)
@@ -873,25 +649,25 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                                         }
 
                                         else
-                                            ErrorMessage =  new OCPPErrorMessage(RequestId,
-                                                                                 OCPPErrorCodes.FormationViolation,
-                                                                                 "The given 'BootNotification' request could not be parsed!",
-                                                                                 new JObject(
-                                                                                     new JProperty("request", TextMessage)
-                                                                                ));
+                                            ErrorMessage =  new WSErrorMessage(RequestId,
+                                                                               WSErrorCodes.FormationViolation,
+                                                                               "The given 'BootNotification' request could not be parsed!",
+                                                                               new JObject(
+                                                                                   new JProperty("request", TextMessage)
+                                                                              ));
 
                                     }
                                     catch (Exception e)
                                     {
 
-                                        ErrorMessage = new OCPPErrorMessage(RequestId,
-                                                                            OCPPErrorCodes.FormationViolation,
-                                                                            "Processing the given 'BootNotification' request led to an exception!",
-                                                                            new JObject(
-                                                                                new JProperty("request",     TextMessage),
-                                                                                new JProperty("exception",   e.Message),
-                                                                                new JProperty("stacktrace",  e.StackTrace)
-                                                                            ));
+                                        ErrorMessage = new WSErrorMessage(RequestId,
+                                                                          WSErrorCodes.FormationViolation,
+                                                                          "Processing the given 'BootNotification' request led to an exception!",
+                                                                          new JObject(
+                                                                              new JProperty("request",     TextMessage),
+                                                                              new JProperty("exception",   e.Message),
+                                                                              new JProperty("stacktrace",  e.StackTrace)
+                                                                          ));
 
                                     }
 
@@ -926,9 +702,9 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                             return new WebSocketTextMessageRespose(RequestTimestamp,
                                                                    TextMessage,
                                                                    DateTime.UtcNow,
-                                                                   new OCPPResponseMessage(MessageTypes.CALLRESULT,
-                                                                                           RequestId,
-                                                                                           OCPPResponseJSON).ToJSON().ToString());
+                                                                   new WSResponseMessage(WSMessageTypes.CALLRESULT,
+                                                                                         RequestId,
+                                                                                         OCPPResponseJSON).ToJSON().ToString());
 
                     }
 
@@ -1000,27 +776,27 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                 #endregion
 
                 else
-                    ErrorMessage = new OCPPErrorMessage(JSON.Count >= 2 ? JSON[1].Value<String>()?.Trim() : "unknown",
-                                                        OCPPErrorCodes.FormationViolation,
-                                                        "The given OCPP request message is invalid!",
-                                                        new JObject(
-                                                            new JProperty("request", TextMessage)
-                                                       ));
+                    ErrorMessage = new WSErrorMessage(JSON.Count >= 2 ? JSON[1].Value<String>()?.Trim() : "unknown",
+                                                      WSErrorCodes.FormationViolation,
+                                                      "The given OCPP request message is invalid!",
+                                                      new JObject(
+                                                          new JProperty("request", TextMessage)
+                                                     ));
 
             }
             catch (Exception e)
             {
 
-                ErrorMessage = new OCPPErrorMessage(JSON != null && JSON.Count >= 2
-                                                        ? JSON?[1].Value<String>()?.Trim()
-                                                        : "Unknown request identification",
-                                                    OCPPErrorCodes.FormationViolation,
-                                                    "Processing the given OCPP request message led to an exception!",
-                                                    new JObject(
-                                                        new JProperty("request",     TextMessage),
-                                                        new JProperty("exception",   e.Message),
-                                                        new JProperty("stacktrace",  e.StackTrace)
-                                                    ));
+                ErrorMessage = new WSErrorMessage(JSON != null && JSON.Count >= 2
+                                                      ? JSON?[1].Value<String>()?.Trim()
+                                                      : "Unknown request identification",
+                                                  WSErrorCodes.FormationViolation,
+                                                  "Processing the given OCPP request message led to an exception!",
+                                                  new JObject(
+                                                      new JProperty("request",     TextMessage),
+                                                      new JProperty("exception",   e.Message),
+                                                      new JProperty("stacktrace",  e.StackTrace)
+                                                  ));
 
             }
 
@@ -1032,6 +808,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         }
 
         #endregion
+
 
     }
 
