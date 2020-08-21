@@ -21,7 +21,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-using org.GraphDefined.WWCP.OCPPv1_6.CP;
+using cloud.charging.adapters.OCPPv1_6.CP;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -31,11 +31,11 @@ using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using Newtonsoft.Json.Linq;
 using System.Threading;
-using org.GraphDefined.WWCP.OCPPv1_6.WebSockets;
+using cloud.charging.adapters.OCPPv1_6.WebSockets;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6.CS
+namespace cloud.charging.adapters.OCPPv1_6.CS
 {
 
     /// <summary>

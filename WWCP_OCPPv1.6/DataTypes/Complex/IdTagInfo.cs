@@ -19,13 +19,15 @@
 
 using System;
 using System.Xml.Linq;
+
 using Newtonsoft.Json.Linq;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6
+namespace cloud.charging.adapters.OCPPv1_6
 {
 
     /// <summary>
@@ -216,7 +218,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
                 IdTagInfo = new IdTagInfo(
 
                                     IdTagInfoXML.MapEnumValues     (OCPPNS.OCPPv1_6_CS + "status",
-                                                                    AuthorizationStatusExtentions.AsAuthorizationStatus),
+                                                                    AuthorizationStatusExtentions.Parse),
 
                                     IdTagInfoXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "expiryDate",
                                                                     DateTime.Parse),
@@ -265,7 +267,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6
 
                 if (!IdTagInfoJSON.MapMandatory("status",
                                                 "authorization status",
-                                                AuthorizationStatusExtentions.AsAuthorizationStatus,
+                                                AuthorizationStatusExtentions.Parse,
                                                 out AuthorizationStatus  Status,
                                                 out String               ErrorString))
                 {

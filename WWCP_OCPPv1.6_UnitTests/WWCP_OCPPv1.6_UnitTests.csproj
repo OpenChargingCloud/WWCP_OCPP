@@ -7,8 +7,8 @@
     <ProjectGuid>{99773764-2A95-4E56-AAFA-B4E76A5BFA95}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>org.GraphDefined.WWCP.OCPPv1_6.UnitTests</RootNamespace>
-    <AssemblyName>WWCP_OCPPv1.6_UnitTests</AssemblyName>
+    <RootNamespace>cloud.charging.adapters.OCPPv1_6.UnitTests</RootNamespace>
+    <AssemblyName>cloud.charging.adapters.OCPPv1_6.UnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\WWCP_OCPPv1.6_UnitTests.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\cloud.charging.adapters.OCPPv1_6.UnitTests.xml</DocumentationFile>
     <CodeAnalysisRuleSet>..\..\WWCP_Core\WWCP.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

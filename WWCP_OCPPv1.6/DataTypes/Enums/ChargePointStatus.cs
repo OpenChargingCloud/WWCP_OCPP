@@ -1,0 +1,209 @@
+﻿/*
+ * Copyright (c) 2014-2020 GraphDefined GmbH
+ * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#region Usings
+
+using System;
+
+#endregion
+
+namespace cloud.charging.adapters.OCPPv1_6
+{
+
+    /// <summary>
+    /// Extention methods for the charge point status.
+    /// </summary>
+    public static class ChargePointStatusExtentions
+    {
+
+        #region Parse(Text)
+
+        public static ChargePointStatus Parse(String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Available":
+                    return ChargePointStatus.Available;
+
+                case "Preparing":
+                    return ChargePointStatus.Preparing;
+
+                case "Charging":
+                    return ChargePointStatus.Charging;
+
+                case "SuspendedEV":
+                    return ChargePointStatus.SuspendedEV;
+
+                case "SuspendedEVSE":
+                    return ChargePointStatus.SuspendedEVSE;
+
+                case "Finishing":
+                    return ChargePointStatus.Finishing;
+
+                case "Reserved":
+                    return ChargePointStatus.Reserved;
+
+                case "Faulted":
+                    return ChargePointStatus.Faulted;
+
+                case "Unavailable":
+                    return ChargePointStatus.Unavailable;
+
+
+                default:
+                    return ChargePointStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this ChargePointStatus)
+
+        public static String AsText(this ChargePointStatus ChargePointStatus)
+        {
+
+            switch (ChargePointStatus)
+            {
+
+                case ChargePointStatus.Available:
+                    return "Available";
+
+                case ChargePointStatus.Preparing:
+                    return "Preparing";
+
+                case ChargePointStatus.Charging:
+                    return "Charging";
+
+                case ChargePointStatus.SuspendedEV:
+                    return "SuspendedEV";
+
+                case ChargePointStatus.SuspendedEVSE:
+                    return "SuspendedEVSE";
+
+                case ChargePointStatus.Finishing:
+                    return "Finishing";
+
+                case ChargePointStatus.Reserved:
+                    return "Reserved";
+
+                case ChargePointStatus.Faulted:
+                    return "Faulted";
+
+                case ChargePointStatus.Unavailable:
+                    return "Unavailable";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
+
+    /// <summary>
+    /// The status reported in StatusNotification request. A status can be
+    /// reported for the charge point main controller (connectorId = 0) or for
+    /// a specific connector.
+    /// The status for the charge point main controller is a subset of the
+    /// enumeration: Available, Unavailable or Faulted.
+    /// </summary>
+    public enum ChargePointStatus
+    {
+
+        /// <summary>
+        /// Unknown charge point status.
+        /// </summary>
+        Unknown,
+
+
+        /// <summary>
+        /// When a connector becomes available for a new user (Operative).
+        /// </summary>
+        Available,
+
+        /// <summary>
+        /// When a connector becomes no longer available for a new user but no
+        /// charging session is active. Typically a connector is occupied when
+        /// a user presents a tag, inserts a cable or a vehicle occupies the
+        /// parking bay (Operative).
+        /// </summary>
+        Preparing,
+
+        /// <summary>
+        /// When the contactor of a connector closes, allowing the vehicle to
+        /// charge (Operative).
+        /// </summary>
+        Charging,
+
+        /// <summary>
+        /// When the contactor of a Connector opens upon request of the EVSE,
+        /// e.g. due to a smart charging restriction or as the result of a
+        /// StartTransaction response indicating that charging is not allowed
+        /// (Operative).
+        /// </summary>
+        SuspendedEV,
+
+        /// <summary>
+        /// When the EVSE is ready to deliver energy but contactor is open,
+        /// e.g. the EV is not ready.
+        /// </summary>
+        SuspendedEVSE,
+
+        /// <summary>
+        /// When a charging session has stopped at a connector, but the
+        /// connector is not yet available for a new user, e.g. the cable
+        /// has not been removed or the vehicle has not left the parking
+        /// bay (Operative).
+        /// </summary>
+        Finishing,
+
+        /// <summary>
+        /// When a Connector becomes reserved as a result of a Reserve Now
+        /// command (Operative).
+        /// </summary>
+        Reserved,
+
+        /// <summary>
+        /// When a Charge Point or connector has reported an error and is
+        /// not available for energy delivery (Inoperative).
+        /// </summary>
+        Faulted,
+
+        /// <summary>
+        /// When a Connector becomes unavailable as the result of a Change
+        /// Availability command or an event upon which the charge point
+        /// transitions to unavailable at its discretion. Upon receipt of a
+        /// Change Availability command, the status MAY change immediately
+        /// or the change MAY be scheduled. When scheduled, the Status
+        /// Notification shall be send when the availability change becomes
+        /// effective (Inoperative).
+        /// </summary>
+        Unavailable
+
+
+    }
+
+}

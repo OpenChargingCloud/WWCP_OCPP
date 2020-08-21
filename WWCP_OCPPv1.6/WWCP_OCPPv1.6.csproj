@@ -7,8 +7,8 @@
     <ProjectGuid>{621CCB6B-7F0C-4DEA-9482-CD70C2278453}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>org.GraphDefined.WWCP.OCPPv1_6</RootNamespace>
-    <AssemblyName>org.GraphDefined.WWCP.OCPPv1_6</AssemblyName>
+    <RootNamespace>cloud.charging.adapters.OCPPv1_6</RootNamespace>
+    <AssemblyName>cloud.charging.adapters.OCPPv1_6</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\org.GraphDefined.WWCP.OCPPv1_6.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\cloud.charging.adapters.OCPPv1_6.xml</DocumentationFile>
     <CodeAnalysisRuleSet>..\..\WWCP_Core\WWCP.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -72,52 +72,52 @@
     <Compile Include="DataTypes\Complex\ConfigurationKey.cs" />
     <Compile Include="DataTypes\Complex\MeterValue.cs" />
     <Compile Include="DataTypes\Complex\SampledValue.cs" />
-    <Compile Include="DataTypes\Simple\ChargingProfilePurposes.cs" />
-    <Compile Include="DataTypes\Simple\ChargingProfile_Id.cs" />
-    <Compile Include="DataTypes\Simple\Reservation_Id.cs" />
-    <Compile Include="DataTypes\Simple\Transaction_Id.cs" />
-    <Compile Include="DataTypes\Simple\Connector_Id.cs" />
-    <Compile Include="DataTypes\Simple\ChargeBox_Id.cs" />
+    <Compile Include="DataTypes\Enums\ChargingProfilePurposes.cs" />
+    <Compile Include="DataTypes\Ids\ChargingProfile_Id.cs" />
+    <Compile Include="DataTypes\Ids\Reservation_Id.cs" />
+    <Compile Include="DataTypes\Ids\Transaction_Id.cs" />
+    <Compile Include="DataTypes\Ids\Connector_Id.cs" />
+    <Compile Include="DataTypes\Ids\ChargeBox_Id.cs" />
     <Compile Include="DataTypes\Complex\Result.cs" />
-    <Compile Include="DataTypes\Simple\AvailabilityStatus.cs" />
-    <Compile Include="DataTypes\Simple\DiagnosticsStatus.cs" />
-    <Compile Include="DataTypes\Simple\FirmwareStatus.cs" />
-    <Compile Include="DataTypes\Simple\ChargePointStatus.cs" />
-    <Compile Include="DataTypes\Simple\ClearChargingProfileStatus.cs" />
-    <Compile Include="DataTypes\Simple\ClearCacheStatus.cs" />
-    <Compile Include="DataTypes\Simple\ConfigurationStatus.cs" />
-    <Compile Include="DataTypes\Simple\Locations.cs" />
-    <Compile Include="DataTypes\Simple\ReadingContext.cs" />
-    <Compile Include="DataTypes\Simple\Measurands.cs" />
-    <Compile Include="DataTypes\Simple\Phases.cs" />
-    <Compile Include="DataTypes\Simple\RegistrationStatus.cs" />
-    <Compile Include="DataTypes\Simple\ResultCodes.cs" />
-    <Compile Include="DataTypes\Simple\UnitsOfMeasure.cs" />
-    <Compile Include="DataTypes\Simple\RemoteStartStopStatus.cs" />
-    <Compile Include="DataTypes\Simple\CancelReservationStatus.cs" />
-    <Compile Include="DataTypes\Simple\DataTransferStatus.cs" />
-    <Compile Include="DataTypes\Simple\GetCompositeScheduleStatus.cs" />
-    <Compile Include="DataTypes\Simple\ReservationStatus.cs" />
-    <Compile Include="DataTypes\Simple\ChargingProfileStatus.cs" />
-    <Compile Include="DataTypes\Simple\MessageTriggers.cs" />
-    <Compile Include="DataTypes\Simple\ChargePointErrorCodes.cs" />
-    <Compile Include="DataTypes\Simple\ValueFormats.cs" />
-    <Compile Include="DataTypes\Simple\TriggerMessageStatus.cs" />
-    <Compile Include="DataTypes\Simple\Reasons.cs" />
-    <Compile Include="DataTypes\Simple\UpdateStatus.cs" />
-    <Compile Include="DataTypes\Simple\ResetStatus.cs" />
-    <Compile Include="DataTypes\Simple\AvailabilityTypes.cs" />
-    <Compile Include="DataTypes\Simple\ChargingRateUnits.cs" />
-    <Compile Include="DataTypes\Simple\ChargingProfileKinds.cs" />
-    <Compile Include="DataTypes\Simple\RecurrencyKinds.cs" />
-    <Compile Include="DataTypes\Simple\UpdateTypes.cs" />
-    <Compile Include="DataTypes\Simple\ResetTypes.cs" />
-    <Compile Include="DataTypes\Simple\UnlockStatus.cs" />
+    <Compile Include="DataTypes\Enums\AvailabilityStatus.cs" />
+    <Compile Include="DataTypes\Enums\DiagnosticsStatus.cs" />
+    <Compile Include="DataTypes\Enums\FirmwareStatus.cs" />
+    <Compile Include="DataTypes\Enums\ChargePointStatus.cs" />
+    <Compile Include="DataTypes\Enums\ClearChargingProfileStatus.cs" />
+    <Compile Include="DataTypes\Enums\ClearCacheStatus.cs" />
+    <Compile Include="DataTypes\Enums\ConfigurationStatus.cs" />
+    <Compile Include="DataTypes\Enums\Locations.cs" />
+    <Compile Include="DataTypes\Enums\ReadingContext.cs" />
+    <Compile Include="DataTypes\Enums\Measurands.cs" />
+    <Compile Include="DataTypes\Enums\Phases.cs" />
+    <Compile Include="DataTypes\Enums\RegistrationStatus.cs" />
+    <Compile Include="DataTypes\Enums\ResultCodes.cs" />
+    <Compile Include="DataTypes\Enums\UnitsOfMeasure.cs" />
+    <Compile Include="DataTypes\Enums\RemoteStartStopStatus.cs" />
+    <Compile Include="DataTypes\Enums\CancelReservationStatus.cs" />
+    <Compile Include="DataTypes\Enums\DataTransferStatus.cs" />
+    <Compile Include="DataTypes\Enums\GetCompositeScheduleStatus.cs" />
+    <Compile Include="DataTypes\Enums\ReservationStatus.cs" />
+    <Compile Include="DataTypes\Enums\ChargingProfileStatus.cs" />
+    <Compile Include="DataTypes\Enums\MessageTriggers.cs" />
+    <Compile Include="DataTypes\Enums\ChargePointErrorCodes.cs" />
+    <Compile Include="DataTypes\Enums\ValueFormats.cs" />
+    <Compile Include="DataTypes\Enums\TriggerMessageStatus.cs" />
+    <Compile Include="DataTypes\Enums\Reasons.cs" />
+    <Compile Include="DataTypes\Enums\UpdateStatus.cs" />
+    <Compile Include="DataTypes\Enums\ResetStatus.cs" />
+    <Compile Include="DataTypes\Enums\AvailabilityTypes.cs" />
+    <Compile Include="DataTypes\Enums\ChargingRateUnits.cs" />
+    <Compile Include="DataTypes\Enums\ChargingProfileKinds.cs" />
+    <Compile Include="DataTypes\Enums\RecurrencyKinds.cs" />
+    <Compile Include="DataTypes\Enums\UpdateTypes.cs" />
+    <Compile Include="DataTypes\Enums\ResetTypes.cs" />
+    <Compile Include="DataTypes\Enums\UnlockStatus.cs" />
     <Compile Include="CentralSystem\CentralSystemSOAPServer\CSServerDelegates.cs" />
     <Compile Include="CentralSystem\CentralSystemSOAPServer\CentralSystemSOAPServer.cs" />
     <Compile Include="DataTypes\Complex\IdTagInfo.cs" />
-    <Compile Include="DataTypes\Simple\IdToken.cs" />
-    <Compile Include="DataTypes\Simple\AuthorizationStatus.cs" />
+    <Compile Include="DataTypes\Ids\IdToken.cs" />
+    <Compile Include="DataTypes\Enums\AuthorizationStatus.cs" />
     <Compile Include="IO\SOAPHeader.cs" />
     <Compile Include="IO\OCPPNS.cs" />
     <Compile Include="IO\SOAP.cs" />

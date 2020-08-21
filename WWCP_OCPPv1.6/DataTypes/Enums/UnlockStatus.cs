@@ -1,0 +1,118 @@
+﻿/*
+ * Copyright (c) 2014-2020 GraphDefined GmbH
+ * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#region Usings
+
+using System;
+
+#endregion
+
+namespace cloud.charging.adapters.OCPPv1_6
+{
+
+    /// <summary>
+    /// Extentions methods for the unlock status.
+    /// </summary>
+    public static class UnlockStatusExtentions
+    {
+
+        #region Parse(Text)
+
+        public static UnlockStatus Parse(String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "Unlocked":
+                    return UnlockStatus.Unlocked;
+
+                case "UnlockFailed":
+                    return UnlockStatus.UnlockFailed;
+
+                case "NotSupported":
+                    return UnlockStatus.NotSupported;
+
+
+                default:
+                    return UnlockStatus.Unknown;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AsText(this UnlockStatus)
+
+        public static String AsText(this UnlockStatus UnlockStatus)
+        {
+
+            switch (UnlockStatus)
+            {
+
+                case UnlockStatus.Unlocked:
+                    return "Unlocked";
+
+                case UnlockStatus.UnlockFailed:
+                    return "UnlockFailed";
+
+                case UnlockStatus.NotSupported:
+                    return "NotSupported";
+
+
+                default:
+                    return "unknown";
+
+            }
+
+        }
+
+        #endregion
+
+    }
+
+
+    /// <summary>
+    /// The status in a response to an unlock request.
+    /// </summary>
+    public enum UnlockStatus
+    {
+
+        /// <summary>
+        /// Unknown unlock status.
+        /// </summary>
+        Unknown,
+
+        /// <summary>
+        /// The connector has successfully been unlocked.
+        /// </summary>
+        Unlocked,
+
+        /// <summary>
+        /// Failed to unlock the connector.
+        /// </summary>
+        UnlockFailed,
+
+        /// <summary>
+        /// Charge point has no connector lock.
+        /// </summary>
+        NotSupported
+
+    }
+
+}

@@ -24,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6.CS
+namespace cloud.charging.adapters.OCPPv1_6.CS
 {
 
     /// <summary>

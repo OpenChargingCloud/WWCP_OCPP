@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6.CP
+namespace cloud.charging.adapters.OCPPv1_6.CP
 {
 
     #region OnReserveNow

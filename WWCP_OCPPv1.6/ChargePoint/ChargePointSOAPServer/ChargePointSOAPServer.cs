@@ -21,7 +21,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-using org.GraphDefined.WWCP.OCPPv1_6.CS;
+using cloud.charging.adapters.OCPPv1_6.CS;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -31,7 +31,7 @@ using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6.CP
+namespace cloud.charging.adapters.OCPPv1_6.CP
 {
 
     /// <summary>
@@ -51,6 +51,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// The default HTTP/SOAP/XML server TCP port.
         /// </summary>
         public new static readonly IPPort           DefaultHTTPServerPort  = IPPort.Parse(2010);
+
+        /// <summary>
+        /// The default TCP service name shown e.g. on service startup.
+        /// </summary>
+        public     const           String           DefaultServiceName     = "OCPP " + Version.Number + " charge point API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
@@ -198,23 +203,26 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// </summary>
         /// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
+        /// <param name="ServiceName">The TCP service name shown e.g. on service startup.</param>
         /// <param name="URLPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="ContentType">An optional HTTP content type to use.</param>
         /// <param name="RegisterHTTPRootService">Register HTTP root services for sending a notice to clients connecting via HTML or plain text.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public ChargePointSOAPServer(String           HTTPServerName           = DefaultHTTPServerName,
-                                     IPPort?          TCPPort                  = null,
-                                     HTTPPath?        URLPrefix                = null,
-                                     HTTPContentType  ContentType              = null,
-                                     Boolean          RegisterHTTPRootService  = true,
-                                     DNSClient        DNSClient                = null,
-                                     Boolean          AutoStart                = false)
+        public ChargePointSOAPServer(String           HTTPServerName            = DefaultHTTPServerName,
+                                     IPPort?          TCPPort                   = null,
+                                     String           ServiceName               = null,
+                                     HTTPPath?        URLPrefix                 = null,
+                                     HTTPContentType  ContentType               = null,
+                                     Boolean          RegisterHTTPRootService   = true,
+                                     DNSClient        DNSClient                 = null,
+                                     Boolean          AutoStart                 = false)
 
             : base(HTTPServerName.IsNotNullOrEmpty()
                        ? HTTPServerName
                        : DefaultHTTPServerName,
                    TCPPort     ?? DefaultHTTPServerPort,
+                   ServiceName ?? DefaultServiceName,
                    URLPrefix   ?? DefaultURLPrefix,
                    ContentType ?? DefaultContentType,
                    RegisterHTTPRootService,

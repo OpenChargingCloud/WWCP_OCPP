@@ -30,11 +30,11 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
-using org.GraphDefined.WWCP.OCPPv1_6.CP;
+using cloud.charging.adapters.OCPPv1_6.CP;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6.CS
+namespace cloud.charging.adapters.OCPPv1_6.CS
 {
 
     /// <summary>

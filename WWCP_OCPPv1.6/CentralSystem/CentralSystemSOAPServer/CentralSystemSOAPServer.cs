@@ -21,7 +21,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-using org.GraphDefined.WWCP.OCPPv1_6.CP;
+using cloud.charging.adapters.OCPPv1_6.CP;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -31,7 +31,7 @@ using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6.CS
+namespace cloud.charging.adapters.OCPPv1_6.CS
 {
 
     /// <summary>
@@ -51,6 +51,11 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// The default HTTP/SOAP/XML server TCP port.
         /// </summary>
         public new static readonly IPPort           DefaultHTTPServerPort  = IPPort.Parse(2010);
+
+        /// <summary>
+        /// The default TCP service name shown e.g. on service startup.
+        /// </summary>
+        public     const           String           DefaultServiceName     = "OCPP " + Version.Number + " central system API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
@@ -374,6 +379,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// </summary>
         /// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
+        /// <param name="ServiceName">The TCP service name shown e.g. on service startup.</param>
         /// <param name="URLPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="ContentType">An optional HTTP content type to use.</param>
         /// <param name="RegisterHTTPRootService">Register HTTP root services for sending a notice to clients connecting via HTML or plain text.</param>
@@ -381,6 +387,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
         /// <param name="AutoStart">Start the server immediately.</param>
         public CentralSystemSOAPServer(String           HTTPServerName            = DefaultHTTPServerName,
                                        IPPort?          TCPPort                   = null,
+                                       String           ServiceName               = null,
                                        HTTPPath?        URLPrefix                 = null,
                                        HTTPContentType  ContentType               = null,
                                        Boolean          RegisterHTTPRootService   = true,
@@ -391,6 +398,7 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CS
                        ? HTTPServerName
                        : DefaultHTTPServerName,
                    TCPPort     ?? DefaultHTTPServerPort,
+                   ServiceName ?? DefaultServiceName,
                    URLPrefix   ?? DefaultURLPrefix,
                    ContentType ?? DefaultContentType,
                    RegisterHTTPRootService,

@@ -23,11 +23,11 @@ using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using org.GraphDefined.WWCP.OCPPv1_6.CS;
+using cloud.charging.adapters.OCPPv1_6.CS;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6.CP
+namespace cloud.charging.adapters.OCPPv1_6.CP
 {
 
     #region OnBootNotification

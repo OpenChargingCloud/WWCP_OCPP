@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6.CS
+namespace cloud.charging.adapters.OCPPv1_6.CS
 {
 
     /// <summary>

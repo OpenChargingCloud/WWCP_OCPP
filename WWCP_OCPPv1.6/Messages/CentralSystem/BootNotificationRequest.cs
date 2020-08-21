@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6.CP
+namespace cloud.charging.adapters.OCPPv1_6.CP
 {
 
     //After start-up, every charge point SHALL send a request to the
@@ -105,13 +105,13 @@ namespace org.GraphDefined.WWCP.OCPPv1_6.CP
         /// <param name="MeterSerialNumber">The serial number of the main power meter of the charge point.</param>
         public BootNotificationRequest(String ChargePointVendor,
                                        String ChargePointModel,
-                                       String ChargePointSerialNumber  = null,
-                                       String ChargeBoxSerialNumber    = null,
-                                       String FirmwareVersion          = null,
-                                       String Iccid                    = null,
-                                       String IMSI                     = null,
-                                       String MeterType                = null,
-                                       String MeterSerialNumber        = null)
+                                       String ChargePointSerialNumber   = null,
+                                       String ChargeBoxSerialNumber     = null,
+                                       String FirmwareVersion           = null,
+                                       String Iccid                     = null,
+                                       String IMSI                      = null,
+                                       String MeterType                 = null,
+                                       String MeterSerialNumber         = null)
         {
 
             this.ChargePointVendor        = ChargePointVendor?.      Trim();

@@ -21,7 +21,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-using org.GraphDefined.WWCP.OCPPv1_6.CP;
+using cloud.charging.adapters.OCPPv1_6.CP;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -34,7 +34,7 @@ using System.Threading;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6.WebSockets
+namespace cloud.charging.adapters.OCPPv1_6.WebSockets
 {
 
     public class WSErrorMessage

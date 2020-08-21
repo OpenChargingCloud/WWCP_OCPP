@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.OCPPv1_6.WebSockets
+namespace cloud.charging.adapters.OCPPv1_6.WebSockets
 {
 
     public class WSResponseMessage
