@@ -1,6 +1,8 @@
 WWCP OCPP v1.5
 ==============
 
+**Version 1.5 of this software is deprecated!**
+
 This software will allow the communication between World Wide Charging
 Protocol (WWCP) entities and entities implementing the
 _Open ChargePoint Protocol Version 1.5_, which is defined by the
