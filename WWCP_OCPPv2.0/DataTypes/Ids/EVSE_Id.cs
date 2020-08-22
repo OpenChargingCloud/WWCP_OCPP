@@ -144,14 +144,14 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         #endregion
 
-        #region (static) TryParse(Text,   out ConnectorId)
+        #region (static) TryParse(Text,   out EVSEId)
 
         /// <summary>
         /// Try to parse the given string as a EVSE identification.
         /// </summary>
         /// <param name="Text">A text representation of a EVSE identification.</param>
-        /// <param name="ConnectorId">The parsed EVSE identification.</param>
-        public static Boolean TryParse(String Text, out EVSE_Id ConnectorId)
+        /// <param name="EVSEId">The parsed EVSE identification.</param>
+        public static Boolean TryParse(String Text, out EVSE_Id EVSEId)
         {
 
             #region Initial checks
@@ -160,7 +160,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
             if (Text.IsNullOrEmpty())
             {
-                ConnectorId = default;
+                EVSEId = default;
                 return false;
             }
 
@@ -168,28 +168,28 @@ namespace cloud.charging.adapters.OCPPv2_0
 
             if (UInt64.TryParse(Text, out UInt64 number))
             {
-                ConnectorId = new EVSE_Id(number);
+                EVSEId = new EVSE_Id(number);
                 return true;
             }
 
-            ConnectorId = default;
+            EVSEId = default;
             return false;
 
         }
 
         #endregion
 
-        #region (static) TryParse(Number, out ConnectorId)
+        #region (static) TryParse(Number, out EVSEId)
 
         /// <summary>
         /// Try to parse the given number as a EVSE identification.
         /// </summary>
         /// <param name="Number">A numeric representation of a EVSE identification.</param>
-        /// <param name="ConnectorId">The parsed EVSE identification.</param>
-        public static Boolean TryParse(UInt64 Number, out EVSE_Id ConnectorId)
+        /// <param name="EVSEId">The parsed EVSE identification.</param>
+        public static Boolean TryParse(UInt64 Number, out EVSE_Id EVSEId)
         {
 
-            ConnectorId = new EVSE_Id(Number);
+            EVSEId = new EVSE_Id(Number);
 
             return true;
 
@@ -210,116 +210,116 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         #region Operator overloading
 
-        #region Operator == (ConnectorId1, ConnectorId2)
+        #region Operator == (EVSEId1, EVSEId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An EVSE identification.</param>
-        /// <param name="ConnectorId2">Another EVSE identification.</param>
+        /// <param name="EVSEId1">An EVSE identification.</param>
+        /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (EVSE_Id ConnectorId1, EVSE_Id ConnectorId2)
+        public static Boolean operator == (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ConnectorId1, ConnectorId2))
+            if (ReferenceEquals(EVSEId1, EVSEId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ConnectorId1 == null) || ((Object) ConnectorId2 == null))
+            if (((Object) EVSEId1 == null) || ((Object) EVSEId2 == null))
                 return false;
 
-            if ((Object) ConnectorId1 == null)
-                throw new ArgumentNullException(nameof(ConnectorId1),  "The given EVSE identification must not be null!");
+            if ((Object) EVSEId1 == null)
+                throw new ArgumentNullException(nameof(EVSEId1),  "The given EVSE identification must not be null!");
 
-            return ConnectorId1.Equals(ConnectorId2);
+            return EVSEId1.Equals(EVSEId2);
 
         }
 
         #endregion
 
-        #region Operator != (ConnectorId1, ConnectorId2)
+        #region Operator != (EVSEId1, EVSEId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An EVSE identification.</param>
-        /// <param name="ConnectorId2">Another EVSE identification.</param>
+        /// <param name="EVSEId1">An EVSE identification.</param>
+        /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (EVSE_Id ConnectorId1, EVSE_Id ConnectorId2)
-            => !(ConnectorId1 == ConnectorId2);
+        public static Boolean operator != (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
+            => !(EVSEId1 == EVSEId2);
 
         #endregion
 
-        #region Operator <  (ConnectorId1, ConnectorId2)
+        #region Operator <  (EVSEId1, EVSEId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An EVSE identification.</param>
-        /// <param name="ConnectorId2">Another EVSE identification.</param>
+        /// <param name="EVSEId1">An EVSE identification.</param>
+        /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (EVSE_Id ConnectorId1, EVSE_Id ConnectorId2)
+        public static Boolean operator < (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
         {
 
-            if ((Object) ConnectorId1 == null)
-                throw new ArgumentNullException(nameof(ConnectorId1),  "The given EVSE identification must not be null!");
+            if ((Object) EVSEId1 == null)
+                throw new ArgumentNullException(nameof(EVSEId1),  "The given EVSE identification must not be null!");
 
-            return ConnectorId1.CompareTo(ConnectorId2) < 0;
+            return EVSEId1.CompareTo(EVSEId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (ConnectorId1, ConnectorId2)
+        #region Operator <= (EVSEId1, EVSEId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An EVSE identification.</param>
-        /// <param name="ConnectorId2">Another EVSE identification.</param>
+        /// <param name="EVSEId1">An EVSE identification.</param>
+        /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (EVSE_Id ConnectorId1, EVSE_Id ConnectorId2)
-            => !(ConnectorId1 > ConnectorId2);
+        public static Boolean operator <= (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
+            => !(EVSEId1 > EVSEId2);
 
         #endregion
 
-        #region Operator >  (ConnectorId1, ConnectorId2)
+        #region Operator >  (EVSEId1, EVSEId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An EVSE identification.</param>
-        /// <param name="ConnectorId2">Another EVSE identification.</param>
+        /// <param name="EVSEId1">An EVSE identification.</param>
+        /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (EVSE_Id ConnectorId1, EVSE_Id ConnectorId2)
+        public static Boolean operator > (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
         {
 
-            if ((Object) ConnectorId1 == null)
-                throw new ArgumentNullException(nameof(ConnectorId1),  "The given EVSE identification must not be null!");
+            if ((Object) EVSEId1 == null)
+                throw new ArgumentNullException(nameof(EVSEId1),  "The given EVSE identification must not be null!");
 
-            return ConnectorId1.CompareTo(ConnectorId2) > 0;
+            return EVSEId1.CompareTo(EVSEId2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (ConnectorId1, ConnectorId2)
+        #region Operator >= (EVSEId1, EVSEId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An EVSE identification.</param>
-        /// <param name="ConnectorId2">Another EVSE identification.</param>
+        /// <param name="EVSEId1">An EVSE identification.</param>
+        /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (EVSE_Id ConnectorId1, EVSE_Id ConnectorId2)
-            => !(ConnectorId1 < ConnectorId2);
+        public static Boolean operator >= (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
+            => !(EVSEId1 < EVSEId2);
 
         #endregion
 
         #endregion
 
-        #region IComparable<ConnectorId> Members
+        #region IComparable<EVSEId> Members
 
         #region CompareTo(Object)
 
@@ -333,28 +333,28 @@ namespace cloud.charging.adapters.OCPPv2_0
             if (Object is null)
                 throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
-            if (!(Object is EVSE_Id ConnectorId))
+            if (!(Object is EVSE_Id EVSEId))
                 throw new ArgumentException("The given object is not a EVSE identification!", nameof(Object));
 
-            return CompareTo(ConnectorId);
+            return CompareTo(EVSEId);
 
         }
 
         #endregion
 
-        #region CompareTo(ConnectorId)
+        #region CompareTo(EVSEId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId">An object to compare with.</param>
-        public Int32 CompareTo(EVSE_Id ConnectorId)
+        /// <param name="EVSEId">An object to compare with.</param>
+        public Int32 CompareTo(EVSE_Id EVSEId)
         {
 
-            if ((Object) ConnectorId == null)
-                throw new ArgumentNullException(nameof(ConnectorId),  "The given EVSE identification must not be null!");
+            if ((Object) EVSEId == null)
+                throw new ArgumentNullException(nameof(EVSEId),  "The given EVSE identification must not be null!");
 
-            return _Value.CompareTo(ConnectorId._Value);
+            return _Value.CompareTo(EVSEId._Value);
 
         }
 
@@ -362,7 +362,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         #endregion
 
-        #region IEquatable<ConnectorId> Members
+        #region IEquatable<EVSEId> Members
 
         #region Equals(Object)
 
@@ -377,29 +377,29 @@ namespace cloud.charging.adapters.OCPPv2_0
             if (Object is null)
                 return false;
 
-            if (!(Object is EVSE_Id ConnectorId))
+            if (!(Object is EVSE_Id EVSEId))
                 return false;
 
-            return Equals(ConnectorId);
+            return Equals(EVSEId);
 
         }
 
         #endregion
 
-        #region Equals(ConnectorId)
+        #region Equals(EVSEId)
 
         /// <summary>
         /// Compares two EVSE identifications for equality.
         /// </summary>
-        /// <param name="ConnectorId">An EVSE identification to compare with.</param>
+        /// <param name="EVSEId">An EVSE identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EVSE_Id ConnectorId)
+        public Boolean Equals(EVSE_Id EVSEId)
         {
 
-            if ((Object) ConnectorId == null)
+            if ((Object) EVSEId == null)
                 return false;
 
-            return _Value.Equals(ConnectorId._Value);
+            return _Value.Equals(EVSEId._Value);
 
         }
 

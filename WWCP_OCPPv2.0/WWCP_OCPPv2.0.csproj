@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTypes\Complex\EVSE.cs" />
     <Compile Include="DataTypes\Complex\MessageContent.cs" />
     <Compile Include="DataTypes\Complex\IdTokenInfo.cs" />
     <Compile Include="DataTypes\Complex\IdToken.cs" />
@@ -57,6 +58,11 @@
     <Compile Include="DataTypes\Complex\Modem.cs" />
     <Compile Include="DataTypes\Complex\CustomData.cs" />
     <Compile Include="DataTypes\Complex\Result.cs" />
+    <Compile Include="DataTypes\Enums\Measurands.cs" />
+    <Compile Include="DataTypes\Enums\MeasurementLocations.cs" />
+    <Compile Include="DataTypes\Enums\ChargingStates.cs" />
+    <Compile Include="DataTypes\Enums\TriggerReasons.cs" />
+    <Compile Include="DataTypes\Enums\TransactionEvents.cs" />
     <Compile Include="DataTypes\Enums\MessageFormats.cs" />
     <Compile Include="DataTypes\Enums\AuthorizeCertificateStatus.cs" />
     <Compile Include="DataTypes\Enums\AuthorizationStatus.cs" />
@@ -64,6 +70,9 @@
     <Compile Include="DataTypes\Enums\ConnectorStatus.cs" />
     <Compile Include="DataTypes\Enums\HashAlgorithms.cs" />
     <Compile Include="DataTypes\Enums\IdTokenTypes.cs" />
+    <Compile Include="DataTypes\Enums\Phases.cs" />
+    <Compile Include="DataTypes\Enums\ReadingContext.cs" />
+    <Compile Include="DataTypes\Enums\Reasons.cs" />
     <Compile Include="DataTypes\Enums\RegistrationStatus.cs" />
     <Compile Include="DataTypes\Enums\ResultCodes.cs" />
     <Compile Include="DataTypes\Ids\EVSE_Id.cs" />

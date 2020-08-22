@@ -21,9 +21,8 @@ using System;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv1_6
+namespace cloud.charging.adapters.OCPPv2_0
 {
-
 
     /// <summary>
     /// Extention methods for stop transaction reasons.
@@ -39,23 +38,44 @@ namespace cloud.charging.adapters.OCPPv1_6
             switch (Text?.Trim())
             {
 
+                case "DeAuthorized":
+                    return Reasons.DeAuthorized;
+
                 case "EmergencyStop":
                     return Reasons.EmergencyStop;
+
+                case "EnergyLimitReached":
+                    return Reasons.EnergyLimitReached;
 
                 case "EVDisconnected":
                     return Reasons.EVDisconnected;
 
-                case "HardReset":
-                    return Reasons.HardReset;
+                case "GroundFault":
+                    return Reasons.GroundFault;
+
+                case "ImmediateReset":
+                    return Reasons.ImmediateReset;
 
                 case "Local":
                     return Reasons.Local;
 
+                case "LocalOutOfCredit":
+                    return Reasons.LocalOutOfCredit;
+
+                case "MasterPass":
+                    return Reasons.MasterPass;
+
                 case "Other":
                     return Reasons.Other;
 
+                case "OvercurrentFault":
+                    return Reasons.OvercurrentFault;
+
                 case "PowerLoss":
                     return Reasons.PowerLoss;
+
+                case "PowerQuality":
+                    return Reasons.PowerQuality;
 
                 case "Reboot":
                     return Reasons.Reboot;
@@ -63,14 +83,17 @@ namespace cloud.charging.adapters.OCPPv1_6
                 case "Remote":
                     return Reasons.Remote;
 
-                case "SoftReset":
-                    return Reasons.SoftReset;
+                case "SOCLimitReached":
+                    return Reasons.SOCLimitReached;
 
-                case "UnlockCommand":
-                    return Reasons.UnlockCommand;
+                case "StoppedByEV":
+                    return Reasons.StoppedByEV;
 
-                case "DeAuthorized":
-                    return Reasons.DeAuthorized;
+                case "TimeLimitReached":
+                    return Reasons.TimeLimitReached;
+
+                case "Timeout":
+                    return Reasons.Timeout;
 
 
                 default:
@@ -90,23 +113,44 @@ namespace cloud.charging.adapters.OCPPv1_6
             switch (Reasons)
             {
 
+                case Reasons.DeAuthorized:
+                    return "DeAuthorized";
+
                 case Reasons.EmergencyStop:
                     return "EmergencyStop";
+
+                case Reasons.EnergyLimitReached:
+                    return "EnergyLimitReached";
 
                 case Reasons.EVDisconnected:
                     return "EVDisconnected";
 
-                case Reasons.HardReset:
-                    return "HardReset";
+                case Reasons.GroundFault:
+                    return "GroundFault";
+
+                case Reasons.ImmediateReset:
+                    return "ImmediateReset";
 
                 case Reasons.Local:
                     return "Local";
 
+                case Reasons.LocalOutOfCredit:
+                    return "LocalOutOfCredit";
+
+                case Reasons.MasterPass:
+                    return "MasterPass";
+
                 case Reasons.Other:
                     return "Other";
 
+                case Reasons.OvercurrentFault:
+                    return "OvercurrentFault";
+
                 case Reasons.PowerLoss:
                     return "PowerLoss";
+
+                case Reasons.PowerQuality:
+                    return "PowerQuality";
 
                 case Reasons.Reboot:
                     return "Reboot";
@@ -114,14 +158,17 @@ namespace cloud.charging.adapters.OCPPv1_6
                 case Reasons.Remote:
                     return "Remote";
 
-                case Reasons.SoftReset:
-                    return "SoftReset";
+                case Reasons.SOCLimitReached:
+                    return "SOCLimitReached";
 
-                case Reasons.UnlockCommand:
-                    return "UnlockCommand";
+                case Reasons.StoppedByEV:
+                    return "StoppedByEV";
 
-                case Reasons.DeAuthorized:
-                    return "DeAuthorized";
+                case Reasons.TimeLimitReached:
+                    return "TimeLimitReached";
+
+                case Reasons.Timeout:
+                    return "Timeout";
 
 
                 default:
@@ -147,10 +194,20 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// </summary>
         Unknown,
 
+
+        /// <summary>
+        /// The transaction was stopped because of the authorization
+        /// status in a StartTransaction response.
+        /// </summary>
+        DeAuthorized,
+
         /// <summary>
         /// The emergency stop button was used.
         /// </summary>
         EmergencyStop,
+
+
+        EnergyLimitReached,
 
         /// <summary>
         /// Disconnection of the cable or vehicle moved away
@@ -158,10 +215,12 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// </summary>
         EVDisconnected,
 
-        /// <summary>
-        /// A hard reset command was received.
-        /// </summary>
-        HardReset,
+
+        GroundFault,
+
+
+        ImmediateReset,
+
 
         /// <summary>
         /// Stopped locally on request of the user at the Charge Point.
@@ -169,15 +228,29 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// </summary>
         Local,
 
+
+        LocalOutOfCredit,
+
+
+        MasterPass,
+
+
         /// <summary>
         /// Any other reason.
         /// </summary>
         Other,
 
+
+        OvercurrentFault,
+
+
         /// <summary>
         /// Complete loss of power.
         /// </summary>
         PowerLoss,
+
+        PowerQuality,
+
 
         /// <summary>
         /// A locally initiated reset/reboot occurred,
@@ -192,21 +265,17 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// </summary>
         Remote,
 
-        /// <summary>
-        /// A soft reset command was received.
-        /// </summary>
-        SoftReset,
 
-        /// <summary>
-        /// Central System sent an Unlock Connector command.
-        /// </summary>
-        UnlockCommand,
+        SOCLimitReached,
 
-        /// <summary>
-        /// The transaction was stopped because of the authorization
-        /// status in a StartTransaction response.
-        /// </summary>
-        DeAuthorized
+
+        StoppedByEV,
+
+
+        TimeLimitReached,
+
+
+        Timeout
 
     }
 
