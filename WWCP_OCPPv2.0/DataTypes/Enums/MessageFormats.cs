@@ -21,29 +21,38 @@ using System;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv1_6
+namespace cloud.charging.adapters.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the clear charging profile status.
+    /// Extentions methods for message formats.
     /// </summary>
-    public static class ClearChargingProfileStatusExtentions
+    public static class MessageFormatsExtentions
     {
 
         #region Parse(Text)
 
-        public static ClearChargingProfileStatus Parse(String Text)
+        public static MessageFormats Parse(String Text)
         {
 
             switch (Text?.Trim())
             {
 
-                case "Accepted":
-                    return ClearChargingProfileStatus.Accepted;
+                case "ASCII":
+                    return MessageFormats.ASCII;
+
+                case "HTML":
+                    return MessageFormats.HTML;
+
+                case "URI":
+                    return MessageFormats.URI;
+
+                case "UTF8":
+                    return MessageFormats.UTF8;
 
 
                 default:
-                    return ClearChargingProfileStatus.Unknown;
+                    return MessageFormats.Unknown;
 
             }
 
@@ -51,16 +60,25 @@ namespace cloud.charging.adapters.OCPPv1_6
 
         #endregion
 
-        #region AsText(this ClearChargingProfileStatus)
+        #region AsText(this MessageFormats)
 
-        public static String AsText(this ClearChargingProfileStatus ClearChargingProfileStatus)
+        public static String AsText(this MessageFormats MessageFormats)
         {
 
-            switch (ClearChargingProfileStatus)
+            switch (MessageFormats)
             {
 
-                case ClearChargingProfileStatus.Accepted:
-                    return "Accepted";
+                case MessageFormats.ASCII:
+                    return "ASCII";
+
+                case MessageFormats.HTML:
+                    return "HTML";
+
+                case MessageFormats.URI:
+                    return "URI";
+
+                case MessageFormats.UTF8:
+                    return "UTF8";
 
 
                 default:
@@ -74,22 +92,21 @@ namespace cloud.charging.adapters.OCPPv1_6
 
     }
 
-
     /// <summary>
-    /// Defines the clear-charging-profile-status-values.
+    /// Message formats.
     /// </summary>
-    public enum ClearChargingProfileStatus
+    public enum MessageFormats
     {
 
         /// <summary>
-        /// No Charging Profile(s) were found matching the request.
+        /// Unknown message format.
         /// </summary>
         Unknown,
 
-        /// <summary>
-        /// Request has been accepted and will be executed.
-        /// </summary>
-        Accepted
+        ASCII,
+        HTML,
+        URI,
+        UTF8
 
     }
 

@@ -453,17 +453,17 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
 
             var JSON = JSONObject.Create(
 
-                           CustomData != null
-                               ? new JProperty("customData",   CustomData.       ToJSON(CustomCustomDataResponseSerializer))
-                               : null,
-
-                                 new JProperty("status",       Status.           AsText()),
-                                 new JProperty("currentTime",  CurrentTime.      ToIso8601()),
-                                 new JProperty("interval",     (UInt32) Interval.TotalSeconds),
+                           new JProperty("status",            Status.           AsText()),
+                           new JProperty("currentTime",       CurrentTime.      ToIso8601()),
+                           new JProperty("interval",          (UInt32) Interval.TotalSeconds),
 
                            StatusInfo != null
-                               ? new JProperty("statusInfo",   StatusInfo.       ToJSON(CustomStatusInfoResponseSerializer,
-                                                                                        CustomCustomDataResponseSerializer))
+                               ? new JProperty("statusInfo",  StatusInfo.       ToJSON(CustomStatusInfoResponseSerializer,
+                                                                                       CustomCustomDataResponseSerializer))
+                               : null,
+
+                           CustomData != null
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );

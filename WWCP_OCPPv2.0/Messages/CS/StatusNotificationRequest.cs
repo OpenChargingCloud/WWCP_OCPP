@@ -371,14 +371,14 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
 
             var JSON = JSONObject.Create(
 
-                           CustomData != null
-                               ? new JProperty("customData",  CustomData.     ToJSON(CustomCustomDataResponseSerializer))
-                               : null,
-
                            new JProperty("timestamp",         Timestamp.      ToIso8601()),
                            new JProperty("connectorStatus",   ConnectorStatus.AsText()),
                            new JProperty("evseId",            EVSEId.         ToString()),
-                           new JProperty("connectorId",       ConnectorId.    ToString()));
+                           new JProperty("connectorId",       ConnectorId.    ToString()),
+
+                           CustomData != null
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               : null);
 
             return CustomStatusNotificationRequestSerializer != null
                        ? CustomStatusNotificationRequestSerializer(this, JSON)

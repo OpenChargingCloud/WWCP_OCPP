@@ -32,7 +32,7 @@ namespace cloud.charging.adapters.OCPPv1_6
         public static Reasons AsReasons(String Text)
         {
 
-            switch (Text)
+            switch (Text?.Trim())
             {
 
                 case "EmergencyStop":

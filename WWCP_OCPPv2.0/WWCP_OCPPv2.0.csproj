@@ -47,11 +47,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTypes\Complex\MessageContent.cs" />
+    <Compile Include="DataTypes\Complex\IdTokenInfo.cs" />
+    <Compile Include="DataTypes\Complex\IdToken.cs" />
     <Compile Include="DataTypes\Complex\ChargingStation.cs" />
+    <Compile Include="DataTypes\Complex\AdditionalInfo.cs" />
+    <Compile Include="DataTypes\Complex\OCSPRequestData.cs" />
     <Compile Include="DataTypes\Complex\StatusInfo.cs" />
     <Compile Include="DataTypes\Complex\Modem.cs" />
     <Compile Include="DataTypes\Complex\CustomData.cs" />
     <Compile Include="DataTypes\Complex\Result.cs" />
+    <Compile Include="DataTypes\Enums\MessageFormats.cs" />
+    <Compile Include="DataTypes\Enums\AuthorizeCertificateStatus.cs" />
+    <Compile Include="DataTypes\Enums\AuthorizationStatus.cs" />
     <Compile Include="DataTypes\Enums\BootReasons.cs" />
     <Compile Include="DataTypes\Enums\ConnectorStatus.cs" />
     <Compile Include="DataTypes\Enums\HashAlgorithms.cs" />
@@ -60,9 +68,12 @@
     <Compile Include="DataTypes\Enums\ResultCodes.cs" />
     <Compile Include="DataTypes\Ids\EVSE_Id.cs" />
     <Compile Include="DataTypes\Ids\Connector_Id.cs" />
+    <Compile Include="DataTypes\Ids\Language_Id.cs" />
     <Compile Include="DataTypes\Ids\Vendor_Id.cs" />
     <Compile Include="Messages\ARequest.cs" />
     <Compile Include="Messages\AResponse.cs" />
+    <Compile Include="Messages\CS\AuthorizeRequest.cs" />
+    <Compile Include="Messages\CS\AuthorizeResponse.cs" />
     <Compile Include="Messages\CS\BootNotificationRequest.cs" />
     <Compile Include="Messages\CS\BootNotificationResponse.cs" />
     <Compile Include="Messages\CS\HeartbeatRequest.cs" />

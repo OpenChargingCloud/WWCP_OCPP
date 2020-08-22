@@ -172,29 +172,12 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 Modem = default;
 
-                #region CustomData
-
-                if (ModemJSON.ParseOptionalJSON("customData",
-                                                "custom data",
-                                                OCPPv2_0.CustomData.TryParse,
-                                                out CustomData  CustomData,
-                                                out String      ErrorResponse,
-                                                OnException))
-                {
-
-                    if (ErrorResponse != null)
-                        return false;
-
-                }
-
-                #endregion
-
                 #region ICCID
 
                 if (ModemJSON.ParseOptional("iccid",
                                             "integrated circuit card identifier",
                                             out String  ICCID,
-                                            out         ErrorResponse))
+                                            out String  ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -210,6 +193,23 @@ namespace cloud.charging.adapters.OCPPv2_0
                                             "international mobile subscriber identity",
                                             out String  IMSI,
                                             out         ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region CustomData
+
+                if (ModemJSON.ParseOptionalJSON("customData",
+                                                "custom data",
+                                                OCPPv2_0.CustomData.TryParse,
+                                                out CustomData  CustomData,
+                                                out             ErrorResponse,
+                                                OnException))
                 {
 
                     if (ErrorResponse != null)
@@ -259,9 +259,10 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 ModemText = ModemText?.Trim();
 
-                if (ModemText.IsNotNullOrEmpty() && TryParse(JObject.Parse(ModemText),
-                                                             out Modem,
-                                                             OnException))
+                if (ModemText.IsNotNullOrEmpty() &&
+                    TryParse(JObject.Parse(ModemText),
+                             out Modem,
+                             OnException))
                 {
                     return true;
                 }
@@ -292,16 +293,16 @@ namespace cloud.charging.adapters.OCPPv2_0
 
             var JSON = JSONObject.Create(
 
-                           CustomData != null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
-                               : null,
-
                            IMSI != null
                                ? new JProperty("iccid",       ICCID)
                                : null,
 
                            IMSI != null
                                ? new JProperty("imsi",        IMSI)
+                               : null,
+
+                           CustomData != null
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
@@ -424,11 +425,15 @@ namespace cloud.charging.adapters.OCPPv2_0
             {
 
                 return (ICCID != null
-                            ? ICCID.GetHashCode() * 3
+                            ? ICCID.GetHashCode() * 5
                             : 0) ^
 
                        (IMSI != null
-                            ? IMSI.GetHashCode()
+                            ? IMSI.GetHashCode()  * 3
+                            : 0) ^
+
+                       (CustomData != null
+                            ? CustomData.GetHashCode()
                             : 0);
 
             }

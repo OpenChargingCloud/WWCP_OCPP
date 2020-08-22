@@ -40,7 +40,7 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
         #region Properties
 
         /// <summary>
-        /// An identification tag info.
+        /// The identification tag info.
         /// </summary>
         public IdTagInfo  IdTagInfo   { get; }
 
@@ -54,7 +54,7 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
         /// Create an authorize response.
         /// </summary>
         /// <param name="Request">The authorize request leading to this response.</param>
-        /// <param name="IdTagInfo">An identification tag info.</param>
+        /// <param name="IdTagInfo">The identification tag info.</param>
         public AuthorizeResponse(CP.AuthorizeRequest  Request,
                                  IdTagInfo            IdTagInfo)
 

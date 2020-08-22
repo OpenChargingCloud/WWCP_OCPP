@@ -21,7 +21,7 @@ using System;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv1_6
+namespace cloud.charging.adapters.OCPPv2_0
 {
 
     /// <summary>
@@ -44,14 +44,26 @@ namespace cloud.charging.adapters.OCPPv1_6
                 case "Blocked":
                     return AuthorizationStatus.Blocked;
 
+                case "ConcurrentTx":
+                    return AuthorizationStatus.ConcurrentTx;
+
                 case "Expired":
                     return AuthorizationStatus.Expired;
 
                 case "Invalid":
                     return AuthorizationStatus.Invalid;
 
-                case "ConcurrentTx":
-                    return AuthorizationStatus.ConcurrentTx;
+                case "NoCredit":
+                    return AuthorizationStatus.NoCredit;
+
+                case "NotAllowedTypeEVSE":
+                    return AuthorizationStatus.NotAllowedTypeEVSE;
+
+                case "NotAtThisLocation":
+                    return AuthorizationStatus.NotAtThisLocation;
+
+                case "NotAtThisTime":
+                    return AuthorizationStatus.NotAtThisTime;
 
 
                 default:
@@ -77,18 +89,30 @@ namespace cloud.charging.adapters.OCPPv1_6
                 case AuthorizationStatus.Blocked:
                     return "Blocked";
 
+                case AuthorizationStatus.ConcurrentTx:
+                    return "ConcurrentTx";
+
                 case AuthorizationStatus.Expired:
                     return "Expired";
 
                 case AuthorizationStatus.Invalid:
                     return "Invalid";
 
-                case AuthorizationStatus.ConcurrentTx:
-                    return "ConcurrentTx";
+                case AuthorizationStatus.NoCredit:
+                    return "NoCredit";
+
+                case AuthorizationStatus.NotAllowedTypeEVSE:
+                    return "NotAllowedTypeEVSE";
+
+                case AuthorizationStatus.NotAtThisLocation:
+                    return "NotAtThisLocation";
+
+                case AuthorizationStatus.NotAtThisTime:
+                    return "NotAtThisTime";
 
 
                 default:
-                    return "unknown";
+                    return "Unknown";
 
             }
 
@@ -120,6 +144,12 @@ namespace cloud.charging.adapters.OCPPv1_6
         Blocked,
 
         /// <summary>
+        /// Identifier is already involved in another transaction
+        /// and multiple transactions are not allowed.
+        /// </summary>
+        ConcurrentTx,
+
+        /// <summary>
         /// Identifier has expired. Not allowed for charging.
         /// </summary>
         Expired,
@@ -129,16 +159,10 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// </summary>
         Invalid,
 
-        /// <summary>
-        /// Identifier is already involved in another transaction
-        /// and multiple transactions are not allowed.
-        /// </summary>
-        ConcurrentTx,
-
-        /// <summary>
-        /// An error occured.
-        /// </summary>
-        Error
+        NoCredit,
+        NotAllowedTypeEVSE,
+        NotAtThisLocation,
+        NotAtThisTime
 
     }
 

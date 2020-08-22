@@ -175,44 +175,41 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 StatusInfo = default;
 
-                #region CustomData
-
-                if (StatusInfoJSON.ParseOptionalJSON("customData",
-                                                "custom data",
-                                                OCPPv2_0.CustomData.TryParse,
-                                                out CustomData  CustomData,
-                                                out String      ErrorResponse,
-                                                OnException))
-                {
-
-                    if (ErrorResponse != null)
-                        return false;
-
-                }
-
-                #endregion
-
                 #region ReasonCode
 
-                if (StatusInfoJSON.ParseOptional("iccid",
-                                            "integrated circuit card identifier",
-                                            out String  ReasonCode,
-                                            out         ErrorResponse))
+                if (!StatusInfoJSON.ParseMandatoryText("reasonCode",
+                                                       "reason code",
+                                                       out String  ReasonCode,
+                                                       out String  ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
-                        return false;
-
+                    return false;
                 }
 
                 #endregion
 
                 #region AdditionalInfo
 
-                if (StatusInfoJSON.ParseOptional("imsi",
-                                            "international mobile subscriber identity",
-                                            out String  AdditionalInfo,
-                                            out         ErrorResponse))
+                if (StatusInfoJSON.ParseOptional("additionalInfo",
+                                                 "additional information",
+                                                 out String  AdditionalInfo,
+                                                 out         ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region CustomData
+
+                if (StatusInfoJSON.ParseOptionalJSON("customData",
+                                                     "custom data",
+                                                     OCPPv2_0.CustomData.TryParse,
+                                                     out CustomData  CustomData,
+                                                     out             ErrorResponse,
+                                                     OnException))
                 {
 
                     if (ErrorResponse != null)
@@ -262,9 +259,10 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 StatusInfoText = StatusInfoText?.Trim();
 
-                if (StatusInfoText.IsNotNullOrEmpty() && TryParse(JObject.Parse(StatusInfoText),
-                                                             out StatusInfo,
-                                                             OnException))
+                if (StatusInfoText.IsNotNullOrEmpty() &&
+                    TryParse(JObject.Parse(StatusInfoText),
+                             out StatusInfo,
+                             OnException))
                 {
                     return true;
                 }
@@ -295,14 +293,14 @@ namespace cloud.charging.adapters.OCPPv2_0
 
             var JSON = JSONObject.Create(
 
-                           CustomData != null
-                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataResponseSerializer))
-                               : null,
-
-                                 new JProperty("reasonCode",      ReasonCode),
+                           new JProperty("reasonCode",            ReasonCode),
 
                            AdditionalInfo != null
                                ? new JProperty("additionalInfo",  AdditionalInfo)
+                               : null,
+
+                           CustomData != null
+                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );

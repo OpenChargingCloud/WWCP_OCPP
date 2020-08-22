@@ -35,7 +35,7 @@ namespace cloud.charging.adapters.OCPPv1_6
         public static ReadingContexts Parse(String Text)
         {
 
-            switch (Text)
+            switch (Text?.Trim())
             {
 
                 case "Interruption.Begin":

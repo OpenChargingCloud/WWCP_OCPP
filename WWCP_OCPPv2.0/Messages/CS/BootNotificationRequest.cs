@@ -388,12 +388,12 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
 
             var JSON = JSONObject.Create(
 
-                           CustomData != null
-                               ? new JProperty("customData",  CustomData.     ToJSON(CustomCustomDataResponseSerializer))
-                               : null,
-
                            new JProperty("chargingStation",   ChargingStation.ToJSON(CustomChargingStationResponseSerializer)),
-                           new JProperty("reason",            Reason.         AsText())
+                           new JProperty("reason",            Reason.         AsText()),
+
+                           CustomData != null
+                               ? new JProperty("customData", CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               : null
 
                        );
 
