@@ -59,7 +59,7 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new charging schedule period.
+        /// Create a new charging schedule period.
         /// </summary>
         /// <param name="StartPeriod">The start of the period, in seconds from the start of schedule. This value also defines the stop time of the previous period.</param>
         /// <param name="Limit">Power limit during the schedule period in Amperes.</param>

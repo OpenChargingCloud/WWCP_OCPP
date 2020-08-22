@@ -288,7 +288,7 @@ namespace cloud.charging.adapters.OCPPv2_0
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom StatusInfo object.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize a CustomData object.</param>
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<StatusInfo> CustomStatusInfoResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<CustomData> CustomCustomDataResponseSerializer   = null)
         {

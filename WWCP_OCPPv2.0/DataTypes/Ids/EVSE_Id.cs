@@ -23,15 +23,15 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv1_6
+namespace cloud.charging.adapters.OCPPv2_0
 {
 
     /// <summary>
-    /// A connector identification.
+    /// An EVSE identification.
     /// </summary>
-    public readonly struct Connector_Id : IId,
-                                          IEquatable<Connector_Id>,
-                                          IComparable<Connector_Id>
+    public readonly struct EVSE_Id : IId,
+                                     IEquatable<EVSE_Id>,
+                                     IComparable<EVSE_Id>
     {
 
         #region Data
@@ -59,10 +59,10 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new connector identification.
+        /// Create a new EVSE identification.
         /// </summary>
         /// <param name="Token">An integer.</param>
-        private Connector_Id(UInt64 Token)
+        private EVSE_Id(UInt64 Token)
         {
             this._Value = Token;
         }
@@ -73,10 +73,10 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region (static) Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as a connector identification.
+        /// Parse the given string as a EVSE identification.
         /// </summary>
-        /// <param name="Text">A text representation of a connector identification.</param>
-        public static Connector_Id Parse(String Text)
+        /// <param name="Text">A text representation of a EVSE identification.</param>
+        public static EVSE_Id Parse(String Text)
         {
 
             #region Initial checks
@@ -85,14 +85,14 @@ namespace cloud.charging.adapters.OCPPv1_6
                 Text = Text.Trim();
 
             if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a connector identification must not be null or empty!");
+                throw new ArgumentNullException(nameof(Text), "The given text representation of a EVSE identification must not be null or empty!");
 
             #endregion
 
-            if (TryParse(Text, out Connector_Id connectorId))
-                return connectorId;
+            if (TryParse(Text, out EVSE_Id EVSEId))
+                return EVSEId;
 
-            throw new ArgumentNullException(nameof(Text), "The given text representation of a connector identification is invalid!");
+            throw new ArgumentNullException(nameof(Text), "The given text representation of a EVSE identification is invalid!");
 
         }
 
@@ -101,24 +101,24 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region (static) Parse   (Integer)
 
         /// <summary>
-        /// Parse the given number as a connector identification.
+        /// Parse the given number as a EVSE identification.
         /// </summary>
-        public static Connector_Id Parse(UInt64 Integer)
-            => new Connector_Id(Integer);
+        public static EVSE_Id Parse(UInt64 Integer)
+            => new EVSE_Id(Integer);
 
         #endregion
 
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as a connector identification.
+        /// Try to parse the given string as a EVSE identification.
         /// </summary>
-        /// <param name="Text">A text representation of a connector identification.</param>
-        public static Connector_Id? TryParse(String Text)
+        /// <param name="Text">A text representation of a EVSE identification.</param>
+        public static EVSE_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Connector_Id connectorId))
-                return connectorId;
+            if (TryParse(Text, out EVSE_Id EVSEId))
+                return EVSEId;
 
             return null;
 
@@ -129,14 +129,14 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region (static) TryParse(Number)
 
         /// <summary>
-        /// Try to parse the given number as a connector identification.
+        /// Try to parse the given number as a EVSE identification.
         /// </summary>
-        /// <param name="Number">A numeric representation of a connector identification.</param>
-        public static Connector_Id? TryParse(UInt64 Number)
+        /// <param name="Number">A numeric representation of a EVSE identification.</param>
+        public static EVSE_Id? TryParse(UInt64 Number)
         {
 
-            if (TryParse(Number, out Connector_Id connectorId))
-                return connectorId;
+            if (TryParse(Number, out EVSE_Id EVSEId))
+                return EVSEId;
 
             return null;
 
@@ -147,11 +147,11 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region (static) TryParse(Text,   out ConnectorId)
 
         /// <summary>
-        /// Try to parse the given string as a connector identification.
+        /// Try to parse the given string as a EVSE identification.
         /// </summary>
-        /// <param name="Text">A text representation of a connector identification.</param>
-        /// <param name="ConnectorId">The parsed connector identification.</param>
-        public static Boolean TryParse(String Text, out Connector_Id ConnectorId)
+        /// <param name="Text">A text representation of a EVSE identification.</param>
+        /// <param name="ConnectorId">The parsed EVSE identification.</param>
+        public static Boolean TryParse(String Text, out EVSE_Id ConnectorId)
         {
 
             #region Initial checks
@@ -168,7 +168,7 @@ namespace cloud.charging.adapters.OCPPv1_6
 
             if (UInt64.TryParse(Text, out UInt64 number))
             {
-                ConnectorId = new Connector_Id(number);
+                ConnectorId = new EVSE_Id(number);
                 return true;
             }
 
@@ -182,14 +182,14 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region (static) TryParse(Number, out ConnectorId)
 
         /// <summary>
-        /// Try to parse the given number as a connector identification.
+        /// Try to parse the given number as a EVSE identification.
         /// </summary>
-        /// <param name="Number">A numeric representation of a connector identification.</param>
-        /// <param name="ConnectorId">The parsed connector identification.</param>
-        public static Boolean TryParse(UInt64 Number, out Connector_Id ConnectorId)
+        /// <param name="Number">A numeric representation of a EVSE identification.</param>
+        /// <param name="ConnectorId">The parsed EVSE identification.</param>
+        public static Boolean TryParse(UInt64 Number, out EVSE_Id ConnectorId)
         {
 
-            ConnectorId = new Connector_Id(Number);
+            ConnectorId = new EVSE_Id(Number);
 
             return true;
 
@@ -200,10 +200,10 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region Clone
 
         /// <summary>
-        /// Clone this connector identification.
+        /// Clone this EVSE identification.
         /// </summary>
-        public Connector_Id Clone
-            => new Connector_Id(_Value);
+        public EVSE_Id Clone
+            => new EVSE_Id(_Value);
 
         #endregion
 
@@ -215,10 +215,10 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An connector identification.</param>
-        /// <param name="ConnectorId2">Another connector identification.</param>
+        /// <param name="ConnectorId1">An EVSE identification.</param>
+        /// <param name="ConnectorId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Connector_Id ConnectorId1, Connector_Id ConnectorId2)
+        public static Boolean operator == (EVSE_Id ConnectorId1, EVSE_Id ConnectorId2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -230,7 +230,7 @@ namespace cloud.charging.adapters.OCPPv1_6
                 return false;
 
             if ((Object) ConnectorId1 == null)
-                throw new ArgumentNullException(nameof(ConnectorId1),  "The given connector identification must not be null!");
+                throw new ArgumentNullException(nameof(ConnectorId1),  "The given EVSE identification must not be null!");
 
             return ConnectorId1.Equals(ConnectorId2);
 
@@ -243,10 +243,10 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An connector identification.</param>
-        /// <param name="ConnectorId2">Another connector identification.</param>
+        /// <param name="ConnectorId1">An EVSE identification.</param>
+        /// <param name="ConnectorId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Connector_Id ConnectorId1, Connector_Id ConnectorId2)
+        public static Boolean operator != (EVSE_Id ConnectorId1, EVSE_Id ConnectorId2)
             => !(ConnectorId1 == ConnectorId2);
 
         #endregion
@@ -256,14 +256,14 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An connector identification.</param>
-        /// <param name="ConnectorId2">Another connector identification.</param>
+        /// <param name="ConnectorId1">An EVSE identification.</param>
+        /// <param name="ConnectorId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Connector_Id ConnectorId1, Connector_Id ConnectorId2)
+        public static Boolean operator < (EVSE_Id ConnectorId1, EVSE_Id ConnectorId2)
         {
 
             if ((Object) ConnectorId1 == null)
-                throw new ArgumentNullException(nameof(ConnectorId1),  "The given connector identification must not be null!");
+                throw new ArgumentNullException(nameof(ConnectorId1),  "The given EVSE identification must not be null!");
 
             return ConnectorId1.CompareTo(ConnectorId2) < 0;
 
@@ -276,10 +276,10 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An connector identification.</param>
-        /// <param name="ConnectorId2">Another connector identification.</param>
+        /// <param name="ConnectorId1">An EVSE identification.</param>
+        /// <param name="ConnectorId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Connector_Id ConnectorId1, Connector_Id ConnectorId2)
+        public static Boolean operator <= (EVSE_Id ConnectorId1, EVSE_Id ConnectorId2)
             => !(ConnectorId1 > ConnectorId2);
 
         #endregion
@@ -289,14 +289,14 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An connector identification.</param>
-        /// <param name="ConnectorId2">Another connector identification.</param>
+        /// <param name="ConnectorId1">An EVSE identification.</param>
+        /// <param name="ConnectorId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Connector_Id ConnectorId1, Connector_Id ConnectorId2)
+        public static Boolean operator > (EVSE_Id ConnectorId1, EVSE_Id ConnectorId2)
         {
 
             if ((Object) ConnectorId1 == null)
-                throw new ArgumentNullException(nameof(ConnectorId1),  "The given connector identification must not be null!");
+                throw new ArgumentNullException(nameof(ConnectorId1),  "The given EVSE identification must not be null!");
 
             return ConnectorId1.CompareTo(ConnectorId2) > 0;
 
@@ -309,10 +309,10 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An connector identification.</param>
-        /// <param name="ConnectorId2">Another connector identification.</param>
+        /// <param name="ConnectorId1">An EVSE identification.</param>
+        /// <param name="ConnectorId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Connector_Id ConnectorId1, Connector_Id ConnectorId2)
+        public static Boolean operator >= (EVSE_Id ConnectorId1, EVSE_Id ConnectorId2)
             => !(ConnectorId1 < ConnectorId2);
 
         #endregion
@@ -333,8 +333,8 @@ namespace cloud.charging.adapters.OCPPv1_6
             if (Object is null)
                 throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
-            if (!(Object is Connector_Id ConnectorId))
-                throw new ArgumentException("The given object is not a connector identification!", nameof(Object));
+            if (!(Object is EVSE_Id ConnectorId))
+                throw new ArgumentException("The given object is not a EVSE identification!", nameof(Object));
 
             return CompareTo(ConnectorId);
 
@@ -348,11 +348,11 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="ConnectorId">An object to compare with.</param>
-        public Int32 CompareTo(Connector_Id ConnectorId)
+        public Int32 CompareTo(EVSE_Id ConnectorId)
         {
 
             if ((Object) ConnectorId == null)
-                throw new ArgumentNullException(nameof(ConnectorId),  "The given connector identification must not be null!");
+                throw new ArgumentNullException(nameof(ConnectorId),  "The given EVSE identification must not be null!");
 
             return _Value.CompareTo(ConnectorId._Value);
 
@@ -377,7 +377,7 @@ namespace cloud.charging.adapters.OCPPv1_6
             if (Object is null)
                 return false;
 
-            if (!(Object is Connector_Id ConnectorId))
+            if (!(Object is EVSE_Id ConnectorId))
                 return false;
 
             return Equals(ConnectorId);
@@ -389,11 +389,11 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region Equals(ConnectorId)
 
         /// <summary>
-        /// Compares two connector identifications for equality.
+        /// Compares two EVSE identifications for equality.
         /// </summary>
-        /// <param name="ConnectorId">An connector identification to compare with.</param>
+        /// <param name="ConnectorId">An EVSE identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Connector_Id ConnectorId)
+        public Boolean Equals(EVSE_Id ConnectorId)
         {
 
             if ((Object) ConnectorId == null)

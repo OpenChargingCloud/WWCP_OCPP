@@ -29,9 +29,9 @@ namespace cloud.charging.adapters.OCPPv1_6
     /// <summary>
     /// A charging profile identification.
     /// </summary>
-    public struct ChargingProfile_Id : IId,
-                                       IEquatable<ChargingProfile_Id>,
-                                       IComparable<ChargingProfile_Id>
+    public readonly struct ChargingProfile_Id : IId,
+                                                IEquatable<ChargingProfile_Id>,
+                                                IComparable<ChargingProfile_Id>
     {
 
         #region Data
@@ -52,14 +52,14 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// The length of the tag identification.
         /// </summary>
         public UInt64 Length
-            => 0;
+            => (UInt64) _Value.ToString().Length;
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new OCPP charging profile identification.
+        /// Create a new OCPP charging profile identification.
         /// </summary>
         /// <param name="Token">An integer.</param>
         private ChargingProfile_Id(UInt64 Token)

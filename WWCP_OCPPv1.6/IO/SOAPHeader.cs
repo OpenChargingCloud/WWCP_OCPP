@@ -73,7 +73,7 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region SOAPHeader(ChargeBoxIdentity, Action, MessageId, From, To)
 
         /// <summary>
-        /// Create an new OCPP SOAP header.
+        /// Create a new OCPP SOAP header.
         /// </summary>
         /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
         /// <param name="Action">The SOAP action.</param>
@@ -100,7 +100,7 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region SOAPHeader(ChargeBoxIdentity, Action, MessageId, RelatesTo, From, To)
 
         /// <summary>
-        /// Create an new OCPP SOAP header.
+        /// Create a new OCPP SOAP header.
         /// </summary>
         /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
         /// <param name="Action">The SOAP action.</param>

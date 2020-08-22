@@ -59,7 +59,7 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new identification tag info.
+        /// Create a new identification tag info.
         /// </summary>
         /// <param name="Status">The authentication result.</param>
         /// <param name="ExpiryDate">An optional date at which the idTag should be removed from the authorization cache.</param>

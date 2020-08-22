@@ -47,7 +47,7 @@ namespace cloud.charging.adapters.OCPPv2_0
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new custom data object.
+        /// Create a new custom data object.
         /// </summary>
         /// <param name="VendorId">The vendor identification.</param>
         /// <param name="CustomData">The custom JSON data.</param>
@@ -231,7 +231,7 @@ namespace cloud.charging.adapters.OCPPv2_0
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize a CustomData object.</param>
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<CustomData> CustomCustomDataResponseSerializer = null)
 
             => CustomCustomDataResponseSerializer != null

@@ -57,7 +57,7 @@ namespace cloud.charging.adapters.OCPPv2_0
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new wireless communication module.
+        /// Create a new wireless communication module.
         /// </summary>
         /// <param name="ICCID">The integrated circuit card identifier of the modem’s SIM card.</param>
         /// <param name="IMSI">The IMSI of the modem’s SIM card.</param>
@@ -285,7 +285,7 @@ namespace cloud.charging.adapters.OCPPv2_0
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomModemResponseSerializer">A delegate to serialize custom Modems.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize a CustomData object.</param>
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<Modem>      CustomModemResponseSerializer        = null,
                               CustomJObjectSerializerDelegate<CustomData> CustomCustomDataResponseSerializer   = null)
         {

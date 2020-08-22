@@ -52,14 +52,14 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// The length of the tag identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64)InternalId?.Length;
+            => (UInt64) InternalId?.Length;
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new charge box identification.
+        /// Create a new charge box identification.
         /// </summary>
         /// <param name="Token">A string.</param>
         private ChargeBox_Id(String  Token)

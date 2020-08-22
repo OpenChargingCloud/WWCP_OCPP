@@ -23,7 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv1_6
+namespace cloud.charging.adapters.OCPPv2_0
 {
 
     /// <summary>

@@ -29,9 +29,9 @@ namespace cloud.charging.adapters.OCPPv1_6
     /// <summary>
     /// A transaction identification.
     /// </summary>
-    public struct Transaction_Id : IId,
-                                   IEquatable<Transaction_Id>,
-                                   IComparable<Transaction_Id>
+    public readonly struct Transaction_Id : IId,
+                                            IEquatable<Transaction_Id>,
+                                            IComparable<Transaction_Id>
     {
 
         #region Data
@@ -52,14 +52,14 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// The length of the tag identification.
         /// </summary>
         public UInt64 Length
-            => 0;
+            => (UInt64) _Value.ToString().Length;
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new OCPP transaction identification.
+        /// Create a new OCPP transaction identification.
         /// </summary>
         /// <param name="Token">An integer.</param>
         private Transaction_Id(UInt64 Token)

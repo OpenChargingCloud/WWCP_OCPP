@@ -95,7 +95,7 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new charging profile.
+        /// Create a new charging profile.
         /// </summary>
         /// <param name="ChargingProfileId">The unique identification of this profile.</param>
         /// <param name="StackLevel">Value determining level in hierarchy stack of profiles. Higher values have precedence over lower values. Lowest level is 0.</param>

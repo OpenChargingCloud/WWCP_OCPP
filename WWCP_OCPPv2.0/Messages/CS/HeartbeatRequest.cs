@@ -239,7 +239,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomHeartbeatRequestSerializer">A delegate to serialize custom heartbeat requests.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize a CustomData object.</param>
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatRequest> CustomHeartbeatRequestSerializer     = null,
                               CustomJObjectSerializerDelegate<CustomData>       CustomCustomDataResponseSerializer   = null)
         {

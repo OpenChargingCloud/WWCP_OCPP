@@ -35,7 +35,7 @@ namespace cloud.charging.adapters.OCPPv1_6
         public static ChargePointStatus Parse(String Text)
         {
 
-            switch (Text)
+            switch (Text?.Trim())
             {
 
                 case "Available":

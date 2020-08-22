@@ -87,7 +87,7 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new OCPP sampled value.
+        /// Create a new OCPP sampled value.
         /// </summary>
         /// <param name="Value">Value as a “Raw” (decimal) number or “SignedData”. Field Type is “string” to allow for digitally signed data readings.</param>
         /// <param name="Context">Type of detail value: start, end or sample. Default = “Sample.Periodic”.</param>

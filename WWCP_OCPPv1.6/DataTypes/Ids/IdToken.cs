@@ -29,9 +29,9 @@ namespace cloud.charging.adapters.OCPPv1_6
     /// <summary>
     /// An identification token.
     /// </summary>
-    public struct IdToken : IId,
-                            IEquatable<IdToken>,
-                            IComparable<IdToken>
+    public readonly struct IdToken : IId,
+                                     IEquatable<IdToken>,
+                                     IComparable<IdToken>
     {
 
         #region Data
@@ -59,7 +59,7 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new identification token.
+        /// Create a new identification token.
         /// </summary>
         /// <param name="Token">A string (20 characters).</param>
         private IdToken(String  Token)

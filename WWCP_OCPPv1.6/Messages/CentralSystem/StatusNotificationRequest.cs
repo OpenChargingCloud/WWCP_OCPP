@@ -493,11 +493,27 @@ namespace cloud.charging.adapters.OCPPv1_6.CP
             try
             {
 
-                if (TryParse(XDocument.Parse(StatusNotificationRequestText).Root,
-                             out StatusNotificationRequest,
-                             OnException))
+                StatusNotificationRequestText = StatusNotificationRequestText?.Trim();
 
-                    return true;
+                if (StatusNotificationRequestText.IsNotNullOrEmpty())
+                {
+
+                    if (StatusNotificationRequestText.StartsWith("{") &&
+                        TryParse(JObject.Parse(StatusNotificationRequestText),
+                                 out StatusNotificationRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(XDocument.Parse(StatusNotificationRequestText).Root,
+                                 out StatusNotificationRequest,
+                                 OnException))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)

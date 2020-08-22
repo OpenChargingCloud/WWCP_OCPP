@@ -29,9 +29,9 @@ namespace cloud.charging.adapters.OCPPv1_6
     /// <summary>
     /// A reservation identification.
     /// </summary>
-    public struct Reservation_Id : IId,
-                                   IEquatable<Reservation_Id>,
-                                   IComparable<Reservation_Id>
+    public readonly struct Reservation_Id : IId,
+                                            IEquatable<Reservation_Id>,
+                                            IComparable<Reservation_Id>
     {
 
         #region Data
@@ -52,14 +52,14 @@ namespace cloud.charging.adapters.OCPPv1_6
         /// The length of this identification.
         /// </summary>
         public UInt64 Length
-            => 0;
+            => (UInt64) _Value.ToString().Length;
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new OCPP reservation identification.
+        /// Create a new OCPP reservation identification.
         /// </summary>
         /// <param name="Token">An integer.</param>
         private Reservation_Id(UInt64 Token)

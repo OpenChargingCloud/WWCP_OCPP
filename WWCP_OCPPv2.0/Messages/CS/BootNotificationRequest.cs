@@ -352,9 +352,10 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
 
                 BootNotificationRequestText = BootNotificationRequestText?.Trim();
 
-                if (BootNotificationRequestText.IsNotNullOrEmpty() && TryParse(JObject.Parse(BootNotificationRequestText),
-                                                                               out BootNotificationRequest,
-                                                                               OnException))
+                if (BootNotificationRequestText.IsNotNullOrEmpty() &&
+                    TryParse(JObject.Parse(BootNotificationRequestText),
+                                           out BootNotificationRequest,
+                                           OnException))
                 {
                     return true;
                 }
@@ -379,7 +380,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
         /// </summary>
         /// <param name="CustomBootNotificationRequestSerializer">A delegate to serialize custom boot notification requests.</param>
         /// <param name="CustomChargingStationResponseSerializer">A delegate to serialize custom ChargingStations.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize a CustomData object.</param>
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<BootNotificationRequest> CustomBootNotificationRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingStation>         CustomChargingStationResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<CustomData>              CustomCustomDataResponseSerializer        = null)

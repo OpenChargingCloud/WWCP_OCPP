@@ -77,7 +77,7 @@ namespace cloud.charging.adapters.OCPPv2_0
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new charging station.
+        /// Create a new charging station.
         /// </summary>
         /// <param name="Model">The model of the charging station.</param>
         /// <param name="VendorName">The vendor name/identification (not necessarily unique).</param>

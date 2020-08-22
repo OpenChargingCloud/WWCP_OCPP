@@ -55,7 +55,7 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new meter value.
+        /// Create a new meter value.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the sampled value(s).</param>
         /// <param name="SampledValues">An enumeration of sampled values.</param>

@@ -29,9 +29,9 @@ namespace cloud.charging.adapters.OCPPv2_0
     /// <summary>
     /// A vendor identification.
     /// </summary>
-    public struct Vendor_Id : IId,
-                              IEquatable<Vendor_Id>,
-                              IComparable<Vendor_Id>
+    public readonly struct Vendor_Id : IId,
+                                       IEquatable<Vendor_Id>,
+                                       IComparable<Vendor_Id>
     {
 
         #region Data
@@ -59,7 +59,7 @@ namespace cloud.charging.adapters.OCPPv2_0
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new vendor identification.
+        /// Create a new vendor identification.
         /// </summary>
         /// <param name="Token">A string.</param>
         private Vendor_Id(String  Token)
