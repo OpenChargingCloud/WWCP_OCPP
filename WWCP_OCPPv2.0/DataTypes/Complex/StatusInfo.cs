@@ -30,46 +30,46 @@ namespace cloud.charging.adapters.OCPPv2_0
 {
 
     /// <summary>
-    /// A wireless communication module.
+    /// An element providing more information about the boot notification status.
     /// </summary>
-    public class Modem
+    public class StatusInfo
     {
 
         #region Properties
 
         /// <summary>
-        /// The ICCID of the modem’s SIM card. 20
+        /// A predefined case-insensitive code for the reason why the status is returned in this response. 20
         /// </summary>
-        public String      ICCID         { get; }
+        public String      ReasonCode        { get; }
 
         /// <summary>
-        /// The IMSI of the modem’s SIM card. 20
+        /// Additional text to provide detailed information. 512
         /// </summary>
-        public String      IMSI          { get; }
+        public String      AdditionalInfo    { get; }
 
         /// <summary>
         /// An optional custom data object to allow to store any kind of customer specific data.
         /// </summary>
-        public CustomData  CustomData    { get; }
+        public CustomData  CustomData        { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an new wireless communication module.
+        /// Create a new element providing more information about the boot notification status.
         /// </summary>
-        /// <param name="ICCID">The integrated circuit card identifier of the modem’s SIM card.</param>
-        /// <param name="IMSI">The IMSI of the modem’s SIM card.</param>
+        /// <param name="ReasonCode">A predefined case-insensitive code for the reason why the status is returned in this response.</param>
+        /// <param name="AdditionalInfo">Additional text to provide detailed information.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public Modem(String      ICCID,
-                     String      IMSI,
-                     CustomData  CustomData  = null)
+        public StatusInfo(String      ReasonCode,
+                          String      AdditionalInfo   = null,
+                          CustomData  CustomData       = null)
         {
 
-            this.ICCID       = ICCID;
-            this.IMSI        = IMSI;
-            this.CustomData  = CustomData;
+            this.ReasonCode      = ReasonCode?.Trim() ?? throw new ArgumentNullException(nameof(ReasonCode), "The given reason code must not be null or empty!");
+            this.AdditionalInfo  = AdditionalInfo;
+            this.CustomData      = CustomData;
 
         }
 
@@ -80,44 +80,47 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:ModemType",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:StatusInfoType",
         //   "comment": "OCPP 2.0.1 FINAL",
-        //   "description": "Wireless_ Communication_ Module\r\nurn:x-oca:ocpp:uid:2:233306\r\nDefines parameters required for initiating and maintaining wireless communication with other devices.\r\n",
-        //   "javaType": "Modem",
+        //   "description": "Element providing more information about the status.\r\n",
+        //   "javaType": "StatusInfo",
         //   "type": "object",
         //   "additionalProperties": false,
         //   "properties": {
         //     "customData": {
         //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "iccid": {
-        //       "description": "Wireless_ Communication_ Module. ICCID. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569327\r\nThis contains the ICCID of the modem’s SIM card.\r\n",
+        //     "reasonCode": {
+        //       "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
         //       "type": "string",
         //       "maxLength": 20
         //     },
-        //     "imsi": {
-        //       "description": "Wireless_ Communication_ Module. IMSI. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569328\r\nThis contains the IMSI of the modem’s SIM card.\r\n",
+        //     "additionalInfo": {
+        //       "description": "Additional text to provide detailed information.\r\n",
         //       "type": "string",
-        //       "maxLength": 20
+        //       "maxLength": 512
         //     }
-        //   }
+        //   },
+        //   "required": [
+        //     "reasonCode"
+        //   ]
         // }
 
         #endregion
 
-        #region (static) Parse   (ModemJSON, OnException = null)
+        #region (static) Parse   (StatusInfoJSON, OnException = null)
 
         /// <summary>
         /// Parse the given JSON representation of a communication module.
         /// </summary>
-        /// <param name="ModemJSON">The JSON to be parsed.</param>
+        /// <param name="StatusInfoJSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Modem Parse(JObject              ModemJSON,
-                                  OnExceptionDelegate  OnException   = null)
+        public static StatusInfo Parse(JObject              StatusInfoJSON,
+                                       OnExceptionDelegate  OnException   = null)
         {
 
-            if (TryParse(ModemJSON,
-                         out Modem modem,
+            if (TryParse(StatusInfoJSON,
+                         out StatusInfo modem,
                          OnException))
             {
                 return modem;
@@ -129,20 +132,20 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (ModemText, OnException = null)
+        #region (static) Parse   (StatusInfoText, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a communication module.
         /// </summary>
-        /// <param name="ModemText">The text to be parsed.</param>
+        /// <param name="StatusInfoText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Modem Parse(String               ModemText,
-                                  OnExceptionDelegate  OnException   = null)
+        public static StatusInfo Parse(String               StatusInfoText,
+                                       OnExceptionDelegate  OnException   = null)
         {
 
 
-            if (TryParse(ModemText,
-                         out Modem modem,
+            if (TryParse(StatusInfoText,
+                         out StatusInfo modem,
                          OnException))
             {
                 return modem;
@@ -154,27 +157,27 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         #endregion
 
-        #region (static) TryParse(ModemJSON, out Modem, OnException = null)
+        #region (static) TryParse(StatusInfoJSON, out StatusInfo, OnException = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a communication module.
         /// </summary>
-        /// <param name="ModemJSON">The JSON to be parsed.</param>
-        /// <param name="Modem">The parsed connector type.</param>
+        /// <param name="StatusInfoJSON">The JSON to be parsed.</param>
+        /// <param name="StatusInfo">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              ModemJSON,
-                                       out Modem            Modem,
+        public static Boolean TryParse(JObject              StatusInfoJSON,
+                                       out StatusInfo       StatusInfo,
                                        OnExceptionDelegate  OnException  = null)
         {
 
             try
             {
 
-                Modem = default;
+                StatusInfo = default;
 
                 #region CustomData
 
-                if (ModemJSON.ParseOptionalJSON("customData",
+                if (StatusInfoJSON.ParseOptionalJSON("customData",
                                                 "custom data",
                                                 OCPPv2_0.CustomData.TryParse,
                                                 out CustomData  CustomData,
@@ -189,11 +192,11 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #endregion
 
-                #region ICCID
+                #region ReasonCode
 
-                if (ModemJSON.ParseOptional("iccid",
+                if (StatusInfoJSON.ParseOptional("iccid",
                                             "integrated circuit card identifier",
-                                            out String  ICCID,
+                                            out String  ReasonCode,
                                             out         ErrorResponse))
                 {
 
@@ -204,11 +207,11 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #endregion
 
-                #region IMSI
+                #region AdditionalInfo
 
-                if (ModemJSON.ParseOptional("imsi",
+                if (StatusInfoJSON.ParseOptional("imsi",
                                             "international mobile subscriber identity",
-                                            out String  IMSI,
+                                            out String  AdditionalInfo,
                                             out         ErrorResponse))
                 {
 
@@ -220,9 +223,9 @@ namespace cloud.charging.adapters.OCPPv2_0
                 #endregion
 
 
-                Modem = new Modem(ICCID?.Trim(),
-                                  IMSI?. Trim(),
-                                  CustomData);
+                StatusInfo = new StatusInfo(ReasonCode?.    Trim(),
+                                            AdditionalInfo?.Trim(),
+                                            CustomData);
 
                 return true;
 
@@ -230,9 +233,9 @@ namespace cloud.charging.adapters.OCPPv2_0
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, ModemJSON, e);
+                OnException?.Invoke(DateTime.UtcNow, StatusInfoJSON, e);
 
-                Modem = default;
+                StatusInfo = default;
                 return false;
 
             }
@@ -241,26 +244,26 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         #endregion
 
-        #region (static) TryParse(ModemText, out Modem, OnException = null)
+        #region (static) TryParse(StatusInfoText, out StatusInfo, OnException = null)
 
         /// <summary>
         /// Try to parse the given text representation of a communication module.
         /// </summary>
-        /// <param name="ModemText">The text to be parsed.</param>
-        /// <param name="Modem">The parsed connector type.</param>
+        /// <param name="StatusInfoText">The text to be parsed.</param>
+        /// <param name="StatusInfo">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               ModemText,
-                                       out Modem            Modem,
+        public static Boolean TryParse(String               StatusInfoText,
+                                       out StatusInfo       StatusInfo,
                                        OnExceptionDelegate  OnException  = null)
         {
 
             try
             {
 
-                ModemText = ModemText?.Trim();
+                StatusInfoText = StatusInfoText?.Trim();
 
-                if (ModemText.IsNotNullOrEmpty() && TryParse(JObject.Parse(ModemText),
-                                                             out Modem,
+                if (StatusInfoText.IsNotNullOrEmpty() && TryParse(JObject.Parse(StatusInfoText),
+                                                             out StatusInfo,
                                                              OnException))
                 {
                     return true;
@@ -269,45 +272,43 @@ namespace cloud.charging.adapters.OCPPv2_0
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, ModemText, e);
+                OnException?.Invoke(DateTime.UtcNow, StatusInfoText, e);
             }
 
-            Modem = default;
+            StatusInfo = default;
             return false;
 
         }
 
         #endregion
 
-        #region ToJSON(CustomModemResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomStatusInfoResponseSerializer = null, CustomCustomDataResponseSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomModemResponseSerializer">A delegate to serialize custom Modems.</param>
+        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom StatusInfo object.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize a CustomData object.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<Modem>      CustomModemResponseSerializer        = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StatusInfo> CustomStatusInfoResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<CustomData> CustomCustomDataResponseSerializer   = null)
         {
 
             var JSON = JSONObject.Create(
 
                            CustomData != null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null,
 
-                           IMSI != null
-                               ? new JProperty("iccid",       ICCID)
-                               : null,
+                                 new JProperty("reasonCode",      ReasonCode),
 
-                           IMSI != null
-                               ? new JProperty("imsi",        IMSI)
+                           AdditionalInfo != null
+                               ? new JProperty("additionalInfo",  AdditionalInfo)
                                : null
 
                        );
 
-            return CustomModemResponseSerializer != null
-                       ? CustomModemResponseSerializer(this, JSON)
+            return CustomStatusInfoResponseSerializer != null
+                       ? CustomStatusInfoResponseSerializer(this, JSON)
                        : JSON;
 
         }
@@ -317,50 +318,50 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         #region Operator overloading
 
-        #region Operator == (Modem1, Modem2)
+        #region Operator == (StatusInfo1, StatusInfo2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Modem1">An id tag info.</param>
-        /// <param name="Modem2">Another id tag info.</param>
+        /// <param name="StatusInfo1">An id tag info.</param>
+        /// <param name="StatusInfo2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Modem Modem1, Modem Modem2)
+        public static Boolean operator == (StatusInfo StatusInfo1, StatusInfo StatusInfo2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(Modem1, Modem2))
+            if (ReferenceEquals(StatusInfo1, StatusInfo2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (Modem1 is null || Modem2 is null)
+            if (StatusInfo1 is null || StatusInfo2 is null)
                 return false;
 
-            if (Modem1 is null)
-                throw new ArgumentNullException(nameof(Modem1),  "The given id tag info must not be null!");
+            if (StatusInfo1 is null)
+                throw new ArgumentNullException(nameof(StatusInfo1),  "The given id tag info must not be null!");
 
-            return Modem1.Equals(Modem2);
+            return StatusInfo1.Equals(StatusInfo2);
 
         }
 
         #endregion
 
-        #region Operator != (Modem1, Modem2)
+        #region Operator != (StatusInfo1, StatusInfo2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Modem1">An id tag info.</param>
-        /// <param name="Modem2">Another id tag info.</param>
+        /// <param name="StatusInfo1">An id tag info.</param>
+        /// <param name="StatusInfo2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Modem Modem1, Modem Modem2)
-            => !(Modem1 == Modem2);
+        public static Boolean operator != (StatusInfo StatusInfo1, StatusInfo StatusInfo2)
+            => !(StatusInfo1 == StatusInfo2);
 
         #endregion
 
         #endregion
 
-        #region IEquatable<Modem> Members
+        #region IEquatable<StatusInfo> Members
 
         #region Equals(Object)
 
@@ -375,36 +376,35 @@ namespace cloud.charging.adapters.OCPPv2_0
             if (Object is null)
                 return false;
 
-            if (!(Object is Modem Modem))
+            if (!(Object is StatusInfo StatusInfo))
                 return false;
 
-            return Equals(Modem);
+            return Equals(StatusInfo);
 
         }
 
         #endregion
 
-        #region Equals(Modem)
+        #region Equals(StatusInfo)
 
         /// <summary>
         /// Compares two id tag infos for equality.
         /// </summary>
-        /// <param name="Modem">An id tag info to compare with.</param>
+        /// <param name="StatusInfo">An id tag info to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Modem Modem)
+        public Boolean Equals(StatusInfo StatusInfo)
         {
 
-            if (Modem is null)
+            if (StatusInfo is null)
                 return false;
 
-            return ((ICCID      == null && Modem.ICCID      == null) ||
-                    (ICCID      != null && Modem.ICCID      != null && ICCID.     Equals(Modem.ICCID))) &&
+            return ReasonCode.Equals(StatusInfo.ReasonCode) &&
 
-                   ((IMSI       == null && Modem.IMSI       == null) ||
-                    (IMSI       != null && Modem.IMSI       != null && IMSI.      Equals(Modem.IMSI)))  &&
+                   ((AdditionalInfo == null && StatusInfo.AdditionalInfo == null) ||
+                    (AdditionalInfo != null && StatusInfo.AdditionalInfo != null && AdditionalInfo.Equals(StatusInfo.AdditionalInfo))) &&
 
-                   ((CustomData == null && Modem.CustomData == null) ||
-                    (CustomData != null && Modem.CustomData != null && CustomData.Equals(Modem.CustomData)));
+                   ((CustomData     == null && StatusInfo.CustomData     == null) ||
+                    (CustomData     != null && StatusInfo.CustomData     != null && CustomData.    Equals(StatusInfo.CustomData)));
 
         }
 
@@ -423,12 +423,10 @@ namespace cloud.charging.adapters.OCPPv2_0
             unchecked
             {
 
-                return (ICCID != null
-                            ? ICCID.GetHashCode() * 3
-                            : 0) ^
+                return ReasonCode.GetHashCode() * 3 ^
 
-                       (IMSI != null
-                            ? IMSI.GetHashCode()
+                       (AdditionalInfo != null
+                            ? AdditionalInfo.GetHashCode()
                             : 0);
 
             }
@@ -443,12 +441,8 @@ namespace cloud.charging.adapters.OCPPv2_0
         /// </summary>
         public override String ToString()
 
-            => new String[] {
-                   ICCID != null ? "ICCID: " + ICCID : null,
-                   IMSI  != null ? "IMSI: "  + IMSI  : null
-               }.
-               SafeWhere(_ => _ != null).
-               AggregateWith(", ");
+            => String.Concat("ReasonCode: ", ReasonCode,
+                             AdditionalInfo  != null ? ", AdditionalInfo: "  + AdditionalInfo  : "");
 
         #endregion
 

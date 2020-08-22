@@ -35,7 +35,7 @@ namespace cloud.charging.adapters.OCPPv2_0
         public static BootReasons Parse(this String Text)
         {
 
-            switch (Text)
+            switch (Text?.Trim())
             {
 
                 case "ApplicationReset":

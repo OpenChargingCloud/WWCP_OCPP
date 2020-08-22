@@ -57,7 +57,8 @@ namespace cloud.charging.adapters.OCPPv2_0
         public CustomData  CustomData         { get; }
 
         /// <summary>
-        /// A vendor-specific charging station identifier. 25
+        /// A vendor-specific charging station identifier.
+        /// It must match the "Common Name" within the TLS client certificate.   25
         /// </summary>
         public String      SerialNumber       { get; }
 

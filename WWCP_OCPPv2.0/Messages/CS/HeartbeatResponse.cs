@@ -18,7 +18,6 @@
 #region Usings
 
 using System;
-using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
@@ -27,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv1_6.CS
+namespace cloud.charging.adapters.OCPPv2_0.CS
 {
 
     /// <summary>
@@ -42,21 +41,28 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
         /// <summary>
         /// The current time at the central system.
         /// </summary>
-        public DateTime  CurrentTime   { get; }
+        public DateTime    CurrentTime    { get; }
+
+        /// <summary>
+        /// An optional custom data object to allow to store any kind of customer specific data.
+        /// </summary>
+        public CustomData  CustomData     { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region HeartbeatResponse(Request, CurrentTime)
+        #region HeartbeatResponse(Request, CurrentTime, CustomData = null)
 
         /// <summary>
         /// Create a new heartbeat response.
         /// </summary>
         /// <param name="Request">The heartbeat request leading to this response.</param>
         /// <param name="CurrentTime">The current time at the central system.</param>
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public HeartbeatResponse(CP.HeartbeatRequest  Request,
-                                 DateTime             CurrentTime)
+                                 DateTime             CurrentTime,
+                                 CustomData           CustomData   = null)
 
             : base(Request,
                    Result.OK())
@@ -64,6 +70,7 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
         {
 
             this.CurrentTime  = CurrentTime;
+            this.CustomData   = CustomData;
 
         }
 
@@ -95,61 +102,42 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
 
         #region Documentation
 
-        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-        //                xmlns:ns   = "urn://Ocpp/Cs/2015/10/">
-        //    <soap:Header/>
-        //    <soap:Body>
-        //       <ns:heartbeatResponse>
-        //
-        //          <ns:currentTime>?</ns:currentTime>
-        //
-        //       </ns:heartbeatResponse>
-        //    </soap:Body>
-        // </soap:Envelope>
-
         // {
-        //     "$schema":  "http://json-schema.org/draft-04/schema#",
-        //     "id":       "urn:OCPP:1.6:2019:12:HeartbeatResponse",
-        //     "title":    "HeartbeatResponse",
-        //     "type":     "object",
-        //     "properties": {
-        //         "currentTime": {
-        //             "type":   "string",
-        //             "format": "date-time"
+        //   "$schema": "http://json-schema.org/draft-06/schema#",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:HeartbeatResponse",
+        //   "comment": "OCPP 2.0.1 FINAL",
+        //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
         //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
+        //     }
+        // },
+        //   "type": "object",
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "additionalProperties": false,
-        //     "required": [
-        //         "currentTime"
-        //     ]
+        //     "currentTime": {
+        //       "description": "Contains the current time of the CSMS.\r\n",
+        //       "type": "string",
+        //       "format": "date-time"
+        //     }
+        //   },
+        //   "required": [
+        //     "currentTime"
+        //   ]
         // }
-
-        #endregion
-
-        #region (static) Parse   (Request, HeartbeatResponseXML,  OnException = null)
-
-        /// <summary>
-        /// Parse the given XML representation of a heartbeat response.
-        /// </summary>
-        /// <param name="Request">The heartbeat request leading to this response.</param>
-        /// <param name="HeartbeatResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static HeartbeatResponse Parse(CP.HeartbeatRequest  Request,
-                                              XElement             HeartbeatResponseXML,
-                                              OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(Request,
-                         HeartbeatResponseXML,
-                         out HeartbeatResponse heartbeatResponse,
-                         OnException))
-            {
-                return heartbeatResponse;
-            }
-
-            return null;
-
-        }
 
         #endregion
 
@@ -207,49 +195,6 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, HeartbeatResponseXML,  out HeartbeatResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a heartbeat response.
-        /// </summary>
-        /// <param name="Request">The heartbeat request leading to this response.</param>
-        /// <param name="HeartbeatResponseXML">The XML to be parsed.</param>
-        /// <param name="HeartbeatResponse">The parsed heartbeat response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CP.HeartbeatRequest    Request,
-                                       XElement               HeartbeatResponseXML,
-                                       out HeartbeatResponse  HeartbeatResponse,
-                                       OnExceptionDelegate    OnException  = null)
-        {
-
-            try
-            {
-
-                HeartbeatResponse = new HeartbeatResponse(
-
-                                        Request,
-                                        HeartbeatResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "currentTime",
-                                                                            DateTime.Parse)
-
-                                    );
-
-                return true;
-
-            }
-            catch (Exception e)
-            {
-
-                OnException?.Invoke(DateTime.UtcNow, HeartbeatResponseXML, e);
-
-                HeartbeatResponse = null;
-                return false;
-
-            }
-
-        }
-
-        #endregion
-
         #region (static) TryParse(Request, HeartbeatResponseJSON, out HeartbeatResponse, OnException = null)
 
         /// <summary>
@@ -282,9 +227,27 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
 
                 #endregion
 
+                #region CustomData
+
+                if (HeartbeatResponseJSON.ParseOptionalJSON("customData",
+                                                            "custom data",
+                                                            OCPPv2_0.CustomData.TryParse,
+                                                            out CustomData  CustomData,
+                                                            out             ErrorResponse,
+                                                            OnException))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
 
                 HeartbeatResponse = new HeartbeatResponse(Request,
-                                                          CurrentTime);
+                                                          CurrentTime,
+                                                          CustomData);
 
                 return true;
 
@@ -323,26 +286,13 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
 
                 HeartbeatResponseText = HeartbeatResponseText?.Trim();
 
-                if (HeartbeatResponseText.IsNotNullOrEmpty())
+                if (HeartbeatResponseText.IsNotNullOrEmpty() &&
+                    TryParse(Request,
+                             JObject.Parse(HeartbeatResponseText),
+                             out HeartbeatResponse,
+                             OnException))
                 {
-
-                    if (HeartbeatResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(HeartbeatResponseText),
-                                 out HeartbeatResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(HeartbeatResponseText).Root,
-                                 out HeartbeatResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
+                    return true;
                 }
 
             }
@@ -358,30 +308,25 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
 
         #endregion
 
-        #region ToXML()
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        public XElement ToXML()
-
-            => new XElement(OCPPNS.OCPPv1_6_CS + "heartbeatResponse",
-                   new XElement(OCPPNS.OCPPv1_6_CS + "currentTime",   CurrentTime.ToIso8601())
-               );
-
-        #endregion
-
-        #region ToJSON(CustomHeartbeatResponseSerializer = null)
+        #region ToJSON(CustomHeartbeatResponseSerializer = null, CustomIdTagInfoResponseSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomHeartbeatResponseSerializer">A delegate to serialize custom heartbeat responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatResponse> CustomHeartbeatResponseSerializer = null)
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize a CustomData object.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatResponse>  CustomHeartbeatResponseSerializer    = null,
+                              CustomJObjectSerializerDelegate<CustomData>         CustomCustomDataResponseSerializer   = null)
         {
 
             var JSON = JSONObject.Create(
-                           new JProperty("currentTime",  CurrentTime.ToIso8601())
+
+                           CustomData != null
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               : null,
+
+                           new JProperty("currentTime",       CurrentTime.ToIso8601())
+
                        );
 
             return CustomHeartbeatResponseSerializer != null

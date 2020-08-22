@@ -30,7 +30,7 @@ namespace cloud.charging.adapters.OCPPv2_0
     public static class RegistrationStatusExtentions
     {
 
-        #region AsRegistrationStatus(Text)
+        #region Parse(Text)
 
         /// <summary>
         /// Parse the given string as registration status.
@@ -39,16 +39,16 @@ namespace cloud.charging.adapters.OCPPv2_0
         public static RegistrationStatus Parse(String Text)
         {
 
-            switch (Text?.ToLower())
+            switch (Text?.Trim())
             {
 
-                case "accepted":
+                case "Accepted":
                     return RegistrationStatus.Accepted;
 
-                case "pending":
+                case "Pending":
                     return RegistrationStatus.Pending;
 
-                case "rejected":
+                case "Rejected":
                     return RegistrationStatus.Rejected;
 
 

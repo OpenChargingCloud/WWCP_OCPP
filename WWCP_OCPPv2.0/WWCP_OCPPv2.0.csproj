@@ -48,16 +48,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTypes\Complex\ChargingStation.cs" />
+    <Compile Include="DataTypes\Complex\StatusInfo.cs" />
     <Compile Include="DataTypes\Complex\Modem.cs" />
     <Compile Include="DataTypes\Complex\CustomData.cs" />
     <Compile Include="DataTypes\Complex\Result.cs" />
     <Compile Include="DataTypes\Enums\BootReasons.cs" />
+    <Compile Include="DataTypes\Enums\HashAlgorithms.cs" />
+    <Compile Include="DataTypes\Enums\IdTokenTypes.cs" />
     <Compile Include="DataTypes\Enums\RegistrationStatus.cs" />
     <Compile Include="DataTypes\Enums\ResultCodes.cs" />
     <Compile Include="DataTypes\Ids\Vendor_Id.cs" />
     <Compile Include="Messages\ARequest.cs" />
     <Compile Include="Messages\AResponse.cs" />
     <Compile Include="Messages\CS\BootNotificationRequest.cs" />
+    <Compile Include="Messages\CS\BootNotificationResponse.cs" />
+    <Compile Include="Messages\CS\HeartbeatRequest.cs" />
+    <Compile Include="Messages\CS\HeartbeatResponse.cs" />
     <Compile Include="Messages\IRequest.cs" />
     <Compile Include="Messages\IResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

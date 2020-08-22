@@ -67,7 +67,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
         /// </summary>
         /// <param name="ChargingStation">A physical system where an electrical vehicle (EV) can be charged.</param>
         /// <param name="Reason">The the reason for sending this boot notification to the CSMS.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public BootNotificationRequest(ChargingStation  ChargingStation,
                                        BootReasons      Reason,
                                        CustomData       CustomData   = null)
@@ -441,6 +441,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
         /// <param name="BootNotificationRequest2">Another boot notification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (BootNotificationRequest BootNotificationRequest1, BootNotificationRequest BootNotificationRequest2)
+
             => !(BootNotificationRequest1 == BootNotificationRequest2);
 
         #endregion
