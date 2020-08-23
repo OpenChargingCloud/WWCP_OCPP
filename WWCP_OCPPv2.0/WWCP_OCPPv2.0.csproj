@@ -47,6 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTypes\Complex\SignedMeterValue.cs" />
+    <Compile Include="DataTypes\Complex\UnitsOfMeasure.cs" />
+    <Compile Include="DataTypes\Complex\SampledValue.cs" />
+    <Compile Include="DataTypes\Complex\MeterValue.cs" />
     <Compile Include="DataTypes\Complex\EVSE.cs" />
     <Compile Include="DataTypes\Complex\MessageContent.cs" />
     <Compile Include="DataTypes\Complex\IdTokenInfo.cs" />
