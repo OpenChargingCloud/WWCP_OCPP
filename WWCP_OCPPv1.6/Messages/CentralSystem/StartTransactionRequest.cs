@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -70,18 +69,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a start transaction request.
+        /// Create a new start transaction request.
         /// </summary>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The connector identification at the charge point.</param>
         /// <param name="IdTag">The identifier for which a transaction has to be started.</param>
         /// <param name="StartTimestamp">The timestamp of the transaction start.</param>
         /// <param name="MeterStart">The energy meter value in Wh for the connector at start of the transaction.</param>
         /// <param name="ReservationId">An optional identification of the reservation that will terminate as a result of this transaction.</param>
-        public StartTransactionRequest(Connector_Id     ConnectorId,
+        /// <param name="RequestTimestamp">the optional request timestamp.</param>
+        public StartTransactionRequest(Request_Id       RequestId,
+                                       ChargeBox_Id     ChargeBoxId,
+                                       Connector_Id     ConnectorId,
                                        IdToken          IdTag,
                                        DateTime         StartTimestamp,
                                        UInt64           MeterStart,
-                                       Reservation_Id?  ReservationId = null)
+                                       Reservation_Id?  ReservationId      = null,
+                                       DateTime?        RequestTimestamp   = null)
+
+            : base(RequestId,
+                   ChargeBoxId,
+                   RequestTimestamp)
+
         {
 
             this.ConnectorId     = ConnectorId;
@@ -156,87 +166,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (StartTransactionRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a start transaction request.
         /// </summary>
-        /// <param name="StartTransactionRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StartTransactionRequest Parse(XElement             StartTransactionRequestXML,
+        public static StartTransactionRequest Parse(XElement             XML,
+                                                    Request_Id           RequestId,
+                                                    ChargeBox_Id         ChargeBoxId,
                                                     OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(StartTransactionRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out StartTransactionRequest startTransactionRequest,
                          OnException))
             {
                 return startTransactionRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a StartTransaction request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (StartTransactionRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomStartTransactionRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a start transaction request.
         /// </summary>
-        /// <param name="StartTransactionRequestJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StartTransactionRequest Parse(JObject              StartTransactionRequestJSON,
-                                                    OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomStartTransactionRequestParser">A delegate to parse custom StartTransaction requests.</param>
+        public static StartTransactionRequest Parse(JObject                                               JSON,
+                                                    Request_Id                                            RequestId,
+                                                    ChargeBox_Id                                          ChargeBoxId,
+                                                    CustomJObjectParserDelegate<StartTransactionRequest>  CustomStartTransactionRequestParser   = null)
         {
 
-            if (TryParse(StartTransactionRequestJSON,
-                         out StartTransactionRequest startTransactionRequest,
-                         OnException))
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out StartTransactionRequest  startTransactionRequest,
+                         out String                   ErrorResponse,
+                         CustomStartTransactionRequestParser))
             {
                 return startTransactionRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a StartTransaction request is invalid: " + ErrorResponse, nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (StartTransactionRequestText, OnException = null)
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a start transaction request.
         /// </summary>
-        /// <param name="StartTransactionRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StartTransactionRequest Parse(String               StartTransactionRequestText,
+        public static StartTransactionRequest Parse(String               Text,
+                                                    Request_Id           RequestId,
+                                                    ChargeBox_Id         ChargeBoxId,
                                                     OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(StartTransactionRequestText,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out StartTransactionRequest startTransactionRequest,
                          OnException))
             {
                 return startTransactionRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a StartTransaction request is invalid!", nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParse(StartTransactionRequestXML,  out StartTransactionRequest, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out StartTransactionRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a start transaction request.
         /// </summary>
-        /// <param name="StartTransactionRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="StartTransactionRequest">The parsed start transaction request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                     StartTransactionRequestXML,
+        public static Boolean TryParse(XElement                     XML,
+                                       Request_Id                   RequestId,
+                                       ChargeBox_Id                 ChargeBoxId,
                                        out StartTransactionRequest  StartTransactionRequest,
                                        OnExceptionDelegate          OnException  = null)
         {
@@ -246,20 +279,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 StartTransactionRequest = new StartTransactionRequest(
 
-                                              StartTransactionRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "connectorId",
-                                                                                            Connector_Id.Parse),
+                                              RequestId,
+                                              ChargeBoxId,
 
-                                              StartTransactionRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "idTag",
-                                                                                            IdToken.Parse),
+                                              XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "connectorId",
+                                                                     Connector_Id.Parse),
 
-                                              StartTransactionRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "timestamp",
-                                                                                            DateTime.Parse),
+                                              XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "idTag",
+                                                                     IdToken.Parse),
 
-                                              StartTransactionRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "meterStart",
-                                                                                            UInt64.Parse),
+                                              XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "timestamp",
+                                                                     DateTime.Parse),
 
-                                              StartTransactionRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "reservationId",
-                                                                                            Reservation_Id.Parse)
+                                              XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "meterStart",
+                                                                     UInt64.Parse),
+
+                                              XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "reservationId",
+                                                                     Reservation_Id.Parse)
 
                                           );
 
@@ -269,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, StartTransactionRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 StartTransactionRequest = null;
                 return false;
@@ -280,17 +316,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(StartTransactionRequestJSON, out StartTransactionRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out StartTransactionRequest, out ErrorResponse, CustomStartTransactionRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given text representation of a start transaction request.
         /// </summary>
-        /// <param name="StartTransactionRequestJSON">The text to be parsed.</param>
+        /// <param name="JSON">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="StartTransactionRequest">The parsed start transaction request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                      StartTransactionRequestJSON,
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                      JSON,
+                                       Request_Id                   RequestId,
+                                       ChargeBox_Id                 ChargeBoxId,
                                        out StartTransactionRequest  StartTransactionRequest,
-                                       OnExceptionDelegate          OnException  = null)
+                                       out String                   ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out StartTransactionRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given text representation of a start transaction request.
+        /// </summary>
+        /// <param name="JSON">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="StartTransactionRequest">The parsed start transaction request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomStartTransactionRequestParser">A delegate to parse custom StartTransaction requests.</param>
+        public static Boolean TryParse(JObject                                               JSON,
+                                       Request_Id                                            RequestId,
+                                       ChargeBox_Id                                          ChargeBoxId,
+                                       out StartTransactionRequest                           StartTransactionRequest,
+                                       out String                                            ErrorResponse,
+                                       CustomJObjectParserDelegate<StartTransactionRequest>  CustomStartTransactionRequestParser)
         {
 
             try
@@ -300,11 +366,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ConnectorId
 
-                if (!StartTransactionRequestJSON.ParseMandatory("connectorId",
-                                                                "connector identification",
-                                                                Connector_Id.TryParse,
-                                                                out Connector_Id  ConnectorId,
-                                                                out String        ErrorResponse))
+                if (!JSON.ParseMandatory("connectorId",
+                                         "connector identification",
+                                         Connector_Id.TryParse,
+                                         out Connector_Id  ConnectorId,
+                                         out               ErrorResponse))
                 {
                     return false;
                 }
@@ -313,11 +379,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region IdTag
 
-                if (!StartTransactionRequestJSON.ParseMandatory("idTag",
-                                                                "identification tag",
-                                                                IdToken.TryParse,
-                                                                out IdToken  IdTag,
-                                                                out          ErrorResponse))
+                if (!JSON.ParseMandatory("idTag",
+                                         "identification tag",
+                                         IdToken.TryParse,
+                                         out IdToken  IdTag,
+                                         out          ErrorResponse))
                 {
                     return false;
                 }
@@ -326,10 +392,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region Timestamp
 
-                if (!StartTransactionRequestJSON.ParseMandatory("timestamp",
-                                                                "timestamp",
-                                                                out DateTime  Timestamp,
-                                                                out           ErrorResponse))
+                if (!JSON.ParseMandatory("timestamp",
+                                         "timestamp",
+                                         out DateTime  Timestamp,
+                                         out           ErrorResponse))
                 {
                     return false;
                 }
@@ -338,10 +404,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region MeterStart
 
-                if (!StartTransactionRequestJSON.ParseMandatory("meterStart",
-                                                                "meter start",
-                                                                out UInt64  MeterStart,
-                                                                out         ErrorResponse))
+                if (!JSON.ParseMandatory("meterStart",
+                                         "meter start",
+                                         out UInt64  MeterStart,
+                                         out         ErrorResponse))
                 {
                     return false;
                 }
@@ -350,11 +416,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ReservationId
 
-                if (StartTransactionRequestJSON.ParseOptionalStruct("reservationId",
-                                                                    "reservation identification",
-                                                                    Reservation_Id.TryParse,
-                                                                    out Reservation_Id? ReservationId,
-                                                                    out ErrorResponse))
+                if (JSON.ParseOptionalStruct("reservationId",
+                                             "reservation identification",
+                                             Reservation_Id.TryParse,
+                                             out Reservation_Id? ReservationId,
+                                             out ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -365,36 +431,45 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                StartTransactionRequest = new StartTransactionRequest(ConnectorId,
+                StartTransactionRequest = new StartTransactionRequest(RequestId,
+                                                                      ChargeBoxId,
+                                                                      ConnectorId,
                                                                       IdTag,
                                                                       Timestamp,
                                                                       MeterStart,
                                                                       ReservationId);
+
+                if (CustomStartTransactionRequestParser != null)
+                    StartTransactionRequest = CustomStartTransactionRequestParser(JSON,
+                                                                                  StartTransactionRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, StartTransactionRequestJSON, e);
+                StartTransactionRequest  = default;
+                ErrorResponse            = "The given JSON representation of a StartTransaction request is invalid: " + e.Message;
+                return false;
             }
-
-            StartTransactionRequest = null;
-            return false;
 
         }
 
         #endregion
 
-        #region (static) TryParse(StartTransactionRequestText, out StartTransactionRequest, OnException = null)
+        #region (static) TryParse(Text, RequestId, ChargeBoxId, out StartTransactionRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given text representation of a start transaction request.
         /// </summary>
-        /// <param name="StartTransactionRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="StartTransactionRequest">The parsed start transaction request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                       StartTransactionRequestText,
+        public static Boolean TryParse(String                       Text,
+                                       Request_Id                   RequestId,
+                                       ChargeBox_Id                 ChargeBoxId,
                                        out StartTransactionRequest  StartTransactionRequest,
                                        OnExceptionDelegate          OnException  = null)
         {
@@ -402,20 +477,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             try
             {
 
-                StartTransactionRequestText = StartTransactionRequestText?.Trim();
+                Text = Text?.Trim();
 
-                if (StartTransactionRequestText.IsNotNullOrEmpty())
+                if (Text.IsNotNullOrEmpty())
                 {
 
-                    if (StartTransactionRequestText.StartsWith("{") &&
-                        TryParse(JObject.Parse(StartTransactionRequestText),
+                    if (Text.StartsWith("{") &&
+                        TryParse(JObject.Parse(Text),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out StartTransactionRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
-                    if (TryParse(XDocument.Parse(StartTransactionRequestText).Root,
+                    if (TryParse(XDocument.Parse(Text).Root,
+                                 RequestId,
+                                 ChargeBoxId,
                                  out StartTransactionRequest,
                                  OnException))
                     {
@@ -427,7 +506,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, StartTransactionRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, Text, e);
             }
 
             StartTransactionRequest = null;

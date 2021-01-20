@@ -53,6 +53,7 @@
     <Compile Include="CentralSystem\CentralSystemSOAPClient\CentralSystemSOAPClient.cs" />
     <Compile Include="CentralSystem\CentralSystemSOAPClient\CSClientDelegates.cs" />
     <Compile Include="CentralSystem\CentralSystemSOAPServer\CSServerLogger.cs" />
+    <Compile Include="DataTypes\Ids\Request_Id.cs" />
     <Compile Include="IO\WSErrorMessage.cs" />
     <Compile Include="IO\WSErrorCodes.cs" />
     <Compile Include="IO\WSResponseMessage.cs" />

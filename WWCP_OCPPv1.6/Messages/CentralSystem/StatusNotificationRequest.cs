@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -79,22 +78,37 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a status notification request.
+        /// Create a new status notification request.
         /// </summary>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The connector identification at the charge point.</param>
         /// <param name="Status">The current status of the charge point.</param>
         /// <param name="ErrorCode">The error code reported by the charge point.</param>
+        /// 
         /// <param name="Info">Additional free format information related to the error.</param>
         /// <param name="StatusTimestamp">The time for which the status is reported.</param>
         /// <param name="VendorId">This identifies the vendor-specific implementation.</param>
         /// <param name="VendorErrorCode">A vendor-specific error code.</param>
-        public StatusNotificationRequest(Connector_Id           ConnectorId,
+        /// 
+        /// <param name="RequestTimestamp">the optional request timestamp.</param>
+        public StatusNotificationRequest(Request_Id             RequestId,
+                                         ChargeBox_Id           ChargeBoxId,
+                                         Connector_Id           ConnectorId,
                                          ChargePointStatus      Status,
                                          ChargePointErrorCodes  ErrorCode,
-                                         String                 Info              = null,
-                                         DateTime?              StatusTimestamp   = null,
-                                         String                 VendorId          = null,
-                                         String                 VendorErrorCode   = null)
+
+                                         String                 Info               = null,
+                                         DateTime?              StatusTimestamp    = null,
+                                         String                 VendorId           = null,
+                                         String                 VendorErrorCode    = null,
+
+                                         DateTime?              RequestTimestamp   = null)
+
+            : base(RequestId,
+                   ChargeBoxId,
+                   RequestTimestamp)
+
         {
 
             this.ConnectorId      = ConnectorId;
@@ -218,87 +232,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (StatusNotificationRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a status notification request.
         /// </summary>
-        /// <param name="StatusNotificationRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StatusNotificationRequest Parse(XElement             StatusNotificationRequestXML,
+        public static StatusNotificationRequest Parse(XElement             XML,
+                                                      Request_Id           RequestId,
+                                                      ChargeBox_Id         ChargeBoxId,
                                                       OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(StatusNotificationRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out StatusNotificationRequest statusNotificationRequest,
                          OnException))
             {
                 return statusNotificationRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a StatusNotification request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (StatusNotificationRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomStatusNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a status notification request.
         /// </summary>
-        /// <param name="StatusNotificationRequestJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StatusNotificationRequest Parse(JObject              StatusNotificationRequestJSON,
-                                                      OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom CustomStatusNotification requests.</param>
+        public static StatusNotificationRequest Parse(JObject                                                 JSON,
+                                                      Request_Id                                              RequestId,
+                                                      ChargeBox_Id                                            ChargeBoxId,
+                                                      CustomJObjectParserDelegate<StatusNotificationRequest>  CustomStatusNotificationRequestParser   = null)
         {
 
-            if (TryParse(StatusNotificationRequestJSON,
-                         out StatusNotificationRequest statusNotificationRequest,
-                         OnException))
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out StatusNotificationRequest  statusNotificationRequest,
+                         out String                     ErrorResponse,
+                         CustomStatusNotificationRequestParser))
             {
                 return statusNotificationRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a StatusNotification request is invalid: " + ErrorResponse, nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (StatusNotificationRequestText, OnException = null)
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a status notification request.
         /// </summary>
-        /// <param name="StatusNotificationRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StatusNotificationRequest Parse(String               StatusNotificationRequestText,
+        public static StatusNotificationRequest Parse(String               Text,
+                                                      Request_Id           RequestId,
+                                                      ChargeBox_Id         ChargeBoxId,
                                                       OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(StatusNotificationRequestText,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out StatusNotificationRequest statusNotificationRequest,
                          OnException))
             {
                 return statusNotificationRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a StatusNotification request is invalid!", nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParse(StatusNotificationRequestXML,  out StatusNotificationRequest, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out StatusNotificationRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a status notification request.
         /// </summary>
-        /// <param name="StatusNotificationRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                       StatusNotificationRequestXML,
+        public static Boolean TryParse(XElement                       XML,
+                                       Request_Id                     RequestId,
+                                       ChargeBox_Id                   ChargeBoxId,
                                        out StatusNotificationRequest  StatusNotificationRequest,
                                        OnExceptionDelegate            OnException  = null)
         {
@@ -308,23 +345,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 StatusNotificationRequest = new StatusNotificationRequest(
 
-                                                StatusNotificationRequestXML.MapValueOrFail       (OCPPNS.OCPPv1_6_CS + "connectorId",
-                                                                                                   Connector_Id.Parse),
+                                                RequestId,
+                                                ChargeBoxId,
 
-                                                StatusNotificationRequestXML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CS + "status",
-                                                                                                   ChargePointStatusExtentions.Parse),
+                                                XML.MapValueOrFail       (OCPPNS.OCPPv1_6_CS + "connectorId",
+                                                                          Connector_Id.Parse),
 
-                                                StatusNotificationRequestXML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CS + "errorCode",
-                                                                                                   ChargePointErrorCodeExtentions.Parse),
+                                                XML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CS + "status",
+                                                                          ChargePointStatusExtentions.Parse),
 
-                                                StatusNotificationRequestXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "info"),
+                                                XML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CS + "errorCode",
+                                                                          ChargePointErrorCodeExtentions.Parse),
 
-                                                StatusNotificationRequestXML.MapValueOrNullable   (OCPPNS.OCPPv1_6_CS + "timestamp",
-                                                                                                   DateTime.Parse),
+                                                XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "info"),
 
-                                                StatusNotificationRequestXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "vendorId"),
+                                                XML.MapValueOrNullable   (OCPPNS.OCPPv1_6_CS + "timestamp",
+                                                                          DateTime.Parse),
 
-                                                StatusNotificationRequestXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "vendorErrorCode")
+                                                XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "vendorId"),
+
+                                                XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "vendorErrorCode")
 
                                             );
 
@@ -334,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, StatusNotificationRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 StatusNotificationRequest = null;
                 return false;
@@ -345,17 +385,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(StatusNotificationRequestJSON, out StatusNotificationRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out CustomStatusNotificationRequestParser, OnException = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a status notification request.
         /// </summary>
-        /// <param name="StatusNotificationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                        StatusNotificationRequestJSON,
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                        JSON,
+                                       Request_Id                     RequestId,
+                                       ChargeBox_Id                   ChargeBoxId,
                                        out StatusNotificationRequest  StatusNotificationRequest,
-                                       OnExceptionDelegate            OnException  = null)
+                                       out String                     ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out StatusNotificationRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a status notification request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom CustomStatusNotification requests.</param>
+        public static Boolean TryParse(JObject                                                 JSON,
+                                       Request_Id                                              RequestId,
+                                       ChargeBox_Id                                            ChargeBoxId,
+                                       out StatusNotificationRequest                           StatusNotificationRequest,
+                                       out String                                              ErrorResponse,
+                                       CustomJObjectParserDelegate<StatusNotificationRequest>  CustomStatusNotificationRequestParser)
         {
 
             try
@@ -365,11 +435,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ConnectorId
 
-                if (!StatusNotificationRequestJSON.ParseMandatory("connectorId",
-                                                                  "connector identification",
-                                                                  Connector_Id.TryParse,
-                                                                  out Connector_Id  ConnectorId,
-                                                                  out String        ErrorResponse))
+                if (!JSON.ParseMandatory("connectorId",
+                                         "connector identification",
+                                         Connector_Id.TryParse,
+                                         out Connector_Id  ConnectorId,
+                                         out               ErrorResponse))
                 {
                     return false;
                 }
@@ -378,11 +448,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region Status
 
-                if (!StatusNotificationRequestJSON.MapMandatory("status",
-                                                                "status",
-                                                                ChargePointStatusExtentions.Parse,
-                                                                out ChargePointStatus  Status,
-                                                                out                    ErrorResponse))
+                if (!JSON.MapMandatory("status",
+                                       "status",
+                                       ChargePointStatusExtentions.Parse,
+                                       out ChargePointStatus  Status,
+                                       out                    ErrorResponse))
                 {
                     return false;
                 }
@@ -391,11 +461,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ErrorCode
 
-                if (!StatusNotificationRequestJSON.MapMandatory("errorCode",
-                                                                "error code",
-                                                                ChargePointErrorCodeExtentions.Parse,
-                                                                out ChargePointErrorCodes  ErrorCode,
-                                                                out                        ErrorResponse))
+                if (!JSON.MapMandatory("errorCode",
+                                       "error code",
+                                       ChargePointErrorCodeExtentions.Parse,
+                                       out ChargePointErrorCodes  ErrorCode,
+                                       out                        ErrorResponse))
                 {
                     return false;
                 }
@@ -404,10 +474,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region Info
 
-                if (!StatusNotificationRequestJSON.ParseOptional("info",
-                                                                 "info",
-                                                                 out String  Info,
-                                                                 out         ErrorResponse))
+                if (!JSON.ParseOptional("info",
+                                        "info",
+                                        out String  Info,
+                                        out         ErrorResponse))
                 {
                     return false;
                 }
@@ -416,10 +486,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region Timestamp
 
-                if (!StatusNotificationRequestJSON.ParseMandatory("timestamp",
-                                                                  "timestamp",
-                                                                  out DateTime  Timestamp,
-                                                                  out           ErrorResponse))
+                if (!JSON.ParseMandatory("timestamp",
+                                         "timestamp",
+                                         out DateTime  Timestamp,
+                                         out           ErrorResponse))
                 {
                     return false;
                 }
@@ -428,10 +498,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region VerndorId
 
-                if (!StatusNotificationRequestJSON.ParseOptional("verndorId",
-                                                                 "verndor identification",
-                                                                 out String  VerndorId,
-                                                                 out         ErrorResponse))
+                if (!JSON.ParseOptional("verndorId",
+                                        "verndor identification",
+                                        out String  VerndorId,
+                                        out         ErrorResponse))
                 {
                     return false;
                 }
@@ -440,10 +510,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region VendorErrorCode
 
-                if (!StatusNotificationRequestJSON.ParseOptional("vendorErrorCode",
-                                                                 "vendor error code",
-                                                                 out String  VendorErrorCode,
-                                                                 out         ErrorResponse))
+                if (!JSON.ParseOptional("vendorErrorCode",
+                                        "vendor error code",
+                                        out String  VendorErrorCode,
+                                        out         ErrorResponse))
                 {
                     return false;
                 }
@@ -451,7 +521,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                StatusNotificationRequest = new StatusNotificationRequest(ConnectorId,
+                StatusNotificationRequest = new StatusNotificationRequest(RequestId,
+                                                                          ChargeBoxId,
+                                                                          ConnectorId,
                                                                           Status,
                                                                           ErrorCode,
 
@@ -460,32 +532,37 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                           VerndorId,
                                                                           VendorErrorCode);
 
+                if (CustomStatusNotificationRequestParser != null)
+                    StatusNotificationRequest = CustomStatusNotificationRequestParser(JSON,
+                                                                                      StatusNotificationRequest);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, StatusNotificationRequestJSON, e);
-
-                StatusNotificationRequest = null;
+                StatusNotificationRequest  = default;
+                ErrorResponse              = "The given JSON representation of a StatusNotification request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(StatusNotificationRequestText, out StatusNotificationRequest, OnException = null)
+        #region (static) TryParse(Text, RequestId, ChargeBoxId, out StatusNotificationRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given text representation of a status notification request.
         /// </summary>
-        /// <param name="StatusNotificationRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                         StatusNotificationRequestText,
+        public static Boolean TryParse(String                         Text,
+                                       Request_Id                     RequestId,
+                                       ChargeBox_Id                   ChargeBoxId,
                                        out StatusNotificationRequest  StatusNotificationRequest,
                                        OnExceptionDelegate            OnException  = null)
         {
@@ -493,20 +570,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             try
             {
 
-                StatusNotificationRequestText = StatusNotificationRequestText?.Trim();
+                Text = Text?.Trim();
 
-                if (StatusNotificationRequestText.IsNotNullOrEmpty())
+                if (Text.IsNotNullOrEmpty())
                 {
 
-                    if (StatusNotificationRequestText.StartsWith("{") &&
-                        TryParse(JObject.Parse(StatusNotificationRequestText),
+                    if (Text.StartsWith("{") &&
+                        TryParse(JObject.Parse(Text),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out StatusNotificationRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
-                    if (TryParse(XDocument.Parse(StatusNotificationRequestText).Root,
+                    if (TryParse(XDocument.Parse(Text).Root,
+                                 RequestId,
+                                 ChargeBoxId,
                                  out StatusNotificationRequest,
                                  OnException))
                     {
@@ -518,7 +599,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, StatusNotificationRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, Text, e);
             }
 
             StatusNotificationRequest = null;

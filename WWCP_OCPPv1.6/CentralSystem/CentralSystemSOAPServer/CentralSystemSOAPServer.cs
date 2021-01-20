@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -480,7 +480,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     var OCPPHeader               = SOAPHeader.Parse(HeaderXML);
-                    var bootNotificationRequest  = BootNotificationRequest.Parse(BootNotificationXML);
+                    var bootNotificationRequest  = BootNotificationRequest.Parse(BootNotificationXML,
+                                                                                 Request_Id.Parse(OCPPHeader.MessageId),
+                                                                                 OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnBootNotificationRequest event
 
@@ -523,7 +525,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
-                                               OCPPHeader.ChargeBoxIdentity,
                                                bootNotificationRequest)).
                                           ToArray();
 
@@ -660,7 +661,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     var OCPPHeader        = SOAPHeader.Parse(HeaderXML);
-                    var heartbeatRequest  = HeartbeatRequest.Parse(HeartbeatXML);
+                    var heartbeatRequest  = HeartbeatRequest.Parse(HeartbeatXML,
+                                                                   Request_Id.Parse(OCPPHeader.MessageId),
+                                                                   OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnHeartbeatRequest event
 
@@ -693,7 +696,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
-                                               OCPPHeader.ChargeBoxIdentity,
                                                heartbeatRequest)).
                                           ToArray();
 
@@ -819,7 +821,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     var OCPPHeader        = SOAPHeader.Parse(HeaderXML);
-                    var authorizeRequest  = AuthorizeRequest.Parse(AuthorizeXML);
+                    var authorizeRequest  = AuthorizeRequest.Parse(AuthorizeXML,
+                                                                   Request_Id.Parse(OCPPHeader.MessageId),
+                                                                   OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnAuthorizeRequest event
 
@@ -981,7 +985,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     var OCPPHeader               = SOAPHeader.Parse(HeaderXML);
-                    var startTransactionRequest  = StartTransactionRequest.Parse(StartTransactionXML);
+                    var startTransactionRequest  = StartTransactionRequest.Parse(StartTransactionXML,
+                                                                                 Request_Id.Parse(OCPPHeader.MessageId),
+                                                                                 OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnStartTransactionRequest event
 
@@ -1152,7 +1158,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     var OCPPHeader                 = SOAPHeader.Parse(HeaderXML);
-                    var statusNotificationRequest  = StatusNotificationRequest.Parse(StatusNotificationXML);
+                    var statusNotificationRequest  = StatusNotificationRequest.Parse(StatusNotificationXML,
+                                                                                     Request_Id.Parse(OCPPHeader.MessageId),
+                                                                                     OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnStatusNotificationRequest event
 
@@ -1325,7 +1333,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     var OCPPHeader          = SOAPHeader.Parse(HeaderXML);
-                    var meterValuesRequest  = MeterValuesRequest.Parse(MeterValuesXML);
+                    var meterValuesRequest  = MeterValuesRequest.Parse(MeterValuesXML,
+                                                                       Request_Id.Parse(OCPPHeader.MessageId),
+                                                                       OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnMeterValuesRequest event
 
@@ -1490,7 +1500,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     var OCPPHeader              = SOAPHeader.Parse(HeaderXML);
-                    var stopTransactionRequest  = StopTransactionRequest.Parse(StopTransactionXML);
+                    var stopTransactionRequest  = StopTransactionRequest.Parse(StopTransactionXML,
+                                                                               Request_Id.Parse(OCPPHeader.MessageId),
+                                                                               OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnStopTransactionRequest event
 
@@ -1658,13 +1670,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
                 DataTransferResponse response      = null;
-                HTTPResponse                 HTTPResponse  = null;
+                HTTPResponse         HTTPResponse  = null;
 
                 try
                 {
 
                     var OCPPHeader           = SOAPHeader.Parse(HeaderXML);
-                    var dataTransferRequest  = CP.DataTransferRequest.Parse(DataTransferXML);
+                    var dataTransferRequest  = CP.DataTransferRequest.Parse(DataTransferXML,
+                                                                            Request_Id.Parse(OCPPHeader.MessageId),
+                                                                            OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnIncomingDataTransferRequest event
 
@@ -1832,7 +1846,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     var OCPPHeader                            = SOAPHeader.Parse(HeaderXML);
-                    var diagnosticsStatusNotificationRequest  = DiagnosticsStatusNotificationRequest.Parse(DiagnosticsStatusNotificationXML);
+                    var diagnosticsStatusNotificationRequest  = DiagnosticsStatusNotificationRequest.Parse(DiagnosticsStatusNotificationXML,
+                                                                                                           Request_Id.Parse(OCPPHeader.MessageId),
+                                                                                                           OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnDiagnosticsStatusNotificationRequest event
 
@@ -1994,7 +2010,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     var OCPPHeader                         = SOAPHeader.Parse(HeaderXML);
-                    var firmwareStatusNotificationRequest  = FirmwareStatusNotificationRequest.Parse(FirmwareStatusNotificationXML);
+                    var firmwareStatusNotificationRequest  = FirmwareStatusNotificationRequest.Parse(FirmwareStatusNotificationXML,
+                                                                                                     Request_Id.Parse(OCPPHeader.MessageId),
+                                                                                                     OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnFirmwareStatusNotificationRequest event
 

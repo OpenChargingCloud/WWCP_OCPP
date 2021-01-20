@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -76,7 +76,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
     /// <param name="BootNotificationRequest">A boot notification request.</param>
     public delegate Task<BootNotificationResponse>
 
@@ -85,7 +84,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                  CancellationToken           CancellationToken,
                                  EventTracking_Id            EventTrackingId,
 
-                                 ChargeBox_Id                ChargeBoxIdentity,
                                  CP.BootNotificationRequest  BootNotificationRequest);
 
 
@@ -166,7 +164,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
     /// <param name="HeartbeatRequest">A heartbeat request.</param>
     public delegate Task<HeartbeatResponse>
 
@@ -175,7 +172,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                           CancellationToken        CancellationToken,
                           EventTracking_Id         EventTrackingId,
 
-                          ChargeBox_Id             ChargeBoxIdentity,
                           CP.HeartbeatRequest      HeartbeatRequest);
 
 

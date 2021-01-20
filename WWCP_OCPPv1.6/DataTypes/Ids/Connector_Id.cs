@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Data
 
-        private readonly UInt64 _Value;
+        private readonly UInt64 InternalId;
 
         #endregion
 
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The length of the tag identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) _Value.ToString().Length;
+            => (UInt64) InternalId.ToString().Length;
 
         #endregion
 
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Token">An integer.</param>
         private Connector_Id(UInt64 Token)
         {
-            this._Value = Token;
+            this.InternalId = Token;
         }
 
         #endregion
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Clone this connector identification.
         /// </summary>
         public Connector_Id Clone
-            => new Connector_Id(_Value);
+            => new Connector_Id(InternalId);
 
         #endregion
 
@@ -215,26 +215,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An connector identification.</param>
+        /// <param name="ConnectorId1">A connector identification.</param>
         /// <param name="ConnectorId2">Another connector identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Connector_Id ConnectorId1, Connector_Id ConnectorId2)
-        {
+        public static Boolean operator == (Connector_Id ConnectorId1,
+                                           Connector_Id ConnectorId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ConnectorId1, ConnectorId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ConnectorId1 == null) || ((Object) ConnectorId2 == null))
-                return false;
-
-            if ((Object) ConnectorId1 == null)
-                throw new ArgumentNullException(nameof(ConnectorId1),  "The given connector identification must not be null!");
-
-            return ConnectorId1.Equals(ConnectorId2);
-
-        }
+            => ConnectorId1.Equals(ConnectorId2);
 
         #endregion
 
@@ -243,10 +230,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An connector identification.</param>
+        /// <param name="ConnectorId1">A connector identification.</param>
         /// <param name="ConnectorId2">Another connector identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Connector_Id ConnectorId1, Connector_Id ConnectorId2)
+        public static Boolean operator != (Connector_Id ConnectorId1,
+                                           Connector_Id ConnectorId2)
+
             => !(ConnectorId1 == ConnectorId2);
 
         #endregion
@@ -256,18 +245,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An connector identification.</param>
+        /// <param name="ConnectorId1">A connector identification.</param>
         /// <param name="ConnectorId2">Another connector identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Connector_Id ConnectorId1, Connector_Id ConnectorId2)
-        {
+        public static Boolean operator < (Connector_Id ConnectorId1,
+                                          Connector_Id ConnectorId2)
 
-            if ((Object) ConnectorId1 == null)
-                throw new ArgumentNullException(nameof(ConnectorId1),  "The given connector identification must not be null!");
-
-            return ConnectorId1.CompareTo(ConnectorId2) < 0;
-
-        }
+            => ConnectorId1.CompareTo(ConnectorId2) < 0;
 
         #endregion
 
@@ -276,10 +260,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An connector identification.</param>
+        /// <param name="ConnectorId1">A connector identification.</param>
         /// <param name="ConnectorId2">Another connector identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Connector_Id ConnectorId1, Connector_Id ConnectorId2)
+        public static Boolean operator <= (Connector_Id ConnectorId1,
+                                           Connector_Id ConnectorId2)
+
             => !(ConnectorId1 > ConnectorId2);
 
         #endregion
@@ -289,18 +275,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An connector identification.</param>
+        /// <param name="ConnectorId1">A connector identification.</param>
         /// <param name="ConnectorId2">Another connector identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Connector_Id ConnectorId1, Connector_Id ConnectorId2)
-        {
+        public static Boolean operator > (Connector_Id ConnectorId1,
+                                          Connector_Id ConnectorId2)
 
-            if ((Object) ConnectorId1 == null)
-                throw new ArgumentNullException(nameof(ConnectorId1),  "The given connector identification must not be null!");
-
-            return ConnectorId1.CompareTo(ConnectorId2) > 0;
-
-        }
+            => ConnectorId1.CompareTo(ConnectorId2) > 0;
 
         #endregion
 
@@ -309,10 +290,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ConnectorId1">An connector identification.</param>
+        /// <param name="ConnectorId1">A connector identification.</param>
         /// <param name="ConnectorId2">Another connector identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Connector_Id ConnectorId1, Connector_Id ConnectorId2)
+        public static Boolean operator >= (Connector_Id ConnectorId1,
+                                           Connector_Id ConnectorId2)
+
             => !(ConnectorId1 < ConnectorId2);
 
         #endregion
@@ -328,17 +311,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object is null)
-                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
-
-            if (!(Object is Connector_Id ConnectorId))
-                throw new ArgumentException("The given object is not a connector identification!", nameof(Object));
-
-            return CompareTo(ConnectorId);
-
-        }
+            => Object is Connector_Id connectorId
+                   ? CompareTo(connectorId)
+                   : throw new ArgumentException("The given object is not a connector identification!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -349,14 +326,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ConnectorId">An object to compare with.</param>
         public Int32 CompareTo(Connector_Id ConnectorId)
-        {
 
-            if ((Object) ConnectorId == null)
-                throw new ArgumentNullException(nameof(ConnectorId),  "The given connector identification must not be null!");
-
-            return _Value.CompareTo(ConnectorId._Value);
-
-        }
+            => InternalId.CompareTo(ConnectorId.InternalId);
 
         #endregion
 
@@ -372,17 +343,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
         public override Boolean Equals(Object Object)
-        {
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is Connector_Id ConnectorId))
-                return false;
-
-            return Equals(ConnectorId);
-
-        }
+            => Object is Connector_Id connectorId &&
+                   Equals(connectorId);
 
         #endregion
 
@@ -391,17 +354,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two connector identifications for equality.
         /// </summary>
-        /// <param name="ConnectorId">An connector identification to compare with.</param>
+        /// <param name="ConnectorId">A connector identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Connector_Id ConnectorId)
-        {
 
-            if ((Object) ConnectorId == null)
-                return false;
-
-            return _Value.Equals(ConnectorId._Value);
-
-        }
+            => InternalId.Equals(ConnectorId.InternalId);
 
         #endregion
 
@@ -414,7 +371,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => _Value.GetHashCode();
+
+            => InternalId.GetHashCode();
 
         #endregion
 
@@ -424,10 +382,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => _Value.ToString();
+
+            => InternalId.ToString();
 
         #endregion
-
 
     }
 

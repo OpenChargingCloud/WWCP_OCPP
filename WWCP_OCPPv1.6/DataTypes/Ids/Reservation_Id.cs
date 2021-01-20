@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Data
 
-        private readonly UInt64 _Value;
+        private readonly UInt64 InternalId;
 
         #endregion
 
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The length of this identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) _Value.ToString().Length;
+            => (UInt64) InternalId.ToString().Length;
 
         #endregion
 
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Token">An integer.</param>
         private Reservation_Id(UInt64 Token)
         {
-            this._Value = Token;
+            this.InternalId = Token;
         }
 
         #endregion
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Clone this reservation identification.
         /// </summary>
         public Reservation_Id Clone
-            => new Reservation_Id(_Value);
+            => new Reservation_Id(InternalId);
 
         #endregion
 
@@ -215,26 +215,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ReservationId1">An reservation identification.</param>
+        /// <param name="ReservationId1">A reservation identification.</param>
         /// <param name="ReservationId2">Another reservation identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Reservation_Id ReservationId1, Reservation_Id ReservationId2)
-        {
+        public static Boolean operator == (Reservation_Id ReservationId1,
+                                           Reservation_Id ReservationId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ReservationId1, ReservationId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ReservationId1 == null) || ((Object) ReservationId2 == null))
-                return false;
-
-            if ((Object) ReservationId1 == null)
-                throw new ArgumentNullException(nameof(ReservationId1),  "The given reservation identification must not be null!");
-
-            return ReservationId1.Equals(ReservationId2);
-
-        }
+            => ReservationId1.Equals(ReservationId2);
 
         #endregion
 
@@ -243,10 +230,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ReservationId1">An reservation identification.</param>
+        /// <param name="ReservationId1">A reservation identification.</param>
         /// <param name="ReservationId2">Another reservation identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Reservation_Id ReservationId1, Reservation_Id ReservationId2)
+        public static Boolean operator != (Reservation_Id ReservationId1,
+                                           Reservation_Id ReservationId2)
+
             => !(ReservationId1 == ReservationId2);
 
         #endregion
@@ -256,18 +245,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ReservationId1">An reservation identification.</param>
+        /// <param name="ReservationId1">A reservation identification.</param>
         /// <param name="ReservationId2">Another reservation identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Reservation_Id ReservationId1, Reservation_Id ReservationId2)
-        {
+        public static Boolean operator < (Reservation_Id ReservationId1,
+                                          Reservation_Id ReservationId2)
 
-            if ((Object) ReservationId1 == null)
-                throw new ArgumentNullException(nameof(ReservationId1),  "The given reservation identification must not be null!");
-
-            return ReservationId1.CompareTo(ReservationId2) < 0;
-
-        }
+            => ReservationId1.CompareTo(ReservationId2) < 0;
 
         #endregion
 
@@ -276,10 +260,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ReservationId1">An reservation identification.</param>
+        /// <param name="ReservationId1">A reservation identification.</param>
         /// <param name="ReservationId2">Another reservation identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Reservation_Id ReservationId1, Reservation_Id ReservationId2)
+        public static Boolean operator <= (Reservation_Id ReservationId1,
+                                           Reservation_Id ReservationId2)
+
             => !(ReservationId1 > ReservationId2);
 
         #endregion
@@ -289,18 +275,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ReservationId1">An reservation identification.</param>
+        /// <param name="ReservationId1">A reservation identification.</param>
         /// <param name="ReservationId2">Another reservation identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Reservation_Id ReservationId1, Reservation_Id ReservationId2)
-        {
+        public static Boolean operator > (Reservation_Id ReservationId1,
+                                          Reservation_Id ReservationId2)
 
-            if ((Object) ReservationId1 == null)
-                throw new ArgumentNullException(nameof(ReservationId1),  "The given reservation identification must not be null!");
-
-            return ReservationId1.CompareTo(ReservationId2) > 0;
-
-        }
+            => ReservationId1.CompareTo(ReservationId2) > 0;
 
         #endregion
 
@@ -309,10 +290,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ReservationId1">An reservation identification.</param>
+        /// <param name="ReservationId1">A reservation identification.</param>
         /// <param name="ReservationId2">Another reservation identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Reservation_Id ReservationId1, Reservation_Id ReservationId2)
+        public static Boolean operator >= (Reservation_Id ReservationId1,
+                                           Reservation_Id ReservationId2)
+
             => !(ReservationId1 < ReservationId2);
 
         #endregion
@@ -328,18 +311,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object is null)
-                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
-
-            // Check if the given object is a reservation identification.
-            if (!(Object is Reservation_Id))
-                throw new ArgumentException("The given object is not a reservation identification!", nameof(Object));
-
-            return CompareTo((Reservation_Id) Object);
-
-        }
+            => Object is Reservation_Id reservationId
+                   ? CompareTo(reservationId)
+                   : throw new ArgumentException("The given object is not a reservation identification!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -350,14 +326,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ReservationId">An object to compare with.</param>
         public Int32 CompareTo(Reservation_Id ReservationId)
-        {
 
-            if ((Object) ReservationId == null)
-                throw new ArgumentNullException(nameof(ReservationId),  "The given reservation identification must not be null!");
-
-            return _Value.CompareTo(ReservationId._Value);
-
-        }
+            => InternalId.CompareTo(ReservationId.InternalId);
 
         #endregion
 
@@ -373,18 +343,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
         public override Boolean Equals(Object Object)
-        {
 
-            if (Object is null)
-                return false;
-
-            // Check if the given object is a reservation identification.
-            if (!(Object is Reservation_Id))
-                return false;
-
-            return this.Equals((Reservation_Id) Object);
-
-        }
+            => Object is Reservation_Id reservationId &&
+                   Equals(reservationId);
 
         #endregion
 
@@ -393,17 +354,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two reservation identifications for equality.
         /// </summary>
-        /// <param name="ReservationId">An reservation identification to compare with.</param>
+        /// <param name="ReservationId">A reservation identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Reservation_Id ReservationId)
-        {
 
-            if ((Object) ReservationId == null)
-                return false;
-
-            return _Value.Equals(ReservationId._Value);
-
-        }
+            => InternalId.Equals(ReservationId.InternalId);
 
         #endregion
 
@@ -416,7 +371,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => _Value.GetHashCode();
+
+            => InternalId.GetHashCode();
 
         #endregion
 
@@ -426,10 +382,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => _Value.ToString();
+
+            => InternalId.ToString();
 
         #endregion
-
 
     }
 

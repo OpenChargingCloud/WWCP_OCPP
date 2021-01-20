@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Data
 
-        private readonly UInt64 _Value;
+        private readonly UInt64 InternalId;
 
         #endregion
 
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The length of the tag identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) _Value.ToString().Length;
+            => (UInt64) InternalId.ToString().Length;
 
         #endregion
 
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Token">An integer.</param>
         private ChargingProfile_Id(UInt64 Token)
         {
-            this._Value = Token;
+            this.InternalId = Token;
         }
 
         #endregion
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Clone this charging profile identification.
         /// </summary>
         public ChargingProfile_Id Clone
-            => new ChargingProfile_Id(_Value);
+            => new ChargingProfile_Id(InternalId);
 
         #endregion
 
@@ -215,26 +215,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProfileId1">An charging profile identification.</param>
+        /// <param name="ChargingProfileId1">A charging profile identification.</param>
         /// <param name="ChargingProfileId2">Another charging profile identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingProfile_Id ChargingProfileId1, ChargingProfile_Id ChargingProfileId2)
-        {
+        public static Boolean operator == (ChargingProfile_Id ChargingProfileId1,
+                                           ChargingProfile_Id ChargingProfileId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargingProfileId1, ChargingProfileId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ChargingProfileId1 == null) || ((Object) ChargingProfileId2 == null))
-                return false;
-
-            if ((Object) ChargingProfileId1 == null)
-                throw new ArgumentNullException(nameof(ChargingProfileId1),  "The given charging profile identification must not be null!");
-
-            return ChargingProfileId1.Equals(ChargingProfileId2);
-
-        }
+            => ChargingProfileId1.Equals(ChargingProfileId2);
 
         #endregion
 
@@ -243,10 +230,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProfileId1">An charging profile identification.</param>
+        /// <param name="ChargingProfileId1">A charging profile identification.</param>
         /// <param name="ChargingProfileId2">Another charging profile identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingProfile_Id ChargingProfileId1, ChargingProfile_Id ChargingProfileId2)
+        public static Boolean operator != (ChargingProfile_Id ChargingProfileId1,
+                                           ChargingProfile_Id ChargingProfileId2)
+
             => !(ChargingProfileId1 == ChargingProfileId2);
 
         #endregion
@@ -256,18 +245,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProfileId1">An charging profile identification.</param>
+        /// <param name="ChargingProfileId1">A charging profile identification.</param>
         /// <param name="ChargingProfileId2">Another charging profile identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingProfile_Id ChargingProfileId1, ChargingProfile_Id ChargingProfileId2)
-        {
+        public static Boolean operator < (ChargingProfile_Id ChargingProfileId1,
+                                          ChargingProfile_Id ChargingProfileId2)
 
-            if ((Object) ChargingProfileId1 == null)
-                throw new ArgumentNullException(nameof(ChargingProfileId1),  "The given charging profile identification must not be null!");
-
-            return ChargingProfileId1.CompareTo(ChargingProfileId2) < 0;
-
-        }
+            => ChargingProfileId1.CompareTo(ChargingProfileId2) < 0;
 
         #endregion
 
@@ -276,10 +260,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProfileId1">An charging profile identification.</param>
+        /// <param name="ChargingProfileId1">A charging profile identification.</param>
         /// <param name="ChargingProfileId2">Another charging profile identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingProfile_Id ChargingProfileId1, ChargingProfile_Id ChargingProfileId2)
+        public static Boolean operator <= (ChargingProfile_Id ChargingProfileId1,
+                                           ChargingProfile_Id ChargingProfileId2)
+
             => !(ChargingProfileId1 > ChargingProfileId2);
 
         #endregion
@@ -289,18 +275,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProfileId1">An charging profile identification.</param>
+        /// <param name="ChargingProfileId1">A charging profile identification.</param>
         /// <param name="ChargingProfileId2">Another charging profile identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingProfile_Id ChargingProfileId1, ChargingProfile_Id ChargingProfileId2)
-        {
+        public static Boolean operator > (ChargingProfile_Id ChargingProfileId1,
+                                          ChargingProfile_Id ChargingProfileId2)
 
-            if ((Object) ChargingProfileId1 == null)
-                throw new ArgumentNullException(nameof(ChargingProfileId1),  "The given charging profile identification must not be null!");
-
-            return ChargingProfileId1.CompareTo(ChargingProfileId2) > 0;
-
-        }
+            => ChargingProfileId1.CompareTo(ChargingProfileId2) > 0;
 
         #endregion
 
@@ -309,10 +290,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProfileId1">An charging profile identification.</param>
+        /// <param name="ChargingProfileId1">A charging profile identification.</param>
         /// <param name="ChargingProfileId2">Another charging profile identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingProfile_Id ChargingProfileId1, ChargingProfile_Id ChargingProfileId2)
+        public static Boolean operator >= (ChargingProfile_Id ChargingProfileId1,
+                                           ChargingProfile_Id ChargingProfileId2)
+
             => !(ChargingProfileId1 < ChargingProfileId2);
 
         #endregion
@@ -328,36 +311,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object is null)
-                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
-
-            // Check if the given object is a charging profile identification.
-            if (!(Object is ChargingProfile_Id))
-                throw new ArgumentException("The given object is not a charging profile identification!", nameof(Object));
-
-            return CompareTo((ChargingProfile_Id) Object);
-
-        }
+            => Object is ChargingProfile_Id chargingProfileId
+                   ? CompareTo(chargingProfileId)
+                   : throw new ArgumentException("The given object is not a charging profile identification!",
+                                                 nameof(Object));
 
         #endregion
 
-        #region CompareTo(ChargingProfile_Id)
+        #region CompareTo(ChargingProfileId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="ChargingProfileId">An object to compare with.</param>
         public Int32 CompareTo(ChargingProfile_Id ChargingProfileId)
-        {
 
-            if ((Object) ChargingProfileId == null)
-                throw new ArgumentNullException(nameof(ChargingProfileId),  "The given charging profile identification must not be null!");
-
-            return _Value.CompareTo(ChargingProfileId._Value);
-
-        }
+            => InternalId.CompareTo(ChargingProfileId.InternalId);
 
         #endregion
 
@@ -373,18 +343,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
         public override Boolean Equals(Object Object)
-        {
 
-            if (Object is null)
-                return false;
-
-            // Check if the given object is a charging profile identification.
-            if (!(Object is ChargingProfile_Id))
-                return false;
-
-            return this.Equals((ChargingProfile_Id) Object);
-
-        }
+            => Object is ChargingProfile_Id chargingProfileId &&
+                   Equals(chargingProfileId);
 
         #endregion
 
@@ -393,17 +354,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two charging profile identifications for equality.
         /// </summary>
-        /// <param name="ChargingProfileId">An charging profile identification to compare with.</param>
+        /// <param name="ChargingProfileId">A charging profile identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingProfile_Id ChargingProfileId)
-        {
 
-            if ((Object) ChargingProfileId == null)
-                return false;
-
-            return _Value.Equals(ChargingProfileId._Value);
-
-        }
+            => InternalId.Equals(ChargingProfileId.InternalId);
 
         #endregion
 
@@ -416,7 +371,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => _Value.GetHashCode();
+
+            => InternalId.GetHashCode();
 
         #endregion
 
@@ -426,10 +382,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => _Value.ToString();
+
+            => InternalId.ToString();
 
         #endregion
-
 
     }
 

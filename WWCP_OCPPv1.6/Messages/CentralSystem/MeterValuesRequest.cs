@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -62,12 +61,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new meter values request.
         /// </summary>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The connector identification at the charge point.</param>
         /// <param name="TransactionId">The charging transaction to which the given meter value samples are related to.</param>
         /// <param name="MeterValues">The sampled meter values with timestamps.</param>
-        public MeterValuesRequest(Connector_Id             ConnectorId,
-                                  Transaction_Id?          TransactionId   = null,
-                                  IEnumerable<MeterValue>  MeterValues     = null)
+        /// <param name="RequestTimestamp">the optional request timestamp.</param>
+        public MeterValuesRequest(Request_Id               RequestId,
+                                  ChargeBox_Id             ChargeBoxId,
+                                  Connector_Id             ConnectorId,
+                                  Transaction_Id?          TransactionId      = null,
+                                  IEnumerable<MeterValue>  MeterValues        = null,
+                                  DateTime?                RequestTimestamp   = null)
+
+            : base(RequestId,
+                   ChargeBoxId,
+                   RequestTimestamp)
+
         {
 
             #region Initial checks
@@ -295,87 +305,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (MeterValuesRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a meter values request.
         /// </summary>
-        /// <param name="MeterValuesRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MeterValuesRequest Parse(XElement             MeterValuesRequestXML,
+        public static MeterValuesRequest Parse(XElement             XML,
+                                               Request_Id           RequestId,
+                                               ChargeBox_Id         ChargeBoxId,
                                                OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(MeterValuesRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out MeterValuesRequest meterValuesRequest,
                          OnException))
             {
                 return meterValuesRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a MeterValues request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (MeterValuesRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomMeterValuesRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a meter values request.
         /// </summary>
-        /// <param name="MeterValuesRequestJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MeterValuesRequest Parse(JObject              MeterValuesRequestJSON,
-                                               OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomMeterValuesRequestParser">A delegate to parse custom MeterValues requests.</param>
+        public static MeterValuesRequest Parse(JObject                                          JSON,
+                                               Request_Id                                       RequestId,
+                                               ChargeBox_Id                                     ChargeBoxId,
+                                               CustomJObjectParserDelegate<MeterValuesRequest>  CustomMeterValuesRequestParser   = null)
         {
 
-            if (TryParse(MeterValuesRequestJSON,
-                         out MeterValuesRequest meterValuesRequest,
-                         OnException))
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out MeterValuesRequest  meterValuesRequest,
+                         out String              ErrorResponse,
+                         CustomMeterValuesRequestParser))
             {
                 return meterValuesRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a MeterValues request is invalid: " + ErrorResponse, nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (MeterValuesRequestText, OnException = null)
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a meter values request.
         /// </summary>
-        /// <param name="MeterValuesRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MeterValuesRequest Parse(String               MeterValuesRequestText,
+        public static MeterValuesRequest Parse(String               Text,
+                                               Request_Id           RequestId,
+                                               ChargeBox_Id         ChargeBoxId,
                                                OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(MeterValuesRequestText,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out MeterValuesRequest meterValuesRequest,
                          OnException))
             {
                 return meterValuesRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a MeterValues request is invalid!", nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParse(MeterValuesRequestXML,  out MeterValuesRequest, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out MeterValuesRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a meter values request.
         /// </summary>
-        /// <param name="MeterValuesRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="MeterValuesRequest">The parsed meter values request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                MeterValuesRequestXML,
+        public static Boolean TryParse(XElement                XML,
+                                       Request_Id              RequestId,
+                                       ChargeBox_Id            ChargeBoxId,
                                        out MeterValuesRequest  MeterValuesRequest,
                                        OnExceptionDelegate     OnException  = null)
         {
@@ -385,14 +418,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 MeterValuesRequest = new MeterValuesRequest(
 
-                                         MeterValuesRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "connectorId",
-                                                                                  Connector_Id.Parse),
+                                         RequestId,
+                                         ChargeBoxId,
 
-                                         MeterValuesRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "transactionId",
-                                                                                  Transaction_Id.Parse),
+                                         XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "connectorId",
+                                                                Connector_Id.Parse),
 
-                                         MeterValuesRequestXML.MapElementsOrFail (OCPPNS.OCPPv1_6_CS + "meterValue",
-                                                                                  MeterValue.Parse)
+                                         XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "transactionId",
+                                                                Transaction_Id.Parse),
+
+                                         XML.MapElementsOrFail (OCPPNS.OCPPv1_6_CS + "meterValue",
+                                                                MeterValue.Parse)
 
                                      );
 
@@ -402,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, MeterValuesRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 MeterValuesRequest = null;
                 return false;
@@ -413,17 +449,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(MeterValuesRequestJSON, out MeterValuesRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out MeterValuesRequest, out ErrorResponse, CustomMeterValuesRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a meter values request.
         /// </summary>
-        /// <param name="MeterValuesRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="MeterValuesRequest">The parsed meter values request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                 MeterValuesRequestJSON,
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                 JSON,
+                                       Request_Id              RequestId,
+                                       ChargeBox_Id            ChargeBoxId,
                                        out MeterValuesRequest  MeterValuesRequest,
-                                       OnExceptionDelegate     OnException  = null)
+                                       out String              ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out MeterValuesRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a meter values request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="MeterValuesRequest">The parsed meter values request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomMeterValuesRequestParser">A delegate to parse custom BootNotification requests.</param>
+        public static Boolean TryParse(JObject                                          JSON,
+                                       Request_Id                                       RequestId,
+                                       ChargeBox_Id                                     ChargeBoxId,
+                                       out MeterValuesRequest                           MeterValuesRequest,
+                                       out String                                       ErrorResponse,
+                                       CustomJObjectParserDelegate<MeterValuesRequest>  CustomMeterValuesRequestParser)
         {
 
             try
@@ -433,11 +499,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ConnectorId
 
-                if (!MeterValuesRequestJSON.ParseMandatory("connectorId",
-                                                           "connector identification",
-                                                           Connector_Id.TryParse,
-                                                           out Connector_Id  ConnectorId,
-                                                           out String        ErrorResponse))
+                if (!JSON.ParseMandatory("connectorId",
+                                         "connector identification",
+                                         Connector_Id.TryParse,
+                                         out Connector_Id  ConnectorId,
+                                         out               ErrorResponse))
                 {
                     return false;
                 }
@@ -446,11 +512,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region TransactionId
 
-                if (!MeterValuesRequestJSON.ParseOptionalStruct("transactionId",
-                                                                "transaction identification",
-                                                                Transaction_Id.TryParse,
-                                                                out Transaction_Id?  TransactionId,
-                                                                out                  ErrorResponse))
+                if (!JSON.ParseOptionalStruct("transactionId",
+                                              "transaction identification",
+                                              Transaction_Id.TryParse,
+                                              out Transaction_Id?  TransactionId,
+                                              out                  ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -462,11 +528,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region MeterValues
 
-                if (!MeterValuesRequestJSON.ParseMandatoryJSON("meterValue",
-                                                               "meter values",
-                                                               MeterValue.TryParse,
-                                                               out IEnumerable<MeterValue>  MeterValues,
-                                                               out                          ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("meterValue",
+                                             "meter values",
+                                             MeterValue.TryParse,
+                                             out IEnumerable<MeterValue>  MeterValues,
+                                             out                          ErrorResponse))
                 {
                     return false;
                 }
@@ -474,36 +540,43 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                MeterValuesRequest = new MeterValuesRequest(ConnectorId,
+                MeterValuesRequest = new MeterValuesRequest(RequestId,
+                                                            ChargeBoxId,
+                                                            ConnectorId,
                                                             TransactionId,
                                                             MeterValues);
+
+                if (CustomMeterValuesRequestParser != null)
+                    MeterValuesRequest = CustomMeterValuesRequestParser(JSON,
+                                                                        MeterValuesRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, MeterValuesRequestJSON, e);
-
-                MeterValuesRequest = null;
+                MeterValuesRequest  = default;
+                ErrorResponse       = "The given JSON representation of a MeterValues request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(MeterValuesRequestText, out MeterValuesRequest, OnException = null)
+        #region (static) TryParse(Text, RequestId, ChargeBoxId, out MeterValuesRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given text representation of a meter values request.
         /// </summary>
-        /// <param name="MeterValuesRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="MeterValuesRequest">The parsed meter values request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                  MeterValuesRequestText,
+        public static Boolean TryParse(String                  Text,
+                                       Request_Id              RequestId,
+                                       ChargeBox_Id            ChargeBoxId,
                                        out MeterValuesRequest  MeterValuesRequest,
                                        OnExceptionDelegate     OnException  = null)
         {
@@ -511,20 +584,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             try
             {
 
-                MeterValuesRequestText = MeterValuesRequestText?.Trim();
+                Text = Text?.Trim();
 
-                if (MeterValuesRequestText.IsNotNullOrEmpty())
+                if (Text.IsNotNullOrEmpty())
                 {
 
-                    if (MeterValuesRequestText.StartsWith("{") &&
-                        TryParse(JObject.Parse(MeterValuesRequestText),
+                    if (Text.StartsWith("{") &&
+                        TryParse(JObject.Parse(Text),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out MeterValuesRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
-                    if (TryParse(XDocument.Parse(MeterValuesRequestText).Root,
+                    if (TryParse(XDocument.Parse(Text).Root,
+                                 RequestId,
+                                 ChargeBoxId,
                                  out MeterValuesRequest,
                                  OnException))
                     {
@@ -536,7 +613,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, MeterValuesRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, Text, e);
             }
 
             MeterValuesRequest = null;

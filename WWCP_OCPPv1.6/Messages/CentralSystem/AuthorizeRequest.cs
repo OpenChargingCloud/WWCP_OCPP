@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -31,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// An authorize request.
+    /// The authorize request.
     /// </summary>
     public class AuthorizeRequest : ARequest<AuthorizeRequest>
     {
@@ -41,17 +40,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The identifier that needs to be authorized.
         /// </summary>
-        public IdToken  IdTag   { get; }
+        [Mandatory]
+        public IdToken  IdTag    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an authorize request.
+        /// Create a new authorize request.
         /// </summary>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="IdTag">The identifier that needs to be authorized.</param>
-        public AuthorizeRequest(IdToken  IdTag)
+        /// <param name="RequestTimestamp">the optional request timestamp.</param>
+        public AuthorizeRequest(Request_Id    RequestId,
+                                ChargeBox_Id  ChargeBoxId,
+                                IdToken       IdTag,
+                                DateTime?     RequestTimestamp   = null)
+
+            : base(RequestId,
+                   ChargeBoxId,
+                   RequestTimestamp)
+
         {
 
             this.IdTag = IdTag;
@@ -100,87 +111,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (AuthorizeRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of an authorize request.
         /// </summary>
-        /// <param name="AuthorizeRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AuthorizeRequest Parse(XElement             AuthorizeRequestXML,
+        public static AuthorizeRequest Parse(XElement             XML,
+                                             Request_Id           RequestId,
+                                             ChargeBox_Id         ChargeBoxId,
                                              OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(AuthorizeRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out AuthorizeRequest authorizeRequest,
                          OnException))
             {
                 return authorizeRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of an Authorize request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (AuthorizeRequestText, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomAuthorizeRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an authorize request.
         /// </summary>
-        /// <param name="AuthorizeRequestJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AuthorizeRequest Parse(JObject              AuthorizeRequestJSON,
-                                             OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom Authorize requests.</param>
+        public static AuthorizeRequest Parse(JObject                                        JSON,
+                                             Request_Id                                     RequestId,
+                                             ChargeBox_Id                                   ChargeBoxId,
+                                             CustomJObjectParserDelegate<AuthorizeRequest>  CustomAuthorizeRequestParser)
         {
 
-            if (TryParse(AuthorizeRequestJSON,
-                         out AuthorizeRequest authorizeRequest,
-                         OnException))
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out AuthorizeRequest  authorizeRequest,
+                         out String            ErrorResponse,
+                         CustomAuthorizeRequestParser))
             {
                 return authorizeRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of an Authorize request is invalid: " + ErrorResponse, nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (AuthorizeRequestText, OnException = null)
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a authorize request.
         /// </summary>
-        /// <param name="AuthorizeRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AuthorizeRequest Parse(String               AuthorizeRequestText,
+        public static AuthorizeRequest Parse(String               Text,
+                                             Request_Id           RequestId,
+                                             ChargeBox_Id         ChargeBoxId,
                                              OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(AuthorizeRequestText,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out AuthorizeRequest authorizeRequest,
                          OnException))
             {
                 return authorizeRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of an Authorize request is invalid!", nameof(Text)); return null;
 
         }
 
         #endregion
 
-        #region (static) TryParse(AuthorizeRequestXML,  out AuthorizeRequest, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out AuthorizeRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of an authorize request.
         /// </summary>
-        /// <param name="AuthorizeRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="AuthorizeRequest">The parsed authorize request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement              AuthorizeRequestXML,
+        public static Boolean TryParse(XElement              XML,
+                                       Request_Id            RequestId,
+                                       ChargeBox_Id          ChargeBoxId,
                                        out AuthorizeRequest  AuthorizeRequest,
                                        OnExceptionDelegate   OnException  = null)
         {
@@ -189,10 +223,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 AuthorizeRequest = new AuthorizeRequest(
-
-                                       AuthorizeRequestXML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "idTag",
-                                                                          IdToken.Parse)
-
+                                       RequestId,
+                                       ChargeBoxId,
+                                       XML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "idTag",
+                                                          IdToken.Parse)
                                    );
 
                 return true;
@@ -201,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, AuthorizeRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 AuthorizeRequest = null;
                 return false;
@@ -212,17 +246,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(AuthorizeRequestJSON, out AuthorizeRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out AuthorizeRequest, OnException = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of an authorize request.
         /// </summary>
-        /// <param name="AuthorizeRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="AuthorizeRequest">The parsed authorize request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject               AuthorizeRequestJSON,
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject               JSON,
+                                       Request_Id            RequestId,
+                                       ChargeBox_Id          ChargeBoxId,
                                        out AuthorizeRequest  AuthorizeRequest,
-                                       OnExceptionDelegate   OnException  = null)
+                                       out String            ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out AuthorizeRequest,
+                        out ErrorResponse);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of an authorize request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="AuthorizeRequest">The parsed authorize request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom Authorize requests.</param>
+        public static Boolean TryParse(JObject                                        JSON,
+                                       Request_Id                                     RequestId,
+                                       ChargeBox_Id                                   ChargeBoxId,
+                                       out AuthorizeRequest                           AuthorizeRequest,
+                                       out String                                     ErrorResponse,
+                                       CustomJObjectParserDelegate<AuthorizeRequest>  CustomAuthorizeRequestParser)
         {
 
             try
@@ -232,45 +295,52 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region IdTag
 
-                if (!AuthorizeRequestJSON.ParseMandatory("idTag",
-                                                         "identification tag",
-                                                         IdToken.TryParse,
-                                                         out IdToken IdTag,
-                                                         out String ErrorResponse))
+                if (!JSON.ParseMandatory("idTag",
+                                         "identification tag",
+                                         IdToken.TryParse,
+                                         out IdToken IdTag,
+                                         out         ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                AuthorizeRequest = new AuthorizeRequest(IdTag);
+                AuthorizeRequest = new AuthorizeRequest(RequestId,
+                                                        ChargeBoxId,
+                                                        IdTag);
+
+                if (CustomAuthorizeRequestParser != null)
+                    AuthorizeRequest = CustomAuthorizeRequestParser(JSON,
+                                                                    AuthorizeRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, AuthorizeRequestJSON, e);
-
-                AuthorizeRequest = null;
+                AuthorizeRequest  = default;
+                ErrorResponse     = "The given JSON representation of an Authorize request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(AuthorizeRequestText, out AuthorizeRequest, OnException = null)
+        #region (static) TryParse(Text, RequestId, ChargeBoxId, out AuthorizeRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given text representation of an authorize request.
         /// </summary>
-        /// <param name="AuthorizeRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="AuthorizeRequest">The parsed authorize request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                AuthorizeRequestText,
+        public static Boolean TryParse(String                Text,
+                                       Request_Id            RequestId,
+                                       ChargeBox_Id          ChargeBoxId,
                                        out AuthorizeRequest  AuthorizeRequest,
                                        OnExceptionDelegate   OnException  = null)
         {
@@ -278,20 +348,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             try
             {
 
-                AuthorizeRequestText = AuthorizeRequestText?.Trim();
+                Text = Text?.Trim();
 
-                if (AuthorizeRequestText.IsNotNullOrEmpty())
+                if (Text.IsNotNullOrEmpty())
                 {
 
-                    if (AuthorizeRequestText.StartsWith("{") &&
-                        TryParse(JObject.Parse(AuthorizeRequestText),
+                    if (Text.StartsWith("{") &&
+                        TryParse(JObject.Parse(Text),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out AuthorizeRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
-                    if (TryParse(XDocument.Parse(AuthorizeRequestText).Root,//.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
+                    if (TryParse(XDocument.Parse(Text).Root,//.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out AuthorizeRequest,
                                  OnException))
                     {
@@ -303,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, AuthorizeRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, Text, e);
             }
 
             AuthorizeRequest = null;

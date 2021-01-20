@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,27 +49,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The default HTTP/SOAP/XML server name.
         /// </summary>
-        public new const           String           DefaultHTTPServerName  = "GraphDefined OCPP " + Version.Number + " HTTP/SOAP/XML Central System API";
+        public new const String DefaultHTTPServerName = "GraphDefined OCPP " + Version.Number + " HTTP/SOAP/XML Central System API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server TCP port.
         /// </summary>
-        public new static readonly IPPort           DefaultHTTPServerPort  = IPPort.Parse(2010);
+        public new static readonly IPPort DefaultHTTPServerPort = IPPort.Parse(2010);
 
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
         /// </summary>
-        public new static readonly HTTPPath         DefaultURLPrefix       = HTTPPath.Parse("/" + Version.Number);
+        public new static readonly HTTPPath DefaultURLPrefix = HTTPPath.Parse("/" + Version.Number);
 
         /// <summary>
         /// The default HTTP/SOAP/XML content type.
         /// </summary>
-        public new static readonly HTTPContentType  DefaultContentType     = HTTPContentType.XMLTEXT_UTF8;
+        public new static readonly HTTPContentType DefaultContentType = HTTPContentType.XMLTEXT_UTF8;
 
         /// <summary>
         /// The default request timeout.
         /// </summary>
-        public new static readonly TimeSpan         DefaultRequestTimeout  = TimeSpan.FromMinutes(1);
+        public new static readonly TimeSpan DefaultRequestTimeout = TimeSpan.FromMinutes(1);
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// A delegate to parse custom BootNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<BootNotificationRequest>  CustomBootNotificationRequestParser    { get; set; }
 
         #endregion
 
@@ -414,12 +423,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region CentralSystemWSServer(SOAPServer, URLPrefix = DefaultURLPrefix)
+        #region CentralSystemWSServer(URLPrefix = DefaultURLPrefix)
 
         /// <summary>
         /// Use the given HTTP server for the central system HTTP/SOAP/XML API.
         /// </summary>
-        /// <param name="SOAPServer">A SOAP server.</param>
         /// <param name="URLPrefix">An optional prefix for the HTTP URLs.</param>
         public CentralSystemWSServer(HTTPPath?   URLPrefix = null)
 
@@ -485,13 +493,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     #region Initial checks
 
-                    var RequestId    = JSON[1].Value<String>()?.Trim();
+                    var RequestId    = Request_Id.TryParse(JSON[1]?.Value<String>());
                     var Action       = JSON[2].Value<String>()?.Trim();
                     var RequestData  = JSON[3].Value<JObject>();
+                    var chargeBoxId  = Connection.TryGetCustomData<ChargeBox_Id>("chargeBoxId");
 
-                    if (RequestId.IsNullOrEmpty())
+                    if (!RequestId.HasValue)
                         ErrorMessage  = new WSErrorMessage(
-                                            RequestId,
+                                            Request_Id.Parse("0"),
                                             WSErrorCodes.ProtocolError,
                                             "The given 'request identification' must not be null or empty!",
                                             new JObject(
@@ -500,9 +509,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     else if (Action.IsNullOrEmpty())
                         ErrorMessage  = new WSErrorMessage(
-                                            RequestId,
+                                            RequestId.Value,
                                             WSErrorCodes.ProtocolError,
                                             "The given 'action' must not be null or empty!",
+                                            new JObject(
+                                                new JProperty("request", TextMessage)
+                                            ));
+
+                    else if (!chargeBoxId.HasValue)
+                        ErrorMessage = new WSErrorMessage(
+                                            RequestId.Value,
+                                            WSErrorCodes.ProtocolError,
+                                            "The given 'charge box identity' must not be null or empty!",
                                             new JObject(
                                                 new JProperty("request", TextMessage)
                                             ));
@@ -512,7 +530,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     else
                     {
 
-                        JObject OCPPResponseJSON  = null;
+                        JObject OCPPResponseJSON  = default;
+                        String  ErrorResponse     = default;
 
                         switch (Action)
                         {
@@ -545,7 +564,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     {
 
                                         if (BootNotificationRequest.TryParse(RequestData,
-                                                                             out BootNotificationRequest bootNotificationRequest))
+                                                                             RequestId.  Value,
+                                                                             chargeBoxId.Value,
+                                                                             out BootNotificationRequest  bootNotificationRequest,
+                                                                             out                          ErrorResponse,
+                                                                             CustomBootNotificationRequestParser))
                                         {
 
                                             #region Send OnBootNotificationRequest event
@@ -557,7 +580,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                                   this,
                                                                                   EventTrackingId,
 
-                                                                                  ChargeBox_Id.Parse("123"),//OCPPHeader.ChargeBoxIdentity,
+                                                                                  chargeBoxId.Value,
 
                                                                                   bootNotificationRequest.ChargePointVendor,
                                                                                   bootNotificationRequest.ChargePointModel,
@@ -586,11 +609,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                     GetInvocationList()?.
                                                                     SafeSelect(subscriber => (subscriber as BootNotificationDelegate)
                                                                         (DateTime.UtcNow,
-                                                                        this,
-                                                                        CancellationToken,
-                                                                        EventTrackingId,
-                                                                        ChargeBox_Id.Parse("123"),//OCPPHeader.ChargeBoxIdentity,
-                                                                        bootNotificationRequest)).
+                                                                         this,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         bootNotificationRequest)).
                                                                     ToArray();
 
                                                 if (results?.Length > 0)
@@ -618,7 +640,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                                    this,
                                                                                    EventTrackingId,
 
-                                                                                   ChargeBox_Id.Parse("123"),//OCPPHeader.ChargeBoxIdentity,
+                                                                                   chargeBoxId.Value,
 
                                                                                    bootNotificationRequest.ChargePointVendor,
                                                                                    bootNotificationRequest.ChargePointModel,
@@ -649,7 +671,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         }
 
                                         else
-                                            ErrorMessage =  new WSErrorMessage(RequestId,
+                                            ErrorMessage =  new WSErrorMessage(RequestId.Value,
                                                                                WSErrorCodes.FormationViolation,
                                                                                "The given 'BootNotification' request could not be parsed!",
                                                                                new JObject(
@@ -660,7 +682,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     catch (Exception e)
                                     {
 
-                                        ErrorMessage = new WSErrorMessage(RequestId,
+                                        ErrorMessage = new WSErrorMessage(RequestId.Value,
                                                                           WSErrorCodes.FormationViolation,
                                                                           "Processing the given 'BootNotification' request led to an exception!",
                                                                           new JObject(
@@ -703,7 +725,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                    TextMessage,
                                                                    DateTime.UtcNow,
                                                                    new WSResponseMessage(WSMessageTypes.CALLRESULT,
-                                                                                         RequestId,
+                                                                                         RequestId.Value,
                                                                                          OCPPResponseJSON).ToJSON().ToString());
 
                     }
@@ -776,7 +798,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
                 else
-                    ErrorMessage = new WSErrorMessage(JSON.Count >= 2 ? JSON[1].Value<String>()?.Trim() : "unknown",
+                    ErrorMessage = new WSErrorMessage(Request_Id.Parse(JSON.Count >= 2 ? JSON[1]?.Value<String>()?.Trim() : "unknown"),
                                                       WSErrorCodes.FormationViolation,
                                                       "The given OCPP request message is invalid!",
                                                       new JObject(
@@ -787,9 +809,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                ErrorMessage = new WSErrorMessage(JSON != null && JSON.Count >= 2
-                                                      ? JSON?[1].Value<String>()?.Trim()
-                                                      : "Unknown request identification",
+                ErrorMessage = new WSErrorMessage(Request_Id.Parse(JSON != null && JSON.Count >= 2
+                                                                       ? JSON?[1].Value<String>()?.Trim()
+                                                                       : "Unknown request identification"),
                                                   WSErrorCodes.FormationViolation,
                                                   "Processing the given OCPP request message led to an exception!",
                                                   new JObject(

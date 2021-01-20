@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -171,26 +171,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An identification token.</param>
+        /// <param name="IdToken1">A identification token.</param>
         /// <param name="IdToken2">Another identification token.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (IdToken IdToken1, IdToken IdToken2)
-        {
+        public static Boolean operator == (IdToken IdToken1,
+                                           IdToken IdToken2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(IdToken1, IdToken2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) IdToken1 == null) || ((Object) IdToken2 == null))
-                return false;
-
-            if ((Object) IdToken1 == null)
-                throw new ArgumentNullException(nameof(IdToken1),  "The given identification token must not be null!");
-
-            return IdToken1.Equals(IdToken2);
-
-        }
+            => IdToken1.Equals(IdToken2);
 
         #endregion
 
@@ -199,10 +186,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An identification token.</param>
+        /// <param name="IdToken1">A identification token.</param>
         /// <param name="IdToken2">Another identification token.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (IdToken IdToken1, IdToken IdToken2)
+        public static Boolean operator != (IdToken IdToken1,
+                                           IdToken IdToken2)
+
             => !(IdToken1 == IdToken2);
 
         #endregion
@@ -212,18 +201,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An identification token.</param>
+        /// <param name="IdToken1">A identification token.</param>
         /// <param name="IdToken2">Another identification token.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (IdToken IdToken1, IdToken IdToken2)
-        {
+        public static Boolean operator < (IdToken IdToken1,
+                                          IdToken IdToken2)
 
-            if ((Object) IdToken1 == null)
-                throw new ArgumentNullException(nameof(IdToken1),  "The given identification token must not be null!");
-
-            return IdToken1.CompareTo(IdToken2) < 0;
-
-        }
+            => IdToken1.CompareTo(IdToken2) < 0;
 
         #endregion
 
@@ -232,10 +216,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An identification token.</param>
+        /// <param name="IdToken1">A identification token.</param>
         /// <param name="IdToken2">Another identification token.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (IdToken IdToken1, IdToken IdToken2)
+        public static Boolean operator <= (IdToken IdToken1,
+                                           IdToken IdToken2)
+
             => !(IdToken1 > IdToken2);
 
         #endregion
@@ -245,18 +231,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An identification token.</param>
+        /// <param name="IdToken1">A identification token.</param>
         /// <param name="IdToken2">Another identification token.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (IdToken IdToken1, IdToken IdToken2)
-        {
+        public static Boolean operator > (IdToken IdToken1,
+                                          IdToken IdToken2)
 
-            if ((Object) IdToken1 == null)
-                throw new ArgumentNullException(nameof(IdToken1),  "The given identification token must not be null!");
-
-            return IdToken1.CompareTo(IdToken2) > 0;
-
-        }
+            => IdToken1.CompareTo(IdToken2) > 0;
 
         #endregion
 
@@ -265,10 +246,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An identification token.</param>
+        /// <param name="IdToken1">A identification token.</param>
         /// <param name="IdToken2">Another identification token.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (IdToken IdToken1, IdToken IdToken2)
+        public static Boolean operator >= (IdToken IdToken1,
+                                           IdToken IdToken2)
+
             => !(IdToken1 < IdToken2);
 
         #endregion
@@ -284,18 +267,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object is null)
-                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
-
-            // Check if the given object is an identification token.
-            if (!(Object is IdToken))
-                throw new ArgumentException("The given object is not a IdToken!", nameof(Object));
-
-            return CompareTo((IdToken) Object);
-
-        }
+            => Object is IdToken idToken
+                   ? CompareTo(idToken)
+                   : throw new ArgumentException("The given object is not an identification token!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -306,14 +282,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="IdToken">An object to compare with.</param>
         public Int32 CompareTo(IdToken IdToken)
-        {
 
-            if ((Object) IdToken == null)
-                throw new ArgumentNullException(nameof(IdToken),  "The given identification token must not be null!");
-
-            return String.Compare(InternalId, IdToken.InternalId, StringComparison.Ordinal);
-
-        }
+            => InternalId.CompareTo(IdToken.InternalId);
 
         #endregion
 
@@ -329,18 +299,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
         public override Boolean Equals(Object Object)
-        {
 
-            if (Object is null)
-                return false;
-
-            // Check if the given object is an identification token.
-            if (!(Object is IdToken))
-                return false;
-
-            return this.Equals((IdToken) Object);
-
-        }
+            => Object is IdToken idToken &&
+                   Equals(idToken);
 
         #endregion
 
@@ -349,17 +310,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two identification tokens for equality.
         /// </summary>
-        /// <param name="IdToken">An identification token to compare with.</param>
+        /// <param name="IdToken">A identification token to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(IdToken IdToken)
-        {
 
-            if ((Object) IdToken == null)
-                return false;
-
-            return InternalId.Equals(IdToken.InternalId);
-
-        }
+            => InternalId.Equals(IdToken.InternalId);
 
         #endregion
 
@@ -372,6 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => InternalId.GetHashCode();
 
         #endregion
@@ -382,10 +338,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => InternalId;
+
+            => InternalId.ToString();
 
         #endregion
-
 
     }
 

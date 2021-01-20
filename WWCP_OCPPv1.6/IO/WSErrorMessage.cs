@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,21 +40,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
     public class WSErrorMessage
     {
 
-        public Byte            MessageType         { get; }
+        public Byte          MessageType         { get; }
 
-        public String          RequestId           { get; }
+        public Request_Id    RequestId           { get; }
 
         public WSErrorCodes  ErrorCode           { get; }
 
-        public String          ErrorDescription    { get; }
+        public String        ErrorDescription    { get; }
 
-        public JObject         ErrorDetails        { get; }
+        public JObject       ErrorDetails        { get; }
 
 
-        public WSErrorMessage(String          RequestId,
+        public WSErrorMessage(Request_Id    RequestId,
                               WSErrorCodes  ErrorCode,
-                              String          ErrorDescription   = null,
-                              JObject         ErrorDetails       = null)
+                              String        ErrorDescription   = null,
+                              JObject       ErrorDetails       = null)
 
         {
 
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         {
 
             var JSON = new JArray(MessageType,
-                                  RequestId,
+                                  RequestId.ToString(),
                                   ErrorCode.ToString(),
                                   ErrorDescription,
                                   ErrorDetails);

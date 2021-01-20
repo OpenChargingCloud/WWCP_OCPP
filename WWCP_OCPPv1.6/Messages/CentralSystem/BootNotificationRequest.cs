@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -45,46 +44,55 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The charge point vendor identification.
         /// </summary>
+        [Mandatory]
         public String ChargePointVendor         { get; }
 
         /// <summary>
         /// The charge point model identification.
         /// </summary>
+        [Mandatory]
         public String ChargePointModel          { get; }
 
         /// <summary>
         /// The serial number of the charge point.
         /// </summary>
+        [Optional]
         public String ChargePointSerialNumber   { get; }
 
         /// <summary>
         /// The serial number of the charge box.
         /// </summary>
+        [Optional]
         public String ChargeBoxSerialNumber     { get; }
 
         /// <summary>
         /// The firmware version of the charge point.
         /// </summary>
+        [Optional]
         public String FirmwareVersion           { get; }
 
         /// <summary>
         /// The ICCID of the charge point's SIM card.
         /// </summary>
+        [Optional]
         public String Iccid                     { get; }
 
         /// <summary>
         /// The IMSI of the charge point’s SIM card.
         /// </summary>
+        [Optional]
         public String IMSI                      { get; }
 
         /// <summary>
         /// The meter type of the main power meter of the charge point.
         /// </summary>
+        [Optional]
         public String MeterType                 { get; }
 
         /// <summary>
         /// The serial number of the main power meter of the charge point.
         /// </summary>
+        [Optional]
         public String MeterSerialNumber         { get; }
 
         #endregion
@@ -92,10 +100,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a boot notification request.
+        /// Create a new boot notification request.
         /// </summary>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ChargePointVendor">The charge point vendor identification.</param>
         /// <param name="ChargePointModel">The charge point model identification.</param>
+        /// 
         /// <param name="ChargePointSerialNumber">The serial number of the charge point.</param>
         /// <param name="ChargeBoxSerialNumber">The serial number of the charge point.</param>
         /// <param name="FirmwareVersion">The firmware version of the charge point.</param>
@@ -103,15 +114,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="IMSI">The IMSI of the charge point’s SIM card.</param>
         /// <param name="MeterType">The meter type of the main power meter of the charge point.</param>
         /// <param name="MeterSerialNumber">The serial number of the main power meter of the charge point.</param>
-        public BootNotificationRequest(String ChargePointVendor,
-                                       String ChargePointModel,
-                                       String ChargePointSerialNumber   = null,
-                                       String ChargeBoxSerialNumber     = null,
-                                       String FirmwareVersion           = null,
-                                       String Iccid                     = null,
-                                       String IMSI                      = null,
-                                       String MeterType                 = null,
-                                       String MeterSerialNumber         = null)
+        /// 
+        /// <param name="RequestTimestamp">the optional request timestamp.</param>
+        public BootNotificationRequest(Request_Id    RequestId,
+                                       ChargeBox_Id  ChargeBoxId,
+                                       String        ChargePointVendor,
+                                       String        ChargePointModel,
+
+                                       String        ChargePointSerialNumber   = null,
+                                       String        ChargeBoxSerialNumber     = null,
+                                       String        FirmwareVersion           = null,
+                                       String        Iccid                     = null,
+                                       String        IMSI                      = null,
+                                       String        MeterType                 = null,
+                                       String        MeterSerialNumber         = null,
+
+                                       DateTime?     RequestTimestamp          = null)
+
+            : base(RequestId,
+                   ChargeBoxId,
+                   RequestTimestamp)
+
         {
 
             this.ChargePointVendor        = ChargePointVendor?.      Trim();
@@ -256,91 +279,124 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         //     ]
         // }
 
+        // [
+        //     2,
+        //    "19223201",
+        //    "BootNotification",
+        //    {
+        //        "chargePointVendor": "VendorX",
+        //        "chargePointModel":  "SingleSocketCharger"
+        //    }
+        // ]
+
         #endregion
 
-        #region (static) Parse   (BootNotificationRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a boot notification request.
         /// </summary>
-        /// <param name="BootNotificationRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static BootNotificationRequest Parse(XElement             BootNotificationRequestXML,
+        public static BootNotificationRequest Parse(XElement             XML,
+                                                    Request_Id           RequestId,
+                                                    ChargeBox_Id         ChargeBoxId,
                                                     OnExceptionDelegate  OnException = null)
         {
 
 
-            if (TryParse(BootNotificationRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out BootNotificationRequest bootNotificationRequest,
                          OnException))
             {
                 return bootNotificationRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a BootNotification request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (BootNotificationRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomBootNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a boot notification request.
         /// </summary>
-        /// <param name="BootNotificationRequestJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static BootNotificationRequest Parse(JObject              BootNotificationRequestJSON,
-                                                    OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom BootNotification requests.</param>
+        public static BootNotificationRequest Parse(JObject                                               JSON,
+                                                    Request_Id                                            RequestId,
+                                                    ChargeBox_Id                                          ChargeBoxId,
+                                                    CustomJObjectParserDelegate<BootNotificationRequest>  CustomBootNotificationRequestParser   = null)
         {
 
 
-            if (TryParse(BootNotificationRequestJSON,
-                         out BootNotificationRequest bootNotificationRequest,
-                         OnException))
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out BootNotificationRequest  bootNotificationRequest,
+                         out String                   ErrorResponse,
+                         CustomBootNotificationRequestParser))
             {
                 return bootNotificationRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a BootNotification request is invalid: " + ErrorResponse, nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (BootNotificationRequestText, OnException = null)
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a boot notification request.
         /// </summary>
-        /// <param name="BootNotificationRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static BootNotificationRequest Parse(String               BootNotificationRequestText,
+        public static BootNotificationRequest Parse(String               Text,
+                                                    Request_Id           RequestId,
+                                                    ChargeBox_Id         ChargeBoxId,
                                                     OnExceptionDelegate  OnException   = null)
         {
 
-            if (TryParse(BootNotificationRequestText,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out BootNotificationRequest bootNotificationRequest,
                          OnException))
             {
                 return bootNotificationRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a BootNotification request is invalid!", nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParse(BootNotificationRequestXML,  out BootNotificationRequest, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out BootNotificationRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a boot notification request.
         /// </summary>
-        /// <param name="BootNotificationRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="BootNotificationRequest">The parsed boot notification request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                     BootNotificationRequestXML,
+        public static Boolean TryParse(XElement                     XML,
+                                       Request_Id                   RequestId,
+                                       ChargeBox_Id                 ChargeBoxId,
                                        out BootNotificationRequest  BootNotificationRequest,
                                        OnExceptionDelegate          OnException  = null)
         {
@@ -350,16 +406,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 BootNotificationRequest = new BootNotificationRequest(
 
-                                              BootNotificationRequestXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargePointVendor"),
-                                              BootNotificationRequestXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargePointModel"),
+                                              RequestId,
+                                              ChargeBoxId,
 
-                                              BootNotificationRequestXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "chargePointSerialNumber"),
-                                              BootNotificationRequestXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "chargeBoxSerialNumber"),
-                                              BootNotificationRequestXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "firmwareVersion"),
-                                              BootNotificationRequestXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "iccid"),
-                                              BootNotificationRequestXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "imsi"),
-                                              BootNotificationRequestXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "meterType"),
-                                              BootNotificationRequestXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "meterSerialNumber")
+                                              XML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargePointVendor"),
+                                              XML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargePointModel"),
+
+                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "chargePointSerialNumber"),
+                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "chargeBoxSerialNumber"),
+                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "firmwareVersion"),
+                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "iccid"),
+                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "imsi"),
+                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "meterType"),
+                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "meterSerialNumber")
 
                                           );
 
@@ -369,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, BootNotificationRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 BootNotificationRequest = null;
                 return false;
@@ -380,17 +439,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(BootNotificationRequestJSON, out BootNotificationRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out BootNotificationRequest, out ErrorResponse, CustomBootNotificationRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a boot notification request.
         /// </summary>
-        /// <param name="BootNotificationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="BootNotificationRequest">The parsed boot notification request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                      BootNotificationRequestJSON,
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                      JSON,
+                                       Request_Id                   RequestId,
+                                       ChargeBox_Id                 ChargeBoxId,
                                        out BootNotificationRequest  BootNotificationRequest,
-                                       OnExceptionDelegate          OnException  = null)
+                                       out String                   ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out BootNotificationRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a boot notification request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="BootNotificationRequest">The parsed boot notification request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom BootNotification requests.</param>
+        public static Boolean TryParse(JObject                                               JSON,
+                                       Request_Id                                            RequestId,
+                                       ChargeBox_Id                                          ChargeBoxId,
+                                       out BootNotificationRequest                           BootNotificationRequest,
+                                       out String                                            ErrorResponse,
+                                       CustomJObjectParserDelegate<BootNotificationRequest>  CustomBootNotificationRequestParser)
         {
 
             try
@@ -400,10 +489,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ChargePointVendor
 
-                if (!BootNotificationRequestJSON.ParseMandatoryText("chargePointVendor",
-                                                                    "charge point vendor",
-                                                                    out String  ChargePointVendor,
-                                                                    out String  ErrorResponse))
+                if (!JSON.ParseMandatoryText("chargePointVendor",
+                                             "charge point vendor",
+                                             out String  ChargePointVendor,
+                                             out         ErrorResponse))
                 {
                     return false;
                 }
@@ -412,10 +501,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ChargePointModel
 
-                if (!BootNotificationRequestJSON.ParseMandatoryText("chargePointModel",
-                                                                    "charge point model",
-                                                                    out String  ChargePointModel,
-                                                                    out         ErrorResponse))
+                if (!JSON.ParseMandatoryText("chargePointModel",
+                                             "charge point model",
+                                             out String  ChargePointModel,
+                                             out         ErrorResponse))
                 {
                     return false;
                 }
@@ -424,43 +513,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
                 BootNotificationRequest = new BootNotificationRequest(
+                                              RequestId,
+                                              ChargeBoxId,
                                               ChargePointVendor,
                                               ChargePointModel,
-                                              BootNotificationRequestJSON["chargePointSerialNumber"]?.Value<String>(),
-                                              BootNotificationRequestJSON["chargeBoxSerialNumber"]?.  Value<String>(),
-                                              BootNotificationRequestJSON["firmwareVersion"]?.        Value<String>(),
-                                              BootNotificationRequestJSON["iccid"]?.                  Value<String>(),
-                                              BootNotificationRequestJSON["imsi"]?.                   Value<String>(),
-                                              BootNotificationRequestJSON["meterType"]?.              Value<String>(),
-                                              BootNotificationRequestJSON["meterSerialNumber"]?.      Value<String>()
+                                              JSON["chargePointSerialNumber"]?.Value<String>(),
+                                              JSON["chargeBoxSerialNumber"]?.  Value<String>(),
+                                              JSON["firmwareVersion"]?.        Value<String>(),
+                                              JSON["iccid"]?.                  Value<String>(),
+                                              JSON["imsi"]?.                   Value<String>(),
+                                              JSON["meterType"]?.              Value<String>(),
+                                              JSON["meterSerialNumber"]?.      Value<String>()
                                           );
+
+                if (CustomBootNotificationRequestParser != null)
+                    BootNotificationRequest = CustomBootNotificationRequestParser(JSON,
+                                                                                  BootNotificationRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, BootNotificationRequestJSON, e);
-
-                BootNotificationRequest = null;
+                BootNotificationRequest  = default;
+                ErrorResponse            = "The given JSON representation of a BootNotification request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(BootNotificationRequestText, out BootNotificationRequest, OnException = null)
+        #region (static) TryParse(Text, RequestId, ChargeBoxId, out BootNotificationRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given text representation of a boot notification request.
         /// </summary>
-        /// <param name="BootNotificationRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="BootNotificationRequest">The parsed boot notification request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                       BootNotificationRequestText,
+        public static Boolean TryParse(String                       Text,
+                                       Request_Id                   RequestId,
+                                       ChargeBox_Id                 ChargeBoxId,
                                        out BootNotificationRequest  BootNotificationRequest,
                                        OnExceptionDelegate          OnException  = null)
         {
@@ -468,20 +564,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             try
             {
 
-                BootNotificationRequestText = BootNotificationRequestText?.Trim();
+                Text = Text?.Trim();
 
-                if (BootNotificationRequestText.IsNotNullOrEmpty())
+                if (Text.IsNotNullOrEmpty())
                 {
 
-                    if (BootNotificationRequestText.StartsWith("{") &&
-                        TryParse(JObject.Parse(BootNotificationRequestText),
+                    if (Text.StartsWith("{") &&
+                        TryParse(JObject.Parse(Text),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out BootNotificationRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
-                    if (TryParse(XDocument.Parse(BootNotificationRequestText).Root,
+                    if (TryParse(XDocument.Parse(Text).Root,
+                                 RequestId,
+                                 ChargeBoxId,
                                  out BootNotificationRequest,
                                  OnException))
                     {
@@ -493,7 +593,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, BootNotificationRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, Text, e);
             }
 
             BootNotificationRequest = null;
@@ -565,27 +665,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                ? new JProperty("chargePointSerialNumber",   ChargePointSerialNumber)
                                : null,
 
-                           ChargeBoxSerialNumber.IsNotNullOrEmpty()
+                           ChargeBoxSerialNumber.  IsNotNullOrEmpty()
                                ? new JProperty("chargeBoxSerialNumber",     ChargeBoxSerialNumber)
                                : null,
 
-                           FirmwareVersion.IsNotNullOrEmpty()
+                           FirmwareVersion.        IsNotNullOrEmpty()
                                ? new JProperty("firmwareVersion",           FirmwareVersion)
                                : null,
 
-                           Iccid.IsNotNullOrEmpty()
+                           Iccid.                  IsNotNullOrEmpty()
                                ? new JProperty("iccid",                     Iccid)
                                : null,
 
-                           IMSI.IsNotNullOrEmpty()
+                           IMSI.                   IsNotNullOrEmpty()
                                ? new JProperty("imsi",                      IMSI)
                                : null,
 
-                           MeterType.IsNotNullOrEmpty()
+                           MeterType.              IsNotNullOrEmpty()
                                ? new JProperty("meterType",                 MeterType)
                                : null,
 
-                           MeterSerialNumber.IsNotNullOrEmpty()
+                           MeterSerialNumber.      IsNotNullOrEmpty()
                                ? new JProperty("meterSerialNumber",         MeterSerialNumber)
                                : null
 

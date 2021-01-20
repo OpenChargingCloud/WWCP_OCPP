@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,13 +31,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
 
         public WSMessageTypes  MessageType    { get; }
 
-        public String          RequestId      { get; }
+        public Request_Id      RequestId      { get; }
 
         public JObject         Data           { get; }
 
 
         public WSResponseMessage(WSMessageTypes  MessageType,
-                                 String          RequestId,
+                                 Request_Id      RequestId,
                                  JObject         Data)
         {
 
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         {
 
             var JSON = new JArray((Byte) MessageType,
-                                  RequestId,
+                                  RequestId.ToString(),
                                   Data);
 
             return JSON;

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -580,7 +580,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new BootNotificationRequest(ChargePointVendor,
+            var request = new BootNotificationRequest(Request_Id.Random(),
+                                                      ChargeBoxIdentity,
+                                                      ChargePointVendor,
                                                       ChargePointModel,
                                                       ChargePointSerialNumber,
                                                       FirmwareVersion,
@@ -781,7 +783,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new HeartbeatRequest();
+            var request = new HeartbeatRequest(Request_Id.Random(),
+                                               ChargeBoxIdentity);
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
@@ -977,7 +980,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new AuthorizeRequest(IdTag);
+            var request = new AuthorizeRequest(Request_Id.Random(),
+                                               ChargeBoxIdentity,
+                                               IdTag);
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
@@ -1182,7 +1187,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new StartTransactionRequest(ConnectorId,
+            var request = new StartTransactionRequest(Request_Id.Random(),
+                                                      ChargeBoxIdentity,
+                                                      ConnectorId,
                                                       IdTag,
                                                       TransactionTimestamp,
                                                       MeterStart,
@@ -1400,7 +1407,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new StatusNotificationRequest(ConnectorId,
+            var request = new StatusNotificationRequest(Request_Id.Random(),
+                                                        ChargeBoxIdentity,
+                                                        ConnectorId,
                                                         Status,
                                                         ErrorCode,
                                                         Info,
@@ -1612,7 +1621,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new MeterValuesRequest(ConnectorId,
+            var request = new MeterValuesRequest(Request_Id.Random(),
+                                                 ChargeBoxIdentity,
+                                                 ConnectorId,
                                                  TransactionId,
                                                  MeterValues);
 
@@ -1829,7 +1840,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new StopTransactionRequest(TransactionId,
+            var request = new StopTransactionRequest(Request_Id.Random(),
+                                                     ChargeBoxIdentity,
+                                                     TransactionId,
                                                      TransactionTimestamp,
                                                      MeterStop,
                                                      IdTag,
@@ -2241,7 +2254,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new DiagnosticsStatusNotificationRequest(Status);
+            var request = new DiagnosticsStatusNotificationRequest(Request_Id.Random(),
+                                                                   ChargeBoxIdentity,
+                                                                   Status);
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
@@ -2435,7 +2450,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new FirmwareStatusNotificationRequest(Status);
+            var request = new FirmwareStatusNotificationRequest(Request_Id.Random(),
+                                                                ChargeBoxIdentity,
+                                                                Status);
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,

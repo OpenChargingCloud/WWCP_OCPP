@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -48,10 +47,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a diagnostics status notification request.
+        /// Create a new diagnostics status notification request.
         /// </summary>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Status">The status of the diagnostics upload.</param>
-        public DiagnosticsStatusNotificationRequest(DiagnosticsStatus Status)
+        /// <param name="RequestTimestamp">the optional request timestamp.</param>
+        public DiagnosticsStatusNotificationRequest(Request_Id         RequestId,
+                                                    ChargeBox_Id       ChargeBoxId,
+                                                    DiagnosticsStatus  Status,
+                                                    DateTime?          RequestTimestamp   = null)
+
+            : base(RequestId,
+                   ChargeBoxId,
+                   RequestTimestamp)
+
         {
 
             this.Status = Status;
@@ -107,87 +117,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (DiagnosticsStatusNotificationRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a diagnostics status notification request.
         /// </summary>
-        /// <param name="DiagnosticsStatusNotificationRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static DiagnosticsStatusNotificationRequest Parse(XElement             DiagnosticsStatusNotificationRequestXML,
+        public static DiagnosticsStatusNotificationRequest Parse(XElement             XML,
+                                                                 Request_Id           RequestId,
+                                                                 ChargeBox_Id         ChargeBoxId,
                                                                  OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(DiagnosticsStatusNotificationRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out DiagnosticsStatusNotificationRequest diagnosticsStatusNotificationRequest,
                          OnException))
             {
                 return diagnosticsStatusNotificationRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a DiagnosticsStatusNotification request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (DiagnosticsStatusNotificationRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomDiagnosticsStatusNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a diagnostics status notification request.
         /// </summary>
-        /// <param name="DiagnosticsStatusNotificationRequestJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static DiagnosticsStatusNotificationRequest Parse(JObject              DiagnosticsStatusNotificationRequestJSON,
-                                                                 OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomDiagnosticsStatusNotificationRequestParser">A delegate to parse custom DiagnosticsStatusNotification requests.</param>
+        public static DiagnosticsStatusNotificationRequest Parse(JObject                                                            JSON,
+                                                                 Request_Id                                                         RequestId,
+                                                                 ChargeBox_Id                                                       ChargeBoxId,
+                                                                 CustomJObjectParserDelegate<DiagnosticsStatusNotificationRequest>  CustomDiagnosticsStatusNotificationRequestParser   = null)
         {
 
-            if (TryParse(DiagnosticsStatusNotificationRequestJSON,
-                         out DiagnosticsStatusNotificationRequest diagnosticsStatusNotificationRequest,
-                         OnException))
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out DiagnosticsStatusNotificationRequest  diagnosticsStatusNotificationRequest,
+                         out String                                ErrorResponse,
+                         CustomDiagnosticsStatusNotificationRequestParser))
             {
                 return diagnosticsStatusNotificationRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a DiagnosticsStatusNotification request is invalid: " + ErrorResponse, nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (DiagnosticsStatusNotificationRequestText, OnException = null)
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a diagnostics status notification request.
         /// </summary>
-        /// <param name="DiagnosticsStatusNotificationRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static DiagnosticsStatusNotificationRequest Parse(String               DiagnosticsStatusNotificationRequestText,
+        public static DiagnosticsStatusNotificationRequest Parse(String               Text,
+                                                                 Request_Id           RequestId,
+                                                                 ChargeBox_Id         ChargeBoxId,
                                                                  OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(DiagnosticsStatusNotificationRequestText,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out DiagnosticsStatusNotificationRequest diagnosticsStatusNotificationRequest,
                          OnException))
             {
                 return diagnosticsStatusNotificationRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of an DiagnosticsStatusNotification request is invalid!", nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParse(DiagnosticsStatusNotificationRequestXML,  out DiagnosticsStatusNotificationRequest, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out DiagnosticsStatusNotificationRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a diagnostics status notification request.
         /// </summary>
-        /// <param name="DiagnosticsStatusNotificationRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="DiagnosticsStatusNotificationRequest">The parsed diagnostics status notification request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                                  DiagnosticsStatusNotificationRequestXML,
+        public static Boolean TryParse(XElement                                  XML,
+                                       Request_Id                                RequestId,
+                                       ChargeBox_Id                              ChargeBoxId,
                                        out DiagnosticsStatusNotificationRequest  DiagnosticsStatusNotificationRequest,
                                        OnExceptionDelegate                       OnException  = null)
         {
@@ -196,10 +229,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 DiagnosticsStatusNotificationRequest = new DiagnosticsStatusNotificationRequest(
-
-                                                           DiagnosticsStatusNotificationRequestXML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "status",
-                                                                                                                  DiagnosticsStatusExtentions.Parse)
-
+                                                           RequestId,
+                                                           ChargeBoxId,
+                                                           XML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "status",
+                                                                              DiagnosticsStatusExtentions.Parse)
                                                        );
 
                 return true;
@@ -208,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, DiagnosticsStatusNotificationRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 DiagnosticsStatusNotificationRequest = null;
                 return false;
@@ -219,17 +252,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(DiagnosticsStatusNotificationRequestJSON, out DiagnosticsStatusNotificationRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out DiagnosticsStatusNotificationRequest, out ErrorResponse, CustomBootNotificationRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a diagnostics status notification request.
         /// </summary>
-        /// <param name="DiagnosticsStatusNotificationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="DiagnosticsStatusNotificationRequest">The parsed diagnostics status notification request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                                   DiagnosticsStatusNotificationRequestJSON,
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                                   JSON,
+                                       Request_Id                                RequestId,
+                                       ChargeBox_Id                              ChargeBoxId,
                                        out DiagnosticsStatusNotificationRequest  DiagnosticsStatusNotificationRequest,
-                                       OnExceptionDelegate                       OnException  = null)
+                                       out String                                ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out DiagnosticsStatusNotificationRequest,
+                        out ErrorResponse);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a diagnostics status notification request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="DiagnosticsStatusNotificationRequest">The parsed diagnostics status notification request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomDiagnosticsStatusNotificationRequestParser">A delegate to parse custom DiagnosticsStatusNotification requests.</param>
+        public static Boolean TryParse(JObject                                                            JSON,
+                                       Request_Id                                                         RequestId,
+                                       ChargeBox_Id                                                       ChargeBoxId,
+                                       out DiagnosticsStatusNotificationRequest                           DiagnosticsStatusNotificationRequest,
+                                       out String                                                         ErrorResponse,
+                                       CustomJObjectParserDelegate<DiagnosticsStatusNotificationRequest>  CustomDiagnosticsStatusNotificationRequestParser)
         {
 
             try
@@ -239,11 +301,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region DiagnosticsStatus
 
-                if (!DiagnosticsStatusNotificationRequestJSON.MapMandatory("status",
-                                                                           "diagnostics status",
-                                                                           DiagnosticsStatusExtentions.Parse,
-                                                                           out DiagnosticsStatus DiagnosticsStatus,
-                                                                           out String ErrorResponse))
+                if (!JSON.MapMandatory("status",
+                                       "diagnostics status",
+                                       DiagnosticsStatusExtentions.Parse,
+                                       out DiagnosticsStatus  DiagnosticsStatus,
+                                       out                    ErrorResponse))
                 {
                     return false;
                 }
@@ -251,34 +313,43 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                DiagnosticsStatusNotificationRequest = new DiagnosticsStatusNotificationRequest(DiagnosticsStatus);
+                DiagnosticsStatusNotificationRequest = new DiagnosticsStatusNotificationRequest(
+                                                           RequestId,
+                                                           ChargeBoxId,
+                                                           DiagnosticsStatus
+                                                       );
+
+                if (CustomDiagnosticsStatusNotificationRequestParser != null)
+                    DiagnosticsStatusNotificationRequest = CustomDiagnosticsStatusNotificationRequestParser(JSON,
+                                                                                                            DiagnosticsStatusNotificationRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, DiagnosticsStatusNotificationRequestJSON, e);
-
-                DiagnosticsStatusNotificationRequest = null;
+                DiagnosticsStatusNotificationRequest  = default;
+                ErrorResponse                         = "The given JSON representation of a DiagnosticsStatusNotification request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(DiagnosticsStatusNotificationRequestText, out DiagnosticsStatusNotificationRequest, OnException = null)
+        #region (static) TryParse(Text, RequestId, ChargeBoxId, out DiagnosticsStatusNotificationRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given text representation of a diagnostics status notification request.
         /// </summary>
-        /// <param name="DiagnosticsStatusNotificationRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="DiagnosticsStatusNotificationRequest">The parsed diagnostics status notification request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                                    DiagnosticsStatusNotificationRequestText,
+        public static Boolean TryParse(String                                    Text,
+                                       Request_Id                                RequestId,
+                                       ChargeBox_Id                              ChargeBoxId,
                                        out DiagnosticsStatusNotificationRequest  DiagnosticsStatusNotificationRequest,
                                        OnExceptionDelegate                       OnException  = null)
         {
@@ -286,20 +357,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             try
             {
 
-                DiagnosticsStatusNotificationRequestText = DiagnosticsStatusNotificationRequestText?.Trim();
+                Text = Text?.Trim();
 
-                if (DiagnosticsStatusNotificationRequestText.IsNotNullOrEmpty())
+                if (Text.IsNotNullOrEmpty())
                 {
 
-                    if (DiagnosticsStatusNotificationRequestText.StartsWith("{") &&
-                        TryParse(JObject.Parse(DiagnosticsStatusNotificationRequestText),
+                    if (Text.StartsWith("{") &&
+                        TryParse(JObject.Parse(Text),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out DiagnosticsStatusNotificationRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
-                    if (TryParse(XDocument.Parse(DiagnosticsStatusNotificationRequestText).Root,//.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
+                    if (TryParse(XDocument.Parse(Text).Root,//.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out DiagnosticsStatusNotificationRequest,
                                  OnException))
                     {
@@ -311,7 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, DiagnosticsStatusNotificationRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, Text, e);
             }
 
             DiagnosticsStatusNotificationRequest = null;

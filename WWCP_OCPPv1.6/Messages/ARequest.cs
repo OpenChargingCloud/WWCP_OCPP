@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
 using System;
 
 #endregion
@@ -25,7 +26,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// An abstract generic OCPP request message.
+    /// An abstract generic request message.
     /// </summary>
     public abstract class ARequest<T> : IRequest,
                                         IEquatable<T>
@@ -37,21 +38,53 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Properties
 
         /// <summary>
+        /// The request identification.
+        /// </summary>
+        public Request_Id    RequestId           { get; }
+
+        /// <summary>
         /// The timestamp of the request message creation.
         /// </summary>
-        public DateTime  RequestTimestamp   { get; }
+        [Mandatory]
+        public DateTime      RequestTimestamp    { get; }
+
+
+        /// <summary>
+        /// Charge box identification.
+        /// </summary>
+        [Mandatory]
+        public ChargeBox_Id  ChargeBoxId         { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new generic OCPP request message.
+        /// Create a new generic request message.
         /// </summary>
         public ARequest()
         {
 
+            this.RequestId         = Request_Id.Parse("0");
             this.RequestTimestamp  = DateTime.UtcNow;
+            this.ChargeBoxId       = ChargeBox_Id.Parse("0");
+
+        }
+
+        /// <summary>
+        /// Create a new generic request message.
+        /// </summary>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="RequestTimestamp">the optional request timestamp.</param>
+        public ARequest(Request_Id    RequestId,
+                        ChargeBox_Id  ChargeBoxId,
+                        DateTime?     RequestTimestamp   = null)
+        {
+
+            this.RequestId         = RequestId;
+            this.RequestTimestamp  = RequestTimestamp ?? DateTime.UtcNow;
+            this.ChargeBoxId       = ChargeBoxId;
 
         }
 

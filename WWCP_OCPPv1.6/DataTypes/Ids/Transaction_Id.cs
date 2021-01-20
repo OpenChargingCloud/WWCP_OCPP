@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Data
 
-        private readonly UInt64 _Value;
+        private readonly UInt64 InternalId;
 
         #endregion
 
@@ -46,13 +46,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Indicates whether this identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
-            => _Value != 0;
+            => InternalId != 0;
 
         /// <summary>
         /// The length of the tag identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) _Value.ToString().Length;
+            => (UInt64) InternalId.ToString().Length;
 
         #endregion
 
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Token">An integer.</param>
         private Transaction_Id(UInt64 Token)
         {
-            this._Value = Token;
+            this.InternalId = Token;
         }
 
         #endregion
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Clone this transaction identification.
         /// </summary>
         public Transaction_Id Clone
-            => new Transaction_Id(_Value);
+            => new Transaction_Id(InternalId);
 
         #endregion
 
@@ -215,26 +215,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TransactionId1">An transaction identification.</param>
+        /// <param name="TransactionId1">A transaction identification.</param>
         /// <param name="TransactionId2">Another transaction identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Transaction_Id TransactionId1, Transaction_Id TransactionId2)
-        {
+        public static Boolean operator == (Transaction_Id TransactionId1,
+                                           Transaction_Id TransactionId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(TransactionId1, TransactionId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) TransactionId1 == null) || ((Object) TransactionId2 == null))
-                return false;
-
-            if ((Object) TransactionId1 == null)
-                throw new ArgumentNullException(nameof(TransactionId1),  "The given transaction identification must not be null!");
-
-            return TransactionId1.Equals(TransactionId2);
-
-        }
+            => TransactionId1.Equals(TransactionId2);
 
         #endregion
 
@@ -243,10 +230,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TransactionId1">An transaction identification.</param>
+        /// <param name="TransactionId1">A transaction identification.</param>
         /// <param name="TransactionId2">Another transaction identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Transaction_Id TransactionId1, Transaction_Id TransactionId2)
+        public static Boolean operator != (Transaction_Id TransactionId1,
+                                           Transaction_Id TransactionId2)
+
             => !(TransactionId1 == TransactionId2);
 
         #endregion
@@ -256,18 +245,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TransactionId1">An transaction identification.</param>
+        /// <param name="TransactionId1">A transaction identification.</param>
         /// <param name="TransactionId2">Another transaction identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Transaction_Id TransactionId1, Transaction_Id TransactionId2)
-        {
+        public static Boolean operator < (Transaction_Id TransactionId1,
+                                          Transaction_Id TransactionId2)
 
-            if ((Object) TransactionId1 == null)
-                throw new ArgumentNullException(nameof(TransactionId1),  "The given transaction identification must not be null!");
-
-            return TransactionId1.CompareTo(TransactionId2) < 0;
-
-        }
+            => TransactionId1.CompareTo(TransactionId2) < 0;
 
         #endregion
 
@@ -276,10 +260,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TransactionId1">An transaction identification.</param>
+        /// <param name="TransactionId1">A transaction identification.</param>
         /// <param name="TransactionId2">Another transaction identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Transaction_Id TransactionId1, Transaction_Id TransactionId2)
+        public static Boolean operator <= (Transaction_Id TransactionId1,
+                                           Transaction_Id TransactionId2)
+
             => !(TransactionId1 > TransactionId2);
 
         #endregion
@@ -289,18 +275,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TransactionId1">An transaction identification.</param>
+        /// <param name="TransactionId1">A transaction identification.</param>
         /// <param name="TransactionId2">Another transaction identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Transaction_Id TransactionId1, Transaction_Id TransactionId2)
-        {
+        public static Boolean operator > (Transaction_Id TransactionId1,
+                                          Transaction_Id TransactionId2)
 
-            if ((Object) TransactionId1 == null)
-                throw new ArgumentNullException(nameof(TransactionId1),  "The given transaction identification must not be null!");
-
-            return TransactionId1.CompareTo(TransactionId2) > 0;
-
-        }
+            => TransactionId1.CompareTo(TransactionId2) > 0;
 
         #endregion
 
@@ -309,10 +290,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TransactionId1">An transaction identification.</param>
+        /// <param name="TransactionId1">A transaction identification.</param>
         /// <param name="TransactionId2">Another transaction identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Transaction_Id TransactionId1, Transaction_Id TransactionId2)
+        public static Boolean operator >= (Transaction_Id TransactionId1,
+                                           Transaction_Id TransactionId2)
+
             => !(TransactionId1 < TransactionId2);
 
         #endregion
@@ -328,18 +311,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object is null)
-                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
-
-            // Check if the given object is a transaction identification.
-            if (!(Object is Transaction_Id))
-                throw new ArgumentException("The given object is not a transaction identification!", nameof(Object));
-
-            return CompareTo((Transaction_Id) Object);
-
-        }
+            => Object is Transaction_Id transactionId
+                   ? CompareTo(transactionId)
+                   : throw new ArgumentException("The given object is not a transaction identification!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -350,14 +326,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="TransactionId">An object to compare with.</param>
         public Int32 CompareTo(Transaction_Id TransactionId)
-        {
 
-            if ((Object) TransactionId == null)
-                throw new ArgumentNullException(nameof(TransactionId),  "The given transaction identification must not be null!");
-
-            return _Value.CompareTo(TransactionId._Value);
-
-        }
+            => InternalId.CompareTo(TransactionId.InternalId);
 
         #endregion
 
@@ -373,18 +343,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
         public override Boolean Equals(Object Object)
-        {
 
-            if (Object is null)
-                return false;
-
-            // Check if the given object is a transaction identification.
-            if (!(Object is Transaction_Id))
-                return false;
-
-            return this.Equals((Transaction_Id) Object);
-
-        }
+            => Object is Transaction_Id transactionId &&
+                   Equals(transactionId);
 
         #endregion
 
@@ -393,17 +354,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two transaction identifications for equality.
         /// </summary>
-        /// <param name="TransactionId">An transaction identification to compare with.</param>
+        /// <param name="TransactionId">A transaction identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Transaction_Id TransactionId)
-        {
 
-            if ((Object) TransactionId == null)
-                return false;
-
-            return _Value.Equals(TransactionId._Value);
-
-        }
+            => InternalId.Equals(TransactionId.InternalId);
 
         #endregion
 
@@ -416,7 +371,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => _Value.GetHashCode();
+
+            => InternalId.GetHashCode();
 
         #endregion
 
@@ -426,10 +382,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => _Value.ToString();
+
+            => InternalId.ToString();
 
         #endregion
-
 
     }
 
