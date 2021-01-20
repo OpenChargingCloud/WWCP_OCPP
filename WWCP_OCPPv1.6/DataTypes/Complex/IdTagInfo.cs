@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv1_6
+namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
@@ -150,25 +150,26 @@ namespace cloud.charging.adapters.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (IdTagInfoJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomIdTagInfoParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an identification tag info.
         /// </summary>
-        /// <param name="IdTagInfoJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static IdTagInfo Parse(JObject              IdTagInfoJSON,
-                                      OnExceptionDelegate  OnException   = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomIdTagInfoParser">A delegate to parse custom IdTagInfo JSON objects.</param>
+        public static IdTagInfo Parse(JObject                                 JSON,
+                                      CustomJObjectParserDelegate<IdTagInfo>  CustomIdTagInfoParser)
         {
 
-            if (TryParse(IdTagInfoJSON,
-                         out IdTagInfo idTagInfo,
-                         OnException))
+            if (TryParse(JSON,
+                         out IdTagInfo  idTagInfo,
+                         out String     ErrorResponse,
+                         CustomIdTagInfoParser))
             {
                 return idTagInfo;
             }
 
-            return default;
+            throw new ArgumentException("The given JSON representation of an IdTagInfo is invalid: " + ErrorResponse, nameof(JSON));
 
         }
 
@@ -245,17 +246,35 @@ namespace cloud.charging.adapters.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(IdTagInfoJSON, out IdTagInfo, OnException = null)
+        #region (static) TryParse(JSON, out IdTagInfo, out ErrorResponse, CustomIdTagInfoParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of an identification tag info.
         /// </summary>
-        /// <param name="IdTagInfoJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="IdTagInfo">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              IdTagInfoJSON,
-                                       out IdTagInfo        IdTagInfo,
-                                       OnExceptionDelegate  OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject        JSON,
+                                       out IdTagInfo  IdTagInfo,
+                                       out String     ErrorResponse)
+
+            => TryParse(JSON,
+                        out IdTagInfo,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of an identification tag info.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="IdTagInfo">The parsed connector type.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomIdTagInfoParser">A delegate to parse custom IdTagInfo JSON objects.</param>
+        public static Boolean TryParse(JObject                                 JSON,
+                                       out IdTagInfo                           IdTagInfo,
+                                       out String                              ErrorResponse,
+                                       CustomJObjectParserDelegate<IdTagInfo>  CustomIdTagInfoParser)
         {
 
             try
@@ -265,11 +284,11 @@ namespace cloud.charging.adapters.OCPPv1_6
 
                 #region Status
 
-                if (!IdTagInfoJSON.MapMandatory("status",
-                                                "authorization status",
-                                                AuthorizationStatusExtentions.Parse,
-                                                out AuthorizationStatus  Status,
-                                                out String               ErrorString))
+                if (!JSON.MapMandatory("status",
+                                       "authorization status",
+                                       AuthorizationStatusExtentions.Parse,
+                                       out AuthorizationStatus  Status,
+                                       out                      ErrorResponse))
                 {
                     return false;
                 }
@@ -278,13 +297,13 @@ namespace cloud.charging.adapters.OCPPv1_6
 
                 #region ExpiryDate
 
-                if (IdTagInfoJSON.ParseOptional("expiryDate",
-                                                "expiry date",
-                                                out DateTime?  ExpiryDate,
-                                                out            ErrorString))
+                if (JSON.ParseOptional("expiryDate",
+                                       "expiry date",
+                                       out DateTime?  ExpiryDate,
+                                       out            ErrorResponse))
                 {
 
-                    if (ErrorString != null)
+                    if (ErrorResponse != null)
                         return false;
 
                 }
@@ -293,14 +312,14 @@ namespace cloud.charging.adapters.OCPPv1_6
 
                 #region ParentIdTag
 
-                if (IdTagInfoJSON.ParseOptional("parentIdTag",
-                                                "parent id tag",
-                                                IdToken.TryParse,
-                                                out IdToken?  ParentIdTag,
-                                                out           ErrorString))
+                if (JSON.ParseOptional("parentIdTag",
+                                       "parent id tag",
+                                       IdToken.TryParse,
+                                       out IdToken?  ParentIdTag,
+                                       out           ErrorResponse))
                 {
 
-                    if (ErrorString != null)
+                    if (ErrorResponse != null)
                         return false;
 
                 }
@@ -312,17 +331,18 @@ namespace cloud.charging.adapters.OCPPv1_6
                                           ExpiryDate,
                                           ParentIdTag);
 
+                if (CustomIdTagInfoParser != null)
+                    IdTagInfo = CustomIdTagInfoParser(JSON,
+                                                      IdTagInfo);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, IdTagInfoJSON, e);
-
-                IdTagInfo = default;
+                IdTagInfo      = default;
+                ErrorResponse  = "The given JSON representation of an IdTagInfo is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -353,7 +373,8 @@ namespace cloud.charging.adapters.OCPPv1_6
                     if (IdTagInfoText.StartsWith("{") &&
                         TryParse(JObject.Parse(IdTagInfoText),
                                  out IdTagInfo,
-                                 OnException))
+                                 out String ErrorResponse,
+                                 null))
                     {
                         return true;
                     }

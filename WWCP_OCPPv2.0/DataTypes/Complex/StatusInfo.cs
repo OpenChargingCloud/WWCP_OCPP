@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv2_0
+namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
@@ -157,15 +157,15 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         #endregion
 
-        #region (static) TryParse(StatusInfoJSON, out StatusInfo, OnException = null)
+        #region (static) TryParse(JSON, out StatusInfo, OnException = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a communication module.
         /// </summary>
-        /// <param name="StatusInfoJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="StatusInfo">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              StatusInfoJSON,
+        public static Boolean TryParse(JObject              JSON,
                                        out StatusInfo       StatusInfo,
                                        OnExceptionDelegate  OnException  = null)
         {
@@ -177,7 +177,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region ReasonCode
 
-                if (!StatusInfoJSON.ParseMandatoryText("reasonCode",
+                if (!JSON.ParseMandatoryText("reasonCode",
                                                        "reason code",
                                                        out String  ReasonCode,
                                                        out String  ErrorResponse))
@@ -189,7 +189,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region AdditionalInfo
 
-                if (StatusInfoJSON.ParseOptional("additionalInfo",
+                if (JSON.ParseOptional("additionalInfo",
                                                  "additional information",
                                                  out String  AdditionalInfo,
                                                  out         ErrorResponse))
@@ -204,12 +204,11 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region CustomData
 
-                if (StatusInfoJSON.ParseOptionalJSON("customData",
-                                                     "custom data",
-                                                     OCPPv2_0.CustomData.TryParse,
-                                                     out CustomData  CustomData,
-                                                     out             ErrorResponse,
-                                                     OnException))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData  CustomData,
+                                           out             ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -230,7 +229,7 @@ namespace cloud.charging.adapters.OCPPv2_0
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, StatusInfoJSON, e);
+                OnException?.Invoke(DateTime.UtcNow, JSON, e);
 
                 StatusInfo = default;
                 return false;

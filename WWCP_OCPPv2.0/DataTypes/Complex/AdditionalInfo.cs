@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,11 +22,10 @@ using System;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv2_0
+namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
@@ -111,22 +110,23 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (AdditionalInfoJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomAdditionalInfoParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a communication module.
+        /// Parse the given JSON representation of a additional info.
         /// </summary>
-        /// <param name="AdditionalInfoJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AdditionalInfo Parse(JObject              AdditionalInfoJSON,
-                                           OnExceptionDelegate  OnException   = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomAdditionalInfoParser">A delegate to parse custom AdditionalInfo JSON objects.</param>
+        public static AdditionalInfo Parse(JObject                                      JSON,
+                                           CustomJObjectParserDelegate<AdditionalInfo>  CustomAdditionalInfoParser   = null)
         {
 
-            if (TryParse(AdditionalInfoJSON,
-                         out AdditionalInfo modem,
-                         OnException))
+            if (TryParse(JSON,
+                         out AdditionalInfo  additionalInfo,
+                         out String          ErrorResponse,
+                         CustomAdditionalInfoParser))
             {
-                return modem;
+                return additionalInfo;
             }
 
             return default;
@@ -135,23 +135,24 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (AdditionalInfoText, OnException = null)
+        #region (static) Parse   (Text, CustomAdditionalInfoParser = null)
 
         /// <summary>
-        /// Parse the given text representation of a communication module.
+        /// Parse the given text representation of a additional info.
         /// </summary>
-        /// <param name="AdditionalInfoText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AdditionalInfo Parse(String               AdditionalInfoText,
-                                           OnExceptionDelegate  OnException   = null)
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="CustomAdditionalInfoParser">A delegate to parse custom AdditionalInfo JSON objects.</param>
+        public static AdditionalInfo Parse(String                                       Text,
+                                           CustomJObjectParserDelegate<AdditionalInfo>  CustomAdditionalInfoParser   = null)
         {
 
 
-            if (TryParse(AdditionalInfoText,
-                         out AdditionalInfo modem,
-                         OnException))
+            if (TryParse(Text,
+                         out AdditionalInfo  additionalInfo,
+                         out String          ErrorResponse,
+                         CustomAdditionalInfoParser))
             {
-                return modem;
+                return additionalInfo;
             }
 
             return default;
@@ -160,17 +161,36 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         #endregion
 
-        #region (static) TryParse(AdditionalInfoJSON, out AdditionalInfo, OnException = null)
+        #region (static) TryParse(JSON, out AdditionalInfo, CustomAdditionalInfoParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a communication module.
+        /// Try to parse the given JSON representation of a additional info.
         /// </summary>
-        /// <param name="AdditionalInfoJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AdditionalInfo">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              AdditionalInfoJSON,
-                                       out AdditionalInfo   AdditionalInfo,
-                                       OnExceptionDelegate  OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject             JSON,
+                                       out AdditionalInfo  AdditionalInfo,
+                                       out String          ErrorResponse)
+
+            => TryParse(JSON,
+                        out AdditionalInfo,
+                        out ErrorResponse);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a additional info.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="AdditionalInfo">The parsed connector type.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomAdditionalInfoParser">A delegate to parse custom AdditionalInfo JSON objects.</param>
+        public static Boolean TryParse(JObject                                      JSON,
+                                       out AdditionalInfo                           AdditionalInfo,
+                                       out String                                   ErrorResponse,
+                                       CustomJObjectParserDelegate<AdditionalInfo>  CustomAdditionalInfoParser)
         {
 
             try
@@ -178,38 +198,37 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 AdditionalInfo = default;
 
-                #region AdditionalIdToken
+                #region AdditionalIdToken    [mandatory]
 
-                if (!AdditionalInfoJSON.ParseMandatoryText("additionalIdToken",
-                                                           "additional identification token",
-                                                           out String  AdditionalIdToken,
-                                                           out String  ErrorResponse))
+                if (!JSON.ParseMandatoryText("additionalIdToken",
+                                             "additional identification token",
+                                             out String  AdditionalIdToken,
+                                             out         ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Type
+                #region Type                 [mandatory]
 
-                if (!AdditionalInfoJSON.ParseMandatoryText("type",
-                                                           "type",
-                                                           out String  Type,
-                                                           out         ErrorResponse))
+                if (!JSON.ParseMandatoryText("type",
+                                             "type",
+                                             out String  Type,
+                                             out         ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region CustomData
+                #region Parse Custom Data    [optional]
 
-                if (AdditionalInfoJSON.ParseOptionalJSON("customData",
-                                                         "custom data",
-                                                         OCPPv2_0.CustomData.TryParse,
-                                                         out CustomData  CustomData,
-                                                         out             ErrorResponse,
-                                                         OnException))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -224,57 +243,53 @@ namespace cloud.charging.adapters.OCPPv2_0
                                                     Type.             Trim(),
                                                     CustomData);
 
+                if (CustomAdditionalInfoParser != null)
+                    AdditionalInfo = CustomAdditionalInfoParser(JSON,
+                                                                AdditionalInfo);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, AdditionalInfoJSON, e);
-
-                AdditionalInfo = default;
+                AdditionalInfo  = default;
+                ErrorResponse   = "The given JSON representation of an AdditionalInfo is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(AdditionalInfoText, out AdditionalInfo, OnException = null)
+        #region (static) TryParse(Text, out AdditionalInfo, CustomAdditionalInfoParser = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a communication module.
+        /// Try to parse the given text representation of a additional info.
         /// </summary>
-        /// <param name="AdditionalInfoText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
         /// <param name="AdditionalInfo">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               AdditionalInfoText,
-                                       out AdditionalInfo   AdditionalInfo,
-                                       OnExceptionDelegate  OnException  = null)
+        /// <param name="CustomAdditionalInfoParser">A delegate to parse custom AdditionalInfo JSON objects.</param>
+        public static Boolean TryParse(String                                       Text,
+                                       out AdditionalInfo                           AdditionalInfo,
+                                       out String                                   ErrorResponse,
+                                       CustomJObjectParserDelegate<AdditionalInfo>  CustomAdditionalInfoParser)
         {
 
             try
             {
 
-                AdditionalInfoText = AdditionalInfoText?.Trim();
-
-                if (AdditionalInfoText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(AdditionalInfoText),
-                             out AdditionalInfo,
-                             OnException))
-                {
-                    return true;
-                }
+                return TryParse(JObject.Parse(Text),
+                                out AdditionalInfo,
+                                out ErrorResponse,
+                                CustomAdditionalInfoParser);
 
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, AdditionalInfoText, e);
+                AdditionalInfo  = default;
+                ErrorResponse   = "The given text representation of an AdditionalInfo is invalid: " + e.Message;
+                return false;
             }
-
-            AdditionalInfo = default;
-            return false;
 
         }
 

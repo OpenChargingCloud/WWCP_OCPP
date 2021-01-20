@@ -21,7 +21,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-using cloud.charging.adapters.OCPPv1_6.CS;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -31,7 +31,7 @@ using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv1_6.CP
+namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>

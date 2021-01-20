@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv2_0.CS
+namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
@@ -181,11 +181,11 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
         /// Try to parse the given JSON representation of a status notification response.
         /// </summary>
         /// <param name="Request">The status notification request leading to this response.</param>
-        /// <param name="StatusNotificationResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="StatusNotificationResponse">The parsed status notification response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.StatusNotificationRequest    Request,
-                                       JObject                         StatusNotificationResponseJSON,
+                                       JObject                         JSON,
                                        out StatusNotificationResponse  StatusNotificationResponse,
                                        OnExceptionDelegate             OnException  = null)
         {
@@ -197,12 +197,11 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
 
                 #region CustomData
 
-                if (StatusNotificationResponseJSON.ParseOptionalJSON("customData",
-                                                                     "custom data",
-                                                                     OCPPv2_0.CustomData.TryParse,
-                                                                     out CustomData  CustomData,
-                                                                     out String      ErrorResponse,
-                                                                     OnException))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData  CustomData,
+                                           out String      ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -222,7 +221,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, StatusNotificationResponseJSON, e);
+                OnException?.Invoke(DateTime.UtcNow, JSON, e);
 
                 StatusNotificationResponse = null;
                 return false;

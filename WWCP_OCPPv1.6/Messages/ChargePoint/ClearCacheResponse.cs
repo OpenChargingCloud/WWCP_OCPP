@@ -28,7 +28,7 @@ using Org.BouncyCastle.Ocsp;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv1_6.CP
+namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>

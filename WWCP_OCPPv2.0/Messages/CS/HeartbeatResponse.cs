@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv2_0.CS
+namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
@@ -201,11 +201,11 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
         /// Try to parse the given JSON representation of a heartbeat response.
         /// </summary>
         /// <param name="Request">The heartbeat request leading to this response.</param>
-        /// <param name="HeartbeatResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="HeartbeatResponse">The parsed heartbeat response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.HeartbeatRequest    Request,
-                                       JObject                HeartbeatResponseJSON,
+                                       JObject                JSON,
                                        out HeartbeatResponse  HeartbeatResponse,
                                        OnExceptionDelegate    OnException  = null)
         {
@@ -217,7 +217,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
 
                 #region CurrentTime
 
-                if (!HeartbeatResponseJSON.ParseMandatory("currentTime",
+                if (!JSON.ParseMandatory("currentTime",
                                                           "current time",
                                                           out DateTime  CurrentTime,
                                                           out String    ErrorResponse))
@@ -229,12 +229,11 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
 
                 #region CustomData
 
-                if (HeartbeatResponseJSON.ParseOptionalJSON("customData",
-                                                            "custom data",
-                                                            OCPPv2_0.CustomData.TryParse,
-                                                            out CustomData  CustomData,
-                                                            out             ErrorResponse,
-                                                            OnException))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData  CustomData,
+                                           out             ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -255,7 +254,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, HeartbeatResponseJSON, e);
+                OnException?.Invoke(DateTime.UtcNow, JSON, e);
 
                 HeartbeatResponse = null;
                 return false;

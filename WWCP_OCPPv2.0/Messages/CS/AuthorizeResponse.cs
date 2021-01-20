@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv2_0.CS
+namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
@@ -394,17 +394,17 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
 
         #endregion
 
-        #region (static) TryParse(Request, AuthorizeResponseJSON, out AuthorizeResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out AuthorizeResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of an authorize response.
         /// </summary>
         /// <param name="Request">The authorize request leading to this response.</param>
-        /// <param name="AuthorizeResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AuthorizeResponse">The parsed authorize response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.AuthorizeRequest    Request,
-                                       JObject                AuthorizeResponseJSON,
+                                       JObject                JSON,
                                        out AuthorizeResponse  AuthorizeResponse,
                                        OnExceptionDelegate    OnException  = null)
         {
@@ -416,7 +416,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
 
                 #region IdTokenInfo
 
-                if (!AuthorizeResponseJSON.ParseMandatoryJSON("idTagInfo",
+                if (!JSON.ParseMandatoryJSON("idTagInfo",
                                                               "identification tag information",
                                                               OCPPv2_0.IdTokenInfo.TryParse,
                                                               out IdTokenInfo  IdTokenInfo,
@@ -430,12 +430,11 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
 
                 #region CustomData
 
-                if (AuthorizeResponseJSON.ParseOptionalJSON("customData",
-                                                            "custom data",
-                                                            OCPPv2_0.CustomData.TryParse,
-                                                            out CustomData  CustomData,
-                                                            out             ErrorResponse,
-                                                            OnException))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData  CustomData,
+                                           out             ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -456,7 +455,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, AuthorizeResponseJSON, e);
+                OnException?.Invoke(DateTime.UtcNow, JSON, e);
 
                 AuthorizeResponse = null;
                 return false;

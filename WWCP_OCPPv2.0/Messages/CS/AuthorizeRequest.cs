@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv2_0.CP
+namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
@@ -315,10 +315,10 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
         /// <summary>
         /// Try to parse the given JSON representation of an authorize request.
         /// </summary>
-        /// <param name="AuthorizeRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AuthorizeRequest">The parsed authorize request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject               AuthorizeRequestJSON,
+        public static Boolean TryParse(JObject               JSON,
                                        out AuthorizeRequest  AuthorizeRequest,
                                        OnExceptionDelegate   OnException  = null)
         {
@@ -330,7 +330,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
 
                 #region IdToken
 
-                if (!AuthorizeRequestJSON.ParseMandatory3("idTag",
+                if (!JSON.ParseMandatory3("idTag",
                                                           "identification tag",
                                                           OCPPv2_0.IdToken.TryParse,
                                                           out IdToken  IdToken,
@@ -344,7 +344,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
 
                 #region Certificate
 
-                if (AuthorizeRequestJSON.ParseOptional("certificate",
+                if (JSON.ParseOptional("certificate",
                                                        "electric vehicle/user certificate",
                                                        out String  Certificate,
                                                        out         ErrorResponse))
@@ -359,12 +359,11 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
 
                 #region ISO15118CertificateHashData
 
-                if (AuthorizeRequestJSON.ParseOptionalHashSet("iso15118CertificateHashData",
-                                                              "electric vehicle/user certificate",
-                                                              OCSPRequestData.TryParse,
-                                                              out HashSet<OCSPRequestData>  ISO15118CertificateHashData,
-                                                              out                           ErrorResponse,
-                                                              OnException))
+                if (JSON.ParseOptionalJSON("iso15118CertificateHashData",
+                                                           "electric vehicle/user certificate",
+                                                           OCSPRequestData.TryParse,
+                                                           out IEnumerable<OCSPRequestData>  ISO15118CertificateHashData,
+                                                           out                               ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -376,12 +375,11 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
 
                 #region CustomData
 
-                if (AuthorizeRequestJSON.ParseOptionalJSON("customData",
-                                                           "custom data",
-                                                           OCPPv2_0.CustomData.TryParse,
-                                                           out CustomData  CustomData,
-                                                           out             ErrorResponse,
-                                                           OnException))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData  CustomData,
+                                           out             ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -403,7 +401,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, AuthorizeRequestJSON, e);
+                OnException?.Invoke(DateTime.UtcNow, JSON, e);
 
                 AuthorizeRequest = null;
                 return false;

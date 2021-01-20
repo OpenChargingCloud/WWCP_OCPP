@@ -29,7 +29,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
@@ -362,12 +362,11 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
 
                 #region LocalAuthorizationList
 
-                if (!SendLocalListRequestJSON.ParseOptionalHashSet("localAuthorizationList",
-                                                                   "local authorization list",
-                                                                   AuthorizationData.TryParse,
-                                                                   out HashSet<AuthorizationData>  LocalAuthorizationList,
-                                                                   out                             ErrorResponse,
-                                                                   OnException))
+                if (!SendLocalListRequestJSON.ParseMandatoryJSON("localAuthorizationList",
+                                                                 "local authorization list",
+                                                                 AuthorizationData.TryParse,
+                                                                 out IEnumerable<AuthorizationData>  LocalAuthorizationList,
+                                                                 out                                 ErrorResponse))
                 {
                     return false;
                 }

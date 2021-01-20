@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
@@ -292,11 +292,11 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
         /// Try to parse the given JSON representation of an authorize response.
         /// </summary>
         /// <param name="Request">The authorize request leading to this response.</param>
-        /// <param name="AuthorizeResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AuthorizeResponse">The parsed authorize response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.AuthorizeRequest    Request,
-                                       JObject                AuthorizeResponseJSON,
+                                       JObject                JSON,
                                        out AuthorizeResponse  AuthorizeResponse,
                                        OnExceptionDelegate    OnException  = null)
         {
@@ -308,12 +308,11 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
 
                 #region IdTagInfo
 
-                if (!AuthorizeResponseJSON.ParseMandatoryJSON("idTagInfo",
-                                                              "identification tag information",
-                                                              OCPPv1_6.IdTagInfo.TryParse,
-                                                              out IdTagInfo  IdTagInfo,
-                                                              out String     ErrorResponse,
-                                                              OnException))
+                if (!JSON.ParseMandatoryJSON("idTagInfo",
+                                             "identification tag information",
+                                             OCPPv1_6.IdTagInfo.TryParse,
+                                             out IdTagInfo  IdTagInfo,
+                                             out String     ErrorResponse))
                 {
                     return false;
                 }
@@ -330,7 +329,7 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, AuthorizeResponseJSON, e);
+                OnException?.Invoke(DateTime.UtcNow, JSON, e);
 
                 AuthorizeResponse = null;
                 return false;

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv2_0
+namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
@@ -248,8 +248,7 @@ namespace cloud.charging.adapters.OCPPv2_0
                                                           "custom data",
                                                           OCPPv2_0.CustomData.TryParse,
                                                           out CustomData  CustomData,
-                                                          out             ErrorResponse,
-                                                          OnException))
+                                                          out             ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -313,12 +312,9 @@ namespace cloud.charging.adapters.OCPPv2_0
             }
             catch (Exception e)
             {
-
                 OnException?.Invoke(DateTime.UtcNow, ChargingStationJSON, e);
-
                 ChargingStation = default;
                 return false;
-
             }
 
         }

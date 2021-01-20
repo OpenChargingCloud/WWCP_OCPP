@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,11 +23,11 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.JSON;
-using cloud.charging.adapters.OCPPv1_6;
+using cloud.charging.open.protocols.OCPPv2_0;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv2_0.CP
+namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
@@ -214,10 +214,10 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
         /// <summary>
         /// Try to parse the given JSON representation of a status notification request.
         /// </summary>
-        /// <param name="StatusNotificationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                        StatusNotificationRequestJSON,
+        public static Boolean TryParse(JObject                        JSON,
                                        out StatusNotificationRequest  StatusNotificationRequest,
                                        OnExceptionDelegate            OnException  = null)
         {
@@ -229,7 +229,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
 
                 #region Timestamp
 
-                if (!StatusNotificationRequestJSON.ParseMandatory("timestamp",
+                if (!JSON.ParseMandatory("timestamp",
                                                                   "timestamp",
                                                                   out DateTime  Timestamp,
                                                                   out String    ErrorResponse))
@@ -241,7 +241,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
 
                 #region ConnectorStatus
 
-                if (!StatusNotificationRequestJSON.MapMandatory("connectorStatus",
+                if (!JSON.MapMandatory("connectorStatus",
                                                                 "connector status",
                                                                 ConnectorStatusExtentions.Parse,
                                                                 out ConnectorStatus  ConnectorStatus,
@@ -254,7 +254,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
 
                 #region EVSEId
 
-                if (!StatusNotificationRequestJSON.ParseMandatory("EVSEId",
+                if (!JSON.ParseMandatory("EVSEId",
                                                                   "EVSE identification",
                                                                   EVSE_Id.TryParse,
                                                                   out EVSE_Id  EVSEId,
@@ -267,7 +267,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
 
                 #region ConnectorId
 
-                if (!StatusNotificationRequestJSON.ParseMandatory("connectorId",
+                if (!JSON.ParseMandatory("connectorId",
                                                                   "connector identification",
                                                                   Connector_Id.TryParse,
                                                                   out Connector_Id  ConnectorId,
@@ -280,12 +280,11 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
 
                 #region CustomData
 
-                if (StatusNotificationRequestJSON.ParseOptionalJSON("customData",
-                                                                    "custom data",
-                                                                    OCPPv2_0.CustomData.TryParse,
-                                                                    out CustomData  CustomData,
-                                                                    out             ErrorResponse,
-                                                                    OnException))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData  CustomData,
+                                           out             ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -308,7 +307,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, StatusNotificationRequestJSON, e);
+                OnException?.Invoke(DateTime.UtcNow, JSON, e);
 
                 StatusNotificationRequest = null;
                 return false;

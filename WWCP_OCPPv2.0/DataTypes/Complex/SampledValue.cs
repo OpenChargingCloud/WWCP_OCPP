@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv2_0
+namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
@@ -209,15 +209,15 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         #endregion
 
-        #region (static) TryParse(SampledValueJSON, out SampledValue, OnException = null)
+        #region (static) TryParse(JSON, out SampledValue, OnException = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a communication module.
         /// </summary>
-        /// <param name="SampledValueJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SampledValue">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              SampledValueJSON,
+        public static Boolean TryParse(JObject              JSON,
                                        out SampledValue     SampledValue,
                                        OnExceptionDelegate  OnException  = null)
         {
@@ -229,7 +229,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region Value
 
-                if (!SampledValueJSON.ParseMandatory("value",
+                if (!JSON.ParseMandatory("value",
                                                      "value",
                                                      out Decimal  Value,
                                                      out String   ErrorResponse))
@@ -241,7 +241,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region Context
 
-                if (SampledValueJSON.ParseOptional("context",
+                if (JSON.ParseOptional("context",
                                                    "context",
                                                    ReadingContextsExtentions.Parse,
                                                    out ReadingContexts?  Context,
@@ -257,7 +257,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region Measurand
 
-                if (SampledValueJSON.ParseOptional("measurand",
+                if (JSON.ParseOptional("measurand",
                                                    "measurand",
                                                    MeasurandsExtentions.Parse,
                                                    out Measurands?  Measurand,
@@ -273,7 +273,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region Phase
 
-                if (SampledValueJSON.ParseOptional("phase",
+                if (JSON.ParseOptional("phase",
                                                    "phase",
                                                    PhasesExtentions.Parse,
                                                    out Phases?  Phase,
@@ -289,7 +289,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region Location
 
-                if (SampledValueJSON.ParseOptional("location",
+                if (JSON.ParseOptional("location",
                                                    "measurment location",
                                                    MeasurementLocationsExtentions.Parse,
                                                    out MeasurementLocations?  Location,
@@ -305,7 +305,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region SignedMeterValue
 
-                if (SampledValueJSON.ParseOptional("signedMeterValue",
+                if (JSON.ParseOptional("signedMeterValue",
                                                    "signed meter value",
                                                    OCPPv2_0.SignedMeterValue.TryParse,
                                                    out SignedMeterValue  SignedMeterValue,
@@ -322,7 +322,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region UnitOfMeasure
 
-                if (SampledValueJSON.ParseOptional("unitOfMeasure",
+                if (JSON.ParseOptional("unitOfMeasure",
                                                    "unit of measure",
                                                    UnitsOfMeasure.TryParse,
                                                    out UnitsOfMeasure  UnitOfMeasure,
@@ -339,12 +339,11 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region CustomData
 
-                if (SampledValueJSON.ParseOptionalJSON("customData",
-                                               "custom data",
-                                               OCPPv2_0.CustomData.TryParse,
-                                               out CustomData  CustomData,
-                                               out             ErrorResponse,
-                                               OnException))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData  CustomData,
+                                           out             ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -370,7 +369,7 @@ namespace cloud.charging.adapters.OCPPv2_0
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, SampledValueJSON, e);
+                OnException?.Invoke(DateTime.UtcNow, JSON, e);
 
                 SampledValue = default;
                 return false;

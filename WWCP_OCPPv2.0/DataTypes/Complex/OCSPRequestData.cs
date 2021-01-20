@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@ using System.Security.Policy;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv2_0
+namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
@@ -213,6 +213,20 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         #region (static) TryParse(OCSPRequestDataJSON, out OCSPRequestData, OnException = null)
 
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a communication module.
+        /// </summary>
+        /// <param name="OCSPRequestDataJSON">The JSON to be parsed.</param>
+        /// <param name="OCSPRequestData">The parsed connector type.</param>
+        public static Boolean TryParse(JObject              OCSPRequestDataJSON,
+                                       out OCSPRequestData  OCSPRequestData)
+
+            => TryParse(OCSPRequestDataJSON,
+                        out OCSPRequestData,
+                        null);
+
         /// <summary>
         /// Try to parse the given JSON representation of a communication module.
         /// </summary>
@@ -296,8 +310,7 @@ namespace cloud.charging.adapters.OCPPv2_0
                                                           "custom data",
                                                           OCPPv2_0.CustomData.TryParse,
                                                           out CustomData  CustomData,
-                                                          out             ErrorResponse,
-                                                          OnException))
+                                                          out             ErrorResponse))
                 {
 
                     if (ErrorResponse != null)

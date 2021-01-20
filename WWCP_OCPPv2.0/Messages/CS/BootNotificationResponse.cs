@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv2_0.CS
+namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
@@ -280,11 +280,11 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
         /// Try to parse the given JSON representation of a boot notification response.
         /// </summary>
         /// <param name="Request">The boot notification request leading to this response.</param>
-        /// <param name="BootNotificationResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.BootNotificationRequest    Request,
-                                       JObject                       BootNotificationResponseJSON,
+                                       JObject                       JSON,
                                        out BootNotificationResponse  BootNotificationResponse,
                                        OnExceptionDelegate           OnException  = null)
         {
@@ -296,7 +296,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
 
                 #region Status
 
-                if (!BootNotificationResponseJSON.MapMandatory("status",
+                if (!JSON.MapMandatory("status",
                                                                "registration status",
                                                                RegistrationStatusExtentions.Parse,
                                                                out RegistrationStatus  RegistrationStatus,
@@ -307,7 +307,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
 
                 if (RegistrationStatus == RegistrationStatus.Unknown)
                 {
-                    ErrorResponse = "Unknown registration status '" + BootNotificationResponseJSON["status"].Value<String>() + "' received!";
+                    ErrorResponse = "Unknown registration status '" + JSON["status"].Value<String>() + "' received!";
                     return false;
                 }
 
@@ -315,7 +315,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
 
                 #region CurrentTime
 
-                if (!BootNotificationResponseJSON.ParseMandatory("currentTime",
+                if (!JSON.ParseMandatory("currentTime",
                                                                  "current time",
                                                                  out DateTime  CurrentTime,
                                                                  out           ErrorResponse))
@@ -327,7 +327,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
 
                 #region Interval
 
-                if (!BootNotificationResponseJSON.ParseMandatory("interval",
+                if (!JSON.ParseMandatory("interval",
                                                                  "heartbeat interval",
                                                                  out TimeSpan  Interval,
                                                                  out           ErrorResponse))
@@ -339,7 +339,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
 
                 #region StatusInfo
 
-                if (BootNotificationResponseJSON.ParseOptionalJSON("statusInfo",
+                if (JSON.ParseOptionalJSON("statusInfo",
                                                                    "status info",
                                                                    OCPPv2_0.StatusInfo.TryParse,
                                                                    out StatusInfo  StatusInfo,
@@ -356,12 +356,11 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
 
                 #region CustomData
 
-                if (BootNotificationResponseJSON.ParseOptionalJSON("customData",
-                                                                   "custom data",
-                                                                   OCPPv2_0.CustomData.TryParse,
-                                                                   out CustomData  CustomData,
-                                                                   out             ErrorResponse,
-                                                                   OnException))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData  CustomData,
+                                           out             ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -385,7 +384,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, BootNotificationResponseJSON, e);
+                OnException?.Invoke(DateTime.UtcNow, JSON, e);
 
                 BootNotificationResponse = null;
                 return false;

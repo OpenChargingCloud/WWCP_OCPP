@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv2_0.CP
+namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     // After start-up, every charge point SHALL send a request to the
@@ -255,10 +255,10 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
         /// <summary>
         /// Try to parse the given JSON representation of a boot notification request.
         /// </summary>
-        /// <param name="BootNotificationRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="BootNotificationRequest">The parsed boot notification request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                      BootNotificationRequestJSON,
+        public static Boolean TryParse(JObject                      JSON,
                                        out BootNotificationRequest  BootNotificationRequest,
                                        OnExceptionDelegate          OnException  = null)
         {
@@ -270,7 +270,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
 
                 #region ChargingStation
 
-                if (!BootNotificationRequestJSON.ParseMandatory3("chargingStation",
+                if (!JSON.ParseMandatory3("chargingStation",
                                                                  "charging station",
                                                                  ChargingStation.TryParse,
                                                                  out ChargingStation  chargingStation,
@@ -284,7 +284,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
 
                 #region Reason
 
-                if (!BootNotificationRequestJSON.MapMandatory("reason",
+                if (!JSON.MapMandatory("reason",
                                                               "boot reason",
                                                               BootReasonsExtentions.Parse,
                                                               out BootReasons  Reason,
@@ -297,12 +297,11 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
 
                 #region CustomData
 
-                if (BootNotificationRequestJSON.ParseOptionalJSON("customData",
-                                                                  "custom data",
-                                                                  OCPPv2_0.CustomData.TryParse,
-                                                                  out CustomData  CustomData,
-                                                                  out             ErrorResponse,
-                                                                  OnException))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData  CustomData,
+                                           out             ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -323,7 +322,7 @@ namespace cloud.charging.adapters.OCPPv2_0.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, BootNotificationRequestJSON, e);
+                OnException?.Invoke(DateTime.UtcNow, JSON, e);
 
                 BootNotificationRequest = null;
                 return false;

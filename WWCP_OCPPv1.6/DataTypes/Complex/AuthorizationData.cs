@@ -28,7 +28,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv1_6
+namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
@@ -146,7 +146,7 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region (static) Parse   (AuthorizationDataXML,  OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a configuration key value pair.
+        /// Parse the given XML representation of authorization data.
         /// </summary>
         /// <param name="AuthorizationDataXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -167,25 +167,26 @@ namespace cloud.charging.adapters.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (AuthorizationDataJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomAuthorizationDataParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a configuration key value pair.
+        /// Parse the given JSON representation of authorization data.
         /// </summary>
-        /// <param name="AuthorizationDataJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AuthorizationData Parse(JObject              AuthorizationDataJSON,
-                                              OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomAuthorizationDataParser">A delegate to parse custom AuthorizationData JSON objects.</param>
+        public static AuthorizationData Parse(JObject                                         JSON,
+                                              CustomJObjectParserDelegate<AuthorizationData>  CustomAuthorizationDataParser)
         {
 
-            if (TryParse(AuthorizationDataJSON,
-                         out AuthorizationData authorizationData,
-                         OnException))
+            if (TryParse(JSON,
+                         out AuthorizationData  authorizationData,
+                         out String             ErrorResponse,
+                         CustomAuthorizationDataParser))
             {
                 return authorizationData;
             }
 
-            return default;
+            throw new ArgumentException("The given JSON representation of an AuthorizationData is invalid: " + ErrorResponse, nameof(JSON));
 
         }
 
@@ -194,7 +195,7 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region (static) Parse   (AuthorizationDataText, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of a configuration key value pair.
+        /// Parse the given text representation of authorization data.
         /// </summary>
         /// <param name="AuthorizationDataText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -218,7 +219,7 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region (static) TryParse(AuthorizationDataXML,  out AuthorizationData, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of a configuration key value pair.
+        /// Try to parse the given XML representation of authorization data.
         /// </summary>
         /// <param name="AuthorizationDataXML">The XML to be parsed.</param>
         /// <param name="AuthorizationData">The parsed connector type.</param>
@@ -249,7 +250,7 @@ namespace cloud.charging.adapters.OCPPv1_6
 
                 OnException?.Invoke(DateTime.UtcNow, AuthorizationDataXML, e);
 
-                AuthorizationData = default(AuthorizationData);
+                AuthorizationData = default;
                 return false;
 
             }
@@ -258,17 +259,37 @@ namespace cloud.charging.adapters.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(AuthorizationDataJSON,  out AuthorizationData, OnException = null)
+        #region (static) TryParse(JSON,  out AuthorizationData, out ErrorResponse, CustomAuthorizationDataParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a configuration key value pair.
+        /// Try to parse the given JSON representation of authorization data.
         /// </summary>
         /// <param name="AuthorizationDataJSON">The JSON to be parsed.</param>
         /// <param name="AuthorizationData">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                AuthorizationDataJSON,
                                        out AuthorizationData  AuthorizationData,
-                                       OnExceptionDelegate    OnException  = null)
+                                       out String             ErrorResponse)
+
+            => TryParse(AuthorizationDataJSON,
+                        out AuthorizationData,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of authorization data.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="AuthorizationData">The parsed connector type.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomAuthorizationDataParser">A delegate to parse custom AuthorizationData JSON objects.</param>
+        public static Boolean TryParse(JObject                                         JSON,
+                                       out AuthorizationData                           AuthorizationData,
+                                       out String                                      ErrorResponse,
+                                       CustomJObjectParserDelegate<AuthorizationData>  CustomAuthorizationDataParser)
         {
 
             try
@@ -278,11 +299,11 @@ namespace cloud.charging.adapters.OCPPv1_6
 
                 #region IdTag
 
-                if (!AuthorizationDataJSON.ParseMandatory("idTag",
-                                                          "identification tag",
-                                                          IdToken.TryParse,
-                                                          out IdToken  IdTag,
-                                                          out String   ErrorResponse))
+                if (!JSON.ParseMandatory("idTag",
+                                         "identification tag",
+                                         IdToken.TryParse,
+                                         out IdToken  IdTag,
+                                         out          ErrorResponse))
                 {
                     return false;
                 }
@@ -291,12 +312,11 @@ namespace cloud.charging.adapters.OCPPv1_6
 
                 #region IdTagInfo
 
-                if (AuthorizationDataJSON.ParseOptionalStruct("idTagInfo",
-                                                              "identification tag information",
-                                                              OCPPv1_6.IdTagInfo.TryParse,
-                                                              out IdTagInfo?  IdTagInfo,
-                                                              out             ErrorResponse,
-                                                              OnException))
+                if (JSON.ParseOptionalJSON("idTagInfo",
+                                           "identification tag information",
+                                           OCPPv1_6.IdTagInfo.TryParse,
+                                           out IdTagInfo?  IdTagInfo,
+                                           out             ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -310,17 +330,18 @@ namespace cloud.charging.adapters.OCPPv1_6
                 AuthorizationData = new AuthorizationData(IdTag,
                                                           IdTagInfo);
 
+                if (CustomAuthorizationDataParser != null)
+                    AuthorizationData = CustomAuthorizationDataParser(JSON,
+                                                                      AuthorizationData);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, AuthorizationDataJSON, e);
-
-                AuthorizationData = default;
+                AuthorizationData  = default;
+                ErrorResponse      = "The given JSON representation of an AuthorizationData is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -330,7 +351,7 @@ namespace cloud.charging.adapters.OCPPv1_6
         #region (static) TryParse(AuthorizationDataText, out AuthorizationData, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a configuration key value pair.
+        /// Try to parse the given text representation of authorization data.
         /// </summary>
         /// <param name="AuthorizationDataText">The text to be parsed.</param>
         /// <param name="AuthorizationData">The parsed connector type.</param>
@@ -351,7 +372,7 @@ namespace cloud.charging.adapters.OCPPv1_6
                     if (AuthorizationDataText.StartsWith("{") &&
                         TryParse(JObject.Parse(AuthorizationDataText),
                                  out AuthorizationData,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
@@ -371,7 +392,7 @@ namespace cloud.charging.adapters.OCPPv1_6
                 OnException?.Invoke(DateTime.UtcNow, AuthorizationDataText, e);
             }
 
-            AuthorizationData = default(AuthorizationData);
+            AuthorizationData = default;
             return false;
 
         }

@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
@@ -318,11 +318,11 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
         /// Try to parse the given JSON representation of a start transaction response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="StartTransactionResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="StartTransactionResponse">The parsed start transaction response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.StartTransactionRequest    Request,
-                                       JObject                       StartTransactionResponseJSON,
+                                       JObject                       JSON,
                                        out StartTransactionResponse  StartTransactionResponse,
                                        OnExceptionDelegate           OnException  = null)
         {
@@ -334,7 +334,7 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
 
                 #region TransactionId
 
-                if (!StartTransactionResponseJSON.ParseMandatory("transactionId",
+                if (!JSON.ParseMandatory("transactionId",
                                                                  "transaction identification",
                                                                  Transaction_Id.TryParse,
                                                                  out Transaction_Id  TransactionId,
@@ -347,12 +347,11 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
 
                 #region IdTagInfo
 
-                if (!StartTransactionResponseJSON.ParseMandatoryJSON("idTagInfo",
-                                                                     "identification tag information",
-                                                                     OCPPv1_6.IdTagInfo.TryParse,
-                                                                     out IdTagInfo  IdTagInfo,
-                                                                     out            ErrorResponse,
-                                                                     OnException))
+                if (!JSON.ParseMandatoryJSON("idTagInfo",
+                                             "identification tag information",
+                                             OCPPv1_6.IdTagInfo.TryParse,
+                                             out IdTagInfo  IdTagInfo,
+                                             out            ErrorResponse))
                 {
                     return false;
                 }
@@ -370,7 +369,7 @@ namespace cloud.charging.adapters.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, StartTransactionResponseJSON, e);
+                OnException?.Invoke(DateTime.UtcNow, JSON, e);
 
                 StartTransactionResponse = null;
                 return false;

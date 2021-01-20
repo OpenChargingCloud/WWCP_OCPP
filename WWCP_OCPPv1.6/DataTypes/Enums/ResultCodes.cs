@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace cloud.charging.adapters.OCPPv1_6
+namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv2_0
+namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
@@ -186,15 +186,15 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         #endregion
 
-        #region (static) TryParse(SignedMeterValueJSON, out SignedMeterValue, OnException = null)
+        #region (static) TryParse(JSON, out SignedMeterValue, OnException = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a communication module.
         /// </summary>
-        /// <param name="SignedMeterValueJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SignedMeterValue">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject               SignedMeterValueJSON,
+        public static Boolean TryParse(JObject               JSON,
                                        out SignedMeterValue  SignedMeterValue,
                                        OnExceptionDelegate   OnException  = null)
         {
@@ -206,7 +206,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region SignedMeterData
 
-                if (!SignedMeterValueJSON.ParseMandatoryText("signedMeterData",
+                if (!JSON.ParseMandatoryText("signedMeterData",
                                                              "signed meter data",
                                                              out String  SignedMeterData,
                                                              out String  ErrorResponse))
@@ -218,7 +218,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region SigningMethod
 
-                if (!SignedMeterValueJSON.ParseMandatoryText("SigningMethod",
+                if (!JSON.ParseMandatoryText("SigningMethod",
                                                              "signing method",
                                                              out String  SigningMethod,
                                                              out         ErrorResponse))
@@ -230,7 +230,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region EncodingMethod
 
-                if (!SignedMeterValueJSON.ParseMandatoryText("encodingMethod",
+                if (!JSON.ParseMandatoryText("encodingMethod",
                                                              "encoding method",
                                                              out String  EncodingMethod,
                                                              out         ErrorResponse))
@@ -242,7 +242,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region PublicKey
 
-                if (!SignedMeterValueJSON.ParseMandatoryText("publicKey",
+                if (!JSON.ParseMandatoryText("publicKey",
                                                              "public key",
                                                              out String  PublicKey,
                                                              out         ErrorResponse))
@@ -254,12 +254,11 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region CustomData
 
-                if (SignedMeterValueJSON.ParseOptionalJSON("customData",
-                                                           "custom data",
-                                                           OCPPv2_0.CustomData.TryParse,
-                                                           out CustomData  CustomData,
-                                                           out             ErrorResponse,
-                                                           OnException))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData  CustomData,
+                                           out             ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -282,7 +281,7 @@ namespace cloud.charging.adapters.OCPPv2_0
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, SignedMeterValueJSON, e);
+                OnException?.Invoke(DateTime.UtcNow, JSON, e);
 
                 SignedMeterValue = default;
                 return false;

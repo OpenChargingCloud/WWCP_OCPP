@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv2_0
+namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
@@ -165,15 +165,15 @@ namespace cloud.charging.adapters.OCPPv2_0
 
         #endregion
 
-        #region (static) TryParse(MeterValueJSON, out MeterValue, OnException = null)
+        #region (static) TryParse(JSON, out MeterValue, OnException = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of an (energy) meter value.
         /// </summary>
-        /// <param name="MeterValueJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="MeterValue">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              MeterValueJSON,
+        public static Boolean TryParse(JObject              JSON,
                                        out MeterValue       MeterValue,
                                        OnExceptionDelegate  OnException  = null)
         {
@@ -185,7 +185,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region SampledValues
 
-                if (!MeterValueJSON.ParseMandatoryJSON("sampledValue",
+                if (!JSON.ParseMandatoryJSON("sampledValue",
                                                        "sampled (energy) meter values",
                                                        SampledValue.TryParse,
                                                        out IEnumerable<SampledValue>  SampledValues,
@@ -198,7 +198,7 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region Timestamp
 
-                if (!MeterValueJSON.ParseMandatory("timestamp",
+                if (!JSON.ParseMandatory("timestamp",
                                                    "common timestamp",
                                                    out DateTime  Timestamp,
                                                    out           ErrorResponse))
@@ -210,12 +210,11 @@ namespace cloud.charging.adapters.OCPPv2_0
 
                 #region CustomData
 
-                if (MeterValueJSON.ParseOptionalJSON("customData",
-                                               "custom data",
-                                               OCPPv2_0.CustomData.TryParse,
-                                               out CustomData  CustomData,
-                                               out             ErrorResponse,
-                                               OnException))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData  CustomData,
+                                           out             ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -236,7 +235,7 @@ namespace cloud.charging.adapters.OCPPv2_0
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, MeterValueJSON, e);
+                OnException?.Invoke(DateTime.UtcNow, JSON, e);
 
                 MeterValue = default;
                 return false;

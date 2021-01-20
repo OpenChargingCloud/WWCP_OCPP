@@ -7,11 +7,13 @@
     <ProjectGuid>{DE2E874E-CE2E-42A6-8BC0-BA5BF28E7940}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>cloud.charging.adapters.OCPPv2_0.UnitTests</RootNamespace>
-    <AssemblyName>cloud.charging.adapters.OCPPv2_0.UnitTests</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <RootNamespace>cloud.charging.open.protocols.OCPPv2_0.UnitTests</RootNamespace>
+    <AssemblyName>cloud.charging.open.protocols.OCPPv2_0.UnitTests</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>8.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\cloud.charging.adapters.OCPPv2_0.UnitTests.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\cloud.charging.open.protocols.OCPPv2_0.UnitTests.xml</DocumentationFile>
     <CodeAnalysisRuleSet>..\libs\WWCP_Core\WWCP.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

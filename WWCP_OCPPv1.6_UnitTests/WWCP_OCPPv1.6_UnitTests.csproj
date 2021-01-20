@@ -7,11 +7,13 @@
     <ProjectGuid>{99773764-2A95-4E56-AAFA-B4E76A5BFA95}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>cloud.charging.adapters.OCPPv1_6.UnitTests</RootNamespace>
-    <AssemblyName>cloud.charging.adapters.OCPPv1_6.UnitTests</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <RootNamespace>cloud.charging.open.protocols.OCPPv1_6.UnitTests</RootNamespace>
+    <AssemblyName>cloud.charging.open.protocols.OCPPv1_6.UnitTests</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>8.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\cloud.charging.adapters.OCPPv1_6.UnitTests.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\cloud.charging.open.protocols.OCPPv1_6.UnitTests.xml</DocumentationFile>
     <CodeAnalysisRuleSet>..\..\WWCP_Core\WWCP.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -38,7 +40,7 @@
       <HintPath>..\..\Styx\libs\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>..\..\Styx\libs\nunit.framework.dll</HintPath>
+      <HintPath>..\..\Styx\libs\NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

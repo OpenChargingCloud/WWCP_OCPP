@@ -23,11 +23,11 @@ using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.adapters.OCPPv1_6.CP;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
-namespace cloud.charging.adapters.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     #region OnCancelReservation
