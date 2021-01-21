@@ -59,7 +59,6 @@
     <Compile Include="IO\WSRequestMessage.cs" />
     <Compile Include="IO\WSResponseMessage.cs" />
     <Compile Include="IO\WSMessageTypes.cs" />
-    <Compile Include="IO\WSRequest.cs" />
     <Compile Include="CentralSystem\WebSockets\CentralSystemWSServer.cs" />
     <Compile Include="ChargePoint\SOAPClient\ICPClient.cs" />
     <Compile Include="ChargePoint\SOAPClient\ChargePointSOAPClient.cs" />

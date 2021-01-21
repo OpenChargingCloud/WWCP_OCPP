@@ -2157,24 +2157,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         }
 
+                        return new WebSocketTextMessageRespose(RequestTimestamp,
+                                                               TextMessage,
+                                                               DateTime.UtcNow,
+                                                               (OCPPResponseJSON != null
 
-                        if (OCPPResponseJSON != null)
-                            return new WebSocketTextMessageRespose(RequestTimestamp,
-                                                                   TextMessage,
-                                                                   DateTime.UtcNow,
-                                                                   new WSResponseMessage(RequestId.Value,
-                                                                                         OCPPResponseJSON).ToJSON().ToString(Newtonsoft.Json.Formatting.None));
+                                                                    ? new WSResponseMessage(RequestId.Value,
+                                                                                            OCPPResponseJSON).ToJSON()
 
-                        else
-                            return new WebSocketTextMessageRespose(RequestTimestamp,
-                                                                   TextMessage,
-                                                                   DateTime.UtcNow,
-                                                                   new WSErrorMessage(RequestId.Value,
-                                                                                      WSErrorCodes.ProtocolError,
-                                                                                      "Invalid action '" + Action + "'!",
-                                                                                      new JObject(
-                                                                                          new JProperty("data", TextMessage)
-                                                                                      )).ToJSON().ToString(Newtonsoft.Json.Formatting.None));
+                                                                    : new WSErrorMessage   (RequestId.Value,
+                                                                                            WSErrorCodes.ProtocolError,
+                                                                                            "Invalid action '" + Action + "'!",
+                                                                                            new JObject(
+                                                                                                new JProperty("data", TextMessage)
+                                                                                            )).ToJSON()
+
+                                                                ).ToString(Newtonsoft.Json.Formatting.None));
 
                     }
 
