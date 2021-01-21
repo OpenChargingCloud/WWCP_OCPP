@@ -18,19 +18,8 @@
 #region Usings
 
 using System;
-using System.Linq;
-using System.Threading.Tasks;
 
-using cloud.charging.open.protocols.OCPPv1_6.CP;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.SOAP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using Newtonsoft.Json.Linq;
-using System.Threading;
 
 #endregion
 
@@ -39,8 +28,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
 
     public class WSErrorMessage
     {
-
-        public Byte          MessageType         { get; }
 
         public Request_Id    RequestId           { get; }
 
@@ -58,7 +45,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
 
         {
 
-            this.MessageType       = 4;
             this.RequestId         = RequestId;
             this.ErrorCode         = ErrorCode;
             this.ErrorDescription  = ErrorDescription ?? "";
@@ -67,46 +53,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         }
 
 
-        #region Documentation
-
-        // [
-        //     4,            // MessageType: CALLERROR (Server-to-Client)
-        //    "19223201",    // RequestId from request
-        //    "<errorCode>",
-        //    "<errorDescription>",
-        //    {
-        //        <errorDetails>
-        //    }
-        // ]
-
-        // Error Code                    Description
-        // -----------------------------------------------------------------------------------------------
-        // NotImplemented                Requested Action is not known by receiver
-        // NotSupported                  Requested Action is recognized but not supported by the receiver
-        // InternalError                 An internal error occurred and the receiver was not able to process the requested Action successfully
-        // ProtocolError                 Payload for Action is incomplete
-        // SecurityError                 During the processing of Action a security issue occurred preventing receiver from completing the Action successfully
-        // FormationViolation            Payload for Action is syntactically incorrect or not conform the PDU structure for Action
-        // PropertyConstraintViolation   Payload is syntactically correct but at least one field contains an invalid value
-        // OccurenceConstraintViolation  Payload for Action is syntactically correct but at least one of the fields violates occurence constraints
-        // TypeConstraintViolation       Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12)
-        // GenericError                  Any other error not covered by the previous ones
-
-        #endregion
-
-
         public JArray ToJSON()
-        {
 
-            var JSON = new JArray(MessageType,
-                                  RequestId.ToString(),
-                                  ErrorCode.ToString(),
-                                  ErrorDescription,
-                                  ErrorDetails);
+            // [
+            //     4,            // MessageType: CALLERROR (Server-to-Client)
+            //    "19223201",    // RequestId from request
+            //    "<errorCode>",
+            //    "<errorDescription>",
+            //    {
+            //        <errorDetails>
+            //    }
+            // ]
 
-            return JSON;
+            // Error Code                    Description
+            // -----------------------------------------------------------------------------------------------
+            // NotImplemented                Requested Action is not known by receiver
+            // NotSupported                  Requested Action is recognized but not supported by the receiver
+            // InternalError                 An internal error occurred and the receiver was not able to process the requested Action successfully
+            // ProtocolError                 Payload for Action is incomplete
+            // SecurityError                 During the processing of Action a security issue occurred preventing receiver from completing the Action successfully
+            // FormationViolation            Payload for Action is syntactically incorrect or not conform the PDU structure for Action
+            // PropertyConstraintViolation   Payload is syntactically correct but at least one field contains an invalid value
+            // OccurenceConstraintViolation  Payload for Action is syntactically correct but at least one of the fields violates occurence constraints
+            // TypeConstraintViolation       Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12)
+            // GenericError                  Any other error not covered by the previous ones
 
-        }
+            => new JArray(4,
+                          RequestId.ToString(),
+                          ErrorCode.ToString(),
+                          ErrorDescription,
+                          ErrorDetails);
 
         public override String ToString()
 

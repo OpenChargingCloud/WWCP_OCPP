@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     // (e.g.version, vendor, etc.).
 
     /// <summary>
-    /// A boot notification request.
+    /// The boot notification request.
     /// </summary>
     public class BootNotificationRequest : ARequest<BootNotificationRequest>
     {

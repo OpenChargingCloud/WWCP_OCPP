@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A data transfer request.
+    /// The data transfer request.
     /// </summary>
     public class DataTransferRequest : ARequest<DataTransferRequest>
     {

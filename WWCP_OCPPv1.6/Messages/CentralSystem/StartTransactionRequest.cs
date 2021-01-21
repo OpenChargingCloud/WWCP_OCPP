@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A start transaction request.
+    /// The start transaction request.
     /// </summary>
     public class StartTransactionRequest : ARequest<StartTransactionRequest>
     {

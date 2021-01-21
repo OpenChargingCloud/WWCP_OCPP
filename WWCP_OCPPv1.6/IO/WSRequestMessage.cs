@@ -26,38 +26,42 @@ using Newtonsoft.Json.Linq;
 namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
 {
 
-    public class WSResponseMessage
+    public class WSRequestMessage
     {
 
         public Request_Id  RequestId    { get; }
 
+        public String      Action       { get; }
+
         public JObject     Data         { get; }
 
 
-        public WSResponseMessage(Request_Id  RequestId,
+        private WSRequestMessage(Request_Id  RequestId,
+                                 String      Action,
                                  JObject     Data)
         {
 
             this.RequestId  = RequestId;
+            this.Action     = Action;
             this.Data       = Data ?? new JObject();
 
         }
 
-
         public JArray ToJSON()
 
             // [
-            //     3,                         // MessageType: CALLRESULT (Server-to-Client)
-            //    "19223201",                 // RequestId copied from request
+            //     2,                  // MessageType: CALL (Client-to-Server)
+            //    "19223201",          // RequestId
+            //    "BootNotification",  // Action
             //    {
-            //        "status":            "Accepted",
-            //        "currentTime":       "2013-02-01T20:53:32.486Z",
-            //        "heartbeatInterval":  300
+            //        "chargePointVendor": "VendorX",
+            //        "chargePointModel":  "SingleSocketCharger"
             //    }
             // ]
 
-            => new JArray(3,
+            => new JArray(2,
                           RequestId.ToString(),
+                          Action,
                           Data);
 
 

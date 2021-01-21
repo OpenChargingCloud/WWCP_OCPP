@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A status notification request.
+    /// The status notification request.
     /// </summary>
     public class StatusNotificationRequest : ARequest<StatusNotificationRequest>
     {

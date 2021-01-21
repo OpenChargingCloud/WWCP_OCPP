@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A firmware status notification request.
+    /// The firmware status notification request.
     /// </summary>
     public class FirmwareStatusNotificationRequest : ARequest<FirmwareStatusNotificationRequest>
     {

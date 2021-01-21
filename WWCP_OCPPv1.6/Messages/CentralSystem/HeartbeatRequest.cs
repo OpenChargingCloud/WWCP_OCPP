@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A heartbeat request.
+    /// The heartbeat request.
     /// </summary>
     public class HeartbeatRequest : ARequest<HeartbeatRequest>
     {

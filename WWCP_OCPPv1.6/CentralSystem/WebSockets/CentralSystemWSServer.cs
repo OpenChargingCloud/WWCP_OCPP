@@ -516,14 +516,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                JSON = JArray.Parse(TextMessage?.Trim());
+                JSON = JArray.Parse(TextMessage);
 
                 #region MessageType 2: CALL       (Client-to-Server)
 
                 // [
-                //     2,                         // MessageType: CALL (Client-to-Server)
-                //    "19223201",                 // RequestId
-                //    "BootNotification",         // Action
+                //     2,                  // MessageType: CALL (Client-to-Server)
+                //    "19223201",          // RequestId
+                //    "BootNotification",  // Action
                 //    {
                 //        "chargePointVendor": "VendorX",
                 //        "chargePointModel":  "SingleSocketCharger"
@@ -623,7 +623,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnBootNotificationRequest?.Invoke(bootNotificationRequest.RequestTimestamp,
+                                                OnBootNotificationRequest?.Invoke(DateTime.UtcNow,
                                                                                   this,
                                                                                   EventTrackingId,
                                                                                   bootNotificationRequest);
@@ -672,7 +672,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnBootNotificationResponse?.Invoke(response.ResponseTimestamp,
+                                                OnBootNotificationResponse?.Invoke(DateTime.UtcNow,
                                                                                    this,
                                                                                    EventTrackingId,
                                                                                    bootNotificationRequest,
@@ -782,7 +782,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnHeartbeatRequest?.Invoke(heartbeatRequest.RequestTimestamp,
+                                                OnHeartbeatRequest?.Invoke(DateTime.UtcNow,
                                                                            this,
                                                                            EventTrackingId,
                                                                            heartbeatRequest);
@@ -831,7 +831,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnHeartbeatResponse?.Invoke(response.ResponseTimestamp,
+                                                OnHeartbeatResponse?.Invoke(DateTime.UtcNow,
                                                                             this,
                                                                             EventTrackingId,
                                                                             heartbeatRequest,
@@ -940,7 +940,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnAuthorizeRequest?.Invoke(authorizeRequest.RequestTimestamp,
+                                                OnAuthorizeRequest?.Invoke(DateTime.UtcNow,
                                                                            this,
                                                                            EventTrackingId,
                                                                            authorizeRequest);
@@ -989,7 +989,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnAuthorizeResponse?.Invoke(response.ResponseTimestamp,
+                                                OnAuthorizeResponse?.Invoke(DateTime.UtcNow,
                                                                             this,
                                                                             EventTrackingId,
                                                                             authorizeRequest,
@@ -1097,7 +1097,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnStartTransactionRequest?.Invoke(startTransactionRequest.RequestTimestamp,
+                                                OnStartTransactionRequest?.Invoke(DateTime.UtcNow,
                                                                                   this,
                                                                                   EventTrackingId,
                                                                                   startTransactionRequest);
@@ -1146,7 +1146,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnStartTransactionResponse?.Invoke(response.ResponseTimestamp,
+                                                OnStartTransactionResponse?.Invoke(DateTime.UtcNow,
                                                                                    this,
                                                                                    EventTrackingId,
                                                                                    startTransactionRequest,
@@ -1255,7 +1255,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnStatusNotificationRequest?.Invoke(statusNotificationRequest.RequestTimestamp,
+                                                OnStatusNotificationRequest?.Invoke(DateTime.UtcNow,
                                                                                     this,
                                                                                     EventTrackingId,
                                                                                     statusNotificationRequest);
@@ -1304,7 +1304,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnStatusNotificationResponse?.Invoke(response.ResponseTimestamp,
+                                                OnStatusNotificationResponse?.Invoke(DateTime.UtcNow,
                                                                                      this,
                                                                                      EventTrackingId,
                                                                                      statusNotificationRequest,
@@ -1411,10 +1411,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnMeterValuesRequest?.Invoke(meterValuesRequest.RequestTimestamp,
-                                                                           this,
-                                                                           EventTrackingId,
-                                                                           meterValuesRequest);
+                                                OnMeterValuesRequest?.Invoke(DateTime.UtcNow,
+                                                                             this,
+                                                                             EventTrackingId,
+                                                                             meterValuesRequest);
 
                                             }
                                             catch (Exception e)
@@ -1460,7 +1460,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnMeterValuesResponse?.Invoke(response.ResponseTimestamp,
+                                                OnMeterValuesResponse?.Invoke(DateTime.UtcNow,
                                                                               this,
                                                                               EventTrackingId,
                                                                               meterValuesRequest,
@@ -1567,7 +1567,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnStopTransactionRequest?.Invoke(stopTransactionRequest.RequestTimestamp,
+                                                OnStopTransactionRequest?.Invoke(DateTime.UtcNow,
                                                                                  this,
                                                                                  EventTrackingId,
                                                                                  stopTransactionRequest);
@@ -1616,7 +1616,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnStopTransactionResponse?.Invoke(response.ResponseTimestamp,
+                                                OnStopTransactionResponse?.Invoke(DateTime.UtcNow,
                                                                                   this,
                                                                                   EventTrackingId,
                                                                                   stopTransactionRequest,
@@ -1774,7 +1774,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnIncomingDataTransferResponse?.Invoke(response.ResponseTimestamp,
+                                                OnIncomingDataTransferResponse?.Invoke(DateTime.UtcNow,
                                                                                        this,
                                                                                        EventTrackingId,
                                                                                        dataTransferRequest,
@@ -1883,7 +1883,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnDiagnosticsStatusNotificationRequest?.Invoke(diagnosticsDiagnosticsStatusNotificationRequest.RequestTimestamp,
+                                                OnDiagnosticsStatusNotificationRequest?.Invoke(DateTime.UtcNow,
                                                                                                this,
                                                                                                EventTrackingId,
                                                                                                diagnosticsDiagnosticsStatusNotificationRequest);
@@ -1932,7 +1932,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnDiagnosticsStatusNotificationResponse?.Invoke(response.ResponseTimestamp,
+                                                OnDiagnosticsStatusNotificationResponse?.Invoke(DateTime.UtcNow,
                                                                                                 this,
                                                                                                 EventTrackingId,
                                                                                                 diagnosticsDiagnosticsStatusNotificationRequest,
@@ -2039,7 +2039,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnFirmwareStatusNotificationRequest?.Invoke(firmwareStatusNotificationRequest.RequestTimestamp,
+                                                OnFirmwareStatusNotificationRequest?.Invoke(DateTime.UtcNow,
                                                                                             this,
                                                                                             EventTrackingId,
                                                                                             firmwareStatusNotificationRequest);
@@ -2088,7 +2088,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnFirmwareStatusNotificationResponse?.Invoke(response.ResponseTimestamp,
+                                                OnFirmwareStatusNotificationResponse?.Invoke(DateTime.UtcNow,
                                                                                              this,
                                                                                              EventTrackingId,
                                                                                              firmwareStatusNotificationRequest,
@@ -2162,9 +2162,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                             return new WebSocketTextMessageRespose(RequestTimestamp,
                                                                    TextMessage,
                                                                    DateTime.UtcNow,
-                                                                   new WSResponseMessage(WSMessageTypes.CALLRESULT,
-                                                                                         RequestId.Value,
-                                                                                         OCPPResponseJSON).ToJSON().ToString());
+                                                                   new WSResponseMessage(RequestId.Value,
+                                                                                         OCPPResponseJSON).ToJSON().ToString(Newtonsoft.Json.Formatting.None));
+
+                        else
+                            return new WebSocketTextMessageRespose(RequestTimestamp,
+                                                                   TextMessage,
+                                                                   DateTime.UtcNow,
+                                                                   new WSErrorMessage(RequestId.Value,
+                                                                                      WSErrorCodes.ProtocolError,
+                                                                                      "Invalid action '" + Action + "'!",
+                                                                                      new JObject(
+                                                                                          new JProperty("data", TextMessage)
+                                                                                      )).ToJSON().ToString(Newtonsoft.Json.Formatting.None));
 
                     }
 

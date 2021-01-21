@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A diagnostics status notification request.
+    /// The diagnostics status notification request.
     /// </summary>
     public class DiagnosticsStatusNotificationRequest : ARequest<DiagnosticsStatusNotificationRequest>
     {

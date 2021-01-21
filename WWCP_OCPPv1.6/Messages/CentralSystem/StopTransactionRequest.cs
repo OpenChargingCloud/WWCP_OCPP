@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A stop transaction request.
+    /// The stop transaction request.
     /// </summary>
     public class StopTransactionRequest : ARequest<StopTransactionRequest>
     {

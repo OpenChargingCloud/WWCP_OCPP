@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A meter values request.
+    /// The meter values request.
     /// </summary>
     public class MeterValuesRequest : ARequest<MeterValuesRequest>
     {
