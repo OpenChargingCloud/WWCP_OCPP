@@ -20,7 +20,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -37,35 +36,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="ChargePointVendor">The charge point vendor identification.</param>
-    /// <param name="ChargePointModel">The charge point model identification.</param>
-    /// <param name="ChargePointSerialNumber">The serial number of the charge point.</param>
-    /// <param name="ChargeBoxSerialNumber">The serial number of the charge point.</param>
-    /// <param name="FirmwareVersion">The firmware version of the charge point.</param>
-    /// <param name="Iccid">The ICCID of the charge point's SIM card.</param>
-    /// <param name="IMSI">The IMSI of the charge point’s SIM card.</param>
-    /// <param name="MeterType">The meter type of the main power meter of the charge point.</param>
-    /// <param name="MeterSerialNumber">The serial number of the main power meter of the charge point.</param>
+    /// <param name="BootNotificationRequest">A boot notification request.</param>
     public delegate Task
 
-        BootNotificationRequestDelegate(DateTime          Timestamp,
-                                        Object            Sender,
-                                        EventTracking_Id  EventTrackingId,
-
-                                        ChargeBox_Id      ChargeBoxIdentity,
-
-                                        String            ChargePointVendor,
-                                        String            ChargePointModel,
-                                        String            ChargePointSerialNumber,
-                                        String            ChargeBoxSerialNumber,
-                                        String            FirmwareVersion,
-                                        String            Iccid,
-                                        String            IMSI,
-                                        String            MeterType,
-                                        String            MeterSerialNumber);
+        BootNotificationRequestDelegate(DateTime                    Timestamp,
+                                        Object                      Sender,
+                                        EventTracking_Id            EventTrackingId,
+                                        CP.BootNotificationRequest  BootNotificationRequest);
 
 
     /// <summary>
@@ -83,7 +60,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                  Object                      Sender,
                                  CancellationToken           CancellationToken,
                                  EventTracking_Id            EventTrackingId,
-
                                  CP.BootNotificationRequest  BootNotificationRequest);
 
 
@@ -93,18 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="ChargePointVendor">The charge point vendor identification.</param>
-    /// <param name="ChargePointModel">The charge point model identification.</param>
-    /// <param name="ChargePointSerialNumber">The serial number of the charge point.</param>
-    /// <param name="ChargeBoxSerialNumber">The serial number of the charge point.</param>
-    /// <param name="FirmwareVersion">The firmware version of the charge point.</param>
-    /// <param name="Iccid">The ICCID of the charge point's SIM card.</param>
-    /// <param name="IMSI">The IMSI of the charge point’s SIM card.</param>
-    /// <param name="MeterType">The meter type of the main power meter of the charge point.</param>
-    /// <param name="MeterSerialNumber">The serial number of the main power meter of the charge point.</param>
+    /// <param name="BootNotificationRequest">A boot notification request.</param>
     /// 
     /// <param name="Result">The general OCPP result.</param>
     /// <param name="Status">The registration status.</param>
@@ -113,27 +78,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        BootNotificationResponseDelegate(DateTime            Timestamp,
-                                         Object              Sender,
-                                         EventTracking_Id    EventTrackingId,
+        BootNotificationResponseDelegate(DateTime                    Timestamp,
+                                         Object                      Sender,
+                                         EventTracking_Id            EventTrackingId,
+                                         CP.BootNotificationRequest  BootNotificationRequest,
 
-                                         ChargeBox_Id        ChargeBoxIdentity,
-
-                                         String              ChargePointVendor,
-                                         String              ChargePointModel,
-                                         String              ChargePointSerialNumber,
-                                         String              ChargeBoxSerialNumber,
-                                         String              FirmwareVersion,
-                                         String              Iccid,
-                                         String              IMSI,
-                                         String              MeterType,
-                                         String              MeterSerialNumber,
-
-                                         Result              Result,
-                                         RegistrationStatus  Status,
-                                         DateTime            CurrentTime,
-                                         TimeSpan            Interval,
-                                         TimeSpan            Runtime);
+                                         Result                      Result,
+                                         RegistrationStatus          Status,
+                                         DateTime                    CurrentTime,
+                                         TimeSpan                    Interval,
+                                         TimeSpan                    Runtime);
 
     #endregion
 
@@ -145,15 +99,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+    /// <param name="HeartbeatRequest">A heartbeat request.</param>
     public delegate Task
 
-        HeartbeatRequestDelegate(DateTime                 Timestamp,
-                                 CentralSystemSOAPServer  Sender,
-                                 EventTracking_Id         EventTrackingId,
-
-                                 ChargeBox_Id             ChargeBoxIdentity);
+        HeartbeatRequestDelegate(DateTime             Timestamp,
+                                 Object               Sender,
+                                 EventTracking_Id     EventTrackingId,
+                                 CP.HeartbeatRequest  HeartbeatRequest);
 
 
     /// <summary>
@@ -167,12 +119,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="HeartbeatRequest">A heartbeat request.</param>
     public delegate Task<HeartbeatResponse>
 
-        HeartbeatDelegate(DateTime                 Timestamp,
-                          CentralSystemSOAPServer  Sender,
-                          CancellationToken        CancellationToken,
-                          EventTracking_Id         EventTrackingId,
-
-                          CP.HeartbeatRequest      HeartbeatRequest);
+        HeartbeatDelegate(DateTime             Timestamp,
+                          Object               Sender,
+                          CancellationToken    CancellationToken,
+                          EventTracking_Id     EventTrackingId,
+                          CP.HeartbeatRequest  HeartbeatRequest);
 
 
     /// <summary>
@@ -181,23 +132,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
+    /// <param name="HeartbeatRequest">A heartbeat request.</param>
     /// 
     /// <param name="Result">The general OCPP result.</param>
     /// <param name="CurrentTime">The current time at the central system.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        HeartbeatResponseDelegate(DateTime                 Timestamp,
-                                  CentralSystemSOAPServer  Sender,
-                                  EventTracking_Id         EventTrackingId,
+        HeartbeatResponseDelegate(DateTime             Timestamp,
+                                  Object               Sender,
+                                  EventTracking_Id     EventTrackingId,
+                                  CP.HeartbeatRequest  HeartbeatRequest,
 
-                                  ChargeBox_Id             ChargeBoxIdentity,
-
-                                  Result                   Result,
-                                  DateTime                 CurrentTime,
-                                  TimeSpan                 Runtime);
+                                  Result               Result,
+                                  DateTime             CurrentTime,
+                                  TimeSpan             Runtime);
 
     #endregion
 
@@ -210,19 +159,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="IdTag">The identifier that needs to be authorized.</param>
+    /// <param name="AuthorizeRequest">An authorize request.</param>
     public delegate Task
 
-        OnAuthorizeRequestDelegate(DateTime                 Timestamp,
-                                   CentralSystemSOAPServer  Sender,
-                                   EventTracking_Id         EventTrackingId,
-
-                                   ChargeBox_Id             ChargeBoxIdentity,
-
-                                   IdToken                  IdTag);
+        OnAuthorizeRequestDelegate(DateTime             Timestamp,
+                                   Object               Sender,
+                                   EventTracking_Id     EventTrackingId,
+                                   CP.AuthorizeRequest  AuthorizeRequest);
 
 
     /// <summary>
@@ -232,18 +175,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
     /// <param name="AuthorizeRequest">An authorize request.</param>
     public delegate Task<AuthorizeResponse>
 
-        OnAuthorizeDelegate(DateTime                 Timestamp,
-                            CentralSystemSOAPServer  Sender,
-                            CancellationToken        CancellationToken,
-                            EventTracking_Id         EventTrackingId,
-
-                            ChargeBox_Id             ChargeBoxIdentity,
-                            CP.AuthorizeRequest      AuthorizeRequest);
+        OnAuthorizeDelegate(DateTime             Timestamp,
+                            Object               Sender,
+                            CancellationToken    CancellationToken,
+                            EventTracking_Id     EventTrackingId,
+                            CP.AuthorizeRequest  AuthorizeRequest);
 
 
     /// <summary>
@@ -252,27 +191,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="IdTag">The identifier that needs to be authorized.</param>
+    /// <param name="AuthorizeRequest">An authorize request.</param>
     /// 
     /// <param name="Result">The general OCPP result.</param>
     /// <param name="IdTagInfo">An identification tag info.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnAuthorizeResponseDelegate(DateTime                 Timestamp,
-                                    CentralSystemSOAPServer  Sender,
-                                    EventTracking_Id         EventTrackingId,
+        OnAuthorizeResponseDelegate(DateTime             Timestamp,
+                                    Object               Sender,
+                                    EventTracking_Id     EventTrackingId,
+                                    CP.AuthorizeRequest  AuthorizeRequest,
 
-                                    ChargeBox_Id             ChargeBoxIdentity,
-
-                                    IdToken                  IdTag,
-
-                                    Result                   Result,
-                                    IdTagInfo                IdTagInfo,
-                                    TimeSpan                 Runtime);
+                                    Result               Result,
+                                    IdTagInfo            IdTagInfo,
+                                    TimeSpan             Runtime);
 
     #endregion
 
@@ -284,27 +217,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="ConnectorId">The connector identification at the charge point.</param>
-    /// <param name="IdTag">The identifier for which a transaction has to be started.</param>
-    /// <param name="StartTimestamp">The timestamp of the transaction start.</param>
-    /// <param name="MeterStart">The energy meter value in Wh for the connector at start of the transaction.</param>
-    /// <param name="ReservationId">An optional identification of the reservation that will terminate as a result of this transaction.</param>
+    /// <param name="StartTransactionRequest">A start transaction request.</param>
     public delegate Task
 
-        OnStartTransactionRequestDelegate(DateTime                 Timestamp,
-                                          CentralSystemSOAPServer  Sender,
-                                          EventTracking_Id         EventTrackingId,
-
-                                          ChargeBox_Id             ChargeBoxIdentity,
-
-                                          Connector_Id             ConnectorId,
-                                          IdToken                  IdTag,
-                                          DateTime                 StartTimestamp,
-                                          UInt64                   MeterStart,
-                                          Reservation_Id?          ReservationId);
+        OnStartTransactionRequestDelegate(DateTime                    Timestamp,
+                                          Object                      Sender,
+                                          EventTracking_Id            EventTrackingId,
+                                          CP.StartTransactionRequest  StartTransactionRequest);
 
 
     /// <summary>
@@ -314,17 +233,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
     /// <param name="StartTransactionRequest">A start transaction request.</param>
     public delegate Task<StartTransactionResponse>
 
         OnStartTransactionDelegate(DateTime                    Timestamp,
-                                   CentralSystemSOAPServer     Sender,
+                                   Object                      Sender,
                                    CancellationToken           CancellationToken,
                                    EventTracking_Id            EventTrackingId,
-
-                                   ChargeBox_Id                ChargeBoxIdentity,
                                    CP.StartTransactionRequest  StartTransactionRequest);
 
 
@@ -334,14 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="ConnectorId">The connector identification at the charge point.</param>
-    /// <param name="IdTag">The identifier for which a transaction has to be started.</param>
-    /// <param name="StartTimestamp">The timestamp of the transaction start.</param>
-    /// <param name="MeterStart">The energy meter value in Wh for the connector at start of the transaction.</param>
-    /// <param name="ReservationId">An optional identification of the reservation that will terminate as a result of this transaction.</param>
+    /// <param name="StartTransactionRequest">A start transaction request.</param>
     /// 
     /// <param name="Result">The general OCPP result.</param>
     /// <param name="TransactionId">The transaction identification assigned by the central system.</param>
@@ -349,22 +257,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnStartTransactionResponseDelegate(DateTime                 Timestamp,
-                                           CentralSystemSOAPServer  Sender,
-                                           EventTracking_Id         EventTrackingId,
+        OnStartTransactionResponseDelegate(DateTime                    Timestamp,
+                                           Object                      Sender,
+                                           EventTracking_Id            EventTrackingId,
+                                           CP.StartTransactionRequest  StartTransactionRequest,
 
-                                           ChargeBox_Id             ChargeBoxIdentity,
-
-                                           Connector_Id             ConnectorId,
-                                           IdToken                  IdTag,
-                                           DateTime                 StartTimestamp,
-                                           UInt64                   MeterStart,
-                                           Reservation_Id?          ReservationId,
-
-                                           Result                   Result,
-                                           Transaction_Id           TransactionId,
-                                           IdTagInfo                IdTagInfo,
-                                           TimeSpan                 Runtime);
+                                           Result                      Result,
+                                           Transaction_Id              TransactionId,
+                                           IdTagInfo                   IdTagInfo,
+                                           TimeSpan                    Runtime);
 
     #endregion
 
@@ -376,31 +277,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="ConnectorId">The connector identification at the charge point. Id '0' (zero) is used if the status is for the charge point main controller.</param>
-    /// <param name="Status">The current status of the charge point.</param>
-    /// <param name="ErrorCode">The error code reported by the charge point.</param>
-    /// <param name="Info">Additional free format information related to the error.</param>
-    /// <param name="StatusTimestamp">The time for which the status is reported.</param>
-    /// <param name="VendorId">This identifies the vendor-specific implementation.</param>
-    /// <param name="VendorErrorCode">A vendor-specific error code.</param>
+    /// <param name="StatusNotificationRequest">A status notification request.</param>
     public delegate Task
 
-        OnStatusNotificationRequestDelegate(DateTime                 Timestamp,
-                                            CentralSystemSOAPServer  Sender,
-                                            EventTracking_Id         EventTrackingId,
-
-                                            ChargeBox_Id             ChargeBoxIdentity,
-
-                                            Connector_Id             ConnectorId,
-                                            ChargePointStatus        Status,
-                                            ChargePointErrorCodes    ErrorCode,
-                                            String                   Info,
-                                            DateTime?                StatusTimestamp,
-                                            String                   VendorId,
-                                            String                   VendorErrorCode);
+        OnStatusNotificationRequestDelegate(DateTime                      Timestamp,
+                                            Object                        Sender,
+                                            EventTracking_Id              EventTrackingId,
+                                            CP.StatusNotificationRequest  StatusNotificationRequest);
 
 
     /// <summary>
@@ -410,17 +293,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
     /// <param name="StatusNotificationRequest">A status notification request.</param>
     public delegate Task<StatusNotificationResponse>
 
         OnStatusNotificationDelegate(DateTime                      Timestamp,
-                                     CentralSystemSOAPServer       Sender,
+                                     Object                        Sender,
                                      CancellationToken             CancellationToken,
                                      EventTracking_Id              EventTrackingId,
-
-                                     ChargeBox_Id                  ChargeBoxIdentity,
                                      CP.StatusNotificationRequest  StatusNotificationRequest);
 
 
@@ -430,37 +309,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="ConnectorId">The connector identification at the charge point. Id '0' (zero) is used if the status is for the charge point main controller.</param>
-    /// <param name="Status">The current status of the charge point.</param>
-    /// <param name="ErrorCode">The error code reported by the charge point.</param>
-    /// <param name="Info">Additional free format information related to the error.</param>
-    /// <param name="StatusTimestamp">The time for which the status is reported.</param>
-    /// <param name="VendorId">This identifies the vendor-specific implementation.</param>
-    /// <param name="VendorErrorCode">A vendor-specific error code.</param>
+    /// <param name="StatusNotificationRequest">A status notification request.</param>
     /// 
     /// <param name="Result">The general OCPP result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnStatusNotificationResponseDelegate(DateTime                 Timestamp,
-                                             CentralSystemSOAPServer  Sender,
-                                             EventTracking_Id         EventTrackingId,
+        OnStatusNotificationResponseDelegate(DateTime                      Timestamp,
+                                             Object                        Sender,
+                                             EventTracking_Id              EventTrackingId,
+                                             CP.StatusNotificationRequest  StatusNotificationRequest,
 
-                                             ChargeBox_Id             ChargeBoxIdentity,
-
-                                             Connector_Id             ConnectorId,
-                                             ChargePointStatus        Status,
-                                             ChargePointErrorCodes    ErrorCode,
-                                             String                   Info,
-                                             DateTime?                StatusTimestamp,
-                                             String                   VendorId,
-                                             String                   VendorErrorCode,
-
-                                             Result                   Result,
-                                             TimeSpan                 Runtime);
+                                             Result                        Result,
+                                             TimeSpan                      Runtime);
 
     #endregion
 
@@ -472,23 +333,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="ConnectorId">The connector identification at the charge point.</param>
-    /// <param name="TransactionId">The charging transaction to which the given meter value samples are related to.</param>
-    /// <param name="MeterValues">The sampled meter values with timestamps.</param>
+    /// <param name="MeterValuesRequest">A meter values request.</param>
     public delegate Task
 
-        OnMeterValuesRequestDelegate(DateTime                 Timestamp,
-                                     CentralSystemSOAPServer  Sender,
-                                     EventTracking_Id         EventTrackingId,
-
-                                     ChargeBox_Id             ChargeBoxIdentity,
-
-                                     Connector_Id             ConnectorId,
-                                     Transaction_Id?          TransactionId,
-                                     IEnumerable<MeterValue>  MeterValues);
+        OnMeterValuesRequestDelegate(DateTime               Timestamp,
+                                     Object                 Sender,
+                                     EventTracking_Id       EventTrackingId,
+                                     CP.MeterValuesRequest  MeterValuesRequest);
 
 
     /// <summary>
@@ -498,18 +349,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
     /// <param name="MeterValuesRequest">A meter values request.</param>
     public delegate Task<MeterValuesResponse>
 
-        OnMeterValuesDelegate(DateTime                 Timestamp,
-                              CentralSystemSOAPServer  Sender,
-                              CancellationToken        CancellationToken,
-                              EventTracking_Id         EventTrackingId,
-
-                              ChargeBox_Id             ChargeBoxIdentity,
-                              CP.MeterValuesRequest    MeterValuesRequest);
+        OnMeterValuesDelegate(DateTime               Timestamp,
+                              Object                 Sender,
+                              CancellationToken      CancellationToken,
+                              EventTracking_Id       EventTrackingId,
+                              CP.MeterValuesRequest  MeterValuesRequest);
 
 
     /// <summary>
@@ -518,29 +365,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="ConnectorId">The connector identification at the charge point.</param>
-    /// <param name="TransactionId">The charging transaction to which the given meter value samples are related to.</param>
-    /// <param name="MeterValues">The sampled meter values with timestamps.</param>
+    /// <param name="MeterValuesRequest">A meter values request.</param>
     /// 
     /// <param name="Result">The general OCPP result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnMeterValuesResponseDelegate(DateTime                 Timestamp,
-                                      CentralSystemSOAPServer  Sender,
-                                      EventTracking_Id         EventTrackingId,
+        OnMeterValuesResponseDelegate(DateTime               Timestamp,
+                                      Object                 Sender,
+                                      EventTracking_Id       EventTrackingId,
+                                      CP.MeterValuesRequest  MeterValuesRequest,
 
-                                      ChargeBox_Id             ChargeBoxIdentity,
-
-                                      Connector_Id             ConnectorId,
-                                      Transaction_Id?          TransactionId,
-                                      IEnumerable<MeterValue>  MeterValues,
-
-                                      Result                   Result,
-                                      TimeSpan                 Runtime);
+                                      Result                 Result,
+                                      TimeSpan               Runtime);
 
     #endregion
 
@@ -552,29 +389,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="TransactionId">The transaction identification copied from the start transaction response.</param>
-    /// <param name="StopTimestamp">The timestamp of the end of the charging transaction.</param>
-    /// <param name="MeterStop">The energy meter value in Wh for the connector at end of the charging transaction.</param>
-    /// <param name="IdTag">An optional identifier which requested to stop the charging. It is optional because a charge point may terminate charging without the presence of an idTag, e.g. in case of a reset.</param>
-    /// <param name="Reason">An optional reason why the transaction had been stopped. MAY only be omitted when the Reason is "Local".</param>
-    /// <param name="TransactionData">Optional transaction usage details relevant for billing purposes.</param>
+    /// <param name="StopTransactionRequest">A stop transaction request.</param>
     public delegate Task
 
-        OnStopTransactionRequestDelegate(DateTime                 Timestamp,
-                                         CentralSystemSOAPServer  Sender,
-                                         EventTracking_Id         EventTrackingId,
-
-                                         ChargeBox_Id             ChargeBoxIdentity,
-
-                                         Transaction_Id           TransactionId,
-                                         DateTime                 StopTimestamp,
-                                         UInt64                   MeterStop,
-                                         IdToken?                 IdTag,
-                                         Reasons?                 Reason,
-                                         IEnumerable<MeterValue>  TransactionData);
+        OnStopTransactionRequestDelegate(DateTime                   Timestamp,
+                                         Object                     Sender,
+                                         EventTracking_Id           EventTrackingId,
+                                         CP.StopTransactionRequest  StopTransactionRequest);
 
 
     /// <summary>
@@ -584,17 +405,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
     /// <param name="StopTransactionRequest">A stop transaction request.</param>
     public delegate Task<StopTransactionResponse>
 
         OnStopTransactionDelegate(DateTime                   Timestamp,
-                                  CentralSystemSOAPServer    Sender,
+                                  Object                     Sender,
                                   CancellationToken          CancellationToken,
                                   EventTracking_Id           EventTrackingId,
-
-                                  ChargeBox_Id               ChargeBoxIdentity,
                                   CP.StopTransactionRequest  StopTransactionRequest);
 
 
@@ -604,37 +421,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="TransactionId">The transaction identification copied from the start transaction response.</param>
-    /// <param name="StopTimestamp">The timestamp of the end of the charging transaction.</param>
-    /// <param name="MeterStop">The energy meter value in Wh for the connector at end of the charging transaction.</param>
-    /// <param name="IdTag">An optional identifier which requested to stop the charging. It is optional because a charge point may terminate charging without the presence of an idTag, e.g. in case of a reset.</param>
-    /// <param name="Reason">An optional reason why the transaction had been stopped. MAY only be omitted when the Reason is "Local".</param>
-    /// <param name="TransactionData">Optional transaction usage details relevant for billing purposes.</param>
+    /// <param name="StopTransactionRequest">A stop transaction request.</param>
     /// 
     /// <param name="Result">The general OCPP result.</param>
     /// <param name="IdTagInfo">An identification tag info.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnStopTransactionResponseDelegate(DateTime                 Timestamp,
-                                          CentralSystemSOAPServer  Sender,
-                                          EventTracking_Id         EventTrackingId,
+        OnStopTransactionResponseDelegate(DateTime                   Timestamp,
+                                          Object                     Sender,
+                                          EventTracking_Id           EventTrackingId,
+                                          CP.StopTransactionRequest  StopTransactionRequest,
 
-                                          ChargeBox_Id             ChargeBoxIdentity,
-
-                                          Transaction_Id           TransactionId,
-                                          DateTime                 StopTimestamp,
-                                          UInt64                   MeterStop,
-                                          IdToken?                 IdTag,
-                                          Reasons?                 Reason,
-                                          IEnumerable<MeterValue>  TransactionData,
-
-                                          Result                   Result,
-                                          IdTagInfo?               IdTagInfo,
-                                          TimeSpan                 Runtime);
+                                          Result                     Result,
+                                          IdTagInfo?                 IdTagInfo,
+                                          TimeSpan                   Runtime);
 
     #endregion
 
@@ -647,23 +448,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-    /// <param name="MessageId">An optional message identification field.</param>
-    /// <param name="MessageData">Optional message data as text without specified length or format.</param>
+    /// <param name="DataTransferRequest">A data transfer request.</param>
     public delegate Task
 
-        OnIncomingDataTransferRequestDelegate(DateTime                 Timestamp,
-                                              CentralSystemSOAPServer  Sender,
-                                              EventTracking_Id         EventTrackingId,
-
-                                              ChargeBox_Id             ChargeBoxIdentity,
-
-                                              String                   VendorId,
-                                              String                   MessageId,
-                                              String                   MessageData);
+        OnIncomingDataTransferRequestDelegate(DateTime                Timestamp,
+                                              Object                  Sender,
+                                              EventTracking_Id        EventTrackingId,
+                                              CP.DataTransferRequest  DataTransferRequest);
 
 
     /// <summary>
@@ -673,17 +464,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
     /// <param name="DataTransferRequest">A data transfer request.</param>
     public delegate Task<DataTransferResponse>
 
-        OnIncomingDataTransferDelegate(DateTime                        Timestamp,
-                                       CentralSystemSOAPServer         Sender,
-                                       CancellationToken               CancellationToken,
-                                       EventTracking_Id                EventTrackingId,
-
-                                       ChargeBox_Id                    ChargeBoxIdentity,
+        OnIncomingDataTransferDelegate(DateTime                Timestamp,
+                                       Object                  Sender,
+                                       CancellationToken       CancellationToken,
+                                       EventTracking_Id        EventTrackingId,
                                        CP.DataTransferRequest  DataTransferRequest);
 
 
@@ -693,12 +480,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-    /// <param name="MessageId">An optional message identification field.</param>
-    /// <param name="MessageData">Optional message data as text without specified length or format.</param>
+    /// <param name="DataTransferRequest">A data transfer request.</param>
     /// 
     /// <param name="Result">The general OCPP result.</param>
     /// <param name="Status">The success or failure status of the data transfer.</param>
@@ -706,20 +488,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnIncomingDataTransferResponseDelegate(DateTime                 Timestamp,
-                                               CentralSystemSOAPServer  Sender,
-                                               EventTracking_Id         EventTrackingId,
+        OnIncomingDataTransferResponseDelegate(DateTime                Timestamp,
+                                               Object                  Sender,
+                                               EventTracking_Id        EventTrackingId,
+                                               CP.DataTransferRequest  DataTransferRequest,
 
-                                               ChargeBox_Id             ChargeBoxIdentity,
-
-                                               String                   VendorId,
-                                               String                   MessageId,
-                                               String                   MessageData,
-
-                                               Result                   Result,
-                                               DataTransferStatus       Status,
-                                               String                   ResponseData,
-                                               TimeSpan                 Runtime);
+                                               Result                  Result,
+                                               DataTransferStatus      Status,
+                                               String                  ResponseData,
+                                               TimeSpan                Runtime);
 
     #endregion
 
@@ -731,19 +508,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="Status">The status of the diagnostics upload.</param>
+    /// <param name="DiagnosticsStatusNotificationRequest">A diagnostics status notification request.</param>
     public delegate Task
 
-        OnDiagnosticsStatusNotificationRequestDelegate(DateTime                 Timestamp,
-                                                       CentralSystemSOAPServer  Sender,
-                                                       EventTracking_Id         EventTrackingId,
-
-                                                       ChargeBox_Id             ChargeBoxIdentity,
-
-                                                       DiagnosticsStatus        Status);
+        OnDiagnosticsStatusNotificationRequestDelegate(DateTime                                 Timestamp,
+                                                       Object                                   Sender,
+                                                       EventTracking_Id                         EventTrackingId,
+                                                       CP.DiagnosticsStatusNotificationRequest  DiagnosticsStatusNotificationRequest);
 
 
     /// <summary>
@@ -753,17 +524,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
     /// <param name="DiagnosticsStatusNotificationRequest">A diagnostics status notification request.</param>
     public delegate Task<DiagnosticsStatusNotificationResponse>
 
         OnDiagnosticsStatusNotificationDelegate(DateTime                                 Timestamp,
-                                                CentralSystemSOAPServer                  Sender,
+                                                Object                                   Sender,
                                                 CancellationToken                        CancellationToken,
                                                 EventTracking_Id                         EventTrackingId,
-
-                                                ChargeBox_Id                             ChargeBoxIdentity,
                                                 CP.DiagnosticsStatusNotificationRequest  DiagnosticsStatusNotificationRequest);
 
 
@@ -773,25 +540,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="Status">The status of the diagnostics upload.</param>
+    /// <param name="DiagnosticsStatusNotificationRequest">A diagnostics status notification request.</param>
     /// 
     /// <param name="Result">The general OCPP result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnDiagnosticsStatusNotificationResponseDelegate(DateTime                 Timestamp,
-                                                        CentralSystemSOAPServer  Sender,
-                                                        EventTracking_Id         EventTrackingId,
+        OnDiagnosticsStatusNotificationResponseDelegate(DateTime                                 Timestamp,
+                                                        Object                                   Sender,
+                                                        EventTracking_Id                         EventTrackingId,
+                                                        CP.DiagnosticsStatusNotificationRequest  DiagnosticsStatusNotificationRequest,
 
-                                                        ChargeBox_Id             ChargeBoxIdentity,
-
-                                                        DiagnosticsStatus        Status,
-
-                                                        Result                   Result,
-                                                        TimeSpan                 Runtime);
+                                                        Result                                   Result,
+                                                        TimeSpan                                 Runtime);
 
     #endregion
 
@@ -803,19 +564,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="Status">The current status of a firmware installation.</param>
+    /// <param name="FirmwareStatusNotificationRequest">A firmware status notification request.</param>
+
     public delegate Task
 
-        OnFirmwareStatusNotificationRequestDelegate(DateTime                 Timestamp,
-                                                    CentralSystemSOAPServer  Sender,
-                                                    EventTracking_Id         EventTrackingId,
-
-                                                    ChargeBox_Id             ChargeBoxIdentity,
-
-                                                    FirmwareStatus           Status);
+        OnFirmwareStatusNotificationRequestDelegate(DateTime                              Timestamp,
+                                                    Object                                Sender,
+                                                    EventTracking_Id                      EventTrackingId,
+                                                    CP.FirmwareStatusNotificationRequest  FirmwareStatusNotificationRequest);
 
 
     /// <summary>
@@ -825,17 +581,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
     /// <param name="FirmwareStatusNotificationRequest">A firmware status notification request.</param>
     public delegate Task<FirmwareStatusNotificationResponse>
 
         OnFirmwareStatusNotificationDelegate(DateTime                              Timestamp,
-                                             CentralSystemSOAPServer               Sender,
+                                             Object                                Sender,
                                              CancellationToken                     CancellationToken,
                                              EventTracking_Id                      EventTrackingId,
-
-                                             ChargeBox_Id                          ChargeBoxIdentity,
                                              CP.FirmwareStatusNotificationRequest  FirmwareStatusNotificationRequest);
 
 
@@ -845,25 +597,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="Status">The current status of a firmware installation.</param>
+    /// <param name="FirmwareStatusNotificationRequest">A firmware status notification request.</param>
     /// 
     /// <param name="Result">The general OCPP result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnFirmwareStatusNotificationResponseDelegate(DateTime                 Timestamp,
-                                                     CentralSystemSOAPServer  Sender,
-                                                     EventTracking_Id         EventTrackingId,
+        OnFirmwareStatusNotificationResponseDelegate(DateTime                              Timestamp,
+                                                     Object                                Sender,
+                                                     EventTracking_Id                      EventTrackingId,
+                                                     CP.FirmwareStatusNotificationRequest  FirmwareStatusNotificationRequest,
 
-                                                     ChargeBox_Id             ChargeBoxIdentity,
-
-                                                     FirmwareStatus           Status,
-
-                                                     Result                   Result,
-                                                     TimeSpan                 Runtime);
+                                                     Result                                Result,
+                                                     TimeSpan                              Runtime);
 
     #endregion
 

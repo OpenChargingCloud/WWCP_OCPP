@@ -78,7 +78,54 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// A delegate to parse custom BootNotification requests.
         /// </summary>
-        public CustomJObjectParserDelegate<BootNotificationRequest>  CustomBootNotificationRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<BootNotificationRequest>               CustomBootNotificationRequestParser                 { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom Heartbeat requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<HeartbeatRequest>                      CustomHeartbeatRequestParser                        { get; set; }
+
+
+        /// <summary>
+        /// A delegate to parse custom Authorize requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<AuthorizeRequest>                      CustomAuthorizeRequestParser                        { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom StartTransaction requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<StartTransactionRequest>               CustomStartTransactionRequestParser                 { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom StatusNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<StatusNotificationRequest>             CustomStatusNotificationRequestParser               { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom MeterValues requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<MeterValuesRequest>                    CustomMeterValuesRequestParser                      { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom StopTransaction requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<StopTransactionRequest>                CustomStopTransactionRequestParser                  { get; set; }
+
+
+        /// <summary>
+        /// A delegate to parse custom DataTransfer requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<CP.DataTransferRequest>                CustomDataTransferRequestParser                     { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom DiagnosticsStatusNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<DiagnosticsStatusNotificationRequest>  CustomDiagnosticsStatusNotificationRequestParser    { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom FirmwareStatusNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>     CustomFirmwareStatusNotificationRequestParser       { get; set; }
 
         #endregion
 
@@ -87,9 +134,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnBootNotification
 
         /// <summary>
-        /// An event sent whenever a boot notification SOAP request was received.
+        /// An event sent whenever a boot notification WebSocket Request was received.
         /// </summary>
-        public event RequestLogHandler                 OnBootNotificationSOAPRequest;
+        public event RequestLogHandler                 OnBootNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a boot notification request was received.
@@ -107,18 +154,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event BootNotificationResponseDelegate  OnBootNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a boot notification was sent.
+        /// An event sent whenever a WebSocket Response to a boot notification was sent.
         /// </summary>
-        public event AccessLogHandler                  OnBootNotificationSOAPResponse;
+        public event AccessLogHandler                  OnBootNotificationWSResponse;
 
         #endregion
 
         #region OnHeartbeat
 
         /// <summary>
-        /// An event sent whenever a heartbeat SOAP request was received.
+        /// An event sent whenever a heartbeat WebSocket Request was received.
         /// </summary>
-        public event RequestLogHandler          OnHeartbeatSOAPRequest;
+        public event RequestLogHandler          OnHeartbeatWSRequest;
 
         /// <summary>
         /// An event sent whenever a heartbeat request was received.
@@ -136,9 +183,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event HeartbeatResponseDelegate  OnHeartbeatResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a heartbeat was sent.
+        /// An event sent whenever a WebSocket Response to a heartbeat was sent.
         /// </summary>
-        public event AccessLogHandler           OnHeartbeatSOAPResponse;
+        public event AccessLogHandler           OnHeartbeatWSResponse;
 
         #endregion
 
@@ -146,9 +193,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnAuthorize
 
         /// <summary>
-        /// An event sent whenever an authorize SOAP request was received.
+        /// An event sent whenever an authorize WebSocket Request was received.
         /// </summary>
-        public event RequestLogHandler            OnAuthorizeSOAPRequest;
+        public event RequestLogHandler            OnAuthorizeWSRequest;
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
@@ -166,18 +213,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnAuthorizeResponseDelegate  OnAuthorizeResponse;
 
         /// <summary>
-        /// An event sent whenever an authorize SOAP response was sent.
+        /// An event sent whenever an authorize WebSocket Response was sent.
         /// </summary>
-        public event AccessLogHandler             OnAuthorizeSOAPResponse;
+        public event AccessLogHandler             OnAuthorizeWSResponse;
 
         #endregion
 
         #region OnStartTransaction
 
         /// <summary>
-        /// An event sent whenever a start transaction SOAP request was received.
+        /// An event sent whenever a start transaction WebSocket Request was received.
         /// </summary>
-        public event RequestLogHandler                   OnStartTransactionSOAPRequest;
+        public event RequestLogHandler                   OnStartTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a start transaction request was received.
@@ -195,18 +242,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnStartTransactionResponseDelegate  OnStartTransactionResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a start transaction request was sent.
+        /// An event sent whenever a WebSocket Response to a start transaction request was sent.
         /// </summary>
-        public event AccessLogHandler                    OnStartTransactionSOAPResponse;
+        public event AccessLogHandler                    OnStartTransactionWSResponse;
 
         #endregion
 
         #region OnStatusNotification
 
         /// <summary>
-        /// An event sent whenever a status notification SOAP request was received.
+        /// An event sent whenever a status notification WebSocket Request was received.
         /// </summary>
-        public event RequestLogHandler                     OnStatusNotificationSOAPRequest;
+        public event RequestLogHandler                     OnStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
@@ -224,18 +271,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnStatusNotificationResponseDelegate  OnStatusNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a status notification request was sent.
+        /// An event sent whenever a WebSocket Response to a status notification request was sent.
         /// </summary>
-        public event AccessLogHandler                      OnStatusNotificationSOAPResponse;
+        public event AccessLogHandler                      OnStatusNotificationWSResponse;
 
         #endregion
 
         #region OnMeterValues
 
         /// <summary>
-        /// An event sent whenever a meter values SOAP request was received.
+        /// An event sent whenever a meter values WebSocket Request was received.
         /// </summary>
-        public event RequestLogHandler              OnMeterValuesSOAPRequest;
+        public event RequestLogHandler              OnMeterValuesWSRequest;
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
@@ -253,18 +300,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnMeterValuesResponseDelegate  OnMeterValuesResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a meter values request was sent.
+        /// An event sent whenever a WebSocket Response to a meter values request was sent.
         /// </summary>
-        public event AccessLogHandler               OnMeterValuesSOAPResponse;
+        public event AccessLogHandler               OnMeterValuesWSResponse;
 
         #endregion
 
         #region OnStopTransaction
 
         /// <summary>
-        /// An event sent whenever a stop transaction SOAP request was received.
+        /// An event sent whenever a stop transaction WebSocket Request was received.
         /// </summary>
-        public event RequestLogHandler                  OnStopTransactionSOAPRequest;
+        public event RequestLogHandler                  OnStopTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
@@ -282,9 +329,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnStopTransactionResponseDelegate  OnStopTransactionResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a stop transaction request was sent.
+        /// An event sent whenever a WebSocket Response to a stop transaction request was sent.
         /// </summary>
-        public event AccessLogHandler                   OnStopTransactionSOAPResponse;
+        public event AccessLogHandler                   OnStopTransactionWSResponse;
 
         #endregion
 
@@ -292,9 +339,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnDataTransfer
 
         /// <summary>
-        /// An event sent whenever a data transfer SOAP request was received.
+        /// An event sent whenever a data transfer WebSocket Request was received.
         /// </summary>
-        public event RequestLogHandler                       OnIncomingDataTransferSOAPRequest;
+        public event RequestLogHandler                       OnIncomingDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
@@ -312,18 +359,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnIncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a data transfer request was sent.
+        /// An event sent whenever a WebSocket Response to a data transfer request was sent.
         /// </summary>
-        public event AccessLogHandler                        OnIncomingDataTransferSOAPResponse;
+        public event AccessLogHandler                        OnIncomingDataTransferWSResponse;
 
         #endregion
 
         #region OnDiagnosticsStatusNotification
 
         /// <summary>
-        /// An event sent whenever a diagnostics status notification SOAP request was received.
+        /// An event sent whenever a diagnostics status notification WebSocket Request was received.
         /// </summary>
-        public event RequestLogHandler                                OnDiagnosticsStatusNotificationSOAPRequest;
+        public event RequestLogHandler                                OnDiagnosticsStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
@@ -341,18 +388,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnDiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a diagnostics status notification request was sent.
+        /// An event sent whenever a WebSocket Response to a diagnostics status notification request was sent.
         /// </summary>
-        public event AccessLogHandler                                 OnDiagnosticsStatusNotificationSOAPResponse;
+        public event AccessLogHandler                                 OnDiagnosticsStatusNotificationWSResponse;
 
         #endregion
 
         #region OnFirmwareStatusNotification
 
         /// <summary>
-        /// An event sent whenever a firmware status notification SOAP request was received.
+        /// An event sent whenever a firmware status notification WebSocket Request was received.
         /// </summary>
-        public event RequestLogHandler                             OnFirmwareStatusNotificationSOAPRequest;
+        public event RequestLogHandler                             OnFirmwareStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
@@ -370,9 +417,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnFirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a firmware status notification request was sent.
+        /// An event sent whenever a WebSocket Response to a firmware status notification request was sent.
         /// </summary>
-        public event AccessLogHandler                              OnFirmwareStatusNotificationSOAPResponse;
+        public event AccessLogHandler                              OnFirmwareStatusNotificationWSResponse;
 
         #endregion
 
@@ -546,14 +593,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnBootNotificationSOAPRequest?.Invoke(DateTime.UtcNow,
-                                        //                                      SOAPServer.HTTPServer,
-                                        //                                      Request);
+                                        //OnBootNotificationWSRequest?.Invoke(DateTime.UtcNow,
+                                        //                                    this,
+                                        //                                    RequestData;
 
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationSOAPRequest));
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationWSRequest));
                                     }
 
                                     #endregion
@@ -579,23 +626,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 OnBootNotificationRequest?.Invoke(bootNotificationRequest.RequestTimestamp,
                                                                                   this,
                                                                                   EventTrackingId,
-
-                                                                                  chargeBoxId.Value,
-
-                                                                                  bootNotificationRequest.ChargePointVendor,
-                                                                                  bootNotificationRequest.ChargePointModel,
-                                                                                  bootNotificationRequest.ChargePointSerialNumber,
-                                                                                  bootNotificationRequest.ChargeBoxSerialNumber,
-                                                                                  bootNotificationRequest.FirmwareVersion,
-                                                                                  bootNotificationRequest.Iccid,
-                                                                                  bootNotificationRequest.IMSI,
-                                                                                  bootNotificationRequest.MeterType,
-                                                                                  bootNotificationRequest.MeterSerialNumber);
+                                                                                  bootNotificationRequest);
 
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationRequest));
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationRequest));
                                             }
 
                                             #endregion
@@ -639,18 +675,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 OnBootNotificationResponse?.Invoke(response.ResponseTimestamp,
                                                                                    this,
                                                                                    EventTrackingId,
-
-                                                                                   chargeBoxId.Value,
-
-                                                                                   bootNotificationRequest.ChargePointVendor,
-                                                                                   bootNotificationRequest.ChargePointModel,
-                                                                                   bootNotificationRequest.ChargePointSerialNumber,
-                                                                                   bootNotificationRequest.ChargeBoxSerialNumber,
-                                                                                   bootNotificationRequest.FirmwareVersion,
-                                                                                   bootNotificationRequest.Iccid,
-                                                                                   bootNotificationRequest.IMSI,
-                                                                                   bootNotificationRequest.MeterType,
-                                                                                   bootNotificationRequest.MeterSerialNumber,
+                                                                                   bootNotificationRequest,
 
                                                                                    response.Result,
                                                                                    response.Status,
@@ -661,7 +686,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationResponse));
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationResponse));
                                             }
 
                                             #endregion
@@ -699,15 +724,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnBootNotificationSOAPResponse?.Invoke(HTTPResponse.Timestamp,
-                                        //                                        SOAPServer.HTTPServer,
-                                        //                                        Request,
-                                        //                                        HTTPResponse);
+                                        //OnBootNotificationWSResponse?.Invoke(DateTime.UtcNow,
+                                        //                                     this,
+                                        //                                     RequestData,
+                                        //                                     HTTPResponse);
 
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationSOAPResponse));
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationWSResponse));
                                     }
 
                                     #endregion
@@ -716,6 +741,1419 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                 break;
 
                             #endregion
+
+                            #region Heartbeat
+
+                            case "Heartbeat":
+                                {
+
+                                    #region Send OnHeartbeatWSRequest event
+
+                                    try
+                                    {
+
+                                        //OnHeartbeatWSRequest?.Invoke(DateTime.UtcNow,
+                                        //                                      SOAPServer.HTTPServer,
+                                        //                                      Request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    HeartbeatResponse response = null;
+
+                                    try
+                                    {
+
+                                        if (HeartbeatRequest.TryParse(RequestData,
+                                                                      RequestId.  Value,
+                                                                      chargeBoxId.Value,
+                                                                      out HeartbeatRequest  heartbeatRequest,
+                                                                      out                   ErrorResponse,
+                                                                      CustomHeartbeatRequestParser))
+                                        {
+
+                                            #region Send OnHeartbeatRequest event
+
+                                            try
+                                            {
+
+                                                OnHeartbeatRequest?.Invoke(heartbeatRequest.RequestTimestamp,
+                                                                           this,
+                                                                           EventTrackingId,
+                                                                           heartbeatRequest);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            if (response == null)
+                                            {
+
+                                                var results = OnHeartbeat?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as HeartbeatDelegate)
+                                                                        (DateTime.UtcNow,
+                                                                         this,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         heartbeatRequest)).
+                                                                    ToArray();
+
+                                                if (results?.Length > 0)
+                                                {
+
+                                                    await Task.WhenAll(results);
+
+                                                    response = results.FirstOrDefault()?.Result;
+
+                                                }
+
+                                                if (results == null || response == null)
+                                                    response = HeartbeatResponse.Failed(heartbeatRequest);
+
+                                            }
+
+                                            #endregion
+
+                                            #region Send OnHeartbeatResponse event
+
+                                            try
+                                            {
+
+                                                OnHeartbeatResponse?.Invoke(response.ResponseTimestamp,
+                                                                            this,
+                                                                            EventTrackingId,
+                                                                            heartbeatRequest,
+
+                                                                            response.Result,
+                                                                            response.CurrentTime,
+                                                                            response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponseJSON = response.ToJSON();
+
+                                        }
+
+                                        else
+                                            ErrorMessage =  new WSErrorMessage(RequestId.Value,
+                                                                               WSErrorCodes.FormationViolation,
+                                                                               "The given 'Heartbeat' request could not be parsed!",
+                                                                               new JObject(
+                                                                                   new JProperty("request", TextMessage)
+                                                                              ));
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        ErrorMessage = new WSErrorMessage(RequestId.Value,
+                                                                          WSErrorCodes.FormationViolation,
+                                                                          "Processing the given 'Heartbeat' request led to an exception!",
+                                                                          new JObject(
+                                                                              new JProperty("request",     TextMessage),
+                                                                              new JProperty("exception",   e.Message),
+                                                                              new JProperty("stacktrace",  e.StackTrace)
+                                                                          ));
+
+                                    }
+
+
+                                    #region Send OnHeartbeatWSResponse event
+
+                                    try
+                                    {
+
+                                        //OnHeartbeatWSResponse?.Invoke(HTTPResponse.Timestamp,
+                                        //                                        SOAPServer.HTTPServer,
+                                        //                                        Request,
+                                        //                                        HTTPResponse);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+
+                            #region Authorize
+
+                            case "Authorize":
+                                {
+
+                                    #region Send OnAuthorizeWSRequest event
+
+                                    try
+                                    {
+
+                                        //OnAuthorizeWSRequest?.Invoke(DateTime.UtcNow,
+                                        //                             this,
+                                        //                             RequestData);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    AuthorizeResponse response = null;
+
+                                    try
+                                    {
+
+                                        if (AuthorizeRequest.TryParse(RequestData,
+                                                                      RequestId.  Value,
+                                                                      chargeBoxId.Value,
+                                                                      out AuthorizeRequest  authorizeRequest,
+                                                                      out                   ErrorResponse,
+                                                                      CustomAuthorizeRequestParser))
+                                        {
+
+                                            #region Send OnAuthorizeRequest event
+
+                                            try
+                                            {
+
+                                                OnAuthorizeRequest?.Invoke(authorizeRequest.RequestTimestamp,
+                                                                           this,
+                                                                           EventTrackingId,
+                                                                           authorizeRequest);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            if (response == null)
+                                            {
+
+                                                var results = OnAuthorize?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)
+                                                                        (DateTime.UtcNow,
+                                                                         this,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         authorizeRequest)).
+                                                                    ToArray();
+
+                                                if (results?.Length > 0)
+                                                {
+
+                                                    await Task.WhenAll(results);
+
+                                                    response = results.FirstOrDefault()?.Result;
+
+                                                }
+
+                                                if (results == null || response == null)
+                                                    response = AuthorizeResponse.Failed(authorizeRequest);
+
+                                            }
+
+                                            #endregion
+
+                                            #region Send OnAuthorizeResponse event
+
+                                            try
+                                            {
+
+                                                OnAuthorizeResponse?.Invoke(response.ResponseTimestamp,
+                                                                            this,
+                                                                            EventTrackingId,
+                                                                            authorizeRequest,
+
+                                                                            response.Result,
+                                                                            response.IdTagInfo,
+                                                                            response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponseJSON = response.ToJSON();
+
+                                        }
+
+                                        else
+                                            ErrorMessage =  new WSErrorMessage(RequestId.Value,
+                                                                               WSErrorCodes.FormationViolation,
+                                                                               "The given 'Authorize' request could not be parsed!",
+                                                                               new JObject(
+                                                                                   new JProperty("request", TextMessage)
+                                                                              ));
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        ErrorMessage = new WSErrorMessage(RequestId.Value,
+                                                                          WSErrorCodes.FormationViolation,
+                                                                          "Processing the given 'Authorize' request led to an exception!",
+                                                                          new JObject(
+                                                                              new JProperty("request",     TextMessage),
+                                                                              new JProperty("exception",   e.Message),
+                                                                              new JProperty("stacktrace",  e.StackTrace)
+                                                                          ));
+
+                                    }
+
+
+                                    #region Send OnAuthorizeWSResponse event
+
+                                    try
+                                    {
+
+                                        //OnAuthorizeWSResponse?.Invoke(DateTime.UtcNow,
+                                        //                              this,
+                                        //                              Request,
+                                        //                              HTTPResponse);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region StartTransaction
+
+                            case "StartTransaction":
+                                {
+
+                                    #region Send OnStartTransactionWSRequest event
+
+                                    try
+                                    {
+
+                                        //OnStartTransactionWSRequest?.Invoke(DateTime.UtcNow,
+                                        //                             this,
+                                        //                             RequestData);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    StartTransactionResponse response = null;
+
+                                    try
+                                    {
+
+                                        if (StartTransactionRequest.TryParse(RequestData,
+                                                                             RequestId.  Value,
+                                                                             chargeBoxId.Value,
+                                                                             out StartTransactionRequest  startTransactionRequest,
+                                                                             out                          ErrorResponse,
+                                                                             CustomStartTransactionRequestParser))
+                                        {
+
+                                            #region Send OnStartTransactionRequest event
+
+                                            try
+                                            {
+
+                                                OnStartTransactionRequest?.Invoke(startTransactionRequest.RequestTimestamp,
+                                                                                  this,
+                                                                                  EventTrackingId,
+                                                                                  startTransactionRequest);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            if (response == null)
+                                            {
+
+                                                var results = OnStartTransaction?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnStartTransactionDelegate)
+                                                                        (DateTime.UtcNow,
+                                                                         this,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         startTransactionRequest)).
+                                                                    ToArray();
+
+                                                if (results?.Length > 0)
+                                                {
+
+                                                    await Task.WhenAll(results);
+
+                                                    response = results.FirstOrDefault()?.Result;
+
+                                                }
+
+                                                if (results == null || response == null)
+                                                    response = StartTransactionResponse.Failed(startTransactionRequest);
+
+                                            }
+
+                                            #endregion
+
+                                            #region Send OnStartTransactionResponse event
+
+                                            try
+                                            {
+
+                                                OnStartTransactionResponse?.Invoke(response.ResponseTimestamp,
+                                                                                   this,
+                                                                                   EventTrackingId,
+                                                                                   startTransactionRequest,
+
+                                                                                   response.Result,
+                                                                                   response.TransactionId,
+                                                                                   response.IdTagInfo,
+                                                                                   response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponseJSON = response.ToJSON();
+
+                                        }
+
+                                        else
+                                            ErrorMessage =  new WSErrorMessage(RequestId.Value,
+                                                                               WSErrorCodes.FormationViolation,
+                                                                               "The given 'StartTransaction' request could not be parsed!",
+                                                                               new JObject(
+                                                                                   new JProperty("request", TextMessage)
+                                                                              ));
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        ErrorMessage = new WSErrorMessage(RequestId.Value,
+                                                                          WSErrorCodes.FormationViolation,
+                                                                          "Processing the given 'StartTransaction' request led to an exception!",
+                                                                          new JObject(
+                                                                              new JProperty("request",     TextMessage),
+                                                                              new JProperty("exception",   e.Message),
+                                                                              new JProperty("stacktrace",  e.StackTrace)
+                                                                          ));
+
+                                    }
+
+
+                                    #region Send OnStartTransactionWSResponse event
+
+                                    try
+                                    {
+
+                                        //OnStartTransactionWSResponse?.Invoke(DateTime.UtcNow,
+                                        //                              this,
+                                        //                              Request,
+                                        //                              HTTPResponse);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                                #endregion
+
+                            #region StatusNotification
+
+                            case "StatusNotification":
+                                {
+
+                                    #region Send OnStatusNotificationWSRequest event
+
+                                    try
+                                    {
+
+                                        //OnStatusNotificationWSRequest?.Invoke(DateTime.UtcNow,
+                                        //                             this,
+                                        //                             RequestData);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    StatusNotificationResponse response = null;
+
+                                    try
+                                    {
+
+                                        if (StatusNotificationRequest.TryParse(RequestData,
+                                                                             RequestId.  Value,
+                                                                             chargeBoxId.Value,
+                                                                             out StatusNotificationRequest  statusNotificationRequest,
+                                                                             out                            ErrorResponse,
+                                                                             CustomStatusNotificationRequestParser))
+                                        {
+
+                                            #region Send OnStatusNotificationRequest event
+
+                                            try
+                                            {
+
+                                                OnStatusNotificationRequest?.Invoke(statusNotificationRequest.RequestTimestamp,
+                                                                                    this,
+                                                                                    EventTrackingId,
+                                                                                    statusNotificationRequest);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            if (response == null)
+                                            {
+
+                                                var results = OnStatusNotification?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)
+                                                                        (DateTime.UtcNow,
+                                                                         this,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         statusNotificationRequest)).
+                                                                    ToArray();
+
+                                                if (results?.Length > 0)
+                                                {
+
+                                                    await Task.WhenAll(results);
+
+                                                    response = results.FirstOrDefault()?.Result;
+
+                                                }
+
+                                                if (results == null || response == null)
+                                                    response = StatusNotificationResponse.Failed(statusNotificationRequest);
+
+                                            }
+
+                                            #endregion
+
+                                            #region Send OnStatusNotificationResponse event
+
+                                            try
+                                            {
+
+                                                OnStatusNotificationResponse?.Invoke(response.ResponseTimestamp,
+                                                                                     this,
+                                                                                     EventTrackingId,
+                                                                                     statusNotificationRequest,
+
+                                                                                     response.Result,
+                                                                                     response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponseJSON = response.ToJSON();
+
+                                        }
+
+                                        else
+                                            ErrorMessage =  new WSErrorMessage(RequestId.Value,
+                                                                               WSErrorCodes.FormationViolation,
+                                                                               "The given 'StatusNotification' request could not be parsed!",
+                                                                               new JObject(
+                                                                                   new JProperty("request", TextMessage)
+                                                                              ));
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        ErrorMessage = new WSErrorMessage(RequestId.Value,
+                                                                          WSErrorCodes.FormationViolation,
+                                                                          "Processing the given 'StatusNotification' request led to an exception!",
+                                                                          new JObject(
+                                                                              new JProperty("request",     TextMessage),
+                                                                              new JProperty("exception",   e.Message),
+                                                                              new JProperty("stacktrace",  e.StackTrace)
+                                                                          ));
+
+                                    }
+
+
+                                    #region Send OnStatusNotificationWSResponse event
+
+                                    try
+                                    {
+
+                                        //OnStatusNotificationWSResponse?.Invoke(DateTime.UtcNow,
+                                        //                              this,
+                                        //                              Request,
+                                        //                              HTTPResponse);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                                #endregion
+
+                            #region MeterValues
+
+                            case "MeterValues":
+                                {
+
+                                    #region Send OnMeterValuesWSRequest event
+
+                                    try
+                                    {
+
+                                        //OnMeterValuesWSRequest?.Invoke(DateTime.UtcNow,
+                                        //                             this,
+                                        //                             RequestData);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    MeterValuesResponse response = null;
+
+                                    try
+                                    {
+
+                                        if (MeterValuesRequest.TryParse(RequestData,
+                                                                      RequestId.  Value,
+                                                                      chargeBoxId.Value,
+                                                                      out MeterValuesRequest  meterValuesRequest,
+                                                                      out                   ErrorResponse,
+                                                                      CustomMeterValuesRequestParser))
+                                        {
+
+                                            #region Send OnMeterValuesRequest event
+
+                                            try
+                                            {
+
+                                                OnMeterValuesRequest?.Invoke(meterValuesRequest.RequestTimestamp,
+                                                                           this,
+                                                                           EventTrackingId,
+                                                                           meterValuesRequest);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            if (response == null)
+                                            {
+
+                                                var results = OnMeterValues?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)
+                                                                        (DateTime.UtcNow,
+                                                                         this,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         meterValuesRequest)).
+                                                                    ToArray();
+
+                                                if (results?.Length > 0)
+                                                {
+
+                                                    await Task.WhenAll(results);
+
+                                                    response = results.FirstOrDefault()?.Result;
+
+                                                }
+
+                                                if (results == null || response == null)
+                                                    response = MeterValuesResponse.Failed(meterValuesRequest);
+
+                                            }
+
+                                            #endregion
+
+                                            #region Send OnMeterValuesResponse event
+
+                                            try
+                                            {
+
+                                                OnMeterValuesResponse?.Invoke(response.ResponseTimestamp,
+                                                                              this,
+                                                                              EventTrackingId,
+                                                                              meterValuesRequest,
+
+                                                                              response.Result,
+                                                                              response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponseJSON = response.ToJSON();
+
+                                        }
+
+                                        else
+                                            ErrorMessage =  new WSErrorMessage(RequestId.Value,
+                                                                               WSErrorCodes.FormationViolation,
+                                                                               "The given 'MeterValues' request could not be parsed!",
+                                                                               new JObject(
+                                                                                   new JProperty("request", TextMessage)
+                                                                              ));
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        ErrorMessage = new WSErrorMessage(RequestId.Value,
+                                                                          WSErrorCodes.FormationViolation,
+                                                                          "Processing the given 'MeterValues' request led to an exception!",
+                                                                          new JObject(
+                                                                              new JProperty("request",     TextMessage),
+                                                                              new JProperty("exception",   e.Message),
+                                                                              new JProperty("stacktrace",  e.StackTrace)
+                                                                          ));
+
+                                    }
+
+
+                                    #region Send OnMeterValuesWSResponse event
+
+                                    try
+                                    {
+
+                                        //OnMeterValuesWSResponse?.Invoke(DateTime.UtcNow,
+                                        //                              this,
+                                        //                              Request,
+                                        //                              HTTPResponse);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region StopTransaction
+
+                            case "StopTransaction":
+                                {
+
+                                    #region Send OnStopTransactionWSRequest event
+
+                                    try
+                                    {
+
+                                        //OnStopTransactionWSRequest?.Invoke(DateTime.UtcNow,
+                                        //                             this,
+                                        //                             RequestData);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    StopTransactionResponse response = null;
+
+                                    try
+                                    {
+
+                                        if (StopTransactionRequest.TryParse(RequestData,
+                                                                             RequestId.  Value,
+                                                                             chargeBoxId.Value,
+                                                                             out StopTransactionRequest  stopTransactionRequest,
+                                                                             out                         ErrorResponse,
+                                                                             CustomStopTransactionRequestParser))
+                                        {
+
+                                            #region Send OnStopTransactionRequest event
+
+                                            try
+                                            {
+
+                                                OnStopTransactionRequest?.Invoke(stopTransactionRequest.RequestTimestamp,
+                                                                                 this,
+                                                                                 EventTrackingId,
+                                                                                 stopTransactionRequest);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            if (response == null)
+                                            {
+
+                                                var results = OnStopTransaction?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnStopTransactionDelegate)
+                                                                        (DateTime.UtcNow,
+                                                                         this,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         stopTransactionRequest)).
+                                                                    ToArray();
+
+                                                if (results?.Length > 0)
+                                                {
+
+                                                    await Task.WhenAll(results);
+
+                                                    response = results.FirstOrDefault()?.Result;
+
+                                                }
+
+                                                if (results == null || response == null)
+                                                    response = StopTransactionResponse.Failed(stopTransactionRequest);
+
+                                            }
+
+                                            #endregion
+
+                                            #region Send OnStopTransactionResponse event
+
+                                            try
+                                            {
+
+                                                OnStopTransactionResponse?.Invoke(response.ResponseTimestamp,
+                                                                                  this,
+                                                                                  EventTrackingId,
+                                                                                  stopTransactionRequest,
+
+                                                                                  response.Result,
+                                                                                  response.IdTagInfo,
+                                                                                  response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponseJSON = response.ToJSON();
+
+                                        }
+
+                                        else
+                                            ErrorMessage =  new WSErrorMessage(RequestId.Value,
+                                                                               WSErrorCodes.FormationViolation,
+                                                                               "The given 'StopTransaction' request could not be parsed!",
+                                                                               new JObject(
+                                                                                   new JProperty("request", TextMessage)
+                                                                              ));
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        ErrorMessage = new WSErrorMessage(RequestId.Value,
+                                                                          WSErrorCodes.FormationViolation,
+                                                                          "Processing the given 'StopTransaction' request led to an exception!",
+                                                                          new JObject(
+                                                                              new JProperty("request",     TextMessage),
+                                                                              new JProperty("exception",   e.Message),
+                                                                              new JProperty("stacktrace",  e.StackTrace)
+                                                                          ));
+
+                                    }
+
+
+                                    #region Send OnStopTransactionWSResponse event
+
+                                    try
+                                    {
+
+                                        //OnStopTransactionWSResponse?.Invoke(DateTime.UtcNow,
+                                        //                              this,
+                                        //                              Request,
+                                        //                              HTTPResponse);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                                #endregion
+
+
+                            #region IncomingDataTransfer
+
+                            case "IncomingDataTransfer":
+                                {
+
+                                    #region Send OnIncomingDataTransferWSRequest event
+
+                                    try
+                                    {
+
+                                        //OnIncomingDataTransferWSRequest?.Invoke(DateTime.UtcNow,
+                                        //                             this,
+                                        //                             RequestData);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    CS.DataTransferResponse response = null;
+
+                                    try
+                                    {
+
+                                        if (CP.DataTransferRequest.TryParse(RequestData,
+                                                                            RequestId.  Value,
+                                                                            chargeBoxId.Value,
+                                                                            out CP.DataTransferRequest  dataTransferRequest,
+                                                                            out                         ErrorResponse,
+                                                                            CustomDataTransferRequestParser))
+                                        {
+
+                                            #region Send OnIncomingDataTransferRequest event
+
+                                            try
+                                            {
+
+                                                OnIncomingDataTransferRequest?.Invoke(DateTime.UtcNow,
+                                                                                      this,
+                                                                                      EventTrackingId,
+                                                                                      dataTransferRequest);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            if (response == null)
+                                            {
+
+                                                var results = OnIncomingDataTransfer?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
+                                                                        (DateTime.UtcNow,
+                                                                         this,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         dataTransferRequest)).
+                                                                    ToArray();
+
+                                                if (results?.Length > 0)
+                                                {
+
+                                                    await Task.WhenAll(results);
+
+                                                    response = results.FirstOrDefault()?.Result;
+
+                                                }
+
+                                                if (results == null || response == null)
+                                                    response = CS.DataTransferResponse.Failed(dataTransferRequest);
+
+                                            }
+
+                                            #endregion
+
+                                            #region Send OnIncomingDataTransferResponse event
+
+                                            try
+                                            {
+
+                                                OnIncomingDataTransferResponse?.Invoke(response.ResponseTimestamp,
+                                                                                       this,
+                                                                                       EventTrackingId,
+                                                                                       dataTransferRequest,
+
+                                                                                       response.Result,
+                                                                                       response.Status,
+                                                                                       response.Data,
+                                                                                       response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponseJSON = response.ToJSON();
+
+                                        }
+
+                                        else
+                                            ErrorMessage =  new WSErrorMessage(RequestId.Value,
+                                                                               WSErrorCodes.FormationViolation,
+                                                                               "The given 'IncomingDataTransfer' request could not be parsed!",
+                                                                               new JObject(
+                                                                                   new JProperty("request", TextMessage)
+                                                                              ));
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        ErrorMessage = new WSErrorMessage(RequestId.Value,
+                                                                          WSErrorCodes.FormationViolation,
+                                                                          "Processing the given 'IncomingDataTransfer' request led to an exception!",
+                                                                          new JObject(
+                                                                              new JProperty("request",     TextMessage),
+                                                                              new JProperty("exception",   e.Message),
+                                                                              new JProperty("stacktrace",  e.StackTrace)
+                                                                          ));
+
+                                    }
+
+
+                                    #region Send OnIncomingDataTransferWSResponse event
+
+                                    try
+                                    {
+
+                                        //OnIncomingDataTransferWSResponse?.Invoke(DateTime.UtcNow,
+                                        //                              this,
+                                        //                              Request,
+                                        //                              HTTPResponse);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                                #endregion
+
+                            #region DiagnosticsStatusNotification
+
+                            case "DiagnosticsStatusNotification":
+                                {
+
+                                    #region Send OnDiagnosticsStatusNotificationWSRequest event
+
+                                    try
+                                    {
+
+                                        //OnDiagnosticsStatusNotificationWSRequest?.Invoke(DateTime.UtcNow,
+                                        //                             this,
+                                        //                             RequestData);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    DiagnosticsStatusNotificationResponse response = null;
+
+                                    try
+                                    {
+
+                                        if (DiagnosticsStatusNotificationRequest.TryParse(RequestData,
+                                                                                          RequestId.  Value,
+                                                                                          chargeBoxId.Value,
+                                                                                          out DiagnosticsStatusNotificationRequest  diagnosticsDiagnosticsStatusNotificationRequest,
+                                                                                          out                                       ErrorResponse,
+                                                                                          CustomDiagnosticsStatusNotificationRequestParser))
+                                        {
+
+                                            #region Send OnDiagnosticsStatusNotificationRequest event
+
+                                            try
+                                            {
+
+                                                OnDiagnosticsStatusNotificationRequest?.Invoke(diagnosticsDiagnosticsStatusNotificationRequest.RequestTimestamp,
+                                                                                               this,
+                                                                                               EventTrackingId,
+                                                                                               diagnosticsDiagnosticsStatusNotificationRequest);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            if (response == null)
+                                            {
+
+                                                var results = OnDiagnosticsStatusNotification?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationDelegate)
+                                                                        (DateTime.UtcNow,
+                                                                         this,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         diagnosticsDiagnosticsStatusNotificationRequest)).
+                                                                    ToArray();
+
+                                                if (results?.Length > 0)
+                                                {
+
+                                                    await Task.WhenAll(results);
+
+                                                    response = results.FirstOrDefault()?.Result;
+
+                                                }
+
+                                                if (results == null || response == null)
+                                                    response = DiagnosticsStatusNotificationResponse.Failed(diagnosticsDiagnosticsStatusNotificationRequest);
+
+                                            }
+
+                                            #endregion
+
+                                            #region Send OnDiagnosticsStatusNotificationResponse event
+
+                                            try
+                                            {
+
+                                                OnDiagnosticsStatusNotificationResponse?.Invoke(response.ResponseTimestamp,
+                                                                                                this,
+                                                                                                EventTrackingId,
+                                                                                                diagnosticsDiagnosticsStatusNotificationRequest,
+
+                                                                                                response.Result,
+                                                                                                response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponseJSON = response.ToJSON();
+
+                                        }
+
+                                        else
+                                            ErrorMessage =  new WSErrorMessage(RequestId.Value,
+                                                                               WSErrorCodes.FormationViolation,
+                                                                               "The given 'DiagnosticsStatusNotification' request could not be parsed!",
+                                                                               new JObject(
+                                                                                   new JProperty("request", TextMessage)
+                                                                              ));
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        ErrorMessage = new WSErrorMessage(RequestId.Value,
+                                                                          WSErrorCodes.FormationViolation,
+                                                                          "Processing the given 'DiagnosticsStatusNotification' request led to an exception!",
+                                                                          new JObject(
+                                                                              new JProperty("request",     TextMessage),
+                                                                              new JProperty("exception",   e.Message),
+                                                                              new JProperty("stacktrace",  e.StackTrace)
+                                                                          ));
+
+                                    }
+
+
+                                    #region Send OnDiagnosticsStatusNotificationWSResponse event
+
+                                    try
+                                    {
+
+                                        //OnDiagnosticsStatusNotificationWSResponse?.Invoke(DateTime.UtcNow,
+                                        //                              this,
+                                        //                              Request,
+                                        //                              HTTPResponse);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                                #endregion
+
+                            #region FirmwareStatusNotification
+
+                            case "FirmwareStatusNotification":
+                                {
+
+                                    #region Send OnFirmwareStatusNotificationWSRequest event
+
+                                    try
+                                    {
+
+                                        //OnFirmwareStatusNotificationWSRequest?.Invoke(DateTime.UtcNow,
+                                        //                             this,
+                                        //                             RequestData);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    FirmwareStatusNotificationResponse response = null;
+
+                                    try
+                                    {
+
+                                        if (FirmwareStatusNotificationRequest.TryParse(RequestData,
+                                                                                       RequestId.  Value,
+                                                                                       chargeBoxId.Value,
+                                                                                       out FirmwareStatusNotificationRequest  firmwareStatusNotificationRequest,
+                                                                                       out                                    ErrorResponse,
+                                                                                       CustomFirmwareStatusNotificationRequestParser))
+                                        {
+
+                                            #region Send OnFirmwareStatusNotificationRequest event
+
+                                            try
+                                            {
+
+                                                OnFirmwareStatusNotificationRequest?.Invoke(firmwareStatusNotificationRequest.RequestTimestamp,
+                                                                                            this,
+                                                                                            EventTrackingId,
+                                                                                            firmwareStatusNotificationRequest);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            if (response == null)
+                                            {
+
+                                                var results = OnFirmwareStatusNotification?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)
+                                                                        (DateTime.UtcNow,
+                                                                         this,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         firmwareStatusNotificationRequest)).
+                                                                    ToArray();
+
+                                                if (results?.Length > 0)
+                                                {
+
+                                                    await Task.WhenAll(results);
+
+                                                    response = results.FirstOrDefault()?.Result;
+
+                                                }
+
+                                                if (results == null || response == null)
+                                                    response = FirmwareStatusNotificationResponse.Failed(firmwareStatusNotificationRequest);
+
+                                            }
+
+                                            #endregion
+
+                                            #region Send OnFirmwareStatusNotificationResponse event
+
+                                            try
+                                            {
+
+                                                OnFirmwareStatusNotificationResponse?.Invoke(response.ResponseTimestamp,
+                                                                                             this,
+                                                                                             EventTrackingId,
+                                                                                             firmwareStatusNotificationRequest,
+
+                                                                                             response.Result,
+                                                                                             response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponseJSON = response.ToJSON();
+
+                                        }
+
+                                        else
+                                            ErrorMessage =  new WSErrorMessage(RequestId.Value,
+                                                                               WSErrorCodes.FormationViolation,
+                                                                               "The given 'FirmwareStatusNotification' request could not be parsed!",
+                                                                               new JObject(
+                                                                                   new JProperty("request", TextMessage)
+                                                                              ));
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        ErrorMessage = new WSErrorMessage(RequestId.Value,
+                                                                          WSErrorCodes.FormationViolation,
+                                                                          "Processing the given 'FirmwareStatusNotification' request led to an exception!",
+                                                                          new JObject(
+                                                                              new JProperty("request",     TextMessage),
+                                                                              new JProperty("exception",   e.Message),
+                                                                              new JProperty("stacktrace",  e.StackTrace)
+                                                                          ));
+
+                                    }
+
+
+                                    #region Send OnFirmwareStatusNotificationWSResponse event
+
+                                    try
+                                    {
+
+                                        //OnFirmwareStatusNotificationWSResponse?.Invoke(DateTime.UtcNow,
+                                        //                              this,
+                                        //                              Request,
+                                        //                              HTTPResponse);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                                #endregion
 
                         }
 

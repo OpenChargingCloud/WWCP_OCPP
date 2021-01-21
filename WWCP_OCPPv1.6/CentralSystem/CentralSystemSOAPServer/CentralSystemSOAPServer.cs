@@ -492,18 +492,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnBootNotificationRequest?.Invoke(bootNotificationRequest.RequestTimestamp,
                                                           this,
                                                           Request.EventTrackingId,
-
-                                                          OCPPHeader.ChargeBoxIdentity,
-
-                                                          bootNotificationRequest.ChargePointVendor,
-                                                          bootNotificationRequest.ChargePointModel,
-                                                          bootNotificationRequest.ChargePointSerialNumber,
-                                                          bootNotificationRequest.ChargeBoxSerialNumber,
-                                                          bootNotificationRequest.FirmwareVersion,
-                                                          bootNotificationRequest.Iccid,
-                                                          bootNotificationRequest.IMSI,
-                                                          bootNotificationRequest.MeterType,
-                                                          bootNotificationRequest.MeterSerialNumber);
+                                                          bootNotificationRequest);
 
                     }
                     catch (Exception e)
@@ -552,18 +541,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnBootNotificationResponse?.Invoke(response.ResponseTimestamp,
                                                            this,
                                                            Request.EventTrackingId,
-
-                                                           OCPPHeader.ChargeBoxIdentity,
-
-                                                           bootNotificationRequest.ChargePointVendor,
-                                                           bootNotificationRequest.ChargePointModel,
-                                                           bootNotificationRequest.ChargePointSerialNumber,
-                                                           bootNotificationRequest.ChargeBoxSerialNumber,
-                                                           bootNotificationRequest.FirmwareVersion,
-                                                           bootNotificationRequest.Iccid,
-                                                           bootNotificationRequest.IMSI,
-                                                           bootNotificationRequest.MeterType,
-                                                           bootNotificationRequest.MeterSerialNumber,
+                                                           bootNotificationRequest,
 
                                                            response.Result,
                                                            response.Status,
@@ -673,8 +651,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnHeartbeatRequest?.Invoke(heartbeatRequest.RequestTimestamp,
                                                    this,
                                                    Request.EventTrackingId,
-
-                                                   OCPPHeader.ChargeBoxIdentity);
+                                                   heartbeatRequest);
 
                     }
                     catch (Exception e)
@@ -723,8 +700,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnHeartbeatResponse?.Invoke(response.ResponseTimestamp,
                                                     this,
                                                     Request.EventTrackingId,
-
-                                                    OCPPHeader.ChargeBoxIdentity,
+                                                    heartbeatRequest,
 
                                                     response.Result,
                                                     response.CurrentTime,
@@ -833,10 +809,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnAuthorizeRequest?.Invoke(authorizeRequest.RequestTimestamp,
                                                    this,
                                                    Request.EventTrackingId,
-
-                                                   OCPPHeader.ChargeBoxIdentity,
-
-                                                   authorizeRequest.IdTag);
+                                                   authorizeRequest);
 
                     }
                     catch (Exception e)
@@ -858,7 +831,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
-                                               OCPPHeader.ChargeBoxIdentity,
                                                authorizeRequest)).
                                           ToArray();
 
@@ -886,10 +858,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnAuthorizeResponse?.Invoke(response.ResponseTimestamp,
                                                     this,
                                                     Request.EventTrackingId,
-
-                                                    OCPPHeader.ChargeBoxIdentity,
-
-                                                    authorizeRequest.IdTag,
+                                                    authorizeRequest,
 
                                                     response.Result,
                                                     response.IdTagInfo,
@@ -997,14 +966,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnStartTransactionRequest?.Invoke(startTransactionRequest.RequestTimestamp,
                                                           this,
                                                           Request.EventTrackingId,
-
-                                                          OCPPHeader.ChargeBoxIdentity,
-
-                                                          startTransactionRequest.ConnectorId,
-                                                          startTransactionRequest.IdTag,
-                                                          startTransactionRequest.StartTimestamp,
-                                                          startTransactionRequest.MeterStart,
-                                                          startTransactionRequest.ReservationId);
+                                                          startTransactionRequest);
 
                     }
                     catch (Exception e)
@@ -1026,7 +988,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
-                                               OCPPHeader.ChargeBoxIdentity,
                                                startTransactionRequest)).
                                           ToArray();
 
@@ -1054,14 +1015,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnStartTransactionResponse?.Invoke(response.ResponseTimestamp,
                                                            this,
                                                            Request.EventTrackingId,
-
-                                                           OCPPHeader.ChargeBoxIdentity,
-
-                                                           startTransactionRequest.ConnectorId,
-                                                           startTransactionRequest.IdTag,
-                                                           startTransactionRequest.StartTimestamp,
-                                                           startTransactionRequest.MeterStart,
-                                                           startTransactionRequest.ReservationId,
+                                                           startTransactionRequest,
 
                                                            response.Result,
                                                            response.TransactionId,
@@ -1170,16 +1124,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnStatusNotificationRequest?.Invoke(statusNotificationRequest.RequestTimestamp,
                                                             this,
                                                             Request.EventTrackingId,
-
-                                                            OCPPHeader.ChargeBoxIdentity,
-
-                                                            statusNotificationRequest.ConnectorId,
-                                                            statusNotificationRequest.Status,
-                                                            statusNotificationRequest.ErrorCode,
-                                                            statusNotificationRequest.Info,
-                                                            statusNotificationRequest.StatusTimestamp,
-                                                            statusNotificationRequest.VendorId,
-                                                            statusNotificationRequest.VendorErrorCode);
+                                                            statusNotificationRequest);
 
                     }
                     catch (Exception e)
@@ -1201,7 +1146,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
-                                               OCPPHeader.ChargeBoxIdentity,
                                                statusNotificationRequest)).
                                           ToArray();
 
@@ -1229,16 +1173,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnStatusNotificationResponse?.Invoke(response.ResponseTimestamp,
                                                              this,
                                                              Request.EventTrackingId,
-
-                                                             OCPPHeader.ChargeBoxIdentity,
-
-                                                             statusNotificationRequest.ConnectorId,
-                                                             statusNotificationRequest.Status,
-                                                             statusNotificationRequest.ErrorCode,
-                                                             statusNotificationRequest.Info,
-                                                             statusNotificationRequest.StatusTimestamp,
-                                                             statusNotificationRequest.VendorId,
-                                                             statusNotificationRequest.VendorErrorCode,
+                                                             statusNotificationRequest,
 
                                                              response.Result,
                                                              response.Runtime);
@@ -1345,12 +1280,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnMeterValuesRequest?.Invoke(meterValuesRequest.RequestTimestamp,
                                                      this,
                                                      Request.EventTrackingId,
-
-                                                     OCPPHeader.ChargeBoxIdentity,
-
-                                                     meterValuesRequest.ConnectorId,
-                                                     meterValuesRequest.TransactionId,
-                                                     meterValuesRequest.MeterValues);
+                                                     meterValuesRequest);
 
                     }
                     catch (Exception e)
@@ -1372,7 +1302,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
-                                               OCPPHeader.ChargeBoxIdentity,
                                                meterValuesRequest)).
                                           ToArray();
 
@@ -1400,12 +1329,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnMeterValuesResponse?.Invoke(response.ResponseTimestamp,
                                                       this,
                                                       Request.EventTrackingId,
-
-                                                      OCPPHeader.ChargeBoxIdentity,
-
-                                                      meterValuesRequest.ConnectorId,
-                                                      meterValuesRequest.TransactionId,
-                                                      meterValuesRequest.MeterValues,
+                                                      meterValuesRequest,
 
                                                       response.Result,
                                                       response.Runtime);
@@ -1512,15 +1436,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnStopTransactionRequest?.Invoke(stopTransactionRequest.RequestTimestamp,
                                                          this,
                                                          Request.EventTrackingId,
-
-                                                         OCPPHeader.ChargeBoxIdentity,
-
-                                                         stopTransactionRequest.TransactionId,
-                                                         stopTransactionRequest.Timestamp,
-                                                         stopTransactionRequest.MeterStop,
-                                                         stopTransactionRequest.IdTag,
-                                                         stopTransactionRequest.Reason,
-                                                         stopTransactionRequest.TransactionData);
+                                                         stopTransactionRequest);
 
                     }
                     catch (Exception e)
@@ -1542,7 +1458,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
-                                               OCPPHeader.ChargeBoxIdentity,
                                                stopTransactionRequest)).
                                           ToArray();
 
@@ -1570,15 +1485,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnStopTransactionResponse?.Invoke(response.ResponseTimestamp,
                                                           this,
                                                           Request.EventTrackingId,
-
-                                                          OCPPHeader.ChargeBoxIdentity,
-
-                                                          stopTransactionRequest.TransactionId,
-                                                          stopTransactionRequest.Timestamp,
-                                                          stopTransactionRequest.MeterStop,
-                                                          stopTransactionRequest.IdTag,
-                                                          stopTransactionRequest.Reason,
-                                                          stopTransactionRequest.TransactionData,
+                                                          stopTransactionRequest,
 
                                                           response.Result,
                                                           response.IdTagInfo,
@@ -1688,12 +1595,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnIncomingDataTransferRequest?.Invoke(dataTransferRequest.RequestTimestamp,
                                                               this,
                                                               Request.EventTrackingId,
-
-                                                              OCPPHeader.ChargeBoxIdentity,
-
-                                                              dataTransferRequest.VendorId,
-                                                              dataTransferRequest.MessageId,
-                                                              dataTransferRequest.Data);
+                                                              dataTransferRequest);
 
                     }
                     catch (Exception e)
@@ -1715,7 +1617,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
-                                               OCPPHeader.ChargeBoxIdentity,
                                                dataTransferRequest)).
                                           ToArray();
 
@@ -1743,12 +1644,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnIncomingDataTransferResponse?.Invoke(response.ResponseTimestamp,
                                                                this,
                                                                Request.EventTrackingId,
-
-                                                               OCPPHeader.ChargeBoxIdentity,
-
-                                                               dataTransferRequest.VendorId,
-                                                               dataTransferRequest.Data,
-                                                               dataTransferRequest.MessageId,
+                                                               dataTransferRequest,
 
                                                                response.Result,
                                                                response.Status,
@@ -1858,10 +1754,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnDiagnosticsStatusNotificationRequest?.Invoke(diagnosticsStatusNotificationRequest.RequestTimestamp,
                                                                        this,
                                                                        Request.EventTrackingId,
-
-                                                                       OCPPHeader.ChargeBoxIdentity,
-
-                                                                       diagnosticsStatusNotificationRequest.Status);
+                                                                       diagnosticsStatusNotificationRequest);
 
                     }
                     catch (Exception e)
@@ -1883,7 +1776,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
-                                               OCPPHeader.ChargeBoxIdentity,
                                                diagnosticsStatusNotificationRequest)).
                                           ToArray();
 
@@ -1911,10 +1803,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnDiagnosticsStatusNotificationResponse?.Invoke(response.ResponseTimestamp,
                                                                         this,
                                                                         Request.EventTrackingId,
-
-                                                                        OCPPHeader.ChargeBoxIdentity,
-
-                                                                        diagnosticsStatusNotificationRequest.Status,
+                                                                        diagnosticsStatusNotificationRequest,
 
                                                                         response.Result,
                                                                         response.Runtime);
@@ -2022,10 +1911,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnFirmwareStatusNotificationRequest?.Invoke(firmwareStatusNotificationRequest.RequestTimestamp,
                                                                     this,
                                                                     Request.EventTrackingId,
-
-                                                                    OCPPHeader.ChargeBoxIdentity,
-
-                                                                    firmwareStatusNotificationRequest.Status);
+                                                                    firmwareStatusNotificationRequest);
 
                     }
                     catch (Exception e)
@@ -2047,7 +1933,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
-                                               OCPPHeader.ChargeBoxIdentity,
                                                firmwareStatusNotificationRequest)).
                                           ToArray();
 
@@ -2075,10 +1960,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         OnFirmwareStatusNotificationResponse?.Invoke(response.ResponseTimestamp,
                                                                      this,
                                                                      Request.EventTrackingId,
-
-                                                                     OCPPHeader.ChargeBoxIdentity,
-
-                                                                     firmwareStatusNotificationRequest.Status,
+                                                                     firmwareStatusNotificationRequest,
 
                                                                      response.Result,
                                                                      response.Runtime);
