@@ -48,18 +48,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CentralSystem\CentralSystemSOAPClient\ICSClient.cs" />
-    <Compile Include="CentralSystem\CentralSystemSOAPClient\CSClientLogger.cs" />
-    <Compile Include="CentralSystem\CentralSystemSOAPClient\CentralSystemSOAPClient.cs" />
-    <Compile Include="CentralSystem\CentralSystemSOAPClient\CSClientDelegates.cs" />
-    <Compile Include="CentralSystem\CentralSystemSOAPServer\CSServerLogger.cs" />
+    <Compile Include="CentralSystem\SOAPClient\ICSClient.cs" />
+    <Compile Include="CentralSystem\SOAPClient\CSClientLogger.cs" />
+    <Compile Include="CentralSystem\SOAPClient\CentralSystemSOAPClient.cs" />
+    <Compile Include="CentralSystem\CSClientDelegates.cs" />
+    <Compile Include="CentralSystem\SOAPServer\CSServerLogger.cs" />
     <Compile Include="DataTypes\Ids\Request_Id.cs" />
     <Compile Include="IO\WSErrorMessage.cs" />
     <Compile Include="IO\WSErrorCodes.cs" />
     <Compile Include="IO\WSResponseMessage.cs" />
     <Compile Include="IO\WSMessageTypes.cs" />
     <Compile Include="IO\WSRequest.cs" />
-    <Compile Include="CentralSystem\CentralSystemWS\CentralSystemWSServer.cs" />
+    <Compile Include="CentralSystem\WebSockets\CentralSystemWSServer.cs" />
     <Compile Include="ChargePoint\ChargePointSOAPClient\ICPClient.cs" />
     <Compile Include="ChargePoint\ChargePointSOAPClient\ChargePointSOAPClient.cs" />
     <Compile Include="ChargePoint\ChargePointSOAPClient\CPClientDelegates.cs" />
@@ -115,8 +115,8 @@
     <Compile Include="DataTypes\Enums\UpdateTypes.cs" />
     <Compile Include="DataTypes\Enums\ResetTypes.cs" />
     <Compile Include="DataTypes\Enums\UnlockStatus.cs" />
-    <Compile Include="CentralSystem\CentralSystemSOAPServer\CSServerDelegates.cs" />
-    <Compile Include="CentralSystem\CentralSystemSOAPServer\CentralSystemSOAPServer.cs" />
+    <Compile Include="CentralSystem\CSServerDelegates.cs" />
+    <Compile Include="CentralSystem\SOAPServer\CentralSystemSOAPServer.cs" />
     <Compile Include="DataTypes\Complex\IdTagInfo.cs" />
     <Compile Include="DataTypes\Ids\IdToken.cs" />
     <Compile Include="DataTypes\Enums\AuthorizationStatus.cs" />

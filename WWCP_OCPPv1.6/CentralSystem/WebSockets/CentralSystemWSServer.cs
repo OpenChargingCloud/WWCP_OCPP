@@ -49,27 +49,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The default HTTP/SOAP/XML server name.
         /// </summary>
-        public new const String DefaultHTTPServerName = "GraphDefined OCPP " + Version.Number + " HTTP/SOAP/XML Central System API";
+        public const String                     DefaultHTTPServerName   = "GraphDefined OCPP " + Version.Number + " HTTP/WebSocket/JSON Central System API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server TCP port.
         /// </summary>
-        public new static readonly IPPort DefaultHTTPServerPort = IPPort.Parse(2010);
+        public static readonly IPPort           DefaultHTTPServerPort   = IPPort.Parse(2010);
 
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
         /// </summary>
-        public new static readonly HTTPPath DefaultURLPrefix = HTTPPath.Parse("/" + Version.Number);
+        public static readonly HTTPPath         DefaultURLPrefix        = HTTPPath.Parse("/" + Version.Number);
 
         /// <summary>
         /// The default HTTP/SOAP/XML content type.
         /// </summary>
-        public new static readonly HTTPContentType DefaultContentType = HTTPContentType.XMLTEXT_UTF8;
+        public static readonly HTTPContentType  DefaultContentType      = HTTPContentType.XMLTEXT_UTF8;
 
         /// <summary>
         /// The default request timeout.
         /// </summary>
-        public new static readonly TimeSpan DefaultRequestTimeout = TimeSpan.FromMinutes(1);
+        public static readonly TimeSpan         DefaultRequestTimeout   = TimeSpan.FromMinutes(1);
 
         #endregion
 
