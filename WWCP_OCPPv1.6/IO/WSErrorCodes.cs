@@ -75,7 +75,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// <summary>
         /// Any other error not covered by the previous ones.
         /// </summary>
-        GenericError
+        GenericError,
+
+
+
+        Timeout
 
     }
 

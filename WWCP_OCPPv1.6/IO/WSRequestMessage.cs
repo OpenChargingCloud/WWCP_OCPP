@@ -36,9 +36,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         public JObject     Data         { get; }
 
 
-        private WSRequestMessage(Request_Id  RequestId,
-                                 String      Action,
-                                 JObject     Data)
+        public WSRequestMessage(Request_Id  RequestId,
+                                String      Action,
+                                JObject     Data)
         {
 
             this.RequestId  = RequestId;

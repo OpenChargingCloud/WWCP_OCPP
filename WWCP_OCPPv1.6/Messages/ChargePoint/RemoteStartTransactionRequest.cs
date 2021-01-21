@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A remote start transaction request.
+    /// The remote start transaction request.
     /// </summary>
     public class RemoteStartTransactionRequest : ARequest<RemoteStartTransactionRequest>
     {
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a RemoteStartTransaction XML/SOAP request.
+        /// Create a new RemoteStartTransaction request.
         /// </summary>
         /// <param name="IdTag">The identification tag to start the charging transaction.</param>
         /// <param name="ConnectorId">An optional connector identification on which the charging transaction should be started (SHALL be > 0).</param>
@@ -70,13 +70,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                              Connector_Id?    ConnectorId       = null,
                                              ChargingProfile  ChargingProfile   = null)
         {
-
-            #region Initial checks
-
-            if (IdTag.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(IdTag),  "The given identification tag must not be null!");
-
-            #endregion
 
             this.IdTag            = IdTag;
             this.ConnectorId      = ConnectorId;

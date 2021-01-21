@@ -19,18 +19,19 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
-using cloud.charging.open.protocols.OCPPv1_6.CP;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
-using Newtonsoft.Json.Linq;
-using System.Threading;
+
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
 
 #endregion
@@ -43,6 +44,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     public class CentralSystemWSServer : WebSocketServer
     {
+
+        public class WSReq
+        {
+
+            public DateTime          Timestamp           { get; }
+            public String            ClientId            { get; }
+            public WSRequestMessage  WSRequestMessage    { get; }
+            public DateTime          Timeout             { get; }
+            public JObject           Response            { get; set; }
+            public WSErrorCodes?     ErrorCode           { get; set; }
+            public String            ErrorDescription    { get; set; }
+            public JObject           ErrorDetails        { get; set; }
+
+            public WSReq(DateTime          Timestamp,
+                         String            ClientId,
+                         WSRequestMessage  WSRequestMessage,
+                         DateTime          Timeout)
+            {
+
+                this.Timestamp         = Timestamp;
+                this.ClientId          = ClientId;
+                this.WSRequestMessage  = WSRequestMessage;
+                this.Timeout           = Timeout;
+
+            }
+
+        }
+
 
         #region Data
 
@@ -74,6 +103,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
         #region Properties
+
+        public List<WSReq> requests;
 
         /// <summary>
         /// A delegate to parse custom BootNotification requests.
@@ -462,6 +493,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             base.OnTextMessage += ProcessTextMessages;
+            this.requests = new List<WSReq>();
 
             //if (AutoStart)
             //    Start();
@@ -485,6 +517,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             base.OnTextMessage += ProcessTextMessages;
+            this.requests = new List<WSReq>();
 
         }
 
@@ -2199,6 +2232,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          JSON[2].Type == JTokenType.Object)
                 {
 
+                    lock (requests)
+                    {
+                        var request = requests.FirstOrDefault(rr => rr.WSRequestMessage.RequestId == Request_Id.Parse(JSON[1]?.Value<String>()));
+                        if (request != null)
+                            request.Response = JSON[2] as JObject;
+                    }
 
                 }
 
@@ -2238,6 +2277,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          JSON[4].Type == JTokenType.Object)
                 {
 
+                    lock (requests)
+                    {
+
+                        var request = requests.FirstOrDefault(rr => rr.WSRequestMessage.RequestId == Request_Id.Parse(JSON[1]?.Value<String>()));
+                        if (request != null)
+                        {
+
+                            if (Enum.TryParse(JSON[2]?.Value<String>(), out WSErrorCodes errorCode))
+                                request.ErrorCode = errorCode;
+                            else
+                                request.ErrorCode = WSErrorCodes.GenericError;
+
+                            request.ErrorDescription  = JSON[3]?.Value<String>();
+                            request.ErrorDetails      = JSON[4] as JObject;
+
+                        }
+
+                    }
 
                 }
 
@@ -2276,6 +2333,150 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         }
 
         #endregion
+
+
+        public enum RES
+        {
+            ok,
+            failed
+        }
+
+
+        public async Task<RES> Send(String    ClientId,
+                                    String    Action,
+                                    JObject   Data,
+                                    DateTime  Timeout)
+        {
+
+            try
+            {
+
+                var webSocketConnection  = WebSocketConnections.FirstOrDefault(ws => ws.HTTPPath.ToString().EndsWith(ClientId));
+                var networkStream        = webSocketConnection.TcpClient.GetStream();
+                var request              = new WSRequestMessage(Request_Id.Random(),
+                                                                Action,
+                                                                Data);
+
+                requests.Add(new WSReq(DateTime.UtcNow,
+                                       ClientId,
+                                       request,
+                                       Timeout));
+
+                var WSFrame              = new WebSocketFrame(WebSocketFrame.Fin.Final,
+                                                              WebSocketFrame.MaskStatus.Off,
+                                                              new Byte[4],
+                                                              WebSocketFrame.Opcodes.Text,
+                                                              request.ToJSON().ToString(Newtonsoft.Json.Formatting.None).ToUTF8Bytes(),
+                                                              WebSocketFrame.Rsv.Off,
+                                                              WebSocketFrame.Rsv.Off,
+                                                              WebSocketFrame.Rsv.Off);
+
+                await networkStream.WriteAsync(WSFrame.ToByteArray());
+                return RES.ok;
+
+            }
+            catch (Exception e)
+            {
+                return RES.failed;
+            }
+
+        }
+
+
+
+        public async Task<RemoteStartTransactionResponse> RemoteStartTransaction(String                         ClientId,
+                                                                                 RemoteStartTransactionRequest  Request,
+                                                                                 TimeSpan?                      Timeout = null)
+        {
+
+            var yy = await XXX(ClientId,
+                               "RemoteStartTransaction",
+                               Request.RequestId,
+                               Request.ToJSON(),
+                               Timeout);
+
+            if (yy?.Response != null)
+            {
+
+                if (RemoteStartTransactionResponse.TryParse(Request,
+                                                            yy.Response,
+                                                            out RemoteStartTransactionResponse remoteStartTransactionResponse))
+                {
+                    return remoteStartTransactionResponse;
+                }
+
+                return new RemoteStartTransactionResponse(Request,
+                                                          RemoteStartStopStatus.Unknown);
+
+            }
+
+            if (yy?.ErrorCode.HasValue == true)
+            {
+
+                return new RemoteStartTransactionResponse(Request,
+                                                          RemoteStartStopStatus.Unknown);
+
+            }
+
+            return new RemoteStartTransactionResponse(Request,
+                                                      RemoteStartStopStatus.Unknown);
+
+        }
+
+        public async Task<WSReq> XXX(String      ClientId,
+                                     String      Action,
+                                     Request_Id  RequestId,
+                                     JObject     Request,
+                                     TimeSpan?   Timeout = null)
+        {
+
+            var endTime = DateTime.UtcNow + (Timeout ?? TimeSpan.FromMinutes(3));
+
+            var res = await Send(ClientId,
+                                 Action,
+                                 Request,
+                                 endTime);
+
+            WSReq request = null;
+
+            do
+            {
+
+                await Task.Delay(25);
+
+                lock (requests)
+                {
+                    request = requests.FirstOrDefault(rr => rr.WSRequestMessage.RequestId == RequestId);
+                }
+
+                if (request?.Response != null || request?.ErrorCode.HasValue == true)
+                {
+
+                    lock (requests)
+                    {
+                        requests.Remove(request);
+                    }
+
+                    return request;
+
+                }
+
+            }
+            while (DateTime.UtcNow < endTime);
+
+            lock (requests)
+            {
+
+                request = requests.FirstOrDefault(rr => rr.WSRequestMessage.RequestId == RequestId);
+
+                if (request != null)
+                    request.ErrorCode = WSErrorCodes.Timeout;
+
+                return request;
+
+            }
+
+        }
 
 
     }
