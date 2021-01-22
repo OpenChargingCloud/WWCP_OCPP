@@ -79,6 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                              DateTime?        RequestTimestamp   = null)
 
             : base(ChargeBoxId,
+                   "RemoteStartTransaction",
                    RequestId,
                    RequestTimestamp)
 
@@ -643,10 +644,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CustomChargingProfileSerializer">A delegate to serialize custom charging profiles.</param>
         /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedule requests.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<RemoteStartTransactionRequest> CustomRemoteStartTransactionRequestSerializer  = null,
-                              CustomJObjectSerializerDelegate<ChargingProfile>               CustomChargingProfileSerializer                = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedule>              CustomChargingScheduleSerializer               = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>        CustomChargingSchedulePeriodSerializer         = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<RemoteStartTransactionRequest> CustomRemoteStartTransactionRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<ChargingProfile>               CustomChargingProfileSerializer                 = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedule>              CustomChargingScheduleSerializer                = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>        CustomChargingSchedulePeriodSerializer          = null)
         {
 
             var JSON = JSONObject.Create(

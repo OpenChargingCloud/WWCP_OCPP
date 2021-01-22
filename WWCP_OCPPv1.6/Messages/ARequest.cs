@@ -55,6 +55,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         [Mandatory]
         public ChargeBox_Id  ChargeBoxId         { get; }
 
+        /// <summary>
+        /// WebSocket Action.
+        /// </summary>
+        [Mandatory]
+        public String        WebSocketAction     { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -75,14 +81,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Create a new generic request message.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="WebSocketAction">WebSocket Action.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         public ARequest(ChargeBox_Id  ChargeBoxId,
+                        String        WebSocketAction,
                         Request_Id?   RequestId          = null,
                         DateTime?     RequestTimestamp   = null)
         {
 
             this.ChargeBoxId       = ChargeBoxId;
+            this.WebSocketAction   = WebSocketAction;
             this.RequestId         = RequestId        ?? Request_Id.Random();
             this.RequestTimestamp  = RequestTimestamp ?? DateTime.UtcNow;
 

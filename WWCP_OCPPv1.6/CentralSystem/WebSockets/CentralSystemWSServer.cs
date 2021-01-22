@@ -45,6 +45,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     public class CentralSystemWSServer : WebSocketServer
     {
 
+        #region (enum)  SendJSONResults
+
+        public enum SendJSONResults
+        {
+            ok,
+            unknownClient,
+            failed
+        }
+
+        #endregion
+
+        #region (class) SendRequestResult
+
         public class SendRequestResult
         {
 
@@ -71,6 +84,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
         }
+
+        #endregion
 
 
         #region Data
@@ -456,6 +471,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region Custom JSON serializer delegates
+        public CustomJObjectSerializerDelegate<RemoteStartTransactionRequest> CustomRemoteStartTransactionRequestSerializer   { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfile>               CustomChargingProfileSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedule>              CustomChargingScheduleSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>        CustomChargingSchedulePeriodSerializer          { get; set; }
+
+        #endregion
+
         #region Constructor(s)
 
         #region CentralSystemWSServer(HTTPServerName, TCPPort = default, URLPrefix = default, ContentType = default, DNSClient = null, AutoStart = false)
@@ -530,6 +553,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
+        #region (protected) ProcessNewConnection(RequestTimestamp, Connection, EventTrackingId, CancellationToken)
 
         protected async Task ProcessNewConnection(DateTime             RequestTimestamp,
                                                   WebSocketConnection  Connection,
@@ -542,7 +566,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         }
 
-        #region (protected) ProcessTextMessages(RequestTimestamp, Connection, EventTrackingId, CancellationToken, TextMessage)
+        #endregion
+
+        #region (protected) ProcessTextMessages (RequestTimestamp, Connection, EventTrackingId, CancellationToken, TextMessage)
 
         /// <summary>
         /// Process all text messages of this web socket API.
@@ -2351,50 +2377,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        public enum SendJSONResults
-        {
-            ok,
-            unknownClient,
-            failed
-        }
-
-        public async Task<RemoteStartTransactionResponse> RemoteStartTransaction(RemoteStartTransactionRequest  Request,
-                                                                                 TimeSpan?                      Timeout = null)
-        {
-
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           "RemoteStartTransaction",
-                                           Request.ToJSON(),
-                                           Timeout);
-
-            if (result?.Response != null)
-            {
-
-                if (RemoteStartTransactionResponse.TryParse(Request,
-                                                            result.Response,
-                                                            out RemoteStartTransactionResponse remoteStartTransactionResponse))
-                {
-                    return remoteStartTransactionResponse;
-                }
-
-                return new RemoteStartTransactionResponse(Request,
-                                                          RemoteStartStopStatus.Unknown);
-
-            }
-
-            if (result?.ErrorCode.HasValue == true)
-            {
-
-                return new RemoteStartTransactionResponse(Request,
-                                                          RemoteStartStopStatus.Unknown);
-
-            }
-
-            return new RemoteStartTransactionResponse(Request,
-                                                      RemoteStartStopStatus.Unknown);
-
-        }
+        #region SendRequest(RequestId, ClientId, Action, Request, Timeout = null)
 
         public async Task<SendRequestResult> SendRequest(Request_Id    RequestId,
                                                          ChargeBox_Id  ClientId,
@@ -2481,6 +2464,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         }
 
+        #endregion
+
+        #region SendJSON   (RequestId, ClientId, Action, Data,    Timeout)
 
         public async Task<SendJSONResults> SendJSON(Request_Id    RequestId,
                                                     ChargeBox_Id  ClientId,
@@ -2537,6 +2523,73 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
         }
+
+        #endregion
+
+
+        #region RemoteStartTransaction(ChargeBoxId, IdTag, ConnectorId = null, ChargingProfile = null, ...)
+
+        public Task<RemoteStartTransactionResponse> RemoteStartTransaction(ChargeBox_Id     ChargeBoxId,
+                                                                           IdToken          IdTag,
+                                                                           Connector_Id?    ConnectorId        = null,
+                                                                           ChargingProfile  ChargingProfile    = null,
+
+                                                                           Request_Id?      RequestId          = null,
+                                                                           DateTime?        RequestTimestamp   = null,
+                                                                           TimeSpan?        Timeout            = null)
+
+            => RemoteStartTransaction(new RemoteStartTransactionRequest(ChargeBoxId,
+                                                                        IdTag,
+                                                                        ConnectorId,
+                                                                        ChargingProfile,
+                                                                        RequestId,
+                                                                        RequestTimestamp),
+                                      Timeout);
+
+
+        public async Task<RemoteStartTransactionResponse> RemoteStartTransaction(RemoteStartTransactionRequest  Request,
+                                                                                 TimeSpan?                      Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomRemoteStartTransactionRequestSerializer,
+                                                          CustomChargingProfileSerializer,
+                                                          CustomChargingScheduleSerializer,
+                                                          CustomChargingSchedulePeriodSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (RemoteStartTransactionResponse.TryParse(Request,
+                                                            result.Response,
+                                                            out RemoteStartTransactionResponse remoteStartTransactionResponse))
+                {
+                    return remoteStartTransactionResponse;
+                }
+
+                return new RemoteStartTransactionResponse(Request,
+                                                          RemoteStartStopStatus.Unknown);
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new RemoteStartTransactionResponse(Request,
+                                                          RemoteStartStopStatus.Unknown);
+
+            }
+
+            return new RemoteStartTransactionResponse(Request,
+                                                      RemoteStartStopStatus.Unknown);
+
+        }
+
+        #endregion
+
 
     }
 

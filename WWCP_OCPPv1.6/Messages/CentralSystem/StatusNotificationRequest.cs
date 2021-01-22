@@ -106,6 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                          DateTime?              RequestTimestamp   = null)
 
             : base(ChargeBoxId,
+                   "StatusNotification",
                    RequestId,
                    RequestTimestamp)
 
