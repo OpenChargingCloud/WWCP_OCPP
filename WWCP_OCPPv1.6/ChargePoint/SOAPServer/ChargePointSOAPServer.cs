@@ -302,9 +302,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
                 var _OCPPHeader         = SOAPHeader.Parse(HeaderXML);
-                var _ReserveNowRequest  = ReserveNowRequest.Parse(ReserveNowXML);
+                var _ReserveNowRequest  = ReserveNowRequest.Parse(ReserveNowXML,
+                                                                  Request_Id.Parse(_OCPPHeader.MessageId),
+                                                                  _OCPPHeader.ChargeBoxIdentity);
 
-                ReserveNowResponse response            = null;
+                ReserveNowResponse response = null;
 
 
 
@@ -417,9 +419,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
                 var _OCPPHeader                = SOAPHeader.Parse(HeaderXML);
-                var _CancelReservationRequest  = CancelReservationRequest.Parse(CancelReservationXML);
+                var _CancelReservationRequest  = CancelReservationRequest.Parse(CancelReservationXML,
+                                                                                Request_Id.Parse(_OCPPHeader.MessageId),
+                                                                                _OCPPHeader.ChargeBoxIdentity);
 
-                CancelReservationResponse response            = null;
+                CancelReservationResponse response = null;
 
 
 
@@ -640,9 +644,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
                 var _OCPPHeader                    = SOAPHeader.Parse(HeaderXML);
-                var _RemoteStopTransactionRequest  = RemoteStopTransactionRequest.Parse(RemoteStopTransactionXML);
+                var _RemoteStopTransactionRequest  = RemoteStopTransactionRequest.Parse(RemoteStopTransactionXML,
+                                                                                        Request_Id.Parse(_OCPPHeader.MessageId),
+                                                                                        _OCPPHeader.ChargeBoxIdentity);
 
-                RemoteStopTransactionResponse response            = null;
+                RemoteStopTransactionResponse response = null;
 
 
 

@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -31,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A reserve now request.
+    /// The reserve now request.
     /// </summary>
     public class ReserveNowRequest : ARequest<ReserveNowRequest>
     {
@@ -73,30 +72,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Create a reserve now request.
         /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The identification of the connector to be reserved. A value of 0 means that the reservation is not for a specific connector.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
         /// <param name="IdTag">The identifier for which the charge point has to reserve a connector.</param>
         /// <param name="ParentIdTag">An optional ParentIdTag.</param>
-        public ReserveNowRequest(Connector_Id    ConnectorId,
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public ReserveNowRequest(ChargeBox_Id    ChargeBoxId,
+                                 Connector_Id    ConnectorId,
                                  Reservation_Id  ReservationId,
                                  DateTime        ExpiryDate,
                                  IdToken         IdTag,
-                                 IdToken?        ParentIdTag = null)
+                                 IdToken?        ParentIdTag = null,
+
+                                 Request_Id?     RequestId          = null,
+                                 DateTime?       RequestTimestamp   = null)
+
+            : base(ChargeBoxId,
+                   "ReserveNow",
+                   RequestId,
+                   RequestTimestamp)
+
         {
-
-            #region Initial checks
-
-            if (ConnectorId.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ConnectorId),    "The given unique connector identification must not be null!");
-
-            if (ReservationId.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ReservationId),  "The given unique reservation identification must not be null!");
-
-            if (IdTag         == null)
-                throw new ArgumentNullException(nameof(IdTag),          "The given identification tag must not be null!");
-
-            #endregion
 
             this.ConnectorId    = ConnectorId;
             this.ReservationId  = ReservationId;
@@ -172,87 +172,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (ReserveNowRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a reserve now request.
         /// </summary>
-        /// <param name="ReserveNowRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ReserveNowRequest Parse(XElement             ReserveNowRequestXML,
+        public static ReserveNowRequest Parse(XElement             XML,
+                                              Request_Id           RequestId,
+                                              ChargeBox_Id         ChargeBoxId,
                                               OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(ReserveNowRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out ReserveNowRequest reserveNowRequest,
                          OnException))
             {
                 return reserveNowRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a ReserveNow request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (ReserveNowRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given JSON representation of a reserve now request.
         /// </summary>
-        /// <param name="ReserveNowRequestJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ReserveNowRequest Parse(JObject              ReserveNowRequestJSON,
-                                              OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomReserveNowRequestParser">A delegate to parse custom CustomReserveNow requests.</param>
+        public static ReserveNowRequest Parse(JObject                                         JSON,
+                                              Request_Id                                      RequestId,
+                                              ChargeBox_Id                                    ChargeBoxId,
+                                              CustomJObjectParserDelegate<ReserveNowRequest>  CustomReserveNowRequestParser   = null)
         {
 
-            if (TryParse(ReserveNowRequestJSON,
-                         out ReserveNowRequest reserveNowRequest,
-                         OnException))
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out ReserveNowRequest  reserveNowRequest,
+                         out String             ErrorResponse,
+                         CustomReserveNowRequestParser))
             {
                 return reserveNowRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a ReserveNow request is invalid: " + ErrorResponse, nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (ReserveNowRequestText, OnException = null)
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a reserve now request.
         /// </summary>
-        /// <param name="ReserveNowRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ReserveNowRequest Parse(String               ReserveNowRequestText,
+        public static ReserveNowRequest Parse(String               Text,
+                                              Request_Id           RequestId,
+                                              ChargeBox_Id         ChargeBoxId,
                                               OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(ReserveNowRequestText,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out ReserveNowRequest reserveNowRequest,
                          OnException))
             {
                 return reserveNowRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a ReserveNow request is invalid!", nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParse(ReserveNowRequestXML,  out ReserveNowRequest, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out ReserveNowRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a reserve now request.
         /// </summary>
-        /// <param name="ReserveNowRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement               ReserveNowRequestXML,
+        public static Boolean TryParse(XElement               XML,
+                                       Request_Id             RequestId,
+                                       ChargeBox_Id           ChargeBoxId,
                                        out ReserveNowRequest  ReserveNowRequest,
                                        OnExceptionDelegate    OnException  = null)
         {
@@ -262,20 +285,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 ReserveNowRequest = new ReserveNowRequest(
 
-                                        ReserveNowRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "connectorId",
+                                        ChargeBoxId,
+
+                                        XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "connectorId",
                                                                                 Connector_Id.Parse),
 
-                                        ReserveNowRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "reservationId",
+                                        XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "reservationId",
                                                                                 Reservation_Id.Parse),
 
-                                        ReserveNowRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "expiryDate",
+                                        XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "expiryDate",
                                                                                 DateTime.Parse),
 
-                                        ReserveNowRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "idTag",
+                                        XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "idTag",
                                                                                 IdToken.Parse),
 
-                                        ReserveNowRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "parentIdTag",
-                                                                                IdToken.Parse)
+                                        XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "parentIdTag",
+                                                                                IdToken.Parse),
+
+                                        RequestId
 
                                     );
 
@@ -285,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, ReserveNowRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 ReserveNowRequest = null;
                 return false;
@@ -296,17 +323,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(ReserveNowRequestJSON, out ReserveNowRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out ReserveNowRequest, OnException = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a reserve now request.
         /// </summary>
-        /// <param name="ReserveNowRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                ReserveNowRequestJSON,
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                JSON,
+                                       Request_Id             RequestId,
+                                       ChargeBox_Id           ChargeBoxId,
                                        out ReserveNowRequest  ReserveNowRequest,
-                                       OnExceptionDelegate    OnException  = null)
+                                       out String             ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out ReserveNowRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a reserve now request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomReserveNowRequestParser">A delegate to parse custom ReserveNowRequest requests.</param>
+        public static Boolean TryParse(JObject                                         JSON,
+                                       Request_Id                                      RequestId,
+                                       ChargeBox_Id                                    ChargeBoxId,
+                                       out ReserveNowRequest                           ReserveNowRequest,
+                                       out String                                      ErrorResponse,
+                                       CustomJObjectParserDelegate<ReserveNowRequest>  CustomReserveNowRequestParser)
         {
 
             try
@@ -316,11 +373,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ConnectorId
 
-                if (!ReserveNowRequestJSON.ParseMandatory("connectorId",
-                                                          "connector identification",
-                                                          Connector_Id.TryParse,
-                                                          out Connector_Id  ConnectorId,
-                                                          out String        ErrorResponse))
+                if (!JSON.ParseMandatory("connectorId",
+                                         "connector identification",
+                                         Connector_Id.TryParse,
+                                         out Connector_Id  ConnectorId,
+                                         out               ErrorResponse))
                 {
                     return false;
                 }
@@ -329,11 +386,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ReservationId
 
-                if (!ReserveNowRequestJSON.ParseMandatory("reservationId",
-                                                          "reservation identification",
-                                                          Reservation_Id.TryParse,
-                                                          out Reservation_Id  ReservationId,
-                                                          out                 ErrorResponse))
+                if (!JSON.ParseMandatory("reservationId",
+                                         "reservation identification",
+                                         Reservation_Id.TryParse,
+                                         out Reservation_Id  ReservationId,
+                                         out                 ErrorResponse))
                 {
                     return false;
                 }
@@ -342,10 +399,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ExpiryDate
 
-                if (!ReserveNowRequestJSON.ParseMandatory("expiryDate",
-                                                          "expiry date",
-                                                          out DateTime  ExpiryDate,
-                                                          out           ErrorResponse))
+                if (!JSON.ParseMandatory("expiryDate",
+                                         "expiry date",
+                                         out DateTime  ExpiryDate,
+                                         out           ErrorResponse))
                 {
                     return false;
                 }
@@ -354,11 +411,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region IdTag
 
-                if (!ReserveNowRequestJSON.ParseMandatory("idTag",
-                                                          "identification tag",
-                                                          IdToken.TryParse,
-                                                          out IdToken  IdTag,
-                                                          out          ErrorResponse))
+                if (!JSON.ParseMandatory("idTag",
+                                         "identification tag",
+                                         IdToken.TryParse,
+                                         out IdToken  IdTag,
+                                         out          ErrorResponse))
                 {
                     return false;
                 }
@@ -367,53 +424,58 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ParentIdTag
 
-                if (ReserveNowRequestJSON.ParseOptional("parentIdTag",
-                                                        "parent identification tag",
-                                                        IdToken.TryParse,
-                                                        out IdToken  ParentIdTag,
-                                                        out          ErrorResponse))
+                if (JSON.ParseOptional("parentIdTag",
+                                       "parent identification tag",
+                                       IdToken.TryParse,
+                                       out IdToken  ParentIdTag,
+                                       out          ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
 
-                ReserveNowRequest = new ReserveNowRequest(ConnectorId,
+                ReserveNowRequest = new ReserveNowRequest(ChargeBoxId,
+                                                          ConnectorId,
                                                           ReservationId,
                                                           ExpiryDate,
                                                           IdTag,
-                                                          ParentIdTag);
+                                                          ParentIdTag,
+                                                          RequestId);
+
+                if (CustomReserveNowRequestParser != null)
+                    ReserveNowRequest = CustomReserveNowRequestParser(JSON,
+                                                                      ReserveNowRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, ReserveNowRequestJSON, e);
-
-                ReserveNowRequest = null;
+                ReserveNowRequest  = default;
+                ErrorResponse      = "The given JSON representation of a ReserveNow request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(ReserveNowRequestText, out ReserveNowRequest, OnException = null)
+        #region (static) TryParse(ReserveNowRequestText, RequestId, ChargeBoxId, out ReserveNowRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given text representation of a reserve now request.
         /// </summary>
         /// <param name="ReserveNowRequestText">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                 ReserveNowRequestText,
+                                       Request_Id             RequestId,
+                                       ChargeBox_Id           ChargeBoxId,
                                        out ReserveNowRequest  ReserveNowRequest,
                                        OnExceptionDelegate    OnException  = null)
         {
@@ -428,13 +490,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     if (ReserveNowRequestText.StartsWith("{") &&
                         TryParse(JObject.Parse(ReserveNowRequestText),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out ReserveNowRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
                     if (TryParse(XDocument.Parse(ReserveNowRequestText).Root,
+                                 RequestId,
+                                 ChargeBoxId,
                                  out ReserveNowRequest,
                                  OnException))
                     {

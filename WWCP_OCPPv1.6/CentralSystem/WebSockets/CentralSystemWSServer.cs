@@ -472,10 +472,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
         #region Custom JSON serializer delegates
-        public CustomJObjectSerializerDelegate<RemoteStartTransactionRequest> CustomRemoteStartTransactionRequestSerializer   { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingProfile>               CustomChargingProfileSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedule>              CustomChargingScheduleSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>        CustomChargingSchedulePeriodSerializer          { get; set; }
+
+        public CustomJObjectSerializerDelegate<ReserveNowRequest>              CustomReserveNowRequestSerializer                { get; set; }
+
+        public CustomJObjectSerializerDelegate<CancelReservationRequest>       CustomCancelReservationRequestSerializer         { get; set; }
+
+        public CustomJObjectSerializerDelegate<RemoteStartTransactionRequest>  CustomRemoteStartTransactionRequestSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfile>                CustomChargingProfileSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedule>               CustomChargingScheduleSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>         CustomChargingSchedulePeriodSerializer           { get; set; }
+
+        public CustomJObjectSerializerDelegate<RemoteStopTransactionRequest>   CustomRemoteStopTransactionRequestSerializer     { get; set; }
 
         #endregion
 
@@ -2527,6 +2534,126 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
+        #region ReserveNow            (ChargeBoxId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
+
+        public Task<ReserveNowResponse> ReserveNow(ChargeBox_Id    ChargeBoxId,
+                                                   Connector_Id    ConnectorId,
+                                                   Reservation_Id  ReservationId,
+                                                   DateTime        ExpiryDate,
+                                                   IdToken         IdTag,
+                                                   IdToken?        ParentIdTag        = null,
+
+                                                   Request_Id?     RequestId          = null,
+                                                   DateTime?       RequestTimestamp   = null,
+                                                   TimeSpan?       Timeout            = null)
+
+            => ReserveNow(new ReserveNowRequest(ChargeBoxId,
+                                                ConnectorId,
+                                                ReservationId,
+                                                ExpiryDate,
+                                                IdTag,
+                                                ParentIdTag,
+                                                RequestId,
+                                                RequestTimestamp),
+                          Timeout);
+
+
+        public async Task<ReserveNowResponse> ReserveNow(ReserveNowRequest  Request,
+                                                         TimeSpan?          Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomReserveNowRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (ReserveNowResponse.TryParse(Request,
+                                                result.Response,
+                                                out ReserveNowResponse reserveNowResponse))
+                {
+                    return reserveNowResponse;
+                }
+
+                return new ReserveNowResponse(Request,
+                                              ReservationStatus.Unknown);
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new ReserveNowResponse(Request,
+                                              ReservationStatus.Unknown);
+
+            }
+
+            return new ReserveNowResponse(Request,
+                                          ReservationStatus.Unknown);
+
+        }
+
+        #endregion
+
+        #region CancelReservation     (ChargeBoxId, ReservationId, ...)
+
+        public Task<CancelReservationResponse> CancelReservation(ChargeBox_Id    ChargeBoxId,
+                                                                 Reservation_Id  ReservationId,
+
+                                                                 Request_Id?     RequestId          = null,
+                                                                 DateTime?       RequestTimestamp   = null,
+                                                                 TimeSpan?       Timeout            = null)
+
+            => CancelReservation(new CancelReservationRequest(ChargeBoxId,
+                                                              ReservationId,
+                                                              RequestId,
+                                                              RequestTimestamp),
+                                 Timeout);
+
+
+        public async Task<CancelReservationResponse> CancelReservation(CancelReservationRequest  Request,
+                                                                       TimeSpan?                 Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomCancelReservationRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (CancelReservationResponse.TryParse(Request,
+                                                       result.Response,
+                                                       out CancelReservationResponse cancelReservationResponse))
+                {
+                    return cancelReservationResponse;
+                }
+
+                return new CancelReservationResponse(Request,
+                                                     CancelReservationStatus.Unknown);
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new CancelReservationResponse(Request,
+                                                     CancelReservationStatus.Unknown);
+
+            }
+
+            return new CancelReservationResponse(Request,
+                                                 CancelReservationStatus.Unknown);
+
+        }
+
+        #endregion
+
         #region RemoteStartTransaction(ChargeBoxId, IdTag, ConnectorId = null, ChargingProfile = null, ...)
 
         public Task<RemoteStartTransactionResponse> RemoteStartTransaction(ChargeBox_Id     ChargeBoxId,
@@ -2585,6 +2712,62 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             return new RemoteStartTransactionResponse(Request,
                                                       RemoteStartStopStatus.Unknown);
+
+        }
+
+        #endregion
+
+        #region RemoteStopTransaction (ChargeBoxId, TransactionId, ...)
+
+        public Task<RemoteStopTransactionResponse> RemoteStopTransaction(ChargeBox_Id    ChargeBoxId,
+                                                                         Transaction_Id  TransactionId,
+
+                                                                         Request_Id?     RequestId          = null,
+                                                                         DateTime?       RequestTimestamp   = null,
+                                                                         TimeSpan?       Timeout            = null)
+
+            => RemoteStopTransaction(new RemoteStopTransactionRequest(ChargeBoxId,
+                                                                      TransactionId,
+                                                                      RequestId,
+                                                                      RequestTimestamp),
+                                      Timeout);
+
+
+        public async Task<RemoteStopTransactionResponse> RemoteStopTransaction(RemoteStopTransactionRequest  Request,
+                                                                               TimeSpan?                     Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomRemoteStopTransactionRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (RemoteStopTransactionResponse.TryParse(Request,
+                                                           result.Response,
+                                                           out RemoteStopTransactionResponse remoteStopTransactionResponse))
+                {
+                    return remoteStopTransactionResponse;
+                }
+
+                return new RemoteStopTransactionResponse(Request,
+                                                         RemoteStartStopStatus.Unknown);
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new RemoteStopTransactionResponse(Request,
+                                                         RemoteStartStopStatus.Unknown);
+
+            }
+
+            return new RemoteStopTransactionResponse(Request,
+                                                     RemoteStartStopStatus.Unknown);
 
         }
 

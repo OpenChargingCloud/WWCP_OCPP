@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A remote stop transaction request.
+    /// The RemoteStopTransaction request.
     /// </summary>
     public class RemoteStopTransactionRequest : ARequest<RemoteStopTransactionRequest>
     {
@@ -49,18 +49,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a remote stop transaction request.
+        /// Create a RemoteStopTransaction request.
         /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="TransactionId">The identification of the transaction which the charge point is requested to stop.</param>
-        public RemoteStopTransactionRequest(Transaction_Id TransactionId)
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public RemoteStopTransactionRequest(ChargeBox_Id    ChargeBoxId,
+                                            Transaction_Id  TransactionId,
+
+                                            Request_Id?     RequestId          = null,
+                                            DateTime?       RequestTimestamp   = null)
+
+            : base(ChargeBoxId,
+                   "RemoteStopTransaction",
+                   RequestId,
+                   RequestTimestamp)
+
         {
-
-            #region Initial checks
-
-            if (TransactionId.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(TransactionId),  "The given transaction identification must not be null!");
-
-            #endregion
 
             this.TransactionId = TransactionId;
 
@@ -107,87 +114,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (RemoteStopTransactionRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a remote stop transaction request.
+        /// Parse the given XML representation of a RemoteStopTransaction request.
         /// </summary>
-        /// <param name="RemoteStopTransactionRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static RemoteStopTransactionRequest Parse(XElement             RemoteStopTransactionRequestXML,
+        public static RemoteStopTransactionRequest Parse(XElement             XML,
+                                                         Request_Id           RequestId,
+                                                         ChargeBox_Id         ChargeBoxId,
                                                          OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(RemoteStopTransactionRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out RemoteStopTransactionRequest remoteStopTransactionRequest,
                          OnException))
             {
                 return remoteStopTransactionRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a RemoteStopTransaction request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (RemoteStopTransactionRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomRemoteStopTransactionRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a remote stop transaction request.
+        /// Parse the given JSON representation of a RemoteStopTransaction request.
         /// </summary>
-        /// <param name="RemoteStopTransactionRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomRemoteStopTransactionRequestParser">A delegate to parse custom RemoteStopTransaction requests.</param>
+        public static RemoteStopTransactionRequest Parse(JObject                                                    JSON,
+                                                         Request_Id                                                 RequestId,
+                                                         ChargeBox_Id                                               ChargeBoxId,
+                                                         CustomJObjectParserDelegate<RemoteStopTransactionRequest>  CustomRemoteStopTransactionRequestParser   = null)
+        {
+
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out RemoteStopTransactionRequest  remoteStopTransactionRequest,
+                         out String                        ErrorResponse,
+                         CustomRemoteStopTransactionRequestParser))
+            {
+                return remoteStopTransactionRequest;
+            }
+
+            throw new ArgumentException("The given JSON representation of a RemoteStopTransaction request is invalid: " + ErrorResponse, nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a RemoteStopTransaction request.
+        /// </summary>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static RemoteStopTransactionRequest Parse(JObject              RemoteStopTransactionRequestJSON,
+        public static RemoteStopTransactionRequest Parse(String               Text,
+                                                         Request_Id           RequestId,
+                                                         ChargeBox_Id         ChargeBoxId,
                                                          OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(RemoteStopTransactionRequestJSON,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out RemoteStopTransactionRequest remoteStopTransactionRequest,
                          OnException))
             {
                 return remoteStopTransactionRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a RemoteStopTransaction request is invalid!", nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) Parse   (RemoteStopTransactionRequestText, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out RemoteStopTransactionRequest, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of a remote stop transaction request.
+        /// Try to parse the given XML representation of a RemoteStopTransaction request.
         /// </summary>
-        /// <param name="RemoteStopTransactionRequestText">The text to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="RemoteStopTransactionRequest">The parsed RemoteStopTransaction request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static RemoteStopTransactionRequest Parse(String               RemoteStopTransactionRequestText,
-                                                         OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(RemoteStopTransactionRequestText,
-                         out RemoteStopTransactionRequest remoteStopTransactionRequest,
-                         OnException))
-            {
-                return remoteStopTransactionRequest;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(RemoteStopTransactionRequestXML,  out RemoteStopTransactionRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a remote stop transaction request.
-        /// </summary>
-        /// <param name="RemoteStopTransactionRequestXML">The XML to be parsed.</param>
-        /// <param name="RemoteStopTransactionRequest">The parsed remote stop transaction request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                          RemoteStopTransactionRequestXML,
+        public static Boolean TryParse(XElement                          XML,
+                                       Request_Id                        RequestId,
+                                       ChargeBox_Id                      ChargeBoxId,
                                        out RemoteStopTransactionRequest  RemoteStopTransactionRequest,
                                        OnExceptionDelegate               OnException  = null)
         {
@@ -197,8 +227,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 RemoteStopTransactionRequest = new RemoteStopTransactionRequest(
 
-                                                   RemoteStopTransactionRequestXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "transactionId",
-                                                                                                  Transaction_Id.Parse)
+                                                   ChargeBoxId,
+
+                                                   XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "transactionId",
+                                                                      Transaction_Id.Parse),
+
+                                                   RequestId
 
                                                );
 
@@ -208,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, RemoteStopTransactionRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 RemoteStopTransactionRequest = null;
                 return false;
@@ -219,17 +253,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(RemoteStopTransactionRequestJSON, out RemoteStopTransactionRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out RemoteStopTransactionRequest, OnException = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a remote stop transaction request.
+        /// Try to parse the given JSON representation of a RemoteStopTransaction request.
         /// </summary>
-        /// <param name="RemoteStopTransactionRequestJSON">The JSON to be parsed.</param>
-        /// <param name="RemoteStopTransactionRequest">The parsed remote stop transaction request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                           RemoteStopTransactionRequestJSON,
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="RemoteStopTransactionRequest">The parsed RemoteStopTransaction request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                           JSON,
+                                       Request_Id                        RequestId,
+                                       ChargeBox_Id                      ChargeBoxId,
                                        out RemoteStopTransactionRequest  RemoteStopTransactionRequest,
-                                       OnExceptionDelegate               OnException  = null)
+                                       out String                        ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out RemoteStopTransactionRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a RemoteStopTransaction request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="RemoteStopTransactionRequest">The parsed RemoteStopTransaction request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomRemoteStopTransactionRequestParser">A delegate to parse custom RemoteStopTransaction requests.</param>
+        public static Boolean TryParse(JObject                                                    JSON,
+                                       Request_Id                                                 RequestId,
+                                       ChargeBox_Id                                               ChargeBoxId,
+                                       out RemoteStopTransactionRequest                           RemoteStopTransactionRequest,
+                                       out String                                                 ErrorResponse,
+                                       CustomJObjectParserDelegate<RemoteStopTransactionRequest>  CustomRemoteStopTransactionRequestParser)
         {
 
             try
@@ -239,11 +303,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region TransactionId
 
-                if (!RemoteStopTransactionRequestJSON.ParseMandatory("transactionId",
-                                                                     "transaction identification",
-                                                                     Transaction_Id.TryParse,
-                                                                     out Transaction_Id  TransactionId,
-                                                                     out String          ErrorResponse))
+                if (!JSON.ParseMandatory("transactionId",
+                                         "transaction identification",
+                                         Transaction_Id.TryParse,
+                                         out Transaction_Id TransactionId,
+                                         out                ErrorResponse))
                 {
                     return false;
                 }
@@ -251,34 +315,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                RemoteStopTransactionRequest = new RemoteStopTransactionRequest(TransactionId);
+                RemoteStopTransactionRequest = new RemoteStopTransactionRequest(ChargeBoxId,
+                                                                                TransactionId,
+                                                                                RequestId);
+
+                if (CustomRemoteStopTransactionRequestParser != null)
+                    RemoteStopTransactionRequest = CustomRemoteStopTransactionRequestParser(JSON,
+                                                                                            RemoteStopTransactionRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, RemoteStopTransactionRequestJSON, e);
-
-                RemoteStopTransactionRequest = null;
+                RemoteStopTransactionRequest  = default;
+                ErrorResponse                 = "The given JSON representation of a RemoteStopTransaction request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(RemoteStopTransactionRequestText, out RemoteStopTransactionRequest, OnException = null)
+        #region (static) TryParse(Text, RequestId, ChargeBoxId, out RemoteStopTransactionRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a remote stop transaction request.
+        /// Try to parse the given text representation of a RemoteStopTransaction request.
         /// </summary>
-        /// <param name="RemoteStopTransactionRequestText">The text to be parsed.</param>
-        /// <param name="RemoteStopTransactionRequest">The parsed remote stop transaction request.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="RemoteStopTransactionRequest">The parsed RemoteStopTransaction request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                            RemoteStopTransactionRequestText,
+        public static Boolean TryParse(String                            Text,
+                                       Request_Id                        RequestId,
+                                       ChargeBox_Id                      ChargeBoxId,
                                        out RemoteStopTransactionRequest  RemoteStopTransactionRequest,
                                        OnExceptionDelegate               OnException  = null)
         {
@@ -286,20 +357,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                RemoteStopTransactionRequestText = RemoteStopTransactionRequestText?.Trim();
+                Text = Text?.Trim();
 
-                if (RemoteStopTransactionRequestText.IsNotNullOrEmpty())
+                if (Text.IsNotNullOrEmpty())
                 {
 
-                    if (RemoteStopTransactionRequestText.StartsWith("{") &&
-                        TryParse(JObject.Parse(RemoteStopTransactionRequestText),
+                    if (Text.StartsWith("{") &&
+                        TryParse(JObject.Parse(Text),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out RemoteStopTransactionRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
-                    if (TryParse(XDocument.Parse(RemoteStopTransactionRequestText).Root,
+                    if (TryParse(XDocument.Parse(Text).Root,
+                                 RequestId,
+                                 ChargeBoxId,
                                  out RemoteStopTransactionRequest,
                                  OnException))
                     {
@@ -311,7 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, RemoteStopTransactionRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, Text, e);
             }
 
             RemoteStopTransactionRequest = null;
@@ -341,7 +416,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomRemoteStopTransactionRequestSerializer">A delegate to serialize custom remote stop transaction requests.</param>
+        /// <param name="CustomRemoteStopTransactionRequestSerializer">A delegate to serialize custom RemoteStopTransaction requests.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<RemoteStopTransactionRequest> CustomRemoteStopTransactionRequestSerializer  = null)
         {
 
@@ -363,10 +438,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (RemoteStopTransactionRequest1, RemoteStopTransactionRequest2)
 
         /// <summary>
-        /// Compares two remote stop transaction requests for equality.
+        /// Compares two RemoteStopTransaction requests for equality.
         /// </summary>
-        /// <param name="RemoteStopTransactionRequest1">A remote stop transaction request.</param>
-        /// <param name="RemoteStopTransactionRequest2">Another remote stop transaction request.</param>
+        /// <param name="RemoteStopTransactionRequest1">A RemoteStopTransaction request.</param>
+        /// <param name="RemoteStopTransactionRequest2">Another RemoteStopTransaction request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (RemoteStopTransactionRequest RemoteStopTransactionRequest1, RemoteStopTransactionRequest RemoteStopTransactionRequest2)
         {
@@ -388,10 +463,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (RemoteStopTransactionRequest1, RemoteStopTransactionRequest2)
 
         /// <summary>
-        /// Compares two remote stop transaction requests for inequality.
+        /// Compares two RemoteStopTransaction requests for inequality.
         /// </summary>
-        /// <param name="RemoteStopTransactionRequest1">A remote stop transaction request.</param>
-        /// <param name="RemoteStopTransactionRequest2">Another remote stop transaction request.</param>
+        /// <param name="RemoteStopTransactionRequest1">A RemoteStopTransaction request.</param>
+        /// <param name="RemoteStopTransactionRequest2">Another RemoteStopTransaction request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (RemoteStopTransactionRequest RemoteStopTransactionRequest1, RemoteStopTransactionRequest RemoteStopTransactionRequest2)
 
@@ -428,9 +503,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(RemoteStopTransactionRequest)
 
         /// <summary>
-        /// Compares two remote stop transaction requests for equality.
+        /// Compares two RemoteStopTransaction requests for equality.
         /// </summary>
-        /// <param name="RemoteStopTransactionRequest">A remote stop transaction request to compare with.</param>
+        /// <param name="RemoteStopTransactionRequest">A RemoteStopTransaction request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(RemoteStopTransactionRequest RemoteStopTransactionRequest)
         {

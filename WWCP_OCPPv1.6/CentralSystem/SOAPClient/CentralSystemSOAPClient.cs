@@ -778,7 +778,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new CancelReservationRequest(ReservationId);
+            var request = new CancelReservationRequest(ChargeBoxIdentity,
+                                                       ReservationId);
 
 
             try
@@ -3115,7 +3116,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new RemoteStopTransactionRequest(TransactionId);
+            var request = new RemoteStopTransactionRequest(ChargeBoxIdentity,
+                                                           TransactionId);
 
 
             try
@@ -3342,7 +3344,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new ReserveNowRequest(ConnectorId,
+            var request = new ReserveNowRequest(ChargeBoxIdentity,
+                                                ConnectorId,
                                                 ReservationId,
                                                 ExpiryDate,
                                                 IdTag,
@@ -3555,7 +3558,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new ResetRequest(Type);
+            var request = new ResetRequest(ChargeBoxIdentity,
+                                           Type);
 
 
             try

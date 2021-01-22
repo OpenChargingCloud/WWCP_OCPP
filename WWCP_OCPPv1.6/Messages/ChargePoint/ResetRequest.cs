@@ -50,10 +50,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Create a reset request.
         /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Type">The type of reset that the charge point should perform.</param>
-        public ResetRequest(ResetTypes Type)
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public ResetRequest(ChargeBox_Id  ChargeBoxId,
+                            ResetTypes    Type,
+
+                            Request_Id?   RequestId          = null,
+                            DateTime?     RequestTimestamp   = null)
+
+            : base(ChargeBoxId,
+                   "Reset",
+                   RequestId,
+                   RequestTimestamp)
+
         {
+
             this.Type = Type;
+
         }
 
         #endregion
@@ -102,87 +118,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (ResetRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a reset request.
         /// </summary>
-        /// <param name="ResetRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ResetRequest Parse(XElement             ResetRequestXML,
+        public static ResetRequest Parse(XElement             XML,
+                                         Request_Id           RequestId,
+                                         ChargeBox_Id         ChargeBoxId,
                                          OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(ResetRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out ResetRequest resetRequest,
                          OnException))
             {
                 return resetRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a Reset request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (ResetRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomResetRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a reset request.
         /// </summary>
-        /// <param name="ResetRequestJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ResetRequest Parse(JObject              ResetRequestJSON,
-                                         OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomResetRequestParser">A delegate to parse custom Reset requests.</param>
+        public static ResetRequest Parse(JObject                                    JSON,
+                                         Request_Id                                 RequestId,
+                                         ChargeBox_Id                               ChargeBoxId,
+                                         CustomJObjectParserDelegate<ResetRequest>  CustomResetRequestParser   = null)
         {
 
-            if (TryParse(ResetRequestJSON,
-                         out ResetRequest resetRequest,
-                         OnException))
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out ResetRequest  resetRequest,
+                         out String        ErrorResponse,
+                         CustomResetRequestParser))
             {
                 return resetRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a Reset request is invalid: " + ErrorResponse, nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (ResetRequestText, OnException = null)
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a reset request.
         /// </summary>
-        /// <param name="ResetRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ResetRequest Parse(String               ResetRequestText,
+        public static ResetRequest Parse(String               Text,
+                                         Request_Id           RequestId,
+                                         ChargeBox_Id         ChargeBoxId,
                                          OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(ResetRequestText,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out ResetRequest resetRequest,
                          OnException))
             {
                 return resetRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a Reset request is invalid!", nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParse(ResetRequestXML,  out ResetRequest, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out ResetRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a reset request.
         /// </summary>
-        /// <param name="ResetRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ResetRequest">The parsed reset request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement             ResetRequestXML,
+        public static Boolean TryParse(XElement             XML,
+                                       Request_Id           RequestId,
+                                       ChargeBox_Id         ChargeBoxId,
                                        out ResetRequest     ResetRequest,
                                        OnExceptionDelegate  OnException  = null)
         {
@@ -192,8 +231,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 ResetRequest = new ResetRequest(
 
-                                   ResetRequestXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "type",
-                                                                       ResetTypesExtentions.Parse)
+                                   ChargeBoxId,
+
+                                   XML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "type",
+                                                                       ResetTypesExtentions.Parse),
+
+                                   RequestId
 
                                );
 
@@ -203,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, ResetRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 ResetRequest = null;
                 return false;
@@ -214,17 +257,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(ResetRequestJSON, out ResetRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out ResetRequest, out ErrorResponse, CustomResetRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a reset request.
         /// </summary>
         /// <param name="ResetRequestJSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ResetRequest">The parsed reset request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              ResetRequestJSON,
-                                       out ResetRequest     ResetRequest,
-                                       OnExceptionDelegate  OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject           ResetRequestJSON,
+                                       Request_Id        RequestId,
+                                       ChargeBox_Id      ChargeBoxId,
+                                       out ResetRequest  ResetRequest,
+                                       out String        ErrorResponse)
+
+            => TryParse(ResetRequestJSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out ResetRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a reset request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ResetRequest">The parsed reset request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomResetRequestParser">A delegate to parse custom Reset requests.</param>
+        public static Boolean TryParse(JObject                                    JSON,
+                                       Request_Id                                 RequestId,
+                                       ChargeBox_Id                               ChargeBoxId,
+                                       out ResetRequest                           ResetRequest,
+                                       out String                                 ErrorResponse,
+                                       CustomJObjectParserDelegate<ResetRequest>  CustomResetRequestParser)
         {
 
             try
@@ -234,11 +307,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ResetType
 
-                if (!ResetRequestJSON.MapMandatory("type",
-                                                   "reset type",
-                                                   ResetTypesExtentions.Parse,
-                                                   out ResetTypes  ResetType,
-                                                   out String      ErrorResponse))
+                if (!JSON.MapMandatory("type",
+                                       "reset type",
+                                       ResetTypesExtentions.Parse,
+                                       out ResetTypes  ResetType,
+                                       out             ErrorResponse))
                 {
                     return false;
                 }
@@ -246,34 +319,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                ResetRequest = new ResetRequest(ResetType);
+                ResetRequest = new ResetRequest(ChargeBoxId,
+                                                ResetType,
+                                                RequestId);
+
+                if (CustomResetRequestParser != null)
+                    ResetRequest = CustomResetRequestParser(JSON,
+                                                            ResetRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, ResetRequestJSON, e);
-
-                ResetRequest = null;
+                ResetRequest   = default;
+                ErrorResponse  = "The given JSON representation of a Reset request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(ResetRequestText, out ResetRequest, OnException = null)
+        #region (static) TryParse(Text, RequestId, ChargeBoxId, out ResetRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given text representation of a reset request.
         /// </summary>
-        /// <param name="ResetRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ResetRequest">The parsed reset request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               ResetRequestText,
+        public static Boolean TryParse(String               Text,
+                                       Request_Id           RequestId,
+                                       ChargeBox_Id         ChargeBoxId,
                                        out ResetRequest     ResetRequest,
                                        OnExceptionDelegate  OnException  = null)
         {
@@ -281,20 +361,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                ResetRequestText = ResetRequestText?.Trim();
+                Text = Text?.Trim();
 
-                if (ResetRequestText.IsNotNullOrEmpty())
+                if (Text.IsNotNullOrEmpty())
                 {
 
-                    if (ResetRequestText.StartsWith("{") &&
-                        TryParse(JObject.Parse(ResetRequestText),
+                    if (Text.StartsWith("{") &&
+                        TryParse(JObject.Parse(Text),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out ResetRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
-                    if (TryParse(XDocument.Parse(ResetRequestText).Root,
+                    if (TryParse(XDocument.Parse(Text).Root,
+                                 RequestId,
+                                 ChargeBoxId,
                                  out ResetRequest,
                                  OnException))
                     {
@@ -306,7 +390,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, ResetRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, Text, e);
             }
 
             ResetRequest = null;
