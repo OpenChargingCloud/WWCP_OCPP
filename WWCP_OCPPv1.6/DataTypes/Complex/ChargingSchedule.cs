@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -218,25 +217,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (ChargingScheduleJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomChargingScheduleParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a charging schedule.
         /// </summary>
-        /// <param name="ChargingScheduleJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingSchedule Parse(JObject              ChargingScheduleJSON,
-                                             OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomChargingScheduleParser">A delegate to parse custom charging schedules.</param>
+        public static ChargingSchedule Parse(JObject                                        JSON,
+                                             CustomJObjectParserDelegate<ChargingSchedule>  CustomChargingScheduleParser   = null)
         {
 
-            if (TryParse(ChargingScheduleJSON,
-                         out ChargingSchedule chargingSchedule,
-                         OnException))
+            if (TryParse(JSON,
+                         out ChargingSchedule  chargingSchedule,
+                         out String            ErrorResponse, 
+                         CustomChargingScheduleParser))
             {
                 return chargingSchedule;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a charging schedule is invalid: " + ErrorResponse, nameof(JSON));
 
         }
 
@@ -318,17 +318,37 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(ChargingScheduleJSON, out ChargingSchedule, OnException = null)
+        #region (static) TryParse(JSON, out ChargingSchedule, CustomChargingScheduleParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a charging schedule.
         /// </summary>
-        /// <param name="ChargingScheduleJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingSchedule">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject               ChargingScheduleJSON,
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject               JSON,
                                        out ChargingSchedule  ChargingSchedule,
-                                       OnExceptionDelegate   OnException  = null)
+                                       out String            ErrorResponse)
+
+            => TryParse(JSON,
+                        out ChargingSchedule,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a charging schedule.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="ChargingSchedule">The parsed connector type.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomChargingScheduleParser">A delegate to parse custom Authorize requests.</param>
+        public static Boolean TryParse(JObject                                        JSON,
+                                       out ChargingSchedule                           ChargingSchedule,
+                                       out String                                     ErrorResponse,
+                                       CustomJObjectParserDelegate<ChargingSchedule>  CustomChargingScheduleParser)
         {
 
             try
@@ -338,11 +358,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region ChargingRateUnit
 
-                if (!ChargingScheduleJSON.MapMandatory("chargingRateUnit",
-                                                       "charging rate unit",
-                                                       ChargingRateUnitsExtentions.Parse,
-                                                       out ChargingRateUnits  ChargingRateUnit,
-                                                       out String             ErrorResponse))
+                if (!JSON.MapMandatory("chargingRateUnit",
+                                       "charging rate unit",
+                                       ChargingRateUnitsExtentions.Parse,
+                                       out ChargingRateUnits ChargingRateUnit,
+                                       out                   ErrorResponse))
                 {
                     return false;
                 }
@@ -351,11 +371,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region ChargingSchedulePeriods
 
-                if (!ChargingScheduleJSON.ParseMandatoryJSON("chargingSchedulePeriod",
-                                                             "charging schedule period",
-                                                             ChargingSchedulePeriod.TryParse,
-                                                             out IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods,
-                                                             out                                      ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("chargingSchedulePeriod",
+                                             "charging schedule period",
+                                             ChargingSchedulePeriod.TryParse,
+                                             out IEnumerable<ChargingSchedulePeriod> ChargingSchedulePeriods,
+                                             out                                     ErrorResponse))
                 {
                     return false;
                 }
@@ -364,45 +384,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region Duration
 
-                if (ChargingScheduleJSON.ParseOptional("duration",
-                                                       "duration",
-                                                       out TimeSpan?  Duration,
-                                                       out            ErrorResponse))
+                if (JSON.ParseOptional("duration",
+                                       "duration",
+                                       out TimeSpan? Duration,
+                                       out           ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
                 #region StartSchedule
 
-                if (ChargingScheduleJSON.ParseOptional("startSchedule",
-                                                       "start schedule",
-                                                       out DateTime?  StartSchedule,
-                                                       out            ErrorResponse))
+                if (JSON.ParseOptional("startSchedule",
+                                       "start schedule",
+                                       out DateTime? StartSchedule,
+                                       out           ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
                 #region MinChargingRate
 
-                if (ChargingScheduleJSON.ParseOptional("min charging rate",
-                                                       "min charging rate",
-                                                       out Decimal?  MinChargingRate,
-                                                       out           ErrorResponse))
+                if (JSON.ParseOptional("minChargingRate",
+                                       "min charging rate",
+                                       out Decimal? MinChargingRate,
+                                       out          ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
@@ -414,17 +428,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                         StartSchedule,
                                                         MinChargingRate);
 
+                if (CustomChargingScheduleParser != null)
+                    ChargingSchedule = CustomChargingScheduleParser(JSON,
+                                                                    ChargingSchedule);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, ChargingScheduleJSON, e);
-
-                ChargingSchedule = null;
+                ChargingSchedule  = default;
+                ErrorResponse     = "The given JSON representation of a charging schedule is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -455,7 +470,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     if (ChargingScheduleText.StartsWith("{") &&
                         TryParse(JObject.Parse(ChargingScheduleText),
                                  out ChargingSchedule,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }

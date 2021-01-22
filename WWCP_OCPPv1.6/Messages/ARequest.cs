@@ -74,17 +74,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Create a new generic request message.
         /// </summary>
-        /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="RequestTimestamp">the optional request timestamp.</param>
-        public ARequest(Request_Id    RequestId,
-                        ChargeBox_Id  ChargeBoxId,
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public ARequest(ChargeBox_Id  ChargeBoxId,
+                        Request_Id?   RequestId          = null,
                         DateTime?     RequestTimestamp   = null)
         {
 
-            this.RequestId         = RequestId;
-            this.RequestTimestamp  = RequestTimestamp ?? DateTime.UtcNow;
             this.ChargeBoxId       = ChargeBoxId;
+            this.RequestId         = RequestId        ?? Request_Id.Random();
+            this.RequestTimestamp  = RequestTimestamp ?? DateTime.UtcNow;
 
         }
 

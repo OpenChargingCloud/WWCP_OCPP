@@ -60,23 +60,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new data transfer request.
         /// </summary>
-        /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// 
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
         /// 
-        /// <param name="RequestTimestamp">the optional request timestamp.</param>
-        public DataTransferRequest(Request_Id    RequestId,
-                                   ChargeBox_Id  ChargeBoxId,
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public DataTransferRequest(ChargeBox_Id  ChargeBoxId,
                                    String        VendorId,
                                    String        MessageId          = null,
                                    String        Data               = null,
+
+                                   Request_Id?   RequestId          = null,
                                    DateTime?     RequestTimestamp   = null)
 
-            : base(RequestId,
-                   ChargeBoxId,
+            : base(ChargeBoxId,
+                   RequestId,
                    RequestTimestamp)
 
         {
@@ -256,14 +257,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 DataTransferRequest = new DataTransferRequest(
-
-                                          RequestId,
                                           ChargeBoxId,
-
                                           XML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "vendorId"),
                                           XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "messageId"),
-                                          XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "data")
-
+                                          XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "data"),
+                                          RequestId
                                       );
 
                 return true;
@@ -356,11 +354,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                DataTransferRequest = new DataTransferRequest(RequestId,
-                                                              ChargeBoxId,
+                DataTransferRequest = new DataTransferRequest(ChargeBoxId,
                                                               VendorId,
                                                               MessageId,
-                                                              Data);
+                                                              Data,
+                                                              RequestId);
 
                 if (CustomDataTransferRequestParser != null)
                     DataTransferRequest = CustomDataTransferRequestParser(JSON,

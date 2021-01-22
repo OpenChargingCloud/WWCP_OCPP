@@ -580,8 +580,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new BootNotificationRequest(Request_Id.Random(),
-                                                      ChargeBoxIdentity,
+            var request = new BootNotificationRequest(ChargeBoxIdentity,
                                                       ChargePointVendor,
                                                       ChargePointModel,
                                                       ChargePointSerialNumber,
@@ -783,8 +782,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new HeartbeatRequest(Request_Id.Random(),
-                                               ChargeBoxIdentity);
+            var request = new HeartbeatRequest(ChargeBoxIdentity);
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,
@@ -980,8 +978,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new AuthorizeRequest(Request_Id.Random(),
-                                               ChargeBoxIdentity,
+            var request = new AuthorizeRequest(ChargeBoxIdentity,
                                                IdTag);
 
 
@@ -1187,8 +1184,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new StartTransactionRequest(Request_Id.Random(),
-                                                      ChargeBoxIdentity,
+            var request = new StartTransactionRequest(ChargeBoxIdentity,
                                                       ConnectorId,
                                                       IdTag,
                                                       TransactionTimestamp,
@@ -1407,8 +1403,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new StatusNotificationRequest(Request_Id.Random(),
-                                                        ChargeBoxIdentity,
+            var request = new StatusNotificationRequest(ChargeBoxIdentity,
                                                         ConnectorId,
                                                         Status,
                                                         ErrorCode,
@@ -1621,8 +1616,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new MeterValuesRequest(Request_Id.Random(),
-                                                 ChargeBoxIdentity,
+            var request = new MeterValuesRequest(ChargeBoxIdentity,
                                                  ConnectorId,
                                                  TransactionId,
                                                  MeterValues);
@@ -1840,8 +1834,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new StopTransactionRequest(Request_Id.Random(),
-                                                     ChargeBoxIdentity,
+            var request = new StopTransactionRequest(ChargeBoxIdentity,
                                                      TransactionId,
                                                      TransactionTimestamp,
                                                      MeterStop,
@@ -2254,8 +2247,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new DiagnosticsStatusNotificationRequest(Request_Id.Random(),
-                                                                   ChargeBoxIdentity,
+            var request = new DiagnosticsStatusNotificationRequest(ChargeBoxIdentity,
                                                                    Status);
 
 
@@ -2450,8 +2442,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new FirmwareStatusNotificationRequest(Request_Id.Random(),
-                                                                ChargeBoxIdentity,
+            var request = new FirmwareStatusNotificationRequest(ChargeBoxIdentity,
                                                                 Status);
 
 

@@ -102,7 +102,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new boot notification request.
         /// </summary>
-        /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ChargePointVendor">The charge point vendor identification.</param>
         /// <param name="ChargePointModel">The charge point model identification.</param>
@@ -115,9 +114,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="MeterType">The meter type of the main power meter of the charge point.</param>
         /// <param name="MeterSerialNumber">The serial number of the main power meter of the charge point.</param>
         /// 
-        /// <param name="RequestTimestamp">the optional request timestamp.</param>
-        public BootNotificationRequest(Request_Id    RequestId,
-                                       ChargeBox_Id  ChargeBoxId,
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public BootNotificationRequest(ChargeBox_Id  ChargeBoxId,
                                        String        ChargePointVendor,
                                        String        ChargePointModel,
 
@@ -129,10 +128,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        String        MeterType                 = null,
                                        String        MeterSerialNumber         = null,
 
+                                       Request_Id?   RequestId                 = null,
                                        DateTime?     RequestTimestamp          = null)
 
-            : base(RequestId,
-                   ChargeBoxId,
+            : base(ChargeBoxId,
+                   RequestId,
                    RequestTimestamp)
 
         {
@@ -405,21 +405,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 BootNotificationRequest = new BootNotificationRequest(
-
-                                              RequestId,
                                               ChargeBoxId,
-
                                               XML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargePointVendor"),
                                               XML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargePointModel"),
-
                                               XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "chargePointSerialNumber"),
                                               XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "chargeBoxSerialNumber"),
                                               XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "firmwareVersion"),
                                               XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "iccid"),
                                               XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "imsi"),
                                               XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "meterType"),
-                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "meterSerialNumber")
-
+                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "meterSerialNumber"),
+                                              RequestId
                                           );
 
                 return true;
@@ -513,7 +509,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
                 BootNotificationRequest = new BootNotificationRequest(
-                                              RequestId,
                                               ChargeBoxId,
                                               ChargePointVendor,
                                               ChargePointModel,
@@ -523,7 +518,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                               JSON["iccid"]?.                  Value<String>(),
                                               JSON["imsi"]?.                   Value<String>(),
                                               JSON["meterType"]?.              Value<String>(),
-                                              JSON["meterSerialNumber"]?.      Value<String>()
+                                              JSON["meterSerialNumber"]?.      Value<String>(),
+                                              RequestId
                                           );
 
                 if (CustomBootNotificationRequestParser != null)

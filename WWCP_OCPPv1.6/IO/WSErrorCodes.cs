@@ -78,7 +78,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         GenericError,
 
 
-
+        UnknownClient,
+        NetworkError,
         Timeout
 
     }

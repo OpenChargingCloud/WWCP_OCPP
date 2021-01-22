@@ -80,7 +80,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new status notification request.
         /// </summary>
-        /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The connector identification at the charge point.</param>
         /// <param name="Status">The current status of the charge point.</param>
@@ -91,9 +90,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="VendorId">This identifies the vendor-specific implementation.</param>
         /// <param name="VendorErrorCode">A vendor-specific error code.</param>
         /// 
-        /// <param name="RequestTimestamp">the optional request timestamp.</param>
-        public StatusNotificationRequest(Request_Id             RequestId,
-                                         ChargeBox_Id           ChargeBoxId,
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public StatusNotificationRequest(ChargeBox_Id           ChargeBoxId,
                                          Connector_Id           ConnectorId,
                                          ChargePointStatus      Status,
                                          ChargePointErrorCodes  ErrorCode,
@@ -103,10 +102,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                          String                 VendorId           = null,
                                          String                 VendorErrorCode    = null,
 
+                                         Request_Id?            RequestId          = null,
                                          DateTime?              RequestTimestamp   = null)
 
-            : base(RequestId,
-                   ChargeBoxId,
+            : base(ChargeBoxId,
+                   RequestId,
                    RequestTimestamp)
 
         {
@@ -345,7 +345,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 StatusNotificationRequest = new StatusNotificationRequest(
 
-                                                RequestId,
                                                 ChargeBoxId,
 
                                                 XML.MapValueOrFail       (OCPPNS.OCPPv1_6_CS + "connectorId",
@@ -364,7 +363,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                 XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "vendorId"),
 
-                                                XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "vendorErrorCode")
+                                                XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "vendorErrorCode"),
+
+                                                RequestId
 
                                             );
 
@@ -521,8 +522,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                StatusNotificationRequest = new StatusNotificationRequest(RequestId,
-                                                                          ChargeBoxId,
+                StatusNotificationRequest = new StatusNotificationRequest(ChargeBoxId,
                                                                           ConnectorId,
                                                                           Status,
                                                                           ErrorCode,
@@ -530,7 +530,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                           Info,
                                                                           Timestamp,
                                                                           VerndorId,
-                                                                          VendorErrorCode);
+                                                                          VendorErrorCode,
+                                                                          RequestId);
 
                 if (CustomStatusNotificationRequestParser != null)
                     StatusNotificationRequest = CustomStatusNotificationRequestParser(JSON,

@@ -49,17 +49,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new diagnostics status notification request.
         /// </summary>
-        /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Status">The status of the diagnostics upload.</param>
-        /// <param name="RequestTimestamp">the optional request timestamp.</param>
-        public DiagnosticsStatusNotificationRequest(Request_Id         RequestId,
-                                                    ChargeBox_Id       ChargeBoxId,
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public DiagnosticsStatusNotificationRequest(ChargeBox_Id       ChargeBoxId,
                                                     DiagnosticsStatus  Status,
+
+                                                    Request_Id?        RequestId          = null,
                                                     DateTime?          RequestTimestamp   = null)
 
-            : base(RequestId,
-                   ChargeBoxId,
+            : base(ChargeBoxId,
+                   RequestId,
                    RequestTimestamp)
 
         {
@@ -229,10 +231,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 DiagnosticsStatusNotificationRequest = new DiagnosticsStatusNotificationRequest(
-                                                           RequestId,
                                                            ChargeBoxId,
                                                            XML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "status",
-                                                                              DiagnosticsStatusExtentions.Parse)
+                                                                              DiagnosticsStatusExtentions.Parse),
+                                                           RequestId
                                                        );
 
                 return true;
@@ -314,9 +316,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
                 DiagnosticsStatusNotificationRequest = new DiagnosticsStatusNotificationRequest(
-                                                           RequestId,
                                                            ChargeBoxId,
-                                                           DiagnosticsStatus
+                                                           DiagnosticsStatus,
+                                                           RequestId
                                                        );
 
                 if (CustomDiagnosticsStatusNotificationRequestParser != null)

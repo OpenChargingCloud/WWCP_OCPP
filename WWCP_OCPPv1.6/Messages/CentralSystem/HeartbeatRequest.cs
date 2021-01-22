@@ -40,15 +40,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new heartbeat request.
         /// </summary>
-        /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="RequestTimestamp">the optional request timestamp.</param>
-        public HeartbeatRequest(Request_Id    RequestId,
-                                ChargeBox_Id  ChargeBoxId,
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public HeartbeatRequest(ChargeBox_Id  ChargeBoxId,
+                                Request_Id?   RequestId          = null,
                                 DateTime?     RequestTimestamp   = null)
 
-            : base(RequestId,
-                   ChargeBoxId,
+            : base(ChargeBoxId,
+                   RequestId,
                    RequestTimestamp)
 
         { }
@@ -194,8 +195,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             try
             {
 
-                HeartbeatRequest = new HeartbeatRequest(RequestId,
-                                                        ChargeBoxId);
+                HeartbeatRequest = new HeartbeatRequest(ChargeBoxId,
+                                                        RequestId);
 
                 return true;
 
@@ -261,8 +262,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 ErrorResponse     = null;
-                HeartbeatRequest  = new HeartbeatRequest(RequestId,
-                                                         ChargeBoxId);
+                HeartbeatRequest  = new HeartbeatRequest(ChargeBoxId,
+                                                         RequestId);
 
                 if (CustomHeartbeatRequestParser != null)
                     HeartbeatRequest = CustomHeartbeatRequestParser(JSON,

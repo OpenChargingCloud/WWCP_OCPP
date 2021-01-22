@@ -81,7 +81,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new StartTransaction request.
         /// </summary>
-        /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="TransactionId">The transaction identification copied from the start transaction response.</param>
         /// <param name="Timestamp">The timestamp of the end of the charging transaction.</param>
@@ -89,19 +88,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="IdTag">An optional identifier which requested to stop the charging.</param>
         /// <param name="Reason">An optional reason why the transaction had been stopped.</param>
         /// <param name="TransactionData">Optional transaction usage details relevant for billing purposes.</param>
-        /// <param name="RequestTimestamp">the optional request timestamp.</param>
-        public StopTransactionRequest(Request_Id               RequestId,
-                                      ChargeBox_Id             ChargeBoxId,
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public StopTransactionRequest(ChargeBox_Id             ChargeBoxId,
                                       Transaction_Id           TransactionId,
                                       DateTime                 Timestamp,
                                       UInt64                   MeterStop,
                                       IdToken?                 IdTag              = null,
                                       Reasons?                 Reason             = null,
                                       IEnumerable<MeterValue>  TransactionData    = null,
+
+                                      Request_Id?              RequestId          = null,
                                       DateTime?                RequestTimestamp   = null)
 
-            : base(RequestId,
-                   ChargeBoxId,
+            : base(ChargeBoxId,
+                   RequestId,
                    RequestTimestamp)
 
         {
@@ -471,7 +473,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 StopTransactionRequest = new StopTransactionRequest(
 
-                                             RequestId,
                                              ChargeBoxId,
 
                                              XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "transactionId",
@@ -490,7 +491,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                     ReasonsExtentions.AsReasons),
 
                                              XML.MapElements       (OCPPNS.OCPPv1_6_CS + "transactionData",
-                                                                    MeterValue.Parse)
+                                                                    MeterValue.Parse),
+
+                                             RequestId
 
                                          );
 
@@ -659,14 +662,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                StopTransactionRequest = new StopTransactionRequest(RequestId,
-                                                                    ChargeBoxId,
+                StopTransactionRequest = new StopTransactionRequest(ChargeBoxId,
                                                                     TransactionId,
                                                                     Timestamp,
                                                                     MeterStop,
                                                                     IdTag,
                                                                     Reason,
-                                                                    TransactionData.Any() ? TransactionData : null);
+                                                                    TransactionData.Any() ? TransactionData : null,
+                                                                    RequestId);
 
                 if (CustomStopTransactionRequestParser != null)
                     StopTransactionRequest = CustomStopTransactionRequestParser(JSON,

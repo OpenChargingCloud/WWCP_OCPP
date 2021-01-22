@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -420,10 +419,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                          out Connector_Id?  ConnectorId,
                                                                          out                ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
@@ -435,10 +432,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                    out DateTime?  ScheduleStart,
                                                                    out            ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
@@ -448,14 +443,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 if (GetCompositeScheduleResponseJSON.ParseOptionalJSON("chargingSchedule",
                                                                        "availability status",
                                                                        OCPPv1_6.ChargingSchedule.TryParse,
-                                                                       out ChargingSchedule  ChargingSchedule,
-                                                                       out                   ErrorResponse,
-                                                                       OnException))
+                                                                       out ChargingSchedule ChargingSchedule,
+                                                                       out                  ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion

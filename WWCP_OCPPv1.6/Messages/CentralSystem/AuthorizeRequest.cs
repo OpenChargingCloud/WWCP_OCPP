@@ -50,17 +50,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new authorize request.
         /// </summary>
-        /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="IdTag">The identifier that needs to be authorized.</param>
-        /// <param name="RequestTimestamp">the optional request timestamp.</param>
-        public AuthorizeRequest(Request_Id    RequestId,
-                                ChargeBox_Id  ChargeBoxId,
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public AuthorizeRequest(ChargeBox_Id  ChargeBoxId,
                                 IdToken       IdTag,
+                                Request_Id?   RequestId          = null,
                                 DateTime?     RequestTimestamp   = null)
 
-            : base(RequestId,
-                   ChargeBoxId,
+            : base(ChargeBoxId,
+                   RequestId,
                    RequestTimestamp)
 
         {
@@ -153,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public static AuthorizeRequest Parse(JObject                                        JSON,
                                              Request_Id                                     RequestId,
                                              ChargeBox_Id                                   ChargeBoxId,
-                                             CustomJObjectParserDelegate<AuthorizeRequest>  CustomAuthorizeRequestParser)
+                                             CustomJObjectParserDelegate<AuthorizeRequest>  CustomAuthorizeRequestParser   = null)
         {
 
             if (TryParse(JSON,
@@ -196,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return authorizeRequest;
             }
 
-            throw new ArgumentException("The given text representation of an Authorize request is invalid!", nameof(Text)); return null;
+            throw new ArgumentException("The given text representation of an Authorize request is invalid!", nameof(Text));
 
         }
 
@@ -223,10 +224,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 AuthorizeRequest = new AuthorizeRequest(
-                                       RequestId,
                                        ChargeBoxId,
                                        XML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "idTag",
-                                                          IdToken.Parse)
+                                                          IdToken.Parse),
+                                       RequestId
                                    );
 
                 return true;
@@ -246,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out AuthorizeRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out AuthorizeRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -306,9 +307,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
-                AuthorizeRequest = new AuthorizeRequest(RequestId,
-                                                        ChargeBoxId,
-                                                        IdTag);
+                AuthorizeRequest = new AuthorizeRequest(ChargeBoxId,
+                                                        IdTag,
+                                                        RequestId);
 
                 if (CustomAuthorizeRequestParser != null)
                     AuthorizeRequest = CustomAuthorizeRequestParser(JSON,

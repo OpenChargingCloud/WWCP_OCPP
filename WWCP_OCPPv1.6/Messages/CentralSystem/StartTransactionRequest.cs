@@ -71,25 +71,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new start transaction request.
         /// </summary>
-        /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The connector identification at the charge point.</param>
         /// <param name="IdTag">The identifier for which a transaction has to be started.</param>
         /// <param name="StartTimestamp">The timestamp of the transaction start.</param>
         /// <param name="MeterStart">The energy meter value in Wh for the connector at start of the transaction.</param>
         /// <param name="ReservationId">An optional identification of the reservation that will terminate as a result of this transaction.</param>
-        /// <param name="RequestTimestamp">the optional request timestamp.</param>
-        public StartTransactionRequest(Request_Id       RequestId,
-                                       ChargeBox_Id     ChargeBoxId,
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public StartTransactionRequest(ChargeBox_Id     ChargeBoxId,
                                        Connector_Id     ConnectorId,
                                        IdToken          IdTag,
                                        DateTime         StartTimestamp,
                                        UInt64           MeterStart,
                                        Reservation_Id?  ReservationId      = null,
+                                       Request_Id?      RequestId          = null,
                                        DateTime?        RequestTimestamp   = null)
 
-            : base(RequestId,
-                   ChargeBoxId,
+            : base(ChargeBoxId,
+                   RequestId,
                    RequestTimestamp)
 
         {
@@ -279,7 +280,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 StartTransactionRequest = new StartTransactionRequest(
 
-                                              RequestId,
                                               ChargeBoxId,
 
                                               XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "connectorId",
@@ -295,7 +295,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                      UInt64.Parse),
 
                                               XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "reservationId",
-                                                                     Reservation_Id.Parse)
+                                                                     Reservation_Id.Parse),
+
+                                              RequestId
 
                                           );
 
@@ -431,13 +433,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                StartTransactionRequest = new StartTransactionRequest(RequestId,
-                                                                      ChargeBoxId,
+                StartTransactionRequest = new StartTransactionRequest(ChargeBoxId,
                                                                       ConnectorId,
                                                                       IdTag,
                                                                       Timestamp,
                                                                       MeterStart,
-                                                                      ReservationId);
+                                                                      ReservationId,
+                                                                      RequestId);
 
                 if (CustomStartTransactionRequestParser != null)
                     StartTransactionRequest = CustomStartTransactionRequestParser(JSON,

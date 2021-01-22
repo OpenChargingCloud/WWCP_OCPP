@@ -63,12 +63,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Create a new RemoteStartTransaction request.
         /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="IdTag">The identification tag to start the charging transaction.</param>
         /// <param name="ConnectorId">An optional connector identification on which the charging transaction should be started (SHALL be > 0).</param>
         /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
-        public RemoteStartTransactionRequest(IdToken          IdTag,
-                                             Connector_Id?    ConnectorId       = null,
-                                             ChargingProfile  ChargingProfile   = null)
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public RemoteStartTransactionRequest(ChargeBox_Id     ChargeBoxId,
+                                             IdToken          IdTag,
+                                             Connector_Id?    ConnectorId        = null,
+                                             ChargingProfile  ChargingProfile    = null,
+
+                                             Request_Id?      RequestId          = null,
+                                             DateTime?        RequestTimestamp   = null)
+
+            : base(ChargeBoxId,
+                   RequestId,
+                   RequestTimestamp)
+
         {
 
             this.IdTag            = IdTag;
@@ -280,87 +293,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (RemoteStartTransactionRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a remote start transaction request.
         /// </summary>
-        /// <param name="RemoteStartTransactionRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static RemoteStartTransactionRequest Parse(XElement             RemoteStartTransactionRequestXML,
+        public static RemoteStartTransactionRequest Parse(XElement             XML,
+                                                          Request_Id           RequestId,
+                                                          ChargeBox_Id         ChargeBoxId,
                                                           OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(RemoteStartTransactionRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out RemoteStartTransactionRequest remoteStartTransactionRequest,
                          OnException))
             {
                 return remoteStartTransactionRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a RemoteStartTransaction request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (RemoteStartTransactionRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomRemoteStartTransactionRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a remote start transaction request.
         /// </summary>
-        /// <param name="RemoteStartTransactionRequestJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static RemoteStartTransactionRequest Parse(JObject              RemoteStartTransactionRequestJSON,
-                                                          OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomRemoteStartTransactionRequestParser">A delegate to parse custom RemoteStartTransaction requests.</param>
+        public static RemoteStartTransactionRequest Parse(JObject                                                     JSON,
+                                                          Request_Id                                                  RequestId,
+                                                          ChargeBox_Id                                                ChargeBoxId,
+                                                          CustomJObjectParserDelegate<RemoteStartTransactionRequest>  CustomRemoteStartTransactionRequestParser   = null)
         {
 
-            if (TryParse(RemoteStartTransactionRequestJSON,
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
                          out RemoteStartTransactionRequest remoteStartTransactionRequest,
-                         OnException))
+                         out String                        ErrorResponse,
+                         CustomRemoteStartTransactionRequestParser))
             {
                 return remoteStartTransactionRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a RemoteStartTransaction request is invalid: " + ErrorResponse, nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (RemoteStartTransactionRequestText, OnException = null)
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a remote start transaction request.
         /// </summary>
-        /// <param name="RemoteStartTransactionRequestText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static RemoteStartTransactionRequest Parse(String               RemoteStartTransactionRequestText,
+        public static RemoteStartTransactionRequest Parse(String               Text,
+                                                          Request_Id           RequestId,
+                                                          ChargeBox_Id         ChargeBoxId,
                                                           OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(RemoteStartTransactionRequestText,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out RemoteStartTransactionRequest remoteStartTransactionRequest,
                          OnException))
             {
                 return remoteStartTransactionRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a RemoteStartTransaction request is invalid!", nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParse(RemoteStartTransactionRequestXML,  out RemoteStartTransactionRequest, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out RemoteStartTransactionRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a remote start transaction request.
         /// </summary>
-        /// <param name="RemoteStartTransactionRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RemoteStartTransactionRequest">The parsed remote start transaction request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                           RemoteStartTransactionRequestXML,
+        public static Boolean TryParse(XElement                           XML,
+                                       Request_Id                         RequestId,
+                                       ChargeBox_Id                       ChargeBoxId,
                                        out RemoteStartTransactionRequest  RemoteStartTransactionRequest,
                                        OnExceptionDelegate                OnException  = null)
         {
@@ -370,14 +406,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 RemoteStartTransactionRequest = new RemoteStartTransactionRequest(
 
-                                                    RemoteStartTransactionRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "idTag",
-                                                                                                        IdToken.Parse),
+                                                    ChargeBoxId,
 
-                                                    RemoteStartTransactionRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "connectorId",
-                                                                                                        Connector_Id.Parse),
+                                                    XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "idTag",
+                                                                           IdToken.Parse),
 
-                                                    RemoteStartTransactionRequestXML.MapElement        (OCPPNS.OCPPv1_6_CP + "chargingProfile",
-                                                                                                        ChargingProfile.Parse)
+                                                    XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "connectorId",
+                                                                           Connector_Id.Parse),
+
+                                                    XML.MapElement        (OCPPNS.OCPPv1_6_CP + "chargingProfile",
+                                                                           ChargingProfile.Parse),
+
+                                                    RequestId
 
                                                 );
 
@@ -387,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, RemoteStartTransactionRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 RemoteStartTransactionRequest = null;
                 return false;
@@ -398,17 +438,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(RemoteStartTransactionRequestJSON, out RemoteStartTransactionRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out RemoteStartTransactionRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a remote start transaction request.
         /// </summary>
-        /// <param name="RemoteStartTransactionRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RemoteStartTransactionRequest">The parsed remote start transaction request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                            RemoteStartTransactionRequestJSON,
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                            JSON,
+                                       Request_Id                         RequestId,
+                                       ChargeBox_Id                       ChargeBoxId,
                                        out RemoteStartTransactionRequest  RemoteStartTransactionRequest,
-                                       OnExceptionDelegate                OnException  = null)
+                                       out String                         ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out RemoteStartTransactionRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a remote start transaction request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="RemoteStartTransactionRequest">The parsed remote start transaction request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomRemoteStartTransactionRequestParser">A delegate to parse custom Authorize requests.</param>
+        public static Boolean TryParse(JObject                                                     JSON,
+                                       Request_Id                                                  RequestId,
+                                       ChargeBox_Id                                                ChargeBoxId,
+                                       out RemoteStartTransactionRequest                           RemoteStartTransactionRequest,
+                                       out String                                                  ErrorResponse,
+                                       CustomJObjectParserDelegate<RemoteStartTransactionRequest>  CustomRemoteStartTransactionRequestParser)
         {
 
             try
@@ -418,11 +488,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region IdTag
 
-                if (!RemoteStartTransactionRequestJSON.ParseMandatory("idTag",
-                                                                      "identification tag",
-                                                                      IdToken.TryParse,
-                                                                      out IdToken  IdTag,
-                                                                      out String   ErrorResponse))
+                if (!JSON.ParseMandatory("idTag",
+                                         "identification tag",
+                                         IdToken.TryParse,
+                                         out IdToken IdTag,
+                                         out         ErrorResponse))
                 {
                     return false;
                 }
@@ -431,11 +501,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ConnectorId
 
-                if (RemoteStartTransactionRequestJSON.ParseOptionalStruct("connectorId",
-                                                                          "connector identification",
-                                                                          Connector_Id.TryParse,
-                                                                          out Connector_Id?  ConnectorId,
-                                                                          out                ErrorResponse))
+                if (JSON.ParseOptionalStruct("connectorId",
+                                             "connector identification",
+                                             Connector_Id.TryParse,
+                                             out Connector_Id? ConnectorId,
+                                             out               ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -447,52 +517,56 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ChargingProfile
 
-                if (RemoteStartTransactionRequestJSON.ParseOptionalJSON("chargingProfile",
-                                                                        "charging profile",
-                                                                        OCPPv1_6.ChargingProfile.TryParse,
-                                                                        out ChargingProfile  ChargingProfile,
-                                                                        out                  ErrorResponse,
-                                                                        OnException))
+                if (JSON.ParseOptionalJSON("chargingProfile",
+                                           "charging profile",
+                                           OCPPv1_6.ChargingProfile.TryParse,
+                                           out ChargingProfile  ChargingProfile,
+                                           out                  ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
 
-                RemoteStartTransactionRequest = new RemoteStartTransactionRequest(IdTag,
+                RemoteStartTransactionRequest = new RemoteStartTransactionRequest(ChargeBoxId,
+                                                                                  IdTag,
                                                                                   ConnectorId,
-                                                                                  ChargingProfile);
+                                                                                  ChargingProfile,
+                                                                                  RequestId);
+
+                if (CustomRemoteStartTransactionRequestParser != null)
+                    RemoteStartTransactionRequest = CustomRemoteStartTransactionRequestParser(JSON,
+                                                                                              RemoteStartTransactionRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, RemoteStartTransactionRequestJSON, e);
-
-                RemoteStartTransactionRequest = null;
+                RemoteStartTransactionRequest  = default;
+                ErrorResponse                  = "The given JSON representation of a RemoteStartTransaction request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(RemoteStartTransactionRequestText, out RemoteStartTransactionRequest, OnException = null)
+        #region (static) TryParse(RemoteStartTransactionRequestText, RequestId, ChargeBoxId, out RemoteStartTransactionRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given text representation of a remote start transaction request.
         /// </summary>
         /// <param name="RemoteStartTransactionRequestText">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RemoteStartTransactionRequest">The parsed remote start transaction request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                             RemoteStartTransactionRequestText,
+                                       Request_Id                         RequestId,
+                                       ChargeBox_Id                       ChargeBoxId,
                                        out RemoteStartTransactionRequest  RemoteStartTransactionRequest,
                                        OnExceptionDelegate                OnException  = null)
         {
@@ -507,13 +581,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     if (RemoteStartTransactionRequestText.StartsWith("{") &&
                         TryParse(JObject.Parse(RemoteStartTransactionRequestText),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out RemoteStartTransactionRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
                     if (TryParse(XDocument.Parse(RemoteStartTransactionRequestText).Root,
+                                 RequestId,
+                                 ChargeBoxId,
                                  out RemoteStartTransactionRequest,
                                  OnException))
                     {

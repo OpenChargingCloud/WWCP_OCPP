@@ -49,17 +49,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new firmware status notification request.
         /// </summary>
-        /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Status">The status of the diagnostics upload.</param>
-        /// <param name="RequestTimestamp">the optional request timestamp.</param>
-        public FirmwareStatusNotificationRequest(Request_Id      RequestId,
-                                                 ChargeBox_Id    ChargeBoxId,
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public FirmwareStatusNotificationRequest(ChargeBox_Id    ChargeBoxId,
                                                  FirmwareStatus  Status,
+
+                                                 Request_Id?     RequestId          = null,
                                                  DateTime?       RequestTimestamp   = null)
 
-            : base(RequestId,
-                   ChargeBoxId,
+            : base(ChargeBoxId,
+                   RequestId,
                    RequestTimestamp)
 
         {
@@ -232,10 +234,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 FirmwareStatusNotificationRequest = new FirmwareStatusNotificationRequest(
-                                                        RequestId,
                                                         ChargeBoxId,
                                                         XML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "status",
-                                                                           FirmwareStatusExtentions.Parse)
+                                                                           FirmwareStatusExtentions.Parse),
+                                                        RequestId
                                                     );
 
                 return true;
@@ -317,9 +319,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                FirmwareStatusNotificationRequest = new FirmwareStatusNotificationRequest(RequestId,
-                                                                                          ChargeBoxId,
-                                                                                          FirmwareStatus);
+                FirmwareStatusNotificationRequest = new FirmwareStatusNotificationRequest(ChargeBoxId,
+                                                                                          FirmwareStatus,
+                                                                                          RequestId);
 
                 if (CustomFirmwareStatusNotificationRequestParser != null)
                     FirmwareStatusNotificationRequest = CustomFirmwareStatusNotificationRequestParser(JSON,

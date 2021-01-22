@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -321,25 +320,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (ChargingProfileJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomChargingProfileParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a charging profile.
         /// </summary>
-        /// <param name="ChargingProfileJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingProfile Parse(JObject              ChargingProfileJSON,
-                                            OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomChargingProfileParser">A delegate to parse custom charging profiles.</param>
+        public static ChargingProfile Parse(JObject                                       JSON,
+                                            CustomJObjectParserDelegate<ChargingProfile>  CustomChargingProfileParser = null)
         {
 
-            if (TryParse(ChargingProfileJSON,
-                         out ChargingProfile chargingProfile,
-                         OnException))
+            if (TryParse(JSON,
+                         out ChargingProfile  chargingProfile,
+                         out String           ErrorResponse,
+                         CustomChargingProfileParser))
             {
                 return chargingProfile;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a charging profile is invalid: " + ErrorResponse, nameof(JSON));
 
         }
 
@@ -433,17 +433,37 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(ChargingProfileJSON, out ChargingProfile, OnException = null)
+        #region (static) TryParse(JSON, out ChargingProfile, CustomChargingProfileParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a charging profile.
         /// </summary>
-        /// <param name="ChargingProfileJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingProfile">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              ChargingProfileJSON,
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject              JSON,
                                        out ChargingProfile  ChargingProfile,
-                                       OnExceptionDelegate  OnException   = null)
+                                       out String           ErrorResponse)
+
+            => TryParse(JSON,
+                        out ChargingProfile,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a charging profile.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="ChargingProfile">The parsed connector type.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomChargingProfileParser">A delegate to parse custom charging profiles.</param>
+        public static Boolean TryParse(JObject                                       JSON,
+                                       out ChargingProfile                           ChargingProfile,
+                                       out String                                    ErrorResponse,
+                                       CustomJObjectParserDelegate<ChargingProfile>  CustomChargingProfileParser)
         {
 
             try
@@ -453,11 +473,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region ChargingProfileId
 
-                if (!ChargingProfileJSON.ParseMandatory("chargingProfileId",
-                                                        "charging profile id",
-                                                        ChargingProfile_Id.TryParse,
-                                                        out ChargingProfile_Id  ChargingProfileId,
-                                                        out String              ErrorResponse))
+                if (!JSON.ParseMandatory("chargingProfileId",
+                                         "charging profile id",
+                                         ChargingProfile_Id.TryParse,
+                                         out ChargingProfile_Id  ChargingProfileId,
+                                         out                     ErrorResponse))
                 {
                     return false;
                 }
@@ -466,10 +486,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region StackLevel
 
-                if (!ChargingProfileJSON.ParseMandatory("stackLevel",
-                                                        "stack level",
-                                                        out UInt32  StackLevel,
-                                                        out         ErrorResponse))
+                if (!JSON.ParseMandatory("stackLevel",
+                                         "stack level",
+                                         out UInt32  StackLevel,
+                                         out         ErrorResponse))
                 {
                     return false;
                 }
@@ -478,11 +498,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region ChargingProfilePurpose
 
-                if (!ChargingProfileJSON.MapMandatory("chargingProfilePurpose",
-                                                      "charging profile purpose",
-                                                      ChargingProfilePurposesExtentions.Parse,
-                                                      out ChargingProfilePurposes  ChargingProfilePurpose,
-                                                      out                          ErrorResponse))
+                if (!JSON.MapMandatory("chargingProfilePurpose",
+                                       "charging profile purpose",
+                                       ChargingProfilePurposesExtentions.Parse,
+                                       out ChargingProfilePurposes  ChargingProfilePurpose,
+                                       out                          ErrorResponse))
                 {
                     return false;
                 }
@@ -491,11 +511,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region ChargingProfileKind
 
-                if (!ChargingProfileJSON.MapMandatory("chargingProfileKind",
-                                                      "charging profile kind",
-                                                      ChargingProfileKindsExtentions.Parse,
-                                                      out ChargingProfileKinds  ChargingProfileKind,
-                                                      out                       ErrorResponse))
+                if (!JSON.MapMandatory("chargingProfileKind",
+                                       "charging profile kind",
+                                       ChargingProfileKindsExtentions.Parse,
+                                       out ChargingProfileKinds  ChargingProfileKind,
+                                       out                       ErrorResponse))
                 {
                     return false;
                 }
@@ -504,12 +524,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region ChargingSchedule
 
-                if (!ChargingProfileJSON.ParseMandatoryJSON("chargingSchedule",
-                                                            "charging schedule",
-                                                            OCPPv1_6.ChargingSchedule.TryParse,
-                                                            out ChargingSchedule  ChargingSchedule,
-                                                            out                   ErrorResponse,
-                                                            OnException))
+                if (!JSON.ParseMandatoryJSON2("chargingSchedule",
+                                              "charging schedule",
+                                              OCPPv1_6.ChargingSchedule.TryParse,
+                                              out ChargingSchedule ChargingSchedule,
+                                              out                  ErrorResponse))
                 {
                     return false;
                 }
@@ -518,62 +537,54 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region TransactionId
 
-                if (ChargingProfileJSON.ParseOptional("transactionId",
-                                                      "transaction identifier",
-                                                      Transaction_Id.TryParse,
-                                                      out Transaction_Id  TransactionId,
-                                                      out                 ErrorResponse))
+                if (JSON.ParseOptional("transactionId",
+                                       "transaction identifier",
+                                       Transaction_Id.TryParse,
+                                       out Transaction_Id? TransactionId,
+                                       out                 ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
                 #region RecurrencyKind
 
-                if (ChargingProfileJSON.ParseOptional("recurrencyKind",
-                                                      "recurrency kind",
-                                                      RecurrencyKindsExtentions.Parse,
-                                                      out RecurrencyKinds  RecurrencyKind,
-                                                      out                  ErrorResponse))
+                if (JSON.ParseOptional("recurrencyKind",
+                                       "recurrency kind",
+                                       RecurrencyKindsExtentions.Parse,
+                                       out RecurrencyKinds? RecurrencyKind,
+                                       out                  ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
                 #region ValidFrom
 
-                if (ChargingProfileJSON.ParseOptional("validFrom",
-                                                      "valid from",
-                                                      out DateTime?  ValidFrom,
-                                                      out            ErrorResponse))
+                if (JSON.ParseOptional("validFrom",
+                                       "valid from",
+                                       out DateTime? ValidFrom,
+                                       out           ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
                 #region ValidTo
 
-                if (ChargingProfileJSON.ParseOptional("validTo",
-                                                      "valid to",
-                                                      out DateTime?  ValidTo,
-                                                      out            ErrorResponse))
+                if (JSON.ParseOptional("validTo",
+                                       "valid to",
+                                       out DateTime? ValidTo,
+                                       out           ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
@@ -589,17 +600,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                       ValidFrom,
                                                       ValidTo);
 
+                if (CustomChargingProfileParser != null)
+                    ChargingProfile = CustomChargingProfileParser(JSON,
+                                                                  ChargingProfile);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, ChargingProfileJSON, e);
-
-                ChargingProfile = null;
+                ChargingProfile  = default;
+                ErrorResponse    = "The given JSON representation of a charging profile is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -630,7 +642,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     if (ChargingProfileText.StartsWith("{") &&
                         TryParse(JObject.Parse(ChargingProfileText),
                                  out ChargingProfile,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
