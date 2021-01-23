@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -31,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A clear charging profile request.
+    /// The ClearChargingProfile request.
     /// </summary>
     public class ClearChargingProfileRequest : ARequest<ClearChargingProfileRequest>
     {
@@ -69,16 +68,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a clear charging profile request.
+        /// Create a new ClearChargingProfile request.
         /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ChargingProfileId">The optional identification of the charging profile to clear.</param>
         /// <param name="ConnectorId">The optional connector for which to clear the charging profiles. Connector identification 0 specifies the charging profile for the overall charge point. Absence of this parameter means the clearing applies to all charging profiles that match the other criteria in the request.</param>
         /// <param name="ChargingProfilePurpose">The optional purpose of the charging profiles that will be cleared, if they meet the other criteria in the request.</param>
         /// <param name="StackLevel">The optional stack level for which charging profiles will be cleared, if they meet the other criteria in the request.</param>
-        public ClearChargingProfileRequest(ChargingProfile_Id?       ChargingProfileId        = null,
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public ClearChargingProfileRequest(ChargeBox_Id              ChargeBoxId,
+                                           ChargingProfile_Id?       ChargingProfileId        = null,
                                            Connector_Id?             ConnectorId              = null,
                                            ChargingProfilePurposes?  ChargingProfilePurpose   = null,
-                                           UInt32?                   StackLevel               = null)
+                                           UInt32?                   StackLevel               = null,
+
+                                           Request_Id?               RequestId                = null,
+                                           DateTime?                 RequestTimestamp         = null)
+
+            : base(ChargeBoxId,
+                   "ClearChargingProfile",
+                   RequestId,
+                   RequestTimestamp)
+
         {
 
             this.ChargingProfileId       = ChargingProfileId;
@@ -151,87 +164,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (ClearChargingProfileRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a clear charging profile request.
+        /// Parse the given XML representation of a ClearChargingProfile request.
         /// </summary>
-        /// <param name="ClearChargingProfileRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearChargingProfileRequest Parse(XElement             ClearChargingProfileRequestXML,
+        public static ClearChargingProfileRequest Parse(XElement             XML,
+                                                        Request_Id           RequestId,
+                                                        ChargeBox_Id         ChargeBoxId,
                                                         OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(ClearChargingProfileRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out ClearChargingProfileRequest clearChargingProfileRequest,
                          OnException))
             {
                 return clearChargingProfileRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a ClearChargingProfile request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (ClearChargingProfileRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomClearChargingProfileRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a clear charging profile request.
+        /// Parse the given JSON representation of a ClearChargingProfile request.
         /// </summary>
-        /// <param name="ClearChargingProfileRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomClearChargingProfileRequestParser">A delegate to parse custom ClearChargingProfile requests.</param>
+        public static ClearChargingProfileRequest Parse(JObject                                                   JSON,
+                                                        Request_Id                                                RequestId,
+                                                        ChargeBox_Id                                              ChargeBoxId,
+                                                        CustomJObjectParserDelegate<ClearChargingProfileRequest>  CustomClearChargingProfileRequestParser   = null)
+        {
+
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out ClearChargingProfileRequest  clearChargingProfileRequest,
+                         out String                       ErrorResponse,
+                         CustomClearChargingProfileRequestParser))
+            {
+                return clearChargingProfileRequest;
+            }
+
+            throw new ArgumentException("The given JSON representation of a ClearChargingProfile request is invalid: " + ErrorResponse, nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a ClearChargingProfile request.
+        /// </summary>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearChargingProfileRequest Parse(JObject              ClearChargingProfileRequestJSON,
+        public static ClearChargingProfileRequest Parse(String               Text,
+                                                        Request_Id           RequestId,
+                                                        ChargeBox_Id         ChargeBoxId,
                                                         OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(ClearChargingProfileRequestJSON,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out ClearChargingProfileRequest clearChargingProfileRequest,
                          OnException))
             {
                 return clearChargingProfileRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a ClearChargingProfile request is invalid!", nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) Parse   (ClearChargingProfileRequestText, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out ClearChargingProfileRequest, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of a clear charging profile request.
+        /// Try to parse the given XML representation of a ClearChargingProfile request.
         /// </summary>
-        /// <param name="ClearChargingProfileRequestText">The text to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ClearChargingProfileRequest">The parsed ClearChargingProfile request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearChargingProfileRequest Parse(String               ClearChargingProfileRequestText,
-                                                        OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(ClearChargingProfileRequestText,
-                         out ClearChargingProfileRequest clearChargingProfileRequest,
-                         OnException))
-            {
-                return clearChargingProfileRequest;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(ClearChargingProfileRequestXML,  out ClearChargingProfileRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a clear charging profile request.
-        /// </summary>
-        /// <param name="ClearChargingProfileRequestXML">The XML to be parsed.</param>
-        /// <param name="ClearChargingProfileRequest">The parsed clear charging profile request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                         ClearChargingProfileRequestXML,
+        public static Boolean TryParse(XElement                         XML,
+                                       Request_Id                       RequestId,
+                                       ChargeBox_Id                     ChargeBoxId,
                                        out ClearChargingProfileRequest  ClearChargingProfileRequest,
                                        OnExceptionDelegate              OnException  = null)
         {
@@ -241,17 +277,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 ClearChargingProfileRequest = new ClearChargingProfileRequest(
 
-                                                  ClearChargingProfileRequestXML.MapValueOrNull    (OCPPNS.OCPPv1_6_CP + "id",
-                                                                                                    ChargingProfile_Id.Parse),
+                                                  ChargeBoxId,
 
-                                                  ClearChargingProfileRequestXML.MapValueOrNull    (OCPPNS.OCPPv1_6_CP + "connectorId",
-                                                                                                    Connector_Id.Parse),
+                                                  XML.MapValueOrNull    (OCPPNS.OCPPv1_6_CP + "id",
+                                                                         ChargingProfile_Id.Parse),
 
-                                                  ClearChargingProfileRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "chargingProfilePurpose",
-                                                                                                    ChargingProfilePurposesExtentions.Parse),
+                                                  XML.MapValueOrNull    (OCPPNS.OCPPv1_6_CP + "connectorId",
+                                                                         Connector_Id.Parse),
 
-                                                  ClearChargingProfileRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "stackLevel",
-                                                                                                    UInt32.Parse)
+                                                  XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "chargingProfilePurpose",
+                                                                         ChargingProfilePurposesExtentions.Parse),
+
+                                                  XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "stackLevel",
+                                                                         UInt32.Parse),
+
+                                                  RequestId
 
                                               );
 
@@ -261,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, ClearChargingProfileRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 ClearChargingProfileRequest = null;
                 return false;
@@ -272,17 +312,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(ClearChargingProfileRequestJSON, out ClearChargingProfileRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out ClearChargingProfileRequest, out ErrorResponse, CustomClearChargingProfileRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a clear charging profile request.
+        /// Try to parse the given JSON representation of a ClearChargingProfile request.
         /// </summary>
-        /// <param name="ClearChargingProfileRequestJSON">The JSON to be parsed.</param>
-        /// <param name="ClearChargingProfileRequest">The parsed clear charging profile request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                          ClearChargingProfileRequestJSON,
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ClearChargingProfileRequest">The parsed ClearChargingProfile request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                          JSON,
+                                       Request_Id                       RequestId,
+                                       ChargeBox_Id                     ChargeBoxId,
                                        out ClearChargingProfileRequest  ClearChargingProfileRequest,
-                                       OnExceptionDelegate              OnException  = null)
+                                       out String                       ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out ClearChargingProfileRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a ClearChargingProfile request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ClearChargingProfileRequest">The parsed ClearChargingProfile request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomClearChargingProfileRequestParser">A delegate to parse custom ClearChargingProfile requests.</param>
+        public static Boolean TryParse(JObject                                                   JSON,
+                                       Request_Id                                                RequestId,
+                                       ChargeBox_Id                                              ChargeBoxId,
+                                       out ClearChargingProfileRequest                           ClearChargingProfileRequest,
+                                       out String                                                ErrorResponse,
+                                       CustomJObjectParserDelegate<ClearChargingProfileRequest>  CustomClearChargingProfileRequestParser)
         {
 
             try
@@ -292,96 +362,98 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ChargingProfileId
 
-                if (ClearChargingProfileRequestJSON.ParseOptionalStruct("chargingProfileId",
-                                                                        "charging profile identification",
-                                                                        ChargingProfile_Id.TryParse,
-                                                                        out ChargingProfile_Id?  ChargingProfileId,
-                                                                        out String               ErrorResponse))
+                if (JSON.ParseOptionalStruct("chargingProfileId",
+                                             "charging profile identification",
+                                             ChargingProfile_Id.TryParse,
+                                             out ChargingProfile_Id?  ChargingProfileId,
+                                             out                      ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
                 #region ConnectorId
 
-                if (ClearChargingProfileRequestJSON.ParseOptionalStruct("connectorId",
-                                                                        "connector identification",
-                                                                        Connector_Id.TryParse,
-                                                                        out Connector_Id?  ConnectorId,
-                                                                        out                ErrorResponse))
+                if (JSON.ParseOptionalStruct("connectorId",
+                                             "connector identification",
+                                             Connector_Id.TryParse,
+                                             out Connector_Id?  ConnectorId,
+                                             out                ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
                 #region ChargingProfilePurpose
 
-                if (ClearChargingProfileRequestJSON.ParseOptional("chargingProfilePurpose",
-                                                                  "charging profile purpose",
-                                                                  ChargingProfilePurposesExtentions.Parse,
-                                                                  out ChargingProfilePurposes?  ChargingProfilePurpose,
-                                                                  out                           ErrorResponse))
+                if (JSON.ParseOptional("chargingProfilePurpose",
+                                       "charging profile purpose",
+                                       ChargingProfilePurposesExtentions.Parse,
+                                       out ChargingProfilePurposes?  ChargingProfilePurpose,
+                                       out                           ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
                 #region StackLevel
 
-                if (!ClearChargingProfileRequestJSON.ParseOptional("StackLevel",
-                                                                   "stack level",
-                                                                   out UInt32?  StackLevel,
-                                                                   out          ErrorResponse))
+                if (JSON.ParseOptional("stackLevel",
+                                       "stack level",
+                                       out UInt32?  StackLevel,
+                                       out          ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse != null)
+                        return false;
                 }
 
                 #endregion
 
 
-                ClearChargingProfileRequest = new ClearChargingProfileRequest(ChargingProfileId,
+                ClearChargingProfileRequest = new ClearChargingProfileRequest(ChargeBoxId,
+                                                                              ChargingProfileId,
                                                                               ConnectorId,
                                                                               ChargingProfilePurpose,
-                                                                              StackLevel);
+                                                                              StackLevel,
+                                                                              RequestId);
+
+                if (CustomClearChargingProfileRequestParser != null)
+                    ClearChargingProfileRequest = CustomClearChargingProfileRequestParser(JSON,
+                                                                                          ClearChargingProfileRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, ClearChargingProfileRequestJSON, e);
-
-                ClearChargingProfileRequest = null;
+                ClearChargingProfileRequest  = default;
+                ErrorResponse                = "The given JSON representation of a ClearChargingProfile request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(ClearChargingProfileRequestText, out ClearChargingProfileRequest, OnException = null)
+        #region (static) TryParse(ClearChargingProfileRequestText, RequestId, ChargeBoxId, out ClearChargingProfileRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a clear charging profile request.
+        /// Try to parse the given text representation of a ClearChargingProfile request.
         /// </summary>
         /// <param name="ClearChargingProfileRequestText">The text to be parsed.</param>
-        /// <param name="ClearChargingProfileRequest">The parsed clear charging profile request.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ClearChargingProfileRequest">The parsed ClearChargingProfile request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                           ClearChargingProfileRequestText,
+                                       Request_Id                       RequestId,
+                                       ChargeBox_Id                     ChargeBoxId,
                                        out ClearChargingProfileRequest  ClearChargingProfileRequest,
                                        OnExceptionDelegate              OnException  = null)
         {
@@ -396,13 +468,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     if (ClearChargingProfileRequestText.StartsWith("{") &&
                         TryParse(JObject.Parse(ClearChargingProfileRequestText),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out ClearChargingProfileRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
                     if (TryParse(XDocument.Parse(ClearChargingProfileRequestText).Root,
+                                 RequestId,
+                                 ChargeBoxId,
                                  out ClearChargingProfileRequest,
                                  OnException))
                     {
@@ -453,13 +529,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToJSON(CustomClearChargingProfileRequestRequestSerializer = null)
+        #region ToJSON(CustomClearChargingProfileRequestSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomClearChargingProfileRequestRequestSerializer">A delegate to serialize custom clear charging profile requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileRequest> CustomClearChargingProfileRequestRequestSerializer  = null)
+        /// <param name="CustomClearChargingProfileRequestSerializer">A delegate to serialize custom ClearChargingProfile requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileRequest> CustomClearChargingProfileRequestSerializer = null)
         {
 
             var JSON = JSONObject.Create(
@@ -482,8 +558,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                        );
 
-            return CustomClearChargingProfileRequestRequestSerializer != null
-                       ? CustomClearChargingProfileRequestRequestSerializer(this, JSON)
+            return CustomClearChargingProfileRequestSerializer != null
+                       ? CustomClearChargingProfileRequestSerializer(this, JSON)
                        : JSON;
 
         }
@@ -496,10 +572,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (ClearChargingProfileRequest1, ClearChargingProfileRequest2)
 
         /// <summary>
-        /// Compares two clear charging profile requests for equality.
+        /// Compares two ClearChargingProfile requests for equality.
         /// </summary>
-        /// <param name="ClearChargingProfileRequest1">A clear charging profile request.</param>
-        /// <param name="ClearChargingProfileRequest2">Another clear charging profile request.</param>
+        /// <param name="ClearChargingProfileRequest1">A ClearChargingProfile request.</param>
+        /// <param name="ClearChargingProfileRequest2">Another ClearChargingProfile request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ClearChargingProfileRequest ClearChargingProfileRequest1, ClearChargingProfileRequest ClearChargingProfileRequest2)
         {
@@ -521,10 +597,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (ClearChargingProfileRequest1, ClearChargingProfileRequest2)
 
         /// <summary>
-        /// Compares two clear charging profile requests for inequality.
+        /// Compares two ClearChargingProfile requests for inequality.
         /// </summary>
-        /// <param name="ClearChargingProfileRequest1">A clear charging profile request.</param>
-        /// <param name="ClearChargingProfileRequest2">Another clear charging profile request.</param>
+        /// <param name="ClearChargingProfileRequest1">A ClearChargingProfile request.</param>
+        /// <param name="ClearChargingProfileRequest2">Another ClearChargingProfile request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ClearChargingProfileRequest ClearChargingProfileRequest1, ClearChargingProfileRequest ClearChargingProfileRequest2)
 
@@ -561,9 +637,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(ClearChargingProfileRequest)
 
         /// <summary>
-        /// Compares two clear charging profile requests for equality.
+        /// Compares two ClearChargingProfile requests for equality.
         /// </summary>
-        /// <param name="ClearChargingProfileRequest">A clear charging profile request to compare with.</param>
+        /// <param name="ClearChargingProfileRequest">A ClearChargingProfile request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(ClearChargingProfileRequest ClearChargingProfileRequest)
         {

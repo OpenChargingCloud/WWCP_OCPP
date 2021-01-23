@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The heartbeat request.
+    /// The Heartbeat request.
     /// </summary>
     public class HeartbeatRequest : ARequest<HeartbeatRequest>
     {
@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new heartbeat request.
+        /// Create a new Heartbeat request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// 
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a heartbeat request.
+        /// Parse the given XML representation of a Heartbeat request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomHeartbeatRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a heartbeat request.
+        /// Parse the given JSON representation of a Heartbeat request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of a heartbeat request.
+        /// Parse the given text representation of a Heartbeat request.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(XML,  RequestId, ChargeBoxId, out HeartbeatRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of a heartbeat request.
+        /// Try to parse the given XML representation of a Heartbeat request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a heartbeat request.
+        /// Try to parse the given JSON representation of a Heartbeat request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a heartbeat request.
+        /// Try to parse the given JSON representation of a Heartbeat request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             try
             {
 
-                ErrorResponse     = null;
+                ErrorResponse     = default;
                 HeartbeatRequest  = new HeartbeatRequest(ChargeBoxId,
                                                          RequestId);
 
@@ -287,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(Text, RequestId, ChargeBoxId, out HeartbeatRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a heartbeat request.
+        /// Try to parse the given text representation of a Heartbeat request.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>

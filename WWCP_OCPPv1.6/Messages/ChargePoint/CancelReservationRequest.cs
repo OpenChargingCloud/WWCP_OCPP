@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A cancel reservation request.
+    /// The CancelReservation request.
     /// </summary>
     public class CancelReservationRequest : ARequest<CancelReservationRequest>
     {
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a cancel reservation request.
+        /// Create a CancelReservation request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a cancel reservation request.
+        /// Parse the given XML representation of a CancelReservation request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomCancelReservationRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a cancel reservation request.
+        /// Parse the given JSON representation of a CancelReservation request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of a cancel reservation request.
+        /// Parse the given text representation of a CancelReservation request.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -207,12 +207,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(XML,  RequestId, ChargeBoxId, out CancelReservationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of a cancel reservation request.
+        /// Try to parse the given XML representation of a CancelReservation request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CancelReservationRequest">The parsed cancel reservation request.</param>
+        /// <param name="CancelReservationRequest">The parsed CancelReservation request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                      XML,
                                        Request_Id                    RequestId,
@@ -257,12 +257,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a cancel reservation request.
+        /// Try to parse the given JSON representation of a CancelReservation request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CancelReservationRequest">The parsed cancel reservation request.</param>
+        /// <param name="CancelReservationRequest">The parsed CancelReservation request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                       JSON,
                                        Request_Id                    RequestId,
@@ -279,12 +279,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a cancel reservation request.
+        /// Try to parse the given JSON representation of a CancelReservation request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CancelReservationRequest">The parsed cancel reservation request.</param>
+        /// <param name="CancelReservationRequest">The parsed CancelReservation request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomCancelReservationRequestParser">A delegate to parse custom CancelReservation requests.</param>
         public static Boolean TryParse(JObject                                                JSON,
@@ -339,12 +339,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(Text, RequestId, ChargeBoxId, out CancelReservationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a cancel reservation request.
+        /// Try to parse the given text representation of a CancelReservation request.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CancelReservationRequest">The parsed cancel reservation request.</param>
+        /// <param name="CancelReservationRequest">The parsed CancelReservation request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                        Text,
                                        Request_Id                    RequestId,
@@ -415,7 +415,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCancelReservationRequestSerializer">A delegate to serialize custom cancel reservation requests.</param>
+        /// <param name="CustomCancelReservationRequestSerializer">A delegate to serialize custom CancelReservation requests.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationRequest>  CustomCancelReservationRequestSerializer   = null)
         {
 
@@ -437,10 +437,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (CancelReservationRequest1, CancelReservationRequest2)
 
         /// <summary>
-        /// Compares two cancel reservation requests for equality.
+        /// Compares two CancelReservation requests for equality.
         /// </summary>
-        /// <param name="CancelReservationRequest1">A cancel reservation request.</param>
-        /// <param name="CancelReservationRequest2">Another cancel reservation request.</param>
+        /// <param name="CancelReservationRequest1">A CancelReservation request.</param>
+        /// <param name="CancelReservationRequest2">Another CancelReservation request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (CancelReservationRequest CancelReservationRequest1, CancelReservationRequest CancelReservationRequest2)
         {
@@ -462,10 +462,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (CancelReservationRequest1, CancelReservationRequest2)
 
         /// <summary>
-        /// Compares two cancel reservation requests for inequality.
+        /// Compares two CancelReservation requests for inequality.
         /// </summary>
-        /// <param name="CancelReservationRequest1">A cancel reservation request.</param>
-        /// <param name="CancelReservationRequest2">Another cancel reservation request.</param>
+        /// <param name="CancelReservationRequest1">A CancelReservation request.</param>
+        /// <param name="CancelReservationRequest2">Another CancelReservation request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (CancelReservationRequest CancelReservationRequest1, CancelReservationRequest CancelReservationRequest2)
 
@@ -502,9 +502,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(CancelReservationRequest)
 
         /// <summary>
-        /// Compares two cancel reservation requests for equality.
+        /// Compares two CancelReservation requests for equality.
         /// </summary>
-        /// <param name="CancelReservationRequest">A cancel reservation request to compare with.</param>
+        /// <param name="CancelReservationRequest">A CancelReservation request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(CancelReservationRequest CancelReservationRequest)
         {

@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -31,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A data transfer request.
+    /// The DataTransfer request.
     /// </summary>
     public class DataTransferRequest : ARequest<DataTransferRequest>
     {
@@ -58,21 +57,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a data transfer request.
+        /// Create a new DataTransfer request.
         /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
-        public DataTransferRequest(String VendorId,
-                                   String MessageId   = null,
-                                   String Data        = null)
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public DataTransferRequest(ChargeBox_Id  ChargeBoxId,
+                                   String        VendorId,
+                                   String        MessageId          = null,
+                                   String        Data               = null,
+
+                                   Request_Id?   RequestId          = null,
+                                   DateTime?     RequestTimestamp   = null)
+
+            : base(ChargeBoxId,
+                   "DataTransfer",
+                   RequestId,
+                   RequestTimestamp)
+
         {
 
-            VendorId = VendorId?.Trim();
-
-            this.VendorId   = VendorId ?? throw new ArgumentNullException(nameof(VendorId), "The given vendor identification must not be null or empty!");
-            this.MessageId  = MessageId;
-            this.Data       = Data;
+            this.VendorId   = VendorId?. Trim() ?? throw new ArgumentNullException(nameof(VendorId), "The given vendor identification must not be null or empty!");
+            this.MessageId  = MessageId?.Trim();
+            this.Data       = Data?.     Trim();
 
         }
 
@@ -131,87 +142,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (DataTransferRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a data transfer request.
+        /// Parse the given XML representation of a DataTransfer request.
         /// </summary>
-        /// <param name="DataTransferRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static DataTransferRequest Parse(XElement             DataTransferRequestXML,
+        public static DataTransferRequest Parse(XElement             XML,
+                                                Request_Id           RequestId,
+                                                ChargeBox_Id         ChargeBoxId,
                                                 OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(DataTransferRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out DataTransferRequest dataTransferRequest,
                          OnException))
             {
                 return dataTransferRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a DataTransfer request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (DataTransferRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomDataTransferRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a data transfer request.
+        /// Parse the given JSON representation of a DataTransfer request.
         /// </summary>
-        /// <param name="DataTransferRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomDataTransferRequestParser">A delegate to parse custom DataTransfer requests.</param>
+        public static DataTransferRequest Parse(JObject                                           JSON,
+                                                Request_Id                                        RequestId,
+                                                ChargeBox_Id                                      ChargeBoxId,
+                                                CustomJObjectParserDelegate<DataTransferRequest>  CustomDataTransferRequestParser   = null)
+        {
+
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out DataTransferRequest  dataTransferRequest,
+                         out String               ErrorResponse,
+                         CustomDataTransferRequestParser))
+            {
+                return dataTransferRequest;
+            }
+
+            throw new ArgumentException("The given JSON representation of a DataTransfer request is invalid: " + ErrorResponse, nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a DataTransfer request.
+        /// </summary>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static DataTransferRequest Parse(JObject              DataTransferRequestJSON,
+        public static DataTransferRequest Parse(String               Text,
+                                                Request_Id           RequestId,
+                                                ChargeBox_Id         ChargeBoxId,
                                                 OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(DataTransferRequestJSON,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out DataTransferRequest dataTransferRequest,
                          OnException))
             {
                 return dataTransferRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a DataTransfer request is invalid!", nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) Parse   (DataTransferRequestText, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out DataTransferRequest, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of a data transfer request.
+        /// Try to parse the given XML representation of a DataTransfer request.
         /// </summary>
-        /// <param name="DataTransferRequestText">The text to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static DataTransferRequest Parse(String               DataTransferRequestText,
-                                                OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(DataTransferRequestText,
-                         out DataTransferRequest dataTransferRequest,
-                         OnException))
-            {
-                return dataTransferRequest;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(DataTransferRequestXML,  out DataTransferRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a data transfer request.
-        /// </summary>
-        /// <param name="DataTransferRequestXML">The XML to be parsed.</param>
-        /// <param name="DataTransferRequest">The parsed data transfer request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                 DataTransferRequestXML,
+        public static Boolean TryParse(XElement                 XML,
+                                       Request_Id               RequestId,
+                                       ChargeBox_Id             ChargeBoxId,
                                        out DataTransferRequest  DataTransferRequest,
                                        OnExceptionDelegate      OnException  = null)
         {
@@ -221,9 +255,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 DataTransferRequest = new DataTransferRequest(
 
-                                          DataTransferRequestXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CP + "vendorId"),
-                                          DataTransferRequestXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "messageId"),
-                                          DataTransferRequestXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "data")
+                                          ChargeBoxId,
+
+                                          XML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CP + "vendorId"),
+                                          XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "messageId"),
+                                          XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "data"),
+
+                                          RequestId
 
                                       );
 
@@ -233,7 +271,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, DataTransferRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 DataTransferRequest = null;
                 return false;
@@ -244,17 +282,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(DataTransferRequestJSON, out DataTransferRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out DataTransferRequest, out ErrorResponse, CustomDataTransferRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a data transfer request.
+        /// Try to parse the given JSON representation of a DataTransfer request.
         /// </summary>
-        /// <param name="DataTransferRequestJSON">The JSON to be parsed.</param>
-        /// <param name="DataTransferRequest">The parsed data transfer request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                  DataTransferRequestJSON,
-                                       out DataTransferRequest  DataTransferRequest,
-                                       OnExceptionDelegate      OnException  = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
+        public static Boolean TryParse(JObject                                           JSON,
+                                       Request_Id                                        RequestId,
+                                       ChargeBox_Id                                      ChargeBoxId,
+                                       out DataTransferRequest                           DataTransferRequest,
+                                       out String                                        ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out DataTransferRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a DataTransfer request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomDataTransferRequestParser">A delegate to parse custom DataTransfer requests.</param>
+        public static Boolean TryParse(JObject                                           JSON,
+                                       Request_Id                                        RequestId,
+                                       ChargeBox_Id                                      ChargeBoxId,
+                                       out DataTransferRequest                           DataTransferRequest,
+                                       out String                                        ErrorResponse,
+                                       CustomJObjectParserDelegate<DataTransferRequest>  CustomDataTransferRequestParser)
         {
 
             try
@@ -264,53 +331,66 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region VendorId
 
-                var VendorId = DataTransferRequestJSON.GetString("vendorId");
+                if (!JSON.ParseMandatoryText("vendorId",
+                                             "vendor identification",
+                                             out String  VendorId,
+                                             out         ErrorResponse))
+                {
+                    return false;
+                }
 
                 #endregion
 
                 #region MessageId
 
-                var MessageId = DataTransferRequestJSON.GetString("messageId");
+                var MessageId = JSON.GetString("messageId");
 
                 #endregion
 
                 #region Data
 
-                var Data = DataTransferRequestJSON.GetString("data");
+                var Data = JSON.GetString("data");
 
                 #endregion
 
 
-                DataTransferRequest = new DataTransferRequest(VendorId,
-                                                                      MessageId,
-                                                                      Data);
+                DataTransferRequest = new DataTransferRequest(ChargeBoxId,
+                                                              VendorId,
+                                                              MessageId,
+                                                              Data,
+                                                              RequestId);
+
+                if (CustomDataTransferRequestParser != null)
+                    DataTransferRequest = CustomDataTransferRequestParser(JSON,
+                                                                          DataTransferRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, DataTransferRequestJSON, e);
-
-                DataTransferRequest = null;
+                DataTransferRequest  = default;
+                ErrorResponse        = "The given JSON representation of a DataTransfer request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(DataTransferRequestText, out DataTransferRequest, OnException = null)
+        #region (static) TryParse(Text, RequestId, ChargeBoxId, out DataTransferRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a data transfer request.
+        /// Try to parse the given text representation of a DataTransfer request.
         /// </summary>
-        /// <param name="DataTransferRequestText">The text to be parsed.</param>
-        /// <param name="DataTransferRequest">The parsed data transfer request.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                   DataTransferRequestText,
+        public static Boolean TryParse(String                   Text,
+                                       Request_Id               RequestId,
+                                       ChargeBox_Id             ChargeBoxId,
                                        out DataTransferRequest  DataTransferRequest,
                                        OnExceptionDelegate      OnException  = null)
         {
@@ -318,20 +398,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                DataTransferRequestText = DataTransferRequestText?.Trim();
+                Text = Text?.Trim();
 
-                if (DataTransferRequestText.IsNotNullOrEmpty())
+                if (Text.IsNotNullOrEmpty())
                 {
 
-                    if (DataTransferRequestText.StartsWith("{") &&
-                        TryParse(JObject.Parse(DataTransferRequestText),
+                    if (Text.StartsWith("{") &&
+                        TryParse(JObject.Parse(Text),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out DataTransferRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
-                    if (TryParse(XDocument.Parse(DataTransferRequestText).Root,
+                    if (TryParse(XDocument.Parse(Text).Root,
+                                 RequestId,
+                                 ChargeBoxId,
                                  out DataTransferRequest,
                                  OnException))
                     {
@@ -343,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, DataTransferRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, Text, e);
             }
 
             DataTransferRequest = null;
@@ -376,13 +460,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToJSON(CustomDataTransferSerializer = null)
+        #region ToJSON(CustomDataTransferRequestSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomDataTransferSerializer">A delegate to serialize custom data transfer requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest> CustomDataTransferSerializer  = null)
+        /// <param name="CustomDataTransferRequestSerializer">A delegate to serialize custom DataTransfer requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest> CustomDataTransferRequestSerializer = null)
         {
 
             var JSON = JSONObject.Create(
@@ -399,8 +483,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                        );
 
-            return CustomDataTransferSerializer != null
-                       ? CustomDataTransferSerializer(this, JSON)
+            return CustomDataTransferRequestSerializer != null
+                       ? CustomDataTransferRequestSerializer(this, JSON)
                        : JSON;
 
         }
@@ -413,10 +497,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (DataTransferRequest1, DataTransferRequest2)
 
         /// <summary>
-        /// Compares two data transfer requests for equality.
+        /// Compares two DataTransfer requests for equality.
         /// </summary>
-        /// <param name="DataTransferRequest1">A data transfer request.</param>
-        /// <param name="DataTransferRequest2">Another data transfer request.</param>
+        /// <param name="DataTransferRequest1">A DataTransfer request.</param>
+        /// <param name="DataTransferRequest2">Another DataTransfer request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (DataTransferRequest DataTransferRequest1, DataTransferRequest DataTransferRequest2)
         {
@@ -438,10 +522,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (DataTransferRequest1, DataTransferRequest2)
 
         /// <summary>
-        /// Compares two data transfer requests for inequality.
+        /// Compares two DataTransfer requests for inequality.
         /// </summary>
-        /// <param name="DataTransferRequest1">A data transfer request.</param>
-        /// <param name="DataTransferRequest2">Another data transfer request.</param>
+        /// <param name="DataTransferRequest1">A DataTransfer request.</param>
+        /// <param name="DataTransferRequest2">Another DataTransfer request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (DataTransferRequest DataTransferRequest1, DataTransferRequest DataTransferRequest2)
 
@@ -478,9 +562,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(DataTransferRequest)
 
         /// <summary>
-        /// Compares two data transfer requests for equality.
+        /// Compares two DataTransfer requests for equality.
         /// </summary>
-        /// <param name="DataTransferRequest">A data transfer request to compare with.</param>
+        /// <param name="DataTransferRequest">A DataTransfer request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(DataTransferRequest DataTransferRequest)
         {

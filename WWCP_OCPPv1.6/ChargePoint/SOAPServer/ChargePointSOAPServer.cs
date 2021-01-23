@@ -757,9 +757,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
                 var _OCPPHeader           = SOAPHeader.Parse(HeaderXML);
-                var _DataTransferRequest  = CS.DataTransferRequest.Parse(DataTransferXML);
+                var _DataTransferRequest  = CS.DataTransferRequest.Parse(DataTransferXML,
+                                                                         Request_Id.Parse(_OCPPHeader.MessageId),
+                                                                         _OCPPHeader.ChargeBoxIdentity);
 
-                CP.DataTransferResponse response            = null;
+                CP.DataTransferResponse response = null;
 
 
 

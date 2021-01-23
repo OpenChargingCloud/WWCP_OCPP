@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The diagnostics status notification request.
+    /// The DiagnosticsStatusNotification request.
     /// </summary>
     public class DiagnosticsStatusNotificationRequest : ARequest<DiagnosticsStatusNotificationRequest>
     {
@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new diagnostics status notification request.
+        /// Create a new DiagnosticsStatusNotification request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Status">The status of the diagnostics upload.</param>
@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a diagnostics status notification request.
+        /// Parse the given XML representation of a DiagnosticsStatusNotification request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomDiagnosticsStatusNotificationRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a diagnostics status notification request.
+        /// Parse the given JSON representation of a DiagnosticsStatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of a diagnostics status notification request.
+        /// Parse the given text representation of a DiagnosticsStatusNotification request.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -214,12 +214,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(XML,  RequestId, ChargeBoxId, out DiagnosticsStatusNotificationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of a diagnostics status notification request.
+        /// Try to parse the given XML representation of a DiagnosticsStatusNotification request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="DiagnosticsStatusNotificationRequest">The parsed diagnostics status notification request.</param>
+        /// <param name="DiagnosticsStatusNotificationRequest">The parsed DiagnosticsStatusNotification request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                                  XML,
                                        Request_Id                                RequestId,
@@ -260,12 +260,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a diagnostics status notification request.
+        /// Try to parse the given JSON representation of a DiagnosticsStatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="DiagnosticsStatusNotificationRequest">The parsed diagnostics status notification request.</param>
+        /// <param name="DiagnosticsStatusNotificationRequest">The parsed DiagnosticsStatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                                   JSON,
                                        Request_Id                                RequestId,
@@ -281,12 +281,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a diagnostics status notification request.
+        /// Try to parse the given JSON representation of a DiagnosticsStatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="DiagnosticsStatusNotificationRequest">The parsed diagnostics status notification request.</param>
+        /// <param name="DiagnosticsStatusNotificationRequest">The parsed DiagnosticsStatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomDiagnosticsStatusNotificationRequestParser">A delegate to parse custom DiagnosticsStatusNotification requests.</param>
         public static Boolean TryParse(JObject                                                            JSON,
@@ -343,12 +343,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(Text, RequestId, ChargeBoxId, out DiagnosticsStatusNotificationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a diagnostics status notification request.
+        /// Try to parse the given text representation of a DiagnosticsStatusNotification request.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="DiagnosticsStatusNotificationRequest">The parsed diagnostics status notification request.</param>
+        /// <param name="DiagnosticsStatusNotificationRequest">The parsed DiagnosticsStatusNotification request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                                    Text,
                                        Request_Id                                RequestId,
@@ -417,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomDiagnosticsStatusNotificationRequestSerializer">A delegate to serialize custom diagnostics status notification requests.</param>
+        /// <param name="CustomDiagnosticsStatusNotificationRequestSerializer">A delegate to serialize custom DiagnosticsStatusNotification requests.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DiagnosticsStatusNotificationRequest> CustomDiagnosticsStatusNotificationRequestSerializer   = null)
         {
 
@@ -439,10 +439,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (DiagnosticsStatusNotificationRequest1, DiagnosticsStatusNotificationRequest2)
 
         /// <summary>
-        /// Compares two diagnostics status notification requests for equality.
+        /// Compares two DiagnosticsStatusNotification requests for equality.
         /// </summary>
-        /// <param name="DiagnosticsStatusNotificationRequest1">A diagnostics status notification request.</param>
-        /// <param name="DiagnosticsStatusNotificationRequest2">Another diagnostics status notification request.</param>
+        /// <param name="DiagnosticsStatusNotificationRequest1">A DiagnosticsStatusNotification request.</param>
+        /// <param name="DiagnosticsStatusNotificationRequest2">Another DiagnosticsStatusNotification request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (DiagnosticsStatusNotificationRequest DiagnosticsStatusNotificationRequest1, DiagnosticsStatusNotificationRequest DiagnosticsStatusNotificationRequest2)
         {
@@ -464,10 +464,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (DiagnosticsStatusNotificationRequest1, DiagnosticsStatusNotificationRequest2)
 
         /// <summary>
-        /// Compares two diagnostics status notification requests for inequality.
+        /// Compares two DiagnosticsStatusNotification requests for inequality.
         /// </summary>
-        /// <param name="DiagnosticsStatusNotificationRequest1">A diagnostics status notification request.</param>
-        /// <param name="DiagnosticsStatusNotificationRequest2">Another diagnostics status notification request.</param>
+        /// <param name="DiagnosticsStatusNotificationRequest1">A DiagnosticsStatusNotification request.</param>
+        /// <param name="DiagnosticsStatusNotificationRequest2">Another DiagnosticsStatusNotification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (DiagnosticsStatusNotificationRequest DiagnosticsStatusNotificationRequest1, DiagnosticsStatusNotificationRequest DiagnosticsStatusNotificationRequest2)
 
@@ -504,9 +504,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(DiagnosticsStatusNotificationRequest)
 
         /// <summary>
-        /// Compares two diagnostics status notification requests for equality.
+        /// Compares two DiagnosticsStatusNotification requests for equality.
         /// </summary>
-        /// <param name="DiagnosticsStatusNotificationRequest">A diagnostics status notification request to compare with.</param>
+        /// <param name="DiagnosticsStatusNotificationRequest">A DiagnosticsStatusNotification request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(DiagnosticsStatusNotificationRequest DiagnosticsStatusNotificationRequest)
         {

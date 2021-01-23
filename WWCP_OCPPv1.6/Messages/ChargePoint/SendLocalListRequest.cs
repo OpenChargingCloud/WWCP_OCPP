@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -33,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A send local list request.
+    /// The SendLocalList request.
     /// </summary>
     public class SendLocalListRequest : ARequest<SendLocalListRequest>
     {
@@ -67,14 +66,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a send local list request.
+        /// Create a SendLocalList request.
         /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ListVersion">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
         /// <param name="UpdateType">The type of update (full or differential).</param>
         /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charge point. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
-        public SendLocalListRequest(UInt64                          ListVersion,
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public SendLocalListRequest(ChargeBox_Id                    ChargeBoxId,
+                                    UInt64                          ListVersion,
                                     UpdateTypes                     UpdateType,
-                                    IEnumerable<AuthorizationData>  LocalAuthorizationList  = null)
+                                    IEnumerable<AuthorizationData>  LocalAuthorizationList   = null,
+
+                                    Request_Id?                     RequestId                = null,
+                                    DateTime?                       RequestTimestamp         = null)
+
+            : base(ChargeBoxId,
+                   "SendLocalList",
+                   RequestId,
+                   RequestTimestamp)
+
         {
 
             this.ListVersion             = ListVersion;
@@ -199,18 +212,85 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (SendLocalListRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a send local list request.
+        /// Parse the given XML representation of a SendLocalList request.
         /// </summary>
-        /// <param name="SendLocalListRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SendLocalListRequest Parse(XElement             SendLocalListRequestXML,
+        public static SendLocalListRequest Parse(XElement             XML,
+                                                 Request_Id           RequestId,
+                                                 ChargeBox_Id         ChargeBoxId,
                                                  OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(SendLocalListRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
+                         out SendLocalListRequest sendLocalListRequest,
+                         OnException))
+            {
+                return sendLocalListRequest;
+            }
+
+            throw new ArgumentException("The given XML representation of a SendLocalList request is invalid!", nameof(XML));
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomSendLocalListRequestParser = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a SendLocalList request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomSendLocalListRequestParser">A delegate to parse custom SendLocalList requests.</param>
+        public static SendLocalListRequest Parse(JObject                                            JSON,
+                                                 Request_Id                                         RequestId,
+                                                 ChargeBox_Id                                       ChargeBoxId,
+                                                 CustomJObjectParserDelegate<SendLocalListRequest>  CustomSendLocalListRequestParser   = null)
+        {
+
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out SendLocalListRequest  sendLocalListRequest,
+                         out String                ErrorResponse,
+                         CustomSendLocalListRequestParser))
+            {
+                return sendLocalListRequest;
+            }
+
+            throw new ArgumentException("The given JSON representation of a SendLocalList request is invalid: " + ErrorResponse, nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a SendLocalList request.
+        /// </summary>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static SendLocalListRequest Parse(String               Text,
+                                                 Request_Id           RequestId,
+                                                 ChargeBox_Id         ChargeBoxId,
+                                                 OnExceptionDelegate  OnException = null)
+        {
+
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out SendLocalListRequest sendLocalListRequest,
                          OnException))
             {
@@ -223,63 +303,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (SendLocalListRequestJSON, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out SendLocalListRequest, OnException = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a send local list request.
+        /// Try to parse the given XML representation of a SendLocalList request.
         /// </summary>
-        /// <param name="SendLocalListRequestJSON">The JSON to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="SendLocalListRequest">The parsed SendLocalList request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SendLocalListRequest Parse(JObject              SendLocalListRequestJSON,
-                                                 OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(SendLocalListRequestJSON,
-                         out SendLocalListRequest sendLocalListRequest,
-                         OnException))
-            {
-                return sendLocalListRequest;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) Parse   (SendLocalListRequestText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a send local list request.
-        /// </summary>
-        /// <param name="SendLocalListRequestText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SendLocalListRequest Parse(String               SendLocalListRequestText,
-                                                 OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(SendLocalListRequestText,
-                         out SendLocalListRequest sendLocalListRequest,
-                         OnException))
-            {
-                return sendLocalListRequest;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(SendLocalListRequestXML,  out SendLocalListRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a send local list request.
-        /// </summary>
-        /// <param name="SendLocalListRequestXML">The XML to be parsed.</param>
-        /// <param name="SendLocalListRequest">The parsed send local list request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                  SendLocalListRequestXML,
+        public static Boolean TryParse(XElement                  XML,
+                                       Request_Id                RequestId,
+                                       ChargeBox_Id              ChargeBoxId,
                                        out SendLocalListRequest  SendLocalListRequest,
                                        OnExceptionDelegate       OnException  = null)
         {
@@ -289,14 +325,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 SendLocalListRequest = new SendLocalListRequest(
 
-                                           SendLocalListRequestXML.MapValueOrFail     (OCPPNS.OCPPv1_6_CP + "listVersion",
+                                           ChargeBoxId,
+
+                                           XML.MapValueOrFail     (OCPPNS.OCPPv1_6_CP + "listVersion",
                                                                                        UInt64.Parse),
 
-                                           SendLocalListRequestXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "updateType",
+                                           XML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "updateType",
                                                                                        UpdateTypesExtentions.Parse),
 
-                                           SendLocalListRequestXML.MapElements        (OCPPNS.OCPPv1_6_CP + "localAuthorizationList",
-                                                                                       AuthorizationData.Parse)
+                                           XML.MapElements        (OCPPNS.OCPPv1_6_CP + "localAuthorizationList",
+                                                                                       AuthorizationData.Parse),
+
+                                           RequestId
 
                                        );
 
@@ -306,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, SendLocalListRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 SendLocalListRequest = null;
                 return false;
@@ -317,17 +357,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(SendLocalListRequestJSON, out SendLocalListRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out SendLocalListRequest, out ErrorResponse, CustomSendLocalListRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a send local list request.
+        /// Try to parse the given JSON representation of a SendLocalList request.
         /// </summary>
-        /// <param name="SendLocalListRequestJSON">The JSON to be parsed.</param>
-        /// <param name="SendLocalListRequest">The parsed send local list request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                   SendLocalListRequestJSON,
-                                       out SendLocalListRequest  SendLocalListRequest,
-                                       OnExceptionDelegate       OnException  = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="SendLocalListRequest">The parsed SendLocalList request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                                            JSON,
+                                       Request_Id                                         RequestId,
+                                       ChargeBox_Id                                       ChargeBoxId,
+                                       out SendLocalListRequest                           SendLocalListRequest,
+                                       out String                                         ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out SendLocalListRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a SendLocalList request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="SendLocalListRequest">The parsed SendLocalList request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSendLocalListRequestParser">A delegate to parse custom SendLocalList requests.</param>
+        public static Boolean TryParse(JObject                                            JSON,
+                                       Request_Id                                         RequestId,
+                                       ChargeBox_Id                                       ChargeBoxId,
+                                       out SendLocalListRequest                           SendLocalListRequest,
+                                       out String                                         ErrorResponse,
+                                       CustomJObjectParserDelegate<SendLocalListRequest>  CustomSendLocalListRequestParser)
         {
 
             try
@@ -337,10 +407,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ListVersion
 
-                if (!SendLocalListRequestJSON.ParseMandatory("listVersion",
-                                                             "list version",
-                                                             out UInt64  ListVersion,
-                                                             out String  ErrorResponse))
+                if (!JSON.ParseMandatory("listVersion",
+                                         "list version",
+                                         out UInt64  ListVersion,
+                                         out         ErrorResponse))
                 {
                     return false;
                 }
@@ -349,11 +419,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region UpdateType
 
-                if (!SendLocalListRequestJSON.MapMandatory("updateType",
-                                                           "update type",
-                                                           UpdateTypesExtentions.Parse,
-                                                           out UpdateTypes  UpdateType,
-                                                           out              ErrorResponse))
+                if (!JSON.MapMandatory("updateType",
+                                       "update type",
+                                       UpdateTypesExtentions.Parse,
+                                       out UpdateTypes  UpdateType,
+                                       out              ErrorResponse))
                 {
                     return false;
                 }
@@ -362,11 +432,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region LocalAuthorizationList
 
-                if (!SendLocalListRequestJSON.ParseMandatoryJSON("localAuthorizationList",
-                                                                 "local authorization list",
-                                                                 AuthorizationData.TryParse,
-                                                                 out IEnumerable<AuthorizationData>  LocalAuthorizationList,
-                                                                 out                                 ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("localAuthorizationList",
+                                             "local authorization list",
+                                             AuthorizationData.TryParse,
+                                             out IEnumerable<AuthorizationData>  LocalAuthorizationList,
+                                             out                                 ErrorResponse))
                 {
                     return false;
                 }
@@ -374,36 +444,43 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                SendLocalListRequest = new SendLocalListRequest(ListVersion,
+                SendLocalListRequest = new SendLocalListRequest(ChargeBoxId,
+                                                                ListVersion,
                                                                 UpdateType,
-                                                                LocalAuthorizationList);
+                                                                LocalAuthorizationList,
+                                                                RequestId);
+
+                if (CustomSendLocalListRequestParser != null)
+                    SendLocalListRequest = CustomSendLocalListRequestParser(JSON,
+                                                                            SendLocalListRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, SendLocalListRequestJSON, e);
-
-                SendLocalListRequest = null;
+                SendLocalListRequest  = default;
+                ErrorResponse         = "The given JSON representation of a SendLocalList request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(SendLocalListRequestText, out SendLocalListRequest, OnException = null)
+        #region (static) TryParse(SendLocalListRequestText, RequestId, ChargeBoxId, out SendLocalListRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a send local list request.
+        /// Try to parse the given text representation of a SendLocalList request.
         /// </summary>
         /// <param name="SendLocalListRequestText">The text to be parsed.</param>
-        /// <param name="SendLocalListRequest">The parsed send local list request.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="SendLocalListRequest">The parsed SendLocalList request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                    SendLocalListRequestText,
+                                       Request_Id                RequestId,
+                                       ChargeBox_Id              ChargeBoxId,
                                        out SendLocalListRequest  SendLocalListRequest,
                                        OnExceptionDelegate       OnException  = null)
         {
@@ -418,13 +495,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     if (SendLocalListRequestText.StartsWith("{") &&
                         TryParse(JObject.Parse(SendLocalListRequestText),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out SendLocalListRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
                     if (TryParse(XDocument.Parse(SendLocalListRequestText).Root,
+                                 RequestId,
+                                 ChargeBoxId,
                                  out SendLocalListRequest,
                                  OnException))
                     {
@@ -506,10 +587,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (SendLocalListRequest1, SendLocalListRequest2)
 
         /// <summary>
-        /// Compares two send local list requests for equality.
+        /// Compares two SendLocalList requests for equality.
         /// </summary>
-        /// <param name="SendLocalListRequest1">A send local list request.</param>
-        /// <param name="SendLocalListRequest2">Another send local list request.</param>
+        /// <param name="SendLocalListRequest1">A SendLocalList request.</param>
+        /// <param name="SendLocalListRequest2">Another SendLocalList request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SendLocalListRequest SendLocalListRequest1, SendLocalListRequest SendLocalListRequest2)
         {
@@ -531,10 +612,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (SendLocalListRequest1, SendLocalListRequest2)
 
         /// <summary>
-        /// Compares two send local list requests for inequality.
+        /// Compares two SendLocalList requests for inequality.
         /// </summary>
-        /// <param name="SendLocalListRequest1">A send local list request.</param>
-        /// <param name="SendLocalListRequest2">Another send local list request.</param>
+        /// <param name="SendLocalListRequest1">A SendLocalList request.</param>
+        /// <param name="SendLocalListRequest2">Another SendLocalList request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SendLocalListRequest SendLocalListRequest1, SendLocalListRequest SendLocalListRequest2)
 
@@ -571,9 +652,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(SendLocalListRequest)
 
         /// <summary>
-        /// Compares two send local list requests for equality.
+        /// Compares two SendLocalList requests for equality.
         /// </summary>
-        /// <param name="SendLocalListRequest">A send local list request to compare with.</param>
+        /// <param name="SendLocalListRequest">A SendLocalList request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(SendLocalListRequest SendLocalListRequest)
         {

@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a RemoteStopTransaction request.
+        /// Create a new RemoteStopTransaction request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="TransactionId">The identification of the transaction which the charge point is requested to stop.</param>

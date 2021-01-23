@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                               ChargeBox_Id             ChargeBoxIdentity,
                                                               Connector_Id             ConnectorId,
-                                                              AvailabilityTypes        Type,
+                                                              Availabilities        Type,
 
                                                               TimeSpan?                RequestTimeout);
 
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                               ChargeBox_Id                ChargeBoxIdentity,
                                                               Connector_Id                ConnectorId,
-                                                              AvailabilityTypes           Type,
+                                                              Availabilities           Type,
 
                                                               TimeSpan?                   RequestTimeout,
                                                               ChangeAvailabilityResponse  Result,

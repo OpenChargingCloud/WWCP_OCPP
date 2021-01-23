@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The reserve now request.
+    /// The ReserveNow request.
     /// </summary>
     public class ReserveNowRequest : ARequest<ReserveNowRequest>
     {
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a reserve now request.
+        /// Create a new ReserveNow request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The identification of the connector to be reserved. A value of 0 means that the reservation is not for a specific connector.</param>
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a reserve now request.
+        /// Parse the given XML representation of a ReserveNow request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (JSON, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a reserve now request.
+        /// Parse the given JSON representation of a ReserveNow request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of a reserve now request.
+        /// Parse the given text representation of a ReserveNow request.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -266,12 +266,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(XML,  RequestId, ChargeBoxId, out ReserveNowRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of a reserve now request.
+        /// Try to parse the given XML representation of a ReserveNow request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
+        /// <param name="ReserveNowRequest">The parsed ReserveNow request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement               XML,
                                        Request_Id             RequestId,
@@ -328,12 +328,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a reserve now request.
+        /// Try to parse the given JSON representation of a ReserveNow request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
+        /// <param name="ReserveNowRequest">The parsed ReserveNow request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                JSON,
                                        Request_Id             RequestId,
@@ -350,12 +350,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a reserve now request.
+        /// Try to parse the given JSON representation of a ReserveNow request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
+        /// <param name="ReserveNowRequest">The parsed ReserveNow request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomReserveNowRequestParser">A delegate to parse custom ReserveNowRequest requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
@@ -466,12 +466,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(ReserveNowRequestText, RequestId, ChargeBoxId, out ReserveNowRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a reserve now request.
+        /// Try to parse the given text representation of a ReserveNow request.
         /// </summary>
         /// <param name="ReserveNowRequestText">The text to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
+        /// <param name="ReserveNowRequest">The parsed ReserveNow request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                 ReserveNowRequestText,
                                        Request_Id             RequestId,
@@ -550,7 +550,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomReserveNowRequestSerializer">A delegate to serialize custom reserve now requests.</param>
+        /// <param name="CustomReserveNowRequestSerializer">A delegate to serialize custom ReserveNow requests.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowRequest> CustomReserveNowRequestSerializer  = null)
         {
 
@@ -581,10 +581,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (ReserveNowRequest1, ReserveNowRequest2)
 
         /// <summary>
-        /// Compares two reserve now requests for equality.
+        /// Compares two ReserveNow requests for equality.
         /// </summary>
-        /// <param name="ReserveNowRequest1">A reserve now request.</param>
-        /// <param name="ReserveNowRequest2">Another reserve now request.</param>
+        /// <param name="ReserveNowRequest1">A ReserveNow request.</param>
+        /// <param name="ReserveNowRequest2">Another ReserveNow request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ReserveNowRequest ReserveNowRequest1, ReserveNowRequest ReserveNowRequest2)
         {
@@ -606,10 +606,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (ReserveNowRequest1, ReserveNowRequest2)
 
         /// <summary>
-        /// Compares two reserve now requests for inequality.
+        /// Compares two ReserveNow requests for inequality.
         /// </summary>
-        /// <param name="ReserveNowRequest1">A reserve now request.</param>
-        /// <param name="ReserveNowRequest2">Another reserve now request.</param>
+        /// <param name="ReserveNowRequest1">A ReserveNow request.</param>
+        /// <param name="ReserveNowRequest2">Another ReserveNow request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ReserveNowRequest ReserveNowRequest1, ReserveNowRequest ReserveNowRequest2)
 
@@ -646,9 +646,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(ReserveNowRequest)
 
         /// <summary>
-        /// Compares two reserve now requests for equality.
+        /// Compares two ReserveNow requests for equality.
         /// </summary>
-        /// <param name="ReserveNowRequest">A reserve now request to compare with.</param>
+        /// <param name="ReserveNowRequest">A ReserveNow request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(ReserveNowRequest ReserveNowRequest)
         {

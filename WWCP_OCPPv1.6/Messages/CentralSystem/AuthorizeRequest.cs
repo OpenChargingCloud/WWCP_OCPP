@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The authorize request.
+    /// The Authorize request.
     /// </summary>
     public class AuthorizeRequest : ARequest<AuthorizeRequest>
     {
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new authorize request.
+        /// Create a new Authorize request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="IdTag">The identifier that needs to be authorized.</param>
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 DateTime?     RequestTimestamp   = null)
 
             : base(ChargeBoxId,
-                   "RemoteStartTransaction",
+                   "Authorize",
                    RequestId,
                    RequestTimestamp)
 
@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of an authorize request.
+        /// Parse the given XML representation of an Authorize request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomAuthorizeRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an authorize request.
+        /// Parse the given JSON representation of an Authorize request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of a authorize request.
+        /// Parse the given text representation of an Authorize request.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(XML,  RequestId, ChargeBoxId, out AuthorizeRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of an authorize request.
+        /// Try to parse the given XML representation of an Authorize request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of an authorize request.
+        /// Try to parse the given JSON representation of an Authorize request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of an authorize request.
+        /// Try to parse the given JSON representation of an Authorize request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(Text, RequestId, ChargeBoxId, out AuthorizeRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an authorize request.
+        /// Try to parse the given text representation of an Authorize request.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>

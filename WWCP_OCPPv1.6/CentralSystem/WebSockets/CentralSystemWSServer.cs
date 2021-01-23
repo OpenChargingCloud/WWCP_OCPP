@@ -473,6 +473,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Custom JSON serializer delegates
 
+        public CustomJObjectSerializerDelegate<ResetRequest>                   CustomResetRequestSerializer                     { get; set; }
+
+        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>      CustomChangeAvailabilityRequestSerializer        { get; set; }
+
+        public CustomJObjectSerializerDelegate<ChangeConfigurationRequest>     CustomChangeConfigurationRequestSerializer       { get; set; }
+
+        public CustomJObjectSerializerDelegate<DataTransferRequest>            CustomDataTransferRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetDiagnosticsRequest>          CustomGetDiagnosticsRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<TriggerMessageRequest>          CustomTriggerMessageRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>          CustomUpdateFirmwareRequestSerializer            { get; set; }
+
+
+
         public CustomJObjectSerializerDelegate<ReserveNowRequest>              CustomReserveNowRequestSerializer                { get; set; }
 
         public CustomJObjectSerializerDelegate<CancelReservationRequest>       CustomCancelReservationRequestSerializer         { get; set; }
@@ -483,6 +499,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>         CustomChargingSchedulePeriodSerializer           { get; set; }
 
         public CustomJObjectSerializerDelegate<RemoteStopTransactionRequest>   CustomRemoteStopTransactionRequestSerializer     { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>      CustomSetChargingProfileRequestSerializer        { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>    CustomClearChargingProfileRequestSerializer      { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>    CustomGetCompositeScheduleRequestSerializer      { get; set; }
+
+        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>         CustomUnlockConnectorRequestSerializer           { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>     CustomGetLocalListVersionRequestSerializer       { get; set; }
+
+        public CustomJObjectSerializerDelegate<SendLocalListRequest>           CustomSendLocalListRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<AuthorizationData>              CustomAuthorizationDataSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<IdTagInfo>                      CustomIdTagInfoResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<ClearCacheRequest>              CustomClearCacheRequestSerializer                { get; set; }
 
         #endregion
 
@@ -2534,6 +2566,424 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
+
+        #region Reset                 (ChargeBoxId, ResetType, ...)
+
+        public Task<ResetResponse> Reset(ChargeBox_Id  ChargeBoxId,
+                                         ResetTypes    ResetType,
+
+                                         Request_Id?   RequestId          = null,
+                                         DateTime?     RequestTimestamp   = null,
+                                         TimeSpan?     Timeout            = null)
+
+            => Reset(new ResetRequest(ChargeBoxId,
+                                      ResetType,
+                                      RequestId,
+                                      RequestTimestamp),
+                     Timeout);
+
+
+        public async Task<ResetResponse> Reset(ResetRequest  Request,
+                                               TimeSpan?     Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomResetRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (ResetResponse.TryParse(Request,
+                                           result.Response,
+                                           out ResetResponse resetResponse))
+                {
+                    return resetResponse;
+                }
+
+                return new ResetResponse(Request,
+                                         Result.Unknown());
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new ResetResponse(Request,
+                                         Result.Unknown(result.ErrorDescription));
+
+            }
+
+            return new ResetResponse(Request,
+                                     Result.Unknown());
+
+        }
+
+        #endregion
+
+        #region ChangeAvailability    (ChargeBoxId, ConnectorId, Availability, ...)
+
+        public Task<ChangeAvailabilityResponse> ChangeAvailability(ChargeBox_Id    ChargeBoxId,
+                                                                   Connector_Id    ConnectorId,
+                                                                   Availabilities  Availability,
+
+                                                                   Request_Id?     RequestId          = null,
+                                                                   DateTime?       RequestTimestamp   = null,
+                                                                   TimeSpan?       Timeout            = null)
+
+            => ChangeAvailability(new ChangeAvailabilityRequest(ChargeBoxId,
+                                                                ConnectorId,
+                                                                Availability,
+                                                                RequestId,
+                                                                RequestTimestamp),
+                                  Timeout);
+
+
+        public async Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest  Request,
+                                                                         TimeSpan?                  Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomChangeAvailabilityRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (ChangeAvailabilityResponse.TryParse(Request,
+                                                       result.Response,
+                                                       out ChangeAvailabilityResponse changeAvailabilityResponse))
+                {
+                    return changeAvailabilityResponse;
+                }
+
+                return new ChangeAvailabilityResponse(Request,
+                                                      Result.Unknown());
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new ChangeAvailabilityResponse(Request,
+                                                      Result.Unknown(result.ErrorDescription));
+
+            }
+
+            return new ChangeAvailabilityResponse(Request,
+                                                  Result.Unknown());
+
+        }
+
+        #endregion
+
+        #region ChangeConfiguration   (ChargeBoxId, Key, Value, ...)
+
+        public Task<ChangeConfigurationResponse> ChangeConfiguration(ChargeBox_Id  ChargeBoxId,
+                                                                     String        Key,
+                                                                     String        Value,
+
+                                                                     Request_Id?   RequestId          = null,
+                                                                     DateTime?     RequestTimestamp   = null,
+                                                                     TimeSpan?     Timeout            = null)
+
+            => ChangeConfiguration(new ChangeConfigurationRequest(ChargeBoxId,
+                                                                  Key,
+                                                                  Value,
+                                                                  RequestId,
+                                                                  RequestTimestamp),
+                                   Timeout);
+
+
+        public async Task<ChangeConfigurationResponse> ChangeConfiguration(ChangeConfigurationRequest  Request,
+                                                                           TimeSpan?                   Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomChangeConfigurationRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (ChangeConfigurationResponse.TryParse(Request,
+                                                         result.Response,
+                                                         out ChangeConfigurationResponse changeConfigurationResponse))
+                {
+                    return changeConfigurationResponse;
+                }
+
+                return new ChangeConfigurationResponse(Request,
+                                                       Result.Unknown());
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new ChangeConfigurationResponse(Request,
+                                                       Result.Unknown(result.ErrorDescription));
+
+            }
+
+            return new ChangeConfigurationResponse(Request,
+                                                   Result.Unknown());
+
+        }
+
+        #endregion
+
+        #region DataTransfer          (ChargeBoxId, VendorId, MessageId, Data, ...)
+
+        public Task<CP.DataTransferResponse> DataTransfer(ChargeBox_Id  ChargeBoxId,
+                                                          String        VendorId,
+                                                          String        MessageId,
+                                                          String        Data,
+
+                                                          Request_Id?   RequestId          = null,
+                                                          DateTime?     RequestTimestamp   = null,
+                                                          TimeSpan?     Timeout            = null)
+
+            => DataTransfer(new CS.DataTransferRequest(ChargeBoxId,
+                                                       VendorId,
+                                                       MessageId,
+                                                       Data,
+                                                       RequestId,
+                                                       RequestTimestamp),
+                            Timeout);
+
+
+        public async Task<CP.DataTransferResponse> DataTransfer(CS.DataTransferRequest  Request,
+                                                                TimeSpan?               Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomDataTransferRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (CP.DataTransferResponse.TryParse(Request,
+                                                     result.Response,
+                                                     out CP.DataTransferResponse dataTransferResponse))
+                {
+                    return dataTransferResponse;
+                }
+
+                return new CP.DataTransferResponse(Request,
+                                                   Result.Unknown());
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new CP.DataTransferResponse(Request,
+                                                   Result.Unknown(result.ErrorDescription));
+
+            }
+
+            return new CP.DataTransferResponse(Request,
+                                               Result.Unknown());
+
+        }
+
+        #endregion
+
+        #region GetDiagnostics        (ChargeBoxId, Location, StartTime = null, StopTime = null, Retries = null, RetryInterval = null, ...)
+
+        public Task<GetDiagnosticsResponse> GetDiagnostics(ChargeBox_Id  ChargeBoxId,
+                                                           String        Location,
+                                                           DateTime?     StartTime          = null,
+                                                           DateTime?     StopTime           = null,
+                                                           Byte?         Retries            = null,
+                                                           TimeSpan?     RetryInterval      = null,
+
+                                                           Request_Id?   RequestId          = null,
+                                                           DateTime?     RequestTimestamp   = null,
+                                                           TimeSpan?     Timeout            = null)
+
+            => GetDiagnostics(new GetDiagnosticsRequest(ChargeBoxId,
+                                                        Location,
+                                                        StartTime,
+                                                        StopTime,
+                                                        Retries,
+                                                        RetryInterval,
+                                                        RequestId,
+                                                        RequestTimestamp),
+                              Timeout);
+
+
+        public async Task<GetDiagnosticsResponse> GetDiagnostics(GetDiagnosticsRequest  Request,
+                                                                 TimeSpan?              Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomGetDiagnosticsRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (GetDiagnosticsResponse.TryParse(Request,
+                                                    result.Response,
+                                                    out GetDiagnosticsResponse getDiagnosticsResponse))
+                {
+                    return getDiagnosticsResponse;
+                }
+
+                return new GetDiagnosticsResponse(Request,
+                                                  Result.Unknown());
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new GetDiagnosticsResponse(Request,
+                                                  Result.Unknown(result.ErrorDescription));
+
+            }
+
+            return new GetDiagnosticsResponse(Request,
+                                              Result.Unknown());
+
+        }
+
+        #endregion
+
+        #region TriggerMessage        (ChargeBoxId, RequestedMessage, ConnectorId = null, ...)
+
+        public Task<CP.TriggerMessageResponse> TriggerMessage(ChargeBox_Id     ChargeBoxId,
+                                                              MessageTriggers  RequestedMessage,
+                                                              Connector_Id?    ConnectorId        = null,
+
+                                                              Request_Id?      RequestId          = null,
+                                                              DateTime?        RequestTimestamp   = null,
+                                                              TimeSpan?        Timeout            = null)
+
+            => TriggerMessage(new TriggerMessageRequest(ChargeBoxId,
+                                                        RequestedMessage,
+                                                        ConnectorId,
+                                                        RequestId,
+                                                        RequestTimestamp),
+                              Timeout);
+
+
+        public async Task<TriggerMessageResponse> TriggerMessage(TriggerMessageRequest  Request,
+                                                                 TimeSpan?              Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomTriggerMessageRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (TriggerMessageResponse.TryParse(Request,
+                                                    result.Response,
+                                                    out TriggerMessageResponse triggerMessageResponse))
+                {
+                    return triggerMessageResponse;
+                }
+
+                return new TriggerMessageResponse(Request,
+                                                  Result.Unknown());
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new TriggerMessageResponse(Request,
+                                                  Result.Unknown(result.ErrorDescription));
+
+            }
+
+            return new TriggerMessageResponse(Request,
+                                              Result.Unknown());
+
+        }
+
+        #endregion
+
+        #region UpdateFirmware        (ChargeBoxId, Location, RetrieveDate, Retries = null, RetryInterval = null, ...)
+
+        public Task<CP.UpdateFirmwareResponse> UpdateFirmware(ChargeBox_Id  ChargeBoxId,
+                                                              String        Location,
+                                                              DateTime      RetrieveDate,
+                                                              Byte?         Retries            = null,
+                                                              TimeSpan?     RetryInterval      = null,
+
+                                                              Request_Id?   RequestId          = null,
+                                                              DateTime?     RequestTimestamp   = null,
+                                                              TimeSpan?     Timeout            = null)
+
+            => UpdateFirmware(new UpdateFirmwareRequest(ChargeBoxId,
+                                                        Location,
+                                                        RetrieveDate,
+                                                        Retries,
+                                                        RetryInterval,
+                                                        RequestId,
+                                                        RequestTimestamp),
+                              Timeout);
+
+
+        public async Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest  Request,
+                                                                 TimeSpan?              Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomUpdateFirmwareRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (UpdateFirmwareResponse.TryParse(Request,
+                                                    result.Response,
+                                                    out UpdateFirmwareResponse updateFirmwareResponse))
+                {
+                    return updateFirmwareResponse;
+                }
+
+                return new UpdateFirmwareResponse(Request,
+                                                  Result.Unknown());
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new UpdateFirmwareResponse(Request,
+                                                  Result.Unknown(result.ErrorDescription));
+
+            }
+
+            return new UpdateFirmwareResponse(Request,
+                                              Result.Unknown());
+
+        }
+
+        #endregion
+
+
         #region ReserveNow            (ChargeBoxId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
 
         public Task<ReserveNowResponse> ReserveNow(ChargeBox_Id    ChargeBoxId,
@@ -2579,7 +3029,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
 
                 return new ReserveNowResponse(Request,
-                                              ReservationStatus.Unknown);
+                                              Result.Unknown());
 
             }
 
@@ -2587,12 +3037,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 return new ReserveNowResponse(Request,
-                                              ReservationStatus.Unknown);
+                                              Result.Unknown(result.ErrorDescription));
 
             }
 
             return new ReserveNowResponse(Request,
-                                          ReservationStatus.Unknown);
+                                          Result.Unknown());
 
         }
 
@@ -2635,7 +3085,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
 
                 return new CancelReservationResponse(Request,
-                                                     CancelReservationStatus.Unknown);
+                                                     Result.Unknown());
 
             }
 
@@ -2643,12 +3093,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 return new CancelReservationResponse(Request,
-                                                     CancelReservationStatus.Unknown);
+                                                     Result.Unknown(result.ErrorDescription));
 
             }
 
             return new CancelReservationResponse(Request,
-                                                 CancelReservationStatus.Unknown);
+                                                 Result.Unknown());
 
         }
 
@@ -2698,7 +3148,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
 
                 return new RemoteStartTransactionResponse(Request,
-                                                          RemoteStartStopStatus.Unknown);
+                                                          Result.Unknown());
 
             }
 
@@ -2706,12 +3156,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 return new RemoteStartTransactionResponse(Request,
-                                                          RemoteStartStopStatus.Unknown);
+                                                          Result.Unknown(result.ErrorDescription));
 
             }
 
             return new RemoteStartTransactionResponse(Request,
-                                                      RemoteStartStopStatus.Unknown);
+                                                      Result.Unknown());
 
         }
 
@@ -2754,7 +3204,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
 
                 return new RemoteStopTransactionResponse(Request,
-                                                         RemoteStartStopStatus.Unknown);
+                                                         Result.Unknown());
 
             }
 
@@ -2762,17 +3212,419 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 return new RemoteStopTransactionResponse(Request,
-                                                         RemoteStartStopStatus.Unknown);
+                                                         Result.Unknown(result.ErrorDescription));
 
             }
 
             return new RemoteStopTransactionResponse(Request,
-                                                     RemoteStartStopStatus.Unknown);
+                                                     Result.Unknown());
 
         }
 
         #endregion
 
+        #region SetChargingProfile    (ChargeBoxId, ConnectorId, ChargingProfile, ...)
+
+        public Task<SetChargingProfileResponse> SetChargingProfile(ChargeBox_Id     ChargeBoxId,
+                                                                   Connector_Id     ConnectorId,
+                                                                   ChargingProfile  ChargingProfile,
+
+                                                                   Request_Id?      RequestId          = null,
+                                                                   DateTime?        RequestTimestamp   = null,
+                                                                   TimeSpan?        Timeout            = null)
+
+            => SetChargingProfile(new SetChargingProfileRequest(ChargeBoxId,
+                                                                ConnectorId,
+                                                                ChargingProfile,
+                                                                RequestId,
+                                                                RequestTimestamp),
+                                  Timeout);
+
+
+        public async Task<SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest  Request,
+                                                                         TimeSpan?                  Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomSetChargingProfileRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (SetChargingProfileResponse.TryParse(Request,
+                                                        result.Response,
+                                                        out SetChargingProfileResponse setChargingProfileResponse))
+                {
+                    return setChargingProfileResponse;
+                }
+
+                return new SetChargingProfileResponse(Request,
+                                                      Result.Unknown());
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new SetChargingProfileResponse(Request,
+                                                      Result.Unknown(result.ErrorDescription));
+
+            }
+
+            return new SetChargingProfileResponse(Request,
+                                                  Result.Unknown());
+
+        }
+
+        #endregion
+
+        #region ClearChargingProfile  (ChargeBoxId, ChargingProfileId, ConnectorId, ChargingProfilePurpose, StackLevel, ...)
+
+        public Task<ClearChargingProfileResponse> ClearChargingProfile(ChargeBox_Id              ChargeBoxId,
+                                                                       ChargingProfile_Id?       ChargingProfileId        = null,
+                                                                       Connector_Id?             ConnectorId              = null,
+                                                                       ChargingProfilePurposes?  ChargingProfilePurpose   = null,
+                                                                       UInt32?                   StackLevel               = null,
+
+                                                                       Request_Id?               RequestId                = null,
+                                                                       DateTime?                 RequestTimestamp         = null,
+                                                                       TimeSpan?                 Timeout                  = null)
+
+            => ClearChargingProfile(new ClearChargingProfileRequest(ChargeBoxId,
+                                                                    ChargingProfileId,
+                                                                    ConnectorId,
+                                                                    ChargingProfilePurpose,
+                                                                    StackLevel,
+                                                                    RequestId,
+                                                                    RequestTimestamp),
+                                    Timeout);
+
+
+        public async Task<ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest  Request,
+                                                                             TimeSpan?                    Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomClearChargingProfileRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (ClearChargingProfileResponse.TryParse(Request,
+                                                          result.Response,
+                                                          out ClearChargingProfileResponse clearChargingProfileResponse))
+                {
+                    return clearChargingProfileResponse;
+                }
+
+                return new ClearChargingProfileResponse(Request,
+                                                        Result.Unknown());
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new ClearChargingProfileResponse(Request,
+                                                        Result.Unknown(result.ErrorDescription));
+
+            }
+
+            return new ClearChargingProfileResponse(Request,
+                                                    Result.Unknown());
+
+        }
+
+        #endregion
+
+        #region GetCompositeSchedule  (ChargeBoxId, ConnectorId, Duration, ChargingRateUnit = null, ...)
+
+        public Task<GetCompositeScheduleResponse> GetCompositeSchedule(ChargeBox_Id        ChargeBoxId,
+                                                                       Connector_Id        ConnectorId,
+                                                                       TimeSpan            Duration,
+                                                                       ChargingRateUnits?  ChargingRateUnit   = null,
+
+                                                                       Request_Id?         RequestId          = null,
+                                                                       DateTime?           RequestTimestamp   = null,
+                                                                       TimeSpan?           Timeout            = null)
+
+            => GetCompositeSchedule(new GetCompositeScheduleRequest(ChargeBoxId,
+                                                                    ConnectorId,
+                                                                    Duration,
+                                                                    ChargingRateUnit,
+                                                                    RequestId,
+                                                                    RequestTimestamp),
+                                    Timeout);
+
+
+        public async Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest  Request,
+                                                                             TimeSpan?                    Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomGetCompositeScheduleRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (GetCompositeScheduleResponse.TryParse(Request,
+                                                          result.Response,
+                                                          out GetCompositeScheduleResponse clearChargingProfileResponse))
+                {
+                    return clearChargingProfileResponse;
+                }
+
+                return new GetCompositeScheduleResponse(Request,
+                                                        Result.Unknown());
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new GetCompositeScheduleResponse(Request,
+                                                        Result.Unknown(result.ErrorDescription));
+
+            }
+
+            return new GetCompositeScheduleResponse(Request,
+                                                    Result.Unknown());
+
+        }
+
+        #endregion
+
+        #region UnlockConnector       (ChargeBoxId, ConnectorId, ...)
+
+        public Task<UnlockConnectorResponse> UnlockConnector(ChargeBox_Id  ChargeBoxId,
+                                                             Connector_Id  ConnectorId,
+
+                                                             Request_Id?   RequestId          = null,
+                                                             DateTime?     RequestTimestamp   = null,
+                                                             TimeSpan?     Timeout            = null)
+
+            => UnlockConnector(new UnlockConnectorRequest(ChargeBoxId,
+                                                          ConnectorId,
+                                                          RequestId,
+                                                          RequestTimestamp),
+                               Timeout);
+
+
+        public async Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest  Request,
+                                                                   TimeSpan?               Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomUnlockConnectorRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (UnlockConnectorResponse.TryParse(Request,
+                                                     result.Response,
+                                                     out UnlockConnectorResponse unlockConnectorResponse))
+                {
+                    return unlockConnectorResponse;
+                }
+
+                return new UnlockConnectorResponse(Request,
+                                                   Result.Unknown());
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new UnlockConnectorResponse(Request,
+                                                   Result.Unknown(result.ErrorDescription));
+
+            }
+
+            return new UnlockConnectorResponse(Request,
+                                               Result.Unknown());
+
+        }
+
+        #endregion
+
+
+        #region GetLocalListVersion   (ChargeBoxId, ...)
+
+        public Task<GetLocalListVersionResponse> GetLocalListVersion(ChargeBox_Id  ChargeBoxId,
+                                                                     Request_Id?   RequestId          = null,
+                                                                     DateTime?     RequestTimestamp   = null,
+                                                                     TimeSpan?     Timeout            = null)
+
+            => GetLocalListVersion(new GetLocalListVersionRequest(ChargeBoxId,
+                                                                  RequestId,
+                                                                  RequestTimestamp),
+                                   Timeout);
+
+
+        public async Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest  Request,
+                                                                           TimeSpan?                   Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomGetLocalListVersionRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (GetLocalListVersionResponse.TryParse(Request,
+                                                         result.Response,
+                                                         out GetLocalListVersionResponse unlockConnectorResponse))
+                {
+                    return unlockConnectorResponse;
+                }
+
+                return new GetLocalListVersionResponse(Request,
+                                                       Result.Unknown());
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new GetLocalListVersionResponse(Request,
+                                                       Result.Unknown(result.ErrorDescription));
+
+            }
+
+            return new GetLocalListVersionResponse(Request,
+                                                   Result.Unknown());
+
+        }
+
+        #endregion
+
+        #region SendLocalList         (ChargeBoxId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
+
+        public Task<SendLocalListResponse> SendLocalList(ChargeBox_Id                    ChargeBoxId,
+                                                         UInt64                          ListVersion,
+                                                         UpdateTypes                     UpdateType,
+                                                         IEnumerable<AuthorizationData>  LocalAuthorizationList   = null,
+
+                                                         Request_Id?                     RequestId                = null,
+                                                         DateTime?                       RequestTimestamp         = null,
+                                                         TimeSpan?                       Timeout                  = null)
+
+            => SendLocalList(new SendLocalListRequest(ChargeBoxId,
+                                                      ListVersion,
+                                                      UpdateType,
+                                                      LocalAuthorizationList,
+                                                      RequestId,
+                                                      RequestTimestamp),
+                             Timeout);
+
+
+        public async Task<SendLocalListResponse> SendLocalList(SendLocalListRequest  Request,
+                                                               TimeSpan?             Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomSendLocalListRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (SendLocalListResponse.TryParse(Request,
+                                                   result.Response,
+                                                   out SendLocalListResponse unlockConnectorResponse))
+                {
+                    return unlockConnectorResponse;
+                }
+
+                return new SendLocalListResponse(Request,
+                                                 Result.Unknown());
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new SendLocalListResponse(Request,
+                                                 Result.Unknown(result.ErrorDescription));
+
+            }
+
+            return new SendLocalListResponse(Request,
+                                             Result.Unknown());
+
+        }
+
+        #endregion
+
+        #region ClearCache            (ChargeBoxId, ...)
+
+        public Task<ClearCacheResponse> ClearCache(ChargeBox_Id  ChargeBoxId,
+                                                   Request_Id?   RequestId          = null,
+                                                   DateTime?     RequestTimestamp   = null,
+                                                   TimeSpan?     Timeout            = null)
+
+            => ClearCache(new ClearCacheRequest(ChargeBoxId,
+                                                RequestId,
+                                                RequestTimestamp),
+                          Timeout);
+
+
+        public async Task<ClearCacheResponse> ClearCache(ClearCacheRequest  Request,
+                                                         TimeSpan?          Timeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomClearCacheRequestSerializer),
+                                           Timeout);
+
+            if (result?.Response != null)
+            {
+
+                if (ClearCacheResponse.TryParse(Request,
+                                                result.Response,
+                                                out ClearCacheResponse unlockConnectorResponse))
+                {
+                    return unlockConnectorResponse;
+                }
+
+                return new ClearCacheResponse(Request,
+                                              Result.Unknown());
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new ClearCacheResponse(Request,
+                                              Result.Unknown(result.ErrorDescription));
+
+            }
+
+            return new ClearCacheResponse(Request,
+                                          Result.Unknown());
+
+        }
+
+        #endregion
 
     }
 

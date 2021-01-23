@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The stop transaction request.
+    /// The StopTransaction request.
     /// </summary>
     public class StopTransactionRequest : ARequest<StopTransactionRequest>
     {
@@ -364,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a stop transaction request.
+        /// Parse the given XML representation of a StopTransaction request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -394,7 +394,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomStopTransactionRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a stop transaction request.
+        /// Parse the given JSON representation of a StopTransaction request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of a stop transaction request.
+        /// Parse the given text representation of a StopTransaction request.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -455,12 +455,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(XML,  RequestId, ChargeBoxId, out StopTransactionRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of a stop transaction request.
+        /// Try to parse the given XML representation of a StopTransaction request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="StopTransactionRequest">The parsed stop transaction request.</param>
+        /// <param name="StopTransactionRequest">The parsed StopTransaction request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                    XML,
                                        Request_Id                  RequestId,
@@ -520,12 +520,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a stop transaction request.
+        /// Try to parse the given JSON representation of a StopTransaction request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="StopTransactionRequest">The parsed stop transaction request.</param>
+        /// <param name="StopTransactionRequest">The parsed StopTransaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                     JSON,
                                        Request_Id                  RequestId,
@@ -542,11 +542,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a stop transaction request.
+        /// Try to parse the given JSON representation of a StopTransaction request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="StopTransactionRequest">The parsed stop transaction request.</param>
+        /// <param name="StopTransactionRequest">The parsed StopTransaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomStopTransactionRequestParser">A delegate to parse custom CustomStopTransaction requests.</param>
         public static Boolean TryParse(JObject                                              JSON,
@@ -693,12 +693,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(Text, RequestId, ChargeBoxId, out StopTransactionRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a stop transaction request.
+        /// Try to parse the given text representation of a StopTransaction request.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="StopTransactionRequest">The parsed stop transaction request.</param>
+        /// <param name="StopTransactionRequest">The parsed StopTransaction request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                      Text,
                                        Request_Id                  RequestId,
@@ -784,7 +784,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomStopTransactionRequestRequestSerializer">A delegate to serialize custom stop transaction requests.</param>
+        /// <param name="CustomStopTransactionRequestRequestSerializer">A delegate to serialize custom StopTransaction requests.</param>
         /// <param name="CustomMeterValueSerializer">A delegate to serialize custom meter values.</param>
         /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<StopTransactionRequest>  CustomStopTransactionRequestRequestSerializer   = null,
@@ -827,10 +827,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (StopTransactionRequest1, StopTransactionRequest2)
 
         /// <summary>
-        /// Compares two stop transaction requests for equality.
+        /// Compares two StopTransaction requests for equality.
         /// </summary>
-        /// <param name="StopTransactionRequest1">A stop transaction request.</param>
-        /// <param name="StopTransactionRequest2">Another stop transaction request.</param>
+        /// <param name="StopTransactionRequest1">A StopTransaction request.</param>
+        /// <param name="StopTransactionRequest2">Another StopTransaction request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (StopTransactionRequest StopTransactionRequest1, StopTransactionRequest StopTransactionRequest2)
         {
@@ -852,10 +852,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (StopTransactionRequest1, StopTransactionRequest2)
 
         /// <summary>
-        /// Compares two stop transaction requests for inequality.
+        /// Compares two StopTransaction requests for inequality.
         /// </summary>
-        /// <param name="StopTransactionRequest1">A stop transaction request.</param>
-        /// <param name="StopTransactionRequest2">Another stop transaction request.</param>
+        /// <param name="StopTransactionRequest1">A StopTransaction request.</param>
+        /// <param name="StopTransactionRequest2">Another StopTransaction request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (StopTransactionRequest StopTransactionRequest1, StopTransactionRequest StopTransactionRequest2)
 
@@ -892,9 +892,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(StopTransactionRequest)
 
         /// <summary>
-        /// Compares two stop transaction requests for equality.
+        /// Compares two StopTransaction requests for equality.
         /// </summary>
-        /// <param name="StopTransactionRequest">A stop transaction request to compare with.</param>
+        /// <param name="StopTransactionRequest">A StopTransaction request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(StopTransactionRequest StopTransactionRequest)
         {

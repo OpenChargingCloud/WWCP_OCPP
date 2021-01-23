@@ -108,7 +108,7 @@
     <Compile Include="DataTypes\Enums\Reasons.cs" />
     <Compile Include="DataTypes\Enums\UpdateStatus.cs" />
     <Compile Include="DataTypes\Enums\ResetStatus.cs" />
-    <Compile Include="DataTypes\Enums\AvailabilityTypes.cs" />
+    <Compile Include="DataTypes\Enums\Availabilities.cs" />
     <Compile Include="DataTypes\Enums\ChargingRateUnits.cs" />
     <Compile Include="DataTypes\Enums\ChargingProfileKinds.cs" />
     <Compile Include="DataTypes\Enums\RecurrencyKinds.cs" />

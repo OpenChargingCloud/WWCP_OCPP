@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -31,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A update firmware request.
+    /// The UpdateFirmware request.
     /// </summary>
     public class UpdateFirmwareRequest : ARequest<UpdateFirmwareRequest>
     {
@@ -69,19 +68,35 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a update firmware request.
+        /// Create a new UpdateFirmware request.
         /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Location">The URI where to download the firmware.</param>
         /// <param name="RetrieveDate">The timestamp after which the charge point must retrieve the firmware.</param>
         /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
-        public UpdateFirmwareRequest(String    Location,
-                                     DateTime  RetrieveDate,
-                                     Byte?     Retries        = null,
-                                     TimeSpan? RetryInterval  = null)
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public UpdateFirmwareRequest(ChargeBox_Id  ChargeBoxId,
+                                     String        Location,
+                                     DateTime      RetrieveDate,
+                                     Byte?         Retries            = null,
+                                     TimeSpan?     RetryInterval      = null,
+
+                                     Request_Id?   RequestId          = null,
+                                     DateTime?     RequestTimestamp   = null)
+
+            : base(ChargeBoxId,
+                   "UpdateFirmware",
+                   RequestId,
+                   RequestTimestamp)
+
         {
 
             #region Initial checks
+
+            Location = Location?.Trim();
 
             if (Location.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Location),  "The given location must not be null or empty!");
@@ -90,8 +105,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             this.Location       = Location;
             this.RetrieveDate   = RetrieveDate;
-            this.Retries        = Retries       ?? new Byte?();
-            this.RetryInterval  = RetryInterval ?? new TimeSpan?();
+            this.Retries        = Retries;
+            this.RetryInterval  = RetryInterval;
 
         }
 
@@ -155,87 +170,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (UpdateFirmwareRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a update firmware request.
+        /// Parse the given XML representation of a UpdateFirmware request.
         /// </summary>
-        /// <param name="UpdateFirmwareRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static UpdateFirmwareRequest Parse(XElement             UpdateFirmwareRequestXML,
+        public static UpdateFirmwareRequest Parse(XElement             XML,
+                                                  Request_Id           RequestId,
+                                                  ChargeBox_Id         ChargeBoxId,
                                                   OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(UpdateFirmwareRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out UpdateFirmwareRequest updateFirmwareRequest,
                          OnException))
             {
                 return updateFirmwareRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a UpdateFirmware request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (UpdateFirmwareRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomUpdateFirmwareRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a update firmware request.
+        /// Parse the given JSON representation of a UpdateFirmware request.
         /// </summary>
-        /// <param name="UpdateFirmwareRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomUpdateFirmwareRequestParser">A delegate to parse custom UpdateFirmware requests.</param>
+        public static UpdateFirmwareRequest Parse(JObject                                             JSON,
+                                                  Request_Id                                          RequestId,
+                                                  ChargeBox_Id                                        ChargeBoxId,
+                                                  CustomJObjectParserDelegate<UpdateFirmwareRequest>  CustomUpdateFirmwareRequestParser   = null)
+        {
+
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out UpdateFirmwareRequest  updateFirmwareRequest,
+                         out String                 ErrorResponse,
+                         CustomUpdateFirmwareRequestParser))
+            {
+                return updateFirmwareRequest;
+            }
+
+            throw new ArgumentException("The given JSON representation of a UpdateFirmware request is invalid: " + ErrorResponse, nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a UpdateFirmware request.
+        /// </summary>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static UpdateFirmwareRequest Parse(JObject              UpdateFirmwareRequestJSON,
+        public static UpdateFirmwareRequest Parse(String               Text,
+                                                  Request_Id           RequestId,
+                                                  ChargeBox_Id         ChargeBoxId,
                                                   OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(UpdateFirmwareRequestJSON,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out UpdateFirmwareRequest updateFirmwareRequest,
                          OnException))
             {
                 return updateFirmwareRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a UpdateFirmware request is invalid!", nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) Parse   (UpdateFirmwareRequestText, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out UpdateFirmwareRequest, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of a update firmware request.
+        /// Try to parse the given XML representation of a UpdateFirmware request.
         /// </summary>
-        /// <param name="UpdateFirmwareRequestText">The text to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="UpdateFirmwareRequest">The parsed UpdateFirmware request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static UpdateFirmwareRequest Parse(String               UpdateFirmwareRequestText,
-                                                  OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(UpdateFirmwareRequestText,
-                         out UpdateFirmwareRequest updateFirmwareRequest,
-                         OnException))
-            {
-                return updateFirmwareRequest;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(UpdateFirmwareRequestXML,  out UpdateFirmwareRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a update firmware request.
-        /// </summary>
-        /// <param name="UpdateFirmwareRequestXML">The XML to be parsed.</param>
-        /// <param name="UpdateFirmwareRequest">The parsed update firmware request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                   UpdateFirmwareRequestXML,
+        public static Boolean TryParse(XElement                   XML,
+                                       Request_Id                 RequestId,
+                                       ChargeBox_Id               ChargeBoxId,
                                        out UpdateFirmwareRequest  UpdateFirmwareRequest,
                                        OnExceptionDelegate        OnException  = null)
         {
@@ -245,16 +283,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 UpdateFirmwareRequest = new UpdateFirmwareRequest(
 
-                                            UpdateFirmwareRequestXML.ElementValueOrFail(OCPPNS.OCPPv1_6_CP + "location"),
+                                            ChargeBoxId,
 
-                                            UpdateFirmwareRequestXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "retrieveDate",
+                                            XML.ElementValueOrFail(OCPPNS.OCPPv1_6_CP + "location"),
+
+                                            XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "retrieveDate",
                                                                                         DateTime.Parse),
 
-                                            UpdateFirmwareRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "retries",
+                                            XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "retries",
                                                                                         Byte.Parse),
 
-                                            UpdateFirmwareRequestXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "retryInterval",
-                                                                                        s => TimeSpan.FromSeconds(UInt32.Parse(s)))
+                                            XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "retryInterval",
+                                                                                        s => TimeSpan.FromSeconds(UInt32.Parse(s))),
+
+                                            RequestId
 
                                         );
 
@@ -264,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, UpdateFirmwareRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 UpdateFirmwareRequest = null;
                 return false;
@@ -275,17 +317,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(UpdateFirmwareRequestJSON,  out UpdateFirmwareRequest, OnException = null)
+        #region (static) TryParse(JSON,  RequestId, ChargeBoxId, out UpdateFirmwareRequest, out ErrorResponse, CustomUpdateFirmwareRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a update firmware request.
+        /// Try to parse the given JSON representation of a UpdateFirmware request.
         /// </summary>
-        /// <param name="UpdateFirmwareRequestJSON">The JSON to be parsed.</param>
-        /// <param name="UpdateFirmwareRequest">The parsed update firmware request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                    UpdateFirmwareRequestJSON,
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="UpdateFirmwareRequest">The parsed UpdateFirmware request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                    JSON,
+                                       Request_Id                 RequestId,
+                                       ChargeBox_Id               ChargeBoxId,
                                        out UpdateFirmwareRequest  UpdateFirmwareRequest,
-                                       OnExceptionDelegate        OnException  = null)
+                                       out String                 ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out UpdateFirmwareRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a UpdateFirmware request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="UpdateFirmwareRequest">The parsed UpdateFirmware request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomUpdateFirmwareRequestParser">A delegate to parse custom UpdateFirmware requests.</param>
+        public static Boolean TryParse(JObject                                             JSON,
+                                       Request_Id                                          RequestId,
+                                       ChargeBox_Id                                        ChargeBoxId,
+                                       out UpdateFirmwareRequest                           UpdateFirmwareRequest,
+                                       out String                                          ErrorResponse,
+                                       CustomJObjectParserDelegate<UpdateFirmwareRequest>  CustomUpdateFirmwareRequestParser)
         {
 
             try
@@ -295,16 +367,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region Location
 
-                var Location = UpdateFirmwareRequestJSON.GetString("location");
+                if (!JSON.ParseMandatoryText("location",
+                                             "location",
+                                             out String  Location,
+                                             out         ErrorResponse))
+                {
+                    return false;
+                }
 
                 #endregion
 
                 #region RetrieveDate
 
-                if (!UpdateFirmwareRequestJSON.ParseMandatory("retrieveDate",
-                                                              "retrieve date",
-                                                              out DateTime  RetrieveDate,
-                                                              out String    ErrorResponse))
+                if (!JSON.ParseMandatory("retrieveDate",
+                                         "retrieve date",
+                                         out DateTime  RetrieveDate,
+                                         out           ErrorResponse))
                 {
                     return false;
                 }
@@ -313,66 +391,69 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region Retries
 
-                if (UpdateFirmwareRequestJSON.ParseOptional("retries",
-                                                            "retries",
-                                                            out Byte?  Retries,
-                                                            out        ErrorResponse))
+                if (JSON.ParseOptional("retries",
+                                       "retries",
+                                       out Byte?  Retries,
+                                       out        ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
                 #region RetryInterval
 
-                if (UpdateFirmwareRequestJSON.ParseOptional("retryInterval",
-                                                            "retry interval",
-                                                            out TimeSpan?  RetryInterval,
-                                                            out            ErrorResponse))
+                if (JSON.ParseOptional("retryInterval",
+                                       "retry interval",
+                                       out TimeSpan?  RetryInterval,
+                                       out            ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
 
-                UpdateFirmwareRequest = new UpdateFirmwareRequest(Location,
+                UpdateFirmwareRequest = new UpdateFirmwareRequest(ChargeBoxId,
+                                                                  Location,
                                                                   RetrieveDate,
                                                                   Retries,
-                                                                  RetryInterval);
+                                                                  RetryInterval,
+                                                                  RequestId);
+
+                if (CustomUpdateFirmwareRequestParser != null)
+                    UpdateFirmwareRequest = CustomUpdateFirmwareRequestParser(JSON,
+                                                                              UpdateFirmwareRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, UpdateFirmwareRequestJSON, e);
-
-                UpdateFirmwareRequest = null;
+                UpdateFirmwareRequest  = default;
+                ErrorResponse          = "The given JSON representation of a UpdateFirmware request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(UpdateFirmwareRequestText, out UpdateFirmwareRequest, OnException = null)
+        #region (static) TryParse(Text, RequestId, ChargeBoxId, out UpdateFirmwareRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a update firmware request.
+        /// Try to parse the given text representation of a UpdateFirmware request.
         /// </summary>
-        /// <param name="UpdateFirmwareRequestText">The text to be parsed.</param>
-        /// <param name="UpdateFirmwareRequest">The parsed update firmware request.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="UpdateFirmwareRequest">The parsed UpdateFirmware request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                     UpdateFirmwareRequestText,
+        public static Boolean TryParse(String                     Text,
+                                       Request_Id                 RequestId,
+                                       ChargeBox_Id               ChargeBoxId,
                                        out UpdateFirmwareRequest  UpdateFirmwareRequest,
                                        OnExceptionDelegate        OnException  = null)
         {
@@ -380,20 +461,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                UpdateFirmwareRequestText = UpdateFirmwareRequestText?.Trim();
+                Text = Text?.Trim();
 
-                if (UpdateFirmwareRequestText.IsNotNullOrEmpty())
+                if (Text.IsNotNullOrEmpty())
                 {
 
-                    if (UpdateFirmwareRequestText.StartsWith("{") &&
-                        TryParse(JObject.Parse(UpdateFirmwareRequestText),
+                    if (Text.StartsWith("{") &&
+                        TryParse(JObject.Parse(Text),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out UpdateFirmwareRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
-                    if (TryParse(XDocument.Parse(UpdateFirmwareRequestText).Root,
+                    if (TryParse(XDocument.Parse(Text).Root,
+                                 RequestId,
+                                 ChargeBoxId,
                                  out UpdateFirmwareRequest,
                                  OnException))
                     {
@@ -405,7 +490,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, UpdateFirmwareRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, Text, e);
             }
 
             UpdateFirmwareRequest = null;
@@ -445,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomUpdateFirmwareRequestSerializer">A delegate to serialize custom start transaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateFirmwareRequest> CustomUpdateFirmwareRequestSerializer  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateFirmwareRequest> CustomUpdateFirmwareRequestSerializer = null)
         {
 
             var JSON = JSONObject.Create(
@@ -477,10 +562,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (UpdateFirmwareRequest1, UpdateFirmwareRequest2)
 
         /// <summary>
-        /// Compares two update firmware requests for equality.
+        /// Compares two UpdateFirmware requests for equality.
         /// </summary>
-        /// <param name="UpdateFirmwareRequest1">A update firmware request.</param>
-        /// <param name="UpdateFirmwareRequest2">Another update firmware request.</param>
+        /// <param name="UpdateFirmwareRequest1">A UpdateFirmware request.</param>
+        /// <param name="UpdateFirmwareRequest2">Another UpdateFirmware request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (UpdateFirmwareRequest UpdateFirmwareRequest1, UpdateFirmwareRequest UpdateFirmwareRequest2)
         {
@@ -502,10 +587,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (UpdateFirmwareRequest1, UpdateFirmwareRequest2)
 
         /// <summary>
-        /// Compares two update firmware requests for inequality.
+        /// Compares two UpdateFirmware requests for inequality.
         /// </summary>
-        /// <param name="UpdateFirmwareRequest1">A update firmware request.</param>
-        /// <param name="UpdateFirmwareRequest2">Another update firmware request.</param>
+        /// <param name="UpdateFirmwareRequest1">A UpdateFirmware request.</param>
+        /// <param name="UpdateFirmwareRequest2">Another UpdateFirmware request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (UpdateFirmwareRequest UpdateFirmwareRequest1, UpdateFirmwareRequest UpdateFirmwareRequest2)
 
@@ -542,9 +627,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(UpdateFirmwareRequest)
 
         /// <summary>
-        /// Compares two update firmware requests for equality.
+        /// Compares two UpdateFirmware requests for equality.
         /// </summary>
-        /// <param name="UpdateFirmwareRequest">A update firmware request to compare with.</param>
+        /// <param name="UpdateFirmwareRequest">A UpdateFirmware request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(UpdateFirmwareRequest UpdateFirmwareRequest)
         {

@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The status notification request.
+    /// The StatusNotification request.
     /// </summary>
     public class StatusNotificationRequest : ARequest<StatusNotificationRequest>
     {
@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new status notification request.
+        /// Create a new StatusNotification request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The connector identification at the charge point.</param>
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a status notification request.
+        /// Parse the given XML representation of a StatusNotification request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomStatusNotificationRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a status notification request.
+        /// Parse the given JSON representation of a StatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of a status notification request.
+        /// Parse the given text representation of a StatusNotification request.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -327,12 +327,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(XML,  RequestId, ChargeBoxId, out StatusNotificationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of a status notification request.
+        /// Try to parse the given XML representation of a StatusNotification request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
+        /// <param name="StatusNotificationRequest">The parsed StatusNotification request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                       XML,
                                        Request_Id                     RequestId,
@@ -392,12 +392,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a status notification request.
+        /// Try to parse the given JSON representation of a StatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
+        /// <param name="StatusNotificationRequest">The parsed StatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                        JSON,
                                        Request_Id                     RequestId,
@@ -414,12 +414,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a status notification request.
+        /// Try to parse the given JSON representation of a StatusNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
+        /// <param name="StatusNotificationRequest">The parsed StatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom CustomStatusNotification requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
@@ -555,12 +555,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) TryParse(Text, RequestId, ChargeBoxId, out StatusNotificationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a status notification request.
+        /// Try to parse the given text representation of a StatusNotification request.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
+        /// <param name="StatusNotificationRequest">The parsed StatusNotification request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                         Text,
                                        Request_Id                     RequestId,
@@ -689,10 +689,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator == (StatusNotificationRequest1, StatusNotificationRequest2)
 
         /// <summary>
-        /// Compares two status notification requests for equality.
+        /// Compares two StatusNotification requests for equality.
         /// </summary>
-        /// <param name="StatusNotificationRequest1">A status notification request.</param>
-        /// <param name="StatusNotificationRequest2">Another status notification request.</param>
+        /// <param name="StatusNotificationRequest1">A StatusNotification request.</param>
+        /// <param name="StatusNotificationRequest2">Another StatusNotification request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (StatusNotificationRequest StatusNotificationRequest1, StatusNotificationRequest StatusNotificationRequest2)
         {
@@ -714,10 +714,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Operator != (StatusNotificationRequest1, StatusNotificationRequest2)
 
         /// <summary>
-        /// Compares two status notification requests for inequality.
+        /// Compares two StatusNotification requests for inequality.
         /// </summary>
-        /// <param name="StatusNotificationRequest1">A status notification request.</param>
-        /// <param name="StatusNotificationRequest2">Another status notification request.</param>
+        /// <param name="StatusNotificationRequest1">A StatusNotification request.</param>
+        /// <param name="StatusNotificationRequest2">Another StatusNotification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (StatusNotificationRequest StatusNotificationRequest1, StatusNotificationRequest StatusNotificationRequest2)
 
@@ -754,9 +754,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(StatusNotificationRequest)
 
         /// <summary>
-        /// Compares two status notification requests for equality.
+        /// Compares two StatusNotification requests for equality.
         /// </summary>
-        /// <param name="StatusNotificationRequest">A status notification request to compare with.</param>
+        /// <param name="StatusNotificationRequest">A StatusNotification request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(StatusNotificationRequest StatusNotificationRequest)
         {

@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -31,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A reset request.
+    /// The reset request.
     /// </summary>
     public class ResetRequest : ARequest<ResetRequest>
     {
@@ -48,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a reset request.
+        /// Create a new reset request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Type">The type of reset that the charge point should perform.</param>
@@ -421,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomResetRequestSerializer">A delegate to serialize custom reset requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ResetRequest> CustomResetRequestSerializer  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ResetRequest>  CustomResetRequestSerializer   = null)
         {
 
             var JSON = JSONObject.Create(

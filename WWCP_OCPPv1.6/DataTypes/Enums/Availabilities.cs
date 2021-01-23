@@ -32,21 +32,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Parse(Text)
 
-        public static AvailabilityTypes Parse(String Text)
+        public static Availabilities Parse(String Text)
         {
 
             switch (Text?.Trim())
             {
 
                 case "Inoperative":
-                    return AvailabilityTypes.Inoperative;
+                    return Availabilities.Inoperative;
 
                 case "Operative":
-                    return AvailabilityTypes.Operative;
+                    return Availabilities.Operative;
 
 
                 default:
-                    return AvailabilityTypes.Unknown;
+                    return Availabilities.Unknown;
 
             }
 
@@ -56,16 +56,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region AsText(this AvailabilityType)
 
-        public static String AsText(this AvailabilityTypes AvailabilityType)
+        public static String AsText(this Availabilities AvailabilityType)
         {
 
             switch (AvailabilityType)
             {
 
-                case AvailabilityTypes.Inoperative:
+                case Availabilities.Inoperative:
                     return "Inoperative";
 
-                case AvailabilityTypes.Operative:
+                case Availabilities.Operative:
                     return "Operative";
 
 
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// Defines the availability-type-values.
     /// </summary>
-    public enum AvailabilityTypes
+    public enum Availabilities
     {
 
         /// <summary>

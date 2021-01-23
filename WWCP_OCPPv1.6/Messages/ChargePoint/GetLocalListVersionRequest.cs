@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -31,10 +30,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A get local list version request.
+    /// The GetLocalListVersion request.
     /// </summary>
     public class GetLocalListVersionRequest : ARequest<GetLocalListVersionRequest>
     {
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a new GetLocalListVersion request.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public GetLocalListVersionRequest(ChargeBox_Id  ChargeBoxId,
+                                          Request_Id?   RequestId          = null,
+                                          DateTime?     RequestTimestamp   = null)
+
+            : base(ChargeBoxId,
+                   "GetLocalListVersion",
+                   RequestId,
+                   RequestTimestamp)
+
+        { }
+
+        #endregion
+
 
         #region Documentation
 
@@ -65,87 +86,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (GetLocalListVersionRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a get local list version request.
+        /// Parse the given XML representation of a GetLocalListVersion request.
         /// </summary>
-        /// <param name="GetLocalListVersionRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetLocalListVersionRequest Parse(XElement             GetLocalListVersionRequestXML,
+        public static GetLocalListVersionRequest Parse(XElement             XML,
+                                                       Request_Id           RequestId,
+                                                       ChargeBox_Id         ChargeBoxId,
                                                        OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(GetLocalListVersionRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out GetLocalListVersionRequest getLocalListVersionRequest,
                          OnException))
             {
                 return getLocalListVersionRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a GetLocalListVersion request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (GetLocalListVersionRequestJSON,  OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomGetLocalListVersionRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get local list version request.
+        /// Parse the given JSON representation of a GetLocalListVersion request.
         /// </summary>
-        /// <param name="GetLocalListVersionRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomGetLocalListVersionRequestParser">A delegate to parse custom GetLocalListVersion requests.</param>
+        public static GetLocalListVersionRequest Parse(JObject                                                  JSON,
+                                                       Request_Id                                               RequestId,
+                                                       ChargeBox_Id                                             ChargeBoxId,
+                                                       CustomJObjectParserDelegate<GetLocalListVersionRequest>  CustomGetLocalListVersionRequestParser   = null)
+        {
+
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out GetLocalListVersionRequest  getLocalListVersionRequest,
+                         out String                      ErrorResponse,
+                         CustomGetLocalListVersionRequestParser))
+            {
+                return getLocalListVersionRequest;
+            }
+
+            throw new ArgumentException("The given JSON representation of a GetLocalListVersion request is invalid: " + ErrorResponse, nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a GetLocalListVersion request.
+        /// </summary>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetLocalListVersionRequest Parse(JObject              GetLocalListVersionRequestJSON,
+        public static GetLocalListVersionRequest Parse(String               Text,
+                                                       Request_Id           RequestId,
+                                                       ChargeBox_Id         ChargeBoxId,
                                                        OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(GetLocalListVersionRequestJSON,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out GetLocalListVersionRequest getLocalListVersionRequest,
                          OnException))
             {
                 return getLocalListVersionRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a GetLocalListVersion request is invalid!", nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) Parse   (GetLocalListVersionRequestText, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out GetLocalListVersionRequest, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of a get local list version request.
+        /// Try to parse the given XML representation of a GetLocalListVersion request.
         /// </summary>
-        /// <param name="GetLocalListVersionRequestText">The text to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="GetLocalListVersionRequest">The parsed GetLocalListVersion request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetLocalListVersionRequest Parse(String               GetLocalListVersionRequestText,
-                                                       OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(GetLocalListVersionRequestText,
-                         out GetLocalListVersionRequest getLocalListVersionRequest,
-                         OnException))
-            {
-                return getLocalListVersionRequest;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(GetLocalListVersionRequestXML,  out GetLocalListVersionRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a get local list version request.
-        /// </summary>
-        /// <param name="GetLocalListVersionRequestXML">The XML to be parsed.</param>
-        /// <param name="GetLocalListVersionRequest">The parsed get local list version request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                        GetLocalListVersionRequestXML,
+        public static Boolean TryParse(XElement                        XML,
+                                       Request_Id                      RequestId,
+                                       ChargeBox_Id                    ChargeBoxId,
                                        out GetLocalListVersionRequest  GetLocalListVersionRequest,
                                        OnExceptionDelegate             OnException  = null)
         {
@@ -153,7 +197,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                GetLocalListVersionRequest = new GetLocalListVersionRequest();
+                GetLocalListVersionRequest = new GetLocalListVersionRequest(ChargeBoxId,
+                                                                            RequestId);
 
                 return true;
 
@@ -161,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, GetLocalListVersionRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 GetLocalListVersionRequest = null;
                 return false;
@@ -172,50 +217,87 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(GetLocalListVersionRequestJSON,  out GetLocalListVersionRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out GetLocalListVersionRequest, OnException = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get local list version request.
+        /// Try to parse the given JSON representation of a GetLocalListVersion request.
         /// </summary>
-        /// <param name="GetLocalListVersionRequestJSON">The JSON to be parsed.</param>
-        /// <param name="GetLocalListVersionRequest">The parsed get local list version request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                         GetLocalListVersionRequestJSON,
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="GetLocalListVersionRequest">The parsed GetLocalListVersion request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                         JSON,
+                                       Request_Id                      RequestId,
+                                       ChargeBox_Id                    ChargeBoxId,
                                        out GetLocalListVersionRequest  GetLocalListVersionRequest,
-                                       OnExceptionDelegate             OnException  = null)
+                                       out String                      ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out GetLocalListVersionRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a GetLocalListVersion request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="GetLocalListVersionRequest">The parsed GetLocalListVersion request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomGetLocalListVersionRequestParser">A delegate to parse custom GetLocalListVersion requests.</param>
+        public static Boolean TryParse(JObject                                                  JSON,
+                                       Request_Id                                               RequestId,
+                                       ChargeBox_Id                                             ChargeBoxId,
+                                       out GetLocalListVersionRequest                           GetLocalListVersionRequest,
+                                       out String                                               ErrorResponse,
+                                       CustomJObjectParserDelegate<GetLocalListVersionRequest>  CustomGetLocalListVersionRequestParser)
         {
 
             try
             {
 
-                GetLocalListVersionRequest = new GetLocalListVersionRequest();
+                ErrorResponse               = default;
+                GetLocalListVersionRequest  = new GetLocalListVersionRequest(ChargeBoxId,
+                                                                             RequestId);
+
+                if (CustomGetLocalListVersionRequestParser != null)
+                    GetLocalListVersionRequest = CustomGetLocalListVersionRequestParser(JSON,
+                                                                                        GetLocalListVersionRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, GetLocalListVersionRequestJSON, e);
-
-                GetLocalListVersionRequest = null;
+                GetLocalListVersionRequest  = default;
+                ErrorResponse               = "The given JSON representation of a GetLocalListVersion request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(GetLocalListVersionRequestText, out GetLocalListVersionRequest, OnException = null)
+        #region (static) TryParse(Text, RequestId, ChargeBoxId, out GetLocalListVersionRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a get local list version request.
+        /// Try to parse the given text representation of a GetLocalListVersion request.
         /// </summary>
-        /// <param name="GetLocalListVersionRequestText">The text to be parsed.</param>
-        /// <param name="GetLocalListVersionRequest">The parsed get local list version request.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="GetLocalListVersionRequest">The parsed GetLocalListVersion request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                          GetLocalListVersionRequestText,
+        public static Boolean TryParse(String                          Text,
+                                       Request_Id                      RequestId,
+                                       ChargeBox_Id                    ChargeBoxId,
                                        out GetLocalListVersionRequest  GetLocalListVersionRequest,
                                        OnExceptionDelegate             OnException  = null)
         {
@@ -223,20 +305,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                GetLocalListVersionRequestText = GetLocalListVersionRequestText?.Trim();
+                Text = Text?.Trim();
 
-                if (GetLocalListVersionRequestText.IsNotNullOrEmpty())
+                if (Text.IsNotNullOrEmpty())
                 {
 
-                    if (GetLocalListVersionRequestText.StartsWith("{") &&
-                        TryParse(JObject.Parse(GetLocalListVersionRequestText),
+                    if (Text.StartsWith("{") &&
+                        TryParse(JObject.Parse(Text),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out GetLocalListVersionRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
-                    if (TryParse(XDocument.Parse(GetLocalListVersionRequestText).Root,
+                    if (TryParse(XDocument.Parse(Text).Root,
+                                 RequestId,
+                                 ChargeBoxId,
                                  out GetLocalListVersionRequest,
                                  OnException))
                     {
@@ -248,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, GetLocalListVersionRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, Text, e);
             }
 
             GetLocalListVersionRequest = null;
@@ -274,8 +360,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetLocalListVersionRequestSerializer">A delegate to serialize custom get local list version requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetLocalListVersionRequest> CustomGetLocalListVersionRequestSerializer  = null)
+        /// <param name="CustomGetLocalListVersionRequestSerializer">A delegate to serialize custom GetLocalListVersion requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetLocalListVersionRequest> CustomGetLocalListVersionRequestSerializer = null)
         {
 
             var JSON = JSONObject.Create();
@@ -294,10 +380,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (GetLocalListVersionRequest1, GetLocalListVersionRequest2)
 
         /// <summary>
-        /// Compares two get local list version requests for equality.
+        /// Compares two GetLocalListVersion requests for equality.
         /// </summary>
-        /// <param name="GetLocalListVersionRequest1">A get local list version request.</param>
-        /// <param name="GetLocalListVersionRequest2">Another get local list version request.</param>
+        /// <param name="GetLocalListVersionRequest1">A GetLocalListVersion request.</param>
+        /// <param name="GetLocalListVersionRequest2">Another GetLocalListVersion request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetLocalListVersionRequest GetLocalListVersionRequest1, GetLocalListVersionRequest GetLocalListVersionRequest2)
         {
@@ -319,10 +405,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (GetLocalListVersionRequest1, GetLocalListVersionRequest2)
 
         /// <summary>
-        /// Compares two get local list version requests for inequality.
+        /// Compares two GetLocalListVersion requests for inequality.
         /// </summary>
-        /// <param name="GetLocalListVersionRequest1">A get local list version request.</param>
-        /// <param name="GetLocalListVersionRequest2">Another get local list version request.</param>
+        /// <param name="GetLocalListVersionRequest1">A GetLocalListVersion request.</param>
+        /// <param name="GetLocalListVersionRequest2">Another GetLocalListVersion request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetLocalListVersionRequest GetLocalListVersionRequest1, GetLocalListVersionRequest GetLocalListVersionRequest2)
 
@@ -359,9 +445,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(GetLocalListVersionRequest)
 
         /// <summary>
-        /// Compares two get local list version requests for equality.
+        /// Compares two GetLocalListVersion requests for equality.
         /// </summary>
-        /// <param name="GetLocalListVersionRequest">A get local list version request to compare with.</param>
+        /// <param name="GetLocalListVersionRequest">A GetLocalListVersion request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(GetLocalListVersionRequest GetLocalListVersionRequest)
         {

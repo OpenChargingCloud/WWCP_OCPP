@@ -2049,7 +2049,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var request = new CS.DataTransferRequest(VendorId,
+            var request = new CS.DataTransferRequest(ChargeBoxIdentity,
+                                                     VendorId,
                                                      MessageId,
                                                      Data);
 

@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -31,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A set charging profile request.
+    /// The SetChargingProfile request.
     /// </summary>
     public class SetChargingProfileRequest : ARequest<SetChargingProfileRequest>
     {
@@ -55,12 +54,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a set charging profile request.
+        /// Create a new SetChargingProfile request.
         /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The connector to which the charging profile applies. If connectorId = 0, the message contains an overall limit for the charge point.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
-        public SetChargingProfileRequest(Connector_Id     ConnectorId,
-                                         ChargingProfile  ChargingProfile)
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public SetChargingProfileRequest(ChargeBox_Id     ChargeBoxId,
+                                         Connector_Id     ConnectorId,
+                                         ChargingProfile  ChargingProfile,
+
+                                         Request_Id?      RequestId          = null,
+                                         DateTime?        RequestTimestamp   = null)
+
+            : base(ChargeBoxId,
+                   "SetChargingProfile",
+                   RequestId,
+                   RequestTimestamp)
+
         {
 
             this.ConnectorId      = ConnectorId;
@@ -266,87 +279,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (SetChargingProfileRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a set charging profile request.
+        /// Parse the given XML representation of a SetChargingProfile request.
         /// </summary>
-        /// <param name="SetChargingProfileRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SetChargingProfileRequest Parse(XElement             SetChargingProfileRequestXML,
+        public static SetChargingProfileRequest Parse(XElement             XML,
+                                                      Request_Id           RequestId,
+                                                      ChargeBox_Id         ChargeBoxId,
                                                       OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(SetChargingProfileRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out SetChargingProfileRequest setChargingProfileRequest,
                          OnException))
             {
                 return setChargingProfileRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a SetChargingProfile request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (SetChargingProfileRequestJSON,  OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomSetChargingProfileRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set charging profile request.
+        /// Parse the given JSON representation of a SetChargingProfile request.
         /// </summary>
-        /// <param name="SetChargingProfileRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomSetChargingProfileRequestParser">A delegate to parse custom SetChargingProfile requests.</param>
+        public static SetChargingProfileRequest Parse(JObject                                                 JSON,
+                                                      Request_Id                                              RequestId,
+                                                      ChargeBox_Id                                            ChargeBoxId,
+                                                      CustomJObjectParserDelegate<SetChargingProfileRequest>  CustomSetChargingProfileRequestParser   = null)
+        {
+
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out SetChargingProfileRequest  setChargingProfileRequest,
+                         out String                     ErrorResponse,
+                         CustomSetChargingProfileRequestParser))
+            {
+                return setChargingProfileRequest;
+            }
+
+            throw new ArgumentException("The given JSON representation of a SetChargingProfile request is invalid: " + ErrorResponse, nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of a SetChargingProfile request.
+        /// </summary>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SetChargingProfileRequest Parse(JObject              SetChargingProfileRequestJSON,
+        public static SetChargingProfileRequest Parse(String               Text,
+                                                      Request_Id           RequestId,
+                                                      ChargeBox_Id         ChargeBoxId,
                                                       OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(SetChargingProfileRequestJSON,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out SetChargingProfileRequest setChargingProfileRequest,
                          OnException))
             {
                 return setChargingProfileRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a SetChargingProfile request is invalid!", nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) Parse   (SetChargingProfileRequestText, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out SetChargingProfileRequest, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of a set charging profile request.
+        /// Try to parse the given XML representation of a SetChargingProfile request.
         /// </summary>
-        /// <param name="SetChargingProfileRequestText">The text to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="SetChargingProfileRequest">The parsed SetChargingProfile request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SetChargingProfileRequest Parse(String               SetChargingProfileRequestText,
-                                                      OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(SetChargingProfileRequestText,
-                         out SetChargingProfileRequest setChargingProfileRequest,
-                         OnException))
-            {
-                return setChargingProfileRequest;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(SetChargingProfileRequestXML,  out SetChargingProfileRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a set charging profile request.
-        /// </summary>
-        /// <param name="SetChargingProfileRequestXML">The XML to be parsed.</param>
-        /// <param name="SetChargingProfileRequest">The parsed set charging profile request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                       SetChargingProfileRequestXML,
+        public static Boolean TryParse(XElement                       XML,
+                                       Request_Id                     RequestId,
+                                       ChargeBox_Id                   ChargeBoxId,
                                        out SetChargingProfileRequest  SetChargingProfileRequest,
                                        OnExceptionDelegate            OnException  = null)
         {
@@ -356,11 +392,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 SetChargingProfileRequest = new SetChargingProfileRequest(
 
-                                                SetChargingProfileRequestXML.MapValueOrFail  (OCPPNS.OCPPv1_6_CP + "connectorId",
-                                                                                              Connector_Id.Parse),
+                                                ChargeBoxId,
 
-                                                SetChargingProfileRequestXML.MapElementOrFail(OCPPNS.OCPPv1_6_CP + "csChargingProfiles",
-                                                                                              ChargingProfile.Parse)
+                                                XML.MapValueOrFail  (OCPPNS.OCPPv1_6_CP + "connectorId",
+                                                                     Connector_Id.Parse),
+
+                                                XML.MapElementOrFail(OCPPNS.OCPPv1_6_CP + "csChargingProfiles",
+                                                                     ChargingProfile.Parse),
+
+                                                RequestId
 
                                             );
 
@@ -370,7 +410,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, SetChargingProfileRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 SetChargingProfileRequest = null;
                 return false;
@@ -381,17 +421,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(SetChargingProfileRequestJSON,  out SetChargingProfileRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out SetChargingProfileRequest, OnException = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a set charging profile request.
+        /// Try to parse the given JSON representation of a SetChargingProfile request.
         /// </summary>
-        /// <param name="SetChargingProfileRequestJSON">The JSON to be parsed.</param>
-        /// <param name="SetChargingProfileRequest">The parsed set charging profile request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                        SetChargingProfileRequestJSON,
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="SetChargingProfileRequest">The parsed SetChargingProfile request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                        JSON,
+                                       Request_Id                     RequestId,
+                                       ChargeBox_Id                   ChargeBoxId,
                                        out SetChargingProfileRequest  SetChargingProfileRequest,
-                                       OnExceptionDelegate            OnException  = null)
+                                       out String                     ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out SetChargingProfileRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a SetChargingProfile request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="SetChargingProfileRequest">The parsed SetChargingProfile request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSetChargingProfileRequestParser">A delegate to parse custom SetChargingProfile requests.</param>
+        public static Boolean TryParse(JObject                                                 JSON,
+                                       Request_Id                                              RequestId,
+                                       ChargeBox_Id                                            ChargeBoxId,
+                                       out SetChargingProfileRequest                           SetChargingProfileRequest,
+                                       out String                                              ErrorResponse,
+                                       CustomJObjectParserDelegate<SetChargingProfileRequest>  CustomSetChargingProfileRequestParser)
         {
 
             try
@@ -401,11 +471,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ConnectorId
 
-                if (!SetChargingProfileRequestJSON.ParseMandatory("connectorId",
-                                                                  "connector identification",
-                                                                  Connector_Id.TryParse,
-                                                                  out Connector_Id  ConnectorId,
-                                                                  out String        ErrorResponse))
+                if (!JSON.ParseMandatory("connectorId",
+                                         "connector identification",
+                                         Connector_Id.TryParse,
+                                         out Connector_Id  ConnectorId,
+                                         out               ErrorResponse))
                 {
                     return false;
                 }
@@ -414,11 +484,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ChargingProfile
 
-                if (!SetChargingProfileRequestJSON.ParseMandatoryJSON2("csChargingProfiles",
-                                                                       "charging station charging profiles",
-                                                                       OCPPv1_6.ChargingProfile.TryParse,
-                                                                       out ChargingProfile ChargingProfile,
-                                                                       out                 ErrorResponse))
+                if (!JSON.ParseMandatoryJSON2("csChargingProfiles",
+                                              "charging station charging profiles",
+                                              OCPPv1_6.ChargingProfile.TryParse,
+                                              out ChargingProfile ChargingProfile,
+                                              out                 ErrorResponse))
                 {
                     return false;
                 }
@@ -426,35 +496,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                SetChargingProfileRequest = new SetChargingProfileRequest(ConnectorId,
-                                                                          ChargingProfile);
+                SetChargingProfileRequest = new SetChargingProfileRequest(ChargeBoxId,
+                                                                          ConnectorId,
+                                                                          ChargingProfile,
+                                                                          RequestId);
+
+                if (CustomSetChargingProfileRequestParser != null)
+                    SetChargingProfileRequest = CustomSetChargingProfileRequestParser(JSON,
+                                                                                      SetChargingProfileRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, SetChargingProfileRequestJSON, e);
-
-                SetChargingProfileRequest = null;
+                SetChargingProfileRequest  = default;
+                ErrorResponse              = "The given JSON representation of a SetChargingProfile request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(SetChargingProfileRequestText, out SetChargingProfileRequest, OnException = null)
+        #region (static) TryParse(SetChargingProfileRequestText, RequestId, ChargeBoxId, out SetChargingProfileRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a set charging profile request.
+        /// Try to parse the given text representation of a SetChargingProfile request.
         /// </summary>
         /// <param name="SetChargingProfileRequestText">The text to be parsed.</param>
-        /// <param name="SetChargingProfileRequest">The parsed set charging profile request.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="SetChargingProfileRequest">The parsed SetChargingProfile request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                         SetChargingProfileRequestText,
+                                       Request_Id                     RequestId,
+                                       ChargeBox_Id                   ChargeBoxId,
                                        out SetChargingProfileRequest  SetChargingProfileRequest,
                                        OnExceptionDelegate            OnException  = null)
         {
@@ -469,13 +546,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     if (SetChargingProfileRequestText.StartsWith("{") &&
                         TryParse(JObject.Parse(SetChargingProfileRequestText),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out SetChargingProfileRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
                     if (TryParse(XDocument.Parse(SetChargingProfileRequestText).Root,
+                                 RequestId,
+                                 ChargeBoxId,
                                  out SetChargingProfileRequest,
                                  OnException))
                     {
@@ -549,10 +630,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (SetChargingProfileRequest1, SetChargingProfileRequest2)
 
         /// <summary>
-        /// Compares two set charging profile requests for equality.
+        /// Compares two SetChargingProfile requests for equality.
         /// </summary>
-        /// <param name="SetChargingProfileRequest1">A set charging profile request.</param>
-        /// <param name="SetChargingProfileRequest2">Another set charging profile request.</param>
+        /// <param name="SetChargingProfileRequest1">A SetChargingProfile request.</param>
+        /// <param name="SetChargingProfileRequest2">Another SetChargingProfile request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetChargingProfileRequest SetChargingProfileRequest1, SetChargingProfileRequest SetChargingProfileRequest2)
         {
@@ -574,10 +655,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (SetChargingProfileRequest1, SetChargingProfileRequest2)
 
         /// <summary>
-        /// Compares two set charging profile requests for inequality.
+        /// Compares two SetChargingProfile requests for inequality.
         /// </summary>
-        /// <param name="SetChargingProfileRequest1">A set charging profile request.</param>
-        /// <param name="SetChargingProfileRequest2">Another set charging profile request.</param>
+        /// <param name="SetChargingProfileRequest1">A SetChargingProfile request.</param>
+        /// <param name="SetChargingProfileRequest2">Another SetChargingProfile request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetChargingProfileRequest SetChargingProfileRequest1, SetChargingProfileRequest SetChargingProfileRequest2)
 
@@ -614,9 +695,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(SetChargingProfileRequest)
 
         /// <summary>
-        /// Compares two set charging profile requests for equality.
+        /// Compares two SetChargingProfile requests for equality.
         /// </summary>
-        /// <param name="SetChargingProfileRequest">A set charging profile request to compare with.</param>
+        /// <param name="SetChargingProfileRequest">A SetChargingProfile request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(SetChargingProfileRequest SetChargingProfileRequest)
         {

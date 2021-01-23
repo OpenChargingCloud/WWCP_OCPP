@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -31,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A unlock connector request.
+    /// The UnlockConnector request.
     /// </summary>
     public class UnlockConnectorRequest : ARequest<UnlockConnectorRequest>
     {
@@ -48,12 +47,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create an unlock connector request.
+        /// Create a new UnlockConnector request.
         /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
-        public UnlockConnectorRequest(Connector_Id ConnectorId)
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        public UnlockConnectorRequest(ChargeBox_Id  ChargeBoxId,
+                                      Connector_Id  ConnectorId,
+
+                                      Request_Id?   RequestId          = null,
+                                      DateTime?     RequestTimestamp   = null)
+
+            : base(ChargeBoxId,
+                   "UnlockConnector",
+                   RequestId,
+                   RequestTimestamp)
+
         {
+
             this.ConnectorId = ConnectorId;
+
         }
 
         #endregion
@@ -97,87 +112,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (UnlockConnectorRequestXML,  OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given XML representation of a unlock connector request.
+        /// Parse the given XML representation of an UnlockConnector request.
         /// </summary>
-        /// <param name="UnlockConnectorRequestXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static UnlockConnectorRequest Parse(XElement             UnlockConnectorRequestXML,
+        public static UnlockConnectorRequest Parse(XElement             XML,
+                                                   Request_Id           RequestId,
+                                                   ChargeBox_Id         ChargeBoxId,
                                                    OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(UnlockConnectorRequestXML,
+            if (TryParse(XML,
+                         RequestId,
+                         ChargeBoxId,
                          out UnlockConnectorRequest unlockConnectorRequest,
                          OnException))
             {
                 return unlockConnectorRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of an UnlockConnector request is invalid!", nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (UnlockConnectorRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, OnException = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a unlock connector request.
+        /// Parse the given JSON representation of an UnlockConnector request.
         /// </summary>
-        /// <param name="UnlockConnectorRequestJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomUnlockConnectorRequestParser">A delegate to parse custom UnlockConnector requests.</param>
+        public static UnlockConnectorRequest Parse(JObject                                              JSON,
+                                                   Request_Id                                           RequestId,
+                                                   ChargeBox_Id                                         ChargeBoxId,
+                                                   CustomJObjectParserDelegate<UnlockConnectorRequest>  CustomUnlockConnectorRequestParser   = null)
+        {
+
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out UnlockConnectorRequest  unlockConnectorRequest,
+                         out String                  ErrorResponse,
+                         CustomUnlockConnectorRequestParser))
+            {
+                return unlockConnectorRequest;
+            }
+
+            throw new ArgumentException("The given JSON representation of an UnlockConnector request is invalid: " + ErrorResponse, nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
+
+        /// <summary>
+        /// Parse the given text representation of an UnlockConnector request.
+        /// </summary>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static UnlockConnectorRequest Parse(JObject              UnlockConnectorRequestJSON,
+        public static UnlockConnectorRequest Parse(String               Text,
+                                                   Request_Id           RequestId,
+                                                   ChargeBox_Id         ChargeBoxId,
                                                    OnExceptionDelegate  OnException = null)
         {
 
-            if (TryParse(UnlockConnectorRequestJSON,
+            if (TryParse(Text,
+                         RequestId,
+                         ChargeBoxId,
                          out UnlockConnectorRequest unlockConnectorRequest,
                          OnException))
             {
                 return unlockConnectorRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of an UnlockConnector request is invalid!", nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) Parse   (UnlockConnectorRequestText, OnException = null)
+        #region (static) TryParse(UnlockConnectorRequestXML,  RequestId, ChargeBoxId, out UnlockConnectorRequest, OnException = null)
 
         /// <summary>
-        /// Parse the given text representation of a unlock connector request.
+        /// Try to parse the given XML representation of an UnlockConnector request.
         /// </summary>
-        /// <param name="UnlockConnectorRequestText">The text to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="UnlockConnectorRequest">The parsed UnlockConnector request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static UnlockConnectorRequest Parse(String               UnlockConnectorRequestText,
-                                                   OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(UnlockConnectorRequestText,
-                         out UnlockConnectorRequest unlockConnectorRequest,
-                         OnException))
-            {
-                return unlockConnectorRequest;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(UnlockConnectorRequestXML,  out UnlockConnectorRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a unlock connector request.
-        /// </summary>
-        /// <param name="UnlockConnectorRequestXML">The XML to be parsed.</param>
-        /// <param name="UnlockConnectorRequest">The parsed unlock connector request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                    UnlockConnectorRequestXML,
+        public static Boolean TryParse(XElement                    XML,
+                                       Request_Id                  RequestId,
+                                       ChargeBox_Id                ChargeBoxId,
                                        out UnlockConnectorRequest  UnlockConnectorRequest,
                                        OnExceptionDelegate         OnException  = null)
         {
@@ -187,8 +225,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 UnlockConnectorRequest = new UnlockConnectorRequest(
 
-                                             UnlockConnectorRequestXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "connectorId",
-                                                                                      Connector_Id.Parse)
+                                             ChargeBoxId,
+
+                                             XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "connectorId",
+                                                                Connector_Id.Parse),
+
+                                             RequestId
 
                                          );
 
@@ -198,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, UnlockConnectorRequestXML, e);
+                OnException?.Invoke(DateTime.UtcNow, XML, e);
 
                 UnlockConnectorRequest = null;
                 return false;
@@ -209,17 +251,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(UnlockConnectorRequestJSON,  out UnlockConnectorRequest, OnException = null)
+        #region (static) TryParse(UnlockConnectorRequestJSON,  RequestId, ChargeBoxId, out UnlockConnectorRequest, out ErrorResponse, CustomUnlockConnectorRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a unlock connector request.
+        /// Try to parse the given JSON representation of an UnlockConnector request.
         /// </summary>
-        /// <param name="UnlockConnectorRequestJSON">The JSON to be parsed.</param>
-        /// <param name="UnlockConnectorRequest">The parsed unlock connector request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                     UnlockConnectorRequestJSON,
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="UnlockConnectorRequest">The parsed UnlockConnector request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                     JSON,
+                                       Request_Id                  RequestId,
+                                       ChargeBox_Id                ChargeBoxId,
                                        out UnlockConnectorRequest  UnlockConnectorRequest,
-                                       OnExceptionDelegate         OnException  = null)
+                                       out String                  ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargeBoxId,
+                        out UnlockConnectorRequest,
+                        out ErrorResponse,
+                        null);
+
+        /// <summary>
+        /// Try to parse the given JSON representation of an UnlockConnector request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="UnlockConnectorRequest">The parsed UnlockConnector request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomUnlockConnectorRequestParser">A delegate to parse custom UnlockConnector requests.</param>
+        public static Boolean TryParse(JObject                                              JSON,
+                                       Request_Id                                           RequestId,
+                                       ChargeBox_Id                                         ChargeBoxId,
+                                       out UnlockConnectorRequest                           UnlockConnectorRequest,
+                                       out String                                           ErrorResponse,
+                                       CustomJObjectParserDelegate<UnlockConnectorRequest>  CustomUnlockConnectorRequestParser)
         {
 
             try
@@ -229,11 +300,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ConnectorId
 
-                if (!UnlockConnectorRequestJSON.ParseMandatory("connectorId",
-                                                               "connector identification",
-                                                               Connector_Id.TryParse,
-                                                               out Connector_Id  ConnectorId,
-                                                               out String        ErrorResponse))
+                if (!JSON.ParseMandatory("connectorId",
+                                         "connector identification",
+                                         Connector_Id.TryParse,
+                                         out Connector_Id  ConnectorId,
+                                         out               ErrorResponse))
                 {
                     return false;
                 }
@@ -241,34 +312,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                UnlockConnectorRequest = new UnlockConnectorRequest(ConnectorId);
+                UnlockConnectorRequest = new UnlockConnectorRequest(ChargeBoxId,
+                                                                    ConnectorId,
+                                                                    RequestId);
+
+                if (CustomUnlockConnectorRequestParser != null)
+                    UnlockConnectorRequest = CustomUnlockConnectorRequestParser(JSON,
+                                                                                UnlockConnectorRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, UnlockConnectorRequestJSON, e);
-
-                UnlockConnectorRequest = null;
+                UnlockConnectorRequest  = default;
+                ErrorResponse           = "The given JSON representation of an UnlockConnector request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(UnlockConnectorRequestText, out UnlockConnectorRequest, OnException = null)
+        #region (static) TryParse(UnlockConnectorRequestText, RequestId, ChargeBoxId, out UnlockConnectorRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given text representation of a unlock connector request.
+        /// Try to parse the given text representation of an UnlockConnector request.
         /// </summary>
-        /// <param name="UnlockConnectorRequestText">The text to be parsed.</param>
-        /// <param name="UnlockConnectorRequest">The parsed unlock connector request.</param>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="UnlockConnectorRequest">The parsed UnlockConnector request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                      UnlockConnectorRequestText,
+        public static Boolean TryParse(String                      Text,
+                                       Request_Id                  RequestId,
+                                       ChargeBox_Id                ChargeBoxId,
                                        out UnlockConnectorRequest  UnlockConnectorRequest,
                                        OnExceptionDelegate         OnException  = null)
         {
@@ -276,20 +354,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                UnlockConnectorRequestText = UnlockConnectorRequestText?.Trim();
+                Text = Text?.Trim();
 
-                if (UnlockConnectorRequestText.IsNotNullOrEmpty())
+                if (Text.IsNotNullOrEmpty())
                 {
 
-                    if (UnlockConnectorRequestText.StartsWith("{") &&
-                        TryParse(JObject.Parse(UnlockConnectorRequestText),
+                    if (Text.StartsWith("{") &&
+                        TryParse(JObject.Parse(Text),
+                                 RequestId,
+                                 ChargeBoxId,
                                  out UnlockConnectorRequest,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
 
-                    if (TryParse(XDocument.Parse(UnlockConnectorRequestText).Root,
+                    if (TryParse(XDocument.Parse(Text).Root,
+                                 RequestId,
+                                 ChargeBoxId,
                                  out UnlockConnectorRequest,
                                  OnException))
                     {
@@ -301,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, UnlockConnectorRequestText, e);
+                OnException?.Invoke(DateTime.UtcNow, Text, e);
             }
 
             UnlockConnectorRequest = null;
@@ -331,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomUnlockConnectorRequestSerializer">A delegate to serialize custom unlock connector requests.</param>
+        /// <param name="CustomUnlockConnectorRequestSerializer">A delegate to serialize custom UnlockConnector requests.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<UnlockConnectorRequest> CustomUnlockConnectorRequestSerializer  = null)
         {
 
@@ -353,10 +435,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (UnlockConnectorRequest1, UnlockConnectorRequest2)
 
         /// <summary>
-        /// Compares two unlock connector requests for equality.
+        /// Compares two UnlockConnector requests for equality.
         /// </summary>
-        /// <param name="UnlockConnectorRequest1">A unlock connector request.</param>
-        /// <param name="UnlockConnectorRequest2">Another unlock connector request.</param>
+        /// <param name="UnlockConnectorRequest1">A UnlockConnector request.</param>
+        /// <param name="UnlockConnectorRequest2">Another UnlockConnector request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (UnlockConnectorRequest UnlockConnectorRequest1, UnlockConnectorRequest UnlockConnectorRequest2)
         {
@@ -378,10 +460,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (UnlockConnectorRequest1, UnlockConnectorRequest2)
 
         /// <summary>
-        /// Compares two unlock connector requests for inequality.
+        /// Compares two UnlockConnector requests for inequality.
         /// </summary>
-        /// <param name="UnlockConnectorRequest1">A unlock connector request.</param>
-        /// <param name="UnlockConnectorRequest2">Another unlock connector request.</param>
+        /// <param name="UnlockConnectorRequest1">A UnlockConnector request.</param>
+        /// <param name="UnlockConnectorRequest2">Another UnlockConnector request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (UnlockConnectorRequest UnlockConnectorRequest1, UnlockConnectorRequest UnlockConnectorRequest2)
 
@@ -418,9 +500,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(UnlockConnectorRequest)
 
         /// <summary>
-        /// Compares two unlock connector requests for equality.
+        /// Compares two UnlockConnector requests for equality.
         /// </summary>
-        /// <param name="UnlockConnectorRequest">A unlock connector request to compare with.</param>
+        /// <param name="UnlockConnectorRequest">A UnlockConnector request to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(UnlockConnectorRequest UnlockConnectorRequest)
         {
