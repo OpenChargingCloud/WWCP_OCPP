@@ -484,26 +484,45 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 BootNotificationRequest = null;
 
-                #region ChargePointVendor
+                #region ChargePointVendor    [mandatory]
 
                 if (!JSON.ParseMandatoryText("chargePointVendor",
                                              "charge point vendor",
-                                             out String  ChargePointVendor,
-                                             out         ErrorResponse))
+                                             out String ChargePointVendor,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region ChargePointModel
+                #region ChargePointModel     [mandatory]
 
                 if (!JSON.ParseMandatoryText("chargePointModel",
                                              "charge point model",
-                                             out String  ChargePointModel,
-                                             out         ErrorResponse))
+                                             out String ChargePointModel,
+                                             out ErrorResponse))
                 {
                     return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId          [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
                 }
 
                 #endregion

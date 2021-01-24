@@ -339,41 +339,60 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 GetCompositeScheduleRequest = null;
 
-                #region ConnectorId
+                #region ConnectorId         [mandatory]
 
                 if (!JSON.ParseMandatory("connectorId",
                                          "connector identification",
                                          Connector_Id.TryParse,
-                                         out Connector_Id  ConnectorId,
-                                         out               ErrorResponse))
+                                         out Connector_Id ConnectorId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Duration
+                #region Duration            [mandatory]
 
                 if (!JSON.ParseMandatory("duration",
                                          "duration",
                                          out UInt32 DurationUInt32,
-                                         out        ErrorResponse))
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region ChargingRateUnit
+                #region ChargingRateUnit    [optional]
 
                 if (JSON.ParseOptional("chargingRateUnit",
                                        "charging rate unit",
                                        ChargingRateUnitsExtentions.Parse,
-                                       out ChargingRateUnits?  ChargingRateUnit,
-                                       out                     ErrorResponse))
+                                       out ChargingRateUnits? ChargingRateUnit,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse != null)
                         return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId         [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
                 }
 
                 #endregion

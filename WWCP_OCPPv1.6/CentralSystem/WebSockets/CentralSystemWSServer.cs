@@ -478,6 +478,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>      CustomChangeAvailabilityRequestSerializer        { get; set; }
 
+        public CustomJObjectSerializerDelegate<GetConfigurationRequest>        CustomGetConfigurationRequestSerializer          { get; set; }
+
         public CustomJObjectSerializerDelegate<ChangeConfigurationRequest>     CustomChangeConfigurationRequestSerializer       { get; set; }
 
         public CustomJObjectSerializerDelegate<DataTransferRequest>            CustomDataTransferRequestSerializer              { get; set; }
@@ -2647,6 +2649,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             return new ChangeAvailabilityResponse(Request,
                                                   Result.Unknown());
+
+        }
+
+        #endregion
+
+        #region GetConfiguration      (ChargeBoxId, Key, Value, ...)
+
+        public async Task<GetConfigurationResponse> GetConfiguration(GetConfigurationRequest  Request,
+                                                                     TimeSpan?                RequestTimeout = null)
+        {
+
+            var result = await SendRequest(Request.RequestId,
+                                           Request.ChargeBoxId,
+                                           Request.WebSocketAction,
+                                           Request.ToJSON(CustomGetConfigurationRequestSerializer),
+                                           RequestTimeout ?? Request.RequestTimeout);
+
+            if (result?.Response != null)
+            {
+
+                if (GetConfigurationResponse.TryParse(Request,
+                                                      result.Response,
+                                                      out GetConfigurationResponse changeConfigurationResponse))
+                {
+                    return changeConfigurationResponse;
+                }
+
+                return new GetConfigurationResponse(Request,
+                                                    Result.Unknown());
+
+            }
+
+            if (result?.ErrorCode.HasValue == true)
+            {
+
+                return new GetConfigurationResponse(Request,
+                                                    Result.Unknown(result.ErrorDescription));
+
+            }
+
+            return new GetConfigurationResponse(Request,
+                                                Result.Unknown());
 
         }
 

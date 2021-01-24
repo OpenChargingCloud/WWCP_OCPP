@@ -63,15 +63,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The connector identification at the charge point.</param>
+        /// <param name="MeterValues">The sampled meter values with timestamps.</param>
         /// <param name="TransactionId">The charging transaction to which the given meter value samples are related to.</param>
-        /// <param name="MeterValues">The sampled MeterValues with timestamps.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         public MeterValuesRequest(ChargeBox_Id             ChargeBoxId,
                                   Connector_Id             ConnectorId,
+                                  IEnumerable<MeterValue>  MeterValues,
                                   Transaction_Id?          TransactionId      = null,
-                                  IEnumerable<MeterValue>  MeterValues        = null,
                                   Request_Id?              RequestId          = null,
                                   DateTime?                RequestTimestamp   = null)
 
@@ -421,11 +421,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                          XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "connectorId",
                                                                 Connector_Id.Parse),
 
-                                         XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "transactionId",
-                                                                Transaction_Id.Parse),
-
                                          XML.MapElementsOrFail (OCPPNS.OCPPv1_6_CS + "meterValue",
                                                                 MeterValue.Parse),
+
+                                         XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "transactionId",
+                                                                Transaction_Id.Parse),
 
                                          RequestId
 
@@ -496,26 +496,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 MeterValuesRequest = null;
 
-                #region ConnectorId
+                #region ConnectorId      [mandatory]
 
                 if (!JSON.ParseMandatory("connectorId",
                                          "connector identification",
                                          Connector_Id.TryParse,
-                                         out Connector_Id  ConnectorId,
-                                         out               ErrorResponse))
+                                         out Connector_Id ConnectorId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region TransactionId
+                #region MeterValues      [mandatory]
+
+                if (!JSON.ParseMandatoryJSON("meterValue",
+                                             "MeterValues",
+                                             MeterValue.TryParse,
+                                             out IEnumerable<MeterValue> MeterValues,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region TransactionId    [optional]
 
                 if (!JSON.ParseOptionalStruct("transactionId",
                                               "transaction identification",
                                               Transaction_Id.TryParse,
-                                              out Transaction_Id?  TransactionId,
-                                              out                  ErrorResponse))
+                                              out Transaction_Id? TransactionId,
+                                              out ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -525,15 +538,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
-                #region MeterValues
+                #region ChargeBoxId      [optional, OCPP_CSE]
 
-                if (!JSON.ParseMandatoryJSON("meterValue",
-                                             "MeterValues",
-                                             MeterValue.TryParse,
-                                             out IEnumerable<MeterValue>  MeterValues,
-                                             out                          ErrorResponse))
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
                 {
-                    return false;
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
                 }
 
                 #endregion
@@ -541,8 +560,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 MeterValuesRequest = new MeterValuesRequest(ChargeBoxId,
                                                             ConnectorId,
-                                                            TransactionId,
                                                             MeterValues,
+                                                            TransactionId,
                                                             RequestId);
 
                 if (CustomMeterValuesRequestParser != null)

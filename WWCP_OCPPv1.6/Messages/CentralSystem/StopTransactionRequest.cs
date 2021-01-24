@@ -545,6 +545,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Try to parse the given JSON representation of a StopTransaction request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="StopTransactionRequest">The parsed StopTransaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -562,101 +563,99 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 StopTransactionRequest = null;
 
-                #region TransactionId
+                #region TransactionId      [mandatory]
 
                 if (!JSON.ParseMandatory("transactionId",
                                          "transaction identification",
                                          Transaction_Id.TryParse,
-                                         out Transaction_Id  TransactionId,
-                                         out                 ErrorResponse))
+                                         out Transaction_Id TransactionId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Timestamp
+                #region Timestamp          [mandatory]
 
                 if (!JSON.ParseMandatory("timestamp",
                                          "timestamp",
-                                         out DateTime  Timestamp,
-                                         out           ErrorResponse))
+                                         out DateTime Timestamp,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region MeterStop
+                #region MeterStop          [mandatory]
 
                 if (!JSON.ParseMandatory("meterStop",
                                          "meter stop",
-                                         out UInt64  MeterStop,
-                                         out         ErrorResponse))
+                                         out UInt64 MeterStop,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Reason
+                #region Reason             [optional]
 
                 if (JSON.ParseOptional("reason",
                                        "reason",
                                        ReasonsExtentions.AsReasons,
-                                       out Reasons?  Reason,
-                                       out           ErrorResponse))
+                                       out Reasons? Reason,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse != null)
+                        return false;
+                }
+
+                #endregion
+
+                #region IdTag              [optional]
+
+                if (JSON.ParseOptional("idTag",
+                                       "identification tag",
+                                       IdToken.TryParse,
+                                       out IdToken? IdTag,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse != null)
+                        return false;
+                }
+
+                #endregion
+
+                #region TransactionData    [optional]
+
+                if (JSON.ParseOptionalJSON("transactionData",
+                                           "transaction data",
+                                           MeterValue.TryParse,
+                                           out IEnumerable<MeterValue> TransactionData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse != null)
+                        return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId        [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
                         return false;
 
-                }
-
-                #endregion
-
-                #region IdTag
-
-                if (!JSON.ParseMandatory("idTag",
-                                         "identification tag",
-                                         IdToken.TryParse,
-                                         out IdToken  IdTag,
-                                         out          ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
-                #region TransactionData
-
-                var TransactionData = new List<MeterValue>();
-
-                if (JSON.ParseOptional("transactionData",
-                                       "transaction data",
-                                       out JArray  TransactionDataJSON,
-                                       out         ErrorResponse))
-                {
-
-                    if (ErrorResponse != null)
-                        return false;
-
-                    if (TransactionDataJSON.SafeAny())
-                    {
-                        foreach (var meterValueJSON in TransactionDataJSON)
-                        {
-
-                            if (meterValueJSON is JObject &&
-                                MeterValue.TryParse(meterValueJSON as JObject, out MeterValue meterValue))
-                            {
-                                TransactionData.Add(meterValue);
-                            }
-
-                            else
-                                return false;
-
-                        }
-                    }
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
 
                 }
 

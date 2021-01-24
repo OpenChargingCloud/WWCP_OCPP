@@ -41,37 +41,37 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// The connector identification at the charge point.
         /// Id '0' (zero) is used if the status is for the charge point main controller.
         /// </summary>
-        public Connector_Id           ConnectorId       { get; }
+        public Connector_Id           ConnectorId        { get; }
 
         /// <summary>
         /// The current status of the charge point.
         /// </summary>
-        public ChargePointStatus      Status            { get; }
+        public ChargePointStatus      Status             { get; }
 
         /// <summary>
         /// The error code reported by the charge point.
         /// </summary>
-        public ChargePointErrorCodes  ErrorCode         { get; }
+        public ChargePointErrorCodes  ErrorCode          { get; }
 
         /// <summary>
         /// Additional free format information related to the error.
         /// </summary>
-        public String                 Info              { get; }
+        public String                 Info               { get; }
 
         /// <summary>
         /// The time for which the status is reported.
         /// </summary>
-        public DateTime?              StatusTimestamp   { get; }
+        public DateTime?              StatusTimestamp    { get; }
 
         /// <summary>
         /// This identifies the vendor-specific implementation.
         /// </summary>
-        public String                 VendorId          { get; }
+        public String                 VendorId           { get; }
 
         /// <summary>
         /// A vendor-specific error code.
         /// </summary>
-        public String                 VendorErrorCode   { get; }
+        public String                 VendorErrorCode    { get; }
 
         #endregion
 
@@ -435,89 +435,108 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 StatusNotificationRequest = null;
 
-                #region ConnectorId
+                #region ConnectorId        [mandatory]
 
                 if (!JSON.ParseMandatory("connectorId",
                                          "connector identification",
                                          Connector_Id.TryParse,
-                                         out Connector_Id  ConnectorId,
-                                         out               ErrorResponse))
+                                         out Connector_Id ConnectorId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Status
+                #region Status             [mandatory]
 
                 if (!JSON.MapMandatory("status",
                                        "status",
                                        ChargePointStatusExtentions.Parse,
-                                       out ChargePointStatus  Status,
-                                       out                    ErrorResponse))
+                                       out ChargePointStatus Status,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region ErrorCode
+                #region ErrorCode          [mandatory]
 
                 if (!JSON.MapMandatory("errorCode",
                                        "error code",
                                        ChargePointErrorCodeExtentions.Parse,
-                                       out ChargePointErrorCodes  ErrorCode,
-                                       out                        ErrorResponse))
+                                       out ChargePointErrorCodes ErrorCode,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Info
+                #region Info               [mandatory]
 
                 if (!JSON.ParseOptional("info",
                                         "info",
-                                        out String  Info,
-                                        out         ErrorResponse))
+                                        out String Info,
+                                        out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Timestamp
+                #region Timestamp          [mandatory]
 
                 if (!JSON.ParseMandatory("timestamp",
                                          "timestamp",
-                                         out DateTime  Timestamp,
-                                         out           ErrorResponse))
+                                         out DateTime Timestamp,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region VerndorId
+                #region VerndorId          [optional]
 
                 if (!JSON.ParseOptional("verndorId",
                                         "verndor identification",
-                                        out String  VerndorId,
-                                        out         ErrorResponse))
+                                        out String VerndorId,
+                                        out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region VendorErrorCode
+                #region VendorErrorCode    [optional]
 
                 if (!JSON.ParseOptional("vendorErrorCode",
                                         "vendor error code",
-                                        out String  VendorErrorCode,
-                                        out         ErrorResponse))
+                                        out String VendorErrorCode,
+                                        out ErrorResponse))
                 {
                     return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId        [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
                 }
 
                 #endregion

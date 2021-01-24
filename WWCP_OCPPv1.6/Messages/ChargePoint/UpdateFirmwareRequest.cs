@@ -365,36 +365,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 UpdateFirmwareRequest = null;
 
-                #region Location
+                #region Location         [optional]
 
                 if (!JSON.ParseMandatoryText("location",
                                              "location",
-                                             out String  Location,
-                                             out         ErrorResponse))
+                                             out String Location,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region RetrieveDate
+                #region RetrieveDate     [optional]
 
                 if (!JSON.ParseMandatory("retrieveDate",
                                          "retrieve date",
-                                         out DateTime  RetrieveDate,
-                                         out           ErrorResponse))
+                                         out DateTime RetrieveDate,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Retries
+                #region Retries          [optional]
 
                 if (JSON.ParseOptional("retries",
                                        "retries",
-                                       out Byte?  Retries,
-                                       out        ErrorResponse))
+                                       out Byte? Retries,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse != null)
                         return false;
@@ -402,15 +402,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region RetryInterval
+                #region RetryInterval    [optional]
 
                 if (JSON.ParseOptional("retryInterval",
                                        "retry interval",
-                                       out TimeSpan?  RetryInterval,
-                                       out            ErrorResponse))
+                                       out TimeSpan? RetryInterval,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse != null)
                         return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId      [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
                 }
 
                 #endregion

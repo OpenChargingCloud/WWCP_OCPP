@@ -1618,8 +1618,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             var request = new MeterValuesRequest(ChargeBoxIdentity,
                                                  ConnectorId,
-                                                 TransactionId,
-                                                 MeterValues);
+                                                 MeterValues,
+                                                 TransactionId);
 
 
             using (var _OCPPClient = new SOAPClient(Hostname,

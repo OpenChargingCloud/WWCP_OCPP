@@ -55,7 +55,7 @@
     <Compile Include="CentralSystem\SOAPClient\CentralSystemSOAPClient.cs" />
     <Compile Include="CentralSystem\CSClientDelegates.cs" />
     <Compile Include="CentralSystem\SOAPServer\CSServerLogger.cs" />
-    <Compile Include="DataTypes\Ids\Request_Id.cs" />
+    <Compile Include="DataTypes\Simple\Request_Id.cs" />
     <Compile Include="IO\WSErrorMessage.cs" />
     <Compile Include="IO\WSErrorCodes.cs" />
     <Compile Include="IO\WSRequestMessage.cs" />
@@ -77,11 +77,11 @@
     <Compile Include="DataTypes\Complex\MeterValue.cs" />
     <Compile Include="DataTypes\Complex\SampledValue.cs" />
     <Compile Include="DataTypes\Enums\ChargingProfilePurposes.cs" />
-    <Compile Include="DataTypes\Ids\ChargingProfile_Id.cs" />
-    <Compile Include="DataTypes\Ids\Reservation_Id.cs" />
-    <Compile Include="DataTypes\Ids\Transaction_Id.cs" />
-    <Compile Include="DataTypes\Ids\Connector_Id.cs" />
-    <Compile Include="DataTypes\Ids\ChargeBox_Id.cs" />
+    <Compile Include="DataTypes\Simple\ChargingProfile_Id.cs" />
+    <Compile Include="DataTypes\Simple\Reservation_Id.cs" />
+    <Compile Include="DataTypes\Simple\Transaction_Id.cs" />
+    <Compile Include="DataTypes\Simple\Connector_Id.cs" />
+    <Compile Include="DataTypes\Simple\ChargeBox_Id.cs" />
     <Compile Include="DataTypes\Complex\Result.cs" />
     <Compile Include="DataTypes\Enums\AvailabilityStatus.cs" />
     <Compile Include="DataTypes\Enums\DiagnosticsStatus.cs" />
@@ -120,7 +120,7 @@
     <Compile Include="CentralSystem\CSServerDelegates.cs" />
     <Compile Include="CentralSystem\SOAPServer\CentralSystemSOAPServer.cs" />
     <Compile Include="DataTypes\Complex\IdTagInfo.cs" />
-    <Compile Include="DataTypes\Ids\IdToken.cs" />
+    <Compile Include="DataTypes\Simple\IdToken.cs" />
     <Compile Include="DataTypes\Enums\AuthorizationStatus.cs" />
     <Compile Include="IO\SOAPHeader.cs" />
     <Compile Include="IO\OCPPNS.cs" />

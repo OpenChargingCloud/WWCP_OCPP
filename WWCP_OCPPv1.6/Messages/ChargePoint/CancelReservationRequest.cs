@@ -300,15 +300,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 CancelReservationRequest = null;
 
-                #region ReservationId
+                #region ReservationId    [mandatory]
 
                 if (!JSON.ParseMandatory("reservationId",
                                          "reservation identification",
                                          Reservation_Id.TryParse,
-                                         out Reservation_Id  ReservationId,
-                                         out                 ErrorResponse))
+                                         out Reservation_Id ReservationId,
+                                         out ErrorResponse))
                 {
                     return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId      [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
                 }
 
                 #endregion

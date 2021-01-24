@@ -304,15 +304,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 ResetRequest = null;
 
-                #region ResetType
+                #region ResetType      [mandatory]
 
                 if (!JSON.MapMandatory("type",
                                        "reset type",
                                        ResetTypesExtentions.Parse,
-                                       out ResetTypes  ResetType,
-                                       out             ErrorResponse))
+                                       out ResetTypes ResetType,
+                                       out ErrorResponse))
                 {
                     return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
                 }
 
                 #endregion

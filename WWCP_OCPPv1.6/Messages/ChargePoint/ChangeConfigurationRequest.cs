@@ -316,26 +316,45 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 ChangeConfigurationRequest = null;
 
-                #region Key
+                #region Key            [mandatory]
 
                 if (!JSON.ParseMandatoryText("key",
                                              "configuration key",
-                                             out String  Key,
-                                             out         ErrorResponse))
+                                             out String Key,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Value
+                #region Value          [mandatory]
 
                 if (!JSON.ParseMandatoryText("value",
                                              "configuration value",
-                                             out String  Value,
-                                             out         ErrorResponse))
+                                             out String Value,
+                                             out ErrorResponse))
                 {
                     return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
                 }
 
                 #endregion

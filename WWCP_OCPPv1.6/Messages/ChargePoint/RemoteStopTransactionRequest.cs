@@ -301,15 +301,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 RemoteStopTransactionRequest = null;
 
-                #region TransactionId
+                #region TransactionId    [mandatory]
 
                 if (!JSON.ParseMandatory("transactionId",
                                          "transaction identification",
                                          Transaction_Id.TryParse,
                                          out Transaction_Id TransactionId,
-                                         out                ErrorResponse))
+                                         out ErrorResponse))
                 {
                     return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId      [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
                 }
 
                 #endregion

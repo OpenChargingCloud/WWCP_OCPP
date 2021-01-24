@@ -360,13 +360,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 ClearChargingProfileRequest = null;
 
-                #region ChargingProfileId
+                #region ChargingProfileId         [optional]
 
                 if (JSON.ParseOptionalStruct("chargingProfileId",
                                              "charging profile identification",
                                              ChargingProfile_Id.TryParse,
-                                             out ChargingProfile_Id?  ChargingProfileId,
-                                             out                      ErrorResponse))
+                                             out ChargingProfile_Id? ChargingProfileId,
+                                             out ErrorResponse))
                 {
                     if (ErrorResponse != null)
                         return false;
@@ -374,13 +374,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region ConnectorId
+                #region ConnectorId               [optional]
 
                 if (JSON.ParseOptionalStruct("connectorId",
                                              "connector identification",
                                              Connector_Id.TryParse,
-                                             out Connector_Id?  ConnectorId,
-                                             out                ErrorResponse))
+                                             out Connector_Id? ConnectorId,
+                                             out ErrorResponse))
                 {
                     if (ErrorResponse != null)
                         return false;
@@ -388,13 +388,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region ChargingProfilePurpose
+                #region ChargingProfilePurpose    [optional]
 
                 if (JSON.ParseOptional("chargingProfilePurpose",
                                        "charging profile purpose",
                                        ChargingProfilePurposesExtentions.Parse,
-                                       out ChargingProfilePurposes?  ChargingProfilePurpose,
-                                       out                           ErrorResponse))
+                                       out ChargingProfilePurposes? ChargingProfilePurpose,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse != null)
                         return false;
@@ -402,15 +402,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region StackLevel
+                #region StackLevel                [optional]
 
                 if (JSON.ParseOptional("stackLevel",
                                        "stack level",
-                                       out UInt32?  StackLevel,
-                                       out          ErrorResponse))
+                                       out UInt32? StackLevel,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse != null)
                         return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId               [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
                 }
 
                 #endregion

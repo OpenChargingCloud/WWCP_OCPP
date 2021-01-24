@@ -262,7 +262,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             try
             {
 
-                ErrorResponse     = default;
+                HeartbeatRequest  = default;
+
+                #region ChargeBoxId    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
+                }
+
+                #endregion
+
+
                 HeartbeatRequest  = new HeartbeatRequest(ChargeBoxId,
                                                          RequestId);
 

@@ -469,28 +469,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 SetChargingProfileRequest = null;
 
-                #region ConnectorId
+                #region ConnectorId        [mandatory]
 
                 if (!JSON.ParseMandatory("connectorId",
                                          "connector identification",
                                          Connector_Id.TryParse,
-                                         out Connector_Id  ConnectorId,
-                                         out               ErrorResponse))
+                                         out Connector_Id ConnectorId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region ChargingProfile
+                #region ChargingProfile    [mandatory]
 
                 if (!JSON.ParseMandatoryJSON2("csChargingProfiles",
                                               "charging station charging profiles",
                                               OCPPv1_6.ChargingProfile.TryParse,
                                               out ChargingProfile ChargingProfile,
-                                              out                 ErrorResponse))
+                                              out ErrorResponse))
                 {
                     return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId        [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
                 }
 
                 #endregion

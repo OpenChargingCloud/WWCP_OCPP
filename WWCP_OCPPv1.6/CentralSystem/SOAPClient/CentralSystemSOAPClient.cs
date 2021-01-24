@@ -1195,7 +1195,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new GetConfigurationRequest(Keys);
+            var request = new GetConfigurationRequest(ChargeBoxIdentity,
+                                                      Keys);
 
 
             try

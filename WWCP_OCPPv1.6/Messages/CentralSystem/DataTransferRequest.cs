@@ -194,8 +194,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (TryParse(JSON,
                          RequestId,
                          ChargeBoxId,
-                         out DataTransferRequest dataTransferRequest,
-                         out String              ErrorResponse,
+                         out DataTransferRequest  dataTransferRequest,
+                         out String               ErrorResponse,
                          CustomDataTransferRequestParser))
             {
                 return dataTransferRequest;
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return dataTransferRequest;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a DataTransfer request is invalid!", nameof(Text));
 
         }
 
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 DataTransferRequest = null;
 
-                #region VendorId     [mandatory]
+                #region VendorId        [mandatory]
 
                 if (!JSON.ParseMandatoryText("vendorId",
                                              "vendor identification",
@@ -342,15 +342,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
-                #region MessageId    [optional]
+                #region MessageId       [optional]
 
                 var MessageId = JSON.GetString("messageId");
 
                 #endregion
 
-                #region Data         [optional]
+                #region Data            [optional]
 
                 var Data = JSON.GetString("data");
+
+                #endregion
+
+                #region ChargeBoxId     [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
+                }
 
                 #endregion
 

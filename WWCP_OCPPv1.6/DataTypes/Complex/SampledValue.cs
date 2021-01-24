@@ -295,25 +295,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (SampledValueJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomSampledValueParser = null)
 
         /// <summary>
         /// Parse the given text representation of a sampled value.
         /// </summary>
-        /// <param name="SampledValueJSON">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SampledValue Parse(JObject              SampledValueJSON,
-                                         OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The text to be parsed.</param>
+        /// <param name="CustomSampledValueParser">A delegate to parse custom DataTransfer requests.</param>
+        public static SampledValue Parse(JObject                                    JSON,
+                                         CustomJObjectParserDelegate<SampledValue>  CustomSampledValueParser   = null)
         {
 
-            if (TryParse(SampledValueJSON,
-                         out SampledValue sampledValue,
-                         OnException))
+            if (TryParse(JSON,
+                         out SampledValue  sampledValue,
+                         out String        ErrorResponse,
+                         CustomSampledValueParser))
             {
                 return sampledValue;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a SampledValue is invalid: " + ErrorResponse, nameof(JSON));
 
         }
 
@@ -400,17 +401,37 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(SampledValueJSON, out SampledValue, OnException = null)
+        #region (static) TryParse(JSON, out SampledValue, out ErrorResponse, CustomSampledValueParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given text representation of a sampled value.
         /// </summary>
-        /// <param name="SampledValueJSON">The text to be parsed.</param>
+        /// <param name="JSON">The text to be parsed.</param>
         /// <param name="SampledValue">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              SampledValueJSON,
-                                       out SampledValue     SampledValue,
-                                       OnExceptionDelegate  OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject           JSON,
+                                       out SampledValue  SampledValue,
+                                       out String        ErrorResponse)
+
+            => TryParse(JSON,
+                        out SampledValue,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given text representation of a sampled value.
+        /// </summary>
+        /// <param name="JSON">The text to be parsed.</param>
+        /// <param name="SampledValue">The parsed connector type.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSampledValueParser">A delegate to parse custom SampledValues.</param>
+        public static Boolean TryParse(JObject                                    JSON,
+                                       out SampledValue                           SampledValue,
+                                       out String                                 ErrorResponse,
+                                       CustomJObjectParserDelegate<SampledValue>  CustomSampledValueParser)
         {
 
             try
@@ -418,110 +439,98 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 SampledValue = null;
 
-                #region Value
+                #region Value        [mandatory]
 
-                if (!SampledValueJSON.ParseMandatoryText("value",
-                                                         "value",
-                                                         out String  Value,
-                                                         out String  ErrorResponse))
+                if (!JSON.ParseMandatoryText("value",
+                                             "value",
+                                             out String Value,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Context
+                #region Context      [optional]
 
-                if (SampledValueJSON.ParseOptional("context",
-                                                   "context",
-                                                   ReadingContextExtentions.Parse,
-                                                   out ReadingContexts  Context,
-                                                   out                  ErrorResponse))
+                if (JSON.ParseOptional("context",
+                                       "context",
+                                       ReadingContextExtentions.Parse,
+                                       out ReadingContexts Context,
+                                       out ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region Format
+                #region Format       [optional]
 
-                if (SampledValueJSON.ParseOptional("format",
-                                                   "format",
-                                                   ValueFormatExtentions.Parse,
-                                                   out ValueFormats  Format,
-                                                   out               ErrorResponse))
+                if (JSON.ParseOptional("format",
+                                       "format",
+                                       ValueFormatExtentions.Parse,
+                                       out ValueFormats Format,
+                                       out ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region Measurand
+                #region Measurand    [optional]
 
-                if (SampledValueJSON.ParseOptional("measurand",
-                                                   "measurand",
-                                                   MeasurandExtentions.Parse,
-                                                   out Measurands  Measurand,
-                                                   out             ErrorResponse))
+                if (JSON.ParseOptional("measurand",
+                                       "measurand",
+                                       MeasurandExtentions.Parse,
+                                       out Measurands Measurand,
+                                       out ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region Phase
+                #region Phase        [optional]
 
-                if (SampledValueJSON.ParseOptional("phase",
-                                                   "phase",
-                                                   PhasesExtentions.Parse,
-                                                   out Phases  Phase,
-                                                   out         ErrorResponse))
+                if (JSON.ParseOptional("phase",
+                                       "phase",
+                                       PhasesExtentions.Parse,
+                                       out Phases Phase,
+                                       out ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region Location
+                #region Location     [optional]
 
-                if (SampledValueJSON.ParseOptional("location",
-                                                   "location",
-                                                   LocationExtentions.Parse,
-                                                   out Locations  Location,
-                                                   out            ErrorResponse))
+                if (JSON.ParseOptional("location",
+                                       "location",
+                                       LocationExtentions.Parse,
+                                       out Locations Location,
+                                       out ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region Unit
+                #region Unit         [optional]
 
-                if (SampledValueJSON.ParseOptional("unit",
-                                                   "unit",
-                                                   UnitsOfMeasureExtentions.Parse,
-                                                   out UnitsOfMeasure  Unit,
-                                                   out                 ErrorResponse))
+                if (JSON.ParseOptional("unit",
+                                       "unit",
+                                       UnitsOfMeasureExtentions.Parse,
+                                       out UnitsOfMeasure Unit,
+                                       out ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
                 }
 
                 #endregion
@@ -535,16 +544,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                 Location,
                                                 Unit);
 
+                if (CustomSampledValueParser != null)
+                    SampledValue = CustomSampledValueParser(JSON,
+                                                            SampledValue);
+
                 return true;
 
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, SampledValueJSON, e);
+                SampledValue   = default;
+                ErrorResponse  = "The given JSON representation of a SampledValue is invalid: " + e.Message;
+                return false;
             }
-
-            SampledValue = null;
-            return false;
 
         }
 
@@ -574,7 +586,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     if (SampledValueText.StartsWith("{") &&
                         TryParse(JObject.Parse(SampledValueText),
                                  out SampledValue,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
@@ -652,7 +664,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("value",      Value),
+                           new JProperty("value",            Value),
 
                            Context.HasValue
                                ? new JProperty("context",    Context.  Value.AsText())

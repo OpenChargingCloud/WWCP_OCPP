@@ -371,67 +371,86 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 ReserveNowRequest = null;
 
-                #region ConnectorId
+                #region ConnectorId      [mandatory]
 
                 if (!JSON.ParseMandatory("connectorId",
                                          "connector identification",
                                          Connector_Id.TryParse,
-                                         out Connector_Id  ConnectorId,
-                                         out               ErrorResponse))
+                                         out Connector_Id ConnectorId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region ReservationId
+                #region ReservationId    [mandatory]
 
                 if (!JSON.ParseMandatory("reservationId",
                                          "reservation identification",
                                          Reservation_Id.TryParse,
-                                         out Reservation_Id  ReservationId,
-                                         out                 ErrorResponse))
+                                         out Reservation_Id ReservationId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region ExpiryDate
+                #region ExpiryDate       [mandatory]
 
                 if (!JSON.ParseMandatory("expiryDate",
                                          "expiry date",
-                                         out DateTime  ExpiryDate,
-                                         out           ErrorResponse))
+                                         out DateTime ExpiryDate,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region IdTag
+                #region IdTag            [mandatory]
 
                 if (!JSON.ParseMandatory("idTag",
                                          "identification tag",
                                          IdToken.TryParse,
-                                         out IdToken  IdTag,
-                                         out          ErrorResponse))
+                                         out IdToken IdTag,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region ParentIdTag
+                #region ParentIdTag      [optional]
 
                 if (JSON.ParseOptional("parentIdTag",
                                        "parent identification tag",
                                        IdToken.TryParse,
-                                       out IdToken  ParentIdTag,
-                                       out          ErrorResponse))
+                                       out IdToken ParentIdTag,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse != null)
                         return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId      [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
                 }
 
                 #endregion

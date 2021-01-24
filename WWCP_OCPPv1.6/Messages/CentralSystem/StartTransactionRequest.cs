@@ -367,57 +367,57 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 StartTransactionRequest = null;
 
-                #region ConnectorId
+                #region ConnectorId      [mandatory]
 
                 if (!JSON.ParseMandatory("connectorId",
                                          "connector identification",
                                          Connector_Id.TryParse,
-                                         out Connector_Id  ConnectorId,
-                                         out               ErrorResponse))
+                                         out Connector_Id ConnectorId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region IdTag
+                #region IdTag            [mandatory]
 
                 if (!JSON.ParseMandatory("idTag",
                                          "identification tag",
                                          IdToken.TryParse,
-                                         out IdToken  IdTag,
-                                         out          ErrorResponse))
+                                         out IdToken IdTag,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Timestamp
+                #region Timestamp        [mandatory]
 
                 if (!JSON.ParseMandatory("timestamp",
                                          "timestamp",
-                                         out DateTime  Timestamp,
-                                         out           ErrorResponse))
+                                         out DateTime Timestamp,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region MeterStart
+                #region MeterStart       [mandatory]
 
                 if (!JSON.ParseMandatory("meterStart",
                                          "meter start",
-                                         out UInt64  MeterStart,
-                                         out         ErrorResponse))
+                                         out UInt64 MeterStart,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region ReservationId
+                #region ReservationId    [optional]
 
                 if (JSON.ParseOptionalStruct("reservationId",
                                              "reservation identification",
@@ -428,6 +428,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                     if (ErrorResponse != null)
                         return false;
+
+                }
+
+                #endregion
+
+                #region ChargeBoxId      [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
 
                 }
 

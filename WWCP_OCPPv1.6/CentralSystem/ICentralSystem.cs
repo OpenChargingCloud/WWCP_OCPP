@@ -417,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
     /// <summary>
-    /// The common interface of a central system.
+    /// The common interface of a central system server.
     /// </summary>
     public interface ICentralSystemServer
     {
@@ -621,7 +621,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     }
 
     /// <summary>
-    /// The common interface of a central system.
+    /// The common interface of a central system client.
     /// </summary>
     public interface ICentralSystemClient
     {
@@ -637,6 +637,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest  Request,
                                                             TimeSpan?                  RequestTimeout = null);
+
+        #endregion
+
+        #region GetConfiguration
+
+        Task<GetConfigurationResponse> GetConfiguration(GetConfigurationRequest  Request,
+                                                        TimeSpan?                RequestTimeout = null);
 
         #endregion
 

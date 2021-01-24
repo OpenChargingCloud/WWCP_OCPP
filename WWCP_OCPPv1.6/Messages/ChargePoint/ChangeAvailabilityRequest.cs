@@ -322,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 ChangeAvailabilityRequest = null;
 
-                #region ConnectorId
+                #region ConnectorId    [mandatory]
 
                 if (!JSON.ParseMandatory("connectorId",
                                          "connector identification",
@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region Type
+                #region Type           [mandatory]
 
                 if (!JSON.MapMandatory("type",
                                        "availability type",
@@ -344,6 +344,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ErrorResponse))
                 {
                     return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
                 }
 
                 #endregion

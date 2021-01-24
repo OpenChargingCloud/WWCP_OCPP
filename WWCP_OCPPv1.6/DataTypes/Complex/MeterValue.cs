@@ -269,25 +269,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (MeterValueJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomMeterValueParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a meter value.
         /// </summary>
-        /// <param name="MeterValueJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MeterValue Parse(JObject              MeterValueJSON,
-                                       OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomMeterValueParser">A delegate to parse custom MeterValues.</param>
+        public static MeterValue Parse(JObject                                  JSON,
+                                       CustomJObjectParserDelegate<MeterValue>  CustomMeterValueParser   = null)
         {
 
-            if (TryParse(MeterValueJSON,
-                         out MeterValue meterValue,
-                         OnException))
+            if (TryParse(JSON,
+                         out MeterValue  meterValue,
+                         out String      ErrorResponse,
+                         CustomMeterValueParser))
             {
                 return meterValue;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a MeterValue is invalid: " + ErrorResponse, nameof(JSON));
 
         }
 
@@ -360,17 +361,37 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(MeterValueJSON, out MeterValue, OnException = null)
+        #region (static) TryParse(JSON, out MeterValue, out ErrorResponse, CustomMeterValueParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a meter value.
         /// </summary>
-        /// <param name="MeterValueJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="MeterValue">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              MeterValueJSON,
-                                       out MeterValue       MeterValue,
-                                       OnExceptionDelegate  OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                                  JSON,
+                                       out MeterValue                           MeterValue,
+                                       out String                               ErrorResponse)
+
+            => TryParse(JSON,
+                        out MeterValue,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a meter value.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="MeterValue">The parsed connector type.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomMeterValueParser">A delegate to parse custom MeterValues.</param>
+        public static Boolean TryParse(JObject                                  JSON,
+                                       out MeterValue                           MeterValue,
+                                       out String                               ErrorResponse,
+                                       CustomJObjectParserDelegate<MeterValue>  CustomMeterValueParser)
         {
 
             try
@@ -378,48 +399,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 MeterValue = null;
 
-                #region Timestamp
+                #region Timestamp        [mandatory]
 
-                if (!MeterValueJSON.ParseMandatory("timestamp",
-                                                   "timestamp",
-                                                   out DateTime  Timestamp,
-                                                   out String    ErrorResponse))
+                if (!JSON.ParseMandatory("timestamp",
+                                         "timestamp",
+                                         out DateTime Timestamp,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region SampledValues
+                #region SampledValues    [optional]
 
-                var SampledValues = new List<SampledValue>();
-
-                if (MeterValueJSON.ParseOptional("sampledValue",
-                                                 "sampled values",
-                                                 out JArray  SampledValuesJSON,
-                                                 out         ErrorResponse))
+                if (JSON.ParseOptionalJSON("sampledValue",
+                                           "sampled values",
+                                           SampledValue.TryParse,
+                                           out IEnumerable<SampledValue> SampledValues,
+                                           out ErrorResponse))
                 {
-
                     if (ErrorResponse != null)
                         return false;
-
-                    if (SampledValuesJSON.SafeAny())
-                    {
-                        foreach (var sampledValueJSON in SampledValuesJSON)
-                        {
-
-                            if (sampledValueJSON is JObject &&
-                                SampledValue.TryParse(sampledValueJSON as JObject, out SampledValue sampledValue))
-                            {
-                                SampledValues.Add(sampledValue);
-                            }
-
-                            else
-                                return false;
-
-                        }
-                    }
-
                 }
 
                 #endregion
@@ -428,17 +429,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 MeterValue = new MeterValue(Timestamp,
                                             SampledValues);
 
+                if (CustomMeterValueParser != null)
+                    MeterValue = CustomMeterValueParser(JSON,
+                                                        MeterValue);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, MeterValueJSON, e);
-
-                MeterValue = null;
+                MeterValue     = default;
+                ErrorResponse  = "The given JSON representation of a MeterValue is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -469,7 +471,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     if (MeterValueText.StartsWith("{") &&
                         TryParse(JObject.Parse(MeterValueText),
                                  out MeterValue,
-                                 OnException))
+                                 out String ErrorResponse))
                     {
                         return true;
                     }
