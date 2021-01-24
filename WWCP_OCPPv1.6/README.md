@@ -8,6 +8,18 @@ Open Charge Alliance. The focus of this protocol are the communication
 aspects between a e-mobility charging station and its operator backend.
 For more details on this protocol please visit http://www.openchargealliance.org.
 
+## Differences to the official protocol
+
+The following desribes differences of this implementation to the official protocol
+specification. Most changes are intended to simplify the daily operations business,
+high availability or to support additional concepts/methods like *European General Data Protection Regulation (GDPR)*  and the *German Calibration Law (Eichrecht)*.
+
+### Charge Box Identification
+
+Within the JSON implementation of OCPP we allow for every request the additional JSON property "chargeBoxId".
+This will allow you to multiplex multiple OCPP communication channels over a single web sockets connection.
+In the official protocol specification this value is only taken from the web sockets context.
+
 
 ### Your participation
 
