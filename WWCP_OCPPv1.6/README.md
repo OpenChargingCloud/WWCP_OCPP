@@ -10,9 +10,8 @@ For more details on this protocol please visit http://www.openchargealliance.org
 
 ## Differences to the official protocol
 
-The following desribes differences of this implementation to the official protocol
-specification. Most changes are intended to simplify the daily operations business,
-high availability or to support additional concepts/methods like *European General Data Protection Regulation (GDPR)*  and the *German Calibration Law (Eichrecht)*.
+The following desribes differences of this implementation to the official protocol specification.
+Most changes are intended to simplify the daily operations business, high availability or to support additional concepts/methods like *European General Data Protection Regulation (GDPR)*  and the *German Calibration Law (Eichrecht)*.
 
 ### Charge Box Identification
 
