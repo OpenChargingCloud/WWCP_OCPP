@@ -10,7 +10,7 @@ For more details on this protocol please visit http://www.openchargealliance.org
 
 ## Content
 
-- **Implementation Details and Differences** for [OCPP v1.6](WWCP_OCPPv1.6/README.md) and [OCPP v2.0](WWCP_OCPPv2.0/README.md) to the official protocol specification. The OCPP specification has unfortunatelly many flaws and security issues. This implementation provides solutions and work-arounds for most of these issues.
+- **Implementation Details and Differences** for [OCPP v1.6](WWCP_OCPPv1.6/README.md) and [OCPP v2.0](WWCP_OCPPv2.0/README.md) to the official protocol specification. The OCPP specification has unfortunatelly many flaws and security issues. This implementation provides extentions and work-arounds for most of these issues to simplify the daily operations business, high availability or to support additional concepts/methods like *European General Data Protection Regulation (GDPR)*  and the *German Calibration Law (Eichrecht)*.
 
 
 ### Your participation
