@@ -8,6 +8,10 @@ Open Charge Alliance. The focus of this protocol are the communication
 aspects between a e-mobility charging station and its operator backend.
 For more details on this protocol please visit http://www.openchargealliance.org.
 
+## Content
+
+- **Implementation Details and Differences** for [OCPP v1.6](WWCP_OCPPv1.6/README.md) and [OCPP v2.0](WWCP_OCPPv2.0/README.md) to the official protocol specification. The OCPP specification has unfortunatelly many flaws and security issues. This implementation provides solutions and work-arounds for most of these issues.
+
 
 ### Your participation
 
