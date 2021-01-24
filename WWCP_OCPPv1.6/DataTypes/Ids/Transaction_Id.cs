@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// A transaction identification.
+    /// The transaction identification.
     /// </summary>
     public readonly struct Transaction_Id : IId,
                                             IEquatable<Transaction_Id>,
@@ -37,6 +37,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Data
 
         private readonly UInt64 InternalId;
+
+        private static readonly Random random = new Random(DateTime.Now.Millisecond);
 
         #endregion
 
@@ -59,16 +61,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new OCPP transaction identification.
+        /// Create a new transaction identification.
         /// </summary>
-        /// <param name="Token">An integer.</param>
-        private Transaction_Id(UInt64 Token)
+        /// <param name="Integer">An integer.</param>
+        private Transaction_Id(UInt64 Integer)
         {
-            this.InternalId = Token;
+            this.InternalId = Integer;
         }
 
         #endregion
 
+
+        #region (static) Random
+
+        /// <summary>
+        /// Create a new random request identification.
+        /// </summary>
+        public static Transaction_Id Random
+
+            => new Transaction_Id((UInt64) random.Next());
+
+        #endregion
 
         #region (static) Parse   (Text)
 

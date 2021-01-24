@@ -48,6 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CentralSystem\ICentralSystem.cs" />
+    <Compile Include="CentralSystem\TestCentralSystem.cs" />
     <Compile Include="CentralSystem\SOAPClient\ICSClient.cs" />
     <Compile Include="CentralSystem\SOAPClient\CSClientLogger.cs" />
     <Compile Include="CentralSystem\SOAPClient\CentralSystemSOAPClient.cs" />

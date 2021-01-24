@@ -37,7 +37,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// The central system HTTP/SOAP/XML server.
     /// </summary>
-    public class CentralSystemSOAPServer : ASOAPServer
+    public class CentralSystemSOAPServer : ASOAPServer,
+                                           ICentralSystemServer
     {
 
         #region Data
@@ -546,7 +547,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                            response.Result,
                                                            response.Status,
                                                            response.CurrentTime,
-                                                           response.Interval,
+                                                           response.HeartbeatInterval,
                                                            response.Runtime);
 
                     }

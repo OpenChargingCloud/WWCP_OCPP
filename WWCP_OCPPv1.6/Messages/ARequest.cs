@@ -17,8 +17,9 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using System;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -40,6 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The request identification.
         /// </summary>
+        [Mandatory]
         public Request_Id    RequestId           { get; }
 
         /// <summary>
@@ -47,6 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         [Mandatory]
         public DateTime      RequestTimestamp    { get; }
+
+        /// <summary>
+        /// The timeout of this request.
+        /// </summary>
+        [Optional]
+        public TimeSpan?     RequestTimeout      { get; }
 
 
         /// <summary>
@@ -84,16 +92,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="WebSocketAction">WebSocket Action.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
         public ARequest(ChargeBox_Id  ChargeBoxId,
                         String        WebSocketAction,
                         Request_Id?   RequestId          = null,
-                        DateTime?     RequestTimestamp   = null)
+                        DateTime?     RequestTimestamp   = null,
+                        TimeSpan?     RequestTimeout     = null)
         {
 
             this.ChargeBoxId       = ChargeBoxId;
             this.WebSocketAction   = WebSocketAction;
             this.RequestId         = RequestId        ?? Request_Id.Random();
             this.RequestTimestamp  = RequestTimestamp ?? DateTime.UtcNow;
+            this.RequestTimeout    = RequestTimeout;
 
         }
 

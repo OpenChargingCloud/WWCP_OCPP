@@ -42,13 +42,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The registration status.
         /// </summary>
-        public RegistrationStatus  Status        { get; }
+        public RegistrationStatus  Status               { get; }
 
         /// <summary>
         /// The current time at the central system.
         /// Should be UTC!
         /// </summary>
-        public DateTime            CurrentTime   { get; }
+        public DateTime            CurrentTime          { get; }
 
         /// <summary>
         /// When the registration status is 'accepted', the interval defines
@@ -57,13 +57,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// the minimum wait time before sending a next BootNotification
         /// request.
         /// </summary>
-        public TimeSpan            Interval      { get; }
+        public TimeSpan            HeartbeatInterval    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region BootNotificationResponse(Request, Status, CurrentTime, Interval)
+        #region BootNotificationResponse(Request, Status, CurrentTime, HeartbeatInterval)
 
         /// <summary>
         /// Create a new boot notification response.
@@ -71,20 +71,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The boot notification request leading to this response.</param>
         /// <param name="Status">The registration status.</param>
         /// <param name="CurrentTime">The current time at the central system. Should be UTC!</param>
-        /// <param name="Interval">When the registration status is 'accepted', the interval defines the heartbeat interval in seconds. In all other cases, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.</param>
+        /// <param name="HeartbeatInterval">When the registration status is 'accepted', the interval defines the heartbeat interval in seconds. In all other cases, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.</param>
         public BootNotificationResponse(CP.BootNotificationRequest  Request,
                                         RegistrationStatus          Status,
                                         DateTime                    CurrentTime,
-                                        TimeSpan                    Interval)
+                                        TimeSpan                    HeartbeatInterval)
 
             : base(Request,
                    Result.OK())
 
         {
 
-            this.Status       = Status;
-            this.CurrentTime  = CurrentTime;
-            this.Interval     = Interval;
+            this.Status             = Status;
+            this.CurrentTime        = CurrentTime;
+            this.HeartbeatInterval  = HeartbeatInterval;
 
         }
 
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             this.Status       = RegistrationStatus.Rejected;
             this.CurrentTime  = DateTime.UtcNow;
-            this.Interval     = TimeSpan.Zero;
+            this.HeartbeatInterval     = TimeSpan.Zero;
 
         }
 
@@ -451,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                    new XElement(OCPPNS.OCPPv1_6_CS + "status",       Status.           AsText()),
                    new XElement(OCPPNS.OCPPv1_6_CS + "currentTime",  CurrentTime.      ToIso8601()),
-                   new XElement(OCPPNS.OCPPv1_6_CS + "interval",     (UInt32) Interval.TotalSeconds)
+                   new XElement(OCPPNS.OCPPv1_6_CS + "interval",     (UInt32) HeartbeatInterval.TotalSeconds)
 
                );
 
@@ -469,7 +469,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             var JSON = JSONObject.Create(
                            new JProperty("status",       Status.AsText()),
                            new JProperty("currentTime",  CurrentTime.ToIso8601()),
-                           new JProperty("interval",     (UInt32) Interval.TotalSeconds)
+                           new JProperty("interval",     (UInt32) HeartbeatInterval.TotalSeconds)
                        );
 
             return CustomBootNotificationResponseSerializer != null
@@ -574,7 +574,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             return Status.     Equals(BootNotificationResponse.Status)      &&
                    CurrentTime.Equals(BootNotificationResponse.CurrentTime) &&
-                   Interval.   Equals(BootNotificationResponse.Interval);
+                   HeartbeatInterval.   Equals(BootNotificationResponse.HeartbeatInterval);
 
         }
 
@@ -595,7 +595,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 return Status.     GetHashCode() * 17 ^
                        CurrentTime.GetHashCode() * 11 ^
-                       Interval.   GetHashCode();
+                       HeartbeatInterval.   GetHashCode();
 
             }
         }
@@ -611,7 +611,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => String.Concat(Status,
                              " (", CurrentTime.ToIso8601(), ", ",
-                                   Interval.TotalSeconds, " sec(s))");
+                                   HeartbeatInterval.TotalSeconds, " sec(s))");
 
         #endregion
 

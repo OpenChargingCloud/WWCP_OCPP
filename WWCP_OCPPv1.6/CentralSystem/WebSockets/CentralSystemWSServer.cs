@@ -42,7 +42,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// The central system HTTP/WebSocket/JSON server.
     /// </summary>
-    public class CentralSystemWSServer : WebSocketServer
+    public class CentralSystemWSServer : WebSocketServer,
+                                         ICentralSystem
     {
 
         #region (enum)  SendJSONResults
@@ -794,7 +795,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                                    response.Result,
                                                                                    response.Status,
                                                                                    response.CurrentTime,
-                                                                                   response.Interval,
+                                                                                   response.HeartbeatInterval,
                                                                                    response.Runtime);
 
                                             }
@@ -2569,29 +2570,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Reset                 (ChargeBoxId, ResetType, ...)
 
-        public Task<ResetResponse> Reset(ChargeBox_Id  ChargeBoxId,
-                                         ResetTypes    ResetType,
-
-                                         Request_Id?   RequestId          = null,
-                                         DateTime?     RequestTimestamp   = null,
-                                         TimeSpan?     Timeout            = null)
-
-            => Reset(new ResetRequest(ChargeBoxId,
-                                      ResetType,
-                                      RequestId,
-                                      RequestTimestamp),
-                     Timeout);
-
-
         public async Task<ResetResponse> Reset(ResetRequest  Request,
-                                               TimeSpan?     Timeout = null)
+                                               TimeSpan?     RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomResetRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -2625,31 +2612,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region ChangeAvailability    (ChargeBoxId, ConnectorId, Availability, ...)
 
-        public Task<ChangeAvailabilityResponse> ChangeAvailability(ChargeBox_Id    ChargeBoxId,
-                                                                   Connector_Id    ConnectorId,
-                                                                   Availabilities  Availability,
-
-                                                                   Request_Id?     RequestId          = null,
-                                                                   DateTime?       RequestTimestamp   = null,
-                                                                   TimeSpan?       Timeout            = null)
-
-            => ChangeAvailability(new ChangeAvailabilityRequest(ChargeBoxId,
-                                                                ConnectorId,
-                                                                Availability,
-                                                                RequestId,
-                                                                RequestTimestamp),
-                                  Timeout);
-
-
         public async Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest  Request,
-                                                                         TimeSpan?                  Timeout = null)
+                                                                         TimeSpan?                  RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomChangeAvailabilityRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -2683,31 +2654,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region ChangeConfiguration   (ChargeBoxId, Key, Value, ...)
 
-        public Task<ChangeConfigurationResponse> ChangeConfiguration(ChargeBox_Id  ChargeBoxId,
-                                                                     String        Key,
-                                                                     String        Value,
-
-                                                                     Request_Id?   RequestId          = null,
-                                                                     DateTime?     RequestTimestamp   = null,
-                                                                     TimeSpan?     Timeout            = null)
-
-            => ChangeConfiguration(new ChangeConfigurationRequest(ChargeBoxId,
-                                                                  Key,
-                                                                  Value,
-                                                                  RequestId,
-                                                                  RequestTimestamp),
-                                   Timeout);
-
-
         public async Task<ChangeConfigurationResponse> ChangeConfiguration(ChangeConfigurationRequest  Request,
-                                                                           TimeSpan?                   Timeout = null)
+                                                                           TimeSpan?                   RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomChangeConfigurationRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -2741,33 +2696,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region DataTransfer          (ChargeBoxId, VendorId, MessageId, Data, ...)
 
-        public Task<CP.DataTransferResponse> DataTransfer(ChargeBox_Id  ChargeBoxId,
-                                                          String        VendorId,
-                                                          String        MessageId,
-                                                          String        Data,
-
-                                                          Request_Id?   RequestId          = null,
-                                                          DateTime?     RequestTimestamp   = null,
-                                                          TimeSpan?     Timeout            = null)
-
-            => DataTransfer(new CS.DataTransferRequest(ChargeBoxId,
-                                                       VendorId,
-                                                       MessageId,
-                                                       Data,
-                                                       RequestId,
-                                                       RequestTimestamp),
-                            Timeout);
-
-
         public async Task<CP.DataTransferResponse> DataTransfer(CS.DataTransferRequest  Request,
-                                                                TimeSpan?               Timeout = null)
+                                                                TimeSpan?               RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomDataTransferRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -2801,37 +2738,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region GetDiagnostics        (ChargeBoxId, Location, StartTime = null, StopTime = null, Retries = null, RetryInterval = null, ...)
 
-        public Task<GetDiagnosticsResponse> GetDiagnostics(ChargeBox_Id  ChargeBoxId,
-                                                           String        Location,
-                                                           DateTime?     StartTime          = null,
-                                                           DateTime?     StopTime           = null,
-                                                           Byte?         Retries            = null,
-                                                           TimeSpan?     RetryInterval      = null,
-
-                                                           Request_Id?   RequestId          = null,
-                                                           DateTime?     RequestTimestamp   = null,
-                                                           TimeSpan?     Timeout            = null)
-
-            => GetDiagnostics(new GetDiagnosticsRequest(ChargeBoxId,
-                                                        Location,
-                                                        StartTime,
-                                                        StopTime,
-                                                        Retries,
-                                                        RetryInterval,
-                                                        RequestId,
-                                                        RequestTimestamp),
-                              Timeout);
-
-
         public async Task<GetDiagnosticsResponse> GetDiagnostics(GetDiagnosticsRequest  Request,
-                                                                 TimeSpan?              Timeout = null)
+                                                                 TimeSpan?              RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomGetDiagnosticsRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -2865,31 +2780,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region TriggerMessage        (ChargeBoxId, RequestedMessage, ConnectorId = null, ...)
 
-        public Task<CP.TriggerMessageResponse> TriggerMessage(ChargeBox_Id     ChargeBoxId,
-                                                              MessageTriggers  RequestedMessage,
-                                                              Connector_Id?    ConnectorId        = null,
-
-                                                              Request_Id?      RequestId          = null,
-                                                              DateTime?        RequestTimestamp   = null,
-                                                              TimeSpan?        Timeout            = null)
-
-            => TriggerMessage(new TriggerMessageRequest(ChargeBoxId,
-                                                        RequestedMessage,
-                                                        ConnectorId,
-                                                        RequestId,
-                                                        RequestTimestamp),
-                              Timeout);
-
-
         public async Task<TriggerMessageResponse> TriggerMessage(TriggerMessageRequest  Request,
-                                                                 TimeSpan?              Timeout = null)
+                                                                 TimeSpan?              RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomTriggerMessageRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -2923,35 +2822,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region UpdateFirmware        (ChargeBoxId, Location, RetrieveDate, Retries = null, RetryInterval = null, ...)
 
-        public Task<CP.UpdateFirmwareResponse> UpdateFirmware(ChargeBox_Id  ChargeBoxId,
-                                                              String        Location,
-                                                              DateTime      RetrieveDate,
-                                                              Byte?         Retries            = null,
-                                                              TimeSpan?     RetryInterval      = null,
-
-                                                              Request_Id?   RequestId          = null,
-                                                              DateTime?     RequestTimestamp   = null,
-                                                              TimeSpan?     Timeout            = null)
-
-            => UpdateFirmware(new UpdateFirmwareRequest(ChargeBoxId,
-                                                        Location,
-                                                        RetrieveDate,
-                                                        Retries,
-                                                        RetryInterval,
-                                                        RequestId,
-                                                        RequestTimestamp),
-                              Timeout);
-
-
         public async Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest  Request,
-                                                                 TimeSpan?              Timeout = null)
+                                                                 TimeSpan?              RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomUpdateFirmwareRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -2986,37 +2865,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region ReserveNow            (ChargeBoxId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
 
-        public Task<ReserveNowResponse> ReserveNow(ChargeBox_Id    ChargeBoxId,
-                                                   Connector_Id    ConnectorId,
-                                                   Reservation_Id  ReservationId,
-                                                   DateTime        ExpiryDate,
-                                                   IdToken         IdTag,
-                                                   IdToken?        ParentIdTag        = null,
-
-                                                   Request_Id?     RequestId          = null,
-                                                   DateTime?       RequestTimestamp   = null,
-                                                   TimeSpan?       Timeout            = null)
-
-            => ReserveNow(new ReserveNowRequest(ChargeBoxId,
-                                                ConnectorId,
-                                                ReservationId,
-                                                ExpiryDate,
-                                                IdTag,
-                                                ParentIdTag,
-                                                RequestId,
-                                                RequestTimestamp),
-                          Timeout);
-
-
         public async Task<ReserveNowResponse> ReserveNow(ReserveNowRequest  Request,
-                                                         TimeSpan?          Timeout = null)
+                                                         TimeSpan?          RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomReserveNowRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -3050,29 +2907,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region CancelReservation     (ChargeBoxId, ReservationId, ...)
 
-        public Task<CancelReservationResponse> CancelReservation(ChargeBox_Id    ChargeBoxId,
-                                                                 Reservation_Id  ReservationId,
-
-                                                                 Request_Id?     RequestId          = null,
-                                                                 DateTime?       RequestTimestamp   = null,
-                                                                 TimeSpan?       Timeout            = null)
-
-            => CancelReservation(new CancelReservationRequest(ChargeBoxId,
-                                                              ReservationId,
-                                                              RequestId,
-                                                              RequestTimestamp),
-                                 Timeout);
-
-
         public async Task<CancelReservationResponse> CancelReservation(CancelReservationRequest  Request,
-                                                                       TimeSpan?                 Timeout = null)
+                                                                       TimeSpan?                 RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomCancelReservationRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -3106,26 +2949,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region RemoteStartTransaction(ChargeBoxId, IdTag, ConnectorId = null, ChargingProfile = null, ...)
 
-        public Task<RemoteStartTransactionResponse> RemoteStartTransaction(ChargeBox_Id     ChargeBoxId,
-                                                                           IdToken          IdTag,
-                                                                           Connector_Id?    ConnectorId        = null,
-                                                                           ChargingProfile  ChargingProfile    = null,
-
-                                                                           Request_Id?      RequestId          = null,
-                                                                           DateTime?        RequestTimestamp   = null,
-                                                                           TimeSpan?        Timeout            = null)
-
-            => RemoteStartTransaction(new RemoteStartTransactionRequest(ChargeBoxId,
-                                                                        IdTag,
-                                                                        ConnectorId,
-                                                                        ChargingProfile,
-                                                                        RequestId,
-                                                                        RequestTimestamp),
-                                      Timeout);
-
-
         public async Task<RemoteStartTransactionResponse> RemoteStartTransaction(RemoteStartTransactionRequest  Request,
-                                                                                 TimeSpan?                      Timeout = null)
+                                                                                 TimeSpan?                      RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
@@ -3135,7 +2960,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                           CustomChargingProfileSerializer,
                                                           CustomChargingScheduleSerializer,
                                                           CustomChargingSchedulePeriodSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -3169,29 +2994,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region RemoteStopTransaction (ChargeBoxId, TransactionId, ...)
 
-        public Task<RemoteStopTransactionResponse> RemoteStopTransaction(ChargeBox_Id    ChargeBoxId,
-                                                                         Transaction_Id  TransactionId,
-
-                                                                         Request_Id?     RequestId          = null,
-                                                                         DateTime?       RequestTimestamp   = null,
-                                                                         TimeSpan?       Timeout            = null)
-
-            => RemoteStopTransaction(new RemoteStopTransactionRequest(ChargeBoxId,
-                                                                      TransactionId,
-                                                                      RequestId,
-                                                                      RequestTimestamp),
-                                      Timeout);
-
-
         public async Task<RemoteStopTransactionResponse> RemoteStopTransaction(RemoteStopTransactionRequest  Request,
-                                                                               TimeSpan?                     Timeout = null)
+                                                                               TimeSpan?                     RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomRemoteStopTransactionRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -3225,31 +3036,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region SetChargingProfile    (ChargeBoxId, ConnectorId, ChargingProfile, ...)
 
-        public Task<SetChargingProfileResponse> SetChargingProfile(ChargeBox_Id     ChargeBoxId,
-                                                                   Connector_Id     ConnectorId,
-                                                                   ChargingProfile  ChargingProfile,
-
-                                                                   Request_Id?      RequestId          = null,
-                                                                   DateTime?        RequestTimestamp   = null,
-                                                                   TimeSpan?        Timeout            = null)
-
-            => SetChargingProfile(new SetChargingProfileRequest(ChargeBoxId,
-                                                                ConnectorId,
-                                                                ChargingProfile,
-                                                                RequestId,
-                                                                RequestTimestamp),
-                                  Timeout);
-
-
         public async Task<SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest  Request,
-                                                                         TimeSpan?                  Timeout = null)
+                                                                         TimeSpan?                  RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomSetChargingProfileRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -3283,35 +3078,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region ClearChargingProfile  (ChargeBoxId, ChargingProfileId, ConnectorId, ChargingProfilePurpose, StackLevel, ...)
 
-        public Task<ClearChargingProfileResponse> ClearChargingProfile(ChargeBox_Id              ChargeBoxId,
-                                                                       ChargingProfile_Id?       ChargingProfileId        = null,
-                                                                       Connector_Id?             ConnectorId              = null,
-                                                                       ChargingProfilePurposes?  ChargingProfilePurpose   = null,
-                                                                       UInt32?                   StackLevel               = null,
-
-                                                                       Request_Id?               RequestId                = null,
-                                                                       DateTime?                 RequestTimestamp         = null,
-                                                                       TimeSpan?                 Timeout                  = null)
-
-            => ClearChargingProfile(new ClearChargingProfileRequest(ChargeBoxId,
-                                                                    ChargingProfileId,
-                                                                    ConnectorId,
-                                                                    ChargingProfilePurpose,
-                                                                    StackLevel,
-                                                                    RequestId,
-                                                                    RequestTimestamp),
-                                    Timeout);
-
-
         public async Task<ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest  Request,
-                                                                             TimeSpan?                    Timeout = null)
+                                                                             TimeSpan?                    RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomClearChargingProfileRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -3345,33 +3120,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region GetCompositeSchedule  (ChargeBoxId, ConnectorId, Duration, ChargingRateUnit = null, ...)
 
-        public Task<GetCompositeScheduleResponse> GetCompositeSchedule(ChargeBox_Id        ChargeBoxId,
-                                                                       Connector_Id        ConnectorId,
-                                                                       TimeSpan            Duration,
-                                                                       ChargingRateUnits?  ChargingRateUnit   = null,
-
-                                                                       Request_Id?         RequestId          = null,
-                                                                       DateTime?           RequestTimestamp   = null,
-                                                                       TimeSpan?           Timeout            = null)
-
-            => GetCompositeSchedule(new GetCompositeScheduleRequest(ChargeBoxId,
-                                                                    ConnectorId,
-                                                                    Duration,
-                                                                    ChargingRateUnit,
-                                                                    RequestId,
-                                                                    RequestTimestamp),
-                                    Timeout);
-
 
         public async Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest  Request,
-                                                                             TimeSpan?                    Timeout = null)
+                                                                             TimeSpan?                    RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomGetCompositeScheduleRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -3405,29 +3163,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region UnlockConnector       (ChargeBoxId, ConnectorId, ...)
 
-        public Task<UnlockConnectorResponse> UnlockConnector(ChargeBox_Id  ChargeBoxId,
-                                                             Connector_Id  ConnectorId,
-
-                                                             Request_Id?   RequestId          = null,
-                                                             DateTime?     RequestTimestamp   = null,
-                                                             TimeSpan?     Timeout            = null)
-
-            => UnlockConnector(new UnlockConnectorRequest(ChargeBoxId,
-                                                          ConnectorId,
-                                                          RequestId,
-                                                          RequestTimestamp),
-                               Timeout);
-
-
         public async Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest  Request,
-                                                                   TimeSpan?               Timeout = null)
+                                                                   TimeSpan?               RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomUnlockConnectorRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -3462,26 +3206,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region GetLocalListVersion   (ChargeBoxId, ...)
 
-        public Task<GetLocalListVersionResponse> GetLocalListVersion(ChargeBox_Id  ChargeBoxId,
-                                                                     Request_Id?   RequestId          = null,
-                                                                     DateTime?     RequestTimestamp   = null,
-                                                                     TimeSpan?     Timeout            = null)
-
-            => GetLocalListVersion(new GetLocalListVersionRequest(ChargeBoxId,
-                                                                  RequestId,
-                                                                  RequestTimestamp),
-                                   Timeout);
-
-
         public async Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest  Request,
-                                                                           TimeSpan?                   Timeout = null)
+                                                                           TimeSpan?                   RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomGetLocalListVersionRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -3515,33 +3248,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region SendLocalList         (ChargeBoxId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
 
-        public Task<SendLocalListResponse> SendLocalList(ChargeBox_Id                    ChargeBoxId,
-                                                         UInt64                          ListVersion,
-                                                         UpdateTypes                     UpdateType,
-                                                         IEnumerable<AuthorizationData>  LocalAuthorizationList   = null,
-
-                                                         Request_Id?                     RequestId                = null,
-                                                         DateTime?                       RequestTimestamp         = null,
-                                                         TimeSpan?                       Timeout                  = null)
-
-            => SendLocalList(new SendLocalListRequest(ChargeBoxId,
-                                                      ListVersion,
-                                                      UpdateType,
-                                                      LocalAuthorizationList,
-                                                      RequestId,
-                                                      RequestTimestamp),
-                             Timeout);
-
 
         public async Task<SendLocalListResponse> SendLocalList(SendLocalListRequest  Request,
-                                                               TimeSpan?             Timeout = null)
+                                                               TimeSpan?             RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomSendLocalListRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
@@ -3575,26 +3291,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region ClearCache            (ChargeBoxId, ...)
 
-        public Task<ClearCacheResponse> ClearCache(ChargeBox_Id  ChargeBoxId,
-                                                   Request_Id?   RequestId          = null,
-                                                   DateTime?     RequestTimestamp   = null,
-                                                   TimeSpan?     Timeout            = null)
-
-            => ClearCache(new ClearCacheRequest(ChargeBoxId,
-                                                RequestId,
-                                                RequestTimestamp),
-                          Timeout);
-
-
         public async Task<ClearCacheResponse> ClearCache(ClearCacheRequest  Request,
-                                                         TimeSpan?          Timeout = null)
+                                                         TimeSpan?          RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
                                            Request.WebSocketAction,
                                            Request.ToJSON(CustomClearCacheRequestSerializer),
-                                           Timeout);
+                                           RequestTimeout ?? Request.RequestTimeout);
 
             if (result?.Response != null)
             {
