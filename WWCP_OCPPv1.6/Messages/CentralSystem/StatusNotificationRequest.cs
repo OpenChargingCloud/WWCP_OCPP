@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, XML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, XML, e);
 
                 StatusNotificationRequest = null;
                 return false;
@@ -622,7 +622,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, Text, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, Text, e);
             }
 
             StatusNotificationRequest = null;

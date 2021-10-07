@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, MeterValuesResponseXML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, MeterValuesResponseXML, e);
 
                 MeterValuesResponse = null;
                 return false;
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, MeterValuesResponseJSON, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, MeterValuesResponseJSON, e);
 
                 MeterValuesResponse = null;
                 return false;
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, MeterValuesResponseText, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, MeterValuesResponseText, e);
             }
 
             MeterValuesResponse = null;

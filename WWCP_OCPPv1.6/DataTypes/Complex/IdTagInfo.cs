@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, IdTagInfoXML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, IdTagInfoXML, e);
 
                 IdTagInfo = default(IdTagInfo);
                 return false;
@@ -391,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, IdTagInfoText, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, IdTagInfoText, e);
             }
 
             IdTagInfo = default;

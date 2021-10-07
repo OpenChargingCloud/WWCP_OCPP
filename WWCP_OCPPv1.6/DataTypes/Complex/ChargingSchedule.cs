@@ -307,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, ChargingScheduleXML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ChargingScheduleXML, e);
 
                 ChargingSchedule = null;
                 return false;
@@ -487,7 +487,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, ChargingScheduleText, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ChargingScheduleText, e);
             }
 
             ChargingSchedule = null;

@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 Task.FromResult(new BootNotificationResponse(Request:            Request,
                                                              Status:             RegistrationStatus.Accepted,
-                                                             CurrentTime:        DateTime.UtcNow,
+                                                             CurrentTime:        org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                              HeartbeatInterval:  TimeSpan.FromMinutes(5)));
 
             #endregion
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 Request) =>
 
                 Task.FromResult(new HeartbeatResponse(Request:      Request,
-                                                      CurrentTime:  DateTime.UtcNow));
+                                                      CurrentTime:  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now));
 
             #endregion
 
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 Task.FromResult(new StartTransactionResponse(Request:        Request,
                                                              TransactionId:  Transaction_Id.Random,
                                                              IdTagInfo:      new IdTagInfo(Status:      AuthorizationStatus.Accepted,
-                                                                                           ExpiryDate:  DateTime.UtcNow.AddDays(3))));
+                                                                                           ExpiryDate:  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.AddDays(3))));
 
             #endregion
 
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 Task.FromResult(new StopTransactionResponse(Request:    Request,
                                                             IdTagInfo:  new IdTagInfo(Status:      AuthorizationStatus.Accepted,
-                                                                                      ExpiryDate:  DateTime.UtcNow.AddDays(3))));
+                                                                                      ExpiryDate:  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.AddDays(3))));
 
             #endregion
 

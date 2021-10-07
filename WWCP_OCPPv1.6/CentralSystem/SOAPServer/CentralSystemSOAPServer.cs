@@ -462,14 +462,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnBootNotificationSOAPRequest?.Invoke(DateTime.UtcNow,
+                    OnBootNotificationSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                           SOAPServer.HTTPServer,
                                                           Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationSOAPRequest));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationSOAPRequest));
                 }
 
                 #endregion
@@ -498,7 +498,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationRequest));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationRequest));
                     }
 
                     #endregion
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         var results = OnBootNotification?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as BootNotificationDelegate)
-                                              (DateTime.UtcNow,
+                                              (Timestamp.Now,
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
@@ -553,7 +553,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationResponse));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationResponse));
                     }
 
                     #endregion
@@ -564,7 +564,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
-                        Date            = DateTime.UtcNow,
+                        Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/BootNotificationResponse",
@@ -597,7 +597,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationSOAPResponse));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnBootNotificationSOAPResponse));
                 }
 
                 #endregion
@@ -621,14 +621,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnHeartbeatSOAPRequest?.Invoke(DateTime.UtcNow,
+                    OnHeartbeatSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                    SOAPServer.HTTPServer,
                                                    Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnHeartbeatSOAPRequest));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnHeartbeatSOAPRequest));
                 }
 
                 #endregion
@@ -657,7 +657,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnHeartbeatRequest));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnHeartbeatRequest));
                     }
 
                     #endregion
@@ -670,7 +670,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         var results = OnHeartbeat?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as HeartbeatDelegate)
-                                              (DateTime.UtcNow,
+                                              (Timestamp.Now,
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
@@ -710,7 +710,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnHeartbeatResponse));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnHeartbeatResponse));
                     }
 
                     #endregion
@@ -721,7 +721,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
-                        Date            = DateTime.UtcNow,
+                        Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/HeartbeatResponse",
@@ -754,7 +754,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnHeartbeatSOAPResponse));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnHeartbeatSOAPResponse));
                 }
 
                 #endregion
@@ -779,14 +779,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnAuthorizeSOAPRequest?.Invoke(DateTime.UtcNow,
+                    OnAuthorizeSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                    SOAPServer.HTTPServer,
                                                    Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnAuthorizeSOAPRequest));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnAuthorizeSOAPRequest));
                 }
 
                 #endregion
@@ -815,7 +815,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnAuthorizeRequest));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnAuthorizeRequest));
                     }
 
                     #endregion
@@ -828,7 +828,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         var results = OnAuthorize?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)
-                                              (DateTime.UtcNow,
+                                              (Timestamp.Now,
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
@@ -868,7 +868,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnAuthorizeResponse));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnAuthorizeResponse));
                     }
 
                     #endregion
@@ -879,7 +879,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
-                        Date            = DateTime.UtcNow,
+                        Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/AuthorizeResponse",
@@ -912,7 +912,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnAuthorizeSOAPResponse));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnAuthorizeSOAPResponse));
                 }
 
                 #endregion
@@ -936,14 +936,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnStartTransactionSOAPRequest?.Invoke(DateTime.UtcNow,
+                    OnStartTransactionSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                           SOAPServer.HTTPServer,
                                                           Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStartTransactionSOAPRequest));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnStartTransactionSOAPRequest));
                 }
 
                 #endregion
@@ -972,7 +972,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStartTransactionRequest));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnStartTransactionRequest));
                     }
 
                     #endregion
@@ -985,7 +985,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         var results = OnStartTransaction?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnStartTransactionDelegate)
-                                              (DateTime.UtcNow,
+                                              (Timestamp.Now,
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
@@ -1026,7 +1026,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStartTransactionResponse));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnStartTransactionResponse));
                     }
 
                     #endregion
@@ -1037,7 +1037,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
-                        Date            = DateTime.UtcNow,
+                        Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/StartTransactionResponse",
@@ -1070,7 +1070,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStartTransactionSOAPResponse));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnStartTransactionSOAPResponse));
                 }
 
                 #endregion
@@ -1094,14 +1094,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnStatusNotificationSOAPRequest?.Invoke(DateTime.UtcNow,
+                    OnStatusNotificationSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                             SOAPServer.HTTPServer,
                                                             Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStatusNotificationSOAPRequest));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnStatusNotificationSOAPRequest));
                 }
 
                 #endregion
@@ -1130,7 +1130,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStatusNotificationRequest));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnStatusNotificationRequest));
                     }
 
                     #endregion
@@ -1143,7 +1143,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         var results = OnStatusNotification?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)
-                                              (DateTime.UtcNow,
+                                              (Timestamp.Now,
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
@@ -1182,7 +1182,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStatusNotificationResponse));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnStatusNotificationResponse));
                     }
 
                     #endregion
@@ -1193,7 +1193,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
-                        Date            = DateTime.UtcNow,
+                        Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/StatusNotificationResponse",
@@ -1226,7 +1226,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStatusNotificationSOAPResponse));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnStatusNotificationSOAPResponse));
                 }
 
                 #endregion
@@ -1250,14 +1250,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnMeterValuesSOAPRequest?.Invoke(DateTime.UtcNow,
+                    OnMeterValuesSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                      SOAPServer.HTTPServer,
                                                      Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnMeterValuesSOAPRequest));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnMeterValuesSOAPRequest));
                 }
 
                 #endregion
@@ -1286,7 +1286,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnMeterValuesRequest));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnMeterValuesRequest));
                     }
 
                     #endregion
@@ -1299,7 +1299,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         var results = OnMeterValues?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)
-                                              (DateTime.UtcNow,
+                                              (Timestamp.Now,
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
@@ -1338,7 +1338,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnMeterValuesResponse));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnMeterValuesResponse));
                     }
 
                     #endregion
@@ -1349,7 +1349,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
-                        Date            = DateTime.UtcNow,
+                        Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/MeterValuesResponse",
@@ -1382,7 +1382,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnMeterValuesSOAPResponse));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnMeterValuesSOAPResponse));
                 }
 
                 #endregion
@@ -1406,14 +1406,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnStopTransactionSOAPRequest?.Invoke(DateTime.UtcNow,
+                    OnStopTransactionSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                          SOAPServer.HTTPServer,
                                                          Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStopTransactionSOAPRequest));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnStopTransactionSOAPRequest));
                 }
 
                 #endregion
@@ -1442,7 +1442,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStopTransactionRequest));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnStopTransactionRequest));
                     }
 
                     #endregion
@@ -1455,7 +1455,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         var results = OnStopTransaction?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnStopTransactionDelegate)
-                                              (DateTime.UtcNow,
+                                              (Timestamp.Now,
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
@@ -1495,7 +1495,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStopTransactionResponse));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnStopTransactionResponse));
                     }
 
                     #endregion
@@ -1506,7 +1506,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
-                        Date            = DateTime.UtcNow,
+                        Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/StopTransactionResponse",
@@ -1539,7 +1539,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnStopTransactionSOAPResponse));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnStopTransactionSOAPResponse));
                 }
 
                 #endregion
@@ -1564,14 +1564,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnIncomingDataTransferSOAPRequest?.Invoke(DateTime.UtcNow,
+                    OnIncomingDataTransferSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                               SOAPServer.HTTPServer,
                                                               Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnIncomingDataTransferSOAPRequest));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnIncomingDataTransferSOAPRequest));
                 }
 
                 #endregion
@@ -1601,7 +1601,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnIncomingDataTransferRequest));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnIncomingDataTransferRequest));
                     }
 
                     #endregion
@@ -1614,7 +1614,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         var results = OnIncomingDataTransfer?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
-                                              (DateTime.UtcNow,
+                                              (Timestamp.Now,
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
@@ -1655,7 +1655,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnIncomingDataTransferResponse));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnIncomingDataTransferResponse));
                     }
 
                     #endregion
@@ -1666,7 +1666,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
-                        Date            = DateTime.UtcNow,
+                        Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/DataTransferResponse",
@@ -1699,7 +1699,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnIncomingDataTransferSOAPResponse));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnIncomingDataTransferSOAPResponse));
                 }
 
                 #endregion
@@ -1723,14 +1723,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnDiagnosticsStatusNotificationSOAPRequest?.Invoke(DateTime.UtcNow,
+                    OnDiagnosticsStatusNotificationSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                        SOAPServer.HTTPServer,
                                                                        Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationSOAPRequest));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationSOAPRequest));
                 }
 
                 #endregion
@@ -1760,7 +1760,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
                     }
 
                     #endregion
@@ -1773,7 +1773,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         var results = OnDiagnosticsStatusNotification?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationDelegate)
-                                              (DateTime.UtcNow,
+                                              (Timestamp.Now,
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
@@ -1812,7 +1812,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
                     }
 
                     #endregion
@@ -1823,7 +1823,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
-                        Date            = DateTime.UtcNow,
+                        Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/DiagnosticsStatusNotificationResponse",
@@ -1856,7 +1856,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationSOAPResponse));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationSOAPResponse));
                 }
 
                 #endregion
@@ -1880,14 +1880,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnFirmwareStatusNotificationSOAPRequest?.Invoke(DateTime.UtcNow,
+                    OnFirmwareStatusNotificationSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                     SOAPServer.HTTPServer,
                                                                     Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationSOAPRequest));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationSOAPRequest));
                 }
 
                 #endregion
@@ -1917,7 +1917,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationRequest));
                     }
 
                     #endregion
@@ -1930,7 +1930,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         var results = OnFirmwareStatusNotification?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)
-                                              (DateTime.UtcNow,
+                                              (Timestamp.Now,
                                                this,
                                                Request.CancellationToken,
                                                Request.EventTrackingId,
@@ -1969,7 +1969,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationResponse));
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationResponse));
                     }
 
                     #endregion
@@ -1980,7 +1980,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
-                        Date            = DateTime.UtcNow,
+                        Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/FirmwareStatusNotificationResponse",
@@ -2013,7 +2013,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationSOAPResponse));
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationSOAPResponse));
                 }
 
                 #endregion

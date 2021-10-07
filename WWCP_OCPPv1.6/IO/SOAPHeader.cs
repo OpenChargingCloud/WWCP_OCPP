@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, SOAPHeaderXML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, SOAPHeaderXML, e);
 
                 SOAPHeader = null;
                 return false;
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, SOAPHeaderText, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, SOAPHeaderText, e);
             }
 
             SOAPHeader = null;

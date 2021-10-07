@@ -422,7 +422,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, ChargingProfileXML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ChargingProfileXML, e);
 
                 ChargingProfile = null;
                 return false;
@@ -659,7 +659,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, ChargingProfileText, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ChargingProfileText, e);
             }
 
             ChargingProfile = null;

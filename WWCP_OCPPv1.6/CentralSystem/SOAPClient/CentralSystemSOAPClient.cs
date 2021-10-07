@@ -31,6 +31,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP.v1_2;
+using System.Security.Cryptography.X509Certificates;
 
 #endregion
 
@@ -38,7 +39,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The central system SOAP client.
+    /// The central system SOAP client runs at the central system
+    /// and connects to a charge point to invoke methods.
     /// </summary>
     public partial class CentralSystemSOAPClient : ASOAPClient,
                                                    ICSClient
@@ -63,8 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The unique identification of this charge box.
         /// </summary>
-        public ChargeBox_Id    ChargeBoxIdentity
-            => ChargeBox_Id.Parse(ClientId);
+        public ChargeBox_Id    ChargeBoxIdentity   { get; }
 
         /// <summary>
         /// The source URI of the SOAP message.
@@ -549,53 +550,66 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region CentralSystemSOAPClient(ChargeBoxIdentity, Hostname, ..., LoggingContext = CSClientLogger.DefaultContext, ...)
 
         /// <summary>
-        /// Create a new central system SOAP client.
+        /// Create a new central system SOAP client running at the central system
+        /// and connecting to a charge point to invoke methods.
         /// </summary>
         /// <param name="ChargeBoxIdentity">The unique identification of this OCPP charge box.</param>
         /// <param name="From">The source URI of the SOAP message.</param>
         /// <param name="To">The destination URI of the SOAP message.</param>
         /// 
-        /// <param name="Hostname">The OCPP hostname to connect to.</param>
-        /// <param name="RemotePort">An optional OCPP TCP port to connect to.</param>
-        /// <param name="RemoteCertificateValidator">A delegate to verify the remote TLS certificate.</param>
+        /// <param name="RemoteURL">The remote URL of the HTTP endpoint to connect to.</param>
+        /// <param name="VirtualHostname">An optional HTTP virtual hostname.</param>
+        /// <param name="Description">An optional description of this HTTP/SOAP client.</param>
+        /// <param name="RemoteCertificateValidator">The remote SSL/TLS certificate validator.</param>
         /// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
-        /// <param name="HTTPVirtualHost">An optional HTTP virtual host name to use.</param>
-        /// <param name="URLPrefix">An default URI prefix.</param>
-        /// <param name="HTTPUserAgent">An optional HTTP user agent to use.</param>
-        /// <param name="RequestTimeout">An optional timeout for upstream queries.</param>
-        /// <param name="MaxNumberOfRetries">The default number of maximum transmission retries.</param>
-        /// <param name="DNSClient">An optional DNS client.</param>
+        /// <param name="ClientCert">The SSL/TLS client certificate to use of HTTP authentication.</param>
+        /// <param name="HTTPUserAgent">The HTTP user agent identification.</param>
+        /// <param name="URLPathPrefix">An optional default URL path prefix.</param>
+        /// <param name="WSSLoginPassword">The WebService-Security username/password.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="TransmissionRetryDelay">The delay between transmission retries.</param>
+        /// <param name="MaxNumberOfRetries">The maximum number of transmission retries for HTTP request.</param>
+        /// <param name="UseHTTPPipelining">Whether to pipeline multiple HTTP request through a single HTTP/TCP connection.</param>
         /// <param name="LoggingContext">An optional context for logging client methods.</param>
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
+        /// <param name="HTTPLogger">A HTTP logger.</param>
+        /// <param name="DNSClient">The DNS client to use.</param>
         public CentralSystemSOAPClient(ChargeBox_Id                         ChargeBoxIdentity,
                                        String                               From,
                                        String                               To,
 
-                                       HTTPHostname                         Hostname,
-                                       IPPort?                              RemotePort                   = null,
+                                       URL                                  RemoteURL,
+                                       HTTPHostname?                        VirtualHostname              = null,
+                                       String                               Description                  = null,
                                        RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
                                        LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                                       HTTPHostname?                        HTTPVirtualHost              = null,
-                                       HTTPPath?                            URLPrefix                    = null,
+                                       X509Certificate                      ClientCert                   = null,
                                        String                               HTTPUserAgent                = DefaultHTTPUserAgent,
+                                       HTTPPath?                            URLPathPrefix                = null,
+                                       Tuple<String, String>                WSSLoginPassword             = null,
                                        TimeSpan?                            RequestTimeout               = null,
-                                       Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
-                                       DNSClient                            DNSClient                    = null,
+                                       TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
+                                       UInt16?                              MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
+                                       Boolean                              UseHTTPPipelining            = false,
                                        String                               LoggingContext               = CSClientLogger.DefaultContext,
-                                       LogfileCreatorDelegate               LogFileCreator               = null)
+                                       LogfileCreatorDelegate               LogFileCreator               = null,
+                                       HTTPClientLogger                     HTTPLogger                   = null,
+                                       DNSClient                            DNSClient                    = null)
 
-            : base(ChargeBoxIdentity.ToString(),
-                   Hostname,
-                   RemotePort ?? DefaultRemotePort,
+            : base(RemoteURL,
+                   VirtualHostname,
+                   Description,
                    RemoteCertificateValidator,
                    ClientCertificateSelector,
-                   HTTPVirtualHost,
-                   URLPrefix ?? DefaultURLPrefix,
-                   null,
+                   ClientCert,
                    HTTPUserAgent,
+                   URLPathPrefix ?? DefaultURLPathPrefix,
+                   WSSLoginPassword,
                    RequestTimeout,
-                   null,
+                   TransmissionRetryDelay,
                    MaxNumberOfRetries,
+                   UseHTTPPipelining,
+                   HTTPLogger,
                    DNSClient)
 
         {
@@ -613,12 +627,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            this.From       = From;
-            this.To         = To;
+            this.ChargeBoxIdentity  = ChargeBoxIdentity;
+            this.From               = From;
+            this.To                 = To;
 
-            this.Logger     = new CSClientLogger(this,
-                                                 LoggingContext,
-                                                 LogFileCreator);
+            this.Logger             = new CSClientLogger(this,
+                                                         LoggingContext,
+                                                         LogFileCreator);
 
         }
 
@@ -626,74 +641,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region CentralSystemSOAPClient(ChargeBoxIdentity, Logger, Hostname, ...)
 
-        /// <summary>
-        /// Create a new central system SOAP client.
-        /// </summary>
-        /// <param name="ChargeBoxIdentity">A unqiue identification of this client.</param>
-        /// <param name="From">The source URI of the SOAP message.</param>
-        /// <param name="To">The destination URI of the SOAP message.</param>
-        /// 
-        /// <param name="Hostname">The OCPP hostname to connect to.</param>
-        /// <param name="RemotePort">An optional OCPP TCP port to connect to.</param>
-        /// <param name="RemoteCertificateValidator">A delegate to verify the remote TLS certificate.</param>
-        /// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
-        /// <param name="HTTPVirtualHost">An optional HTTP virtual host name to use.</param>
-        /// <param name="URLPrefix">An default URI prefix.</param>
-        /// <param name="HTTPUserAgent">An optional HTTP user agent to use.</param>
-        /// <param name="RequestTimeout">An optional timeout for upstream queries.</param>
-        /// <param name="MaxNumberOfRetries">The default number of maximum transmission retries.</param>
-        /// <param name="DNSClient">An optional DNS client.</param>
-        public CentralSystemSOAPClient(ChargeBox_Id                         ChargeBoxIdentity,
-                                       String                               From,
-                                       String                               To,
+        ///// <summary>
+        ///// Create a new central system SOAP client.
+        ///// </summary>
+        ///// <param name="ChargeBoxIdentity">A unqiue identification of this client.</param>
+        ///// <param name="From">The source URI of the SOAP message.</param>
+        ///// <param name="To">The destination URI of the SOAP message.</param>
+        ///// 
+        ///// <param name="Hostname">The OCPP hostname to connect to.</param>
+        ///// <param name="RemotePort">An optional OCPP TCP port to connect to.</param>
+        ///// <param name="RemoteCertificateValidator">A delegate to verify the remote TLS certificate.</param>
+        ///// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
+        ///// <param name="HTTPVirtualHost">An optional HTTP virtual host name to use.</param>
+        ///// <param name="URLPrefix">An default URI prefix.</param>
+        ///// <param name="HTTPUserAgent">An optional HTTP user agent to use.</param>
+        ///// <param name="RequestTimeout">An optional timeout for upstream queries.</param>
+        ///// <param name="MaxNumberOfRetries">The default number of maximum transmission retries.</param>
+        ///// <param name="DNSClient">An optional DNS client.</param>
+        //public CentralSystemSOAPClient(ChargeBox_Id                         ChargeBoxIdentity,
+        //                               String                               From,
+        //                               String                               To,
 
-                                       CSClientLogger                       Logger,
-                                       HTTPHostname                         Hostname,
-                                       IPPort?                              RemotePort                   = null,
-                                       RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                                       LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                                       HTTPHostname?                        HTTPVirtualHost              = null,
-                                       HTTPPath?                            URLPrefix                    = null,
-                                       String                               HTTPUserAgent                = DefaultHTTPUserAgent,
-                                       TimeSpan?                            RequestTimeout               = null,
-                                       Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
-                                       DNSClient                            DNSClient                    = null)
+        //                               CSClientLogger                       Logger,
+        //                               HTTPHostname                         Hostname,
+        //                               IPPort?                              RemotePort                   = null,
+        //                               RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
+        //                               LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
+        //                               HTTPHostname?                        HTTPVirtualHost              = null,
+        //                               HTTPPath?                            URLPrefix                    = null,
+        //                               String                               HTTPUserAgent                = DefaultHTTPUserAgent,
+        //                               TimeSpan?                            RequestTimeout               = null,
+        //                               Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
+        //                               DNSClient                            DNSClient                    = null)
 
-            : base(ChargeBoxIdentity.ToString(),
-                   Hostname,
-                   RemotePort ?? DefaultRemotePort,
-                   RemoteCertificateValidator,
-                   ClientCertificateSelector,
-                   HTTPVirtualHost,
-                   URLPrefix ?? DefaultURLPrefix,
-                   null,
-                   HTTPUserAgent,
-                   RequestTimeout,
-                   null,
-                   MaxNumberOfRetries,
-                   DNSClient)
+        //    : base(ChargeBoxIdentity.ToString(),
+        //           Hostname,
+        //           RemotePort ?? DefaultRemotePort,
+        //           RemoteCertificateValidator,
+        //           ClientCertificateSelector,
+        //           HTTPVirtualHost,
+        //           URLPrefix ?? DefaultURLPrefix,
+        //           null,
+        //           HTTPUserAgent,
+        //           RequestTimeout,
+        //           null,
+        //           MaxNumberOfRetries,
+        //           DNSClient)
 
-        {
+        //{
 
-            #region Initial checks
+        //    #region Initial checks
 
-            if (ChargeBoxIdentity.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ChargeBoxIdentity),  "The given charge box identification must not be null or empty!");
+        //    if (ChargeBoxIdentity.IsNullOrEmpty)
+        //        throw new ArgumentNullException(nameof(ChargeBoxIdentity),  "The given charge box identification must not be null or empty!");
 
-            if (From.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(From),               "The given SOAP message source must not be null or empty!");
+        //    if (From.IsNullOrEmpty())
+        //        throw new ArgumentNullException(nameof(From),               "The given SOAP message source must not be null or empty!");
 
-            if (To.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(To),                 "The given SOAP message destination must not be null or empty!");
+        //    if (To.IsNullOrEmpty())
+        //        throw new ArgumentNullException(nameof(To),                 "The given SOAP message destination must not be null or empty!");
 
-            #endregion
+        //    #endregion
 
-            this.From    = From;
-            this.To      = To;
+        //    this.From    = From;
+        //    this.To      = To;
 
-            this.Logger  = Logger ?? throw new ArgumentNullException(nameof(Logger), "The given client logger must not be null!"); ;
+        //    this.Logger  = Logger ?? throw new ArgumentNullException(nameof(Logger), "The given client logger must not be null!"); ;
 
-        }
+        //}
 
         #endregion
 
@@ -735,7 +750,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -756,10 +771,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnResetRequest?.Invoke(DateTime.UtcNow,
+                OnResetRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                        Timestamp.Value,
                                        this,
-                                       ClientId,
+                                       Description,
                                        EventTrackingId,
                                        ChargeBoxIdentity,
                                        Type,
@@ -768,7 +783,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnResetRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnResetRequest));
             }
 
             #endregion
@@ -781,15 +796,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -891,21 +912,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnResetResponse?.Invoke(DateTime.UtcNow,
+                OnResetResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                              Timestamp.Value,
                                              this,
-                                             ClientId,
+                                             Description,
                                              EventTrackingId,
                                              ChargeBoxIdentity,
                                              Type,
                                              RequestTimeout,
                                              result.Content,
-                                             DateTime.UtcNow - Timestamp.Value);
+                                             org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnResetResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnResetResponse));
             }
 
             #endregion
@@ -947,7 +968,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -968,10 +989,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnChangeAvailabilityRequest?.Invoke(DateTime.UtcNow,
+                OnChangeAvailabilityRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                     Timestamp.Value,
                                                     this,
-                                                    ClientId,
+                                                    Description,
                                                     EventTrackingId,
                                                     ChargeBoxIdentity,
                                                     ConnectorId,
@@ -981,7 +1002,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnChangeAvailabilityRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnChangeAvailabilityRequest));
             }
 
             #endregion
@@ -995,15 +1016,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -1105,22 +1132,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnChangeAvailabilityResponse?.Invoke(DateTime.UtcNow,
+                OnChangeAvailabilityResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                      Timestamp.Value,
                                                      this,
-                                                     ClientId,
+                                                     Description,
                                                      EventTrackingId,
                                                      ChargeBoxIdentity,
                                                      ConnectorId,
                                                      Availability,
                                                      RequestTimeout,
                                                      result.Content,
-                                                     DateTime.UtcNow - Timestamp.Value);
+                                                     org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnChangeAvailabilityResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnChangeAvailabilityResponse));
             }
 
             #endregion
@@ -1156,7 +1183,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1177,10 +1204,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnGetConfigurationRequest?.Invoke(DateTime.UtcNow,
+                OnGetConfigurationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                   Timestamp.Value,
                                                   this,
-                                                  ClientId,
+                                                  Description,
                                                   EventTrackingId,
                                                   ChargeBoxIdentity,
                                                   Keys,
@@ -1189,7 +1216,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnGetConfigurationRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnGetConfigurationRequest));
             }
 
             #endregion
@@ -1202,15 +1229,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -1312,21 +1345,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnGetConfigurationResponse?.Invoke(DateTime.UtcNow,
+                OnGetConfigurationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                    Timestamp.Value,
                                                    this,
-                                                   ClientId,
+                                                   Description,
                                                    EventTrackingId,
                                                    ChargeBoxIdentity,
                                                    Keys,
                                                    RequestTimeout,
                                                    result.Content,
-                                                   DateTime.UtcNow - Timestamp.Value);
+                                                   org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnGetConfigurationResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnGetConfigurationResponse));
             }
 
             #endregion
@@ -1368,7 +1401,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1389,10 +1422,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnChangeConfigurationRequest?.Invoke(DateTime.UtcNow,
+                OnChangeConfigurationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                      Timestamp.Value,
                                                      this,
-                                                     ClientId,
+                                                     Description,
                                                      EventTrackingId,
                                                      ChargeBoxIdentity,
                                                      Key,
@@ -1402,7 +1435,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnChangeConfigurationRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnChangeConfigurationRequest));
             }
 
             #endregion
@@ -1416,15 +1449,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -1526,22 +1565,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnChangeConfigurationResponse?.Invoke(DateTime.UtcNow,
+                OnChangeConfigurationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                       Timestamp.Value,
                                                       this,
-                                                      ClientId,
+                                                      Description,
                                                       EventTrackingId,
                                                       ChargeBoxIdentity,
                                                       Key,
                                                       Value,
                                                       RequestTimeout,
                                                       result.Content,
-                                                      DateTime.UtcNow - Timestamp.Value);
+                                                      org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnChangeConfigurationResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnChangeConfigurationResponse));
             }
 
             #endregion
@@ -1585,7 +1624,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1606,10 +1645,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnDataTransferRequest?.Invoke(DateTime.UtcNow,
+                OnDataTransferRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                               Timestamp.Value,
                                               this,
-                                              ClientId,
+                                              Description,
                                               EventTrackingId,
                                               VendorId,
                                               MessageId,
@@ -1619,7 +1658,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnDataTransferRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnDataTransferRequest));
             }
 
             #endregion
@@ -1631,15 +1670,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                   Data);
 
 
-            using (var _OCPPClient = new SOAPClient(Hostname,
-                                                    URLPrefix,
+            using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                     VirtualHostname,
-                                                    RemotePort,
+                                                    true,
+                                                    null,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
-                                                    UserAgent,
-                                                    false,
+                                                    ClientCert,
+                                                    HTTPUserAgent,
+                                                    URLPathPrefix,
+                                                    WSSLoginPassword,
                                                     RequestTimeout,
+                                                    TransmissionRetryDelay,
+                                                    MaxNumberOfRetries,
+                                                    UseHTTPPipelining,
+                                                    HTTPLogger,
                                                     DNSClient))
             {
 
@@ -1735,22 +1780,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnDataTransferResponse?.Invoke(DateTime.UtcNow,
+                OnDataTransferResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                Timestamp.Value,
                                                this,
-                                               ClientId,
+                                               Description,
                                                EventTrackingId,
                                                VendorId,
                                                MessageId,
                                                Data,
                                                RequestTimeout,
                                                result.Content,
-                                               DateTime.UtcNow - Timestamp.Value);
+                                               org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnDataTransferResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnDataTransferResponse));
             }
 
             #endregion
@@ -1798,7 +1843,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1819,10 +1864,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnGetDiagnosticsRequest?.Invoke(DateTime.UtcNow,
+                OnGetDiagnosticsRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                 Timestamp.Value,
                                                 this,
-                                                ClientId,
+                                                Description,
                                                 EventTrackingId,
                                                 ChargeBoxIdentity,
                                                 Location,
@@ -1835,7 +1880,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnGetDiagnosticsRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnGetDiagnosticsRequest));
             }
 
             #endregion
@@ -1852,15 +1897,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -1962,10 +2013,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnGetDiagnosticsResponse?.Invoke(DateTime.UtcNow,
+                OnGetDiagnosticsResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                  Timestamp.Value,
                                                  this,
-                                                 ClientId,
+                                                 Description,
                                                  EventTrackingId,
                                                  ChargeBoxIdentity,
                                                  Location,
@@ -1975,12 +2026,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                  RetryInterval,
                                                  RequestTimeout,
                                                  result.Content,
-                                                 DateTime.UtcNow - Timestamp.Value);
+                                                 org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnGetDiagnosticsResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnGetDiagnosticsResponse));
             }
 
             #endregion
@@ -2018,7 +2069,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2039,10 +2090,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnTriggerMessageRequest?.Invoke(DateTime.UtcNow,
+                OnTriggerMessageRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                 Timestamp.Value,
                                                 this,
-                                                ClientId,
+                                                Description,
                                                 EventTrackingId,
                                                 ChargeBoxIdentity,
                                                 RequestedMessage,
@@ -2052,7 +2103,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnTriggerMessageRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnTriggerMessageRequest));
             }
 
             #endregion
@@ -2066,15 +2117,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -2176,22 +2233,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnTriggerMessageResponse?.Invoke(DateTime.UtcNow,
+                OnTriggerMessageResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                  Timestamp.Value,
                                                  this,
-                                                 ClientId,
+                                                 Description,
                                                  EventTrackingId,
                                                  ChargeBoxIdentity,
                                                  RequestedMessage,
                                                  ConnectorId,
                                                  RequestTimeout,
                                                  result.Content,
-                                                 DateTime.UtcNow - Timestamp.Value);
+                                                 org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnTriggerMessageResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnTriggerMessageResponse));
             }
 
             #endregion
@@ -2237,7 +2294,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2258,10 +2315,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnUpdateFirmwareRequest?.Invoke(DateTime.UtcNow,
+                OnUpdateFirmwareRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                 Timestamp.Value,
                                                 this,
-                                                ClientId,
+                                                Description,
                                                 EventTrackingId,
                                                 ChargeBoxIdentity,
                                                 Location,
@@ -2273,7 +2330,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnUpdateFirmwareRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnUpdateFirmwareRequest));
             }
 
             #endregion
@@ -2289,15 +2346,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -2399,10 +2462,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnUpdateFirmwareResponse?.Invoke(DateTime.UtcNow,
+                OnUpdateFirmwareResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                  Timestamp.Value,
                                                  this,
-                                                 ClientId,
+                                                 Description,
                                                  EventTrackingId,
                                                  ChargeBoxIdentity,
                                                  Location,
@@ -2411,12 +2474,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                  RetryInterval,
                                                  RequestTimeout,
                                                  result.Content,
-                                                 DateTime.UtcNow - Timestamp.Value);
+                                                 org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnUpdateFirmwareResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnUpdateFirmwareResponse));
             }
 
             #endregion
@@ -2471,7 +2534,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2492,10 +2555,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnReserveNowRequest?.Invoke(DateTime.UtcNow,
+                OnReserveNowRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                             Timestamp.Value,
                                             this,
-                                            ClientId,
+                                            Description,
                                             EventTrackingId,
                                             ChargeBoxIdentity,
                                             ConnectorId,
@@ -2508,7 +2571,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnReserveNowRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnReserveNowRequest));
             }
 
             #endregion
@@ -2525,15 +2588,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -2635,10 +2704,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnReserveNowResponse?.Invoke(DateTime.UtcNow,
+                OnReserveNowResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                              Timestamp.Value,
                                              this,
-                                             ClientId,
+                                             Description,
                                              EventTrackingId,
                                              ChargeBoxIdentity,
                                              ConnectorId,
@@ -2648,12 +2717,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                              ParentIdTag,
                                              RequestTimeout,
                                              result.Content,
-                                             DateTime.UtcNow - Timestamp.Value);
+                                             org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnReserveNowResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnReserveNowResponse));
             }
 
             #endregion
@@ -2693,7 +2762,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2714,10 +2783,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnCancelReservationRequest?.Invoke(DateTime.UtcNow,
+                OnCancelReservationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                    Timestamp.Value,
                                                    this,
-                                                   ClientId,
+                                                   Description,
                                                    EventTrackingId,
                                                    ChargeBoxIdentity,
                                                    ReservationId,
@@ -2726,7 +2795,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnCancelReservationRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnCancelReservationRequest));
             }
 
             #endregion
@@ -2739,15 +2808,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -2849,21 +2924,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnCancelReservationResponse?.Invoke(DateTime.UtcNow,
+                OnCancelReservationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                     Timestamp.Value,
                                                     this,
-                                                    ClientId,
+                                                    Description,
                                                     EventTrackingId,
                                                     ChargeBoxIdentity,
                                                     ReservationId,
                                                     RequestTimeout,
                                                     result.Content,
-                                                    DateTime.UtcNow - Timestamp.Value);
+                                                    org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnCancelReservationResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnCancelReservationResponse));
             }
 
             #endregion
@@ -2907,7 +2982,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2928,10 +3003,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnRemoteStartTransactionRequest?.Invoke(DateTime.UtcNow,
+                OnRemoteStartTransactionRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                         Timestamp.Value,
                                                         this,
-                                                        ClientId,
+                                                        Description,
                                                         EventTrackingId,
                                                         ChargeBoxIdentity,
                                                         IdTag,
@@ -2942,7 +3017,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnRemoteStartTransactionRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnRemoteStartTransactionRequest));
             }
 
             #endregion
@@ -2957,16 +3032,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname:                    Hostname,
-                                                        URLPrefix:                   URLPrefix,
-                                                        VirtualHostname:             VirtualHostname,
-                                                        HTTPPort:                    RemotePort,
-                                                        RemoteCertificateValidator:  RemoteCertificateValidator,
-                                                        ClientCertificateSelector:   ClientCertificateSelector,
-                                                        UserAgent:                   UserAgent,
-                                                        UseFakeURLPrefix:            false,
-                                                        RequestTimeout:              RequestTimeout,
-                                                        DNSClient:                   DNSClient))
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
+                                                        VirtualHostname,
+                                                        true,
+                                                        null,
+                                                        RemoteCertificateValidator,
+                                                        ClientCertificateSelector,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
+                                                        RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
+                                                        DNSClient))
                 {
 
                     result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
@@ -3068,10 +3149,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnRemoteStartTransactionResponse?.Invoke(DateTime.UtcNow,
+                OnRemoteStartTransactionResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                          Timestamp.Value,
                                                          this,
-                                                         ClientId,
+                                                         Description,
                                                          EventTrackingId,
                                                          ChargeBoxIdentity,
                                                          IdTag,
@@ -3079,12 +3160,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                          ChargingProfile,
                                                          RequestTimeout,
                                                          result.Content,
-                                                         DateTime.UtcNow - Timestamp.Value);
+                                                         org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnRemoteStartTransactionResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnRemoteStartTransactionResponse));
             }
 
             #endregion
@@ -3124,7 +3205,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3145,10 +3226,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnRemoteStopTransactionRequest?.Invoke(DateTime.UtcNow,
+                OnRemoteStopTransactionRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                        Timestamp.Value,
                                                        this,
-                                                       ClientId,
+                                                       Description,
                                                        EventTrackingId,
                                                        ChargeBoxIdentity,
                                                        TransactionId,
@@ -3157,7 +3238,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnRemoteStopTransactionRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnRemoteStopTransactionRequest));
             }
 
             #endregion
@@ -3170,15 +3251,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -3280,21 +3367,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnRemoteStopTransactionResponse?.Invoke(DateTime.UtcNow,
+                OnRemoteStopTransactionResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                         Timestamp.Value,
                                                         this,
-                                                        ClientId,
+                                                        Description,
                                                         EventTrackingId,
                                                         ChargeBoxIdentity,
                                                         TransactionId,
                                                         RequestTimeout,
                                                         result.Content,
-                                                        DateTime.UtcNow - Timestamp.Value);
+                                                        org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnRemoteStopTransactionResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnRemoteStopTransactionResponse));
             }
 
             #endregion
@@ -3339,7 +3426,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3360,10 +3447,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnSetChargingProfileRequest?.Invoke(DateTime.UtcNow,
+                OnSetChargingProfileRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                     Timestamp.Value,
                                                     this,
-                                                    ClientId,
+                                                    Description,
                                                     EventTrackingId,
                                                     ChargeBoxIdentity,
                                                     ConnectorId,
@@ -3373,7 +3460,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnSetChargingProfileRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnSetChargingProfileRequest));
             }
 
             #endregion
@@ -3387,15 +3474,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -3497,22 +3590,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnSetChargingProfileResponse?.Invoke(DateTime.UtcNow,
+                OnSetChargingProfileResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                      Timestamp.Value,
                                                      this,
-                                                     ClientId,
+                                                     Description,
                                                      EventTrackingId,
                                                      ChargeBoxIdentity,
                                                      ConnectorId,
                                                      ChargingProfile,
                                                      RequestTimeout,
                                                      result.Content,
-                                                     DateTime.UtcNow - Timestamp.Value);
+                                                     org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnSetChargingProfileResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnSetChargingProfileResponse));
             }
 
             #endregion
@@ -3554,7 +3647,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3575,10 +3668,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnClearChargingProfileRequest?.Invoke(DateTime.UtcNow,
+                OnClearChargingProfileRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                       Timestamp.Value,
                                                       this,
-                                                      ClientId,
+                                                      Description,
                                                       EventTrackingId,
                                                       ChargeBoxIdentity,
                                                       ChargingProfileId,
@@ -3590,7 +3683,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnClearChargingProfileRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnClearChargingProfileRequest));
             }
 
             #endregion
@@ -3606,15 +3699,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -3716,10 +3815,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnClearChargingProfileResponse?.Invoke(DateTime.UtcNow,
+                OnClearChargingProfileResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                        Timestamp.Value,
                                                        this,
-                                                       ClientId,
+                                                       Description,
                                                        EventTrackingId,
                                                        ChargeBoxIdentity,
                                                        ChargingProfileId,
@@ -3728,12 +3827,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        StackLevel,
                                                        RequestTimeout,
                                                        result.Content,
-                                                       DateTime.UtcNow - Timestamp.Value);
+                                                       org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnClearChargingProfileResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnClearChargingProfileResponse));
             }
 
             #endregion
@@ -3777,7 +3876,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3798,10 +3897,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnGetCompositeScheduleRequest?.Invoke(DateTime.UtcNow,
+                OnGetCompositeScheduleRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                       Timestamp.Value,
                                                       this,
-                                                      ClientId,
+                                                      Description,
                                                       EventTrackingId,
                                                       ChargeBoxIdentity,
                                                       ConnectorId,
@@ -3812,7 +3911,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnGetCompositeScheduleRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnGetCompositeScheduleRequest));
             }
 
             #endregion
@@ -3827,15 +3926,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -3937,10 +4042,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnGetCompositeScheduleResponse?.Invoke(DateTime.UtcNow,
+                OnGetCompositeScheduleResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                        Timestamp.Value,
                                                        this,
-                                                       ClientId,
+                                                       Description,
                                                        EventTrackingId,
                                                        ChargeBoxIdentity,
                                                        ConnectorId,
@@ -3948,12 +4053,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        ChargingRateUnit,
                                                        RequestTimeout,
                                                        result.Content,
-                                                       DateTime.UtcNow - Timestamp.Value);
+                                                       org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnGetCompositeScheduleResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnGetCompositeScheduleResponse));
             }
 
             #endregion
@@ -3993,7 +4098,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -4014,10 +4119,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnUnlockConnectorRequest?.Invoke(DateTime.UtcNow,
+                OnUnlockConnectorRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                  Timestamp.Value,
                                                  this,
-                                                 ClientId,
+                                                 Description,
                                                  EventTrackingId,
                                                  ChargeBoxIdentity,
                                                  ConnectorId,
@@ -4026,7 +4131,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnUnlockConnectorRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnUnlockConnectorRequest));
             }
 
             #endregion
@@ -4039,15 +4144,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -4149,21 +4260,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnUnlockConnectorResponse?.Invoke(DateTime.UtcNow,
+                OnUnlockConnectorResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                   Timestamp.Value,
                                                   this,
-                                                  ClientId,
+                                                  Description,
                                                   EventTrackingId,
                                                   ChargeBoxIdentity,
                                                   ConnectorId,
                                                   RequestTimeout,
                                                   result.Content,
-                                                  DateTime.UtcNow - Timestamp.Value);
+                                                  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnUnlockConnectorResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnUnlockConnectorResponse));
             }
 
             #endregion
@@ -4196,7 +4307,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -4217,10 +4328,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnGetLocalListVersionRequest?.Invoke(DateTime.UtcNow,
+                OnGetLocalListVersionRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                      Timestamp.Value,
                                                      this,
-                                                     ClientId,
+                                                     Description,
                                                      EventTrackingId,
                                                      ChargeBoxIdentity,
                                                      RequestTimeout);
@@ -4228,7 +4339,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnGetLocalListVersionRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnGetLocalListVersionRequest));
             }
 
             #endregion
@@ -4240,15 +4351,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -4350,20 +4467,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnGetLocalListVersionResponse?.Invoke(DateTime.UtcNow,
+                OnGetLocalListVersionResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                       Timestamp.Value,
                                                       this,
-                                                      ClientId,
+                                                      Description,
                                                       EventTrackingId,
                                                       ChargeBoxIdentity,
                                                       RequestTimeout,
                                                       result.Content,
-                                                      DateTime.UtcNow - Timestamp.Value);
+                                                      org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnGetLocalListVersionResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnGetLocalListVersionResponse));
             }
 
             #endregion
@@ -4403,7 +4520,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -4424,10 +4541,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnSendLocalListRequest?.Invoke(DateTime.UtcNow,
+                OnSendLocalListRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                Timestamp.Value,
                                                this,
-                                               ClientId,
+                                               Description,
                                                EventTrackingId,
                                                ChargeBoxIdentity,
                                                ListVersion,
@@ -4438,7 +4555,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnSendLocalListRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnSendLocalListRequest));
             }
 
             #endregion
@@ -4453,15 +4570,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -4563,10 +4686,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnSendLocalListResponse?.Invoke(DateTime.UtcNow,
+                OnSendLocalListResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                Timestamp.Value,
                                                this,
-                                               ClientId,
+                                               Description,
                                                EventTrackingId,
                                                ChargeBoxIdentity,
                                                ListVersion,
@@ -4574,12 +4697,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                LocalAuthorizationList,
                                                RequestTimeout,
                                                result.Content,
-                                               DateTime.UtcNow - Timestamp.Value);
+                                               org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnSendLocalListResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnSendLocalListResponse));
             }
 
             #endregion
@@ -4611,7 +4734,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -4632,10 +4755,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnClearCacheRequest?.Invoke(DateTime.UtcNow,
+                OnClearCacheRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                             Timestamp.Value,
                                             this,
-                                            ClientId,
+                                            Description,
                                             EventTrackingId,
                                             ChargeBoxIdentity,
                                             RequestTimeout);
@@ -4643,7 +4766,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnClearCacheRequest));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnClearCacheRequest));
             }
 
             #endregion
@@ -4655,15 +4778,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(Hostname,
-                                                        URLPrefix,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                         VirtualHostname,
-                                                        RemotePort,
+                                                        true,
+                                                        null,
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
-                                                        UserAgent,
-                                                        false,
+                                                        ClientCert,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
                                                         RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
                                                         DNSClient))
                 {
 
@@ -4765,20 +4894,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                OnClearCacheResponse?.Invoke(DateTime.UtcNow,
+                OnClearCacheResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                              Timestamp.Value,
                                              this,
-                                             ClientId,
+                                             Description,
                                              EventTrackingId,
                                              ChargeBoxIdentity,
                                              RequestTimeout,
                                              result.Content,
-                                             DateTime.UtcNow - Timestamp.Value);
+                                             org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(CentralSystemSOAPClient) + "." + nameof(OnClearCacheResponse));
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnClearCacheResponse));
             }
 
             #endregion

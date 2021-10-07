@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, ChargingSchedulePeriodXML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ChargingSchedulePeriodXML, e);
 
                 ChargingSchedulePeriod = default;
                 return false;
@@ -305,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, ChargingSchedulePeriodJSON, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ChargingSchedulePeriodJSON, e);
 
                 ChargingSchedulePeriod = default;
                 return false;
@@ -357,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, ChargingSchedulePeriodText, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ChargingSchedulePeriodText, e);
             }
 
             ChargingSchedulePeriod = default(ChargingSchedulePeriod);

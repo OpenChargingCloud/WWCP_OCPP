@@ -678,14 +678,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnBootNotificationWSRequest?.Invoke(DateTime.UtcNow,
+                                        //OnBootNotificationWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                                    this,
                                         //                                    RequestData;
 
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationWSRequest));
                                     }
 
                                     #endregion
@@ -708,7 +708,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnBootNotificationRequest?.Invoke(DateTime.UtcNow,
+                                                OnBootNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                                   this,
                                                                                   EventTrackingId,
                                                                                   bootNotificationRequest);
@@ -716,7 +716,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationRequest));
                                             }
 
                                             #endregion
@@ -729,7 +729,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 var results = OnBootNotification?.
                                                                     GetInvocationList()?.
                                                                     SafeSelect(subscriber => (subscriber as BootNotificationDelegate)
-                                                                        (DateTime.UtcNow,
+                                                                        (Timestamp.Now,
                                                                          this,
                                                                          CancellationToken,
                                                                          EventTrackingId,
@@ -757,7 +757,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnBootNotificationResponse?.Invoke(DateTime.UtcNow,
+                                                OnBootNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                                    this,
                                                                                    EventTrackingId,
                                                                                    bootNotificationRequest,
@@ -771,7 +771,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationResponse));
                                             }
 
                                             #endregion
@@ -809,7 +809,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnBootNotificationWSResponse?.Invoke(DateTime.UtcNow,
+                                        //OnBootNotificationWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                                     this,
                                         //                                     RequestData,
                                         //                                     HTTPResponse);
@@ -817,7 +817,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationWSResponse));
                                     }
 
                                     #endregion
@@ -837,14 +837,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnHeartbeatWSRequest?.Invoke(DateTime.UtcNow,
+                                        //OnHeartbeatWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                                      SOAPServer.HTTPServer,
                                         //                                      Request);
 
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatWSRequest));
                                     }
 
                                     #endregion
@@ -867,7 +867,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnHeartbeatRequest?.Invoke(DateTime.UtcNow,
+                                                OnHeartbeatRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                            this,
                                                                            EventTrackingId,
                                                                            heartbeatRequest);
@@ -875,7 +875,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatRequest));
                                             }
 
                                             #endregion
@@ -888,7 +888,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 var results = OnHeartbeat?.
                                                                     GetInvocationList()?.
                                                                     SafeSelect(subscriber => (subscriber as HeartbeatDelegate)
-                                                                        (DateTime.UtcNow,
+                                                                        (Timestamp.Now,
                                                                          this,
                                                                          CancellationToken,
                                                                          EventTrackingId,
@@ -916,7 +916,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnHeartbeatResponse?.Invoke(DateTime.UtcNow,
+                                                OnHeartbeatResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                             this,
                                                                             EventTrackingId,
                                                                             heartbeatRequest,
@@ -928,7 +928,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatResponse));
                                             }
 
                                             #endregion
@@ -974,7 +974,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatWSResponse));
                                     }
 
                                     #endregion
@@ -995,14 +995,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnAuthorizeWSRequest?.Invoke(DateTime.UtcNow,
+                                        //OnAuthorizeWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                             this,
                                         //                             RequestData);
 
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeWSRequest));
                                     }
 
                                     #endregion
@@ -1025,7 +1025,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnAuthorizeRequest?.Invoke(DateTime.UtcNow,
+                                                OnAuthorizeRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                            this,
                                                                            EventTrackingId,
                                                                            authorizeRequest);
@@ -1033,7 +1033,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeRequest));
                                             }
 
                                             #endregion
@@ -1046,7 +1046,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 var results = OnAuthorize?.
                                                                     GetInvocationList()?.
                                                                     SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)
-                                                                        (DateTime.UtcNow,
+                                                                        (Timestamp.Now,
                                                                          this,
                                                                          CancellationToken,
                                                                          EventTrackingId,
@@ -1074,7 +1074,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnAuthorizeResponse?.Invoke(DateTime.UtcNow,
+                                                OnAuthorizeResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                             this,
                                                                             EventTrackingId,
                                                                             authorizeRequest,
@@ -1086,7 +1086,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeResponse));
                                             }
 
                                             #endregion
@@ -1124,7 +1124,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnAuthorizeWSResponse?.Invoke(DateTime.UtcNow,
+                                        //OnAuthorizeWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                              this,
                                         //                              Request,
                                         //                              HTTPResponse);
@@ -1132,7 +1132,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeWSResponse));
                                     }
 
                                     #endregion
@@ -1152,14 +1152,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnStartTransactionWSRequest?.Invoke(DateTime.UtcNow,
+                                        //OnStartTransactionWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                             this,
                                         //                             RequestData);
 
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionWSRequest));
                                     }
 
                                     #endregion
@@ -1182,7 +1182,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnStartTransactionRequest?.Invoke(DateTime.UtcNow,
+                                                OnStartTransactionRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                                   this,
                                                                                   EventTrackingId,
                                                                                   startTransactionRequest);
@@ -1190,7 +1190,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionRequest));
                                             }
 
                                             #endregion
@@ -1203,7 +1203,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 var results = OnStartTransaction?.
                                                                     GetInvocationList()?.
                                                                     SafeSelect(subscriber => (subscriber as OnStartTransactionDelegate)
-                                                                        (DateTime.UtcNow,
+                                                                        (Timestamp.Now,
                                                                          this,
                                                                          CancellationToken,
                                                                          EventTrackingId,
@@ -1231,7 +1231,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnStartTransactionResponse?.Invoke(DateTime.UtcNow,
+                                                OnStartTransactionResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                                    this,
                                                                                    EventTrackingId,
                                                                                    startTransactionRequest,
@@ -1244,7 +1244,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionResponse));
                                             }
 
                                             #endregion
@@ -1282,7 +1282,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnStartTransactionWSResponse?.Invoke(DateTime.UtcNow,
+                                        //OnStartTransactionWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                              this,
                                         //                              Request,
                                         //                              HTTPResponse);
@@ -1290,7 +1290,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionWSResponse));
                                     }
 
                                     #endregion
@@ -1310,14 +1310,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnStatusNotificationWSRequest?.Invoke(DateTime.UtcNow,
+                                        //OnStatusNotificationWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                             this,
                                         //                             RequestData);
 
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationWSRequest));
                                     }
 
                                     #endregion
@@ -1340,7 +1340,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnStatusNotificationRequest?.Invoke(DateTime.UtcNow,
+                                                OnStatusNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                                     this,
                                                                                     EventTrackingId,
                                                                                     statusNotificationRequest);
@@ -1348,7 +1348,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationRequest));
                                             }
 
                                             #endregion
@@ -1361,7 +1361,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 var results = OnStatusNotification?.
                                                                     GetInvocationList()?.
                                                                     SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)
-                                                                        (DateTime.UtcNow,
+                                                                        (Timestamp.Now,
                                                                          this,
                                                                          CancellationToken,
                                                                          EventTrackingId,
@@ -1389,7 +1389,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnStatusNotificationResponse?.Invoke(DateTime.UtcNow,
+                                                OnStatusNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                                      this,
                                                                                      EventTrackingId,
                                                                                      statusNotificationRequest,
@@ -1400,7 +1400,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationResponse));
                                             }
 
                                             #endregion
@@ -1438,7 +1438,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnStatusNotificationWSResponse?.Invoke(DateTime.UtcNow,
+                                        //OnStatusNotificationWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                              this,
                                         //                              Request,
                                         //                              HTTPResponse);
@@ -1446,7 +1446,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationWSResponse));
                                     }
 
                                     #endregion
@@ -1466,14 +1466,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnMeterValuesWSRequest?.Invoke(DateTime.UtcNow,
+                                        //OnMeterValuesWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                             this,
                                         //                             RequestData);
 
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesWSRequest));
                                     }
 
                                     #endregion
@@ -1496,7 +1496,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnMeterValuesRequest?.Invoke(DateTime.UtcNow,
+                                                OnMeterValuesRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                              this,
                                                                              EventTrackingId,
                                                                              meterValuesRequest);
@@ -1504,7 +1504,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesRequest));
                                             }
 
                                             #endregion
@@ -1517,7 +1517,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 var results = OnMeterValues?.
                                                                     GetInvocationList()?.
                                                                     SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)
-                                                                        (DateTime.UtcNow,
+                                                                        (Timestamp.Now,
                                                                          this,
                                                                          CancellationToken,
                                                                          EventTrackingId,
@@ -1545,7 +1545,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnMeterValuesResponse?.Invoke(DateTime.UtcNow,
+                                                OnMeterValuesResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                               this,
                                                                               EventTrackingId,
                                                                               meterValuesRequest,
@@ -1556,7 +1556,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesResponse));
                                             }
 
                                             #endregion
@@ -1594,7 +1594,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnMeterValuesWSResponse?.Invoke(DateTime.UtcNow,
+                                        //OnMeterValuesWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                              this,
                                         //                              Request,
                                         //                              HTTPResponse);
@@ -1602,7 +1602,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesWSResponse));
                                     }
 
                                     #endregion
@@ -1622,14 +1622,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnStopTransactionWSRequest?.Invoke(DateTime.UtcNow,
+                                        //OnStopTransactionWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                             this,
                                         //                             RequestData);
 
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionWSRequest));
                                     }
 
                                     #endregion
@@ -1652,7 +1652,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnStopTransactionRequest?.Invoke(DateTime.UtcNow,
+                                                OnStopTransactionRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                                  this,
                                                                                  EventTrackingId,
                                                                                  stopTransactionRequest);
@@ -1660,7 +1660,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionRequest));
                                             }
 
                                             #endregion
@@ -1673,7 +1673,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 var results = OnStopTransaction?.
                                                                     GetInvocationList()?.
                                                                     SafeSelect(subscriber => (subscriber as OnStopTransactionDelegate)
-                                                                        (DateTime.UtcNow,
+                                                                        (Timestamp.Now,
                                                                          this,
                                                                          CancellationToken,
                                                                          EventTrackingId,
@@ -1701,7 +1701,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnStopTransactionResponse?.Invoke(DateTime.UtcNow,
+                                                OnStopTransactionResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                                   this,
                                                                                   EventTrackingId,
                                                                                   stopTransactionRequest,
@@ -1713,7 +1713,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionResponse));
                                             }
 
                                             #endregion
@@ -1751,7 +1751,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnStopTransactionWSResponse?.Invoke(DateTime.UtcNow,
+                                        //OnStopTransactionWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                              this,
                                         //                              Request,
                                         //                              HTTPResponse);
@@ -1759,7 +1759,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionWSResponse));
                                     }
 
                                     #endregion
@@ -1780,14 +1780,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnIncomingDataTransferWSRequest?.Invoke(DateTime.UtcNow,
+                                        //OnIncomingDataTransferWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                             this,
                                         //                             RequestData);
 
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferWSRequest));
                                     }
 
                                     #endregion
@@ -1810,7 +1810,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnIncomingDataTransferRequest?.Invoke(DateTime.UtcNow,
+                                                OnIncomingDataTransferRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                                       this,
                                                                                       EventTrackingId,
                                                                                       dataTransferRequest);
@@ -1818,7 +1818,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferRequest));
                                             }
 
                                             #endregion
@@ -1831,7 +1831,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 var results = OnIncomingDataTransfer?.
                                                                     GetInvocationList()?.
                                                                     SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
-                                                                        (DateTime.UtcNow,
+                                                                        (Timestamp.Now,
                                                                          this,
                                                                          CancellationToken,
                                                                          EventTrackingId,
@@ -1859,7 +1859,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnIncomingDataTransferResponse?.Invoke(DateTime.UtcNow,
+                                                OnIncomingDataTransferResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                                        this,
                                                                                        EventTrackingId,
                                                                                        dataTransferRequest,
@@ -1872,7 +1872,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferResponse));
                                             }
 
                                             #endregion
@@ -1910,7 +1910,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnIncomingDataTransferWSResponse?.Invoke(DateTime.UtcNow,
+                                        //OnIncomingDataTransferWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                              this,
                                         //                              Request,
                                         //                              HTTPResponse);
@@ -1918,7 +1918,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferWSResponse));
                                     }
 
                                     #endregion
@@ -1938,14 +1938,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnDiagnosticsStatusNotificationWSRequest?.Invoke(DateTime.UtcNow,
+                                        //OnDiagnosticsStatusNotificationWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                             this,
                                         //                             RequestData);
 
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationWSRequest));
                                     }
 
                                     #endregion
@@ -1968,7 +1968,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnDiagnosticsStatusNotificationRequest?.Invoke(DateTime.UtcNow,
+                                                OnDiagnosticsStatusNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                                                this,
                                                                                                EventTrackingId,
                                                                                                diagnosticsDiagnosticsStatusNotificationRequest);
@@ -1976,7 +1976,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
                                             }
 
                                             #endregion
@@ -1989,7 +1989,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 var results = OnDiagnosticsStatusNotification?.
                                                                     GetInvocationList()?.
                                                                     SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationDelegate)
-                                                                        (DateTime.UtcNow,
+                                                                        (Timestamp.Now,
                                                                          this,
                                                                          CancellationToken,
                                                                          EventTrackingId,
@@ -2017,7 +2017,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnDiagnosticsStatusNotificationResponse?.Invoke(DateTime.UtcNow,
+                                                OnDiagnosticsStatusNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                                                 this,
                                                                                                 EventTrackingId,
                                                                                                 diagnosticsDiagnosticsStatusNotificationRequest,
@@ -2028,7 +2028,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
                                             }
 
                                             #endregion
@@ -2066,7 +2066,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnDiagnosticsStatusNotificationWSResponse?.Invoke(DateTime.UtcNow,
+                                        //OnDiagnosticsStatusNotificationWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                              this,
                                         //                              Request,
                                         //                              HTTPResponse);
@@ -2074,7 +2074,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationWSResponse));
                                     }
 
                                     #endregion
@@ -2094,14 +2094,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnFirmwareStatusNotificationWSRequest?.Invoke(DateTime.UtcNow,
+                                        //OnFirmwareStatusNotificationWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                             this,
                                         //                             RequestData);
 
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationWSRequest));
                                     }
 
                                     #endregion
@@ -2124,7 +2124,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnFirmwareStatusNotificationRequest?.Invoke(DateTime.UtcNow,
+                                                OnFirmwareStatusNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                                             this,
                                                                                             EventTrackingId,
                                                                                             firmwareStatusNotificationRequest);
@@ -2132,7 +2132,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationRequest));
                                             }
 
                                             #endregion
@@ -2145,7 +2145,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 var results = OnFirmwareStatusNotification?.
                                                                     GetInvocationList()?.
                                                                     SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)
-                                                                        (DateTime.UtcNow,
+                                                                        (Timestamp.Now,
                                                                          this,
                                                                          CancellationToken,
                                                                          EventTrackingId,
@@ -2173,7 +2173,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnFirmwareStatusNotificationResponse?.Invoke(DateTime.UtcNow,
+                                                OnFirmwareStatusNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                                              this,
                                                                                              EventTrackingId,
                                                                                              firmwareStatusNotificationRequest,
@@ -2184,7 +2184,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationResponse));
                                             }
 
                                             #endregion
@@ -2222,7 +2222,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnFirmwareStatusNotificationWSResponse?.Invoke(DateTime.UtcNow,
+                                        //OnFirmwareStatusNotificationWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                         //                              this,
                                         //                              Request,
                                         //                              HTTPResponse);
@@ -2230,7 +2230,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        e.Log(nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationWSResponse));
                                     }
 
                                     #endregion
@@ -2244,7 +2244,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         return new WebSocketTextMessageRespose(RequestTimestamp,
                                                                TextMessage,
-                                                               DateTime.UtcNow,
+                                                               Timestamp.Now,
                                                                (OCPPResponseJSON != null
 
                                                                     ? new WSResponseMessage(RequestId.Value,
@@ -2379,7 +2379,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             return new WebSocketTextMessageRespose(RequestTimestamp,
                                                    TextMessage,
-                                                   DateTime.UtcNow,
+                                                   Timestamp.Now,
                                                    ((ErrorMessage?.ToJSON()) ?? new JArray()).ToString());
 
         }
@@ -2396,7 +2396,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                          TimeSpan?     Timeout   = null)
         {
 
-            var endTime = DateTime.UtcNow + (Timeout ?? TimeSpan.FromMinutes(3));
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now + (Timeout ?? TimeSpan.FromMinutes(3));
 
             var result = await SendJSON(RequestId,
                                         ClientId,
@@ -2435,7 +2435,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     { }
 
                 }
-                while (DateTime.UtcNow < endTime);
+                while (Timestamp.Now < endTime);
 
                 lock (requests)
                 {
@@ -2495,7 +2495,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 Action,
                                                 Data);
 
-                result   = new SendRequestResult(DateTime.UtcNow,
+                result   = new SendRequestResult(Timestamp.Now,
                                                  ClientId,
                                                  request,
                                                  Timeout);

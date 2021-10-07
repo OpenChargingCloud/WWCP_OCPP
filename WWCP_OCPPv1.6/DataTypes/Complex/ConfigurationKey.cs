@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, ConfigurationKeyXML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ConfigurationKeyXML, e);
 
                 ConfigurationKey = default;
                 return false;
@@ -317,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, ConfigurationKeyJSON, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ConfigurationKeyJSON, e);
 
                 ConfigurationKey = default;
                 return false;
@@ -369,7 +369,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, ConfigurationKeyText, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ConfigurationKeyText, e);
             }
 
             ConfigurationKey = default;

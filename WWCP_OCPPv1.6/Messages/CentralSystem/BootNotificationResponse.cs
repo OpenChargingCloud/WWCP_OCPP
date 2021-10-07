@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             this.Status       = RegistrationStatus.Rejected;
-            this.CurrentTime  = DateTime.UtcNow;
+            this.CurrentTime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             this.HeartbeatInterval     = TimeSpan.Zero;
 
         }
@@ -286,7 +286,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, BootNotificationResponseXML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, BootNotificationResponseXML, e);
 
                 BootNotificationResponse = null;
                 return false;
@@ -374,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, BootNotificationResponseJSON, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, BootNotificationResponseJSON, e);
 
                 BootNotificationResponse = null;
                 return false;
@@ -430,7 +430,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, BootNotificationResponseText, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, BootNotificationResponseText, e);
             }
 
             BootNotificationResponse = null;

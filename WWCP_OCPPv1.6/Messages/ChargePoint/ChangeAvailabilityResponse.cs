@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, ChangeAvailabilityResponseXML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ChangeAvailabilityResponseXML, e);
 
                 ChangeAvailabilityResponse = null;
                 return false;
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, ChangeAvailabilityResponseJSON, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ChangeAvailabilityResponseJSON, e);
 
                 ChangeAvailabilityResponse = null;
                 return false;
@@ -351,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, ChangeAvailabilityResponseText, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ChangeAvailabilityResponseText, e);
             }
 
             ChangeAvailabilityResponse = null;

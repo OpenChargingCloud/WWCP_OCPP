@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, CancelReservationResponseXML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, CancelReservationResponseXML, e);
 
                 CancelReservationResponse = null;
                 return false;
@@ -294,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, CancelReservationResponseJSON, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, CancelReservationResponseJSON, e);
 
                 CancelReservationResponse = null;
                 return false;
@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, CancelReservationResponseText, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, CancelReservationResponseText, e);
             }
 
             CancelReservationResponse = null;

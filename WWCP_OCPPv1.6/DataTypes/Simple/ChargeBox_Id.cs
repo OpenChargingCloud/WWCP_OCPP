@@ -51,14 +51,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Indicates whether this identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
+            => InternalId.IsNullOrEmpty();
 
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// The length of the charge box identification.
         /// </summary>
         public UInt64 Length
-
             => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion

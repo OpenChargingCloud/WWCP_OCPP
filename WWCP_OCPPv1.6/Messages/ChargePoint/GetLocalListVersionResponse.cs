@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, GetLocalListVersionResponseXML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, GetLocalListVersionResponseXML, e);
 
                 GetLocalListVersionResponse = null;
                 return false;
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, GetLocalListVersionResponseJSON, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, GetLocalListVersionResponseJSON, e);
 
                 GetLocalListVersionResponse = null;
                 return false;
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, GetLocalListVersionResponseText, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, GetLocalListVersionResponseText, e);
             }
 
             GetLocalListVersionResponse = null;

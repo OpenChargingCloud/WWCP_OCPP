@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, RemoteStopTransactionResponseXML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, RemoteStopTransactionResponseXML, e);
 
                 RemoteStopTransactionResponse = null;
                 return false;
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, RemoteStopTransactionResponseJSON, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, RemoteStopTransactionResponseJSON, e);
             }
 
             RemoteStopTransactionResponse = null;
@@ -348,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, RemoteStopTransactionResponseText, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, RemoteStopTransactionResponseText, e);
             }
 
             RemoteStopTransactionResponse = null;

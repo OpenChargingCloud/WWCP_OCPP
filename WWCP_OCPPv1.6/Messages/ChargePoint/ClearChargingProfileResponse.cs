@@ -219,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, ClearChargingProfileResponseXML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ClearChargingProfileResponseXML, e);
 
                 ClearChargingProfileResponse = null;
                 return false;
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, ClearChargingProfileResponseJSON, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ClearChargingProfileResponseJSON, e);
 
                 ClearChargingProfileResponse = null;
                 return false;
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, ClearChargingProfileResponseText, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ClearChargingProfileResponseText, e);
             }
 
             ClearChargingProfileResponse = null;

@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         {
 
             this.Result             = Result;
-            this.ResponseTimestamp  = DateTime.UtcNow;
+            this.ResponseTimestamp  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
         }
 

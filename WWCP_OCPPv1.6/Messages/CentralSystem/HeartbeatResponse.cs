@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         {
 
-            this.CurrentTime = DateTime.UtcNow;
+            this.CurrentTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
         }
 
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, HeartbeatResponseXML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, HeartbeatResponseXML, e);
 
                 HeartbeatResponse = null;
                 return false;
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow, HeartbeatResponseJSON, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, HeartbeatResponseJSON, e);
 
                 HeartbeatResponse = null;
                 return false;
@@ -348,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(DateTime.UtcNow, HeartbeatResponseText, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, HeartbeatResponseText, e);
             }
 
             HeartbeatResponse = null;
@@ -402,7 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public static HeartbeatResponse Failed(CP.HeartbeatRequest Request)
 
             => new HeartbeatResponse(Request,
-                                     DateTime.UtcNow);
+                                     Timestamp.Now);
 
         #endregion
 

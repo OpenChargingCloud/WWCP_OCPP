@@ -288,14 +288,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 try
                 {
 
-                    OnReserveNowSOAPRequest?.Invoke(DateTime.UtcNow,
+                    OnReserveNowSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                     this.SOAPServer.HTTPServer,
                                                     Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnReserveNowSOAPRequest));
+                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnReserveNowSOAPRequest));
                 }
 
                 #endregion
@@ -318,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     var results = OnReserveNowRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)
-                                          (DateTime.UtcNow,
+                                          (Timestamp.Now,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -354,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.UtcNow,
+                    Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/ReserveNowResponse",
@@ -381,7 +381,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnReserveNowSOAPResponse));
+                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnReserveNowSOAPResponse));
                 }
 
                 #endregion
@@ -405,14 +405,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 try
                 {
 
-                    OnCancelReservationSOAPRequest?.Invoke(DateTime.UtcNow,
+                    OnCancelReservationSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                            this.SOAPServer.HTTPServer,
                                                            Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnCancelReservationSOAPRequest));
+                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnCancelReservationSOAPRequest));
                 }
 
                 #endregion
@@ -435,7 +435,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     var results = OnCancelReservationRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnCancelReservationDelegate)
-                                          (DateTime.UtcNow,
+                                          (Timestamp.Now,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.UtcNow,
+                    Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/CancelReservationResponse",
@@ -494,7 +494,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnCancelReservationSOAPResponse));
+                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnCancelReservationSOAPResponse));
                 }
 
                 #endregion
@@ -518,14 +518,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 try
                 {
 
-                    OnRemoteStartTransactionSOAPRequest?.Invoke(DateTime.UtcNow,
+                    OnRemoteStartTransactionSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                 this.SOAPServer.HTTPServer,
                                                                 Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnRemoteStartTransactionSOAPRequest));
+                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnRemoteStartTransactionSOAPRequest));
                 }
 
                 #endregion
@@ -548,7 +548,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     var results = OnRemoteStartTransaction?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnRemoteStartTransactionDelegate)
-                                          (DateTime.UtcNow,
+                                          (Timestamp.Now,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -579,7 +579,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.UtcNow,
+                    Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/RemoteStartTransactionResponse",
@@ -606,7 +606,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnRemoteStartTransactionSOAPResponse));
+                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnRemoteStartTransactionSOAPResponse));
                 }
 
                 #endregion
@@ -630,14 +630,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 try
                 {
 
-                    OnRemoteStopTransactionSOAPRequest?.Invoke(DateTime.UtcNow,
+                    OnRemoteStopTransactionSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                this.SOAPServer.HTTPServer,
                                                                Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnRemoteStopTransactionSOAPRequest));
+                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnRemoteStopTransactionSOAPRequest));
                 }
 
                 #endregion
@@ -660,7 +660,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     var results = OnRemoteStopTransaction?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnRemoteStopTransactionDelegate)
-                                          (DateTime.UtcNow,
+                                          (Timestamp.Now,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -691,7 +691,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.UtcNow,
+                    Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/RemoteStopTransactionResponse",
@@ -718,7 +718,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnRemoteStopTransactionSOAPResponse));
+                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnRemoteStopTransactionSOAPResponse));
                 }
 
                 #endregion
@@ -743,14 +743,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 try
                 {
 
-                    OnDataTransferSOAPRequest?.Invoke(DateTime.UtcNow,
+                    OnDataTransferSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                       this.SOAPServer.HTTPServer,
                                                       Request);
 
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnDataTransferSOAPRequest));
+                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnDataTransferSOAPRequest));
                 }
 
                 #endregion
@@ -773,7 +773,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     var results = OnDataTransferRequest?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnDataTransferDelegate)
-                                          (DateTime.UtcNow,
+                                          (Timestamp.Now,
                                            this,
                                            Request.CancellationToken,
                                            Request.EventTrackingId,
@@ -807,7 +807,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 var HTTPResponse = new HTTPResponse.Builder(Request) {
                     HTTPStatusCode  = HTTPStatusCode.OK,
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = DateTime.UtcNow,
+                    Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
                     Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
                                                          "/DataTransferResponse",
@@ -834,7 +834,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 }
                 catch (Exception e)
                 {
-                    e.Log(nameof(ChargePointSOAPServer) + "." + nameof(OnDataTransferSOAPResponse));
+                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnDataTransferSOAPResponse));
                 }
 
                 #endregion

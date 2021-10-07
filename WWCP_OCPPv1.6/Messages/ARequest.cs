@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         {
 
             this.RequestId         = Request_Id.Parse("0");
-            this.RequestTimestamp  = DateTime.UtcNow;
+            this.RequestTimestamp  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             this.ChargeBoxId       = ChargeBox_Id.Parse("0");
 
         }
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             this.ChargeBoxId       = ChargeBoxId;
             this.WebSocketAction   = WebSocketAction;
             this.RequestId         = RequestId        ?? Request_Id.Random();
-            this.RequestTimestamp  = RequestTimestamp ?? DateTime.UtcNow;
+            this.RequestTimestamp  = RequestTimestamp ?? Timestamp.Now;
             this.RequestTimeout    = RequestTimeout;
 
         }
