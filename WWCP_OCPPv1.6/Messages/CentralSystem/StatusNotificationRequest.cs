@@ -505,7 +505,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                         out String VerndorId,
                                         out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse != null)
+                        return false;
                 }
 
                 #endregion
@@ -517,7 +518,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                         out String VendorErrorCode,
                                         out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse != null)
+                        return false;
                 }
 
                 #endregion

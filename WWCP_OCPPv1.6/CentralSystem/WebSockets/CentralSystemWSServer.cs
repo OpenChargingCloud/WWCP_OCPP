@@ -523,84 +523,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region CentralSystemWSServer(HTTPServerName, TCPPort = default, URLPrefix = default, ContentType = default, DNSClient = null, AutoStart = false)
-
         /// <summary>
-        /// Initialize a new HTTP server for the central system HTTP/SOAP/XML API.
+        /// Initialize a new HTTP server for the central system HTTP/WebSocket/JSON API.
         /// </summary>
         /// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
-        /// <param name="URLPrefix">An optional prefix for the HTTP URLs.</param>
-        /// <param name="ContentType">An optional HTTP content type to use.</param>
-        /// <param name="RegisterHTTPRootService">Register HTTP root services for sending a notice to clients connecting via HTML or plain text.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
         public CentralSystemWSServer(String           HTTPServerName            = DefaultHTTPServerName,
+                                     IIPAddress       IPAddress                 = null,
                                      IPPort?          TCPPort                   = null,
-                                     HTTPPath?        URLPrefix                 = null,
-                                     HTTPContentType  ContentType               = null,
-                                     Boolean          RegisterHTTPRootService   = true,
                                      DNSClient        DNSClient                 = null,
                                      Boolean          AutoStart                 = false)
 
             //: base(HTTPServerName.IsNotNullOrEmpty()
             //           ? HTTPServerName
             //           : DefaultHTTPServerName,
-            //       TCPPort     ?? DefaultHTTPServerPort,
-            //       URLPrefix   ?? DefaultURLPrefix,
-            //       ContentType ?? DefaultContentType,
-            //       RegisterHTTPRootService,
-            //       DNSClient,
-            //       AutoStart: false)
-            : base(System.Net.IPAddress.Parse("127.0.0.1"),
-                   TCPPort.HasValue ? TCPPort.Value.ToUInt16() : 8000)
+
+            : base(IPAddress,
+                   TCPPort ?? IPPort.Parse(8000),
+                   DNSClient,
+                   false)
 
         {
 
-            this.requests = new List<SendRequestResult>();
+            this.requests                  = new List<SendRequestResult>();
 
-            base.OnNewConnection += ProcessNewConnection;
-            base.OnTextMessage   += ProcessTextMessages;
+            base.OnNewWebSocketConnection += ProcessNewWebSocketConnection;
+            base.OnTextMessage            += ProcessTextMessages;
 
-            //if (AutoStart)
-            //    Start();
+            if (AutoStart)
+                Start();
 
         }
 
         #endregion
 
-        #region CentralSystemWSServer(URLPrefix = DefaultURLPrefix)
 
-        /// <summary>
-        /// Use the given HTTP server for the central system HTTP/SOAP/XML API.
-        /// </summary>
-        /// <param name="URLPrefix">An optional prefix for the HTTP URLs.</param>
-        public CentralSystemWSServer(HTTPPath?   URLPrefix = null)
+        #region (protected) ProcessNewWebSocketConnection(Timestamp, Server, Connection, EventTrackingId, CancellationToken)
 
-            //: base(SOAPServer,
-            //       URLPrefix ?? DefaultURLPrefix)
-            : base(System.Net.IPAddress.Parse("127.0.0.1"), 8000)
-
-        {
-
-            this.requests = new List<SendRequestResult>();
-
-            base.OnNewConnection += ProcessNewConnection;
-            base.OnTextMessage   += ProcessTextMessages;
-
-        }
-
-        #endregion
-
-        #endregion
-
-
-        #region (protected) ProcessNewConnection(RequestTimestamp, Connection, EventTrackingId, CancellationToken)
-
-        protected async Task ProcessNewConnection(DateTime             RequestTimestamp,
-                                                  WebSocketConnection  Connection,
-                                                  EventTracking_Id     EventTrackingId,
-                                                  CancellationToken    CancellationToken)
+        protected async Task ProcessNewWebSocketConnection(DateTime             Timestamp,
+                                                           WebSocketServer      Server,
+                                                           WebSocketConnection  Connection,
+                                                           EventTracking_Id     EventTrackingId,
+                                                           CancellationToken    CancellationToken)
         {
 
             Connection.AddCustomData("chargeBoxId",
@@ -610,21 +576,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (protected) ProcessTextMessages (RequestTimestamp, Connection, EventTrackingId, CancellationToken, TextMessage)
+        #region (protected) ProcessTextMessages (RequestTimestamp, Server, Connection, TextMessage, EventTrackingId, CancellationToken)
 
         /// <summary>
         /// Process all text messages of this web socket API.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
+        /// <param name="Server">The web socket server.</param>
         /// <param name="Connection">The web socket connection.</param>
+        /// <param name="TextMessage">The received text message.</param>
         /// <param name="EventTrackingId">The event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        /// <param name="TextMessage">The received text message.</param>
         protected async Task<WebSocketTextMessageRespose> ProcessTextMessages(DateTime             RequestTimestamp,
+                                                                              WebSocketServer      Server,
                                                                               WebSocketConnection  Connection,
+                                                                              String               TextMessage,
                                                                               EventTracking_Id     EventTrackingId,
-                                                                              CancellationToken    CancellationToken,
-                                                                              String               TextMessage)
+                                                                              CancellationToken    CancellationToken)
         {
 
             JArray         JSON           = null;
@@ -1360,11 +1328,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     {
 
                                         if (StatusNotificationRequest.TryParse(RequestData,
-                                                                             RequestId.  Value,
-                                                                             chargeBoxId.Value,
-                                                                             out StatusNotificationRequest  statusNotificationRequest,
-                                                                             out                            ErrorResponse,
-                                                                             CustomStatusNotificationRequestParser))
+                                                                               RequestId.  Value,
+                                                                               chargeBoxId.Value,
+                                                                               out StatusNotificationRequest  statusNotificationRequest,
+                                                                               out                            ErrorResponse,
+                                                                               CustomStatusNotificationRequestParser))
                                         {
 
                                             #region Send OnStatusNotificationRequest event
@@ -1804,7 +1772,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                             #region IncomingDataTransfer
 
-                            case "IncomingDataTransfer":
+                            case "DataTransfer":
                                 {
 
                                     #region Send OnIncomingDataTransferWSRequest event
@@ -1824,7 +1792,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                     #endregion
 
-                                    CS.DataTransferResponse response = null;
+                                    DataTransferResponse response = null;
 
                                     try
                                     {
@@ -1880,7 +1848,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 }
 
                                                 if (results == null || response == null)
-                                                    response = CS.DataTransferResponse.Failed(dataTransferRequest);
+                                                    response = DataTransferResponse.Failed(dataTransferRequest);
 
                                             }
 
@@ -2570,7 +2538,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
 
-        #region Reset                 (ChargeBoxId, ResetType, ...)
+        #region Reset                 (Request, RequestTimeout = null)
 
         public async Task<ResetResponse> Reset(ResetRequest  Request,
                                                TimeSpan?     RequestTimeout = null)
@@ -2612,7 +2580,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ChangeAvailability    (ChargeBoxId, ConnectorId, Availability, ...)
+        #region ChangeAvailability    (Request, RequestTimeout = null)
 
         public async Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest  Request,
                                                                          TimeSpan?                  RequestTimeout = null)
@@ -2654,7 +2622,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region GetConfiguration      (ChargeBoxId, Key, Value, ...)
+        #region GetConfiguration      (Request, RequestTimeout = null)
 
         public async Task<GetConfigurationResponse> GetConfiguration(GetConfigurationRequest  Request,
                                                                      TimeSpan?                RequestTimeout = null)
@@ -2696,7 +2664,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ChangeConfiguration   (ChargeBoxId, Key, Value, ...)
+        #region ChangeConfiguration   (Request, RequestTimeout = null)
 
         public async Task<ChangeConfigurationResponse> ChangeConfiguration(ChangeConfigurationRequest  Request,
                                                                            TimeSpan?                   RequestTimeout = null)
@@ -2738,10 +2706,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region DataTransfer          (ChargeBoxId, VendorId, MessageId, Data, ...)
+        #region DataTransfer          (Request, RequestTimeout = null)
 
-        public async Task<CP.DataTransferResponse> DataTransfer(CS.DataTransferRequest  Request,
-                                                                TimeSpan?               RequestTimeout = null)
+        public async Task<CP.DataTransferResponse> DataTransfer(DataTransferRequest  Request,
+                                                                TimeSpan?            RequestTimeout = null)
         {
 
             var result = await SendRequest(Request.RequestId,
@@ -2780,7 +2748,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region GetDiagnostics        (ChargeBoxId, Location, StartTime = null, StopTime = null, Retries = null, RetryInterval = null, ...)
+        #region GetDiagnostics        (Request, RequestTimeout = null)
 
         public async Task<GetDiagnosticsResponse> GetDiagnostics(GetDiagnosticsRequest  Request,
                                                                  TimeSpan?              RequestTimeout = null)
@@ -2822,7 +2790,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region TriggerMessage        (ChargeBoxId, RequestedMessage, ConnectorId = null, ...)
+        #region TriggerMessage        (Request, RequestTimeout = null)
 
         public async Task<TriggerMessageResponse> TriggerMessage(TriggerMessageRequest  Request,
                                                                  TimeSpan?              RequestTimeout = null)
@@ -2864,7 +2832,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region UpdateFirmware        (ChargeBoxId, Location, RetrieveDate, Retries = null, RetryInterval = null, ...)
+        #region UpdateFirmware        (Request, RequestTimeout = null)
 
         public async Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest  Request,
                                                                  TimeSpan?              RequestTimeout = null)
@@ -2907,7 +2875,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region ReserveNow            (ChargeBoxId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
+        #region ReserveNow            (Request, RequestTimeout = null)
 
         public async Task<ReserveNowResponse> ReserveNow(ReserveNowRequest  Request,
                                                          TimeSpan?          RequestTimeout = null)
@@ -2949,7 +2917,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region CancelReservation     (ChargeBoxId, ReservationId, ...)
+        #region CancelReservation     (Request, RequestTimeout = null)
 
         public async Task<CancelReservationResponse> CancelReservation(CancelReservationRequest  Request,
                                                                        TimeSpan?                 RequestTimeout = null)
@@ -2991,7 +2959,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region RemoteStartTransaction(ChargeBoxId, IdTag, ConnectorId = null, ChargingProfile = null, ...)
+        #region RemoteStartTransaction(Request, RequestTimeout = null)
 
         public async Task<RemoteStartTransactionResponse> RemoteStartTransaction(RemoteStartTransactionRequest  Request,
                                                                                  TimeSpan?                      RequestTimeout = null)
@@ -3036,7 +3004,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region RemoteStopTransaction (ChargeBoxId, TransactionId, ...)
+        #region RemoteStopTransaction (Request, RequestTimeout = null)
 
         public async Task<RemoteStopTransactionResponse> RemoteStopTransaction(RemoteStopTransactionRequest  Request,
                                                                                TimeSpan?                     RequestTimeout = null)
@@ -3078,7 +3046,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region SetChargingProfile    (ChargeBoxId, ConnectorId, ChargingProfile, ...)
+        #region SetChargingProfile    (Request, RequestTimeout = null)
 
         public async Task<SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest  Request,
                                                                          TimeSpan?                  RequestTimeout = null)
@@ -3120,7 +3088,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ClearChargingProfile  (ChargeBoxId, ChargingProfileId, ConnectorId, ChargingProfilePurpose, StackLevel, ...)
+        #region ClearChargingProfile  (Request, RequestTimeout = null)
 
         public async Task<ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest  Request,
                                                                              TimeSpan?                    RequestTimeout = null)
@@ -3162,7 +3130,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region GetCompositeSchedule  (ChargeBoxId, ConnectorId, Duration, ChargingRateUnit = null, ...)
+        #region GetCompositeSchedule  (Request, RequestTimeout = null)
 
 
         public async Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest  Request,
@@ -3205,7 +3173,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region UnlockConnector       (ChargeBoxId, ConnectorId, ...)
+        #region UnlockConnector       (Request, RequestTimeout = null)
 
         public async Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest  Request,
                                                                    TimeSpan?               RequestTimeout = null)
@@ -3248,7 +3216,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region GetLocalListVersion   (ChargeBoxId, ...)
+        #region GetLocalListVersion   (Request, RequestTimeout = null)
 
         public async Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest  Request,
                                                                            TimeSpan?                   RequestTimeout = null)
@@ -3290,7 +3258,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region SendLocalList         (ChargeBoxId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
+        #region SendLocalList         (Request, RequestTimeout = null)
 
 
         public async Task<SendLocalListResponse> SendLocalList(SendLocalListRequest  Request,
@@ -3333,7 +3301,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ClearCache            (ChargeBoxId, ...)
+        #region ClearCache            (Request, RequestTimeout = null)
 
         public async Task<ClearCacheResponse> ClearCache(ClearCacheRequest  Request,
                                                          TimeSpan?          RequestTimeout = null)

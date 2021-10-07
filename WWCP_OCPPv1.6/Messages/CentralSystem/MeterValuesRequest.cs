@@ -272,7 +272,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         //                                         "A",
         //                                         "V",
         //                                         "K",
-        //                                         "Celcius",
         //                                         "Celsius",
         //                                         "Fahrenheit",
         //                                         "Percent"
