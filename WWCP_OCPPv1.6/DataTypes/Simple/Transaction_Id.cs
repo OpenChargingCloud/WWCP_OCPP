@@ -27,6 +27,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
+    /// Extention methods for transaction identifications.
+    /// </summary>
+    public static class TransactionIdExtentions
+    {
+
+        /// <summary>
+        /// Indicates whether this transaction identification is null or empty.
+        /// </summary>
+        /// <param name="TransactionId">A transaction identification.</param>
+        public static Boolean IsNullOrEmpty(this Transaction_Id? TransactionId)
+            => !TransactionId.HasValue || TransactionId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this transaction identification is null or empty.
+        /// </summary>
+        /// <param name="TransactionId">A transaction identification.</param>
+        public static Boolean IsNotNullOrEmpty(this Transaction_Id? TransactionId)
+            => TransactionId.HasValue && TransactionId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// The transaction identification.
     /// </summary>
     public readonly struct Transaction_Id : IId,
@@ -38,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         private readonly UInt64 InternalId;
 
-        private static readonly Random random = new Random(DateTime.Now.Millisecond);
+        private static readonly Random random = new Random();
 
         #endregion
 
@@ -48,6 +71,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Indicates whether this identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
+            => InternalId == 0;
+
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
             => InternalId != 0;
 
         /// <summary>
@@ -249,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator != (Transaction_Id TransactionId1,
                                            Transaction_Id TransactionId2)
 
-            => !(TransactionId1 == TransactionId2);
+            => !TransactionId1.Equals(TransactionId2);
 
         #endregion
 
@@ -279,7 +308,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator <= (Transaction_Id TransactionId1,
                                            Transaction_Id TransactionId2)
 
-            => !(TransactionId1 > TransactionId2);
+            => TransactionId1.CompareTo(TransactionId2) <= 0;
 
         #endregion
 
@@ -309,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator >= (Transaction_Id TransactionId1,
                                            Transaction_Id TransactionId2)
 
-            => !(TransactionId1 < TransactionId2);
+            => TransactionId1.CompareTo(TransactionId2) >= 0;
 
         #endregion
 

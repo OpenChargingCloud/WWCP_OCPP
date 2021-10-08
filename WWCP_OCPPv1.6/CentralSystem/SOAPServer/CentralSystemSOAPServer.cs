@@ -462,7 +462,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnBootNotificationSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                    OnBootNotificationSOAPRequest?.Invoke(Timestamp.Now,
                                                           SOAPServer.HTTPServer,
                                                           Request);
 
@@ -621,7 +621,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnHeartbeatSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                    OnHeartbeatSOAPRequest?.Invoke(Timestamp.Now,
                                                    SOAPServer.HTTPServer,
                                                    Request);
 
@@ -779,7 +779,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnAuthorizeSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                    OnAuthorizeSOAPRequest?.Invoke(Timestamp.Now,
                                                    SOAPServer.HTTPServer,
                                                    Request);
 
@@ -936,7 +936,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnStartTransactionSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                    OnStartTransactionSOAPRequest?.Invoke(Timestamp.Now,
                                                           SOAPServer.HTTPServer,
                                                           Request);
 
@@ -1094,7 +1094,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnStatusNotificationSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                    OnStatusNotificationSOAPRequest?.Invoke(Timestamp.Now,
                                                             SOAPServer.HTTPServer,
                                                             Request);
 
@@ -1250,7 +1250,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnMeterValuesSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                    OnMeterValuesSOAPRequest?.Invoke(Timestamp.Now,
                                                      SOAPServer.HTTPServer,
                                                      Request);
 
@@ -1406,7 +1406,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnStopTransactionSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                    OnStopTransactionSOAPRequest?.Invoke(Timestamp.Now,
                                                          SOAPServer.HTTPServer,
                                                          Request);
 
@@ -1564,7 +1564,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnIncomingDataTransferSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                    OnIncomingDataTransferSOAPRequest?.Invoke(Timestamp.Now,
                                                               SOAPServer.HTTPServer,
                                                               Request);
 
@@ -1723,7 +1723,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnDiagnosticsStatusNotificationSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                    OnDiagnosticsStatusNotificationSOAPRequest?.Invoke(Timestamp.Now,
                                                                        SOAPServer.HTTPServer,
                                                                        Request);
 
@@ -1880,7 +1880,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    OnFirmwareStatusNotificationSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                    OnFirmwareStatusNotificationSOAPRequest?.Invoke(Timestamp.Now,
                                                                     SOAPServer.HTTPServer,
                                                                     Request);
 

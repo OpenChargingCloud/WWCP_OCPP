@@ -106,13 +106,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ChargePointVendor">The charge point vendor identification.</param>
         /// <param name="ChargePointModel">The charge point model identification.</param>
         /// 
-        /// <param name="ChargePointSerialNumber">The serial number of the charge point.</param>
-        /// <param name="ChargeBoxSerialNumber">The serial number of the charge point.</param>
-        /// <param name="FirmwareVersion">The firmware version of the charge point.</param>
-        /// <param name="Iccid">The ICCID of the charge point's SIM card.</param>
-        /// <param name="IMSI">The IMSI of the charge point’s SIM card.</param>
-        /// <param name="MeterType">The meter type of the main power meter of the charge point.</param>
-        /// <param name="MeterSerialNumber">The serial number of the main power meter of the charge point.</param>
+        /// <param name="ChargePointSerialNumber">The optional serial number of the charge point.</param>
+        /// <param name="ChargeBoxSerialNumber">The optional serial number of the charge point.</param>
+        /// <param name="FirmwareVersion">The optional firmware version of the charge point.</param>
+        /// <param name="Iccid">The optional ICCID of the charge point's SIM card.</param>
+        /// <param name="IMSI">The optional IMSI of the charge point’s SIM card.</param>
+        /// <param name="MeterType">The optional meter type of the main power meter of the charge point.</param>
+        /// <param name="MeterSerialNumber">The optional serial number of the main power meter of the charge point.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>

@@ -41,15 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                             String                      SenderId,
                                                             EventTracking_Id            EventTrackingId,
 
-                                                            String                      ChargePointVendor,
-                                                            String                      ChargePointModel,
-                                                            String                      ChargePointSerialNumber,
-                                                            String                      FirmwareVersion,
-                                                            String                      Iccid,
-                                                            String                      IMSI,
-                                                            String                      MeterType,
-                                                            String                      MeterSerialNumber,
-
+                                                            BootNotificationRequest     Request,
                                                             TimeSpan?                   RequestTimeout);
 
     /// <summary>
@@ -61,15 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                             String                      SenderId,
                                                             EventTracking_Id            EventTrackingId,
 
-                                                            String                      ChargePointVendor,
-                                                            String                      ChargePointModel,
-                                                            String                      ChargePointSerialNumber,
-                                                            String                      FirmwareVersion,
-                                                            String                      Iccid,
-                                                            String                      IMSI,
-                                                            String                      MeterType,
-                                                            String                      MeterSerialNumber,
-
+                                                            BootNotificationRequest     Request,
                                                             TimeSpan?                   RequestTimeout,
                                                             BootNotificationResponse    Result,
                                                             TimeSpan                    Runtime);

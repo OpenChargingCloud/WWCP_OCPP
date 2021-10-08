@@ -27,6 +27,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
+    /// Extention methods for connector identifications.
+    /// </summary>
+    public static class ConnectorIdExtentions
+    {
+
+        /// <summary>
+        /// Indicates whether this connector identification is null or empty.
+        /// </summary>
+        /// <param name="ConnectorId">A connector identification.</param>
+        public static Boolean IsNullOrEmpty(this Connector_Id? ConnectorId)
+            => !ConnectorId.HasValue || ConnectorId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this connector identification is null or empty.
+        /// </summary>
+        /// <param name="ConnectorId">A connector identification.</param>
+        public static Boolean IsNotNullOrEmpty(this Connector_Id? ConnectorId)
+            => ConnectorId.HasValue && ConnectorId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// A connector identification.
     /// </summary>
     public readonly struct Connector_Id : IId,
@@ -47,6 +70,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public Boolean IsNullOrEmpty
             => false;
+
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => true;
 
         /// <summary>
         /// The length of the tag identification.
@@ -236,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator != (Connector_Id ConnectorId1,
                                            Connector_Id ConnectorId2)
 
-            => !(ConnectorId1 == ConnectorId2);
+            => !ConnectorId1.Equals(ConnectorId2);
 
         #endregion
 
@@ -266,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator <= (Connector_Id ConnectorId1,
                                            Connector_Id ConnectorId2)
 
-            => !(ConnectorId1 > ConnectorId2);
+            => ConnectorId1.CompareTo(ConnectorId2) <= 0;
 
         #endregion
 
@@ -296,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator >= (Connector_Id ConnectorId1,
                                            Connector_Id ConnectorId2)
 
-            => !(ConnectorId1 < ConnectorId2);
+            => ConnectorId1.CompareTo(ConnectorId2) >= 0;
 
         #endregion
 

@@ -27,6 +27,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
+    /// Extention methods for request identifications.
+    /// </summary>
+    public static class RequestIdExtentions
+    {
+
+        /// <summary>
+        /// Indicates whether this request identification is null or empty.
+        /// </summary>
+        /// <param name="RequestId">A request identification.</param>
+        public static Boolean IsNullOrEmpty(this Request_Id? RequestId)
+            => !RequestId.HasValue || RequestId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this request identification is null or empty.
+        /// </summary>
+        /// <param name="RequestId">A request identification.</param>
+        public static Boolean IsNotNullOrEmpty(this Request_Id? RequestId)
+            => RequestId.HasValue && RequestId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// A request identification.
     /// </summary>
     public readonly struct Request_Id : IId,
@@ -41,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         private readonly String InternalId;
 
-        private static readonly Random random = new Random(DateTime.Now.Millisecond);
+        private static readonly Random random = new Random();
 
         #endregion
 
@@ -51,14 +74,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Indicates whether this identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
-
             => InternalId.IsNullOrEmpty();
+
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the request identification.
         /// </summary>
         public UInt64 Length
-
             => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
@@ -201,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator != (Request_Id RequestId1,
                                            Request_Id RequestId2)
 
-            => !(RequestId1 == RequestId2);
+            => !RequestId1.Equals(RequestId2);
 
         #endregion
 
@@ -231,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator <= (Request_Id RequestId1,
                                            Request_Id RequestId2)
 
-            => !(RequestId1 > RequestId2);
+            => RequestId1.CompareTo(RequestId2) <= 0;
 
         #endregion
 
@@ -261,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator >= (Request_Id RequestId1,
                                            Request_Id RequestId2)
 
-            => !(RequestId1 < RequestId2);
+            => RequestId1.CompareTo(RequestId2) >= 0;
 
         #endregion
 

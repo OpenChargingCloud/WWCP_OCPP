@@ -527,18 +527,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Initialize a new HTTP server for the central system HTTP/WebSocket/JSON API.
         /// </summary>
         /// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
+        /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CentralSystemWSServer(String           HTTPServerName            = DefaultHTTPServerName,
-                                     IIPAddress       IPAddress                 = null,
-                                     IPPort?          TCPPort                   = null,
-                                     DNSClient        DNSClient                 = null,
-                                     Boolean          AutoStart                 = false)
-
-            //: base(HTTPServerName.IsNotNullOrEmpty()
-            //           ? HTTPServerName
-            //           : DefaultHTTPServerName,
+        public CentralSystemWSServer(String      HTTPServerName   = DefaultHTTPServerName,
+                                     IIPAddress  IPAddress        = null,
+                                     IPPort?     TCPPort          = null,
+                                     DNSClient   DNSClient        = null,
+                                     Boolean     AutoStart        = false)
 
             : base(IPAddress,
                    TCPPort ?? IPPort.Parse(8000),

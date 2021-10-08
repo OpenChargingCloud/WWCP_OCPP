@@ -18,7 +18,14 @@
 #region Usings
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -31,31 +38,120 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     public class TestCentralSystem
     {
 
+        #region Data
+
+        private readonly HashSet<ICentralSystemServer> centralSystemServers;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The unique identification of this central system.
+        /// </summary>
+        public CentralSystem_Id  CentralSystemId    { get; }
+
+
+        /// <summary>
+        /// An enumeration of central system servers.
+        /// </summary>
+        public IEnumerable<ICentralSystemServer> CentralSystemServers
+            => centralSystemServers;
+
+        #endregion
+
+        #region Events
+
+        #region OnBootNotification
+
+        /// <summary>
+        /// An event sent whenever a boot notification request was received.
+        /// </summary>
+        event BootNotificationRequestDelegate   OnBootNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a boot notification was sent.
+        /// </summary>
+        event BootNotificationResponseDelegate  OnBootNotificationResponse;
+
+        #endregion
+
+        #endregion
+
+        #region Constructor(s)
+
         /// <summary>
         /// Create a new central system for testing.
         /// </summary>
-        /// <param name="CentralSystemServer"></param>
-        public TestCentralSystem(ICentralSystemServer CentralSystemServer)
+        /// <param name="CentralSystemId">The unique identification of this central system.</param>
+        public TestCentralSystem(CentralSystem_Id CentralSystemId)
         {
 
-            if (CentralSystemServer == null)
+            if (CentralSystemId.IsNullOrEmpty)
+                throw new ArgumentNullException(nameof(CentralSystemId), "The given central system identification must not be null or empty!");
+
+            this.CentralSystemId       = CentralSystemId;
+            this.centralSystemServers  = new HashSet<ICentralSystemServer>();
+
+        }
+
+        #endregion
+
+
+        #region Attach(CentralSystemServer)
+
+        public void Attach(ICentralSystemServer CentralSystemServer)
+        {
+
+            #region Initial checks
+
+            if (CentralSystemServer is null)
                 throw new ArgumentNullException(nameof(CentralSystemServer), "The given central system must not be null!");
+
+            #endregion
+
+
+            centralSystemServers.Add(CentralSystemServer);
 
 
             // Wire events...
 
             #region OnBootNotification
 
-            CentralSystemServer.OnBootNotification += (Timestamp,
-                                                       Sender,
-                                                       CancellationToken,
-                                                       EventTrackingId,
-                                                       Request) =>
+            CentralSystemServer.OnBootNotification += async (Timestamp,
+                                                             Sender,
+                                                             CancellationToken,
+                                                             EventTrackingId,
+                                                             Request) => {
 
-                Task.FromResult(new BootNotificationResponse(Request:            Request,
-                                                             Status:             RegistrationStatus.Accepted,
-                                                             CurrentTime:        org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                             HeartbeatInterval:  TimeSpan.FromMinutes(5)));
+                #region Send OnBootNotificationRequest event
+
+                try
+                {
+
+                    OnBootNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                                                      this,
+                                                      Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBootNotificationRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(100);
+
+                C
+
+                return new BootNotificationResponse(Request:            Request,
+                                                    Status:             RegistrationStatus.Accepted,
+                                                    CurrentTime:        org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                                                    HeartbeatInterval:  TimeSpan.FromMinutes(5));
+
+            };
 
             #endregion
 
@@ -165,6 +261,80 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
         }
+
+        #endregion
+
+        #region CreateSOAPService(...)
+
+        /// <summary>
+        /// Create a new central system for testing using HTTP/SOAP.
+        /// </summary>
+        /// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
+        /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
+        /// <param name="ServiceName">The TCP service name shown e.g. on service startup.</param>
+        /// <param name="URLPrefix">An optional prefix for the HTTP URLs.</param>
+        /// <param name="ContentType">An optional HTTP content type to use.</param>
+        /// <param name="RegisterHTTPRootService">Register HTTP root services for sending a notice to clients connecting via HTML or plain text.</param>
+        /// <param name="DNSClient">An optional DNS client to use.</param>
+        /// <param name="AutoStart">Start the server immediately.</param>
+        public CentralSystemSOAPServer CreateSOAPService(String           HTTPServerName            = CentralSystemSOAPServer.DefaultHTTPServerName,
+                                                         IPPort?          TCPPort                   = null,
+                                                         String           ServiceName               = null,
+                                                         HTTPPath?        URLPrefix                 = null,
+                                                         HTTPContentType  ContentType               = null,
+                                                         Boolean          RegisterHTTPRootService   = true,
+                                                         DNSClient        DNSClient                 = null,
+                                                         Boolean          AutoStart                 = false)
+        {
+
+            var centralSystemServer = new CentralSystemSOAPServer(HTTPServerName,
+                                                                  TCPPort,
+                                                                  ServiceName,
+                                                                  URLPrefix,
+                                                                  ContentType,
+                                                                  RegisterHTTPRootService,
+                                                                  DNSClient,
+                                                                  AutoStart);
+
+            Attach(centralSystemServer);
+
+            return centralSystemServer;
+
+        }
+
+        #endregion
+
+        #region CreateWebSocketService(...)
+
+        /// <summary>
+        /// Create a new central system for testing using HTTP/WebSocket.
+        /// </summary>
+        /// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
+        /// <param name="IPAddress">An IP address to listen on.</param>
+        /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
+        /// <param name="DNSClient">An optional DNS client to use.</param>
+        /// <param name="AutoStart">Start the server immediately.</param>
+        public CentralSystemWSServer CreateWebSocketService(String      HTTPServerName   = CentralSystemWSServer.DefaultHTTPServerName,
+                                                            IIPAddress  IPAddress        = null,
+                                                            IPPort?     TCPPort          = null,
+                                                            DNSClient   DNSClient        = null,
+                                                            Boolean     AutoStart        = false)
+        {
+
+            var centralSystemServer = new CentralSystemWSServer(HTTPServerName,
+                                                                IPAddress,
+                                                                TCPPort,
+                                                                DNSClient,
+                                                                AutoStart);
+
+            Attach(centralSystemServer);
+
+            return centralSystemServer;
+
+        }
+
+        #endregion
+
 
     }
 

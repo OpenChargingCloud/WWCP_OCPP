@@ -27,6 +27,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
+    /// Extention methods for charge box identifications.
+    /// </summary>
+    public static class ChargeBoxIdExtentions
+    {
+
+        /// <summary>
+        /// Indicates whether this charge box identification is null or empty.
+        /// </summary>
+        /// <param name="ChargeBoxId">A charge box identification.</param>
+        public static Boolean IsNullOrEmpty(this ChargeBox_Id? ChargeBoxId)
+            => !ChargeBoxId.HasValue || ChargeBoxId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this charge box identification is null or empty.
+        /// </summary>
+        /// <param name="ChargeBoxId">A charge box identification.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargeBox_Id? ChargeBoxId)
+            => ChargeBoxId.HasValue && ChargeBoxId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// A charge box identification.
     /// </summary>
     public readonly struct ChargeBox_Id : IId,
@@ -41,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         private readonly String InternalId;
 
-        private static readonly Random random = new Random(DateTime.Now.Millisecond);
+        private static readonly Random random = new Random();
 
         #endregion
 
@@ -202,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator != (ChargeBox_Id ChargeBoxId1,
                                            ChargeBox_Id ChargeBoxId2)
 
-            => !(ChargeBoxId1 == ChargeBoxId2);
+            => !ChargeBoxId1.Equals(ChargeBoxId2);
 
         #endregion
 
@@ -232,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator <= (ChargeBox_Id ChargeBoxId1,
                                            ChargeBox_Id ChargeBoxId2)
 
-            => !(ChargeBoxId1 > ChargeBoxId2);
+            => ChargeBoxId1.CompareTo(ChargeBoxId2) <= 0;
 
         #endregion
 
@@ -262,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator >= (ChargeBox_Id ChargeBoxId1,
                                            ChargeBox_Id ChargeBoxId2)
 
-            => !(ChargeBoxId1 < ChargeBoxId2);
+            => ChargeBoxId1.CompareTo(ChargeBoxId2) >= 0;
 
         #endregion
 

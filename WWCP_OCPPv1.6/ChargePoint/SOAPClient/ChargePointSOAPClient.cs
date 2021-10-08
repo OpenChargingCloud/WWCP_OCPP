@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Properties
 
         /// <summary>
-        /// The unique identification of this OCPP charge box.
+        /// The unique identification of this charge box.
         /// </summary>
         public ChargeBox_Id    ChargeBoxIdentity   { get; }
 
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Create a new charge point SOAP client running on a charge point
         /// and connecting to a central system to invoke methods.
         /// </summary>
-        /// <param name="ChargeBoxIdentity">The unique identification of this OCPP charge box.</param>
+        /// <param name="ChargeBoxIdentity">The unique identification of this charge box.</param>
         /// <param name="From">The source URI of the SOAP message.</param>
         /// <param name="To">The destination URI of the SOAP message.</param>
         /// 
@@ -505,19 +505,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         // <cs:chargeBoxIdentity se:mustUnderstand="true">CP1234</cs:chargeBoxIdentity>
 
 
-        #region BootNotification             (ChargePointVendor, ChargePointModel, ...)
+        #region SendBootNotification             (Request, ...)
 
         /// <summary>
         /// Send a boot notification.
         /// </summary>
-        /// <param name="ChargePointVendor">The charge point vendor identification.</param>
-        /// <param name="ChargePointModel">The charge point model identification.</param>
-        /// <param name="ChargePointSerialNumber">The serial number of the charge point.</param>
-        /// <param name="FirmwareVersion">The firmware version of the charge point.</param>
-        /// <param name="Iccid">The ICCID of the charge point's SIM card.</param>
-        /// <param name="IMSI">The IMSI of the charge point’s SIM card.</param>
-        /// <param name="MeterType">The meter type of the main power meter of the charge point.</param>
-        /// <param name="MeterSerialNumber">The serial number of the main power meter of the charge point.</param>
+        /// <param name="Request">A BootNotification request.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -525,30 +518,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<BootNotificationResponse>>
 
-            BootNotification(String              ChargePointVendor,
-                             String              ChargePointModel,
-                             String              ChargePointSerialNumber  = null,
-                             String              FirmwareVersion          = null,
-                             String              Iccid                    = null,
-                             String              IMSI                     = null,
-                             String              MeterType                = null,
-                             String              MeterSerialNumber        = null,
+            SendBootNotification(BootNotificationRequest  Request,
 
-                             DateTime?           Timestamp                = null,
-                             CancellationToken?  CancellationToken        = null,
-                             EventTracking_Id    EventTrackingId          = null,
-                             TimeSpan?           RequestTimeout           = null)
+                                 DateTime?                Timestamp                = null,
+                                 CancellationToken?       CancellationToken        = null,
+                                 EventTracking_Id         EventTrackingId          = null,
+                                 TimeSpan?                RequestTimeout           = null)
 
         {
 
             #region Initial checks
-
-            if (ChargePointVendor.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(ChargePointVendor),  "The given charge point vendor identification must not be null or empty!");
-
-            if (ChargePointModel.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(ChargePointModel),   "The given charge point model identification must not be null or empty!");
-
 
             if (!Timestamp.HasValue)
                 Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
@@ -577,14 +556,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                   this,
                                                   Description,
                                                   EventTrackingId,
-                                                  ChargePointVendor,
-                                                  ChargePointModel,
-                                                  ChargePointSerialNumber,
-                                                  FirmwareVersion,
-                                                  Iccid,
-                                                  IMSI,
-                                                  MeterType,
-                                                  MeterSerialNumber,
+                                                  Request,
                                                   RequestTimeout);
 
             }
@@ -594,17 +566,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             #endregion
-
-
-            var request = new BootNotificationRequest(ChargeBoxIdentity,
-                                                      ChargePointVendor,
-                                                      ChargePointModel,
-                                                      ChargePointSerialNumber,
-                                                      FirmwareVersion,
-                                                      Iccid,
-                                                      IMSI,
-                                                      MeterType,
-                                                      MeterSerialNumber);
 
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
@@ -630,7 +591,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    request.ToXML()),
+                                                                    Request.ToXML()),
                                                  "BootNotification",
                                                  RequestLogDelegate:   OnBootNotificationSOAPRequest,
                                                  ResponseLogDelegate:  OnBootNotificationSOAPResponse,
@@ -640,7 +601,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request, BootNotificationResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request, BootNotificationResponse.Parse),
 
                                                  #endregion
 
@@ -652,7 +613,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<BootNotificationResponse>(httpresponse,
                                                                                                        new BootNotificationResponse(
-                                                                                                           request,
+                                                                                                           Request,
                                                                                                            Result.Format(
                                                                                                                "Invalid SOAP => " +
                                                                                                                httpresponse.HTTPBody.ToUTF8String()
@@ -672,7 +633,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<BootNotificationResponse>(httpresponse,
                                                                                                        new BootNotificationResponse(
-                                                                                                           request,
+                                                                                                           Request,
                                                                                                            Result.Server(
                                                                                                                 httpresponse.HTTPStatusCode.ToString() +
                                                                                                                 " => " +
@@ -692,7 +653,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<BootNotificationResponse>.ExceptionThrown(new BootNotificationResponse(
-                                                                                                                       request,
+                                                                                                                       Request,
                                                                                                                        Result.Format(exception.Message +
                                                                                                                                      " => " +
                                                                                                                                      exception.StackTrace)),
@@ -707,7 +668,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<BootNotificationResponse>.OK(new BootNotificationResponse(request, Result.OK("Nothing to upload!")));
+                result = HTTPResponse<BootNotificationResponse>.OK(new BootNotificationResponse(Request, Result.OK("Nothing to upload!")));
 
 
             #region Send OnBootNotificationResponse event
@@ -720,14 +681,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    this,
                                                    Description,
                                                    EventTrackingId,
-                                                   ChargePointVendor,
-                                                   ChargePointModel,
-                                                   ChargePointSerialNumber,
-                                                   FirmwareVersion,
-                                                   Iccid,
-                                                   IMSI,
-                                                   MeterType,
-                                                   MeterSerialNumber,
+                                                   Request,
                                                    RequestTimeout,
                                                    result.Content,
                                                    org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
