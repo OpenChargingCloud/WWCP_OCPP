@@ -18,13 +18,13 @@
 #region Usings
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using System.Threading;
 
 #endregion
 
@@ -36,6 +36,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     public class TestChargePoint : IEventSender
     {
+
+        #region Data
+
+        /// <summary>
+        /// The default time span between heartbeat requests.
+        /// </summary>
+        public readonly TimeSpan DefaultSendHeartbeatEvery = TimeSpan.FromMinutes(5);
+
+        #endregion
 
         #region Properties
 
@@ -107,6 +116,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public String                   MeterSerialNumber           { get; }
 
+        /// <summary>
+        /// The optional public key of the main power meter of the charge point.
+        /// </summary>
+        public String                   MeterPublicKey              { get; }
+
+
+        /// <summary>
+        /// The time span between heartbeat requests.
+        /// </summary>
+        public TimeSpan                 SendHeartbeatEvery          { get; }
+
 
         /// <summary>
         /// The default request timeout for all requests.
@@ -156,14 +176,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ChargePointVendor">The charge point vendor identification.</param>
         /// <param name="ChargePointModel">The charge point model identification.</param>
         /// 
-        /// <param name="Description">The optional multi-language charge box description.</param>
-        /// <param name="ChargePointSerialNumber">The optional serial number of the charge point.</param>
-        /// <param name="ChargeBoxSerialNumber">The optional serial number of the charge point.</param>
-        /// <param name="FirmwareVersion">The optional firmware version of the charge point.</param>
-        /// <param name="Iccid">The optional ICCID of the charge point's SIM card.</param>
-        /// <param name="IMSI">The optional IMSI of the charge point’s SIM card.</param>
-        /// <param name="MeterType">The optional meter type of the main power meter of the charge point.</param>
-        /// <param name="MeterSerialNumber">The optional serial number of the main power meter of the charge point.</param>
+        /// <param name="Description">An optional multi-language charge box description.</param>
+        /// <param name="ChargePointSerialNumber">An optional serial number of the charge point.</param>
+        /// <param name="ChargeBoxSerialNumber">An optional serial number of the charge point.</param>
+        /// <param name="FirmwareVersion">An optional firmware version of the charge point.</param>
+        /// <param name="Iccid">An optional ICCID of the charge point's SIM card.</param>
+        /// <param name="IMSI">An optional IMSI of the charge point’s SIM card.</param>
+        /// <param name="MeterType">An optional meter type of the main power meter of the charge point.</param>
+        /// <param name="MeterSerialNumber">An optional serial number of the main power meter of the charge point.</param>
+        /// <param name="MeterPublicKey">An optional public key of the main power meter of the charge point.</param>
+        /// 
+        /// <param name="SendHeartbeatEvery">The time span between heartbeat requests.</param>
         /// 
         /// <param name="DefaultRequestTimeout">The default request timeout for all requests.</param>
         public TestChargePoint(ChargeBox_Id  ChargeBoxId,
@@ -178,6 +201,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                String        IMSI                      = null,
                                String        MeterType                 = null,
                                String        MeterSerialNumber         = null,
+                               String        MeterPublicKey            = null,
+
+                               TimeSpan?     SendHeartbeatEvery        = null,
 
                                TimeSpan?     DefaultRequestTimeout     = null)
 
@@ -205,6 +231,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.IMSI                     = IMSI;
             this.MeterType                = MeterType;
             this.MeterSerialNumber        = MeterSerialNumber;
+            this.MeterPublicKey           = MeterPublicKey;
+
+            this.SendHeartbeatEvery       = SendHeartbeatEvery    ?? DefaultSendHeartbeatEvery;
 
             this.DefaultRequestTimeout    = DefaultRequestTimeout ?? TimeSpan.FromMinutes(1);
 
