@@ -34,6 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a boot notification request will be send to the central system.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The reserve now request.</param>
     public delegate Task OnBootNotificationRequestDelegate (DateTime                  LogTimestamp,
                                                             IEventSender              Sender,
                                                             BootNotificationRequest   Request);
@@ -41,6 +44,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a response to a boot notification request was received.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnBootNotificationResponseDelegate(DateTime                   LogTimestamp,
                                                             IEventSender               Sender,
                                                             BootNotificationRequest    Request,
@@ -54,6 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a heartbeat request will be send to the central system.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The reserve now request.</param>
     public delegate Task OnHeartbeatRequestDelegate (DateTime           LogTimestamp,
                                                      IEventSender       Sender,
                                                      HeartbeatRequest   Request);
@@ -61,6 +72,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a response to a heartbeat request was received.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnHeartbeatResponseDelegate(DateTime            LogTimestamp,
                                                      IEventSender        Sender,
                                                      HeartbeatRequest    Request,
@@ -75,6 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever an authorize request will be send to the central system.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
     public delegate Task OnAuthorizeRequestDelegate (DateTime           LogTimestamp,
                                                      IEventSender       Sender,
                                                      AuthorizeRequest   Request);
@@ -82,6 +101,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a response to an authorize request was received.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnAuthorizeResponseDelegate(DateTime            LogTimestamp,
                                                      IEventSender        Sender,
                                                      AuthorizeRequest    Request,
@@ -95,6 +119,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a start transaction request will be send to the central system.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
     public delegate Task OnStartTransactionRequestDelegate (DateTime                  LogTimestamp,
                                                             IEventSender              Sender,
                                                             StartTransactionRequest   Request);
@@ -102,6 +129,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a response to a start transaction request was received.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnStartTransactionResponseDelegate(DateTime                   LogTimestamp,
                                                             IEventSender               Sender,
                                                             StartTransactionRequest    Request,
@@ -115,13 +147,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a status notification request will be send to the central system.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
     public delegate Task OnStatusNotificationRequestDelegate (DateTime                    LogTimestamp,
                                                               IEventSender                Sender,
                                                               StatusNotificationRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a status notification request was received.
-    /// </summary>s
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnStatusNotificationResponseDelegate(DateTime                     LogTimestamp,
                                                               IEventSender                 Sender,
                                                               StatusNotificationRequest    Request,
@@ -135,13 +175,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a meter values request will be send to the central system.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
     public delegate Task OnMeterValuesRequestDelegate (DateTime             LogTimestamp,
                                                        IEventSender         Sender,
                                                        MeterValuesRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a meter values request was received.
-    /// </summary>s
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnMeterValuesResponseDelegate(DateTime              LogTimestamp,
                                                        IEventSender          Sender,
                                                        MeterValuesRequest    Request,
@@ -155,6 +203,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a stop transaction request will be send to the central system.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
     public delegate Task OnStopTransactionRequestDelegate (DateTime                 LogTimestamp,
                                                            IEventSender             Sender,
                                                            StopTransactionRequest   Request);
@@ -162,6 +213,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a response to a stop transaction request was received.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnStopTransactionResponseDelegate(DateTime                  LogTimestamp,
                                                            IEventSender              Sender,
                                                            StopTransactionRequest    Request,
@@ -176,6 +232,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a data transfer request will be send to the central system.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
     public delegate Task OnDataTransferRequestDelegate (DateTime              LogTimestamp,
                                                         IEventSender          Sender,
                                                         DataTransferRequest   Request);
@@ -183,6 +242,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a response to a data transfer request was received.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnDataTransferResponseDelegate(DateTime                  LogTimestamp,
                                                         IEventSender              Sender,
                                                         DataTransferRequest       Request,
@@ -196,6 +260,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a diagnostics status notification request will be send to the central system.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
     public delegate Task OnDiagnosticsStatusNotificationRequestDelegate (DateTime                               LogTimestamp,
                                                                          IEventSender                           Sender,
                                                                          DiagnosticsStatusNotificationRequest   Request);
@@ -203,6 +270,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a response to a diagnostics status notification request was received.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnDiagnosticsStatusNotificationResponseDelegate(DateTime                                LogTimestamp,
                                                                          IEventSender                            Sender,
                                                                          DiagnosticsStatusNotificationRequest    Request,
@@ -216,6 +288,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a firmware status notification request will be send to the central system.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
     public delegate Task OnFirmwareStatusNotificationRequestDelegate (DateTime                            LogTimestamp,
                                                                       IEventSender                        Sender,
                                                                       FirmwareStatusNotificationRequest   Request);
@@ -223,6 +298,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a response to a firmware status notification request was received.
     /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnFirmwareStatusNotificationResponseDelegate(DateTime                             LogTimestamp,
                                                                       IEventSender                         Sender,
                                                                       FirmwareStatusNotificationRequest    Request,

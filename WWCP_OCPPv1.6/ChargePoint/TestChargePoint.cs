@@ -291,6 +291,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         // Server events
 
+        #region OnResetRequest/-Response
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnResetRequestDelegate   OnResetRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnResetResponseDelegate  OnResetResponse;
+
+        #endregion
+
+
         #region OnReserveNowRequest/-Response
 
         /// <summary>

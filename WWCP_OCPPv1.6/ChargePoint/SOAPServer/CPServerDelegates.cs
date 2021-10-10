@@ -30,6 +30,56 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
+    #region OnReset
+
+    /// <summary>
+    /// A reset request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnResetRequestDelegate(DateTime         Timestamp,
+                               IEventSender     Sender,
+                               CS.ResetRequest  Request);
+
+
+    /// <summary>
+    /// A reset request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ResetResponse>
+
+        OnResetDelegate(DateTime           Timestamp,
+                        IEventSender       Sender,
+                        CS.ResetRequest    Request,
+                        CancellationToken  CancellationToken);
+
+
+    /// <summary>
+    /// A reset response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnResetResponseDelegate(DateTime          Timestamp,
+                                IEventSender      Sender,
+                                CS.ResetRequest   Request,
+                                CP.ResetResponse  Response,
+                                TimeSpan          Runtime);
+
+    #endregion
+
+
+
     #region OnReserveNow
 
     /// <summary>
@@ -37,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Request">The request.</param>
     public delegate Task
 
         OnReserveNowRequestDelegate(DateTime              Timestamp,
@@ -50,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<ReserveNowResponse>
 
@@ -65,8 +115,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
-    /// <param name="Request">The reserve now request.</param>
-    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 

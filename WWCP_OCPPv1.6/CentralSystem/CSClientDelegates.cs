@@ -29,6 +29,34 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
+    #region OnReset
+
+    /// <summary>
+    /// A delegate called whenever a reset request will be send to a charge point.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnResetRequestDelegate(DateTime      LogTimestamp,
+                                                IEventSender  Sender,
+                                                ResetRequest  Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a reset request was received.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnResetResponseDelegate(DateTime          LogTimestamp,
+                                                 IEventSender      Sender,
+                                                 CS.ResetRequest   Request,
+                                                 CP.ResetResponse  Response,
+                                                 TimeSpan          Runtime);
+
+    #endregion
+
     #region OnChangeAvailability
 
     /// <summary>
@@ -62,42 +90,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                               TimeSpan?                   RequestTimeout,
                                                               CP.ChangeAvailabilityResponse  Result,
                                                               TimeSpan                    Runtime);
-
-    #endregion
-
-    #region OnChangeConfiguration
-
-    /// <summary>
-    /// A delegate called whenever a change configuration request will be send to a charge point.
-    /// </summary>
-    public delegate Task OnChangeConfigurationRequestDelegate (DateTime                 LogTimestamp,
-                                                               DateTime                 RequestTimestamp,
-                                                               CentralSystemSOAPClient  Sender,
-                                                               String                   SenderId,
-                                                               EventTracking_Id         EventTrackingId,
-
-                                                               ChargeBox_Id             ChargeBoxIdentity,
-                                                               String                   Key,
-                                                               String                   Value,
-
-                                                               TimeSpan?                RequestTimeout);
-
-    /// <summary>
-    /// A delegate called whenever a response to a change configuration request was received.
-    /// </summary>
-    public delegate Task OnChangeConfigurationResponseDelegate(DateTime                     LogTimestamp,
-                                                               DateTime                     RequestTimestamp,
-                                                               CentralSystemSOAPClient      Sender,
-                                                               String                       SenderId,
-                                                               EventTracking_Id             EventTrackingId,
-
-                                                               ChargeBox_Id                 ChargeBoxIdentity,
-                                                               String                       Key,
-                                                               String                       Value,
-
-                                                               TimeSpan?                    RequestTimeout,
-                                                               CP.ChangeConfigurationResponse  Result,
-                                                               TimeSpan                     Runtime);
 
     #endregion
 
@@ -135,39 +127,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
     #endregion
 
-    #region OnTriggerMessage
+    #region OnChangeConfiguration
 
     /// <summary>
-    /// A delegate called whenever a trigger message request will be send to a charge point.
+    /// A delegate called whenever a change configuration request will be send to a charge point.
     /// </summary>
-    public delegate Task OnTriggerMessageRequestDelegate (DateTime                 LogTimestamp,
-                                                          DateTime                 RequestTimestamp,
-                                                          CentralSystemSOAPClient  Sender,
-                                                          String                   SenderId,
-                                                          EventTracking_Id         EventTrackingId,
+    public delegate Task OnChangeConfigurationRequestDelegate (DateTime                 LogTimestamp,
+                                                               DateTime                 RequestTimestamp,
+                                                               CentralSystemSOAPClient  Sender,
+                                                               String                   SenderId,
+                                                               EventTracking_Id         EventTrackingId,
 
-                                                          ChargeBox_Id             ChargeBoxIdentity,
-                                                          MessageTriggers          RequestedMessage,
-                                                          Connector_Id?            ConnectorId,
+                                                               ChargeBox_Id             ChargeBoxIdentity,
+                                                               String                   Key,
+                                                               String                   Value,
 
-                                                          TimeSpan?                RequestTimeout);
+                                                               TimeSpan?                RequestTimeout);
 
     /// <summary>
-    /// A delegate called whenever a response to a trigger message request was received.
+    /// A delegate called whenever a response to a change configuration request was received.
     /// </summary>
-    public delegate Task OnTriggerMessageResponseDelegate(DateTime                 LogTimestamp,
-                                                          DateTime                 RequestTimestamp,
-                                                          CentralSystemSOAPClient  Sender,
-                                                          String                   SenderId,
-                                                          EventTracking_Id         EventTrackingId,
+    public delegate Task OnChangeConfigurationResponseDelegate(DateTime                     LogTimestamp,
+                                                               DateTime                     RequestTimestamp,
+                                                               CentralSystemSOAPClient      Sender,
+                                                               String                       SenderId,
+                                                               EventTracking_Id             EventTrackingId,
 
-                                                          ChargeBox_Id             ChargeBoxIdentity,
-                                                          MessageTriggers          RequestedMessage,
-                                                          Connector_Id?            ConnectorId,
+                                                               ChargeBox_Id                 ChargeBoxIdentity,
+                                                               String                       Key,
+                                                               String                       Value,
 
-                                                          TimeSpan?                RequestTimeout,
-                                                          CP.TriggerMessageResponse   Result,
-                                                          TimeSpan                 Runtime);
+                                                               TimeSpan?                    RequestTimeout,
+                                                               CP.ChangeConfigurationResponse  Result,
+                                                               TimeSpan                     Runtime);
 
     #endregion
 
@@ -249,6 +241,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
     #endregion
 
+    #region OnTriggerMessage
+
+    /// <summary>
+    /// A delegate called whenever a trigger message request will be send to a charge point.
+    /// </summary>
+    public delegate Task OnTriggerMessageRequestDelegate (DateTime                 LogTimestamp,
+                                                          DateTime                 RequestTimestamp,
+                                                          CentralSystemSOAPClient  Sender,
+                                                          String                   SenderId,
+                                                          EventTracking_Id         EventTrackingId,
+
+                                                          ChargeBox_Id             ChargeBoxIdentity,
+                                                          MessageTriggers          RequestedMessage,
+                                                          Connector_Id?            ConnectorId,
+
+                                                          TimeSpan?                RequestTimeout);
+
+    /// <summary>
+    /// A delegate called whenever a response to a trigger message request was received.
+    /// </summary>
+    public delegate Task OnTriggerMessageResponseDelegate(DateTime                 LogTimestamp,
+                                                          DateTime                 RequestTimestamp,
+                                                          CentralSystemSOAPClient  Sender,
+                                                          String                   SenderId,
+                                                          EventTracking_Id         EventTrackingId,
+
+                                                          ChargeBox_Id             ChargeBoxIdentity,
+                                                          MessageTriggers          RequestedMessage,
+                                                          Connector_Id?            ConnectorId,
+
+                                                          TimeSpan?                RequestTimeout,
+                                                          CP.TriggerMessageResponse   Result,
+                                                          TimeSpan                 Runtime);
+
+    #endregion
+
     #region OnUpdateFirmware
 
     /// <summary>
@@ -289,40 +317,38 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
     #endregion
 
-    #region OnReset
+
+    #region OnGetLocalListVersion
 
     /// <summary>
-    /// A delegate called whenever a reset request will be send to a charge point.
+    /// A delegate called whenever a get local list version request will be send to a charge point.
     /// </summary>
-    public delegate Task OnResetRequestDelegate (DateTime                 LogTimestamp,
-                                                 DateTime                 RequestTimestamp,
-                                                 CentralSystemSOAPClient  Sender,
-                                                 String                   SenderId,
-                                                 EventTracking_Id         EventTrackingId,
+    public delegate Task OnGetLocalListVersionRequestDelegate (DateTime                 LogTimestamp,
+                                                               DateTime                 RequestTimestamp,
+                                                               CentralSystemSOAPClient  Sender,
+                                                               String                   SenderId,
+                                                               EventTracking_Id         EventTrackingId,
 
-                                                 ChargeBox_Id             ChargeBoxIdentity,
-                                                 ResetTypes               Type,
+                                                               ChargeBox_Id             ChargeBoxIdentity,
 
-                                                 TimeSpan?                RequestTimeout);
+                                                               TimeSpan?                RequestTimeout);
 
     /// <summary>
-    /// A delegate called whenever a response to a reset request was received.
+    /// A delegate called whenever a response to a get local list version request was received.
     /// </summary>
-    public delegate Task OnResetResponseDelegate(DateTime                 LogTimestamp,
-                                                 DateTime                 RequestTimestamp,
-                                                 CentralSystemSOAPClient  Sender,
-                                                 String                   SenderId,
-                                                 EventTracking_Id         EventTrackingId,
+    public delegate Task OnGetLocalListVersionResponseDelegate(DateTime                     LogTimestamp,
+                                                               DateTime                     RequestTimestamp,
+                                                               CentralSystemSOAPClient      Sender,
+                                                               String                       SenderId,
+                                                               EventTracking_Id             EventTrackingId,
 
-                                                 ChargeBox_Id             ChargeBoxIdentity,
-                                                 ResetTypes               Type,
+                                                               ChargeBox_Id                 ChargeBoxIdentity,
 
-                                                 TimeSpan?                RequestTimeout,
-                                                 CP.ResetResponse            Result,
-                                                 TimeSpan                 Runtime);
+                                                               TimeSpan?                    RequestTimeout,
+                                                               CP.GetLocalListVersionResponse  Result,
+                                                               TimeSpan                     Runtime);
 
     #endregion
-
 
     #region OnSendLocalList
 
@@ -359,38 +385,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                          TimeSpan?                       RequestTimeout,
                                                          CP.SendLocalListResponse           Result,
                                                          TimeSpan                        Runtime);
-
-    #endregion
-
-    #region OnGetLocalListVersion
-
-    /// <summary>
-    /// A delegate called whenever a get local list version request will be send to a charge point.
-    /// </summary>
-    public delegate Task OnGetLocalListVersionRequestDelegate (DateTime                 LogTimestamp,
-                                                               DateTime                 RequestTimestamp,
-                                                               CentralSystemSOAPClient  Sender,
-                                                               String                   SenderId,
-                                                               EventTracking_Id         EventTrackingId,
-
-                                                               ChargeBox_Id             ChargeBoxIdentity,
-
-                                                               TimeSpan?                RequestTimeout);
-
-    /// <summary>
-    /// A delegate called whenever a response to a get local list version request was received.
-    /// </summary>
-    public delegate Task OnGetLocalListVersionResponseDelegate(DateTime                     LogTimestamp,
-                                                               DateTime                     RequestTimestamp,
-                                                               CentralSystemSOAPClient      Sender,
-                                                               String                       SenderId,
-                                                               EventTracking_Id             EventTrackingId,
-
-                                                               ChargeBox_Id                 ChargeBoxIdentity,
-
-                                                               TimeSpan?                    RequestTimeout,
-                                                               CP.GetLocalListVersionResponse  Result,
-                                                               TimeSpan                     Runtime);
 
     #endregion
 
@@ -432,17 +426,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// A delegate called whenever a reserve now request will be send to a charge point.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The reserve now request.</param>
-    public delegate Task OnReserveNowRequestDelegate (DateTime           Timestamp,
+    /// <param name="Request">The request.</param>
+    public delegate Task OnReserveNowRequestDelegate (DateTime           LogTimestamp,
                                                       IEventSender       Sender,
                                                       ReserveNowRequest  Request);
 
     /// <summary>
     /// A delegate called whenever a response to a reserve now request was received.
     /// </summary>
-    public delegate Task OnReserveNowResponseDelegate(DateTime               Timestamp,
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnReserveNowResponseDelegate(DateTime               LogTimestamp,
                                                       IEventSender           Sender,
                                                       CS.ReserveNowRequest   Request,
                                                       CP.ReserveNowResponse  Response,
