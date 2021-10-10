@@ -49,13 +49,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="BootNotificationRequest">The boot notification request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="Request">The boot notification request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<BootNotificationResponse>
 
         BootNotificationDelegate(DateTime                    Timestamp,
                                  IEventSender                Sender,
-                                 CP.BootNotificationRequest  BootNotificationRequest,
+                                 CP.BootNotificationRequest  Request,
                                  CancellationToken           CancellationToken);
 
 
@@ -97,13 +97,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="HeartbeatRequest">A heartbeat request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="Request">The heartbeat request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<HeartbeatResponse>
 
         HeartbeatDelegate(DateTime             Timestamp,
                           IEventSender         Sender,
-                          CP.HeartbeatRequest  HeartbeatRequest,
+                          CP.HeartbeatRequest  Request,
                           CancellationToken    CancellationToken);
 
 
@@ -133,14 +133,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="AuthorizeRequest">An authorize request.</param>
+    /// <param name="Request">The authorize request.</param>
     public delegate Task
 
         OnAuthorizeRequestDelegate(DateTime             Timestamp,
-                                   Object               Sender,
-                                   EventTracking_Id     EventTrackingId,
-                                   CP.AuthorizeRequest  AuthorizeRequest);
+                                   IEventSender         Sender,
+                                   CP.AuthorizeRequest  Request);
 
 
     /// <summary>
@@ -148,16 +146,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="AuthorizeRequest">An authorize request.</param>
+    /// <param name="Request">The authorize request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<AuthorizeResponse>
 
         OnAuthorizeDelegate(DateTime             Timestamp,
-                            Object               Sender,
-                            CancellationToken    CancellationToken,
-                            EventTracking_Id     EventTrackingId,
-                            CP.AuthorizeRequest  AuthorizeRequest);
+                            IEventSender         Sender,
+                            CP.AuthorizeRequest  Request,
+                            CancellationToken    CancellationToken);
 
 
     /// <summary>
@@ -165,22 +161,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="AuthorizeRequest">An authorize request.</param>
-    /// 
-    /// <param name="Result">The general OCPP result.</param>
-    /// <param name="IdTagInfo">An identification tag info.</param>
+    /// <param name="Request">The authorize request.</param>
+    /// <param name="Response">The authorize response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnAuthorizeResponseDelegate(DateTime             Timestamp,
-                                    Object               Sender,
-                                    EventTracking_Id     EventTrackingId,
-                                    CP.AuthorizeRequest  AuthorizeRequest,
-
-                                    Result               Result,
-                                    IdTagInfo            IdTagInfo,
-                                    TimeSpan             Runtime);
+        OnAuthorizeResponseDelegate(DateTime               Timestamp,
+                                    IEventSender           Sender,
+                                    CP.AuthorizeRequest    Request,
+                                    CS.AuthorizeResponse   Response,
+                                    TimeSpan               Runtime);
 
     #endregion
 
@@ -191,14 +181,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="StartTransactionRequest">A start transaction request.</param>
+    /// <param name="Request">The start transaction request.</param>
     public delegate Task
 
         OnStartTransactionRequestDelegate(DateTime                    Timestamp,
-                                          Object                      Sender,
-                                          EventTracking_Id            EventTrackingId,
-                                          CP.StartTransactionRequest  StartTransactionRequest);
+                                          IEventSender                Sender,
+                                          CP.StartTransactionRequest  Request);
 
 
     /// <summary>
@@ -206,16 +194,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="StartTransactionRequest">A start transaction request.</param>
+    /// <param name="Request">The start transaction request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<StartTransactionResponse>
 
         OnStartTransactionDelegate(DateTime                    Timestamp,
-                                   Object                      Sender,
-                                   CancellationToken           CancellationToken,
-                                   EventTracking_Id            EventTrackingId,
-                                   CP.StartTransactionRequest  StartTransactionRequest);
+                                   IEventSender                Sender,
+                                   CP.StartTransactionRequest  Request,
+                                   CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -223,24 +209,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="StartTransactionRequest">A start transaction request.</param>
-    /// 
-    /// <param name="Result">The general OCPP result.</param>
-    /// <param name="TransactionId">The transaction identification assigned by the central system.</param>
-    /// <param name="IdTagInfo">An identification tag info.</param>
+    /// <param name="Request">The start transaction request.</param>
+    /// <param name="Response">The start transaction response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnStartTransactionResponseDelegate(DateTime                    Timestamp,
-                                           Object                      Sender,
-                                           EventTracking_Id            EventTrackingId,
-                                           CP.StartTransactionRequest  StartTransactionRequest,
-
-                                           Result                      Result,
-                                           Transaction_Id              TransactionId,
-                                           IdTagInfo                   IdTagInfo,
-                                           TimeSpan                    Runtime);
+        OnStartTransactionResponseDelegate(DateTime                     Timestamp,
+                                           IEventSender                 Sender,
+                                           CP.StartTransactionRequest   Request,
+                                           CS.StartTransactionResponse  Response,
+                                           TimeSpan                     Runtime);
 
     #endregion
 
@@ -251,14 +229,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="StatusNotificationRequest">A status notification request.</param>
+    /// <param name="Request">The status notification request.</param>
     public delegate Task
 
         OnStatusNotificationRequestDelegate(DateTime                      Timestamp,
-                                            Object                        Sender,
-                                            EventTracking_Id              EventTrackingId,
-                                            CP.StatusNotificationRequest  StatusNotificationRequest);
+                                            IEventSender                  Sender,
+                                            CP.StatusNotificationRequest  Request);
 
 
     /// <summary>
@@ -266,16 +242,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="StatusNotificationRequest">A status notification request.</param>
+    /// <param name="Request">The status notification request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<StatusNotificationResponse>
 
         OnStatusNotificationDelegate(DateTime                      Timestamp,
-                                     Object                        Sender,
-                                     CancellationToken             CancellationToken,
-                                     EventTracking_Id              EventTrackingId,
-                                     CP.StatusNotificationRequest  StatusNotificationRequest);
+                                     IEventSender                  Sender,
+                                     CP.StatusNotificationRequest  Request,
+                                     CancellationToken             CancellationToken);
 
 
     /// <summary>
@@ -283,20 +257,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="StatusNotificationRequest">A status notification request.</param>
-    /// 
-    /// <param name="Result">The general OCPP result.</param>
+    /// <param name="Request">The status notification request.</param>
+    /// <param name="Response">The status notification response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnStatusNotificationResponseDelegate(DateTime                      Timestamp,
-                                             Object                        Sender,
-                                             EventTracking_Id              EventTrackingId,
-                                             CP.StatusNotificationRequest  StatusNotificationRequest,
-
-                                             Result                        Result,
-                                             TimeSpan                      Runtime);
+        OnStatusNotificationResponseDelegate(DateTime                       Timestamp,
+                                             IEventSender                   Sender,
+                                             CP.StatusNotificationRequest   Request,
+                                             CS.StatusNotificationResponse  Response,
+                                             TimeSpan                       Runtime);
 
     #endregion
 
@@ -307,13 +277,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="MeterValuesRequest">A meter values request.</param>
+    /// <param name="MeterValuesRequest">The meter values request.</param>
     public delegate Task
 
         OnMeterValuesRequestDelegate(DateTime               Timestamp,
-                                     Object                 Sender,
-                                     EventTracking_Id       EventTrackingId,
+                                     IEventSender           Sender,
                                      CP.MeterValuesRequest  MeterValuesRequest);
 
 
@@ -322,16 +290,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="MeterValuesRequest">A meter values request.</param>
+    /// <param name="Request">The meter values request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<MeterValuesResponse>
 
         OnMeterValuesDelegate(DateTime               Timestamp,
-                              Object                 Sender,
-                              CancellationToken      CancellationToken,
-                              EventTracking_Id       EventTrackingId,
-                              CP.MeterValuesRequest  MeterValuesRequest);
+                              IEventSender           Sender,
+                              CP.MeterValuesRequest  Request,
+                              CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -339,20 +305,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="MeterValuesRequest">A meter values request.</param>
-    /// 
-    /// <param name="Result">The general OCPP result.</param>
+    /// <param name="Request">The meter values request.</param>
+    /// <param name="Response">The meter values response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnMeterValuesResponseDelegate(DateTime               Timestamp,
-                                      Object                 Sender,
-                                      EventTracking_Id       EventTrackingId,
-                                      CP.MeterValuesRequest  MeterValuesRequest,
-
-                                      Result                 Result,
-                                      TimeSpan               Runtime);
+        OnMeterValuesResponseDelegate(DateTime                Timestamp,
+                                      IEventSender            Sender,
+                                      CP.MeterValuesRequest   Request,
+                                      CS.MeterValuesResponse  Response,
+                                      TimeSpan                Runtime);
 
     #endregion
 
@@ -363,14 +325,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="StopTransactionRequest">A stop transaction request.</param>
+    /// <param name="Request">The stop transaction request.</param>
     public delegate Task
 
         OnStopTransactionRequestDelegate(DateTime                   Timestamp,
-                                         Object                     Sender,
-                                         EventTracking_Id           EventTrackingId,
-                                         CP.StopTransactionRequest  StopTransactionRequest);
+                                         IEventSender               Sender,
+                                         CP.StopTransactionRequest  Request);
 
 
     /// <summary>
@@ -378,16 +338,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="StopTransactionRequest">A stop transaction request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<StopTransactionResponse>
 
         OnStopTransactionDelegate(DateTime                   Timestamp,
-                                  Object                     Sender,
-                                  CancellationToken          CancellationToken,
-                                  EventTracking_Id           EventTrackingId,
-                                  CP.StopTransactionRequest  StopTransactionRequest);
+                                  IEventSender               Sender,
+                                  CP.StopTransactionRequest  Request,
+                                  CancellationToken          CancellationToken);
 
 
     /// <summary>
@@ -395,22 +353,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="StopTransactionRequest">A stop transaction request.</param>
-    /// 
-    /// <param name="Result">The general OCPP result.</param>
-    /// <param name="IdTagInfo">An identification tag info.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="Response">The stop transaction response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnStopTransactionResponseDelegate(DateTime                   Timestamp,
-                                          Object                     Sender,
-                                          EventTracking_Id           EventTrackingId,
-                                          CP.StopTransactionRequest  StopTransactionRequest,
-
-                                          Result                     Result,
-                                          IdTagInfo?                 IdTagInfo,
-                                          TimeSpan                   Runtime);
+        OnStopTransactionResponseDelegate(DateTime                    Timestamp,
+                                          IEventSender                Sender,
+                                          CP.StopTransactionRequest   Request,
+                                          CS.StopTransactionResponse  Response,
+                                          TimeSpan                    Runtime);
 
     #endregion
 
@@ -422,14 +374,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="DataTransferRequest">A data transfer request.</param>
+    /// <param name="Request">The data transfer request.</param>
     public delegate Task
 
         OnIncomingDataTransferRequestDelegate(DateTime                Timestamp,
-                                              Object                  Sender,
-                                              EventTracking_Id        EventTrackingId,
-                                              CP.DataTransferRequest  DataTransferRequest);
+                                              IEventSender            Sender,
+                                              CP.DataTransferRequest  Request);
 
 
     /// <summary>
@@ -437,16 +387,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="DataTransferRequest">A data transfer request.</param>
+    /// <param name="Request">The data transfer request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<DataTransferResponse>
 
         OnIncomingDataTransferDelegate(DateTime                Timestamp,
-                                       Object                  Sender,
-                                       CancellationToken       CancellationToken,
-                                       EventTracking_Id        EventTrackingId,
-                                       CP.DataTransferRequest  DataTransferRequest);
+                                       IEventSender            Sender,
+                                       CP.DataTransferRequest  Request,
+                                       CancellationToken       CancellationToken);
 
 
     /// <summary>
@@ -454,24 +402,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="DataTransferRequest">A data transfer request.</param>
-    /// 
-    /// <param name="Result">The general OCPP result.</param>
-    /// <param name="Status">The success or failure status of the data transfer.</param>
-    /// <param name="ResponseData">Optional response data.</param>
+    /// <param name="Request">The data transfer request.</param>
+    /// <param name="Response">The stop transaction response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnIncomingDataTransferResponseDelegate(DateTime                Timestamp,
-                                               Object                  Sender,
-                                               EventTracking_Id        EventTrackingId,
-                                               CP.DataTransferRequest  DataTransferRequest,
-
-                                               Result                  Result,
-                                               DataTransferStatus      Status,
-                                               String                  ResponseData,
-                                               TimeSpan                Runtime);
+        OnIncomingDataTransferResponseDelegate(DateTime                 Timestamp,
+                                               IEventSender             Sender,
+                                               CP.DataTransferRequest   Request,
+                                               CS.DataTransferResponse  Response,
+                                               TimeSpan                 Runtime);
 
     #endregion
 
@@ -482,14 +422,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="DiagnosticsStatusNotificationRequest">A diagnostics status notification request.</param>
+    /// <param name="Request">The diagnostics status notification request.</param>
     public delegate Task
 
         OnDiagnosticsStatusNotificationRequestDelegate(DateTime                                 Timestamp,
-                                                       Object                                   Sender,
-                                                       EventTracking_Id                         EventTrackingId,
-                                                       CP.DiagnosticsStatusNotificationRequest  DiagnosticsStatusNotificationRequest);
+                                                       IEventSender                             Sender,
+                                                       CP.DiagnosticsStatusNotificationRequest  Request);
 
 
     /// <summary>
@@ -497,16 +435,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="DiagnosticsStatusNotificationRequest">A diagnostics status notification request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    /// <param name="Request">The diagnostics status notification request.</param>
     public delegate Task<DiagnosticsStatusNotificationResponse>
 
         OnDiagnosticsStatusNotificationDelegate(DateTime                                 Timestamp,
-                                                Object                                   Sender,
-                                                CancellationToken                        CancellationToken,
-                                                EventTracking_Id                         EventTrackingId,
-                                                CP.DiagnosticsStatusNotificationRequest  DiagnosticsStatusNotificationRequest);
+                                                IEventSender                             Sender,
+                                                CP.DiagnosticsStatusNotificationRequest  Request,
+                                                CancellationToken                        CancellationToken);
 
 
     /// <summary>
@@ -514,20 +450,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="DiagnosticsStatusNotificationRequest">A diagnostics status notification request.</param>
-    /// 
-    /// <param name="Result">The general OCPP result.</param>
+    /// <param name="Request">The diagnostics status notification request.</param>
+    /// <param name="Response">The diagnostics status notification response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnDiagnosticsStatusNotificationResponseDelegate(DateTime                                 Timestamp,
-                                                        Object                                   Sender,
-                                                        EventTracking_Id                         EventTrackingId,
-                                                        CP.DiagnosticsStatusNotificationRequest  DiagnosticsStatusNotificationRequest,
-
-                                                        Result                                   Result,
-                                                        TimeSpan                                 Runtime);
+        OnDiagnosticsStatusNotificationResponseDelegate(DateTime                                  Timestamp,
+                                                        IEventSender                              Sender,
+                                                        CP.DiagnosticsStatusNotificationRequest   Request,
+                                                        CS.DiagnosticsStatusNotificationResponse  Response,
+                                                        TimeSpan                                  Runtime);
 
     #endregion
 
@@ -538,15 +470,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="FirmwareStatusNotificationRequest">A firmware status notification request.</param>
+    /// <param name="Request">The firmware status notification request.</param>
 
     public delegate Task
 
         OnFirmwareStatusNotificationRequestDelegate(DateTime                              Timestamp,
-                                                    Object                                Sender,
-                                                    EventTracking_Id                      EventTrackingId,
-                                                    CP.FirmwareStatusNotificationRequest  FirmwareStatusNotificationRequest);
+                                                    IEventSender                          Sender,
+                                                    CP.FirmwareStatusNotificationRequest  Request);
 
 
     /// <summary>
@@ -554,16 +484,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="FirmwareStatusNotificationRequest">A firmware status notification request.</param>
+    /// <param name="Request">The firmware status notification request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<FirmwareStatusNotificationResponse>
 
         OnFirmwareStatusNotificationDelegate(DateTime                              Timestamp,
-                                             Object                                Sender,
-                                             CancellationToken                     CancellationToken,
-                                             EventTracking_Id                      EventTrackingId,
-                                             CP.FirmwareStatusNotificationRequest  FirmwareStatusNotificationRequest);
+                                             IEventSender                          Sender,
+                                             CP.FirmwareStatusNotificationRequest  Request,
+                                             CancellationToken                     CancellationToken);
 
 
     /// <summary>
@@ -571,20 +499,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="FirmwareStatusNotificationRequest">A firmware status notification request.</param>
-    /// 
-    /// <param name="Result">The general OCPP result.</param>
+    /// <param name="Request">The firmware status notification request.</param>
+    /// <param name="Response">The firmware status notification response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnFirmwareStatusNotificationResponseDelegate(DateTime                              Timestamp,
-                                                     Object                                Sender,
-                                                     EventTracking_Id                      EventTrackingId,
-                                                     CP.FirmwareStatusNotificationRequest  FirmwareStatusNotificationRequest,
-
-                                                     Result                                Result,
-                                                     TimeSpan                              Runtime);
+        OnFirmwareStatusNotificationResponseDelegate(DateTime                               Timestamp,
+                                                     IEventSender                           Sender,
+                                                     CP.FirmwareStatusNotificationRequest   Request,
+                                                     CS.FirmwareStatusNotificationResponse  Response,
+                                                     TimeSpan                               Runtime);
 
     #endregion
 

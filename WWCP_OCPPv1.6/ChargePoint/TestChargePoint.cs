@@ -138,6 +138,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Events
 
+        // Client events
+
         #region OnBootNotificationRequest/-Response
 
         /// <summary>
@@ -280,6 +282,66 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+
+
+        // Server events
+
+        #region OnReserveNow
+
+        /// <summary>
+        /// An event sent whenever a reserve now request was received.
+        /// </summary>
+        public event OnReserveNowDelegate  OnReserveNowRequest;
+
+        #endregion
+
+        #region OnCancelReservation
+
+        /// <summary>
+        /// An event sent whenever a cancel reservation request was received.
+        /// </summary>
+        public event OnCancelReservationDelegate  OnCancelReservationRequest;
+
+        #endregion
+
+        #region OnRemoteStartTransaction
+
+        /// <summary>
+        /// An event sent whenever a remote start transaction request was received.
+        /// </summary>
+        public event OnRemoteStartTransactionRequestDelegate   OnRemoteStartTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a remote start transaction request was sent.
+        /// </summary>
+        public event OnRemoteStartTransactionResponseDelegate  OnRemoteStartTransactionResponse;
+
+        #endregion
+
+        #region OnRemoteStopTransaction
+
+        /// <summary>
+        /// An event sent whenever a remote stop transaction request was received.
+        /// </summary>
+        public event OnRemoteStopTransactionRequestDelegate   OnRemoteStopTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a remote stop transaction request was sent.
+        /// </summary>
+        public event OnRemoteStopTransactionResponseDelegate  OnRemoteStopTransactionResponse;
+
+        #endregion
+
+
+        #region OnDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a data transfer request was received.
+        /// </summary>
+        public event OnDataTransferDelegate  OnReceiveDataTransferRequest;
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -357,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region SendBootNotification         (CancellationToken= null, EventTrackingId = null, RequestTimeout = null)
+        #region SendBootNotification             (CancellationToken= null, EventTrackingId = null, RequestTimeout = null)
 
         /// <summary>
         /// Send a boot notification.
@@ -446,7 +508,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region SendHeartbeat                (CancellationToken= null, EventTrackingId = null, RequestTimeout = null)
+        #region SendHeartbeat                    (CancellationToken= null, EventTrackingId = null, RequestTimeout = null)
 
         /// <summary>
         /// Send a heartbeat.
@@ -526,7 +588,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region Authorize                    (IdTag, ...)
+        #region Authorize                        (IdTag, ...)
 
         /// <summary>
         /// Authorize the given token.
@@ -610,7 +672,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region StartTransaction             (ConnectorId, IdTag, TransactionTimestamp, MeterStart, ReservationId = null, ...)
+        #region StartTransaction                 (ConnectorId, IdTag, TransactionTimestamp, MeterStart, ReservationId = null, ...)
 
         /// <summary>
         /// Start a charging process at the given connector.
@@ -706,7 +768,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region StatusNotification           (ConnectorId, Status, ErrorCode, ...)
+        #region SendStatusNotification           (ConnectorId, Status, ErrorCode, ...)
 
         /// <summary>
         /// Send a status notification for the given connector.
@@ -724,17 +786,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<CS.StatusNotificationResponse>
 
-            StatusNotification(Connector_Id           ConnectorId,
-                               ChargePointStatus      Status,
-                               ChargePointErrorCodes  ErrorCode,
-                               String                 Info                = null,
-                               DateTime?              StatusTimestamp     = null,
-                               String                 VendorId            = null,
-                               String                 VendorErrorCode     = null,
+            SendStatusNotification(Connector_Id           ConnectorId,
+                                   ChargePointStatus      Status,
+                                   ChargePointErrorCodes  ErrorCode,
+                                   String                 Info                = null,
+                                   DateTime?              StatusTimestamp     = null,
+                                   String                 VendorId            = null,
+                                   String                 VendorErrorCode     = null,
 
-                               CancellationToken?     CancellationToken   = null,
-                               EventTracking_Id       EventTrackingId     = null,
-                               TimeSpan?              RequestTimeout      = null)
+                                   CancellationToken?     CancellationToken   = null,
+                                   EventTracking_Id       EventTrackingId     = null,
+                                   TimeSpan?              RequestTimeout      = null)
 
         {
 
@@ -775,7 +837,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var response = await CPClient.StatusNotification(request,
+            var response = await CPClient.SendStatusNotification(request,
 
                                                              requestTimestamp,
                                                              CancellationToken,
@@ -808,7 +870,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region MeterValues                  (ConnectorId, TransactionId = null, MeterValues = null, ...)
+        #region SendMeterValues                  (ConnectorId, TransactionId = null, MeterValues = null, ...)
 
         /// <summary>
         /// Send a meter values for the given connector.
@@ -822,13 +884,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<CS.MeterValuesResponse>
 
-            MeterValues(Connector_Id             ConnectorId,
-                        IEnumerable<MeterValue>  MeterValues,
-                        Transaction_Id?          TransactionId       = null,
+            SendMeterValues(Connector_Id             ConnectorId,
+                            IEnumerable<MeterValue>  MeterValues,
+                            Transaction_Id?          TransactionId       = null,
 
-                        CancellationToken?       CancellationToken   = null,
-                        EventTracking_Id         EventTrackingId     = null,
-                        TimeSpan?                RequestTimeout      = null)
+                            CancellationToken?       CancellationToken   = null,
+                            EventTracking_Id         EventTrackingId     = null,
+                            TimeSpan?                RequestTimeout      = null)
 
         {
 
@@ -865,7 +927,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var response = await CPClient.MeterValues(request,
+            var response = await CPClient.SendMeterValues(request,
 
                                                       requestTimestamp,
                                                       CancellationToken,
@@ -898,7 +960,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region StopTransaction              (TransactionId, TransactionTimestamp, MeterStop, ...)
+        #region StopTransaction                  (TransactionId, TransactionTimestamp, MeterStop, ...)
 
         /// <summary>
         /// Stop a charging process at the given connector.
@@ -998,7 +1060,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region DataTransfer                 (VendorId, MessageId = null, Data = null, ...)
+        #region TransferData                     (VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Send the given vendor-specific data to the central system.
@@ -1012,7 +1074,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<CS.DataTransferResponse>
 
-            DataTransfer(String              VendorId,
+            TransferData(String              VendorId,
                          String              MessageId           = null,
                          String              Data                = null,
 
@@ -1055,7 +1117,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var response = await CPClient.DataTransfer(request,
+            var response = await CPClient.TransferData(request,
 
                                                        requestTimestamp,
                                                        CancellationToken,
@@ -1088,7 +1150,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region DiagnosticsStatusNotification(Status, ...)
+        #region SendDiagnosticsStatusNotification(Status, ...)
 
         /// <summary>
         /// Send a diagnostics status notification to the central system.
@@ -1100,11 +1162,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<CS.DiagnosticsStatusNotificationResponse>
 
-            DiagnosticsStatusNotification(DiagnosticsStatus   Status,
+            SendDiagnosticsStatusNotification(DiagnosticsStatus   Status,
 
-                                          CancellationToken?  CancellationToken  = null,
-                                          EventTracking_Id    EventTrackingId    = null,
-                                          TimeSpan?           RequestTimeout     = null)
+                                              CancellationToken?  CancellationToken  = null,
+                                              EventTracking_Id    EventTrackingId    = null,
+                                              TimeSpan?           RequestTimeout     = null)
 
         {
 
@@ -1139,7 +1201,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var response = await CPClient.DiagnosticsStatusNotification(request,
+            var response = await CPClient.SendDiagnosticsStatusNotification(request,
 
                                                                         requestTimestamp,
                                                                         CancellationToken,
@@ -1172,7 +1234,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region FirmwareStatusNotification   (Status, ...)
+        #region SendFirmwareStatusNotification   (Status, ...)
 
         /// <summary>
         /// Send a firmware status notification to the central system.
@@ -1184,11 +1246,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<CS.FirmwareStatusNotificationResponse>
 
-            FirmwareStatusNotification(FirmwareStatus      Status,
+            SendFirmwareStatusNotification(FirmwareStatus      Status,
 
-                                       CancellationToken?  CancellationToken  = null,
-                                       EventTracking_Id    EventTrackingId    = null,
-                                       TimeSpan?           RequestTimeout     = null)
+                                           CancellationToken?  CancellationToken  = null,
+                                           EventTracking_Id    EventTrackingId    = null,
+                                           TimeSpan?           RequestTimeout     = null)
 
         {
 
@@ -1223,7 +1285,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var response = await CPClient.FirmwareStatusNotification(request,
+            var response = await CPClient.SendFirmwareStatusNotification(request,
 
                                                                      requestTimestamp,
                                                                      CancellationToken,

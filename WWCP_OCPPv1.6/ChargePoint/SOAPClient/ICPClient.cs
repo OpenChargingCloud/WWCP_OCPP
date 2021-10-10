@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The common interface of all OCPP CP Clients.
+    /// The common interface of all charge point clients.
     /// </summary>
     public interface ICPClient : IHTTPClient, IEventSender
     {
@@ -374,12 +374,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public Task<HTTPResponse<StatusNotificationResponse>>
 
-            StatusNotification(StatusNotificationRequest  Request,
+            SendStatusNotification(StatusNotificationRequest  Request,
 
-                               DateTime?                  Timestamp          = null,
-                               CancellationToken?         CancellationToken  = null,
-                               EventTracking_Id           EventTrackingId    = null,
-                               TimeSpan?                  RequestTimeout     = null);
+                                   DateTime?                  Timestamp          = null,
+                                   CancellationToken?         CancellationToken  = null,
+                                   EventTracking_Id           EventTrackingId    = null,
+                                   TimeSpan?                  RequestTimeout     = null);
 
 
         /// <summary>
@@ -393,12 +393,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public Task<HTTPResponse<MeterValuesResponse>>
 
-            MeterValues(MeterValuesRequest  Request,
+            SendMeterValues(MeterValuesRequest  Request,
 
-                        DateTime?           Timestamp          = null,
-                        CancellationToken?  CancellationToken  = null,
-                        EventTracking_Id    EventTrackingId    = null,
-                        TimeSpan?           RequestTimeout     = null);
+                            DateTime?           Timestamp          = null,
+                            CancellationToken?  CancellationToken  = null,
+                            EventTracking_Id    EventTrackingId    = null,
+                            TimeSpan?           RequestTimeout     = null);
 
 
         /// <summary>
@@ -431,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public Task<HTTPResponse<CS.DataTransferResponse>>
 
-            DataTransfer(DataTransferRequest  Request,
+            TransferData(DataTransferRequest  Request,
 
                          DateTime?            Timestamp          = null,
                          CancellationToken?   CancellationToken  = null,
@@ -450,12 +450,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public Task<HTTPResponse<DiagnosticsStatusNotificationResponse>>
 
-            DiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest  Request,
+            SendDiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest  Request,
 
-                                          DateTime?                             Timestamp          = null,
-                                          CancellationToken?                    CancellationToken  = null,
-                                          EventTracking_Id                      EventTrackingId    = null,
-                                          TimeSpan?                             RequestTimeout     = null);
+                                              DateTime?                             Timestamp          = null,
+                                              CancellationToken?                    CancellationToken  = null,
+                                              EventTracking_Id                      EventTrackingId    = null,
+                                              TimeSpan?                             RequestTimeout     = null);
 
 
         /// <summary>
@@ -469,12 +469,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public Task<HTTPResponse<FirmwareStatusNotificationResponse>>
 
-            FirmwareStatusNotification(FirmwareStatusNotificationRequest  Request,
+            SendFirmwareStatusNotification(FirmwareStatusNotificationRequest  Request,
 
-                                       DateTime?                          Timestamp          = null,
-                                       CancellationToken?                 CancellationToken  = null,
-                                       EventTracking_Id                   EventTrackingId    = null,
-                                       TimeSpan?                          RequestTimeout     = null);
+                                           DateTime?                          Timestamp          = null,
+                                           CancellationToken?                 CancellationToken  = null,
+                                           EventTracking_Id                   EventTrackingId    = null,
+                                           TimeSpan?                          RequestTimeout     = null);
 
     }
 

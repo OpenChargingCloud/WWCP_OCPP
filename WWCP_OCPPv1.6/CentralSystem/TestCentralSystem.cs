@@ -260,9 +260,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CentralSystemServer.OnStartTransaction += (Timestamp,
                                                        Sender,
-                                                       CancellationToken,
-                                                       EventTrackingId,
-                                                       Request) =>
+                                                       Request,
+                                                       CancellationToken) =>
 
                 Task.FromResult(new StartTransactionResponse(Request:        Request,
                                                              TransactionId:  Transaction_Id.Random,
@@ -275,9 +274,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CentralSystemServer.OnStatusNotification += (Timestamp,
                                                          Sender,
-                                                         CancellationToken,
-                                                         EventTrackingId,
-                                                         Request) =>
+                                                         Request,
+                                                         CancellationToken) =>
 
                 Task.FromResult(new StatusNotificationResponse(Request));
 
@@ -287,9 +285,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CentralSystemServer.OnMeterValues += (Timestamp,
                                                   Sender,
-                                                  CancellationToken,
-                                                  EventTrackingId,
-                                                  Request) =>
+                                                  Request,
+                                                  CancellationToken) =>
 
                 Task.FromResult(new MeterValuesResponse(Request));
 
@@ -299,9 +296,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CentralSystemServer.OnStopTransaction += (Timestamp,
                                                       Sender,
-                                                      CancellationToken,
-                                                      EventTrackingId,
-                                                      Request) =>
+                                                      Request,
+                                                      CancellationToken) =>
 
                 Task.FromResult(new StopTransactionResponse(Request:    Request,
                                                             IdTagInfo:  new IdTagInfo(Status:      AuthorizationStatus.Accepted,
@@ -314,9 +310,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CentralSystemServer.OnIncomingDataTransfer += (Timestamp,
                                                            Sender,
-                                                           CancellationToken,
-                                                           EventTrackingId,
-                                                           Request) =>
+                                                           Request,
+                                                           CancellationToken) =>
 
                 Task.FromResult(new DataTransferResponse(Request:  Request,
                                                          Status:   DataTransferStatus.Accepted,
@@ -328,9 +323,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CentralSystemServer.OnDiagnosticsStatusNotification += (Timestamp,
                                                                     Sender,
-                                                                    CancellationToken,
-                                                                    EventTrackingId,
-                                                                    Request) =>
+                                                                    Request,
+                                                                    CancellationToken) =>
 
                 Task.FromResult(new DiagnosticsStatusNotificationResponse(Request));
 
@@ -340,9 +334,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CentralSystemServer.OnFirmwareStatusNotification += (Timestamp,
                                                                  Sender,
-                                                                 CancellationToken,
-                                                                 EventTrackingId,
-                                                                 Request) =>
+                                                                 Request,
+                                                                 CancellationToken) =>
 
                 Task.FromResult(new FirmwareStatusNotificationResponse(Request));
 

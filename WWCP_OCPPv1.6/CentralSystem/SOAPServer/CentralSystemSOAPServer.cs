@@ -491,19 +491,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    var OCPPHeader               = SOAPHeader.Parse(HeaderXML);
-                    var bootNotificationRequest  = BootNotificationRequest.Parse(BootNotificationXML,
-                                                                                 Request_Id.Parse(OCPPHeader.MessageId),
-                                                                                 OCPPHeader.ChargeBoxIdentity);
+                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                    var request     = BootNotificationRequest.Parse(BootNotificationXML,
+                                                                    Request_Id.Parse(OCPPHeader.MessageId),
+                                                                    OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnBootNotificationRequest event
 
                     try
                     {
 
-                        OnBootNotificationRequest?.Invoke(bootNotificationRequest.RequestTimestamp,
+                        OnBootNotificationRequest?.Invoke(request.RequestTimestamp,
                                                           this,
-                                                          bootNotificationRequest);
+                                                          request);
 
                     }
                     catch (Exception e)
@@ -523,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           SafeSelect(subscriber => (subscriber as BootNotificationDelegate)
                                               (Timestamp.Now,
                                                this,
-                                               bootNotificationRequest,
+                                               request,
                                                Request.CancellationToken)).
                                           ToArray();
 
@@ -537,7 +537,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         }
 
                         if (results.Length == 0 || response == null)
-                            response = BootNotificationResponse.Failed(bootNotificationRequest);
+                            response = BootNotificationResponse.Failed(request);
 
                     }
 
@@ -552,7 +552,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnBootNotificationResponse?.Invoke(responseTimestamp,
                                                            this,
-                                                           bootNotificationRequest,
+                                                           request,
                                                            response,
                                                            responseTimestamp - requestTimestamp);
 
@@ -647,19 +647,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    var OCPPHeader        = SOAPHeader.Parse(HeaderXML);
-                    var heartbeatRequest  = HeartbeatRequest.Parse(HeartbeatXML,
-                                                                   Request_Id.Parse(OCPPHeader.MessageId),
-                                                                   OCPPHeader.ChargeBoxIdentity);
+                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                    var request     = HeartbeatRequest.Parse(HeartbeatXML,
+                                                             Request_Id.Parse(OCPPHeader.MessageId),
+                                                             OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnHeartbeatRequest event
 
                     try
                     {
 
-                        OnHeartbeatRequest?.Invoke(heartbeatRequest.RequestTimestamp,
+                        OnHeartbeatRequest?.Invoke(request.RequestTimestamp,
                                                    this,
-                                                   heartbeatRequest);
+                                                   request);
 
                     }
                     catch (Exception e)
@@ -679,7 +679,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           SafeSelect(subscriber => (subscriber as HeartbeatDelegate)
                                               (Timestamp.Now,
                                                this,
-                                               heartbeatRequest,
+                                               request,
                                                Request.CancellationToken)).
                                           ToArray();
 
@@ -693,7 +693,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         }
 
                         if (results.Length == 0 || response == null)
-                            response = HeartbeatResponse.Failed(heartbeatRequest);
+                            response = HeartbeatResponse.Failed(request);
 
                     }
 
@@ -708,7 +708,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnHeartbeatResponse?.Invoke(responseTimestamp,
                                                     this,
-                                                    heartbeatRequest,
+                                                    request,
                                                     response,
                                                     responseTimestamp - requestTimestamp);
 
@@ -781,10 +781,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region Send OnAuthorizeSOAPRequest event
 
+                var requestTimestamp = Timestamp.Now;
+
                 try
                 {
 
-                    OnAuthorizeSOAPRequest?.Invoke(Timestamp.Now,
+                    OnAuthorizeSOAPRequest?.Invoke(requestTimestamp,
                                                    SOAPServer.HTTPServer,
                                                    Request);
 
@@ -802,20 +804,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    var OCPPHeader        = SOAPHeader.Parse(HeaderXML);
-                    var authorizeRequest  = AuthorizeRequest.Parse(AuthorizeXML,
-                                                                   Request_Id.Parse(OCPPHeader.MessageId),
-                                                                   OCPPHeader.ChargeBoxIdentity);
+                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                    var request     = AuthorizeRequest.Parse(AuthorizeXML,
+                                                             Request_Id.Parse(OCPPHeader.MessageId),
+                                                             OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnAuthorizeRequest event
 
                     try
                     {
 
-                        OnAuthorizeRequest?.Invoke(authorizeRequest.RequestTimestamp,
+                        OnAuthorizeRequest?.Invoke(request.RequestTimestamp,
                                                    this,
-                                                   Request.EventTrackingId,
-                                                   authorizeRequest);
+                                                   request);
 
                     }
                     catch (Exception e)
@@ -835,9 +836,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)
                                               (Timestamp.Now,
                                                this,
-                                               Request.CancellationToken,
-                                               Request.EventTrackingId,
-                                               authorizeRequest)).
+                                               request,
+                                               Request.CancellationToken)).
                                           ToArray();
 
                         if (results.Length > 0)
@@ -850,7 +850,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         }
 
                         if (results.Length == 0 || response == null)
-                            response = AuthorizeResponse.Failed(authorizeRequest);
+                            response = AuthorizeResponse.Failed(request);
 
                     }
 
@@ -861,14 +861,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     try
                     {
 
-                        OnAuthorizeResponse?.Invoke(response.ResponseTimestamp,
-                                                    this,
-                                                    Request.EventTrackingId,
-                                                    authorizeRequest,
+                        var responseTimestamp = Timestamp.Now;
 
-                                                    response.Result,
-                                                    response.IdTagInfo,
-                                                    response.Runtime);
+                        OnAuthorizeResponse?.Invoke(responseTimestamp,
+                                                    this,
+                                                    request,
+                                                    response,
+                                                    responseTimestamp - requestTimestamp);
 
                     }
                     catch (Exception e)
@@ -900,7 +899,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "./Authorize");
                 }
 
 
@@ -938,10 +937,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region Send OnStartTransactionSOAPRequest event
 
+                var requestTimestamp = Timestamp.Now;
+
                 try
                 {
 
-                    OnStartTransactionSOAPRequest?.Invoke(Timestamp.Now,
+                    OnStartTransactionSOAPRequest?.Invoke(requestTimestamp,
                                                           SOAPServer.HTTPServer,
                                                           Request);
 
@@ -959,20 +960,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    var OCPPHeader               = SOAPHeader.Parse(HeaderXML);
-                    var startTransactionRequest  = StartTransactionRequest.Parse(StartTransactionXML,
-                                                                                 Request_Id.Parse(OCPPHeader.MessageId),
-                                                                                 OCPPHeader.ChargeBoxIdentity);
+                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                    var request     = StartTransactionRequest.Parse(StartTransactionXML,
+                                                                    Request_Id.Parse(OCPPHeader.MessageId),
+                                                                    OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnStartTransactionRequest event
 
                     try
                     {
 
-                        OnStartTransactionRequest?.Invoke(startTransactionRequest.RequestTimestamp,
+                        OnStartTransactionRequest?.Invoke(request.RequestTimestamp,
                                                           this,
-                                                          Request.EventTrackingId,
-                                                          startTransactionRequest);
+                                                          request);
 
                     }
                     catch (Exception e)
@@ -992,9 +992,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           SafeSelect(subscriber => (subscriber as OnStartTransactionDelegate)
                                               (Timestamp.Now,
                                                this,
-                                               Request.CancellationToken,
-                                               Request.EventTrackingId,
-                                               startTransactionRequest)).
+                                               request,
+                                               Request.CancellationToken)).
                                           ToArray();
 
                         if (results.Length > 0)
@@ -1007,7 +1006,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         }
 
                         if (results.Length == 0 || response == null)
-                            response = StartTransactionResponse.Failed(startTransactionRequest);
+                            response = StartTransactionResponse.Failed(request);
 
                     }
 
@@ -1018,15 +1017,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     try
                     {
 
-                        OnStartTransactionResponse?.Invoke(response.ResponseTimestamp,
-                                                           this,
-                                                           Request.EventTrackingId,
-                                                           startTransactionRequest,
+                        var responseTimestamp = Timestamp.Now;
 
-                                                           response.Result,
-                                                           response.TransactionId,
-                                                           response.IdTagInfo,
-                                                           response.Runtime);
+                        OnStartTransactionResponse?.Invoke(responseTimestamp,
+                                                           this,
+                                                           request,
+                                                           response,
+                                                           responseTimestamp - requestTimestamp);
 
                     }
                     catch (Exception e)
@@ -1058,7 +1055,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-
+                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/StartTransaction");
                 }
 
 
@@ -1096,10 +1093,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region Send OnStatusNotificationSOAPRequest event
 
+                var requestTimestamp = Timestamp.Now;
+
                 try
                 {
 
-                    OnStatusNotificationSOAPRequest?.Invoke(Timestamp.Now,
+                    OnStatusNotificationSOAPRequest?.Invoke(requestTimestamp,
                                                             SOAPServer.HTTPServer,
                                                             Request);
 
@@ -1117,20 +1116,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    var OCPPHeader                 = SOAPHeader.Parse(HeaderXML);
-                    var statusNotificationRequest  = StatusNotificationRequest.Parse(StatusNotificationXML,
-                                                                                     Request_Id.Parse(OCPPHeader.MessageId),
-                                                                                     OCPPHeader.ChargeBoxIdentity);
+                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                    var request     = StatusNotificationRequest.Parse(StatusNotificationXML,
+                                                                      Request_Id.Parse(OCPPHeader.MessageId),
+                                                                      OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnStatusNotificationRequest event
 
                     try
                     {
 
-                        OnStatusNotificationRequest?.Invoke(statusNotificationRequest.RequestTimestamp,
+                        OnStatusNotificationRequest?.Invoke(request.RequestTimestamp,
                                                             this,
-                                                            Request.EventTrackingId,
-                                                            statusNotificationRequest);
+                                                            request);
 
                     }
                     catch (Exception e)
@@ -1150,9 +1148,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)
                                               (Timestamp.Now,
                                                this,
-                                               Request.CancellationToken,
-                                               Request.EventTrackingId,
-                                               statusNotificationRequest)).
+                                               request,
+                                               Request.CancellationToken)).
                                           ToArray();
 
                         if (results.Length > 0)
@@ -1165,7 +1162,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         }
 
                         if (results.Length == 0 || response == null)
-                            response = StatusNotificationResponse.Failed(statusNotificationRequest);
+                            response = StatusNotificationResponse.Failed(request);
 
                     }
 
@@ -1176,13 +1173,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     try
                     {
 
-                        OnStatusNotificationResponse?.Invoke(response.ResponseTimestamp,
-                                                             this,
-                                                             Request.EventTrackingId,
-                                                             statusNotificationRequest,
+                        var responseTimestamp = Timestamp.Now;
 
-                                                             response.Result,
-                                                             response.Runtime);
+                        OnStatusNotificationResponse?.Invoke(responseTimestamp,
+                                                             this,
+                                                             request,
+                                                             response,
+                                                             responseTimestamp - requestTimestamp);
 
                     }
                     catch (Exception e)
@@ -1214,7 +1211,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-
+                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/StatusNotification");
                 }
 
 
@@ -1252,10 +1249,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region Send OnMeterValuesSOAPRequest event
 
+                var requestTimestamp = Timestamp.Now;
+
                 try
                 {
 
-                    OnMeterValuesSOAPRequest?.Invoke(Timestamp.Now,
+                    OnMeterValuesSOAPRequest?.Invoke(requestTimestamp,
                                                      SOAPServer.HTTPServer,
                                                      Request);
 
@@ -1273,20 +1272,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    var OCPPHeader          = SOAPHeader.Parse(HeaderXML);
-                    var meterValuesRequest  = MeterValuesRequest.Parse(MeterValuesXML,
-                                                                       Request_Id.Parse(OCPPHeader.MessageId),
-                                                                       OCPPHeader.ChargeBoxIdentity);
+                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                    var request     = MeterValuesRequest.Parse(MeterValuesXML,
+                                                               Request_Id.Parse(OCPPHeader.MessageId),
+                                                               OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnMeterValuesRequest event
 
                     try
                     {
 
-                        OnMeterValuesRequest?.Invoke(meterValuesRequest.RequestTimestamp,
+                        OnMeterValuesRequest?.Invoke(request.RequestTimestamp,
                                                      this,
-                                                     Request.EventTrackingId,
-                                                     meterValuesRequest);
+                                                     request);
 
                     }
                     catch (Exception e)
@@ -1306,9 +1304,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)
                                               (Timestamp.Now,
                                                this,
-                                               Request.CancellationToken,
-                                               Request.EventTrackingId,
-                                               meterValuesRequest)).
+                                               request,
+                                               Request.CancellationToken)).
                                           ToArray();
 
                         if (results.Length > 0)
@@ -1321,7 +1318,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         }
 
                         if (results.Length == 0 || response == null)
-                            response = MeterValuesResponse.Failed(meterValuesRequest);
+                            response = MeterValuesResponse.Failed(request);
 
                     }
 
@@ -1332,13 +1329,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     try
                     {
 
-                        OnMeterValuesResponse?.Invoke(response.ResponseTimestamp,
-                                                      this,
-                                                      Request.EventTrackingId,
-                                                      meterValuesRequest,
+                        var responseTimestamp = Timestamp.Now;
 
-                                                      response.Result,
-                                                      response.Runtime);
+                        OnMeterValuesResponse?.Invoke(responseTimestamp,
+                                                      this,
+                                                      request,
+                                                      response,
+                                                      responseTimestamp - requestTimestamp);
 
                     }
                     catch (Exception e)
@@ -1370,7 +1367,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-
+                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/MeterValues");
                 }
 
 
@@ -1408,10 +1405,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region Send OnStopTransactionSOAPRequest event
 
+                var requestTimestamp = Timestamp.Now;
+
                 try
                 {
 
-                    OnStopTransactionSOAPRequest?.Invoke(Timestamp.Now,
+                    OnStopTransactionSOAPRequest?.Invoke(requestTimestamp,
                                                          SOAPServer.HTTPServer,
                                                          Request);
 
@@ -1429,20 +1428,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    var OCPPHeader              = SOAPHeader.Parse(HeaderXML);
-                    var stopTransactionRequest  = StopTransactionRequest.Parse(StopTransactionXML,
-                                                                               Request_Id.Parse(OCPPHeader.MessageId),
-                                                                               OCPPHeader.ChargeBoxIdentity);
+                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                    var request     = StopTransactionRequest.Parse(StopTransactionXML,
+                                                                   Request_Id.Parse(OCPPHeader.MessageId),
+                                                                   OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnStopTransactionRequest event
 
                     try
                     {
 
-                        OnStopTransactionRequest?.Invoke(stopTransactionRequest.RequestTimestamp,
+                        OnStopTransactionRequest?.Invoke(request.RequestTimestamp,
                                                          this,
-                                                         Request.EventTrackingId,
-                                                         stopTransactionRequest);
+                                                         request);
 
                     }
                     catch (Exception e)
@@ -1462,9 +1460,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           SafeSelect(subscriber => (subscriber as OnStopTransactionDelegate)
                                               (Timestamp.Now,
                                                this,
-                                               Request.CancellationToken,
-                                               Request.EventTrackingId,
-                                               stopTransactionRequest)).
+                                               request,
+                                               Request.CancellationToken)).
                                           ToArray();
 
                         if (results.Length > 0)
@@ -1477,7 +1474,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         }
 
                         if (results.Length == 0 || response == null)
-                            response = StopTransactionResponse.Failed(stopTransactionRequest);
+                            response = StopTransactionResponse.Failed(request);
 
                     }
 
@@ -1488,14 +1485,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     try
                     {
 
-                        OnStopTransactionResponse?.Invoke(response.ResponseTimestamp,
-                                                          this,
-                                                          Request.EventTrackingId,
-                                                          stopTransactionRequest,
+                        var responseTimestamp = Timestamp.Now;
 
-                                                          response.Result,
-                                                          response.IdTagInfo,
-                                                          response.Runtime);
+                        OnStopTransactionResponse?.Invoke(responseTimestamp,
+                                                          this,
+                                                          request,
+                                                          response,
+                                                          responseTimestamp - requestTimestamp);
 
                     }
                     catch (Exception e)
@@ -1527,7 +1523,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-
+                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/StopTransaction");
                 }
 
 
@@ -1566,10 +1562,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region Send OnIncomingDataTransferSOAPRequest event
 
+                var requestTimestamp = Timestamp.Now;
+
                 try
                 {
 
-                    OnIncomingDataTransferSOAPRequest?.Invoke(Timestamp.Now,
+                    OnIncomingDataTransferSOAPRequest?.Invoke(requestTimestamp,
                                                               SOAPServer.HTTPServer,
                                                               Request);
 
@@ -1588,20 +1586,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    var OCPPHeader           = SOAPHeader.Parse(HeaderXML);
-                    var dataTransferRequest  = CP.DataTransferRequest.Parse(DataTransferXML,
-                                                                            Request_Id.Parse(OCPPHeader.MessageId),
-                                                                            OCPPHeader.ChargeBoxIdentity);
+                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                    var request     = CP.DataTransferRequest.Parse(DataTransferXML,
+                                                                   Request_Id.Parse(OCPPHeader.MessageId),
+                                                                   OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnIncomingDataTransferRequest event
 
                     try
                     {
 
-                        OnIncomingDataTransferRequest?.Invoke(dataTransferRequest.RequestTimestamp,
+                        OnIncomingDataTransferRequest?.Invoke(request.RequestTimestamp,
                                                               this,
-                                                              Request.EventTrackingId,
-                                                              dataTransferRequest);
+                                                              request);
 
                     }
                     catch (Exception e)
@@ -1621,9 +1618,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
                                               (Timestamp.Now,
                                                this,
-                                               Request.CancellationToken,
-                                               Request.EventTrackingId,
-                                               dataTransferRequest)).
+                                               request,
+                                               Request.CancellationToken)).
                                           ToArray();
 
                         if (results.Length > 0)
@@ -1636,7 +1632,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         }
 
                         if (results.Length == 0 || response == null)
-                            response = DataTransferResponse.Failed(dataTransferRequest);
+                            response = DataTransferResponse.Failed(request);
 
                     }
 
@@ -1647,15 +1643,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     try
                     {
 
-                        OnIncomingDataTransferResponse?.Invoke(response.ResponseTimestamp,
-                                                               this,
-                                                               Request.EventTrackingId,
-                                                               dataTransferRequest,
+                        var responseTimestamp = Timestamp.Now;
 
-                                                               response.Result,
-                                                               response.Status,
-                                                               response.Data,
-                                                               response.Runtime);
+                        OnIncomingDataTransferResponse?.Invoke(responseTimestamp,
+                                                               this,
+                                                               request,
+                                                               response,
+                                                               responseTimestamp - requestTimestamp);
 
                     }
                     catch (Exception e)
@@ -1687,7 +1681,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-
+                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/IncomingDataTransfer");
                 }
 
 
@@ -1725,10 +1719,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region Send OnDiagnosticsStatusNotificationSOAPRequest event
 
+                var requestTimestamp = Timestamp.Now;
+
                 try
                 {
 
-                    OnDiagnosticsStatusNotificationSOAPRequest?.Invoke(Timestamp.Now,
+                    OnDiagnosticsStatusNotificationSOAPRequest?.Invoke(requestTimestamp,
                                                                        SOAPServer.HTTPServer,
                                                                        Request);
 
@@ -1747,20 +1743,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    var OCPPHeader                            = SOAPHeader.Parse(HeaderXML);
-                    var diagnosticsStatusNotificationRequest  = DiagnosticsStatusNotificationRequest.Parse(DiagnosticsStatusNotificationXML,
-                                                                                                           Request_Id.Parse(OCPPHeader.MessageId),
-                                                                                                           OCPPHeader.ChargeBoxIdentity);
+                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                    var request     = DiagnosticsStatusNotificationRequest.Parse(DiagnosticsStatusNotificationXML,
+                                                                                 Request_Id.Parse(OCPPHeader.MessageId),
+                                                                                 OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnDiagnosticsStatusNotificationRequest event
 
                     try
                     {
 
-                        OnDiagnosticsStatusNotificationRequest?.Invoke(diagnosticsStatusNotificationRequest.RequestTimestamp,
+                        OnDiagnosticsStatusNotificationRequest?.Invoke(request.RequestTimestamp,
                                                                        this,
-                                                                       Request.EventTrackingId,
-                                                                       diagnosticsStatusNotificationRequest);
+                                                                       request);
 
                     }
                     catch (Exception e)
@@ -1780,9 +1775,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationDelegate)
                                               (Timestamp.Now,
                                                this,
-                                               Request.CancellationToken,
-                                               Request.EventTrackingId,
-                                               diagnosticsStatusNotificationRequest)).
+                                               request,
+                                               Request.CancellationToken)).
                                           ToArray();
 
                         if (results.Length > 0)
@@ -1795,7 +1789,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         }
 
                         if (results.Length == 0 || response == null)
-                            response = DiagnosticsStatusNotificationResponse.Failed(diagnosticsStatusNotificationRequest);
+                            response = DiagnosticsStatusNotificationResponse.Failed(request);
 
                     }
 
@@ -1806,13 +1800,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     try
                     {
 
-                        OnDiagnosticsStatusNotificationResponse?.Invoke(response.ResponseTimestamp,
-                                                                        this,
-                                                                        Request.EventTrackingId,
-                                                                        diagnosticsStatusNotificationRequest,
+                        var responseTimestamp = Timestamp.Now;
 
-                                                                        response.Result,
-                                                                        response.Runtime);
+                        OnDiagnosticsStatusNotificationResponse?.Invoke(responseTimestamp,
+                                                                        this,
+                                                                        request,
+                                                                        response,
+                                                                        responseTimestamp - requestTimestamp);
 
                     }
                     catch (Exception e)
@@ -1844,7 +1838,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-
+                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/DiagnosticsStatusNotification");
                 }
 
 
@@ -1882,10 +1876,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region Send OnFirmwareStatusNotificationSOAPRequest event
 
+                var requestTimestamp = Timestamp.Now;
+
                 try
                 {
 
-                    OnFirmwareStatusNotificationSOAPRequest?.Invoke(Timestamp.Now,
+                    OnFirmwareStatusNotificationSOAPRequest?.Invoke(requestTimestamp,
                                                                     SOAPServer.HTTPServer,
                                                                     Request);
 
@@ -1904,20 +1900,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 try
                 {
 
-                    var OCPPHeader                         = SOAPHeader.Parse(HeaderXML);
-                    var firmwareStatusNotificationRequest  = FirmwareStatusNotificationRequest.Parse(FirmwareStatusNotificationXML,
-                                                                                                     Request_Id.Parse(OCPPHeader.MessageId),
-                                                                                                     OCPPHeader.ChargeBoxIdentity);
+                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                    var request     = FirmwareStatusNotificationRequest.Parse(FirmwareStatusNotificationXML,
+                                                                              Request_Id.Parse(OCPPHeader.MessageId),
+                                                                              OCPPHeader.ChargeBoxIdentity);
 
                     #region Send OnFirmwareStatusNotificationRequest event
 
                     try
                     {
 
-                        OnFirmwareStatusNotificationRequest?.Invoke(firmwareStatusNotificationRequest.RequestTimestamp,
+                        OnFirmwareStatusNotificationRequest?.Invoke(request.RequestTimestamp,
                                                                     this,
-                                                                    Request.EventTrackingId,
-                                                                    firmwareStatusNotificationRequest);
+                                                                    request);
 
                     }
                     catch (Exception e)
@@ -1937,9 +1932,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)
                                               (Timestamp.Now,
                                                this,
-                                               Request.CancellationToken,
-                                               Request.EventTrackingId,
-                                               firmwareStatusNotificationRequest)).
+                                               request,
+                                               Request.CancellationToken)).
                                           ToArray();
 
                         if (results.Length > 0)
@@ -1952,7 +1946,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         }
 
                         if (results.Length == 0 || response == null)
-                            response = FirmwareStatusNotificationResponse.Failed(firmwareStatusNotificationRequest);
+                            response = FirmwareStatusNotificationResponse.Failed(request);
 
                     }
 
@@ -1963,13 +1957,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     try
                     {
 
-                        OnFirmwareStatusNotificationResponse?.Invoke(response.ResponseTimestamp,
-                                                                     this,
-                                                                     Request.EventTrackingId,
-                                                                     firmwareStatusNotificationRequest,
+                        var responseTimestamp = Timestamp.Now;
 
-                                                                     response.Result,
-                                                                     response.Runtime);
+                        OnFirmwareStatusNotificationResponse?.Invoke(responseTimestamp,
+                                                                     this,
+                                                                     request,
+                                                                     response,
+                                                                     responseTimestamp - requestTimestamp);
 
                     }
                     catch (Exception e)
@@ -2001,7 +1995,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-
+                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/FirmwareStatusNotification");
                 }
 
 

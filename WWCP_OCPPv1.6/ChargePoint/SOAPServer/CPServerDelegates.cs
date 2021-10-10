@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -32,11 +33,58 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     #region OnReserveNow
 
     /// <summary>
+    /// A reserve now request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The boot notification request.</param>
+    public delegate Task
+
+        ReserveNowRequestDelegate(DateTime               Timestamp,
+                                  IEventSender           Sender,
+                                  CS.ReserveNowRequest   Request);
+
+
+    /// <summary>
+    /// A reserve now request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ReserveNowResponse>
+
+        ReserveNowDelegate(DateTime               Timestamp,
+                           IEventSender           Sender,
+                           CS.ReserveNowRequest   Request,
+                           CancellationToken      CancellationToken);
+
+
+    /// <summary>
+    /// A reserve now response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        ReserveNowResponseDelegate(DateTime                      Timestamp,
+                                         IEventSender            Sender,
+                                         CS.ReserveNowRequest    Request,
+                                         CP.ReserveNowResponse   Response,
+                                         TimeSpan                Runtime);
+
+
+
+
+    /// <summary>
     /// Reserve a charge point.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// 
     /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
@@ -72,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// 
     /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
@@ -100,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// 
     /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
@@ -127,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// 
     /// <param name="RemoteStartTransactionRequest">A remote start transaction request.</param>
@@ -146,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// 
     /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
@@ -184,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// 
     /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
@@ -205,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// 
     /// <param name="RemoteStopTransactionRequest">A remote stop transaction request.</param>
@@ -224,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// 
     /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
@@ -257,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// 
     /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>

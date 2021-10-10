@@ -22,6 +22,7 @@ using System.Threading;
 using System.Net.Security;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 
@@ -31,7 +32,6 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP.v1_2;
-using System.Security.Cryptography.X509Certificates;
 
 #endregion
 
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         // <cs:chargeBoxIdentity se:mustUnderstand="true">CP1234</cs:chargeBoxIdentity>
 
 
-        #region SendBootNotification         (Request, ...)
+        #region SendBootNotification             (Request, ...)
 
         /// <summary>
         /// Send a boot notification.
@@ -702,7 +702,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region SendHeartbeat                (Request, ...)
+        #region SendHeartbeat                    (Request, ...)
 
         /// <summary>
         /// Send a heartbeat.
@@ -894,7 +894,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region Authorize                    (Request, ...)
+        #region Authorize                        (Request, ...)
 
         /// <summary>
         /// Authorize the given token.
@@ -1086,7 +1086,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region StartTransaction             (Request, ...)
+        #region StartTransaction                 (Request, ...)
 
         /// <summary>
         /// Start a charging process at the given connector.
@@ -1277,7 +1277,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region StatusNotification           (Request, ...)
+        #region SendStatusNotification           (Request, ...)
 
         /// <summary>
         /// Send a status notification for the given connector.
@@ -1290,12 +1290,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this Request.</param>
         public async Task<HTTPResponse<StatusNotificationResponse>>
 
-            StatusNotification(StatusNotificationRequest  Request,
+            SendStatusNotification(StatusNotificationRequest  Request,
 
-                               DateTime?                  Timestamp          = null,
-                               CancellationToken?         CancellationToken  = null,
-                               EventTracking_Id           EventTrackingId    = null,
-                               TimeSpan?                  RequestTimeout     = null)
+                                   DateTime?                  Timestamp          = null,
+                                   CancellationToken?         CancellationToken  = null,
+                                   EventTracking_Id           EventTrackingId    = null,
+                                   TimeSpan?                  RequestTimeout     = null)
 
         {
 
@@ -1470,7 +1470,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region MeterValues                  (Request, ...)
+        #region SendMeterValues                  (Request, ...)
 
         /// <summary>
         /// Send a meter values for the given connector.
@@ -1483,12 +1483,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this Request.</param>
         public async Task<HTTPResponse<MeterValuesResponse>>
 
-            MeterValues(MeterValuesRequest  Request,
+            SendMeterValues(MeterValuesRequest  Request,
 
-                        DateTime?           Timestamp          = null,
-                        CancellationToken?  CancellationToken  = null,
-                        EventTracking_Id    EventTrackingId    = null,
-                        TimeSpan?           RequestTimeout     = null)
+                            DateTime?           Timestamp          = null,
+                            CancellationToken?  CancellationToken  = null,
+                            EventTracking_Id    EventTrackingId    = null,
+                            TimeSpan?           RequestTimeout     = null)
 
         {
 
@@ -1663,7 +1663,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region StopTransaction              (Request, ...)
+        #region StopTransaction                  (Request, ...)
 
         /// <summary>
         /// Stop a charging process at the given connector.
@@ -1856,7 +1856,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region DataTransfer                 (Request, ...)
+        #region TransferData                     (Request, ...)
 
         /// <summary>
         /// Send the given vendor-specific data to the central system.
@@ -1869,7 +1869,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this Request.</param>
         public async Task<HTTPResponse<CS.DataTransferResponse>>
 
-            DataTransfer(DataTransferRequest  Request,
+            TransferData(DataTransferRequest  Request,
 
                          DateTime?            Timestamp          = null,
                          CancellationToken?   CancellationToken  = null,
@@ -2049,7 +2049,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region DiagnosticsStatusNotification(Request, ...)
+        #region SendDiagnosticsStatusNotification(Request, ...)
 
         /// <summary>
         /// Send a diagnostics status notification to the central system.
@@ -2062,12 +2062,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this Request.</param>
         public async Task<HTTPResponse<DiagnosticsStatusNotificationResponse>>
 
-            DiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest  Request,
+            SendDiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest  Request,
 
-                                          DateTime?                             Timestamp          = null,
-                                          CancellationToken?                    CancellationToken  = null,
-                                          EventTracking_Id                      EventTrackingId    = null,
-                                          TimeSpan?                             RequestTimeout     = null)
+                                              DateTime?                             Timestamp          = null,
+                                              CancellationToken?                    CancellationToken  = null,
+                                              EventTracking_Id                      EventTrackingId    = null,
+                                              TimeSpan?                             RequestTimeout     = null)
 
         {
 
@@ -2242,7 +2242,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region FirmwareStatusNotification   (Request, ...)
+        #region SendFirmwareStatusNotification   (Request, ...)
 
         /// <summary>
         /// Send a firmware status notification to the central system.
@@ -2255,12 +2255,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this Request.</param>
         public async Task<HTTPResponse<FirmwareStatusNotificationResponse>>
 
-            FirmwareStatusNotification(FirmwareStatusNotificationRequest  Request,
+            SendFirmwareStatusNotification(FirmwareStatusNotificationRequest  Request,
 
-                                       DateTime?                          Timestamp          = null,
-                                       CancellationToken?                 CancellationToken  = null,
-                                       EventTracking_Id                   EventTrackingId    = null,
-                                       TimeSpan?                          RequestTimeout     = null)
+                                           DateTime?                          Timestamp          = null,
+                                           CancellationToken?                 CancellationToken  = null,
+                                           EventTracking_Id                   EventTrackingId    = null,
+                                           TimeSpan?                          RequestTimeout     = null)
 
         {
 
