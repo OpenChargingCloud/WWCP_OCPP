@@ -360,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="WSSLoginPassword">The WebService-Security username/password.</param>
         /// <param name="RequestTimeout">An optional Request timeout.</param>
         /// <param name="TransmissionRetryDelay">The delay between transmission retries.</param>
-        /// <param name="MaxNumberOfRetries">The maximum number of transmission retries for HTTP Request.</param>
+        /// <param name="MaxNumberOfRetries">The maximum number of transmission retries for HTTP request.</param>
         /// <param name="UseHTTPPipelining">Whether to pipeline multiple HTTP Request through a single HTTP/TCP connection.</param>
         /// <param name="LoggingContext">An optional context for logging client methods.</param>
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
@@ -516,12 +516,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Send a boot notification.
         /// </summary>
-        /// <param name="Request">A boot notification Request.</param>
+        /// <param name="Request">A boot notification request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the Request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<BootNotificationResponse>>
 
             SendBootNotification(BootNotificationRequest  Request,
@@ -536,7 +536,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #region Initial checks
 
             if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given boot notification Request must not be null!");
+                throw new ArgumentNullException(nameof(Request), "The given boot notification request must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -707,12 +707,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Send a heartbeat.
         /// </summary>
-        /// <param name="Request">A heartbeat Request.</param>
+        /// <param name="Request">A heartbeat request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the Request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<HeartbeatResponse>>
 
             SendHeartbeat(HeartbeatRequest    Request,
@@ -899,12 +899,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Authorize the given token.
         /// </summary>
-        /// <param name="Request">An authorize Request.</param>
+        /// <param name="Request">An authorize request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the Request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<AuthorizeResponse>>
 
             Authorize(AuthorizeRequest    Request,
@@ -1091,12 +1091,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Start a charging process at the given connector.
         /// </summary>
-        /// <param name="Request">A start transaction Request.</param>
+        /// <param name="Request">A start transaction request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the Request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<StartTransactionResponse>>
 
             StartTransaction(StartTransactionRequest  Request,
@@ -1282,12 +1282,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Send a status notification for the given connector.
         /// </summary>
-        /// <param name="Request">A status notification Request.</param>
+        /// <param name="Request">A status notification request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the Request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<StatusNotificationResponse>>
 
             SendStatusNotification(StatusNotificationRequest  Request,
@@ -1475,12 +1475,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Send a meter values for the given connector.
         /// </summary>
-        /// <param name="Request">A meter values Request.</param>
+        /// <param name="Request">A meter values request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the Request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<MeterValuesResponse>>
 
             SendMeterValues(MeterValuesRequest  Request,
@@ -1668,12 +1668,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Stop a charging process at the given connector.
         /// </summary>
-        /// <param name="Request">A stop transaction Request.</param>
+        /// <param name="Request">A stop transaction request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the Request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<StopTransactionResponse>>
 
             StopTransaction(StopTransactionRequest  Request,
@@ -1861,12 +1861,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Send the given vendor-specific data to the central system.
         /// </summary>
-        /// <param name="Request">A data transfer Request.</param>
+        /// <param name="Request">A data transfer request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the Request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<CS.DataTransferResponse>>
 
             TransferData(DataTransferRequest  Request,
@@ -2054,12 +2054,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Send a diagnostics status notification to the central system.
         /// </summary>
-        /// <param name="Request">A diagnostics status notification Request.</param>
+        /// <param name="Request">A diagnostics status notification request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the Request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<DiagnosticsStatusNotificationResponse>>
 
             SendDiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest  Request,
@@ -2247,12 +2247,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Send a firmware status notification to the central system.
         /// </summary>
-        /// <param name="Request">A firmware status notification Request.</param>
+        /// <param name="Request">A firmware status notification request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the Request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<FirmwareStatusNotificationResponse>>
 
             SendFirmwareStatusNotification(FirmwareStatusNotificationRequest  Request,

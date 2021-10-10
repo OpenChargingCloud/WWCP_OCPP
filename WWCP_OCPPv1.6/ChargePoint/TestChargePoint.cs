@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 #endregion
 
@@ -52,7 +54,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The client connected to a central system.
         /// </summary>
-        public ICPClient                CPClient                    { get; }
+        public ICPClient                CPClient                    { get; private set; }
+
+
+        public ChargePointSOAPServer    CPServer                    { get; private set; }
 
 
         /// <summary>
@@ -286,25 +291,35 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         // Server events
 
-        #region OnReserveNow
+        #region OnReserveNowRequest/-Response
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event OnReserveNowDelegate  OnReserveNowRequest;
+        public event OnReserveNowRequestDelegate   OnReserveNowRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reserve now request was sent.
+        /// </summary>
+        public event OnReserveNowResponseDelegate  OnReserveNowResponse;
 
         #endregion
 
-        #region OnCancelReservation
+        #region OnCancelReservationRequest/-Response
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event OnCancelReservationDelegate  OnCancelReservationRequest;
+        public event OnCancelReservationRequestDelegate   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a cancel reservation request was sent.
+        /// </summary>
+        public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
 
         #endregion
 
-        #region OnRemoteStartTransaction
+        #region OnRemoteStartTransactionRequest/-Response
 
         /// <summary>
         /// An event sent whenever a remote start transaction request was received.
@@ -318,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region OnRemoteStopTransaction
+        #region OnRemoteStopTransactionRequest/-Response
 
         /// <summary>
         /// An event sent whenever a remote stop transaction request was received.
@@ -333,12 +348,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region OnDataTransfer
+        #region OnIncomingDataTransferRequest/-Response
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnDataTransferDelegate  OnReceiveDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a data transfer request was sent.
+        /// </summary>
+        public event OnIncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
 
         #endregion
 
@@ -413,6 +433,372 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.SendHeartbeatEvery       = SendHeartbeatEvery    ?? DefaultSendHeartbeatEvery;
 
             this.DefaultRequestTimeout    = DefaultRequestTimeout ?? TimeSpan.FromMinutes(1);
+
+        }
+
+        #endregion
+
+
+        #region InitSOAP(...)
+
+        public void InitSOAP(String                               From,
+                             String                               To,
+
+                             URL                                  RemoteURL,
+                             HTTPHostname?                        VirtualHostname              = null,
+                             String                               Description                  = null,
+                             RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
+                             LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
+                             X509Certificate                      ClientCert                   = null,
+                             String                               HTTPUserAgent                = null,
+                             HTTPPath?                            URLPathPrefix                = null,
+                             Tuple<String, String>                WSSLoginPassword             = null,
+                             TimeSpan?                            RequestTimeout               = null,
+                             TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
+                             UInt16?                              MaxNumberOfRetries           = null,
+                             Boolean                              UseHTTPPipelining            = false,
+                             String                               LoggingContext               = null,
+                             LogfileCreatorDelegate               LogFileCreator               = null,
+                             HTTPClientLogger                     HTTPLogger                   = null,
+
+                             String                               HTTPServerName               = null,
+                             IPPort?                              TCPPort                      = null,
+                             String                               ServiceName                  = null,
+                             HTTPPath?                            URLPrefix                    = null,
+                             HTTPContentType                      ContentType                  = null,
+                             Boolean                              RegisterHTTPRootService      = true,
+                             DNSClient                            DNSClient                    = null,
+                             Boolean                              AutoStart                    = false)
+
+        {
+
+            this.CPClient = new ChargePointSOAPClient(ChargeBoxId,
+                                                      From,
+                                                      To,
+
+                                                      RemoteURL,
+                                                      VirtualHostname,
+                                                      Description,
+                                                      RemoteCertificateValidator,
+                                                      ClientCertificateSelector,
+                                                      ClientCert,
+                                                      HTTPUserAgent,
+                                                      URLPathPrefix,
+                                                      WSSLoginPassword,
+                                                      RequestTimeout,
+                                                      TransmissionRetryDelay,
+                                                      MaxNumberOfRetries,
+                                                      UseHTTPPipelining,
+                                                      LoggingContext,
+                                                      LogFileCreator,
+                                                      HTTPLogger);
+
+            this.CPServer = new ChargePointSOAPServer(HTTPServerName,
+                                                      TCPPort,
+                                                      ServiceName,
+                                                      URLPrefix,
+                                                      ContentType,
+                                                      RegisterHTTPRootService,
+                                                      DNSClient,
+                                                      AutoStart);
+
+            WireEvents(CPServer);
+
+        }
+
+        #endregion
+
+        #region WireEvents(CPServer)
+
+        public void WireEvents(ChargePointSOAPServer CPServer)
+        {
+
+            #region OnReserveNow
+
+            CPServer.OnReserveNow += async (LogTimestamp,
+                                            Sender,
+                                            Request,
+                                            CancellationToken) => {
+
+                #region Send OnReserveNowRequest event
+
+                var requestTimestamp = Timestamp.Now;
+
+                try
+                {
+
+                    OnReserveNowRequest?.Invoke(requestTimestamp,
+                                                this,
+                                                Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnReserveNowRequest));
+                }
+
+                #endregion
+
+                //transactionId1 = Request.ChargingProfile?.TransactionId;
+
+                var response = new ReserveNowResponse(Request,
+                                                      ReservationStatus.Accepted);
+
+                #region Send OnReserveNowResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnReserveNowResponse?.Invoke(responseTimestamp,
+                                                 this,
+                                                 Request,
+                                                 response,
+                                                 responseTimestamp - requestTimestamp);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnReserveNowResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnCancelReservation
+
+            CPServer.OnCancelReservation += async (LogTimestamp,
+                                                   Sender,
+                                                   Request,
+                                                   CancellationToken) => {
+
+                #region Send OnCancelReservationRequest event
+
+                var requestTimestamp = Timestamp.Now;
+
+                try
+                {
+
+                    OnCancelReservationRequest?.Invoke(requestTimestamp,
+                                                       this,
+                                                       Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnCancelReservationRequest));
+                }
+
+                #endregion
+
+                //transactionId1 = Request.ChargingProfile?.TransactionId;
+
+                var response = new CancelReservationResponse(Request,
+                                                             CancelReservationStatus.Accepted);
+
+                #region Send OnCancelReservationResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnCancelReservationResponse?.Invoke(responseTimestamp,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        responseTimestamp - requestTimestamp);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnCancelReservationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnRemoteStartTransaction
+
+            CPServer.OnRemoteStartTransaction += async (LogTimestamp,
+                                                        Sender,
+                                                        Request,
+                                                        CancellationToken) => {
+
+                #region Send OnRemoteStartTransactionRequest event
+
+                var requestTimestamp = Timestamp.Now;
+
+                try
+                {
+
+                    OnRemoteStartTransactionRequest?.Invoke(requestTimestamp,
+                                                            this,
+                                                            Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnRemoteStartTransactionRequest));
+                }
+
+                #endregion
+
+                //transactionId1 = Request.ChargingProfile?.TransactionId;
+
+                var response = new RemoteStartTransactionResponse(Request,
+                                                                  RemoteStartStopStatus.Accepted);
+
+                #region Send OnRemoteStartTransactionResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnRemoteStartTransactionResponse?.Invoke(responseTimestamp,
+                                                             this,
+                                                             Request,
+                                                             response,
+                                                             responseTimestamp - requestTimestamp);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnRemoteStartTransactionResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnRemoteStopTransaction
+
+            CPServer.OnRemoteStopTransaction += async (LogTimestamp,
+                                                       Sender,
+                                                       Request,
+                                                       CancellationToken) => {
+
+                #region Send OnRemoteStopTransactionRequest event
+
+                var requestTimestamp = Timestamp.Now;
+
+                try
+                {
+
+                    OnRemoteStopTransactionRequest?.Invoke(requestTimestamp,
+                                                           this,
+                                                           Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnRemoteStopTransactionRequest));
+                }
+
+                #endregion
+
+                //transactionId1 = Request.ChargingProfile?.TransactionId;
+
+                var response = new RemoteStopTransactionResponse(Request,
+                                                                 RemoteStartStopStatus.Accepted);
+
+                #region Send OnRemoteStopTransactionResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnRemoteStopTransactionResponse?.Invoke(responseTimestamp,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            responseTimestamp - requestTimestamp);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnRemoteStopTransactionResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            #region OnIncomingDataTransfer
+
+            CPServer.OnIncomingDataTransfer += async (LogTimestamp,
+                                                      Sender,
+                                                      Request,
+                                                      CancellationToken) => {
+
+                #region Send OnDataTransferRequest event
+
+                var requestTimestamp = Timestamp.Now;
+
+                try
+                {
+
+                    OnIncomingDataTransferRequest?.Invoke(requestTimestamp,
+                                                          this,
+                                                          Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnDataTransferRequest));
+                }
+
+                #endregion
+
+                //transactionId1 = Request.ChargingProfile?.TransactionId;
+
+                var response = new DataTransferResponse(Request,
+                                                        DataTransferStatus.Accepted,
+                                                        "n/a");
+
+                #region Send OnDataTransferResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnIncomingDataTransferResponse?.Invoke(responseTimestamp,
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           responseTimestamp - requestTimestamp);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnDataTransferResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
 
         }
 

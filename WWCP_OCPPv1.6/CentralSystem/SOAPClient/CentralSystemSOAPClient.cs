@@ -68,6 +68,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public ChargeBox_Id    ChargeBoxIdentity   { get; }
 
         /// <summary>
+        /// The sender identification.
+        /// </summary>
+        String IEventSender.Id
+            => nameof(CentralSystemSOAPClient);
+
+        /// <summary>
         /// The source URI of the SOAP message.
         /// </summary>
         public String          From                { get; }
@@ -2491,16 +2497,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region ReserveNow            (ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
+        #region ReserveNow            (Request, ...)
 
         /// <summary>
         /// Reserve a connector for the given IdTag and till the given timestamp.
         /// </summary>
-        /// <param name="ConnectorId">The identification of the connector to be reserved. A value of 0 means that the reservation is not for a specific connector.</param>
-        /// <param name="ReservationId">The unique identification of this reservation.</param>
-        /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
-        /// <param name="IdTag">The identifier for which the charge point has to reserve a connector.</param>
-        /// <param name="ParentIdTag">An optional ParentIdTag.</param>
+        /// <param name="Request">A reserve now request.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -2508,11 +2510,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<ReserveNowResponse>>
 
-            ReserveNow(Connector_Id        ConnectorId,
-                       Reservation_Id      ReservationId,
-                       DateTime            ExpiryDate,
-                       IdToken             IdTag,
-                       IdToken?            ParentIdTag         = null,
+            ReserveNow(ReserveNowRequest   Request,
 
                        DateTime?           Timestamp           = null,
                        CancellationToken?  CancellationToken   = null,
@@ -2523,14 +2521,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region Initial checks
 
-            if (ConnectorId.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ConnectorId),    "The given connector identification must not be null or empty!");
-
-            if (ReservationId.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ReservationId),  "The given reservation identification must not be null or empty!");
-
-            if (IdTag.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(IdTag),          "The given reservation identification must not be null or empty!");
+            if (Request is null)
+                throw new ArgumentNullException(nameof(Request), "The given reserve now request must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -2556,17 +2548,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 OnReserveNowRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                            Timestamp.Value,
                                             this,
-                                            Description,
-                                            EventTrackingId,
-                                            ChargeBoxIdentity,
-                                            ConnectorId,
-                                            ReservationId,
-                                            ExpiryDate,
-                                            IdTag,
-                                            ParentIdTag,
-                                            RequestTimeout);
+                                            Request);
 
             }
             catch (Exception e)
@@ -2575,14 +2558,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             #endregion
-
-
-            var request = new ReserveNowRequest(ChargeBoxIdentity,
-                                                ConnectorId,
-                                                ReservationId,
-                                                ExpiryDate,
-                                                IdTag,
-                                                ParentIdTag);
 
 
             try
@@ -2611,7 +2586,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                         NextMessageId(),
                                                                         From,
                                                                         To,
-                                                                        request.ToXML()),
+                                                                        Request.ToXML()),
                                                      "ReserveNow",
                                                      RequestLogDelegate:   OnReserveNowSOAPRequest,
                                                      ResponseLogDelegate:  OnReserveNowSOAPResponse,
@@ -2621,7 +2596,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                      #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
                                                                                                           ReserveNowResponse.Parse),
 
                                                      #endregion
@@ -2634,7 +2609,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                          return new HTTPResponse<ReserveNowResponse>(httpresponse,
                                                                                                      new ReserveNowResponse(
-                                                                                                         request,
+                                                                                                         Request,
                                                                                                          Result.Format(
                                                                                                              "Invalid SOAP => " +
                                                                                                              httpresponse.HTTPBody.ToUTF8String()
@@ -2654,7 +2629,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                          return new HTTPResponse<ReserveNowResponse>(httpresponse,
                                                                                                      new ReserveNowResponse(
-                                                                                                         request,
+                                                                                                         Request,
                                                                                                          Result.Server(
                                                                                                               httpresponse.HTTPStatusCode.ToString() +
                                                                                                               " => " +
@@ -2674,7 +2649,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                          SendException(timestamp, sender, exception);
 
                                                          return HTTPResponse<ReserveNowResponse>.ExceptionThrown(new ReserveNowResponse(
-                                                                                                                     request,
+                                                                                                                     Request,
                                                                                                                      Result.Format(exception.Message +
                                                                                                                                    " => " +
                                                                                                                                    exception.StackTrace)),
@@ -2695,7 +2670,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             if (result == null)
-                result = HTTPResponse<ReserveNowResponse>.OK(new ReserveNowResponse(request,
+                result = HTTPResponse<ReserveNowResponse>.OK(new ReserveNowResponse(Request,
                                                                                     Result.OK("Nothing to upload!")));
 
 
@@ -2705,17 +2680,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 OnReserveNowResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                             Timestamp.Value,
                                              this,
-                                             Description,
-                                             EventTrackingId,
-                                             ChargeBoxIdentity,
-                                             ConnectorId,
-                                             ReservationId,
-                                             ExpiryDate,
-                                             IdTag,
-                                             ParentIdTag,
-                                             RequestTimeout,
+                                             Request,
                                              result.Content,
                                              org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 

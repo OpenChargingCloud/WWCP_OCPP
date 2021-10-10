@@ -37,7 +37,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// The charge point HTTP/SOAP/XML server.
     /// </summary>
-    public class ChargePointSOAPServer : ASOAPServer
+    public class ChargePointSOAPServer : ASOAPServer,
+                                         IEventSender
     {
 
         #region Data
@@ -74,6 +75,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region Properties
+
+        /// <summary>
+        /// The sender identification.
+        /// </summary>
+        String IEventSender.Id
+            => SOAPServer.HTTPServer.DefaultServerName;
+
+        #endregion
+
         #region Events
 
         #region OnReserveNow
@@ -81,17 +92,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reserve now SOAP request was received.
         /// </summary>
-        public event RequestLogHandler     OnReserveNowSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever a SOAP response to a reserve now request was sent.
-        /// </summary>
-        public event AccessLogHandler      OnReserveNowSOAPResponse;
+        public event RequestLogHandler             OnReserveNowSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event OnReserveNowDelegate  OnReserveNowRequest;
+        public event OnReserveNowRequestDelegate   OnReserveNowRequest;
+
+        /// <summary>
+        /// An event sent whenever a reserve now request was received.
+        /// </summary>
+        public event OnReserveNowDelegate          OnReserveNow;
+
+        /// <summary>
+        /// An event sent whenever a response to a reserve now request was sent.
+        /// </summary>
+        public event OnReserveNowResponseDelegate  OnReserveNowResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reserve now request was sent.
+        /// </summary>
+        public event AccessLogHandler              OnReserveNowSOAPResponse;
 
         #endregion
 
@@ -100,17 +121,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a cancel reservation SOAP request was received.
         /// </summary>
-        public event RequestLogHandler            OnCancelReservationSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever a SOAP response to a cancel reservation request was sent.
-        /// </summary>
-        public event AccessLogHandler             OnCancelReservationSOAPResponse;
+        public event RequestLogHandler                    OnCancelReservationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event OnCancelReservationDelegate  OnCancelReservationRequest;
+        public event OnCancelReservationRequestDelegate   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event sent whenever a cancel reservation request was received.
+        /// </summary>
+        public event OnCancelReservationDelegate          OnCancelReservation;
+
+        /// <summary>
+        /// An event sent whenever a response to a cancel reservation request was sent.
+        /// </summary>
+        public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a cancel reservation request was sent.
+        /// </summary>
+        public event AccessLogHandler                     OnCancelReservationSOAPResponse;
 
         #endregion
 
@@ -178,17 +209,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a data transfer SOAP request was received.
         /// </summary>
-        public event RequestLogHandler       OnDataTransferSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever a SOAP response to a data transfer request was sent.
-        /// </summary>
-        public event AccessLogHandler        OnDataTransferSOAPResponse;
+        public event RequestLogHandler                       OnIncomingDataTransferSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnDataTransferDelegate  OnDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate   OnDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a data transfer request was received.
+        /// </summary>
+        public event OnIncomingDataTransferDelegate          OnIncomingDataTransfer;
+
+        /// <summary>
+        /// An event sent whenever a response to a data transfer request was sent.
+        /// </summary>
+        public event OnIncomingDataTransferResponseDelegate  OnDataTransferResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a data transfer request was sent.
+        /// </summary>
+        public event AccessLogHandler                        OnIncomingDataTransferSOAPResponse;
 
         #endregion
 
@@ -285,11 +326,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region Send OnReserveNowSOAPRequest event
 
+                var requestTimestamp = Timestamp.Now;
+
                 try
                 {
 
-                    OnReserveNowSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                    this.SOAPServer.HTTPServer,
+                    OnReserveNowSOAPRequest?.Invoke(requestTimestamp,
+                                                    SOAPServer.HTTPServer,
                                                     Request);
 
                 }
@@ -300,73 +343,108 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
+                ReserveNowResponse response      = null;
+                HTTPResponse       HTTPResponse  = null;
 
-                var _OCPPHeader         = SOAPHeader.Parse(HeaderXML);
-                var _ReserveNowRequest  = ReserveNowRequest.Parse(ReserveNowXML,
-                                                                  Request_Id.Parse(_OCPPHeader.MessageId),
-                                                                  _OCPPHeader.ChargeBoxIdentity);
-
-                ReserveNowResponse response = null;
-
-
-
-                #region Call async subscribers
-
-                if (response == null)
+                try
                 {
 
-                    var results = OnReserveNowRequest?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)
-                                          (Timestamp.Now,
-                                           this,
-                                           Request.CancellationToken,
-                                           Request.EventTrackingId,
-                                           _OCPPHeader.ChargeBoxIdentity,
-                                           _ReserveNowRequest.ConnectorId,
-                                           _ReserveNowRequest.ReservationId,
-                                           _ReserveNowRequest.ExpiryDate,
-                                           _ReserveNowRequest.IdTag,
-                                           _ReserveNowRequest.ParentIdTag,
-                                           DefaultRequestTimeout)).
-                                      ToArray();
+                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                    var request     = ReserveNowRequest.Parse(ReserveNowXML,
+                                                                Request_Id.Parse(OCPPHeader.MessageId),
+                                                                OCPPHeader.ChargeBoxIdentity);
 
-                    if (results.Length > 0)
+                    #region Send OnReserveNowRequest event
+
+                    try
                     {
 
-                        await Task.WhenAll(results);
+                        OnReserveNowRequest?.Invoke(request.RequestTimestamp,
+                                                    this,
+                                                    request);
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnReserveNowRequest));
+                    }
 
-                        response = results.FirstOrDefault()?.Result;
+                    #endregion
+
+                    #region Call async subscribers
+
+                    if (response == null)
+                    {
+
+                        var results = OnReserveNow?.
+                                          GetInvocationList()?.
+                                          SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)
+                                              (Timestamp.Now,
+                                               this,
+                                               request,
+                                               Request.CancellationToken)).
+                                          ToArray();
+
+                        if (results.Length > 0)
+                        {
+
+                            await Task.WhenAll(results);
+
+                            response = results.FirstOrDefault()?.Result;
+
+                        }
+
+                        if (results.Length == 0 || response == null)
+                            response = ReserveNowResponse.Failed(request);
 
                     }
 
-                    if (results.Length == 0 || response == null)
-                        response = ReserveNowResponse.Failed(_ReserveNowRequest);
+                    #endregion
+
+                    #region Send OnReserveNowResponse event
+
+                    try
+                    {
+
+                        var responseTimestamp = Timestamp.Now;
+
+                        OnReserveNowResponse?.Invoke(responseTimestamp,
+                                                     this,
+                                                     request,
+                                                     response,
+                                                     responseTimestamp - requestTimestamp);
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnReserveNowResponse));
+                    }
+
+                    #endregion
+
+
+                    #region Create SOAPResponse
+
+                    HTTPResponse = new HTTPResponse.Builder(Request) {
+                        HTTPStatusCode  = HTTPStatusCode.OK,
+                        Server          = SOAPServer.HTTPServer.DefaultServerName,
+                        Date            = Timestamp.Now,
+                        ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                        Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
+                                                             "/ReserveNowResponse",
+                                                             null,
+                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
+                                                             OCPPHeader.To,         // Fake it!
+                                                             OCPPHeader.From,       // Fake it!
+                                                             response.ToXML()).ToUTF8Bytes()
+                    };
+
+                    #endregion
 
                 }
-
-                #endregion
-
-
-
-                #region Create SOAPResponse
-
-                var HTTPResponse = new HTTPResponse.Builder(Request) {
-                    HTTPStatusCode  = HTTPStatusCode.OK,
-                    Server          = SOAPServer.HTTPServer.DefaultServerName,
-                    Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                    ContentType     = HTTPContentType.XMLTEXT_UTF8,
-                    Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
-                                                         "/ReserveNowResponse",
-                                                         null,
-                                                         _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
-                                                         _OCPPHeader.To,         // Fake it!
-                                                         _OCPPHeader.From,       // Fake it!
-                                                         response.ToXML()).ToUTF8Bytes()
-                };
-
-                #endregion
-
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/ReserveNow");
+                }
 
                 #region Send OnReserveNowSOAPResponse event
 
@@ -418,10 +496,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                var _OCPPHeader                = SOAPHeader.Parse(HeaderXML);
-                var _CancelReservationRequest  = CancelReservationRequest.Parse(CancelReservationXML,
-                                                                                Request_Id.Parse(_OCPPHeader.MessageId),
-                                                                                _OCPPHeader.ChargeBoxIdentity);
+                var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                var request     = CancelReservationRequest.Parse(CancelReservationXML,
+                                                                 Request_Id.Parse(OCPPHeader.MessageId),
+                                                                 OCPPHeader.ChargeBoxIdentity);
 
                 CancelReservationResponse response = null;
 
@@ -432,16 +510,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 if (response == null)
                 {
 
-                    var results = OnCancelReservationRequest?.
+                    var results = OnCancelReservation?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnCancelReservationDelegate)
                                           (Timestamp.Now,
                                            this,
-                                           Request.CancellationToken,
-                                           Request.EventTrackingId,
-                                           _OCPPHeader.ChargeBoxIdentity,
-                                           _CancelReservationRequest.ReservationId,
-                                           DefaultRequestTimeout)).
+                                           request,
+                                           Request.CancellationToken)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -454,7 +529,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = CancelReservationResponse.Failed(_CancelReservationRequest);
+                        response = CancelReservationResponse.Failed(request);
 
                 }
 
@@ -469,12 +544,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
                     Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
-                    Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
+                    Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                          "/CancelReservationResponse",
                                                          null,
-                                                         _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
-                                                         _OCPPHeader.To,         // Fake it!
-                                                         _OCPPHeader.From,       // Fake it!
+                                                         OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
+                                                         OCPPHeader.To,         // Fake it!
+                                                         OCPPHeader.From,       // Fake it!
                                                          response.ToXML()).ToUTF8Bytes()
                 };
 
@@ -531,10 +606,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                var _OCPPHeader                     = SOAPHeader.Parse(HeaderXML);
-                var _RemoteStartTransactionRequest  = RemoteStartTransactionRequest.Parse(RemoteStartTransactionXML,
-                                                                                          Request_Id.Parse(_OCPPHeader.MessageId),
-                                                                                          _OCPPHeader.ChargeBoxIdentity);
+                var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                var request     = RemoteStartTransactionRequest.Parse(RemoteStartTransactionXML,
+                                                                      Request_Id.Parse(OCPPHeader.MessageId),
+                                                                      OCPPHeader.ChargeBoxIdentity);
 
                 RemoteStartTransactionResponse response = null;
 
@@ -550,10 +625,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                       SafeSelect(subscriber => (subscriber as OnRemoteStartTransactionDelegate)
                                           (Timestamp.Now,
                                            this,
-                                           Request.CancellationToken,
-                                           Request.EventTrackingId,
-                                           //_OCPPHeader.ChargeBoxIdentity,
-                                           _RemoteStartTransactionRequest)).
+                                           request,
+                                           Request.CancellationToken)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -566,7 +639,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = RemoteStartTransactionResponse.Failed(_RemoteStartTransactionRequest);
+                        response = RemoteStartTransactionResponse.Failed(request);
 
                 }
 
@@ -581,12 +654,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
                     Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
-                    Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
+                    Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                          "/RemoteStartTransactionResponse",
                                                          NextMessageId(),
-                                                         _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
-                                                         _OCPPHeader.To,         // Fake it!
-                                                         _OCPPHeader.From,       // Fake it!
+                                                         OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
+                                                         OCPPHeader.To,         // Fake it!
+                                                         OCPPHeader.From,       // Fake it!
                                                          response.ToXML()).ToUTF8Bytes()
                 };
 
@@ -643,10 +716,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                var _OCPPHeader                    = SOAPHeader.Parse(HeaderXML);
-                var _RemoteStopTransactionRequest  = RemoteStopTransactionRequest.Parse(RemoteStopTransactionXML,
-                                                                                        Request_Id.Parse(_OCPPHeader.MessageId),
-                                                                                        _OCPPHeader.ChargeBoxIdentity);
+                var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                var request     = RemoteStopTransactionRequest.Parse(RemoteStopTransactionXML,
+                                                                     Request_Id.Parse(OCPPHeader.MessageId),
+                                                                     OCPPHeader.ChargeBoxIdentity);
 
                 RemoteStopTransactionResponse response = null;
 
@@ -662,10 +735,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                       SafeSelect(subscriber => (subscriber as OnRemoteStopTransactionDelegate)
                                           (Timestamp.Now,
                                            this,
-                                           Request.CancellationToken,
-                                           Request.EventTrackingId,
-                                           //_OCPPHeader.ChargeBoxIdentity,
-                                           _RemoteStopTransactionRequest)).
+                                           request,
+                                           Request.CancellationToken)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -678,7 +749,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = RemoteStopTransactionResponse.Failed(_RemoteStopTransactionRequest);
+                        response = RemoteStopTransactionResponse.Failed(request);
 
                 }
 
@@ -693,12 +764,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
                     Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
-                    Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
+                    Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                          "/RemoteStopTransactionResponse",
                                                          null,
-                                                         _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
-                                                         _OCPPHeader.To,         // Fake it!
-                                                         _OCPPHeader.From,       // Fake it!
+                                                         OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
+                                                         OCPPHeader.To,         // Fake it!
+                                                         OCPPHeader.From,       // Fake it!
                                                          response.ToXML()).ToUTF8Bytes()
                 };
 
@@ -738,28 +809,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CP + "dataTransferRequest").FirstOrDefault(),
                                             async (Request, HeaderXML, DataTransferXML) => {
 
-                #region Send OnDataTransferSOAPRequest event
+                #region Send OnIncomingDataTransferSOAPRequest event
 
                 try
                 {
 
-                    OnDataTransferSOAPRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                      this.SOAPServer.HTTPServer,
-                                                      Request);
+                    OnIncomingDataTransferSOAPRequest?.Invoke(Timestamp.Now,
+                                                              this.SOAPServer.HTTPServer,
+                                                              Request);
 
                 }
                 catch (Exception e)
                 {
-                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnDataTransferSOAPRequest));
+                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnIncomingDataTransferSOAPRequest));
                 }
 
                 #endregion
 
 
-                var _OCPPHeader           = SOAPHeader.Parse(HeaderXML);
-                var _DataTransferRequest  = CS.DataTransferRequest.Parse(DataTransferXML,
-                                                                         Request_Id.Parse(_OCPPHeader.MessageId),
-                                                                         _OCPPHeader.ChargeBoxIdentity);
+                var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                var request     = CS.DataTransferRequest.Parse(DataTransferXML,
+                                                               Request_Id.Parse(OCPPHeader.MessageId),
+                                                               OCPPHeader.ChargeBoxIdentity);
 
                 CP.DataTransferResponse response = null;
 
@@ -770,18 +841,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 if (response == null)
                 {
 
-                    var results = OnDataTransferRequest?.
+                    var results = OnIncomingDataTransfer?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnDataTransferDelegate)
+                                      SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
                                           (Timestamp.Now,
                                            this,
-                                           Request.CancellationToken,
-                                           Request.EventTrackingId,
-                                           _OCPPHeader.ChargeBoxIdentity,
-                                           _DataTransferRequest.VendorId,
-                                           _DataTransferRequest.MessageId,
-                                           _DataTransferRequest.Data,
-                                           DefaultRequestTimeout)).
+                                           request,
+                                           Request.CancellationToken)).
                                       ToArray();
 
                     if (results.Length > 0)
@@ -794,7 +860,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     }
 
                     if (results.Length == 0 || response == null)
-                        response = DataTransferResponse.Failed(_DataTransferRequest);
+                        response = DataTransferResponse.Failed(request);
 
                 }
 
@@ -809,32 +875,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     Server          = SOAPServer.HTTPServer.DefaultServerName,
                     Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                     ContentType     = HTTPContentType.XMLTEXT_UTF8,
-                    Content         = SOAP.Encapsulation(_OCPPHeader.ChargeBoxIdentity,
+                    Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                          "/DataTransferResponse",
                                                          null,
-                                                         _OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
-                                                         _OCPPHeader.To,         // Fake it!
-                                                         _OCPPHeader.From,       // Fake it!
+                                                         OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
+                                                         OCPPHeader.To,         // Fake it!
+                                                         OCPPHeader.From,       // Fake it!
                                                          response.ToXML()).ToUTF8Bytes()
                 };
 
                 #endregion
 
 
-                #region Send OnDataTransferSOAPResponse event
+                #region Send OnIncomingDataTransferSOAPResponse event
 
                 try
                 {
 
-                    OnDataTransferSOAPResponse?.Invoke(HTTPResponse.Timestamp,
-                                                       this.SOAPServer.HTTPServer,
-                                                       Request,
-                                                       HTTPResponse);
+                    OnIncomingDataTransferSOAPResponse?.Invoke(HTTPResponse.Timestamp,
+                                                               SOAPServer.HTTPServer,
+                                                               Request,
+                                                               HTTPResponse);
 
                 }
                 catch (Exception e)
                 {
-                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnDataTransferSOAPResponse));
+                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnIncomingDataTransferSOAPResponse));
                 }
 
                 #endregion

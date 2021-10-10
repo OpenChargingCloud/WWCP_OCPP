@@ -277,12 +277,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="MeterValuesRequest">The meter values request.</param>
+    /// <param name="Request">The meter values request.</param>
     public delegate Task
 
         OnMeterValuesRequestDelegate(DateTime               Timestamp,
                                      IEventSender           Sender,
-                                     CP.MeterValuesRequest  MeterValuesRequest);
+                                     CP.MeterValuesRequest  Request);
 
 
     /// <summary>

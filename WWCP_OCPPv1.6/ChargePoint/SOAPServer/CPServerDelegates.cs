@@ -37,12 +37,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The boot notification request.</param>
+    /// <param name="Request">The reserve now request.</param>
     public delegate Task
 
-        ReserveNowRequestDelegate(DateTime               Timestamp,
-                                  IEventSender           Sender,
-                                  CS.ReserveNowRequest   Request);
+        OnReserveNowRequestDelegate(DateTime              Timestamp,
+                                    IEventSender          Sender,
+                                    CS.ReserveNowRequest  Request);
 
 
     /// <summary>
@@ -54,10 +54,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<ReserveNowResponse>
 
-        ReserveNowDelegate(DateTime               Timestamp,
-                           IEventSender           Sender,
-                           CS.ReserveNowRequest   Request,
-                           CancellationToken      CancellationToken);
+        OnReserveNowDelegate(DateTime              Timestamp,
+                             IEventSender          Sender,
+                             CS.ReserveNowRequest  Request,
+                             CancellationToken     CancellationToken);
 
 
     /// <summary>
@@ -70,265 +70,205 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        ReserveNowResponseDelegate(DateTime                      Timestamp,
-                                         IEventSender            Sender,
-                                         CS.ReserveNowRequest    Request,
-                                         CP.ReserveNowResponse   Response,
-                                         TimeSpan                Runtime);
-
-
-
-
-    /// <summary>
-    /// Reserve a charge point.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// <param name="ConnectorId">The identification of the connector to be reserved. A value of 0 means that the reservation is not for a specific connector.</param>
-    /// <param name="ReservationId">The unique identification of this reservation.</param>
-    /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
-    /// <param name="IdTag">The identifier for which the charge point has to reserve a connector.</param>
-    /// <param name="ParentIdTag">An optional ParentIdTag.</param>
-    /// 
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<ReserveNowResponse>
-
-        OnReserveNowDelegate(DateTime               Timestamp,
-                             ChargePointSOAPServer  Sender,
-                             CancellationToken      CancellationToken,
-                             EventTracking_Id       EventTrackingId,
-
-                             ChargeBox_Id           ChargeBoxIdentity,
-                             Connector_Id           ConnectorId,
-                             Reservation_Id         ReservationId,
-                             DateTime               ExpiryDate,
-                             IdToken                IdTag,
-                             IdToken?               ParentIdTag,
-
-                             TimeSpan?              RequestTimeout = null);
+        OnReserveNowResponseDelegate(DateTime               Timestamp,
+                                     IEventSender           Sender,
+                                     CS.ReserveNowRequest   Request,
+                                     CP.ReserveNowResponse  Response,
+                                     TimeSpan               Runtime);
 
     #endregion
 
     #region OnCancelReservation
 
     /// <summary>
-    /// Cancel a charge point reservation.
+    /// A cancel reservation request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The cancel reservation request.</param>
+    public delegate Task
+
+        OnCancelReservationRequestDelegate(DateTime                     Timestamp,
+                                           IEventSender                 Sender,
+                                           CS.CancelReservationRequest  Request);
+
+
+    /// <summary>
+    /// A cancel reservation request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The cancel reservation request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// <param name="ReservationId">The unique identification of this reservation.</param>
-    /// 
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<CancelReservationResponse>
 
-        OnCancelReservationDelegate(DateTime               Timestamp,
-                                    ChargePointSOAPServer  Sender,
-                                    CancellationToken      CancellationToken,
-                                    EventTracking_Id       EventTrackingId,
+        OnCancelReservationDelegate(DateTime                     Timestamp,
+                                    IEventSender                 Sender,
+                                    CS.CancelReservationRequest  Request,
+                                    CancellationToken            CancellationToken);
 
-                                    ChargeBox_Id           ChargeBoxIdentity,
-                                    Reservation_Id         ReservationId,
 
-                                    TimeSpan?              RequestTimeout = null);
+    /// <summary>
+    /// A cancel reservation response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The cancel reservation request.</param>
+    /// <param name="Response">The cancel reservation response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnCancelReservationResponseDelegate(DateTime                      Timestamp,
+                                            IEventSender                  Sender,
+                                            CS.CancelReservationRequest   Request,
+                                            CP.CancelReservationResponse  Response,
+                                            TimeSpan                      Runtime);
 
     #endregion
 
     #region OnRemoteStartTransaction
 
     /// <summary>
-    /// Start a charging transaction.
+    /// A remote start transaction request.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="IdTag">The identification tag to start the charging transaction.</param>
-    /// <param name="ConnectorId">An optional connector identification on which the charging transaction should be started (SHALL be > 0).</param>
-    /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
+    /// <param name="Request">The remote start transaction request.</param>
     public delegate Task
 
-        OnRemoteStartTransactionRequestDelegate(DateTime               Timestamp,
-                                                ChargePointSOAPServer  Sender,
-                                                CancellationToken      CancellationToken,
-                                                EventTracking_Id       EventTrackingId,
-
-                                                ChargeBox_Id           ChargeBoxIdentity,
-
-                                                IdToken                IdTag,
-                                                Connector_Id?          ConnectorId,
-                                                ChargingProfile        ChargingProfile);
+        OnRemoteStartTransactionRequestDelegate(DateTime                          Timestamp,
+                                                IEventSender                      Sender,
+                                                CS.RemoteStartTransactionRequest  Request);
 
 
     /// <summary>
-    /// Start a charging transaction.
+    /// A remote start transaction request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The remote start transaction request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="RemoteStartTransactionRequest">A remote start transaction request.</param>
     public delegate Task<RemoteStartTransactionResponse>
 
         OnRemoteStartTransactionDelegate(DateTime                          Timestamp,
-                                         ChargePointSOAPServer             Sender,
-                                         CancellationToken                 CancellationToken,
-                                         EventTracking_Id                  EventTrackingId,
-
-                                         CS.RemoteStartTransactionRequest  RemoteStartTransactionRequest);
+                                         IEventSender                      Sender,
+                                         CS.RemoteStartTransactionRequest  Request,
+                                         CancellationToken                 CancellationToken);
 
 
     /// <summary>
-    /// Start a charging transaction.
+    /// A remote start transaction response.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// 
-    /// <param name="IdTag">The identification tag to start the charging transaction.</param>
-    /// <param name="ConnectorId">An optional connector identification on which the charging transaction should be started (SHALL be > 0).</param>
-    /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
-    /// 
-    /// <param name="Result">The general OCPP result.</param>
-    /// <param name="Status">The status indicating whether the charge point accepts the request to start a charging transaction.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The remote start transaction request.</param>
+    /// <param name="Response">The remote start transaction response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnRemoteStartTransactionResponseDelegate(DateTime               Timestamp,
-                                                 ChargePointSOAPServer  Sender,
-                                                 CancellationToken      CancellationToken,
-                                                 EventTracking_Id       EventTrackingId,
-
-                                                 ChargeBox_Id           ChargeBoxIdentity,
-
-                                                 IdToken                IdTag,
-                                                 Connector_Id?          ConnectorId,
-                                                 ChargingProfile        ChargingProfile,
-
-                                                 Result                 Result,
-                                                 RemoteStartStopStatus  Status,
-                                                 TimeSpan               Runtime);
+        OnRemoteStartTransactionResponseDelegate(DateTime                           Timestamp,
+                                                 IEventSender                       Sender,
+                                                 CS.RemoteStartTransactionRequest   Request,
+                                                 CP.RemoteStartTransactionResponse  Response,
+                                                 TimeSpan                           Runtime);
 
     #endregion
 
     #region OnRemoteStopTransaction
 
     /// <summary>
-    /// Stop a charging transaction.
+    /// A remote stop transaction request.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// <param name="TransactionId">The identification of the transaction which the charge point is requested to stop.</param>
-    public delegate Task<RemoteStopTransactionResponse>
+    /// <param name="Request">The remote stop transaction request.</param>
+    public delegate Task
 
-        OnRemoteStopTransactionRequestDelegate(DateTime               Timestamp,
-                                               ChargePointSOAPServer  Sender,
-                                               CancellationToken      CancellationToken,
-                                               EventTracking_Id       EventTrackingId,
-
-                                               ChargeBox_Id           ChargeBoxIdentity,
-                                               Transaction_Id         TransactionId);
+        OnRemoteStopTransactionRequestDelegate(DateTime                         Timestamp,
+                                               IEventSender                     Sender,
+                                               CS.RemoteStopTransactionRequest  Request);
 
 
     /// <summary>
-    /// Stop a charging transaction.
+    /// A remote stop transaction request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The remote stop transaction request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="RemoteStopTransactionRequest">A remote stop transaction request.</param>
     public delegate Task<RemoteStopTransactionResponse>
 
         OnRemoteStopTransactionDelegate(DateTime                         Timestamp,
-                                        ChargePointSOAPServer            Sender,
-                                        CancellationToken                CancellationToken,
-                                        EventTracking_Id                 EventTrackingId,
-
-                                        CS.RemoteStopTransactionRequest  RemoteStopTransactionRequest);
+                                        IEventSender                     Sender,
+                                        CS.RemoteStopTransactionRequest  Request,
+                                        CancellationToken                CancellationToken);
 
 
     /// <summary>
-    /// Stop a charging transaction.
+    /// A remote stop transaction response.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// <param name="TransactionId">The identification of the transaction which the charge point is requested to stop.</param>
-    /// 
-    /// <param name="Result">The general OCPP result.</param>
-    /// <param name="Status">The status indicating whether the charge point accepts the request to stop a charging transaction.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task<RemoteStopTransactionResponse>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The remote stop transaction request.</param>
+    /// <param name="Response">The remote stop transaction response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
 
-        OnRemoteStopTransactionResponseDelegate(DateTime               Timestamp,
-                                                ChargePointSOAPServer  Sender,
-                                                CancellationToken      CancellationToken,
-                                                EventTracking_Id       EventTrackingId,
-
-                                                ChargeBox_Id           ChargeBoxIdentity,
-                                                Transaction_Id         TransactionId,
-
-                                                Result                 Result,
-                                                RemoteStartStopStatus  Status,
-                                                TimeSpan               Runtime);
+        OnRemoteStopTransactionResponseDelegate(DateTime                          Timestamp,
+                                                IEventSender                      Sender,
+                                                CS.RemoteStopTransactionRequest   Request,
+                                                CP.RemoteStopTransactionResponse  Response,
+                                                TimeSpan                          Runtime);
 
     #endregion
 
 
-    #region OnDataTransfer
+    #region OnIncomingDataTransfer
 
     /// <summary>
-    /// A data transfer from the central system.
+    /// A data transfer request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The data transfer request.</param>
+    public delegate Task
+
+        OnIncomingDataTransferRequestDelegate(DateTime                Timestamp,
+                                              IEventSender            Sender,
+                                              CS.DataTransferRequest  Request);
+
+
+    /// <summary>
+    /// A data transfer request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The data transfer request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="ChargeBoxIdentity">The unique identification of the charge box.</param>
-    /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-    /// <param name="MessageId">The charge point model identification.</param>
-    /// <param name="Data">The serial number of the charge point.</param>
-    /// 
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<DataTransferResponse>
 
-        OnDataTransferDelegate(DateTime               Timestamp,
-                               ChargePointSOAPServer  Sender,
-                               CancellationToken      CancellationToken,
-                               EventTracking_Id       EventTrackingId,
+        OnIncomingDataTransferDelegate(DateTime                Timestamp,
+                                       IEventSender            Sender,
+                                       CS.DataTransferRequest  Request,
+                                       CancellationToken       CancellationToken);
 
-                               ChargeBox_Id           ChargeBoxIdentity,
-                               String                 VendorId,
-                               String                 MessageId,
-                               String                 Data,
 
-                               TimeSpan?              RequestTimeout = null);
+    /// <summary>
+    /// A data transfer response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The data transfer request.</param>
+    /// <param name="Response">The data transfer response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnIncomingDataTransferResponseDelegate(DateTime                 Timestamp,
+                                               IEventSender             Sender,
+                                               CS.DataTransferRequest   Request,
+                                               CP.DataTransferResponse  Response,
+                                               TimeSpan                 Runtime);
 
     #endregion
-
 
 }
