@@ -96,22 +96,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnBootNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a boot notification request will be send to the central system.
+        /// An event fired whenever a boot notification Request will be send to the central system.
         /// </summary>
         public event OnBootNotificationRequestDelegate   OnBootNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a boot notification SOAP request will be send to the central system.
+        /// An event fired whenever a boot notification SOAP Request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler             OnBootNotificationSOAPRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a boot notification SOAP request was received.
+        /// An event fired whenever a response to a boot notification SOAP Request was received.
         /// </summary>
         public event ClientResponseLogHandler            OnBootNotificationSOAPResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a boot notification request was received.
+        /// An event fired whenever a response to a boot notification Request was received.
         /// </summary>
         public event OnBootNotificationResponseDelegate  OnBootNotificationResponse;
 
@@ -120,22 +120,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnHeartbeatRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a heartbeat request will be send to the central system.
+        /// An event fired whenever a heartbeat Request will be send to the central system.
         /// </summary>
         public event OnHeartbeatRequestDelegate   OnHeartbeatRequest;
 
         /// <summary>
-        /// An event fired whenever a heartbeat SOAP request will be send to the central system.
+        /// An event fired whenever a heartbeat SOAP Request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler      OnHeartbeatSOAPRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a heartbeat SOAP request was received.
+        /// An event fired whenever a response to a heartbeat SOAP Request was received.
         /// </summary>
         public event ClientResponseLogHandler     OnHeartbeatSOAPResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a heartbeat request was received.
+        /// An event fired whenever a response to a heartbeat Request was received.
         /// </summary>
         public event OnHeartbeatResponseDelegate  OnHeartbeatResponse;
 
@@ -145,22 +145,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnAuthorizeRequest/-Response
 
         /// <summary>
-        /// An event fired whenever an authorize request will be send to the central system.
+        /// An event fired whenever an authorize Request will be send to the central system.
         /// </summary>
         public event OnAuthorizeRequestDelegate   OnAuthorizeRequest;
 
         /// <summary>
-        /// An event fired whenever an authorize SOAP request will be send to the central system.
+        /// An event fired whenever an authorize SOAP Request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler      OnAuthorizeSOAPRequest;
 
         /// <summary>
-        /// An event fired whenever a response to an authorize SOAP request was received.
+        /// An event fired whenever a response to an authorize SOAP Request was received.
         /// </summary>
         public event ClientResponseLogHandler     OnAuthorizeSOAPResponse;
 
         /// <summary>
-        /// An event fired whenever a response to an authorize request was received.
+        /// An event fired whenever a response to an authorize Request was received.
         /// </summary>
         public event OnAuthorizeResponseDelegate  OnAuthorizeResponse;
 
@@ -169,22 +169,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnStartTransactionRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a start transaction request will be send to the central system.
+        /// An event fired whenever a start transaction Request will be send to the central system.
         /// </summary>
         public event OnStartTransactionRequestDelegate   OnStartTransactionRequest;
 
         /// <summary>
-        /// An event fired whenever a start transaction SOAP request will be send to the central system.
+        /// An event fired whenever a start transaction SOAP Request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler             OnStartTransactionSOAPRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a start transaction SOAP request was received.
+        /// An event fired whenever a response to a start transaction SOAP Request was received.
         /// </summary>
         public event ClientResponseLogHandler            OnStartTransactionSOAPResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a start transaction request was received.
+        /// An event fired whenever a response to a start transaction Request was received.
         /// </summary>
         public event OnStartTransactionResponseDelegate  OnStartTransactionResponse;
 
@@ -193,22 +193,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a status notification request will be send to the central system.
+        /// An event fired whenever a status notification Request will be send to the central system.
         /// </summary>
         public event OnStatusNotificationRequestDelegate   OnStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a status notification SOAP request will be send to the central system.
+        /// An event fired whenever a status notification SOAP Request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler               OnStatusNotificationSOAPRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a status notification SOAP request was received.
+        /// An event fired whenever a response to a status notification SOAP Request was received.
         /// </summary>
         public event ClientResponseLogHandler              OnStatusNotificationSOAPResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a status notification request was received.
+        /// An event fired whenever a response to a status notification Request was received.
         /// </summary>
         public event OnStatusNotificationResponseDelegate  OnStatusNotificationResponse;
 
@@ -217,22 +217,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnMeterValuesRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a meter values request will be send to the central system.
+        /// An event fired whenever a meter values Request will be send to the central system.
         /// </summary>
         public event OnMeterValuesRequestDelegate   OnMeterValuesRequest;
 
         /// <summary>
-        /// An event fired whenever a meter values SOAP request will be send to the central system.
+        /// An event fired whenever a meter values SOAP Request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler        OnMeterValuesSOAPRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a meter values SOAP request was received.
+        /// An event fired whenever a response to a meter values SOAP Request was received.
         /// </summary>
         public event ClientResponseLogHandler       OnMeterValuesSOAPResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a meter values request was received.
+        /// An event fired whenever a response to a meter values Request was received.
         /// </summary>
         public event OnMeterValuesResponseDelegate  OnMeterValuesResponse;
 
@@ -241,22 +241,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnStopTransactionRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a stop transaction request will be send to the central system.
+        /// An event fired whenever a stop transaction Request will be send to the central system.
         /// </summary>
         public event OnStopTransactionRequestDelegate   OnStopTransactionRequest;
 
         /// <summary>
-        /// An event fired whenever a stop transaction SOAP request will be send to the central system.
+        /// An event fired whenever a stop transaction SOAP Request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler            OnStopTransactionSOAPRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a stop transaction SOAP request was received.
+        /// An event fired whenever a response to a stop transaction SOAP Request was received.
         /// </summary>
         public event ClientResponseLogHandler           OnStopTransactionSOAPResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a stop transaction request was received.
+        /// An event fired whenever a response to a stop transaction Request was received.
         /// </summary>
         public event OnStopTransactionResponseDelegate  OnStopTransactionResponse;
 
@@ -266,22 +266,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnDataTransferRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a data transfer request will be send to the central system.
+        /// An event fired whenever a data transfer Request will be send to the central system.
         /// </summary>
         public event OnDataTransferRequestDelegate   OnDataTransferRequest;
 
         /// <summary>
-        /// An event fired whenever a data transfer SOAP request will be send to the central system.
+        /// An event fired whenever a data transfer SOAP Request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler         OnDataTransferSOAPRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a data transfer SOAP request was received.
+        /// An event fired whenever a response to a data transfer SOAP Request was received.
         /// </summary>
         public event ClientResponseLogHandler        OnDataTransferSOAPResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a data transfer request was received.
+        /// An event fired whenever a response to a data transfer Request was received.
         /// </summary>
         public event OnDataTransferResponseDelegate  OnDataTransferResponse;
 
@@ -290,22 +290,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnDiagnosticsStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a diagnostics status notification request will be send to the central system.
+        /// An event fired whenever a diagnostics status notification Request will be send to the central system.
         /// </summary>
         public event OnDiagnosticsStatusNotificationRequestDelegate   OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a diagnostics status notification SOAP request will be send to the central system.
+        /// An event fired whenever a diagnostics status notification SOAP Request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler                          OnDiagnosticsStatusNotificationSOAPRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a diagnostics status notification SOAP request was received.
+        /// An event fired whenever a response to a diagnostics status notification SOAP Request was received.
         /// </summary>
         public event ClientResponseLogHandler                         OnDiagnosticsStatusNotificationSOAPResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a diagnostics status notification request was received.
+        /// An event fired whenever a response to a diagnostics status notification Request was received.
         /// </summary>
         public event OnDiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
 
@@ -314,22 +314,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnFirmwareStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a firmware status notification request will be send to the central system.
+        /// An event fired whenever a firmware status notification Request will be send to the central system.
         /// </summary>
         public event OnFirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a firmware status notification SOAP request will be send to the central system.
+        /// An event fired whenever a firmware status notification SOAP Request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler                       OnFirmwareStatusNotificationSOAPRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a firmware status notification SOAP request was received.
+        /// An event fired whenever a response to a firmware status notification SOAP Request was received.
         /// </summary>
         public event ClientResponseLogHandler                      OnFirmwareStatusNotificationSOAPResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a firmware status notification request was received.
+        /// An event fired whenever a response to a firmware status notification Request was received.
         /// </summary>
         public event OnFirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
 
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region ChargePointSOAPClient(ChargeBoxIdentity, Hostname, ..., LoggingContext = CPClientLogger.DefaultContext, ...)
+        #region ChargePointSOAPClient(Request.ChargeBoxId, Hostname, ..., LoggingContext = CPClientLogger.DefaultContext, ...)
 
         /// <summary>
         /// Create a new charge point SOAP client running on a charge point
@@ -358,10 +358,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="HTTPUserAgent">The HTTP user agent identification.</param>
         /// <param name="URLPathPrefix">An optional default URL path prefix.</param>
         /// <param name="WSSLoginPassword">The WebService-Security username/password.</param>
-        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="RequestTimeout">An optional Request timeout.</param>
         /// <param name="TransmissionRetryDelay">The delay between transmission retries.</param>
-        /// <param name="MaxNumberOfRetries">The maximum number of transmission retries for HTTP request.</param>
-        /// <param name="UseHTTPPipelining">Whether to pipeline multiple HTTP request through a single HTTP/TCP connection.</param>
+        /// <param name="MaxNumberOfRetries">The maximum number of transmission retries for HTTP Request.</param>
+        /// <param name="UseHTTPPipelining">Whether to pipeline multiple HTTP Request through a single HTTP/TCP connection.</param>
         /// <param name="LoggingContext">An optional context for logging client methods.</param>
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ChargePointSOAPClient(ChargeBoxIdentity, Logger, Hostname, ...)
+        #region ChargePointSOAPClient(Request.ChargeBoxId, Logger, Hostname, ...)
 
         /// <summary>
         /// Create a new charge point SOAP client.
@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         //                             Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
         //                             DNSClient                            DNSClient                    = null)
 
-        //    : base(ChargeBoxIdentity,
+        //    : base(Request.ChargeBoxId,
         //           Hostname,
         //           RemotePort ?? DefaultRemotePort,
         //           RemoteCertificateValidator,
@@ -516,12 +516,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Send a boot notification.
         /// </summary>
-        /// <param name="Request">A BootNotification request.</param>
+        /// <param name="Request">A boot notification Request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="Timestamp">The optional timestamp of the Request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
         public async Task<HTTPResponse<BootNotificationResponse>>
 
             SendBootNotification(BootNotificationRequest  Request,
@@ -534,6 +534,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         {
 
             #region Initial checks
+
+            if (Request is null)
+                throw new ArgumentNullException(nameof(Request), "The given boot notification Request must not be null!");
+
 
             if (!Timestamp.HasValue)
                 Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
@@ -588,7 +592,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/BootNotification",
                                                                     null,
                                                                     From,
@@ -703,12 +707,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Send a heartbeat.
         /// </summary>
-        /// <param name="Request">A Heartbeat request.</param>
+        /// <param name="Request">A heartbeat Request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="Timestamp">The optional timestamp of the Request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
         public async Task<HTTPResponse<HeartbeatResponse>>
 
             SendHeartbeat(HeartbeatRequest    Request,
@@ -721,6 +725,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         {
 
             #region Initial checks
+
+            if (Request is null)
+                throw new ArgumentNullException(nameof(Request), "The given heartbeat Request must not be null!");
+
 
             if (!Timestamp.HasValue)
                 Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
@@ -775,7 +783,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/Heartbeat",
                                                                     null,
                                                                     From,
@@ -886,32 +894,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region Authorize                    (IdTag, ...)
+        #region Authorize                    (Request, ...)
 
         /// <summary>
         /// Authorize the given token.
         /// </summary>
-        /// <param name="IdTag">The identifier that needs to be authorized.</param>
+        /// <param name="Request">An authorize Request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="Timestamp">The optional timestamp of the Request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
         public async Task<HTTPResponse<AuthorizeResponse>>
 
-            Authorize(IdToken             IdTag,
+            Authorize(AuthorizeRequest    Request,
 
-                      DateTime?           Timestamp          = null,
-                      CancellationToken?  CancellationToken  = null,
-                      EventTracking_Id    EventTrackingId    = null,
-                      TimeSpan?           RequestTimeout     = null)
+                      DateTime?           Timestamp           = null,
+                      CancellationToken?  CancellationToken   = null,
+                      EventTracking_Id    EventTrackingId     = null,
+                      TimeSpan?           RequestTimeout      = null)
 
         {
 
             #region Initial checks
 
-            if (IdTag == null)
-                throw new ArgumentNullException(nameof(IdTag),  "The given identification tag info must not be null!");
+            if (Request is null)
+                throw new ArgumentNullException(nameof(Request), "The given authorize Request must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -937,12 +945,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnAuthorizeRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                           Timestamp.Value,
                                            this,
-                                           Description,
-                                           EventTrackingId,
-                                           IdTag,
-                                           RequestTimeout);
+                                           Request);
 
             }
             catch (Exception e)
@@ -951,10 +955,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             #endregion
-
-
-            var request = new AuthorizeRequest(ChargeBoxIdentity,
-                                               IdTag);
 
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
@@ -975,12 +975,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/Authorize",
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    request.ToXML()),
+                                                                    Request.ToXML()),
                                                  "Authorize",
                                                  RequestLogDelegate:   OnAuthorizeSOAPRequest,
                                                  ResponseLogDelegate:  OnAuthorizeSOAPResponse,
@@ -990,7 +990,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
                                                                                                       AuthorizeResponse.Parse),
 
                                                  #endregion
@@ -1003,7 +1003,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<AuthorizeResponse>(httpresponse,
                                                                                                 new AuthorizeResponse(
-                                                                                                    request,
+                                                                                                    Request,
                                                                                                     Result.Format(
                                                                                                         "Invalid SOAP => " +
                                                                                                         httpresponse.HTTPBody.ToUTF8String()
@@ -1023,7 +1023,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<AuthorizeResponse>(httpresponse,
                                                                                                 new AuthorizeResponse(
-                                                                                                    request,
+                                                                                                    Request,
                                                                                                     Result.Server(
                                                                                                          httpresponse.HTTPStatusCode.ToString() +
                                                                                                          " => " +
@@ -1043,7 +1043,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<AuthorizeResponse>.ExceptionThrown(new AuthorizeResponse(
-                                                                                                                request,
+                                                                                                                Request,
                                                                                                                 Result.Format(exception.Message +
                                                                                                                               " => " +
                                                                                                                               exception.StackTrace)),
@@ -1058,7 +1058,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<AuthorizeResponse>.OK(new AuthorizeResponse(request, Result.OK("Nothing to upload!")));
+                result = HTTPResponse<AuthorizeResponse>.OK(new AuthorizeResponse(Request, Result.OK("Nothing to upload!")));
 
 
             #region Send OnAuthorizeResponse event
@@ -1067,12 +1067,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnAuthorizeResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                            Timestamp.Value,
                                             this,
-                                            Description,
-                                            EventTrackingId,
-                                            IdTag,
-                                            RequestTimeout,
+                                            Request,
                                             result.Content,
                                             org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
@@ -1090,37 +1086,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region StartTransaction             (ConnectorId, IdTag, TransactionTimestamp, MeterStart, ReservationId = null, ...)
+        #region StartTransaction             (Request, ...)
 
         /// <summary>
         /// Start a charging process at the given connector.
         /// </summary>
-        /// <param name="ConnectorId">The connector identification at the charge point.</param>
-        /// <param name="IdTag">The identifier for which a transaction has to be started.</param>
-        /// <param name="TransactionTimestamp">The timestamp of the transaction start.</param>
-        /// <param name="MeterStart">The meter value in Wh for the connector at start of the transaction.</param>
-        /// <param name="ReservationId">An optional identification of the reservation that will terminate as a result of this transaction.</param>
+        /// <param name="Request">A start transaction Request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="Timestamp">The optional timestamp of the Request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
         public async Task<HTTPResponse<StartTransactionResponse>>
 
-            StartTransaction(Connector_Id        ConnectorId,
-                             IdToken             IdTag,
-                             DateTime            TransactionTimestamp,
-                             UInt64              MeterStart,
-                             Reservation_Id?     ReservationId      = null,
+            StartTransaction(StartTransactionRequest  Request,
 
-                             DateTime?           Timestamp          = null,
-                             CancellationToken?  CancellationToken  = null,
-                             EventTracking_Id    EventTrackingId    = null,
-                             TimeSpan?           RequestTimeout     = null)
+                             DateTime?                Timestamp          = null,
+                             CancellationToken?       CancellationToken  = null,
+                             EventTracking_Id         EventTrackingId    = null,
+                             TimeSpan?                RequestTimeout     = null)
 
         {
 
             #region Initial checks
+
+            if (Request is null)
+                throw new ArgumentNullException(nameof(Request), "The given start transaction Request must not be null!");
+
 
             if (!Timestamp.HasValue)
                 Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
@@ -1145,16 +1137,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnStartTransactionRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                  Timestamp.Value,
                                                   this,
-                                                  Description,
-                                                  EventTrackingId,
-                                                  ConnectorId,
-                                                  IdTag,
-                                                  TransactionTimestamp,
-                                                  MeterStart,
-                                                  ReservationId,
-                                                  RequestTimeout);
+                                                  Request);
 
             }
             catch (Exception e)
@@ -1163,14 +1147,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             #endregion
-
-
-            var request = new StartTransactionRequest(ChargeBoxIdentity,
-                                                      ConnectorId,
-                                                      IdTag,
-                                                      TransactionTimestamp,
-                                                      MeterStart,
-                                                      ReservationId);
 
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
@@ -1191,12 +1167,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/StartTransaction",
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    request.ToXML()),
+                                                                    Request.ToXML()),
                                                  "StartTransaction",
                                                  RequestLogDelegate:   OnStartTransactionSOAPRequest,
                                                  ResponseLogDelegate:  OnStartTransactionSOAPResponse,
@@ -1206,7 +1182,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request, StartTransactionResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request, StartTransactionResponse.Parse),
 
                                                  #endregion
 
@@ -1218,7 +1194,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StartTransactionResponse>(httpresponse,
                                                                                                        new StartTransactionResponse(
-                                                                                                           request,
+                                                                                                           Request,
                                                                                                            Result.Format(
                                                                                                                "Invalid SOAP => " +
                                                                                                                httpresponse.HTTPBody.ToUTF8String()
@@ -1238,7 +1214,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StartTransactionResponse>(httpresponse,
                                                                                                        new StartTransactionResponse(
-                                                                                                           request,
+                                                                                                           Request,
                                                                                                            Result.Server(
                                                                                                                 httpresponse.HTTPStatusCode.ToString() +
                                                                                                                 " => " +
@@ -1258,7 +1234,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<StartTransactionResponse>.ExceptionThrown(new StartTransactionResponse(
-                                                                                                                       request,
+                                                                                                                       Request,
                                                                                                                        Result.Format(exception.Message +
                                                                                                                                      " => " +
                                                                                                                                      exception.StackTrace)),
@@ -1273,7 +1249,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<StartTransactionResponse>.OK(new StartTransactionResponse(request, Result.OK("Nothing to upload!")));
+                result = HTTPResponse<StartTransactionResponse>.OK(new StartTransactionResponse(Request, Result.OK("Nothing to upload!")));
 
 
             #region Send OnStartTransactionResponse event
@@ -1282,16 +1258,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnStartTransactionResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                   Timestamp.Value,
                                                    this,
-                                                   Description,
-                                                   EventTrackingId,
-                                                   ConnectorId,
-                                                   IdTag,
-                                                   TransactionTimestamp,
-                                                   MeterStart,
-                                                   ReservationId,
-                                                   RequestTimeout,
+                                                   Request,
                                                    result.Content,
                                                    org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
@@ -1309,41 +1277,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region StatusNotification           (ConnectorId, Status, ErrorCode, ...)
+        #region StatusNotification           (Request, ...)
 
         /// <summary>
         /// Send a status notification for the given connector.
         /// </summary>
-        /// <param name="ConnectorId">The connector identification at the charge point.</param>
-        /// <param name="Status">The current status of the charge point.</param>
-        /// <param name="ErrorCode">The error code reported by the charge point.</param>
-        /// <param name="Info">Additional free format information related to the error.</param>
-        /// <param name="StatusTimestamp">The time for which the status is reported.</param>
-        /// <param name="VendorId">This identifies the vendor-specific implementation.</param>
-        /// <param name="VendorErrorCode">A vendor-specific error code.</param>
+        /// <param name="Request">A status notification Request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="Timestamp">The optional timestamp of the Request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
         public async Task<HTTPResponse<StatusNotificationResponse>>
 
-            StatusNotification(Connector_Id           ConnectorId,
-                               ChargePointStatus      Status,
-                               ChargePointErrorCodes  ErrorCode,
-                               String                 Info               = null,
-                               DateTime?              StatusTimestamp    = null,
-                               String                 VendorId           = null,
-                               String                 VendorErrorCode    = null,
+            StatusNotification(StatusNotificationRequest  Request,
 
-                               DateTime?              Timestamp          = null,
-                               CancellationToken?     CancellationToken  = null,
-                               EventTracking_Id       EventTrackingId    = null,
-                               TimeSpan?              RequestTimeout     = null)
+                               DateTime?                  Timestamp          = null,
+                               CancellationToken?         CancellationToken  = null,
+                               EventTracking_Id           EventTrackingId    = null,
+                               TimeSpan?                  RequestTimeout     = null)
 
         {
 
             #region Initial checks
+
+            if (Request is null)
+                throw new ArgumentNullException(nameof(Request), "The given status notification Request must not be null!");
+
 
             if (!Timestamp.HasValue)
                 Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
@@ -1368,18 +1328,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnStatusNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                    Timestamp.Value,
                                                     this,
-                                                    Description,
-                                                    EventTrackingId,
-                                                    ConnectorId,
-                                                    Status,
-                                                    ErrorCode,
-                                                    Info,
-                                                    StatusTimestamp,
-                                                    VendorId,
-                                                    VendorErrorCode,
-                                                    RequestTimeout);
+                                                    Request);
 
             }
             catch (Exception e)
@@ -1388,16 +1338,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             #endregion
-
-
-            var request = new StatusNotificationRequest(ChargeBoxIdentity,
-                                                        ConnectorId,
-                                                        Status,
-                                                        ErrorCode,
-                                                        Info,
-                                                        StatusTimestamp,
-                                                        VendorId,
-                                                        VendorErrorCode);
 
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
@@ -1418,12 +1358,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/StatusNotification",
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    request.ToXML()),
+                                                                    Request.ToXML()),
                                                  "StatusNotification",
                                                  RequestLogDelegate:   OnStatusNotificationSOAPRequest,
                                                  ResponseLogDelegate:  OnStatusNotificationSOAPResponse,
@@ -1433,7 +1373,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
                                                                                                       StatusNotificationResponse.Parse),
 
                                                  #endregion
@@ -1446,7 +1386,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StatusNotificationResponse>(httpresponse,
                                                                                                          new StatusNotificationResponse(
-                                                                                                             request,
+                                                                                                             Request,
                                                                                                              Result.Format(
                                                                                                                  "Invalid SOAP => " +
                                                                                                                  httpresponse.HTTPBody.ToUTF8String()
@@ -1466,7 +1406,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StatusNotificationResponse>(httpresponse,
                                                                                                          new StatusNotificationResponse(
-                                                                                                             request,
+                                                                                                             Request,
                                                                                                              Result.Server(
                                                                                                                   httpresponse.HTTPStatusCode.ToString() +
                                                                                                                   " => " +
@@ -1486,7 +1426,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<StatusNotificationResponse>.ExceptionThrown(new StatusNotificationResponse(
-                                                                                                                         request,
+                                                                                                                         Request,
                                                                                                                          Result.Format(exception.Message +
                                                                                                                                        " => " +
                                                                                                                                        exception.StackTrace)),
@@ -1501,7 +1441,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<StatusNotificationResponse>.OK(new StatusNotificationResponse(request,
+                result = HTTPResponse<StatusNotificationResponse>.OK(new StatusNotificationResponse(Request,
                                                                                                     Result.OK("Nothing to upload!")));
 
 
@@ -1511,18 +1451,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnStatusNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                     Timestamp.Value,
                                                      this,
-                                                     Description,
-                                                     EventTrackingId,
-                                                     ConnectorId,
-                                                     Status,
-                                                     ErrorCode,
-                                                     Info,
-                                                     StatusTimestamp,
-                                                     VendorId,
-                                                     VendorErrorCode,
-                                                     RequestTimeout,
+                                                     Request,
                                                      result.Content,
                                                      org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
@@ -1540,33 +1470,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region MeterValues                  (ConnectorId, TransactionId = null, MeterValues = null, ...)
+        #region MeterValues                  (Request, ...)
 
         /// <summary>
         /// Send a meter values for the given connector.
         /// </summary>
-        /// <param name="ConnectorId">The connector identification at the charge point.</param>
-        /// <param name="TransactionId">The charging transaction to which the given meter value samples are related to.</param>
-        /// <param name="MeterValues">The sampled meter values with timestamps.</param>
+        /// <param name="Request">A meter values Request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="Timestamp">The optional timestamp of the Request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
         public async Task<HTTPResponse<MeterValuesResponse>>
 
-            MeterValues(Connector_Id             ConnectorId,
-                        Transaction_Id?          TransactionId      = null,
-                        IEnumerable<MeterValue>  MeterValues        = null,
+            MeterValues(MeterValuesRequest  Request,
 
-                        DateTime?                Timestamp          = null,
-                        CancellationToken?       CancellationToken  = null,
-                        EventTracking_Id         EventTrackingId    = null,
-                        TimeSpan?                RequestTimeout     = null)
+                        DateTime?           Timestamp          = null,
+                        CancellationToken?  CancellationToken  = null,
+                        EventTracking_Id    EventTrackingId    = null,
+                        TimeSpan?           RequestTimeout     = null)
 
         {
 
             #region Initial checks
+
+            if (Request is null)
+                throw new ArgumentNullException(nameof(Request), "The given meter values Request must not be null!");
+
 
             if (!Timestamp.HasValue)
                 Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
@@ -1591,14 +1521,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnMeterValuesRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                             Timestamp.Value,
                                              this,
-                                             Description,
-                                             EventTrackingId,
-                                             ConnectorId,
-                                             TransactionId,
-                                             MeterValues,
-                                             RequestTimeout);
+                                             Request);
 
             }
             catch (Exception e)
@@ -1607,12 +1531,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             #endregion
-
-
-            var request = new MeterValuesRequest(ChargeBoxIdentity,
-                                                 ConnectorId,
-                                                 MeterValues,
-                                                 TransactionId);
 
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
@@ -1633,12 +1551,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/MeterValues",
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    request.ToXML()),
+                                                                    Request.ToXML()),
                                                  "MeterValues",
                                                  RequestLogDelegate:   OnMeterValuesSOAPRequest,
                                                  ResponseLogDelegate:  OnMeterValuesSOAPResponse,
@@ -1648,7 +1566,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
                                                                                                       MeterValuesResponse.Parse),
 
                                                  #endregion
@@ -1661,7 +1579,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<MeterValuesResponse>(httpresponse,
                                                                                                   new MeterValuesResponse(
-                                                                                                      request,
+                                                                                                      Request,
                                                                                                       Result.Format(
                                                                                                           "Invalid SOAP => " +
                                                                                                           httpresponse.HTTPBody.ToUTF8String()
@@ -1681,7 +1599,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<MeterValuesResponse>(httpresponse,
                                                                                                   new MeterValuesResponse(
-                                                                                                      request,
+                                                                                                      Request,
                                                                                                       Result.Server(
                                                                                                            httpresponse.HTTPStatusCode.ToString() +
                                                                                                            " => " +
@@ -1701,7 +1619,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<MeterValuesResponse>.ExceptionThrown(new MeterValuesResponse(
-                                                                                                                  request,
+                                                                                                                  Request,
                                                                                                                   Result.Format(exception.Message +
                                                                                                                                 " => " +
                                                                                                                                 exception.StackTrace)),
@@ -1716,7 +1634,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<MeterValuesResponse>.OK(new MeterValuesResponse(request,
+                result = HTTPResponse<MeterValuesResponse>.OK(new MeterValuesResponse(Request,
                                                                                       Result.OK("Nothing to upload!")));
 
 
@@ -1726,14 +1644,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnMeterValuesResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                              Timestamp.Value,
                                               this,
-                                              Description,
-                                              EventTrackingId,
-                                              ConnectorId,
-                                              TransactionId,
-                                              MeterValues,
-                                              RequestTimeout,
+                                              Request,
                                               result.Content,
                                               org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
@@ -1751,42 +1663,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region StopTransaction              (TransactionId, TransactionTimestamp, MeterStop, ...)
+        #region StopTransaction              (Request, ...)
 
         /// <summary>
         /// Stop a charging process at the given connector.
         /// </summary>
-        /// <param name="TransactionId">The transaction identification copied from the start transaction response.</param>
-        /// <param name="TransactionTimestamp">The timestamp of the end of the charging transaction.</param>
-        /// <param name="MeterStop">The energy meter value in Wh for the connector at end of the charging transaction.</param>
-        /// <param name="IdTag">An optional identifier which requested to stop the charging.</param>
-        /// <param name="Reason">An optional reason why the transaction had been stopped.</param>
-        /// <param name="TransactionData">Optional transaction usage details relevant for billing purposes.</param>
+        /// <param name="Request">A stop transaction Request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="Timestamp">The optional timestamp of the Request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
         public async Task<HTTPResponse<StopTransactionResponse>>
 
-            StopTransaction(Transaction_Id           TransactionId,
-                            DateTime                 TransactionTimestamp,
-                            UInt64                   MeterStop,
-                            IdToken?                 IdTag              = null,
-                            Reasons?                 Reason             = null,
-                            IEnumerable<MeterValue>  TransactionData    = null,
+            StopTransaction(StopTransactionRequest  Request,
 
-                            DateTime?                Timestamp          = null,
-                            CancellationToken?       CancellationToken  = null,
-                            EventTracking_Id         EventTrackingId    = null,
-                            TimeSpan?                RequestTimeout     = null)
+                            DateTime?               Timestamp          = null,
+                            CancellationToken?      CancellationToken  = null,
+                            EventTracking_Id        EventTrackingId    = null,
+                            TimeSpan?               RequestTimeout     = null)
 
         {
 
             #region Initial checks
 
-            if (TransactionId == null)
-                throw new ArgumentNullException(nameof(TransactionId),  "The given transaction identification must not be null!");
+            if (Request is null)
+                throw new ArgumentNullException(nameof(Request), "The given stop transaction Request must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -1812,17 +1714,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnStopTransactionRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                 Timestamp.Value,
                                                  this,
-                                                 Description,
-                                                 EventTrackingId,
-                                                 TransactionId,
-                                                 TransactionTimestamp,
-                                                 MeterStop,
-                                                 IdTag,
-                                                 Reason,
-                                                 TransactionData,
-                                                 RequestTimeout);
+                                                 Request);
 
             }
             catch (Exception e)
@@ -1831,15 +1724,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             #endregion
-
-
-            var request = new StopTransactionRequest(ChargeBoxIdentity,
-                                                     TransactionId,
-                                                     TransactionTimestamp,
-                                                     MeterStop,
-                                                     IdTag,
-                                                     Reason,
-                                                     TransactionData);
 
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
@@ -1860,12 +1744,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/StopTransaction",
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    request.ToXML()),
+                                                                    Request.ToXML()),
                                                  "StopTransaction",
                                                  RequestLogDelegate:   OnStopTransactionSOAPRequest,
                                                  ResponseLogDelegate:  OnStopTransactionSOAPResponse,
@@ -1875,7 +1759,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request, StopTransactionResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request, StopTransactionResponse.Parse),
 
                                                  #endregion
 
@@ -1887,7 +1771,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StopTransactionResponse>(httpresponse,
                                                                                                       new StopTransactionResponse(
-                                                                                                          request,
+                                                                                                          Request,
                                                                                                           Result.Format(
                                                                                                               "Invalid SOAP => " +
                                                                                                               httpresponse.HTTPBody.ToUTF8String()
@@ -1907,7 +1791,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<StopTransactionResponse>(httpresponse,
                                                                                                       new StopTransactionResponse(
-                                                                                                          request,
+                                                                                                          Request,
                                                                                                           Result.Server(
                                                                                                                httpresponse.HTTPStatusCode.ToString() +
                                                                                                                " => " +
@@ -1927,7 +1811,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<StopTransactionResponse>.ExceptionThrown(new StopTransactionResponse(
-                                                                                                                      request,
+                                                                                                                      Request,
                                                                                                                       Result.Format(exception.Message +
                                                                                                                                     " => " +
                                                                                                                                     exception.StackTrace)),
@@ -1942,7 +1826,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<StopTransactionResponse>.OK(new StopTransactionResponse(request,
+                result = HTTPResponse<StopTransactionResponse>.OK(new StopTransactionResponse(Request,
                                                                                               Result.OK("Nothing to upload!")));
 
 
@@ -1952,19 +1836,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnStopTransactionResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                   Timestamp.Value,
-                                                   this,
-                                                   Description,
-                                                   EventTrackingId,
-                                                   TransactionId,
-                                                   TransactionTimestamp,
-                                                   MeterStop,
-                                                   IdTag,
-                                                   Reason,
-                                                   TransactionData,
-                                                   RequestTimeout,
-                                                   result.Content,
-                                                   org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                  this,
+                                                  Request,
+                                                  result.Content,
+                                                  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
@@ -1981,36 +1856,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region DataTransfer                 (VendorId, MessageId = null, Data = null, ...)
+        #region DataTransfer                 (Request, ...)
 
         /// <summary>
         /// Send the given vendor-specific data to the central system.
         /// </summary>
-        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">The charge point model identification.</param>
-        /// <param name="Data">The serial number of the charge point.</param>
+        /// <param name="Request">A data transfer Request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<DataTransferResponse>>
+        /// <param name="Timestamp">The optional timestamp of the Request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
+        public async Task<HTTPResponse<CS.DataTransferResponse>>
 
-            DataTransfer(String              VendorId,
-                         String              MessageId          = null,
-                         String              Data               = null,
+            DataTransfer(DataTransferRequest  Request,
 
-                         DateTime?           Timestamp          = null,
-                         CancellationToken?  CancellationToken  = null,
-                         EventTracking_Id    EventTrackingId    = null,
-                         TimeSpan?           RequestTimeout     = null)
+                         DateTime?            Timestamp          = null,
+                         CancellationToken?   CancellationToken  = null,
+                         EventTracking_Id     EventTrackingId    = null,
+                         TimeSpan?            RequestTimeout     = null)
 
         {
 
             #region Initial checks
 
-            if (VendorId.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(VendorId),  "The given vendor identification must not be null or empty!");
+            if (Request is null)
+                throw new ArgumentNullException(nameof(Request), "The given data transfer Request must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -2026,7 +1897,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 RequestTimeout = this.RequestTimeout;
 
 
-            HTTPResponse<DataTransferResponse> result = null;
+            HTTPResponse<CS.DataTransferResponse> result = null;
 
             #endregion
 
@@ -2036,14 +1907,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnDataTransferRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                              Timestamp.Value,
                                               this,
-                                              Description,
-                                              EventTrackingId,
-                                              VendorId,
-                                              MessageId,
-                                              Data,
-                                              RequestTimeout);
+                                              Request);
 
             }
             catch (Exception e)
@@ -2052,12 +1917,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             #endregion
-
-
-            var request = new CS.DataTransferRequest(ChargeBoxIdentity,
-                                                     VendorId,
-                                                     MessageId,
-                                                     Data);
 
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
@@ -2078,12 +1937,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/DataTransfer",
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    request.ToXML()),
+                                                                    Request.ToXML()),
                                                  "DataTransfer",
                                                  RequestLogDelegate:   OnDataTransferSOAPRequest,
                                                  ResponseLogDelegate:  OnDataTransferSOAPResponse,
@@ -2093,8 +1952,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                      DataTransferResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                                                      CS.DataTransferResponse.Parse),
 
                                                  #endregion
 
@@ -2104,15 +1963,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                     return new HTTPResponse<DataTransferResponse>(httpresponse,
-                                                                                                   new DataTransferResponse(
-                                                                                                       request,
-                                                                                                       Result.Format(
-                                                                                                           "Invalid SOAP => " +
-                                                                                                           httpresponse.HTTPBody.ToUTF8String()
-                                                                                                       )
-                                                                                                   ),
-                                                                                                   IsFault: true);
+                                                     return new HTTPResponse<CS.DataTransferResponse>(httpresponse,
+                                                                                                      new CS.DataTransferResponse(
+                                                                                                          Request,
+                                                                                                          Result.Format(
+                                                                                                              "Invalid SOAP => " +
+                                                                                                              httpresponse.HTTPBody.ToUTF8String()
+                                                                                                          )
+                                                                                                      ),
+                                                                                                      IsFault: true);
 
                                                  },
 
@@ -2124,16 +1983,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      SendHTTPError(timestamp, this, httpresponse);
 
-                                                     return new HTTPResponse<DataTransferResponse>(httpresponse,
-                                                                                                   new DataTransferResponse(
-                                                                                                       request,
-                                                                                                       Result.Server(
-                                                                                                            httpresponse.HTTPStatusCode.ToString() +
-                                                                                                            " => " +
-                                                                                                            httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                       )
-                                                                                                   ),
-                                                                                                   IsFault: true);
+                                                     return new HTTPResponse<CS.DataTransferResponse>(httpresponse,
+                                                                                                      new CS.DataTransferResponse(
+                                                                                                          Request,
+                                                                                                          Result.Server(
+                                                                                                               httpresponse.HTTPStatusCode.ToString() +
+                                                                                                               " => " +
+                                                                                                               httpresponse.HTTPBody.      ToUTF8String()
+                                                                                                          )
+                                                                                                      ),
+                                                                                                      IsFault: true);
 
                                                  },
 
@@ -2145,12 +2004,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      SendException(timestamp, sender, exception);
 
-                                                     return HTTPResponse<DataTransferResponse>.ExceptionThrown(new DataTransferResponse(
-                                                                                                                   request,
-                                                                                                                   Result.Format(exception.Message +
-                                                                                                                                 " => " +
-                                                                                                                                 exception.StackTrace)),
-                                                                                                               exception);
+                                                     return HTTPResponse<CS.DataTransferResponse>.ExceptionThrown(new CS.DataTransferResponse(
+                                                                                                                      Request,
+                                                                                                                      Result.Format(exception.Message +
+                                                                                                                                    " => " +
+                                                                                                                                    exception.StackTrace)),
+                                                                                                                  exception);
 
                                                  }
 
@@ -2161,8 +2020,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<DataTransferResponse>.OK(new DataTransferResponse(request,
-                                                                                        Result.OK("Nothing to upload!")));
+                result = HTTPResponse<CS.DataTransferResponse>.OK(new CS.DataTransferResponse(Request,
+                                                                                              Result.OK("Nothing to upload!")));
 
 
             #region Send OnDataTransferResponse event
@@ -2171,16 +2030,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnDataTransferResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                   Timestamp.Value,
-                                                   this,
-                                                   Description,
-                                                   EventTrackingId,
-                                                   VendorId,
-                                                   MessageId,
-                                                   Data,
-                                                   RequestTimeout,
-                                                   result.Content,
-                                                   org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                               this,
+                                               Request,
+                                               result.Content,
+                                               org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
             }
             catch (Exception e)
@@ -2196,29 +2049,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region DiagnosticsStatusNotification(Status, ...)
+        #region DiagnosticsStatusNotification(Request, ...)
 
         /// <summary>
         /// Send a diagnostics status notification to the central system.
         /// </summary>
-        /// <param name="Status">The status of the diagnostics upload.</param>
+        /// <param name="Request">A diagnostics status notification Request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="Timestamp">The optional timestamp of the Request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
         public async Task<HTTPResponse<DiagnosticsStatusNotificationResponse>>
 
-            DiagnosticsStatusNotification(DiagnosticsStatus   Status,
+            DiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest  Request,
 
-                                          DateTime?           Timestamp          = null,
-                                          CancellationToken?  CancellationToken  = null,
-                                          EventTracking_Id    EventTrackingId    = null,
-                                          TimeSpan?           RequestTimeout     = null)
+                                          DateTime?                             Timestamp          = null,
+                                          CancellationToken?                    CancellationToken  = null,
+                                          EventTracking_Id                      EventTrackingId    = null,
+                                          TimeSpan?                             RequestTimeout     = null)
 
         {
 
             #region Initial checks
+
+            if (Request is null)
+                throw new ArgumentNullException(nameof(Request), "The given diagnostics status notification Request must not be null!");
+
 
             if (!Timestamp.HasValue)
                 Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
@@ -2243,12 +2100,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnDiagnosticsStatusNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                               Timestamp.Value,
                                                                this,
-                                                               Description,
-                                                               EventTrackingId,
-                                                               Status,
-                                                               RequestTimeout);
+                                                               Request);
 
             }
             catch (Exception e)
@@ -2257,10 +2110,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             #endregion
-
-
-            var request = new DiagnosticsStatusNotificationRequest(ChargeBoxIdentity,
-                                                                   Status);
 
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
@@ -2281,12 +2130,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/DiagnosticsStatusNotification",
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    request.ToXML()),
+                                                                    Request.ToXML()),
                                                  "DiagnosticsStatusNotification",
                                                  RequestLogDelegate:   OnDiagnosticsStatusNotificationSOAPRequest,
                                                  ResponseLogDelegate:  OnDiagnosticsStatusNotificationSOAPResponse,
@@ -2296,7 +2145,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
                                                                                                       DiagnosticsStatusNotificationResponse.Parse),
 
                                                  #endregion
@@ -2309,7 +2158,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<DiagnosticsStatusNotificationResponse>(httpresponse,
                                                                                                                     new DiagnosticsStatusNotificationResponse(
-                                                                                                                        request,
+                                                                                                                        Request,
                                                                                                                         Result.Format(
                                                                                                                             "Invalid SOAP => " +
                                                                                                                             httpresponse.HTTPBody.ToUTF8String()
@@ -2329,7 +2178,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<DiagnosticsStatusNotificationResponse>(httpresponse,
                                                                                                                     new DiagnosticsStatusNotificationResponse(
-                                                                                                                        request,
+                                                                                                                        Request,
                                                                                                                         Result.Server(
                                                                                                                              httpresponse.HTTPStatusCode.ToString() +
                                                                                                                              " => " +
@@ -2349,7 +2198,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<DiagnosticsStatusNotificationResponse>.ExceptionThrown(new DiagnosticsStatusNotificationResponse(
-                                                                                                                                    request,
+                                                                                                                                    Request,
                                                                                                                                     Result.Format(exception.Message +
                                                                                                                                                   " => " +
                                                                                                                                                   exception.StackTrace)),
@@ -2364,7 +2213,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<DiagnosticsStatusNotificationResponse>.OK(new DiagnosticsStatusNotificationResponse(request,
+                result = HTTPResponse<DiagnosticsStatusNotificationResponse>.OK(new DiagnosticsStatusNotificationResponse(Request,
                                                                                                                           Result.OK("Nothing to upload!")));
 
 
@@ -2374,12 +2223,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnDiagnosticsStatusNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                                Timestamp.Value,
                                                                 this,
-                                                                Description,
-                                                                EventTrackingId,
-                                                                Status,
-                                                                RequestTimeout,
+                                                                Request,
                                                                 result.Content,
                                                                 org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
@@ -2397,29 +2242,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region FirmwareStatusNotification   (Status, ...)
+        #region FirmwareStatusNotification   (Request, ...)
 
         /// <summary>
         /// Send a firmware status notification to the central system.
         /// </summary>
-        /// <param name="Status">The status of the firmware installation.</param>
+        /// <param name="Request">A firmware status notification Request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="Timestamp">The optional timestamp of the Request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this Request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this Request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this Request.</param>
         public async Task<HTTPResponse<FirmwareStatusNotificationResponse>>
 
-            FirmwareStatusNotification(FirmwareStatus      Status,
+            FirmwareStatusNotification(FirmwareStatusNotificationRequest  Request,
 
-                                       DateTime?           Timestamp          = null,
-                                       CancellationToken?  CancellationToken  = null,
-                                       EventTracking_Id    EventTrackingId    = null,
-                                       TimeSpan?           RequestTimeout     = null)
+                                       DateTime?                          Timestamp          = null,
+                                       CancellationToken?                 CancellationToken  = null,
+                                       EventTracking_Id                   EventTrackingId    = null,
+                                       TimeSpan?                          RequestTimeout     = null)
 
         {
 
             #region Initial checks
+
+            if (Request is null)
+                throw new ArgumentNullException(nameof(Request), "The given firmware status notification Request must not be null!");
+
 
             if (!Timestamp.HasValue)
                 Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
@@ -2444,12 +2293,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnFirmwareStatusNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                            Timestamp.Value,
                                                             this,
-                                                            Description,
-                                                            EventTrackingId,
-                                                            Status,
-                                                            RequestTimeout);
+                                                            Request);
 
             }
             catch (Exception e)
@@ -2458,10 +2303,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             #endregion
-
-
-            var request = new FirmwareStatusNotificationRequest(ChargeBoxIdentity,
-                                                                Status);
 
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
@@ -2482,12 +2323,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/FirmwareStatusNotification",
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    request.ToXML()),
+                                                                    Request.ToXML()),
                                                  "FirmwareStatusNotification",
                                                  RequestLogDelegate:   OnFirmwareStatusNotificationSOAPRequest,
                                                  ResponseLogDelegate:  OnFirmwareStatusNotificationSOAPResponse,
@@ -2497,7 +2338,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
                                                                                                       FirmwareStatusNotificationResponse.Parse),
 
                                                  #endregion
@@ -2510,7 +2351,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<FirmwareStatusNotificationResponse>(httpresponse,
                                                                                                                  new FirmwareStatusNotificationResponse(
-                                                                                                                     request,
+                                                                                                                     Request,
                                                                                                                      Result.Format(
                                                                                                                          "Invalid SOAP => " +
                                                                                                                          httpresponse.HTTPBody.ToUTF8String()
@@ -2530,7 +2371,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<FirmwareStatusNotificationResponse>(httpresponse,
                                                                                                                  new FirmwareStatusNotificationResponse(
-                                                                                                                     request,
+                                                                                                                     Request,
                                                                                                                      Result.Server(
                                                                                                                           httpresponse.HTTPStatusCode.ToString() +
                                                                                                                           " => " +
@@ -2550,7 +2391,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<FirmwareStatusNotificationResponse>.ExceptionThrown(new FirmwareStatusNotificationResponse(
-                                                                                                                                 request,
+                                                                                                                                 Request,
                                                                                                                                  Result.Format(exception.Message +
                                                                                                                                                " => " +
                                                                                                                                                exception.StackTrace)),
@@ -2565,7 +2406,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<FirmwareStatusNotificationResponse>.OK(new FirmwareStatusNotificationResponse(request,
+                result = HTTPResponse<FirmwareStatusNotificationResponse>.OK(new FirmwareStatusNotificationResponse(Request,
                                                                                                                     Result.OK("Nothing to upload!")));
 
 
@@ -2575,12 +2416,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnFirmwareStatusNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                             Timestamp.Value,
                                                              this,
-                                                             Description,
-                                                             EventTrackingId,
-                                                             Status,
-                                                             RequestTimeout,
+                                                             Request,
                                                              result.Content,
                                                              org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 

@@ -20,6 +20,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -288,9 +289,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Send a boot notification.
         /// </summary>
-        /// <param name="Request">A BootNotification request.</param>
+        /// <param name="Request">A boot notification request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="Timestamp">An optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
@@ -307,9 +308,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Send a heartbeat.
         /// </summary>
-        /// <param name="Request">A Heartbeat request.</param>
+        /// <param name="Request">A heartbeat request.</param>
         /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="Timestamp">An optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
@@ -322,6 +323,158 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                           EventTracking_Id    EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
+
+
+        /// <summary>
+        /// Authorize the given token.
+        /// </summary>
+        /// <param name="Request">An authorize request.</param>
+        /// 
+        /// <param name="Timestamp">An optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public Task<HTTPResponse<AuthorizeResponse>>
+
+            Authorize(AuthorizeRequest    Request,
+
+                      DateTime?           Timestamp           = null,
+                      CancellationToken?  CancellationToken   = null,
+                      EventTracking_Id    EventTrackingId     = null,
+                      TimeSpan?           RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Start a charging process at the given connector.
+        /// </summary>
+        /// <param name="Request">A start transaction request.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public Task<HTTPResponse<StartTransactionResponse>>
+
+            StartTransaction(StartTransactionRequest  Request,
+
+                             DateTime?                Timestamp          = null,
+                             CancellationToken?       CancellationToken  = null,
+                             EventTracking_Id         EventTrackingId    = null,
+                             TimeSpan?                RequestTimeout     = null);
+
+
+        /// <summary>
+        /// Send a status notification for the given connector.
+        /// </summary>
+        /// <param name="Request">A status notification request.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public Task<HTTPResponse<StatusNotificationResponse>>
+
+            StatusNotification(StatusNotificationRequest  Request,
+
+                               DateTime?                  Timestamp          = null,
+                               CancellationToken?         CancellationToken  = null,
+                               EventTracking_Id           EventTrackingId    = null,
+                               TimeSpan?                  RequestTimeout     = null);
+
+
+        /// <summary>
+        /// Send a meter values for the given connector.
+        /// </summary>
+        /// <param name="Request">A meter values request.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public Task<HTTPResponse<MeterValuesResponse>>
+
+            MeterValues(MeterValuesRequest  Request,
+
+                        DateTime?           Timestamp          = null,
+                        CancellationToken?  CancellationToken  = null,
+                        EventTracking_Id    EventTrackingId    = null,
+                        TimeSpan?           RequestTimeout     = null);
+
+
+        /// <summary>
+        /// Stop a charging process at the given connector.
+        /// </summary>
+        /// <param name="Request">A stop transaction request.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public Task<HTTPResponse<StopTransactionResponse>>
+
+            StopTransaction(StopTransactionRequest  Request,
+
+                            DateTime?               Timestamp          = null,
+                            CancellationToken?      CancellationToken  = null,
+                            EventTracking_Id        EventTrackingId    = null,
+                            TimeSpan?               RequestTimeout     = null);
+
+
+        /// <summary>
+        /// Send the given vendor-specific data to the central system.
+        /// </summary>
+        /// <param name="Request">A data transfer request.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public Task<HTTPResponse<CS.DataTransferResponse>>
+
+            DataTransfer(DataTransferRequest  Request,
+
+                         DateTime?            Timestamp          = null,
+                         CancellationToken?   CancellationToken  = null,
+                         EventTracking_Id     EventTrackingId    = null,
+                         TimeSpan?            RequestTimeout     = null);
+
+
+        /// <summary>
+        /// Send a diagnostics status notification to the central system.
+        /// </summary>
+        /// <param name="Request">A diagnostics status notification request.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public Task<HTTPResponse<DiagnosticsStatusNotificationResponse>>
+
+            DiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest  Request,
+
+                                          DateTime?                             Timestamp          = null,
+                                          CancellationToken?                    CancellationToken  = null,
+                                          EventTracking_Id                      EventTrackingId    = null,
+                                          TimeSpan?                             RequestTimeout     = null);
+
+
+        /// <summary>
+        /// Send a firmware status notification to the central system.
+        /// </summary>
+        /// <param name="Request">A firmware status notification request.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public Task<HTTPResponse<FirmwareStatusNotificationResponse>>
+
+            FirmwareStatusNotification(FirmwareStatusNotificationRequest  Request,
+
+                                       DateTime?                          Timestamp          = null,
+                                       CancellationToken?                 CancellationToken  = null,
+                                       EventTracking_Id                   EventTrackingId    = null,
+                                       TimeSpan?                          RequestTimeout     = null);
 
     }
 
