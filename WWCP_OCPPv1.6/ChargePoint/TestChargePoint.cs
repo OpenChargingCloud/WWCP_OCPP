@@ -131,6 +131,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region OnHeartbeatRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a heartbeat request will be send to the central system.
+        /// </summary>
+        public event OnHeartbeatRequestDelegate   OnHeartbeatRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a heartbeat request was received.
+        /// </summary>
+        public event OnHeartbeatResponseDelegate  OnHeartbeatResponse;
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -199,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region SendBootNotification(CancellationToken= null, EventTrackingId = null, RequestTimeout = null)
+        #region SendBootNotification         (CancellationToken= null, EventTrackingId = null, RequestTimeout = null)
 
         /// <summary>
         /// Send a boot notification.
@@ -232,7 +246,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                 MeterSerialNumber,
 
                                                                 Request_Id.Random(),
-                                                                requestTimestamp);
+                                                                requestTimestamp,
+                                                                EventTrackingId ?? EventTracking_Id.New);
 
             #endregion
 
@@ -275,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargePointSOAPClient) + "." + nameof(OnBootNotificationResponse));
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnBootNotificationResponse));
             }
 
             #endregion
@@ -285,6 +300,84 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         }
 
         #endregion
+
+        #region SendHeartbeat                (CancellationToken= null, EventTrackingId = null, RequestTimeout = null)
+
+        /// <summary>
+        /// Send a heartbeat.
+        /// </summary>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<CS.HeartbeatResponse>
+
+            SendHeartbeat(CancellationToken?  CancellationToken   = null,
+                          EventTracking_Id    EventTrackingId     = null,
+                          TimeSpan?           RequestTimeout      = null)
+
+        {
+
+            #region Create request
+
+            var requestTimestamp  = Timestamp.Now;
+
+            var request           = new HeartbeatRequest(ChargeBoxId,
+                                                         Request_Id.Random(),
+                                                         requestTimestamp,
+                                                         EventTrackingId ?? EventTracking_Id.New);
+
+            #endregion
+
+            #region Send OnHeartbeatRequest event
+
+            try
+            {
+
+                OnHeartbeatRequest?.Invoke(requestTimestamp,
+                                           this,
+                                           request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnHeartbeatRequest));
+            }
+
+            #endregion
+
+
+            var response = await CPClient.SendHeartbeat(request,
+                                                        requestTimestamp,
+                                                        CancellationToken,
+                                                        EventTrackingId,
+                                                        RequestTimeout ?? DefaultRequestTimeout);
+
+
+            #region Send OnHeartbeatResponse event
+
+            try
+            {
+
+                OnHeartbeatResponse?.Invoke(Timestamp.Now,
+                                            this,
+                                            request,
+                                            response.Content,
+                                            Timestamp.Now - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnHeartbeatResponse));
+            }
+
+            #endregion
+
+            return response.Content;
+
+        }
+
+        #endregion
+
 
 
     }

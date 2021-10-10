@@ -50,6 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         [Mandatory]
         public DateTime          RequestTimestamp    { get; }
 
+
         public EventTracking_Id  EventTrackingId     { get; }
 
         /// <summary>

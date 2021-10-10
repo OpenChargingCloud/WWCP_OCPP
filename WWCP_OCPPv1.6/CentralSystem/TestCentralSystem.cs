@@ -198,13 +198,60 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region OnHeartbeat
 
-            CentralSystemServer.OnHeartbeat += (LogTimestamp,
-                                                Sender,
-                                                Request,
-                                                CancellationToken) =>
+            CentralSystemServer.OnHeartbeat += async (LogTimestamp,
+                                                      Sender,
+                                                      Request,
+                                                      CancellationToken) => {
 
-                Task.FromResult(new HeartbeatResponse(Request:      Request,
-                                                      CurrentTime:  Timestamp.Now));
+                #region Send OnHeartbeatRequest event
+
+                var requestTimestamp = Timestamp.Now;
+
+                try
+                {
+
+                    OnHeartbeatRequest?.Invoke(requestTimestamp,
+                                               this,
+                                               Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnHeartbeatRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(100);
+
+
+                var response = new HeartbeatResponse(Request:      Request,
+                                                     CurrentTime:  Timestamp.Now);
+
+
+                #region Send OnHeartbeatResponse event
+
+                try
+                {
+
+                    OnHeartbeatResponse?.Invoke(Timestamp.Now,
+                                                this,
+                                                Request,
+                                                response,
+                                                Timestamp.Now - requestTimestamp);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnHeartbeatResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
 
             #endregion
 

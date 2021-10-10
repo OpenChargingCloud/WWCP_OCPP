@@ -19,16 +19,11 @@
 
 using System;
 using System.Threading;
-using System.Net.Security;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 
@@ -290,8 +285,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region Requests
-
         /// <summary>
         /// Send a boot notification.
         /// </summary>
@@ -305,12 +298,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             SendBootNotification(BootNotificationRequest  Request,
 
-                                 DateTime?                Timestamp                = null,
-                                 CancellationToken?       CancellationToken        = null,
-                                 EventTracking_Id         EventTrackingId          = null,
-                                 TimeSpan?                RequestTimeout           = null);
+                                 DateTime?                Timestamp           = null,
+                                 CancellationToken?       CancellationToken   = null,
+                                 EventTracking_Id         EventTrackingId     = null,
+                                 TimeSpan?                RequestTimeout      = null);
 
-        #endregion
+
+        /// <summary>
+        /// Send a heartbeat.
+        /// </summary>
+        /// <param name="Request">A Heartbeat request.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public Task<HTTPResponse<HeartbeatResponse>>
+
+            SendHeartbeat(HeartbeatRequest    Request,
+
+                          DateTime?           Timestamp           = null,
+                          CancellationToken?  CancellationToken   = null,
+                          EventTracking_Id    EventTrackingId     = null,
+                          TimeSpan?           RequestTimeout      = null);
+
 
     }
 

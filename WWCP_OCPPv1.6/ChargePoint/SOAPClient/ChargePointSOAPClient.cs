@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         // <cs:chargeBoxIdentity se:mustUnderstand="true">CP1234</cs:chargeBoxIdentity>
 
 
-        #region SendBootNotification             (Request, ...)
+        #region SendBootNotification         (Request, ...)
 
         /// <summary>
         /// Send a boot notification.
@@ -526,10 +526,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             SendBootNotification(BootNotificationRequest  Request,
 
-                                 DateTime?                Timestamp                = null,
-                                 CancellationToken?       CancellationToken        = null,
-                                 EventTracking_Id         EventTrackingId          = null,
-                                 TimeSpan?                RequestTimeout           = null)
+                                 DateTime?                Timestamp           = null,
+                                 CancellationToken?       CancellationToken   = null,
+                                 EventTracking_Id         EventTrackingId     = null,
+                                 TimeSpan?                RequestTimeout      = null)
 
         {
 
@@ -698,7 +698,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region Heartbeat                    (Request, ...)
+        #region SendHeartbeat                (Request, ...)
 
         /// <summary>
         /// Send a heartbeat.
@@ -713,10 +713,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             SendHeartbeat(HeartbeatRequest    Request,
 
-                          DateTime?           Timestamp          = null,
-                          CancellationToken?  CancellationToken  = null,
-                          EventTracking_Id    EventTrackingId    = null,
-                          TimeSpan?           RequestTimeout     = null)
+                          DateTime?           Timestamp           = null,
+                          CancellationToken?  CancellationToken   = null,
+                          EventTracking_Id    EventTrackingId     = null,
+                          TimeSpan?           RequestTimeout      = null)
 
         {
 

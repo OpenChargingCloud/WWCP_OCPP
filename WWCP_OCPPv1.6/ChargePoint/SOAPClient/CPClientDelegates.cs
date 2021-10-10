@@ -36,18 +36,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a boot notification request will be send to the central system.
     /// </summary>
-    public delegate Task OnBootNotificationRequestDelegate (DateTime                    LogTimestamp,
-                                                            IEventSender                     Sender,
-                                                            BootNotificationRequest     Request);
+    public delegate Task OnBootNotificationRequestDelegate (DateTime                  LogTimestamp,
+                                                            IEventSender              Sender,
+                                                            BootNotificationRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a boot notification request was received.
     /// </summary>
-    public delegate Task OnBootNotificationResponseDelegate(DateTime                    LogTimestamp,
-                                                            IEventSender                     Sender,
-                                                            BootNotificationRequest     Request,
-                                                            BootNotificationResponse    Response,
-                                                            TimeSpan                    Runtime);
+    public delegate Task OnBootNotificationResponseDelegate(DateTime                   LogTimestamp,
+                                                            IEventSender               Sender,
+                                                            BootNotificationRequest    Request,
+                                                            BootNotificationResponse   Response,
+                                                            TimeSpan                   Runtime);
 
     #endregion
 
@@ -56,18 +56,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a heartbeat request will be send to the central system.
     /// </summary>
-    public delegate Task OnHeartbeatRequestDelegate (DateTime          LogTimestamp,
-                                                     IEventSender           Sender,
-                                                     HeartbeatRequest  Request);
+    public delegate Task OnHeartbeatRequestDelegate (DateTime           LogTimestamp,
+                                                     IEventSender       Sender,
+                                                     HeartbeatRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a heartbeat request was received.
     /// </summary>
-    public delegate Task OnHeartbeatResponseDelegate(DateTime           LogTimestamp,
-                                                     IEventSender            Sender,
-                                                     HeartbeatRequest   Request,
-                                                     HeartbeatResponse  Response,
-                                                     TimeSpan           Runtime);
+    public delegate Task OnHeartbeatResponseDelegate(DateTime            LogTimestamp,
+                                                     IEventSender        Sender,
+                                                     HeartbeatRequest    Request,
+                                                     HeartbeatResponse   Response,
+                                                     TimeSpan            Runtime);
 
     #endregion
 
