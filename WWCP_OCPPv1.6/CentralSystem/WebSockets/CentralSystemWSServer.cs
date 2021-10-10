@@ -120,7 +120,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Properties
 
+        /// <summary>
+        /// The sender identification.
+        /// </summary>
+        String IEventSender.Id { get; }
+
+
         public List<SendRequestResult> requests;
+
 
         /// <summary>
         /// A delegate to parse custom BootNotification requests.
@@ -705,9 +712,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnBootNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                                                OnBootNotificationRequest?.Invoke(Timestamp.Now,
                                                                                   this,
-                                                                                  EventTrackingId,
                                                                                   bootNotificationRequest);
 
                                             }
@@ -728,9 +734,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                     SafeSelect(subscriber => (subscriber as BootNotificationDelegate)
                                                                         (Timestamp.Now,
                                                                          this,
-                                                                         CancellationToken,
-                                                                         EventTrackingId,
-                                                                         bootNotificationRequest)).
+                                                                         bootNotificationRequest,
+                                                                         CancellationToken)).
                                                                     ToArray();
 
                                                 if (results?.Length > 0)
@@ -754,15 +759,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnBootNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                                                OnBootNotificationResponse?.Invoke(Timestamp.Now,
                                                                                    this,
-                                                                                   EventTrackingId,
                                                                                    bootNotificationRequest,
-
-                                                                                   response.Result,
-                                                                                   response.Status,
-                                                                                   response.CurrentTime,
-                                                                                   response.HeartbeatInterval,
+                                                                                   response,
                                                                                    response.Runtime);
 
                                             }
@@ -864,9 +864,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnHeartbeatRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                                                OnHeartbeatRequest?.Invoke(Timestamp.Now,
                                                                            this,
-                                                                           EventTrackingId,
                                                                            heartbeatRequest);
 
                                             }
@@ -887,9 +886,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                     SafeSelect(subscriber => (subscriber as HeartbeatDelegate)
                                                                         (Timestamp.Now,
                                                                          this,
-                                                                         CancellationToken,
-                                                                         EventTrackingId,
-                                                                         heartbeatRequest)).
+                                                                         heartbeatRequest,
+                                                                         CancellationToken)).
                                                                     ToArray();
 
                                                 if (results?.Length > 0)
@@ -913,13 +911,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             try
                                             {
 
-                                                OnHeartbeatResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                                                OnHeartbeatResponse?.Invoke(Timestamp.Now,
                                                                             this,
-                                                                            EventTrackingId,
                                                                             heartbeatRequest,
-
-                                                                            response.Result,
-                                                                            response.CurrentTime,
+                                                                            response,
                                                                             response.Runtime);
 
                                             }

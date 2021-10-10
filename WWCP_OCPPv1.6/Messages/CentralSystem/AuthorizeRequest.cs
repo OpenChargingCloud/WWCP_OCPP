@@ -58,11 +58,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public AuthorizeRequest(ChargeBox_Id  ChargeBoxId,
                                 IdToken       IdTag,
                                 Request_Id?   RequestId          = null,
-                                DateTime?     RequestTimestamp   = null)
+                                DateTime?     RequestTimestamp   = null,
+                                EventTracking_Id  EventTrackingId           = null)
 
             : base(ChargeBoxId,
                    "Authorize",
                    RequestId,
+                   EventTrackingId,
                    RequestTimestamp)
 
         {

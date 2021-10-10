@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 
@@ -36,26 +37,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// A delegate called whenever a boot notification request will be send to the central system.
     /// </summary>
     public delegate Task OnBootNotificationRequestDelegate (DateTime                    LogTimestamp,
-                                                            DateTime                    RequestTimestamp,
-                                                            ChargePointSOAPClient       Sender,
-                                                            String                      SenderId,
-                                                            EventTracking_Id            EventTrackingId,
-
-                                                            BootNotificationRequest     Request,
-                                                            TimeSpan?                   RequestTimeout);
+                                                            IEventSender                     Sender,
+                                                            BootNotificationRequest     Request);
 
     /// <summary>
     /// A delegate called whenever a response to a boot notification request was received.
     /// </summary>
     public delegate Task OnBootNotificationResponseDelegate(DateTime                    LogTimestamp,
-                                                            DateTime                    RequestTimestamp,
-                                                            ChargePointSOAPClient       Sender,
-                                                            String                      SenderId,
-                                                            EventTracking_Id            EventTrackingId,
-
+                                                            IEventSender                     Sender,
                                                             BootNotificationRequest     Request,
-                                                            TimeSpan?                   RequestTimeout,
-                                                            BootNotificationResponse    Result,
+                                                            BootNotificationResponse    Response,
                                                             TimeSpan                    Runtime);
 
     #endregion
@@ -65,24 +56,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a heartbeat request will be send to the central system.
     /// </summary>
-    public delegate Task OnHeartbeatRequestDelegate (DateTime               LogTimestamp,
-                                                     DateTime               RequestTimestamp,
-                                                     ChargePointSOAPClient  Sender,
-                                                     String                 SenderId,
-                                                     EventTracking_Id       EventTrackingId,
-                                                     TimeSpan?              RequestTimeout);
+    public delegate Task OnHeartbeatRequestDelegate (DateTime          LogTimestamp,
+                                                     IEventSender           Sender,
+                                                     HeartbeatRequest  Request);
 
     /// <summary>
     /// A delegate called whenever a response to a heartbeat request was received.
     /// </summary>
-    public delegate Task OnHeartbeatResponseDelegate(DateTime               LogTimestamp,
-                                                     DateTime               RequestTimestamp,
-                                                     ChargePointSOAPClient  Sender,
-                                                     String                 SenderId,
-                                                     EventTracking_Id       EventTrackingId,
-                                                     TimeSpan?              RequestTimeout,
-                                                     HeartbeatResponse      Result,
-                                                     TimeSpan               Runtime);
+    public delegate Task OnHeartbeatResponseDelegate(DateTime           LogTimestamp,
+                                                     IEventSender            Sender,
+                                                     HeartbeatRequest   Request,
+                                                     HeartbeatResponse  Response,
+                                                     TimeSpan           Runtime);
 
     #endregion
 

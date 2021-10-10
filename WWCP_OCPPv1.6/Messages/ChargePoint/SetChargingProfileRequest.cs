@@ -67,11 +67,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                          ChargingProfile  ChargingProfile,
 
                                          Request_Id?      RequestId          = null,
-                                         DateTime?        RequestTimestamp   = null)
+                                         DateTime?        RequestTimestamp   = null,
+                                       EventTracking_Id  EventTrackingId           = null)
 
             : base(ChargeBoxId,
                    "SetChargingProfile",
                    RequestId,
+                   EventTrackingId,
                    RequestTimestamp)
 
         {

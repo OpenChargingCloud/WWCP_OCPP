@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// The common interface of all OCPP CP Clients.
     /// </summary>
-    public interface ICPClient : IHTTPClient
+    public interface ICPClient : IHTTPClient, IEventSender
     {
 
         #region Events
@@ -286,6 +286,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         event OnFirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
 
         #endregion
+
+        #endregion
+
+
+        #region Requests
+
+        /// <summary>
+        /// Send a boot notification.
+        /// </summary>
+        /// <param name="Request">A BootNotification request.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public Task<HTTPResponse<BootNotificationResponse>>
+
+            SendBootNotification(BootNotificationRequest  Request,
+
+                                 DateTime?                Timestamp                = null,
+                                 CancellationToken?       CancellationToken        = null,
+                                 EventTracking_Id         EventTrackingId          = null,
+                                 TimeSpan?                RequestTimeout           = null);
 
         #endregion
 

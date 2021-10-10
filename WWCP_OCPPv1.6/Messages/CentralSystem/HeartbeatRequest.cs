@@ -46,11 +46,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         public HeartbeatRequest(ChargeBox_Id  ChargeBoxId,
                                 Request_Id?   RequestId          = null,
-                                DateTime?     RequestTimestamp   = null)
+                                DateTime?     RequestTimestamp   = null,
+                                       EventTracking_Id  EventTrackingId           = null)
 
             : base(ChargeBoxId,
                    "Heartbeat",
                    RequestId,
+                   EventTrackingId,
                    RequestTimestamp)
 
         { }

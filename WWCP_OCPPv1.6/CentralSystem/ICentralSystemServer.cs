@@ -21,6 +21,8 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using org.GraphDefined.Vanaheimr.Hermod;
+
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
@@ -31,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// The common interface of a central system server.
     /// </summary>
-    public interface ICentralSystemServer
+    public interface ICentralSystemServer : IEventSender
     {
 
         #region Events

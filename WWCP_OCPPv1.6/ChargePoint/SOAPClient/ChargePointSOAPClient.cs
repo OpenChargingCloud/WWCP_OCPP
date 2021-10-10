@@ -68,6 +68,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public ChargeBox_Id    ChargeBoxIdentity   { get; }
 
         /// <summary>
+        /// The sender identification.
+        /// </summary>
+        String IEventSender.Id
+            => ChargeBoxIdentity.ToString();
+
+        /// <summary>
         /// The source URI of the SOAP message.
         /// </summary>
         public String          From                { get; }
@@ -552,12 +558,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnBootNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                  Timestamp.Value,
                                                   this,
-                                                  Description,
-                                                  EventTrackingId,
-                                                  Request,
-                                                  RequestTimeout);
+                                                  Request);
 
             }
             catch (Exception e)
@@ -677,12 +679,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnBootNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                   Timestamp.Value,
                                                    this,
-                                                   Description,
-                                                   EventTrackingId,
                                                    Request,
-                                                   RequestTimeout,
                                                    result.Content,
                                                    org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 
@@ -700,21 +698,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region Heartbeat                    (...)
+        #region Heartbeat                    (Request, ...)
 
         /// <summary>
         /// Send a heartbeat.
         /// </summary>
+        /// <param name="Request">A Heartbeat request.</param>
+        /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<HeartbeatResponse>>
 
-            Heartbeat(DateTime?           Timestamp          = null,
-                      CancellationToken?  CancellationToken  = null,
-                      EventTracking_Id    EventTrackingId    = null,
-                      TimeSpan?           RequestTimeout     = null)
+            SendHeartbeat(HeartbeatRequest    Request,
+
+                          DateTime?           Timestamp          = null,
+                          CancellationToken?  CancellationToken  = null,
+                          EventTracking_Id    EventTrackingId    = null,
+                          TimeSpan?           RequestTimeout     = null)
 
         {
 
@@ -743,11 +745,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnHeartbeatRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                           Timestamp.Value,
                                            this,
-                                           Description,
-                                           EventTrackingId,
-                                           RequestTimeout);
+                                           Request);
 
             }
             catch (Exception e)
@@ -756,9 +755,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             #endregion
-
-
-            var request = new HeartbeatRequest(ChargeBoxIdentity);
 
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
@@ -784,7 +780,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                     null,
                                                                     From,
                                                                     To,
-                                                                    request.ToXML()),
+                                                                    Request.ToXML()),
                                                  "Heartbeat",
                                                  RequestLogDelegate:   OnHeartbeatSOAPRequest,
                                                  ResponseLogDelegate:  OnHeartbeatSOAPResponse,
@@ -794,7 +790,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request, HeartbeatResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request, HeartbeatResponse.Parse),
 
                                                  #endregion
 
@@ -806,7 +802,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<HeartbeatResponse>(httpresponse,
                                                                                                 new HeartbeatResponse(
-                                                                                                    request,
+                                                                                                    Request,
                                                                                                     Result.Format(
                                                                                                         "Invalid SOAP => " +
                                                                                                         httpresponse.HTTPBody.ToUTF8String()
@@ -826,7 +822,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                      return new HTTPResponse<HeartbeatResponse>(httpresponse,
                                                                                                 new HeartbeatResponse(
-                                                                                                    request,
+                                                                                                    Request,
                                                                                                     Result.Server(
                                                                                                          httpresponse.HTTPStatusCode.ToString() +
                                                                                                          " => " +
@@ -846,7 +842,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                      SendException(timestamp, sender, exception);
 
                                                      return HTTPResponse<HeartbeatResponse>.ExceptionThrown(new HeartbeatResponse(
-                                                                                                                request,
+                                                                                                                Request,
                                                                                                                 Result.Format(exception.Message +
                                                                                                                               " => " +
                                                                                                                               exception.StackTrace)),
@@ -861,7 +857,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             if (result == null)
-                result = HTTPResponse<HeartbeatResponse>.OK(new HeartbeatResponse(request, Result.OK("Nothing to upload!")));
+                result = HTTPResponse<HeartbeatResponse>.OK(new HeartbeatResponse(Request, Result.OK("Nothing to upload!")));
 
 
             #region Send OnHeartbeatResponse event
@@ -870,11 +866,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 OnHeartbeatResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                            Timestamp.Value,
                                             this,
-                                            Description,
-                                            EventTrackingId,
-                                            RequestTimeout,
+                                            Request,
                                             result.Content,
                                             org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
 

@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// A central system for testing.
     /// </summary>
-    public class TestCentralSystem
+    public class TestCentralSystem : IEventSender
     {
 
         #region Data
@@ -51,6 +51,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public CentralSystem_Id  CentralSystemId    { get; }
 
+        /// <summary>
+        /// The sender identification.
+        /// </summary>
+        String IEventSender.Id
+            => CentralSystemId.ToString();
 
         /// <summary>
         /// An enumeration of central system servers.
@@ -73,6 +78,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// An event sent whenever a response to a boot notification was sent.
         /// </summary>
         event BootNotificationResponseDelegate  OnBootNotificationResponse;
+
+        #endregion
+
+        #region OnHeartbeat
+
+        /// <summary>
+        /// An event sent whenever a heartbeat request was received.
+        /// </summary>
+        public event HeartbeatRequestDelegate   OnHeartbeatRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a heartbeat was sent.
+        /// </summary>
+        public event HeartbeatResponseDelegate  OnHeartbeatResponse;
 
         #endregion
 
@@ -118,18 +137,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region OnBootNotification
 
-            CentralSystemServer.OnBootNotification += async (Timestamp,
+            CentralSystemServer.OnBootNotification += async (LogTimestamp,
                                                              Sender,
-                                                             CancellationToken,
-                                                             EventTrackingId,
-                                                             Request) => {
+                                                             Request,
+                                                             CancellationToken) => {
 
                 #region Send OnBootNotificationRequest event
+
+                var requestTimestamp = Timestamp.Now;
 
                 try
                 {
 
-                    OnBootNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                    OnBootNotificationRequest?.Invoke(requestTimestamp,
                                                       this,
                                                       Request);
 
@@ -144,12 +164,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 await Task.Delay(100);
 
-                C
 
-                return new BootNotificationResponse(Request:            Request,
-                                                    Status:             RegistrationStatus.Accepted,
-                                                    CurrentTime:        org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                    HeartbeatInterval:  TimeSpan.FromMinutes(5));
+                var response = new BootNotificationResponse(Request:            Request,
+                                                            Status:             RegistrationStatus.Accepted,
+                                                            CurrentTime:        Timestamp.Now,
+                                                            HeartbeatInterval:  TimeSpan.FromMinutes(5));
+
+
+                #region Send OnBootNotificationResponse event
+
+                try
+                {
+
+                    OnBootNotificationResponse?.Invoke(Timestamp.Now,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       Timestamp.Now - requestTimestamp);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBootNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
 
             };
 
@@ -157,16 +198,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region OnHeartbeat
 
-            CentralSystemServer.OnHeartbeat += (Timestamp,
+            CentralSystemServer.OnHeartbeat += (LogTimestamp,
                                                 Sender,
-                                                CancellationToken,
-                                                EventTrackingId,
-                                                Request) =>
+                                                Request,
+                                                CancellationToken) =>
 
                 Task.FromResult(new HeartbeatResponse(Request:      Request,
-                                                      CurrentTime:  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now));
+                                                      CurrentTime:  Timestamp.Now));
 
             #endregion
+
 
             #region OnStartTransaction
 

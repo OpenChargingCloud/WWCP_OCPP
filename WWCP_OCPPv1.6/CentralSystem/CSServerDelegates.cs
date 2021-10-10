@@ -22,6 +22,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -33,16 +34,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// A boot notification request.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="BootNotificationRequest">A boot notification request.</param>
+    /// <param name="Request">The boot notification request.</param>
     public delegate Task
 
         BootNotificationRequestDelegate(DateTime                    Timestamp,
-                                        Object                      Sender,
-                                        EventTracking_Id            EventTrackingId,
-                                        CP.BootNotificationRequest  BootNotificationRequest);
+                                        IEventSender                Sender,
+                                        CP.BootNotificationRequest  Request);
 
 
     /// <summary>
@@ -50,44 +49,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="BootNotificationRequest">The boot notification request.</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
-    /// <param name="BootNotificationRequest">A boot notification request.</param>
     public delegate Task<BootNotificationResponse>
 
         BootNotificationDelegate(DateTime                    Timestamp,
-                                 Object                      Sender,
-                                 CancellationToken           CancellationToken,
-                                 EventTracking_Id            EventTrackingId,
-                                 CP.BootNotificationRequest  BootNotificationRequest);
+                                 IEventSender                Sender,
+                                 CP.BootNotificationRequest  BootNotificationRequest,
+                                 CancellationToken           CancellationToken);
 
 
     /// <summary>
     /// A boot notification response.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="BootNotificationRequest">A boot notification request.</param>
-    /// 
-    /// <param name="Result">The general OCPP result.</param>
-    /// <param name="Status">The registration status.</param>
-    /// <param name="CurrentTime">The current time at the central system.</param>
-    /// <param name="Interval">When the registration status is 'accepted', the interval defines the heartbeat interval in seconds. In all other cases, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The boot notification request.</param>
+    /// <param name="Response">The boot notification response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        BootNotificationResponseDelegate(DateTime                    Timestamp,
-                                         Object                      Sender,
-                                         EventTracking_Id            EventTrackingId,
-                                         CP.BootNotificationRequest  BootNotificationRequest,
-
-                                         Result                      Result,
-                                         RegistrationStatus          Status,
-                                         DateTime                    CurrentTime,
-                                         TimeSpan                    Interval,
-                                         TimeSpan                    Runtime);
+        BootNotificationResponseDelegate(DateTime                     Timestamp,
+                                         IEventSender                 Sender,
+                                         CP.BootNotificationRequest   Request,
+                                         CS.BootNotificationResponse  Response,
+                                         TimeSpan                     Runtime);
 
     #endregion
 
@@ -98,14 +84,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="HeartbeatRequest">A heartbeat request.</param>
+    /// <param name="Request">The heartbeat request.</param>
     public delegate Task
 
         HeartbeatRequestDelegate(DateTime             Timestamp,
-                                 Object               Sender,
-                                 EventTracking_Id     EventTrackingId,
-                                 CP.HeartbeatRequest  HeartbeatRequest);
+                                 IEventSender         Sender,
+                                 CP.HeartbeatRequest  Request);
 
 
     /// <summary>
@@ -113,17 +97,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// 
     /// <param name="HeartbeatRequest">A heartbeat request.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
     public delegate Task<HeartbeatResponse>
 
         HeartbeatDelegate(DateTime             Timestamp,
-                          Object               Sender,
-                          CancellationToken    CancellationToken,
-                          EventTracking_Id     EventTrackingId,
-                          CP.HeartbeatRequest  HeartbeatRequest);
+                          IEventSender         Sender,
+                          CP.HeartbeatRequest  HeartbeatRequest,
+                          CancellationToken    CancellationToken);
 
 
     /// <summary>
@@ -131,22 +112,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="HeartbeatRequest">A heartbeat request.</param>
-    /// 
-    /// <param name="Result">The general OCPP result.</param>
-    /// <param name="CurrentTime">The current time at the central system.</param>
+    /// <param name="Request">The heartbeat request.</param>
+    /// <param name="Response">The heartbeat response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        HeartbeatResponseDelegate(DateTime             Timestamp,
-                                  Object               Sender,
-                                  EventTracking_Id     EventTrackingId,
-                                  CP.HeartbeatRequest  HeartbeatRequest,
-
-                                  Result               Result,
-                                  DateTime             CurrentTime,
-                                  TimeSpan             Runtime);
+        HeartbeatResponseDelegate(DateTime              Timestamp,
+                                  IEventSender          Sender,
+                                  CP.HeartbeatRequest   Request,
+                                  CS.HeartbeatResponse  Response,
+                                  TimeSpan              Runtime);
 
     #endregion
 

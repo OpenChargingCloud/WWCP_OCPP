@@ -75,6 +75,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region Properties
+
+        /// <summary>
+        /// The sender identification.
+        /// </summary>
+        String IEventSender.Id { get; }
+
+        #endregion
+
         #region Events
 
         #region OnBootNotification
@@ -459,10 +468,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region Send OnBootNotificationSOAPRequest event
 
+                var requestTimestamp = Timestamp.Now;
+
                 try
                 {
 
-                    OnBootNotificationSOAPRequest?.Invoke(Timestamp.Now,
+                    OnBootNotificationSOAPRequest?.Invoke(requestTimestamp,
                                                           SOAPServer.HTTPServer,
                                                           Request);
 
@@ -492,7 +503,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnBootNotificationRequest?.Invoke(bootNotificationRequest.RequestTimestamp,
                                                           this,
-                                                          Request.EventTrackingId,
                                                           bootNotificationRequest);
 
                     }
@@ -513,9 +523,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           SafeSelect(subscriber => (subscriber as BootNotificationDelegate)
                                               (Timestamp.Now,
                                                this,
-                                               Request.CancellationToken,
-                                               Request.EventTrackingId,
-                                               bootNotificationRequest)).
+                                               bootNotificationRequest,
+                                               Request.CancellationToken)).
                                           ToArray();
 
                         if (results.Length > 0)
@@ -539,16 +548,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     try
                     {
 
-                        OnBootNotificationResponse?.Invoke(response.ResponseTimestamp,
-                                                           this,
-                                                           Request.EventTrackingId,
-                                                           bootNotificationRequest,
+                        var responseTimestamp = Timestamp.Now;
 
-                                                           response.Result,
-                                                           response.Status,
-                                                           response.CurrentTime,
-                                                           response.HeartbeatInterval,
-                                                           response.Runtime);
+                        OnBootNotificationResponse?.Invoke(responseTimestamp,
+                                                           this,
+                                                           bootNotificationRequest,
+                                                           response,
+                                                           responseTimestamp - requestTimestamp);
 
                     }
                     catch (Exception e)
@@ -564,7 +570,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
-                        Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                        Date            = Timestamp.Now,
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/BootNotificationResponse",
@@ -580,7 +586,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-
+                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/BootNotification");
                 }
 
 
@@ -618,10 +624,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region Send OnHeartbeatSOAPRequest event
 
+                var requestTimestamp = Timestamp.Now;
+
                 try
                 {
 
-                    OnHeartbeatSOAPRequest?.Invoke(Timestamp.Now,
+                    OnHeartbeatSOAPRequest?.Invoke(requestTimestamp,
                                                    SOAPServer.HTTPServer,
                                                    Request);
 
@@ -651,7 +659,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnHeartbeatRequest?.Invoke(heartbeatRequest.RequestTimestamp,
                                                    this,
-                                                   Request.EventTrackingId,
                                                    heartbeatRequest);
 
                     }
@@ -672,9 +679,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           SafeSelect(subscriber => (subscriber as HeartbeatDelegate)
                                               (Timestamp.Now,
                                                this,
-                                               Request.CancellationToken,
-                                               Request.EventTrackingId,
-                                               heartbeatRequest)).
+                                               heartbeatRequest,
+                                               Request.CancellationToken)).
                                           ToArray();
 
                         if (results.Length > 0)
@@ -698,14 +704,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     try
                     {
 
-                        OnHeartbeatResponse?.Invoke(response.ResponseTimestamp,
-                                                    this,
-                                                    Request.EventTrackingId,
-                                                    heartbeatRequest,
+                        var responseTimestamp = Timestamp.Now;
 
-                                                    response.Result,
-                                                    response.CurrentTime,
-                                                    response.Runtime);
+                        OnHeartbeatResponse?.Invoke(responseTimestamp,
+                                                    this,
+                                                    heartbeatRequest,
+                                                    response,
+                                                    responseTimestamp - requestTimestamp);
 
                     }
                     catch (Exception e)
@@ -721,7 +726,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     HTTPResponse = new HTTPResponse.Builder(Request) {
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
-                        Date            = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                        Date            = Timestamp.Now,
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/HeartbeatResponse",
@@ -737,7 +742,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
                 catch (Exception e)
                 {
-
+                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/Heartbeat");
                 }
 
 

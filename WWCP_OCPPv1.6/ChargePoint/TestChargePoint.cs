@@ -24,6 +24,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using System.Threading;
 
 #endregion
 
@@ -33,25 +34,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A charge point for testing.
     /// </summary>
-    public class TestChargePoint
+    public class TestChargePoint : IEventSender
     {
 
         #region Properties
 
         /// <summary>
-        /// The connected central system.
+        /// The client connected to a central system.
         /// </summary>
-        public CS.ICentralSystemServer  CentralSystemServer         { get; }
-
-
-        public ChargePointSOAPClient CentralSystemClient { get; set; }
-
+        public ICPClient                CPClient                    { get; }
 
 
         /// <summary>
         /// The charge box identification.
         /// </summary>
         public ChargeBox_Id             ChargeBoxId                 { get; }
+
+        /// <summary>
+        /// The sender identification.
+        /// </summary>
+        String IEventSender.Id
+            => ChargeBoxId.ToString();
 
         /// <summary>
         /// The charge point vendor identification.
@@ -64,6 +67,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public String                   ChargePointModel            { get; }
 
 
+        /// <summary>
+        /// The optional multi-language charge box description.
+        /// </summary>
+        public I18NString               Description                 { get; }
 
         /// <summary>
         /// The optional serial number of the charge point.
@@ -100,6 +107,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public String                   MeterSerialNumber           { get; }
 
+
+        /// <summary>
+        /// The default request timeout for all requests.
+        /// </summary>
+        public TimeSpan                 DefaultRequestTimeout       { get; }
+
+        #endregion
+
+        #region Events
+
+        #region OnBootNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a boot notification request will be send to the central system.
+        /// </summary>
+        public event OnBootNotificationRequestDelegate   OnBootNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a boot notification request was received.
+        /// </summary>
+        public event OnBootNotificationResponseDelegate  OnBootNotificationResponse;
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -111,6 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ChargePointVendor">The charge point vendor identification.</param>
         /// <param name="ChargePointModel">The charge point model identification.</param>
         /// 
+        /// <param name="Description">The optional multi-language charge box description.</param>
         /// <param name="ChargePointSerialNumber">The optional serial number of the charge point.</param>
         /// <param name="ChargeBoxSerialNumber">The optional serial number of the charge point.</param>
         /// <param name="FirmwareVersion">The optional firmware version of the charge point.</param>
@@ -118,17 +150,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="IMSI">The optional IMSI of the charge point’s SIM card.</param>
         /// <param name="MeterType">The optional meter type of the main power meter of the charge point.</param>
         /// <param name="MeterSerialNumber">The optional serial number of the main power meter of the charge point.</param>
+        /// 
+        /// <param name="DefaultRequestTimeout">The default request timeout for all requests.</param>
         public TestChargePoint(ChargeBox_Id  ChargeBoxId,
                                String        ChargePointVendor,
                                String        ChargePointModel,
 
+                               I18NString    Description               = null,
                                String        ChargePointSerialNumber   = null,
                                String        ChargeBoxSerialNumber     = null,
                                String        FirmwareVersion           = null,
                                String        Iccid                     = null,
                                String        IMSI                      = null,
                                String        MeterType                 = null,
-                               String        MeterSerialNumber         = null)
+                               String        MeterSerialNumber         = null,
+
+                               TimeSpan?     DefaultRequestTimeout     = null)
 
         {
 
@@ -146,6 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.ChargePointVendor        = ChargePointVendor;
             this.ChargePointModel         = ChargePointModel;
 
+            this.Description              = Description;
             this.ChargePointSerialNumber  = ChargePointSerialNumber;
             this.ChargeBoxSerialNumber    = ChargeBoxSerialNumber;
             this.FirmwareVersion          = FirmwareVersion;
@@ -154,33 +192,99 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.MeterType                = MeterType;
             this.MeterSerialNumber        = MeterSerialNumber;
 
+            this.DefaultRequestTimeout    = DefaultRequestTimeout ?? TimeSpan.FromMinutes(1);
+
         }
 
         #endregion
 
 
-        public async Task<CS.BootNotificationResponse> SendBootNotification()
+        #region SendBootNotification(CancellationToken= null, EventTrackingId = null, RequestTimeout = null)
+
+        /// <summary>
+        /// Send a boot notification.
+        /// </summary>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<CS.BootNotificationResponse>
+
+            SendBootNotification(CancellationToken?  CancellationToken   = null,
+                                 EventTracking_Id    EventTrackingId     = null,
+                                 TimeSpan?           RequestTimeout      = null)
+
         {
 
-            var response = await CentralSystemClient.SendBootNotification(
-                                     new BootNotificationRequest(ChargeBoxId,
-                                                                 ChargePointVendor,
-                                                                 ChargePointModel,
+            #region Create request
 
-                                                                 ChargePointSerialNumber,
-                                                                 ChargeBoxSerialNumber,
-                                                                 FirmwareVersion,
-                                                                 Iccid,
-                                                                 IMSI,
-                                                                 MeterType,
-                                                                 MeterSerialNumber,
+            var requestTimestamp  = Timestamp.Now;
 
-                                                                 Request_Id.Random(),
-                                                                 Timestamp.Now));
+            var request           = new BootNotificationRequest(ChargeBoxId,
+                                                                ChargePointVendor,
+                                                                ChargePointModel,
+
+                                                                ChargePointSerialNumber,
+                                                                ChargeBoxSerialNumber,
+                                                                FirmwareVersion,
+                                                                Iccid,
+                                                                IMSI,
+                                                                MeterType,
+                                                                MeterSerialNumber,
+
+                                                                Request_Id.Random(),
+                                                                requestTimestamp);
+
+            #endregion
+
+            #region Send OnBootNotificationRequest event
+
+            try
+            {
+
+                OnBootNotificationRequest?.Invoke(requestTimestamp,
+                                                  this,
+                                                  request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnBootNotificationRequest));
+            }
+
+            #endregion
+
+
+            var response  = await CPClient.SendBootNotification(request,
+                                                                requestTimestamp,
+                                                                CancellationToken,
+                                                                EventTrackingId,
+                                                                RequestTimeout ?? DefaultRequestTimeout);
+
+
+            #region Send OnBootNotificationResponse event
+
+            try
+            {
+
+                OnBootNotificationResponse?.Invoke(Timestamp.Now,
+                                                   this,
+                                                   request,
+                                                   response.Content,
+                                                   Timestamp.Now - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargePointSOAPClient) + "." + nameof(OnBootNotificationResponse));
+            }
+
+            #endregion
 
             return response.Content;
 
         }
+
+        #endregion
 
 
     }

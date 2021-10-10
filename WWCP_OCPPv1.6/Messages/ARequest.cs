@@ -42,32 +42,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The request identification.
         /// </summary>
         [Mandatory]
-        public Request_Id    RequestId           { get; }
+        public Request_Id        RequestId           { get; }
 
         /// <summary>
         /// The timestamp of the request message creation.
         /// </summary>
         [Mandatory]
-        public DateTime      RequestTimestamp    { get; }
+        public DateTime          RequestTimestamp    { get; }
+
+        public EventTracking_Id  EventTrackingId     { get; }
 
         /// <summary>
         /// The timeout of this request.
         /// </summary>
         [Optional]
-        public TimeSpan?     RequestTimeout      { get; }
+        public TimeSpan?         RequestTimeout      { get; }
 
 
         /// <summary>
         /// Charge box identification.
         /// </summary>
         [Mandatory]
-        public ChargeBox_Id  ChargeBoxId         { get; }
+        public ChargeBox_Id      ChargeBoxId         { get; }
 
         /// <summary>
         /// WebSocket Action.
         /// </summary>
         [Mandatory]
-        public String        WebSocketAction     { get; }
+        public String            WebSocketAction     { get; }
 
         #endregion
 
@@ -80,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         {
 
             this.RequestId         = Request_Id.Parse("0");
-            this.RequestTimestamp  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            this.RequestTimestamp  = Timestamp.Now;
             this.ChargeBoxId       = ChargeBox_Id.Parse("0");
 
         }
@@ -93,16 +95,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
-        public ARequest(ChargeBox_Id  ChargeBoxId,
-                        String        WebSocketAction,
-                        Request_Id?   RequestId          = null,
-                        DateTime?     RequestTimestamp   = null,
-                        TimeSpan?     RequestTimeout     = null)
+        public ARequest(ChargeBox_Id      ChargeBoxId,
+                        String            WebSocketAction,
+                        Request_Id?       RequestId          = null,
+                        EventTracking_Id  EventTrackingId    = null,
+                        DateTime?         RequestTimestamp   = null,
+                        TimeSpan?         RequestTimeout     = null)
         {
 
             this.ChargeBoxId       = ChargeBoxId;
             this.WebSocketAction   = WebSocketAction;
             this.RequestId         = RequestId        ?? Request_Id.Random();
+            this.EventTrackingId   = EventTrackingId  ?? EventTracking_Id.New;
             this.RequestTimestamp  = RequestTimestamp ?? Timestamp.Now;
             this.RequestTimeout    = RequestTimeout;
 
