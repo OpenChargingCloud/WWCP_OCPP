@@ -417,6 +417,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
+        #region Reset(ChargeBoxId, ResetType, ...)
+
+        /// <summary>
+        /// Create a new reset request.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ResetType">The type of reset that the charge point should perform.</param>
+        public async Task<CP.ResetResponse> Reset(ChargeBox_Id      ChargeBoxId,
+                                                  ResetTypes        ResetType,
+                                                  EventTracking_Id  EventTrackingId    = null)
+        {
+
+            CentralSystemSOAPClient CPClient = null;
+
+            var response = await CPClient.Reset(new ResetRequest(ChargeBoxId,
+                                                                 ResetType,
+                                                                 Request_Id.Random(),
+                                                                 null,
+                                                                 EventTrackingId));
+
+            return response.Content;
+
+        }
+
+        #endregion
+
+
     }
 
 }

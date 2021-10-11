@@ -87,6 +87,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Events
 
+        #region OnReset
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler        OnResetSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnResetRequestDelegate   OnResetRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnResetDelegate          OnReset;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnResetResponseDelegate  OnResetResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event AccessLogHandler         OnResetSOAPResponse;
+
+        #endregion
+
+
         #region OnReserveNow
 
         /// <summary>
@@ -315,6 +345,161 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         protected void RegisterURLTemplates()
         {
+
+            #region / - Reset
+
+            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+                                            URLPrefix,
+                                            "Reset",
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CP + "resetRequest").FirstOrDefault(),
+                                            async (Request, HeaderXML, ResetXML) => {
+
+                #region Send OnResetSOAPRequest event
+
+                var requestTimestamp = Timestamp.Now;
+
+                try
+                {
+
+                    OnResetSOAPRequest?.Invoke(requestTimestamp,
+                                               SOAPServer.HTTPServer,
+                                               Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnResetSOAPRequest));
+                }
+
+                #endregion
+
+                ResetResponse response      = null;
+                HTTPResponse  HTTPResponse  = null;
+
+                try
+                {
+
+                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                    var request     = ResetRequest.Parse(ResetXML,
+                                                         Request_Id.Parse(OCPPHeader.MessageId),
+                                                         OCPPHeader.ChargeBoxIdentity);
+
+                    #region Send OnResetRequest event
+
+                    try
+                    {
+
+                        OnResetRequest?.Invoke(request.RequestTimestamp,
+                                               this,
+                                               request);
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnResetRequest));
+                    }
+
+                    #endregion
+
+                    #region Call async subscribers
+
+                    if (response == null)
+                    {
+
+                        var results = OnReset?.
+                                          GetInvocationList()?.
+                                          SafeSelect(subscriber => (subscriber as OnResetDelegate)
+                                              (Timestamp.Now,
+                                               this,
+                                               request,
+                                               Request.CancellationToken)).
+                                          ToArray();
+
+                        if (results.Length > 0)
+                        {
+
+                            await Task.WhenAll(results);
+
+                            response = results.FirstOrDefault()?.Result;
+
+                        }
+
+                        if (results.Length == 0 || response == null)
+                            response = ResetResponse.Failed(request);
+
+                    }
+
+                    #endregion
+
+                    #region Send OnResetResponse event
+
+                    try
+                    {
+
+                        var responseTimestamp = Timestamp.Now;
+
+                        OnResetResponse?.Invoke(responseTimestamp,
+                                                this,
+                                                request,
+                                                response,
+                                                responseTimestamp - requestTimestamp);
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnResetResponse));
+                    }
+
+                    #endregion
+
+
+                    #region Create SOAPResponse
+
+                    HTTPResponse = new HTTPResponse.Builder(Request) {
+                        HTTPStatusCode  = HTTPStatusCode.OK,
+                        Server          = SOAPServer.HTTPServer.DefaultServerName,
+                        Date            = Timestamp.Now,
+                        ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                        Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
+                                                             "/ResetResponse",
+                                                             null,
+                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
+                                                             OCPPHeader.To,         // Fake it!
+                                                             OCPPHeader.From,       // Fake it!
+                                                             response.ToXML()).ToUTF8Bytes()
+                    };
+
+                    #endregion
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/Reset");
+                }
+
+                #region Send OnResetSOAPResponse event
+
+                try
+                {
+
+                    OnResetSOAPResponse?.Invoke(HTTPResponse.Timestamp,
+                                                this.SOAPServer.HTTPServer,
+                                                Request,
+                                                HTTPResponse);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(ChargePointSOAPServer) + "." + nameof(OnResetSOAPResponse));
+                }
+
+                #endregion
+
+                return HTTPResponse;
+
+            });
+
+            #endregion
+
 
             #region / - ReserveNow
 

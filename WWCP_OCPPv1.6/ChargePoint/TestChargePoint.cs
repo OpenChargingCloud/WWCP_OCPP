@@ -528,6 +528,64 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public void WireEvents(ChargePointSOAPServer CPServer)
         {
 
+            #region OnReset
+
+            CPServer.OnReset += async (LogTimestamp,
+                                       Sender,
+                                       Request,
+                                       CancellationToken) => {
+
+                #region Send OnResetRequest event
+
+                var requestTimestamp = Timestamp.Now;
+
+                try
+                {
+
+                    OnResetRequest?.Invoke(requestTimestamp,
+                                           this,
+                                           Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnResetRequest));
+                }
+
+                #endregion
+
+                //transactionId1 = Request.ChargingProfile?.TransactionId;
+
+                var response = new ResetResponse(Request,
+                                                 ResetStatus.Accepted);
+
+                #region Send OnResetResponse event
+
+                                           try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnResetResponse?.Invoke(responseTimestamp,
+                                            this,
+                                            Request,
+                                            response,
+                                            responseTimestamp - requestTimestamp);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnResetResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
             #region OnReserveNow
 
             CPServer.OnReserveNow += async (LogTimestamp,
