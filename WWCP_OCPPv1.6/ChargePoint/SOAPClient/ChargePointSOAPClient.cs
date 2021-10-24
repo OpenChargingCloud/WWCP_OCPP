@@ -526,7 +526,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<BootNotificationResponse>>
+        public async Task<BootNotificationResponse>
 
             SendBootNotification(BootNotificationRequest  Request,
 
@@ -700,7 +700,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
@@ -717,7 +717,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<HeartbeatResponse>>
+        public async Task<HeartbeatResponse>
 
             SendHeartbeat(HeartbeatRequest    Request,
 
@@ -891,7 +891,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
@@ -909,7 +909,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<AuthorizeResponse>>
+        public async Task<AuthorizeResponse>
 
             Authorize(AuthorizeRequest    Request,
 
@@ -1084,7 +1084,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
@@ -1101,7 +1101,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<StartTransactionResponse>>
+        public async Task<StartTransactionResponse>
 
             StartTransaction(StartTransactionRequest  Request,
 
@@ -1275,7 +1275,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
@@ -1292,7 +1292,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<StatusNotificationResponse>>
+        public async Task<StatusNotificationResponse>
 
             SendStatusNotification(StatusNotificationRequest  Request,
 
@@ -1468,7 +1468,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
@@ -1485,7 +1485,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<MeterValuesResponse>>
+        public async Task<MeterValuesResponse>
 
             SendMeterValues(MeterValuesRequest  Request,
 
@@ -1661,7 +1661,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
@@ -1678,7 +1678,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<StopTransactionResponse>>
+        public async Task<StopTransactionResponse>
 
             StopTransaction(StopTransactionRequest  Request,
 
@@ -1853,7 +1853,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
@@ -1871,7 +1871,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<CS.DataTransferResponse>>
+        public async Task<CS.DataTransferResponse>
 
             TransferData(DataTransferRequest  Request,
 
@@ -2047,7 +2047,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
@@ -2064,7 +2064,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<DiagnosticsStatusNotificationResponse>>
+        public async Task<DiagnosticsStatusNotificationResponse>
 
             SendDiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest  Request,
 
@@ -2240,7 +2240,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
@@ -2257,7 +2257,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<FirmwareStatusNotificationResponse>>
+        public async Task<FirmwareStatusNotificationResponse>
 
             SendFirmwareStatusNotification(FirmwareStatusNotificationRequest  Request,
 
@@ -2433,7 +2433,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 

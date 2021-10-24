@@ -20,6 +20,7 @@
 using System;
 
 using Newtonsoft.Json.Linq;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -29,21 +30,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
     public class WSRequestMessage
     {
 
-        public Request_Id  RequestId    { get; }
+        public Byte        MessageType    { get; }
 
-        public String      Action       { get; }
+        public Request_Id  RequestId      { get; }
 
-        public JObject     Data         { get; }
+        public String      Action         { get; }
+
+        public JObject     Message        { get; }
 
 
         public WSRequestMessage(Request_Id  RequestId,
                                 String      Action,
-                                JObject     Data)
+                                JObject     Message,
+                                Byte        MessageType = 2)
         {
 
-            this.RequestId  = RequestId;
-            this.Action     = Action;
-            this.Data       = Data ?? new JObject();
+            this.MessageType  = MessageType;
+            this.RequestId    = RequestId;
+            this.Action       = Action;
+            this.Message      = Message ?? new JObject();
 
         }
 
@@ -62,14 +67,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
             => new JArray(2,
                           RequestId.ToString(),
                           Action,
-                          Data);
+                          Message);
+
+
+        public Byte[] ToByteArray(Newtonsoft.Json.Formatting Format = Newtonsoft.Json.Formatting.None)
+
+            => ToJSON().
+               ToString(Format).
+               ToUTF8Bytes();
+
 
 
         public override String ToString()
 
             => String.Concat(RequestId,
                              " => ",
-                             Data.ToString());
+                             Message.ToString());
 
     }
 

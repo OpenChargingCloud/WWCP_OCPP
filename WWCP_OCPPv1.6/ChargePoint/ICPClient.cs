@@ -20,7 +20,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -295,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<HTTPResponse<BootNotificationResponse>>
+        public Task<BootNotificationResponse>
 
             SendBootNotification(BootNotificationRequest  Request,
 
@@ -314,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<HTTPResponse<HeartbeatResponse>>
+        public Task<HeartbeatResponse>
 
             SendHeartbeat(HeartbeatRequest    Request,
 
@@ -334,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<HTTPResponse<AuthorizeResponse>>
+        public Task<AuthorizeResponse>
 
             Authorize(AuthorizeRequest    Request,
 
@@ -353,7 +352,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<HTTPResponse<StartTransactionResponse>>
+        public Task<StartTransactionResponse>
 
             StartTransaction(StartTransactionRequest  Request,
 
@@ -372,7 +371,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<HTTPResponse<StatusNotificationResponse>>
+        public Task<StatusNotificationResponse>
 
             SendStatusNotification(StatusNotificationRequest  Request,
 
@@ -391,7 +390,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<HTTPResponse<MeterValuesResponse>>
+        public Task<MeterValuesResponse>
 
             SendMeterValues(MeterValuesRequest  Request,
 
@@ -410,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<HTTPResponse<StopTransactionResponse>>
+        public Task<StopTransactionResponse>
 
             StopTransaction(StopTransactionRequest  Request,
 
@@ -429,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<HTTPResponse<CS.DataTransferResponse>>
+        public Task<CS.DataTransferResponse>
 
             TransferData(DataTransferRequest  Request,
 
@@ -448,7 +447,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<HTTPResponse<DiagnosticsStatusNotificationResponse>>
+        public Task<DiagnosticsStatusNotificationResponse>
 
             SendDiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest  Request,
 
@@ -467,7 +466,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<HTTPResponse<FirmwareStatusNotificationResponse>>
+        public Task<FirmwareStatusNotificationResponse>
 
             SendFirmwareStatusNotification(FirmwareStatusNotificationRequest  Request,
 

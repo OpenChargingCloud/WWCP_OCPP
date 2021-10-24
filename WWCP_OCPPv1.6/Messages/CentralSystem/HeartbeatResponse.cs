@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         {
 
-            this.CurrentTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            this.CurrentTime = Timestamp.Now;
 
         }
 
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, HeartbeatResponseXML, e);
+                OnException?.Invoke(Timestamp.Now, HeartbeatResponseXML, e);
 
                 HeartbeatResponse = null;
                 return false;
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, HeartbeatResponseJSON, e);
+                OnException?.Invoke(Timestamp.Now, HeartbeatResponseJSON, e);
 
                 HeartbeatResponse = null;
                 return false;
@@ -348,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, HeartbeatResponseText, e);
+                OnException?.Invoke(Timestamp.Now, HeartbeatResponseText, e);
             }
 
             HeartbeatResponse = null;

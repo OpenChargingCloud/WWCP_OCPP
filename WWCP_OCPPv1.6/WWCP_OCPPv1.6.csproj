@@ -57,6 +57,7 @@
     <Compile Include="CentralSystem\SOAPClient\CentralSystemSOAPClient.cs" />
     <Compile Include="CentralSystem\CSClientDelegates.cs" />
     <Compile Include="CentralSystem\SOAPServer\CSServerLogger.cs" />
+    <Compile Include="ChargePoint\IChargePointServerEvents.cs" />
     <Compile Include="ChargePoint\WebSockets\ChargePointWSClient.cs" />
     <Compile Include="ChargePoint\TestChargePoint.cs" />
     <Compile Include="DataTypes\Simple\CentralSystem_Id.cs" />

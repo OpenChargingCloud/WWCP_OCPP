@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, UpdateFirmwareResponseXML, e);
+                OnException?.Invoke(Timestamp.Now, UpdateFirmwareResponseXML, e);
 
                 UpdateFirmwareResponse = null;
                 return false;
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, UpdateFirmwareResponseJSON, e);
+                OnException?.Invoke(Timestamp.Now, UpdateFirmwareResponseJSON, e);
 
                 UpdateFirmwareResponse = null;
                 return false;
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, UpdateFirmwareResponseText, e);
+                OnException?.Invoke(Timestamp.Now, UpdateFirmwareResponseText, e);
             }
 
             UpdateFirmwareResponse = null;

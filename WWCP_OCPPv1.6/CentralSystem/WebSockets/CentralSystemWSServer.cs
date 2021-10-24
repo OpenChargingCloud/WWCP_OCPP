@@ -188,9 +188,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnBootNotification
 
         /// <summary>
-        /// An event sent whenever a boot notification WebSocket Request was received.
+        /// An event sent whenever a boot notification WebSocket request was received.
         /// </summary>
-        public event RequestLogHandler                 OnBootNotificationWSRequest;
+        public event WSRequestLogHandler               OnBootNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a boot notification request was received.
@@ -208,18 +208,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event BootNotificationResponseDelegate  OnBootNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket Response to a boot notification was sent.
+        /// An event sent whenever a WebSocket response to a boot notification was sent.
         /// </summary>
-        public event AccessLogHandler                  OnBootNotificationWSResponse;
+        public event WSResponseLogHandler              OnBootNotificationWSResponse;
 
         #endregion
 
         #region OnHeartbeat
 
         /// <summary>
-        /// An event sent whenever a heartbeat WebSocket Request was received.
+        /// An event sent whenever a heartbeat WebSocket request was received.
         /// </summary>
-        public event RequestLogHandler          OnHeartbeatWSRequest;
+        public event WSRequestLogHandler        OnHeartbeatWSRequest;
 
         /// <summary>
         /// An event sent whenever a heartbeat request was received.
@@ -237,9 +237,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event HeartbeatResponseDelegate  OnHeartbeatResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket Response to a heartbeat was sent.
+        /// An event sent whenever a WebSocket response to a heartbeat was sent.
         /// </summary>
-        public event AccessLogHandler           OnHeartbeatWSResponse;
+        public event WSResponseLogHandler       OnHeartbeatWSResponse;
 
         #endregion
 
@@ -247,9 +247,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnAuthorize
 
         /// <summary>
-        /// An event sent whenever an authorize WebSocket Request was received.
+        /// An event sent whenever an authorize WebSocket request was received.
         /// </summary>
-        public event RequestLogHandler            OnAuthorizeWSRequest;
+        public event WSRequestLogHandler          OnAuthorizeWSRequest;
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
@@ -267,18 +267,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnAuthorizeResponseDelegate  OnAuthorizeResponse;
 
         /// <summary>
-        /// An event sent whenever an authorize WebSocket Response was sent.
+        /// An event sent whenever an authorize WebSocket response was sent.
         /// </summary>
-        public event AccessLogHandler             OnAuthorizeWSResponse;
+        public event WSResponseLogHandler         OnAuthorizeWSResponse;
 
         #endregion
 
         #region OnStartTransaction
 
         /// <summary>
-        /// An event sent whenever a start transaction WebSocket Request was received.
+        /// An event sent whenever a start transaction WebSocket request was received.
         /// </summary>
-        public event RequestLogHandler                   OnStartTransactionWSRequest;
+        public event WSRequestLogHandler                 OnStartTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a start transaction request was received.
@@ -296,18 +296,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnStartTransactionResponseDelegate  OnStartTransactionResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket Response to a start transaction request was sent.
+        /// An event sent whenever a WebSocket response to a start transaction request was sent.
         /// </summary>
-        public event AccessLogHandler                    OnStartTransactionWSResponse;
+        public event WSResponseLogHandler                OnStartTransactionWSResponse;
 
         #endregion
 
         #region OnStatusNotification
 
         /// <summary>
-        /// An event sent whenever a status notification WebSocket Request was received.
+        /// An event sent whenever a status notification WebSocket request was received.
         /// </summary>
-        public event RequestLogHandler                     OnStatusNotificationWSRequest;
+        public event WSRequestLogHandler                   OnStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
@@ -325,18 +325,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnStatusNotificationResponseDelegate  OnStatusNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket Response to a status notification request was sent.
+        /// An event sent whenever a WebSocket response to a status notification request was sent.
         /// </summary>
-        public event AccessLogHandler                      OnStatusNotificationWSResponse;
+        public event WSResponseLogHandler                  OnStatusNotificationWSResponse;
 
         #endregion
 
         #region OnMeterValues
 
         /// <summary>
-        /// An event sent whenever a meter values WebSocket Request was received.
+        /// An event sent whenever a meter values WebSocket request was received.
         /// </summary>
-        public event RequestLogHandler              OnMeterValuesWSRequest;
+        public event WSRequestLogHandler            OnMeterValuesWSRequest;
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
@@ -354,18 +354,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnMeterValuesResponseDelegate  OnMeterValuesResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket Response to a meter values request was sent.
+        /// An event sent whenever a WebSocket response to a meter values request was sent.
         /// </summary>
-        public event AccessLogHandler               OnMeterValuesWSResponse;
+        public event WSResponseLogHandler           OnMeterValuesWSResponse;
 
         #endregion
 
         #region OnStopTransaction
 
         /// <summary>
-        /// An event sent whenever a stop transaction WebSocket Request was received.
+        /// An event sent whenever a stop transaction WebSocket request was received.
         /// </summary>
-        public event RequestLogHandler                  OnStopTransactionWSRequest;
+        public event WSRequestLogHandler                OnStopTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
@@ -383,9 +383,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnStopTransactionResponseDelegate  OnStopTransactionResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket Response to a stop transaction request was sent.
+        /// An event sent whenever a WebSocket response to a stop transaction request was sent.
         /// </summary>
-        public event AccessLogHandler                   OnStopTransactionWSResponse;
+        public event WSResponseLogHandler               OnStopTransactionWSResponse;
 
         #endregion
 
@@ -393,9 +393,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnDataTransfer
 
         /// <summary>
-        /// An event sent whenever a data transfer WebSocket Request was received.
+        /// An event sent whenever a data transfer WebSocket request was received.
         /// </summary>
-        public event RequestLogHandler                       OnIncomingDataTransferWSRequest;
+        public event WSRequestLogHandler                     OnIncomingDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
@@ -413,18 +413,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnIncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket Response to a data transfer request was sent.
+        /// An event sent whenever a WebSocket response to a data transfer request was sent.
         /// </summary>
-        public event AccessLogHandler                        OnIncomingDataTransferWSResponse;
+        public event WSResponseLogHandler                    OnIncomingDataTransferWSResponse;
 
         #endregion
 
         #region OnDiagnosticsStatusNotification
 
         /// <summary>
-        /// An event sent whenever a diagnostics status notification WebSocket Request was received.
+        /// An event sent whenever a diagnostics status notification WebSocket request was received.
         /// </summary>
-        public event RequestLogHandler                                OnDiagnosticsStatusNotificationWSRequest;
+        public event WSRequestLogHandler                              OnDiagnosticsStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
@@ -442,18 +442,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnDiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket Response to a diagnostics status notification request was sent.
+        /// An event sent whenever a WebSocket response to a diagnostics status notification request was sent.
         /// </summary>
-        public event AccessLogHandler                                 OnDiagnosticsStatusNotificationWSResponse;
+        public event WSResponseLogHandler                             OnDiagnosticsStatusNotificationWSResponse;
 
         #endregion
 
         #region OnFirmwareStatusNotification
 
         /// <summary>
-        /// An event sent whenever a firmware status notification WebSocket Request was received.
+        /// An event sent whenever a firmware status notification WebSocket request was received.
         /// </summary>
-        public event RequestLogHandler                             OnFirmwareStatusNotificationWSRequest;
+        public event WSRequestLogHandler                           OnFirmwareStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
@@ -471,9 +471,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnFirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket Response to a firmware status notification request was sent.
+        /// An event sent whenever a WebSocket response to a firmware status notification request was sent.
         /// </summary>
-        public event AccessLogHandler                              OnFirmwareStatusNotificationWSResponse;
+        public event WSResponseLogHandler                          OnFirmwareStatusNotificationWSResponse;
 
         #endregion
 
@@ -573,8 +573,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                            CancellationToken    CancellationToken)
         {
 
-            Connection.AddCustomData("chargeBoxId",
-                                     ChargeBox_Id.Parse(Connection.HTTPPath.ToString().Substring(Connection.HTTPPath.ToString().LastIndexOf("/") + 1)));
+            var chargeBoxId = Connection.HTTPPath.ToString().Substring(Connection.HTTPPath.ToString().LastIndexOf("/") + 1);
+
+            if (chargeBoxId.IsNotNullOrEmpty())
+                Connection.AddCustomData("chargeBoxId", ChargeBox_Id.Parse(chargeBoxId));
 
         }
 
@@ -682,9 +684,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnBootNotificationWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                                    this,
-                                        //                                    RequestData;
+                                        OnBootNotificationWSRequest?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            JSON);
 
                                     }
                                     catch (Exception e)
@@ -806,10 +808,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnBootNotificationWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                                     this,
-                                        //                                     RequestData,
-                                        //                                     HTTPResponse);
+                                        OnBootNotificationWSResponse?.Invoke(Timestamp.Now,
+                                                                             this,
+                                                                             JSON,
+                                                                             new WSResponseMessage(RequestId.Value,
+                                                                                                   OCPPResponseJSON).ToJSON());
 
                                     }
                                     catch (Exception e)
@@ -834,9 +837,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnHeartbeatWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                                      SOAPServer.HTTPServer,
-                                        //                                      Request);
+                                        OnHeartbeatWSRequest?.Invoke(Timestamp.Now,
+                                                                     this,
+                                                                     JSON);
 
                                     }
                                     catch (Exception e)
@@ -958,10 +961,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnHeartbeatWSResponse?.Invoke(HTTPResponse.Timestamp,
-                                        //                                        SOAPServer.HTTPServer,
-                                        //                                        Request,
-                                        //                                        HTTPResponse);
+                                        OnHeartbeatWSResponse?.Invoke(Timestamp.Now,
+                                                                      this,
+                                                                      JSON,
+                                                                      new WSResponseMessage(RequestId.Value,
+                                                                                            OCPPResponseJSON).ToJSON());
 
                                     }
                                     catch (Exception e)
@@ -987,9 +991,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnAuthorizeWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                             this,
-                                        //                             RequestData);
+                                        OnAuthorizeWSRequest?.Invoke(Timestamp.Now,
+                                                                     this,
+                                                                     JSON);
 
                                     }
                                     catch (Exception e)
@@ -1111,10 +1115,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnAuthorizeWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                              this,
-                                        //                              Request,
-                                        //                              HTTPResponse);
+                                        OnAuthorizeWSResponse?.Invoke(Timestamp.Now,
+                                                                      this,
+                                                                      JSON,
+                                                                      new WSResponseMessage(RequestId.Value,
+                                                                                            OCPPResponseJSON).ToJSON());
 
                                     }
                                     catch (Exception e)
@@ -1139,9 +1144,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnStartTransactionWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                             this,
-                                        //                             RequestData);
+                                        OnStartTransactionWSRequest?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            JSON);
 
                                     }
                                     catch (Exception e)
@@ -1263,10 +1268,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnStartTransactionWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                              this,
-                                        //                              Request,
-                                        //                              HTTPResponse);
+                                        OnStartTransactionWSResponse?.Invoke(Timestamp.Now,
+                                                                             this,
+                                                                             JSON,
+                                                                             new WSResponseMessage(RequestId.Value,
+                                                                                                   OCPPResponseJSON).ToJSON());
 
                                     }
                                     catch (Exception e)
@@ -1291,9 +1297,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnStatusNotificationWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                             this,
-                                        //                             RequestData);
+                                        OnStatusNotificationWSRequest?.Invoke(Timestamp.Now,
+                                                                              this,
+                                                                              JSON);
 
                                     }
                                     catch (Exception e)
@@ -1415,10 +1421,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnStatusNotificationWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                              this,
-                                        //                              Request,
-                                        //                              HTTPResponse);
+                                        OnStatusNotificationWSResponse?.Invoke(Timestamp.Now,
+                                                                               this,
+                                                                               JSON,
+                                                                               new WSResponseMessage(RequestId.Value,
+                                                                                                     OCPPResponseJSON).ToJSON());
 
                                     }
                                     catch (Exception e)
@@ -1443,9 +1450,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnMeterValuesWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                             this,
-                                        //                             RequestData);
+                                        OnMeterValuesWSRequest?.Invoke(Timestamp.Now,
+                                                                       this,
+                                                                       JSON);
 
                                     }
                                     catch (Exception e)
@@ -1567,10 +1574,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnMeterValuesWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                              this,
-                                        //                              Request,
-                                        //                              HTTPResponse);
+                                        OnMeterValuesWSResponse?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        JSON,
+                                                                        new WSResponseMessage(RequestId.Value,
+                                                                                              OCPPResponseJSON).ToJSON());
 
                                     }
                                     catch (Exception e)
@@ -1595,9 +1603,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnStopTransactionWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                             this,
-                                        //                             RequestData);
+                                        OnStopTransactionWSRequest?.Invoke(Timestamp.Now,
+                                                                           this,
+                                                                           JSON);
 
                                     }
                                     catch (Exception e)
@@ -1719,10 +1727,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnStopTransactionWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                              this,
-                                        //                              Request,
-                                        //                              HTTPResponse);
+                                        OnStopTransactionWSResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            JSON,
+                                                                            new WSResponseMessage(RequestId.Value,
+                                                                                                  OCPPResponseJSON).ToJSON());
 
                                     }
                                     catch (Exception e)
@@ -1748,9 +1757,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnIncomingDataTransferWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                             this,
-                                        //                             RequestData);
+                                        OnIncomingDataTransferWSRequest?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                JSON);
 
                                     }
                                     catch (Exception e)
@@ -1872,10 +1881,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnIncomingDataTransferWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                              this,
-                                        //                              Request,
-                                        //                              HTTPResponse);
+                                        OnIncomingDataTransferWSResponse?.Invoke(Timestamp.Now,
+                                                                                 this,
+                                                                                 JSON,
+                                                                                 new WSResponseMessage(RequestId.Value,
+                                                                                                       OCPPResponseJSON).ToJSON());
 
                                     }
                                     catch (Exception e)
@@ -1900,9 +1910,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnDiagnosticsStatusNotificationWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                             this,
-                                        //                             RequestData);
+                                        OnDiagnosticsStatusNotificationWSRequest?.Invoke(Timestamp.Now,
+                                                                                         this,
+                                                                                         JSON);
 
                                     }
                                     catch (Exception e)
@@ -2024,10 +2034,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnDiagnosticsStatusNotificationWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                              this,
-                                        //                              Request,
-                                        //                              HTTPResponse);
+                                        OnDiagnosticsStatusNotificationWSResponse?.Invoke(Timestamp.Now,
+                                                                                          this,
+                                                                                          JSON,
+                                                                                          new WSResponseMessage(RequestId.Value,
+                                                                                                                OCPPResponseJSON).ToJSON());
 
                                     }
                                     catch (Exception e)
@@ -2052,9 +2063,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnFirmwareStatusNotificationWSRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                             this,
-                                        //                             RequestData);
+                                        OnFirmwareStatusNotificationWSRequest?.Invoke(Timestamp.Now,
+                                                                                      this,
+                                                                                      JSON);
 
                                     }
                                     catch (Exception e)
@@ -2176,10 +2187,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     try
                                     {
 
-                                        //OnFirmwareStatusNotificationWSResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                        //                              this,
-                                        //                              Request,
-                                        //                              HTTPResponse);
+                                        OnFirmwareStatusNotificationWSResponse?.Invoke(Timestamp.Now,
+                                                                                       this,
+                                                                                       JSON,
+                                                                                       new WSResponseMessage(RequestId.Value,
+                                                                                                             OCPPResponseJSON).ToJSON());
 
                                     }
                                     catch (Exception e)

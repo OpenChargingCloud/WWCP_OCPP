@@ -47,6 +47,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public readonly TimeSpan DefaultSendHeartbeatEvery = TimeSpan.FromMinutes(5);
 
+        protected static readonly TimeSpan SemaphoreSlimTimeout = TimeSpan.FromSeconds(5);
+
+        /// <summary>
+        /// The default maintenance interval.
+        /// </summary>
+        public readonly TimeSpan DefaultMaintenanceEvery = TimeSpan.FromMinutes(1);
+        private static readonly SemaphoreSlim MaintenanceSemaphore = new SemaphoreSlim(1, 1);
+        private readonly Timer MaintenanceTimer;
+
+        private readonly Timer SendHeartbeatTimer;
+
         #endregion
 
         #region Properties
@@ -131,13 +142,35 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The time span between heartbeat requests.
         /// </summary>
-        public TimeSpan                 SendHeartbeatEvery          { get; }
+        public TimeSpan                 SendHeartbeatEvery          { get; set; }
 
+        /// <summary>
+        /// The time at the central system.
+        /// </summary>
+        public DateTime?                CentralSystemTime           { get; private set; }
 
         /// <summary>
         /// The default request timeout for all requests.
         /// </summary>
         public TimeSpan                 DefaultRequestTimeout       { get; }
+
+
+
+
+        /// <summary>
+        /// The maintenance interval.
+        /// </summary>
+        public TimeSpan                 MaintenanceEvery            { get; }
+
+        /// <summary>
+        /// Disable all maintenance tasks.
+        /// </summary>
+        public Boolean                  DisableMaintenanceTasks     { get; set; }
+
+        /// <summary>
+        /// Disable all heartbeats.
+        /// </summary>
+        public Boolean                  DisableSendHeartbeats       { get; set; }
 
         #endregion
 
@@ -449,42 +482,49 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             this.DefaultRequestTimeout    = DefaultRequestTimeout ?? TimeSpan.FromMinutes(1);
 
+            this.DisableSendHeartbeats    = true;
+            this.SendHeartbeatTimer       = new Timer(DoSendHeartbeatSync,
+                                                      null,
+                                                      this.SendHeartbeatEvery,
+                                                      this.SendHeartbeatEvery);
+
         }
 
         #endregion
 
 
-        #region InitSOAP(...)
 
-        public void InitSOAP(String                               From,
-                             String                               To,
+        #region ConnectSOAP(...)
 
-                             URL                                  RemoteURL,
-                             HTTPHostname?                        VirtualHostname              = null,
-                             String                               Description                  = null,
-                             RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                             LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                             X509Certificate                      ClientCert                   = null,
-                             String                               HTTPUserAgent                = null,
-                             HTTPPath?                            URLPathPrefix                = null,
-                             Tuple<String, String>                WSSLoginPassword             = null,
-                             TimeSpan?                            RequestTimeout               = null,
-                             TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
-                             UInt16?                              MaxNumberOfRetries           = null,
-                             Boolean                              UseHTTPPipelining            = false,
-                             String                               LoggingPath                  = null,
-                             String                               LoggingContext               = null,
-                             LogfileCreatorDelegate               LogFileCreator               = null,
-                             HTTPClientLogger                     HTTPLogger                   = null,
+        public void ConnectSOAP(String                               From,
+                                String                               To,
 
-                             String                               HTTPServerName               = null,
-                             IPPort?                              TCPPort                      = null,
-                             String                               ServiceName                  = null,
-                             HTTPPath?                            URLPrefix                    = null,
-                             HTTPContentType                      ContentType                  = null,
-                             Boolean                              RegisterHTTPRootService      = true,
-                             DNSClient                            DNSClient                    = null,
-                             Boolean                              AutoStart                    = false)
+                                URL                                  RemoteURL,
+                                HTTPHostname?                        VirtualHostname              = null,
+                                String                               Description                  = null,
+                                RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
+                                LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
+                                X509Certificate                      ClientCert                   = null,
+                                String                               HTTPUserAgent                = null,
+                                HTTPPath?                            URLPathPrefix                = null,
+                                Tuple<String, String>                WSSLoginPassword             = null,
+                                TimeSpan?                            RequestTimeout               = null,
+                                TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
+                                UInt16?                              MaxNumberOfRetries           = null,
+                                Boolean                              UseHTTPPipelining            = false,
+                                String                               LoggingPath                  = null,
+                                String                               LoggingContext               = null,
+                                LogfileCreatorDelegate               LogFileCreator               = null,
+                                HTTPClientLogger                     HTTPLogger                   = null,
+
+                                String                               HTTPServerName               = null,
+                                IPPort?                              TCPPort                      = null,
+                                String                               ServiceName                  = null,
+                                HTTPPath?                            URLPrefix                    = null,
+                                HTTPContentType                      ContentType                  = null,
+                                Boolean                              RegisterHTTPRootService      = true,
+                                DNSClient                            DNSClient                    = null,
+                                Boolean                              AutoStart                    = false)
 
         {
 
@@ -525,9 +565,68 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region ConnectWebSocket(...)
+
+        public async Task ConnectWebSocket(String                               From,
+                                           String                               To,
+
+                                           URL                                  RemoteURL,
+                                           HTTPHostname?                        VirtualHostname              = null,
+                                           String                               Description                  = null,
+                                           RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
+                                           LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
+                                           X509Certificate                      ClientCert                   = null,
+                                           String                               HTTPUserAgent                = null,
+                                           HTTPPath?                            URLPathPrefix                = null,
+                                           Tuple<String, String>                HTTPBasicAuth                = null,
+                                           TimeSpan?                            RequestTimeout               = null,
+                                           TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
+                                           UInt16?                              MaxNumberOfRetries           = null,
+                                           Boolean                              UseHTTPPipelining            = false,
+                                           String                               LoggingPath                  = null,
+                                           String                               LoggingContext               = null,
+                                           LogfileCreatorDelegate               LogFileCreator               = null,
+                                           HTTPClientLogger                     HTTPLogger                   = null,
+                                           DNSClient                            DNSClient                    = null)
+
+        {
+
+            var WSClient   = new ChargePointWSClient(ChargeBoxId,
+                                                     From,
+                                                     To,
+
+                                                     RemoteURL,
+                                                     VirtualHostname,
+                                                     Description,
+                                                     RemoteCertificateValidator,
+                                                     ClientCertificateSelector,
+                                                     ClientCert,
+                                                     HTTPUserAgent,
+                                                     URLPathPrefix,
+                                                     HTTPBasicAuth,
+                                                     RequestTimeout,
+                                                     TransmissionRetryDelay,
+                                                     MaxNumberOfRetries,
+                                                     UseHTTPPipelining,
+                                                     LoggingPath,
+                                                     LoggingContext,
+                                                     LogFileCreator,
+                                                     HTTPLogger,
+                                                     DNSClient);
+
+            this.CPClient  = WSClient;
+
+            WireEvents(WSClient);
+
+            await WSClient.Connect();
+
+        }
+
+        #endregion
+
         #region WireEvents(CPServer)
 
-        public void WireEvents(ChargePointSOAPServer CPServer)
+        public void WireEvents(IChargePointServerEvents CPServer)
         {
 
             #region OnReset
@@ -879,140 +978,62 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region InitSOAP(...)
 
-        public void InitSOAP(String From,
-                             String To,
+        #region (Timer) DoMaintenance(State)
 
-                             URL RemoteURL,
-                             HTTPHostname? VirtualHostname = null,
-                             String Description = null,
-                             RemoteCertificateValidationCallback RemoteCertificateValidator = null,
-                             LocalCertificateSelectionCallback ClientCertificateSelector = null,
-                             X509Certificate ClientCert = null,
-                             String HTTPUserAgent = null,
-                             HTTPPath? URLPathPrefix = null,
-                             Tuple<String, String> WSSLoginPassword = null,
-                             TimeSpan? RequestTimeout = null,
-                             TransmissionRetryDelayDelegate TransmissionRetryDelay = null,
-                             UInt16? MaxNumberOfRetries = null,
-                             Boolean UseHTTPPipelining = false,
-                             String LoggingPath = null,
-                             String LoggingContext = null,
-                             LogfileCreatorDelegate LogFileCreator = null,
-                             HTTPClientLogger HTTPLogger = null,
-
-                             String HTTPServerName = null,
-                             IPPort? TCPPort = null,
-                             String ServiceName = null,
-                             HTTPPath? URLPrefix = null,
-                             HTTPContentType ContentType = null,
-                             Boolean RegisterHTTPRootService = true,
-                             DNSClient DNSClient = null,
-                             Boolean AutoStart = false)
-
+        private void DoMaintenanceSync(Object State)
         {
+            if (!DisableMaintenanceTasks)
+                DoMaintenance(State).Wait();
+        }
 
-            this.CPClient = new ChargePointSOAPClient(ChargeBoxId,
-                                                      From,
-                                                      To,
-
-                                                      RemoteURL,
-                                                      VirtualHostname,
-                                                      Description,
-                                                      RemoteCertificateValidator,
-                                                      ClientCertificateSelector,
-                                                      ClientCert,
-                                                      HTTPUserAgent,
-                                                      URLPathPrefix,
-                                                      WSSLoginPassword,
-                                                      RequestTimeout,
-                                                      TransmissionRetryDelay,
-                                                      MaxNumberOfRetries,
-                                                      UseHTTPPipelining,
-                                                      LoggingPath,
-                                                      LoggingContext,
-                                                      LogFileCreator,
-                                                      HTTPLogger);
-
-            this.CPServer = new ChargePointSOAPServer(HTTPServerName,
-                                                      TCPPort,
-                                                      ServiceName,
-                                                      URLPrefix,
-                                                      ContentType,
-                                                      RegisterHTTPRootService,
-                                                      DNSClient,
-                                                      AutoStart);
-
-            WireEvents(CPServer);
+        protected internal virtual async Task _DoMaintenance(Object State)
+        {
 
         }
 
-        #endregion#region InitWebSocket(...)
-
-        public void InitWebSocket(String                               From,
-                                  String                               To,
-
-                                  URL                                  RemoteURL,
-                                  HTTPHostname?                        VirtualHostname              = null,
-                                  String                               Description                  = null,
-                                  RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                                  LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                                  X509Certificate                      ClientCert                   = null,
-                                  String                               HTTPUserAgent                = null,
-                                  HTTPPath?                            URLPathPrefix                = null,
-                                  Tuple<String, String>                WSSLoginPassword             = null,
-                                  TimeSpan?                            RequestTimeout               = null,
-                                  TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
-                                  UInt16?                              MaxNumberOfRetries           = null,
-                                  Boolean                              UseHTTPPipelining            = false,
-                                  String                               LoggingPath                  = null,
-                                  String                               LoggingContext               = null,
-                                  LogfileCreatorDelegate               LogFileCreator               = null,
-                                  HTTPClientLogger                     HTTPLogger                   = null,
-                                  DNSClient                            DNSClient                    = null,
-                                  Boolean                              AutoStart                    = false)
-
+        private async Task DoMaintenance(Object State)
         {
 
-            this.CPClient = new ChargePoint(ChargeBoxId,
-                                                      From,
-                                                      To,
+            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
+                                           ConfigureAwait(false))
+            {
+                try
+                {
 
-                                                      RemoteURL,
-                                                      VirtualHostname,
-                                                      Description,
-                                                      RemoteCertificateValidator,
-                                                      ClientCertificateSelector,
-                                                      ClientCert,
-                                                      HTTPUserAgent,
-                                                      URLPathPrefix,
-                                                      WSSLoginPassword,
-                                                      RequestTimeout,
-                                                      TransmissionRetryDelay,
-                                                      MaxNumberOfRetries,
-                                                      UseHTTPPipelining,
-                                                      LoggingPath,
-                                                      LoggingContext,
-                                                      LogFileCreator,
-                                                      HTTPLogger);
+                    await _DoMaintenance(State);
 
-            this.CPServer = new ChargePointSOAPServer(HTTPServerName,
-                                                      TCPPort,
-                                                      ServiceName,
-                                                      URLPrefix,
-                                                      ContentType,
-                                                      RegisterHTTPRootService,
-                                                      DNSClient,
-                                                      AutoStart);
+                }
+                catch (Exception e)
+                {
 
-            WireEvents(CPServer);
+                    while (e.InnerException != null)
+                        e = e.InnerException;
+
+                    DebugX.LogException(e);
+
+                }
+                finally
+                {
+                    MaintenanceSemaphore.Release();
+                }
+            }
+            else
+                DebugX.LogT("Could not aquire the maintenance tasks lock!");
 
         }
 
         #endregion
 
+        #region (Timer) DoSendHeartbeatSync(State)
 
+        private void DoSendHeartbeatSync(Object State)
+        {
+            if (!DisableSendHeartbeats)
+                SendHeartbeat().Wait();
+        }
+
+        #endregion
 
 
         #region SendBootNotification             (CancellationToken= null, EventTrackingId = null, RequestTimeout = null)
@@ -1078,6 +1099,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                 EventTrackingId,
                                                                 RequestTimeout ?? DefaultRequestTimeout);
 
+            if (response != null)
+            {
+                switch (response.Status)
+                {
+
+                    case RegistrationStatus.Accepted:
+                        this.CentralSystemTime      = response.CurrentTime;
+                        this.SendHeartbeatEvery     = response.HeartbeatInterval >= TimeSpan.FromSeconds(5) ? response.HeartbeatInterval : TimeSpan.FromSeconds(5);
+                        this.SendHeartbeatTimer.Change(this.SendHeartbeatEvery, this.SendHeartbeatEvery);
+                        this.DisableSendHeartbeats  = false;
+                        break;
+
+                    case RegistrationStatus.Pending:
+                        // Do not reconnect before: response.HeartbeatInterval
+                        break;
+
+                    case RegistrationStatus.Rejected:
+                        // Do not reconnect before: response.HeartbeatInterval
+                        break;
+
+                }
+            }
+
 
             #region Send OnBootNotificationResponse event
 
@@ -1087,7 +1131,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 OnBootNotificationResponse?.Invoke(Timestamp.Now,
                                                    this,
                                                    request,
-                                                   response.Content,
+                                                   response,
                                                    Timestamp.Now - requestTimestamp);
 
             }
@@ -1098,7 +1142,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return response.Content;
+            return response;
 
         }
 
@@ -1157,6 +1201,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                         EventTrackingId,
                                                         RequestTimeout ?? DefaultRequestTimeout);
 
+            if (response != null)
+            {
+                this.CentralSystemTime = response.CurrentTime;
+            }
+
 
             #region Send OnHeartbeatResponse event
 
@@ -1166,7 +1215,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 OnHeartbeatResponse?.Invoke(Timestamp.Now,
                                             this,
                                             request,
-                                            response.Content,
+                                            response,
                                             Timestamp.Now - requestTimestamp);
 
             }
@@ -1177,7 +1226,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return response.Content;
+            return response;
 
         }
 
@@ -1251,7 +1300,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 OnAuthorizeResponse?.Invoke(Timestamp.Now,
                                             this,
                                             request,
-                                            response.Content,
+                                            response,
                                             Timestamp.Now - requestTimestamp);
 
             }
@@ -1262,7 +1311,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return response.Content;
+            return response;
 
         }
 
@@ -1347,7 +1396,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 OnStartTransactionResponse?.Invoke(Timestamp.Now,
                                                    this,
                                                    request,
-                                                   response.Content,
+                                                   response,
                                                    Timestamp.Now - requestTimestamp);
 
             }
@@ -1358,7 +1407,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return response.Content;
+            return response;
 
         }
 
@@ -1449,7 +1498,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 OnStatusNotificationResponse?.Invoke(Timestamp.Now,
                                                      this,
                                                      request,
-                                                     response.Content,
+                                                     response,
                                                      Timestamp.Now - requestTimestamp);
 
             }
@@ -1460,7 +1509,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return response.Content;
+            return response;
 
         }
 
@@ -1539,7 +1588,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 OnMeterValuesResponse?.Invoke(Timestamp.Now,
                                               this,
                                               request,
-                                              response.Content,
+                                              response,
                                               Timestamp.Now - requestTimestamp);
 
             }
@@ -1550,7 +1599,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return response.Content;
+            return response;
 
         }
 
@@ -1638,7 +1687,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 OnStopTransactionResponse?.Invoke(Timestamp.Now,
                                                   this,
                                                   request,
-                                                  response.Content,
+                                                  response,
                                                   Timestamp.Now - requestTimestamp);
 
             }
@@ -1649,7 +1698,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return response.Content;
+            return response;
 
         }
 
@@ -1729,7 +1778,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 OnDataTransferResponse?.Invoke(Timestamp.Now,
                                                this,
                                                request,
-                                               response.Content,
+                                               response,
                                                Timestamp.Now - requestTimestamp);
 
             }
@@ -1740,7 +1789,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return response.Content;
+            return response;
 
         }
 
@@ -1813,7 +1862,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 OnDiagnosticsStatusNotificationResponse?.Invoke(Timestamp.Now,
                                                                 this,
                                                                 request,
-                                                                response.Content,
+                                                                response,
                                                                 Timestamp.Now - requestTimestamp);
 
             }
@@ -1824,7 +1873,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return response.Content;
+            return response;
 
         }
 
@@ -1897,7 +1946,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
                                                              this,
                                                              request,
-                                                             response.Content,
+                                                             response,
                                                              Timestamp.Now - requestTimestamp);
 
             }
@@ -1908,7 +1957,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            return response.Content;
+            return response;
 
         }
 

@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, DataTransferResponseXML, e);
+                OnException?.Invoke(Timestamp.Now, DataTransferResponseXML, e);
 
                 DataTransferResponse = null;
                 return false;
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, DataTransferResponseJSON, e);
+                OnException?.Invoke(Timestamp.Now, DataTransferResponseJSON, e);
 
                 DataTransferResponse = null;
                 return false;
@@ -379,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, DataTransferResponseText, e);
+                OnException?.Invoke(Timestamp.Now, DataTransferResponseText, e);
             }
 
             DataTransferResponse = null;

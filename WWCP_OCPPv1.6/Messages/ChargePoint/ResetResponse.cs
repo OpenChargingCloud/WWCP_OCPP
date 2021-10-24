@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ResetResponseXML, e);
+                OnException?.Invoke(Timestamp.Now, ResetResponseXML, e);
 
                 ResetResponse = null;
                 return false;
@@ -294,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ResetResponseJSON, e);
+                OnException?.Invoke(Timestamp.Now, ResetResponseJSON, e);
 
                 ResetResponse = null;
                 return false;
@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ResetResponseText, e);
+                OnException?.Invoke(Timestamp.Now, ResetResponseText, e);
             }
 
             ResetResponse = null;

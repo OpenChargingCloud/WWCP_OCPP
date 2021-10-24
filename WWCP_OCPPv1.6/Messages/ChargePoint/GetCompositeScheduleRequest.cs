@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, XML, e);
+                OnException?.Invoke(Timestamp.Now, XML, e);
 
                 GetCompositeScheduleRequest = null;
                 return false;
@@ -473,7 +473,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, Text, e);
+                OnException?.Invoke(Timestamp.Now, Text, e);
             }
 
             GetCompositeScheduleRequest = null;

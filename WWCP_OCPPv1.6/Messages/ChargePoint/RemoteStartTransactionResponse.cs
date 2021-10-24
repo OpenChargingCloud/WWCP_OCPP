@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, RemoteStartTransactionResponseXML, e);
+                OnException?.Invoke(Timestamp.Now, RemoteStartTransactionResponseXML, e);
 
                 RemoteStartTransactionResponse = null;
                 return false;
@@ -294,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, RemoteStartTransactionResponseJSON, e);
+                OnException?.Invoke(Timestamp.Now, RemoteStartTransactionResponseJSON, e);
 
                 RemoteStartTransactionResponse = null;
                 return false;
@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, RemoteStartTransactionResponseText, e);
+                OnException?.Invoke(Timestamp.Now, RemoteStartTransactionResponseText, e);
             }
 
             RemoteStartTransactionResponse = null;

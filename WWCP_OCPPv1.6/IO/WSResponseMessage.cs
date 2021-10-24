@@ -20,6 +20,7 @@
 using System;
 
 using Newtonsoft.Json.Linq;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -29,17 +30,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
     public class WSResponseMessage
     {
 
-        public Request_Id  RequestId    { get; }
+        public Byte        MessageType    { get; }
 
-        public JObject     Data         { get; }
+        public Request_Id  RequestId      { get; }
+
+        public JObject     Message        { get; }
 
 
         public WSResponseMessage(Request_Id  RequestId,
-                                 JObject     Data)
+                                 JObject     Message,
+                                 Byte        MessageType = 3)
         {
 
-            this.RequestId  = RequestId;
-            this.Data       = Data ?? new JObject();
+            this.RequestId    = RequestId;
+            this.Message      = Message ?? new JObject();
+            this.MessageType  = MessageType;
 
         }
 
@@ -58,14 +63,79 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
 
             => new JArray(3,
                           RequestId.ToString(),
-                          Data);
+                          Message);
+
+
+        public Byte[] ToByteArray(Newtonsoft.Json.Formatting Format = Newtonsoft.Json.Formatting.None)
+
+            => ToJSON().
+               ToString(Format).
+               ToUTF8Bytes();
+
+
+        public static Boolean TryParse(String Text, out WSResponseMessage ResponseFrame)
+        {
+
+            ResponseFrame = null;
+
+            if (Text is null)
+                return false;
+
+            // [
+            //     3,                         // MessageType: CALLRESULT (Server-to-Client)
+            //    "19223201",                 // RequestId copied from request
+            //    {
+            //        "status":            "Accepted",
+            //        "currentTime":       "2013-02-01T20:53:32.486Z",
+            //        "heartbeatInterval":  300
+            //    }
+            // ]
+
+            try
+            {
+
+                var JSON = JArray.Parse(Text);
+
+                if (JSON.Count != 3)
+                    return false;
+
+                if (!(Byte.TryParse(JSON[0].Value<String>(), out Byte messageType)))
+                    return false;
+
+                var responseId  = Request_Id.Parse(JSON[1].Value<String>());
+                var message     = JSON[2] as JObject;
+
+                if (message is null)
+                    return false;
+
+                ResponseFrame   = new WSResponseMessage(responseId,
+                                                        message,
+                                                        messageType);
+
+                return true;
+
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+
+
+
+
+
+
+
+
 
 
         public override String ToString()
 
             => String.Concat(RequestId,
                              " => ",
-                             Data.ToString());
+                             Message.ToString());
 
     }
 

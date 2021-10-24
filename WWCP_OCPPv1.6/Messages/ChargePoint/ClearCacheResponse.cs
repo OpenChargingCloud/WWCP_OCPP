@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ClearCacheResponseXML, e);
+                OnException?.Invoke(Timestamp.Now, ClearCacheResponseXML, e);
 
                 ClearCacheResponse = null;
                 return false;
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ClearCacheResponseJSON, e);
+                OnException?.Invoke(Timestamp.Now, ClearCacheResponseJSON, e);
 
                 ClearCacheResponse = null;
                 return false;
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ClearCacheResponseText, e);
+                OnException?.Invoke(Timestamp.Now, ClearCacheResponseText, e);
             }
 
             ClearCacheResponse = null;

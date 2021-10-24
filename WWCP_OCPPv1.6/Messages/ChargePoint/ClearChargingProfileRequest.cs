@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, XML, e);
+                OnException?.Invoke(Timestamp.Now, XML, e);
 
                 ClearChargingProfileRequest = null;
                 return false;
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ClearChargingProfileRequestText, e);
+                OnException?.Invoke(Timestamp.Now, ClearChargingProfileRequestText, e);
             }
 
             ClearChargingProfileRequest = null;

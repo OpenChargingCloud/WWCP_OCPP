@@ -367,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, GetCompositeScheduleResponseXML, e);
+                OnException?.Invoke(Timestamp.Now, GetCompositeScheduleResponseXML, e);
 
                 GetCompositeScheduleResponse = null;
                 return false;
@@ -465,7 +465,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, GetCompositeScheduleResponseJSON, e);
+                OnException?.Invoke(Timestamp.Now, GetCompositeScheduleResponseJSON, e);
 
                 GetCompositeScheduleResponse = null;
                 return false;
@@ -521,7 +521,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, GetCompositeScheduleResponseText, e);
+                OnException?.Invoke(Timestamp.Now, GetCompositeScheduleResponseText, e);
             }
 
             GetCompositeScheduleResponse = null;

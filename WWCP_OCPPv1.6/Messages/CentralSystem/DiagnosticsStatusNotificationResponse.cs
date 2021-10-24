@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, DiagnosticsStatusNotificationResponseXML, e);
+                OnException?.Invoke(Timestamp.Now, DiagnosticsStatusNotificationResponseXML, e);
 
                 DiagnosticsStatusNotificationResponse = null;
                 return false;
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, DiagnosticsStatusNotificationResponseJSON, e);
+                OnException?.Invoke(Timestamp.Now, DiagnosticsStatusNotificationResponseJSON, e);
 
                 DiagnosticsStatusNotificationResponse = null;
                 return false;
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, DiagnosticsStatusNotificationResponseText, e);
+                OnException?.Invoke(Timestamp.Now, DiagnosticsStatusNotificationResponseText, e);
             }
 
             DiagnosticsStatusNotificationResponse = null;

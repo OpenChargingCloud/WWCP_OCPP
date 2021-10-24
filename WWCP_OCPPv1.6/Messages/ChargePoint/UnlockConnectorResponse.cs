@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, UnlockConnectorResponseXML, e);
+                OnException?.Invoke(Timestamp.Now, UnlockConnectorResponseXML, e);
 
                 UnlockConnectorResponse = null;
                 return false;
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, UnlockConnectorResponseJSON, e);
+                OnException?.Invoke(Timestamp.Now, UnlockConnectorResponseJSON, e);
 
                 UnlockConnectorResponse = null;
                 return false;
@@ -351,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, UnlockConnectorResponseText, e);
+                OnException?.Invoke(Timestamp.Now, UnlockConnectorResponseText, e);
             }
 
             UnlockConnectorResponse = null;
