@@ -131,6 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     OnBootNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                       this,
+                                                      EventTracking_Id.New,
                                                       Request);
 
                 }
@@ -144,7 +145,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 await Task.Delay(100);
 
-                C
 
                 return new BootNotificationResponse(Request:            Request,
                                                     Status:             RegistrationStatus.Accepted,
