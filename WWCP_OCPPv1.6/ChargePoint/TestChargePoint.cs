@@ -472,6 +472,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                              TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
                              UInt16?                              MaxNumberOfRetries           = null,
                              Boolean                              UseHTTPPipelining            = false,
+                             String                               LoggingPath                  = null,
                              String                               LoggingContext               = null,
                              LogfileCreatorDelegate               LogFileCreator               = null,
                              HTTPClientLogger                     HTTPLogger                   = null,
@@ -504,6 +505,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                       TransmissionRetryDelay,
                                                       MaxNumberOfRetries,
                                                       UseHTTPPipelining,
+                                                      LoggingPath,
                                                       LoggingContext,
                                                       LogFileCreator,
                                                       HTTPLogger);

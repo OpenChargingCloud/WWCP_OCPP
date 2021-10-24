@@ -59,13 +59,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Create a new charge point SOAP server logger using the default logging delegates.
         /// </summary>
         /// <param name="CPServer">A OCPP charge point SOAP server.</param>
+        /// <param name="LoggingPath">The logging path.</param>
         /// <param name="Context">A context of this API.</param>
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CPServerLogger(ChargePointSOAPServer                 CPServer,
-                               String                  Context         = DefaultContext,
-                               LogfileCreatorDelegate  LogFileCreator  = null)
+        public CPServerLogger(ChargePointSOAPServer   CPServer,
+                              String                  LoggingPath,
+                              String                  Context         = DefaultContext,
+                              LogfileCreatorDelegate  LogFileCreator  = null)
 
             : this(CPServer,
+                   LoggingPath,
                    Context.IsNotNullOrEmpty() ? Context : DefaultContext,
                    null,
                    null,
@@ -84,6 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Create a new charge point SOAP server logger using the given logging delegates.
         /// </summary>
         /// <param name="CPServer">A OCPP charge point SOAP server.</param>
+        /// <param name="LoggingPath">The logging path.</param>
         /// <param name="Context">A context of this API.</param>
         /// 
         /// <param name="LogHTTPRequest_toConsole">A delegate to log incoming HTTP requests to console.</param>
@@ -102,7 +106,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="LogHTTPError_toHTTPSSE">A delegate to log HTTP errors to a HTTP server sent events source.</param>
         /// 
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CPServerLogger(ChargePointSOAPServer                    CPServer,
+        public CPServerLogger(ChargePointSOAPServer       CPServer,
+                              String                      LoggingPath,
                               String                      Context,
 
                               HTTPRequestLoggerDelegate   LogHTTPRequest_toConsole,
@@ -123,6 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                               LogfileCreatorDelegate      LogFileCreator              = null)
 
             : base(CPServer.SOAPServer.HTTPServer,
+                   LoggingPath,
                    Context.IsNotNullOrEmpty() ? Context : DefaultContext,
 
                    LogHTTPRequest_toConsole,

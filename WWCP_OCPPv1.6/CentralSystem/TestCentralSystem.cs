@@ -151,7 +151,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     OnBootNotificationRequest?.Invoke(requestTimestamp,
                                                       this,
-                                                      EventTracking_Id.New,
                                                       Request);
 
                 }

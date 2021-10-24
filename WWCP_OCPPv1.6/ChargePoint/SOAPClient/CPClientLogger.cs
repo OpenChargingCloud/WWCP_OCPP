@@ -66,13 +66,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             /// Create a new CP client logger using the default logging delegates.
             /// </summary>
             /// <param name="CPClient">A OCPP CP client.</param>
+            /// <param name="LoggingPath">The logging path.</param>
             /// <param name="Context">A context of this API.</param>
             /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-            public CPClientLogger(ChargePointSOAPClient                CPClient,
+            public CPClientLogger(ChargePointSOAPClient   CPClient,
+                                  String                  LoggingPath,
                                   String                  Context         = DefaultContext,
                                   LogfileCreatorDelegate  LogFileCreator  = null)
 
                 : this(CPClient,
+                       LoggingPath,
                        Context.IsNotNullOrEmpty() ? Context : DefaultContext,
                        null,
                        null,
@@ -91,6 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             /// Create a new CP client logger using the given logging delegates.
             /// </summary>
             /// <param name="CPClient">A OCPP CP client.</param>
+            /// <param name="LoggingPath">The logging path.</param>
             /// <param name="Context">A context of this API.</param>
             /// 
             /// <param name="LogHTTPRequest_toConsole">A delegate to log incoming HTTP requests to console.</param>
@@ -110,6 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             /// 
             /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
             public CPClientLogger(ICPClient                   CPClient,
+                                  String                      LoggingPath,
                                   String                      Context,
 
                                   HTTPRequestLoggerDelegate   LogHTTPRequest_toConsole,
@@ -130,6 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                   LogfileCreatorDelegate      LogFileCreator              = null)
 
                 : base(CPClient,
+                       LoggingPath,
                        Context.IsNotNullOrEmpty() ? Context : DefaultContext,
 
                        LogHTTPRequest_toConsole,

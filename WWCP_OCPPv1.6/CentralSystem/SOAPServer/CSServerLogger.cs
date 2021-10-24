@@ -59,13 +59,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a new central service SOAP server logger using the default logging delegates.
         /// </summary>
         /// <param name="CSServer">A OCPP central service SOAP server.</param>
+        /// <param name="LoggingPath">The logging path.</param>
         /// <param name="Context">A context of this API.</param>
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CSServerLogger(CentralSystemSOAPServer                CSServer,
-                              String                  Context         = DefaultContext,
-                              LogfileCreatorDelegate  LogFileCreator  = null)
+        public CSServerLogger(CentralSystemSOAPServer  CSServer,
+                              String                   LoggingPath,
+                              String                   Context         = DefaultContext,
+                              LogfileCreatorDelegate   LogFileCreator  = null)
 
             : this(CSServer,
+                   LoggingPath,
                    Context.IsNotNullOrEmpty() ? Context : DefaultContext,
                    null,
                    null,
@@ -84,6 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a new central service SOAP server logger using the given logging delegates.
         /// </summary>
         /// <param name="CSServer">A OCPP central service SOAP server.</param>
+        /// <param name="LoggingPath">The logging path.</param>
         /// <param name="Context">A context of this API.</param>
         /// 
         /// <param name="LogHTTPRequest_toConsole">A delegate to log incoming HTTP requests to console.</param>
@@ -102,7 +106,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="LogHTTPError_toHTTPSSE">A delegate to log HTTP errors to a HTTP server sent events source.</param>
         /// 
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CSServerLogger(CentralSystemSOAPServer                    CSServer,
+        public CSServerLogger(CentralSystemSOAPServer     CSServer,
+                              String                      LoggingPath,
                               String                      Context,
 
                               HTTPRequestLoggerDelegate   LogHTTPRequest_toConsole,
@@ -123,6 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                               LogfileCreatorDelegate      LogFileCreator              = null)
 
             : base(CSServer.SOAPServer.HTTPServer,
+                   LoggingPath,
                    Context.IsNotNullOrEmpty() ? Context : DefaultContext,
 
                    LogHTTPRequest_toConsole,

@@ -576,6 +576,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="TransmissionRetryDelay">The delay between transmission retries.</param>
         /// <param name="MaxNumberOfRetries">The maximum number of transmission retries for HTTP request.</param>
         /// <param name="UseHTTPPipelining">Whether to pipeline multiple HTTP request through a single HTTP/TCP connection.</param>
+        /// <param name="LoggingPath">The logging path.</param>
         /// <param name="LoggingContext">An optional context for logging client methods.</param>
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
@@ -597,6 +598,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
                                        UInt16?                              MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
                                        Boolean                              UseHTTPPipelining            = false,
+
+                                       String                               LoggingPath                  = null,
                                        String                               LoggingContext               = CSClientLogger.DefaultContext,
                                        LogfileCreatorDelegate               LogFileCreator               = null,
                                        HTTPClientLogger                     HTTPLogger                   = null,
@@ -638,6 +641,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             this.To                 = To;
 
             this.Logger             = new CSClientLogger(this,
+                                                         LoggingPath,
                                                          LoggingContext,
                                                          LogFileCreator);
 
