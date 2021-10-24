@@ -85,11 +85,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                      TimeSpan?     RetryInterval      = null,
 
                                      Request_Id?   RequestId          = null,
-                                     DateTime?     RequestTimestamp   = null)
+                                     DateTime?     RequestTimestamp   = null,
+                                     EventTracking_Id  EventTrackingId           = null)
 
             : base(ChargeBoxId,
                    "UpdateFirmware",
                    RequestId,
+                   EventTrackingId,
                    RequestTimestamp)
 
         {

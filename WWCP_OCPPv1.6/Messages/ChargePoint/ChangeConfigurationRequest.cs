@@ -65,11 +65,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           String        Value,
 
                                           Request_Id?   RequestId          = null,
-                                          DateTime?     RequestTimestamp   = null)
+                                          DateTime?     RequestTimestamp   = null,
+                                          EventTracking_Id  EventTrackingId           = null)
 
             : base(ChargeBoxId,
                    "ChangeConfiguration",
                    RequestId,
+                   EventTrackingId,
                    RequestTimestamp)
 
         {

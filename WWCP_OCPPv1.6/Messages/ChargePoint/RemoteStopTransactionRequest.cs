@@ -60,11 +60,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             Transaction_Id  TransactionId,
 
                                             Request_Id?     RequestId          = null,
-                                            DateTime?       RequestTimestamp   = null)
+                                            DateTime?       RequestTimestamp   = null,
+                                            EventTracking_Id  EventTrackingId           = null)
 
             : base(ChargeBoxId,
                    "RemoteStopTransaction",
                    RequestId,
+                   EventTrackingId,
                    RequestTimestamp)
 
         {

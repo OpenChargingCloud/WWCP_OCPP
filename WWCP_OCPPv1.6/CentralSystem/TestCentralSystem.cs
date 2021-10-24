@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// A central system for testing.
     /// </summary>
-    public class TestCentralSystem
+    public class TestCentralSystem : IEventSender
     {
 
         #region Data
@@ -51,6 +51,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public CentralSystem_Id  CentralSystemId    { get; }
 
+        /// <summary>
+        /// The sender identification.
+        /// </summary>
+        String IEventSender.Id
+            => CentralSystemId.ToString();
 
         /// <summary>
         /// An enumeration of central system servers.
@@ -73,6 +78,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// An event sent whenever a response to a boot notification was sent.
         /// </summary>
         event BootNotificationResponseDelegate  OnBootNotificationResponse;
+
+        #endregion
+
+        #region OnHeartbeat
+
+        /// <summary>
+        /// An event sent whenever a heartbeat request was received.
+        /// </summary>
+        public event HeartbeatRequestDelegate   OnHeartbeatRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a heartbeat was sent.
+        /// </summary>
+        public event HeartbeatResponseDelegate  OnHeartbeatResponse;
 
         #endregion
 
@@ -118,18 +137,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region OnBootNotification
 
-            CentralSystemServer.OnBootNotification += async (Timestamp,
+            CentralSystemServer.OnBootNotification += async (LogTimestamp,
                                                              Sender,
-                                                             CancellationToken,
-                                                             EventTrackingId,
-                                                             Request) => {
+                                                             Request,
+                                                             CancellationToken) => {
 
                 #region Send OnBootNotificationRequest event
+
+                var requestTimestamp = Timestamp.Now;
 
                 try
                 {
 
-                    OnBootNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                    OnBootNotificationRequest?.Invoke(requestTimestamp,
                                                       this,
                                                       EventTracking_Id.New,
                                                       Request);
@@ -146,10 +166,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 await Task.Delay(100);
 
 
-                return new BootNotificationResponse(Request:            Request,
-                                                    Status:             RegistrationStatus.Accepted,
-                                                    CurrentTime:        org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                    HeartbeatInterval:  TimeSpan.FromMinutes(5));
+                var response = new BootNotificationResponse(Request:            Request,
+                                                            Status:             RegistrationStatus.Accepted,
+                                                            CurrentTime:        Timestamp.Now,
+                                                            HeartbeatInterval:  TimeSpan.FromMinutes(5));
+
+
+                #region Send OnBootNotificationResponse event
+
+                try
+                {
+
+                    OnBootNotificationResponse?.Invoke(Timestamp.Now,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       Timestamp.Now - requestTimestamp);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBootNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
 
             };
 
@@ -157,24 +199,70 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region OnHeartbeat
 
-            CentralSystemServer.OnHeartbeat += (Timestamp,
-                                                Sender,
-                                                CancellationToken,
-                                                EventTrackingId,
-                                                Request) =>
+            CentralSystemServer.OnHeartbeat += async (LogTimestamp,
+                                                      Sender,
+                                                      Request,
+                                                      CancellationToken) => {
 
-                Task.FromResult(new HeartbeatResponse(Request:      Request,
-                                                      CurrentTime:  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now));
+                #region Send OnHeartbeatRequest event
+
+                var requestTimestamp = Timestamp.Now;
+
+                try
+                {
+
+                    OnHeartbeatRequest?.Invoke(requestTimestamp,
+                                               this,
+                                               Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnHeartbeatRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(100);
+
+
+                var response = new HeartbeatResponse(Request:      Request,
+                                                     CurrentTime:  Timestamp.Now);
+
+
+                #region Send OnHeartbeatResponse event
+
+                try
+                {
+
+                    OnHeartbeatResponse?.Invoke(Timestamp.Now,
+                                                this,
+                                                Request,
+                                                response,
+                                                Timestamp.Now - requestTimestamp);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnHeartbeatResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
 
             #endregion
+
 
             #region OnStartTransaction
 
             CentralSystemServer.OnStartTransaction += (Timestamp,
                                                        Sender,
-                                                       CancellationToken,
-                                                       EventTrackingId,
-                                                       Request) =>
+                                                       Request,
+                                                       CancellationToken) =>
 
                 Task.FromResult(new StartTransactionResponse(Request:        Request,
                                                              TransactionId:  Transaction_Id.Random,
@@ -187,9 +275,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CentralSystemServer.OnStatusNotification += (Timestamp,
                                                          Sender,
-                                                         CancellationToken,
-                                                         EventTrackingId,
-                                                         Request) =>
+                                                         Request,
+                                                         CancellationToken) =>
 
                 Task.FromResult(new StatusNotificationResponse(Request));
 
@@ -199,9 +286,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CentralSystemServer.OnMeterValues += (Timestamp,
                                                   Sender,
-                                                  CancellationToken,
-                                                  EventTrackingId,
-                                                  Request) =>
+                                                  Request,
+                                                  CancellationToken) =>
 
                 Task.FromResult(new MeterValuesResponse(Request));
 
@@ -211,9 +297,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CentralSystemServer.OnStopTransaction += (Timestamp,
                                                       Sender,
-                                                      CancellationToken,
-                                                      EventTrackingId,
-                                                      Request) =>
+                                                      Request,
+                                                      CancellationToken) =>
 
                 Task.FromResult(new StopTransactionResponse(Request:    Request,
                                                             IdTagInfo:  new IdTagInfo(Status:      AuthorizationStatus.Accepted,
@@ -226,9 +311,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CentralSystemServer.OnIncomingDataTransfer += (Timestamp,
                                                            Sender,
-                                                           CancellationToken,
-                                                           EventTrackingId,
-                                                           Request) =>
+                                                           Request,
+                                                           CancellationToken) =>
 
                 Task.FromResult(new DataTransferResponse(Request:  Request,
                                                          Status:   DataTransferStatus.Accepted,
@@ -240,9 +324,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CentralSystemServer.OnDiagnosticsStatusNotification += (Timestamp,
                                                                     Sender,
-                                                                    CancellationToken,
-                                                                    EventTrackingId,
-                                                                    Request) =>
+                                                                    Request,
+                                                                    CancellationToken) =>
 
                 Task.FromResult(new DiagnosticsStatusNotificationResponse(Request));
 
@@ -252,9 +335,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CentralSystemServer.OnFirmwareStatusNotification += (Timestamp,
                                                                  Sender,
-                                                                 CancellationToken,
-                                                                 EventTrackingId,
-                                                                 Request) =>
+                                                                 Request,
+                                                                 CancellationToken) =>
 
                 Task.FromResult(new FirmwareStatusNotificationResponse(Request));
 
@@ -330,6 +412,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             Attach(centralSystemServer);
 
             return centralSystemServer;
+
+        }
+
+        #endregion
+
+
+        #region Reset(ChargeBoxId, ResetType, ...)
+
+        /// <summary>
+        /// Create a new reset request.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ResetType">The type of reset that the charge point should perform.</param>
+        public async Task<CP.ResetResponse> Reset(ChargeBox_Id      ChargeBoxId,
+                                                  ResetTypes        ResetType,
+                                                  EventTracking_Id  EventTrackingId    = null)
+        {
+
+            CentralSystemSOAPClient CPClient = null;
+
+            var response = await CPClient.Reset(new ResetRequest(ChargeBoxId,
+                                                                 ResetType,
+                                                                 Request_Id.Random(),
+                                                                 null,
+                                                                 EventTrackingId));
+
+            return response.Content;
 
         }
 

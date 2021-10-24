@@ -58,11 +58,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                       Connector_Id  ConnectorId,
 
                                       Request_Id?   RequestId          = null,
-                                      DateTime?     RequestTimestamp   = null)
+                                      DateTime?     RequestTimestamp   = null,
+                                      EventTracking_Id  EventTrackingId           = null)
 
             : base(ChargeBoxId,
                    "UnlockConnector",
                    RequestId,
+                   EventTrackingId,
                    RequestTimestamp)
 
         {

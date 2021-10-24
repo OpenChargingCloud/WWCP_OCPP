@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The type of reset that the charge point should perform.
         /// </summary>
-        public ResetTypes  Type    { get; }
+        public ResetTypes  ResetType    { get; }
 
         #endregion
 
@@ -50,24 +50,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a new reset request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="Type">The type of reset that the charge point should perform.</param>
+        /// <param name="ResetType">The type of reset that the charge point should perform.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public ResetRequest(ChargeBox_Id  ChargeBoxId,
-                            ResetTypes    Type,
+        public ResetRequest(ChargeBox_Id      ChargeBoxId,
+                            ResetTypes        ResetType,
 
-                            Request_Id?   RequestId          = null,
-                            DateTime?     RequestTimestamp   = null)
+                            Request_Id?       RequestId          = null,
+                            DateTime?         RequestTimestamp   = null,
+                            EventTracking_Id  EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "Reset",
                    RequestId,
+                   EventTrackingId,
                    RequestTimestamp)
 
         {
 
-            this.Type = Type;
+            this.ResetType = ResetType;
 
         }
 
@@ -427,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => new XElement(OCPPNS.OCPPv1_6_CP + "resetRequest",
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "type",  Type.AsText())
+                   new XElement(OCPPNS.OCPPv1_6_CP + "type",  ResetType.AsText())
 
                );
 
@@ -443,7 +445,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             var JSON = JSONObject.Create(
-                           new JProperty("type",  Type.AsText())
+                           new JProperty("type",  ResetType.AsText())
                        );
 
             return CustomResetRequestSerializer != null
@@ -535,7 +537,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (ResetRequest is null)
                 return false;
 
-            return Type.Equals(ResetRequest.Type);
+            return ResetType.Equals(ResetRequest.ResetType);
 
         }
 
@@ -551,7 +553,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => Type.GetHashCode();
+            => ResetType.GetHashCode();
 
         #endregion
 
@@ -562,7 +564,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => Type.ToString();
+            => ResetType.ToString();
 
         #endregion
 

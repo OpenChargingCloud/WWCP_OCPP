@@ -58,11 +58,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                  FirmwareStatus  Status,
 
                                                  Request_Id?     RequestId          = null,
-                                                 DateTime?       RequestTimestamp   = null)
+                                                 DateTime?       RequestTimestamp   = null,
+                                                 EventTracking_Id  EventTrackingId           = null)
 
             : base(ChargeBoxId,
                    "FirmwareStatusNotification",
                    RequestId,
+                   EventTrackingId,
                    RequestTimestamp)
 
         {

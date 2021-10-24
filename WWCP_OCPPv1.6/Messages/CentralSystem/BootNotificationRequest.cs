@@ -116,24 +116,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public BootNotificationRequest(ChargeBox_Id  ChargeBoxId,
-                                       String        ChargePointVendor,
-                                       String        ChargePointModel,
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        public BootNotificationRequest(ChargeBox_Id      ChargeBoxId,
+                                       String            ChargePointVendor,
+                                       String            ChargePointModel,
 
-                                       String        ChargePointSerialNumber   = null,
-                                       String        ChargeBoxSerialNumber     = null,
-                                       String        FirmwareVersion           = null,
-                                       String        Iccid                     = null,
-                                       String        IMSI                      = null,
-                                       String        MeterType                 = null,
-                                       String        MeterSerialNumber         = null,
+                                       String            ChargePointSerialNumber   = null,
+                                       String            ChargeBoxSerialNumber     = null,
+                                       String            FirmwareVersion           = null,
+                                       String            Iccid                     = null,
+                                       String            IMSI                      = null,
+                                       String            MeterType                 = null,
+                                       String            MeterSerialNumber         = null,
 
-                                       Request_Id?   RequestId                 = null,
-                                       DateTime?     RequestTimestamp          = null)
+                                       Request_Id?       RequestId                 = null,
+                                       DateTime?         RequestTimestamp          = null,
+                                       EventTracking_Id  EventTrackingId           = null)
 
             : base(ChargeBoxId,
                    "BootNotification",
                    RequestId,
+                   EventTrackingId,
                    RequestTimestamp)
 
         {

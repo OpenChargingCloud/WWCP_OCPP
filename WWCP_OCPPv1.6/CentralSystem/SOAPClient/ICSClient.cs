@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// The common interface of all OCPP CS clients.
     /// </summary>
-    public interface ICSClient : IHTTPClient
+    public interface ICSClient : IHTTPClient, IEventSender
     {
 
         #region Events

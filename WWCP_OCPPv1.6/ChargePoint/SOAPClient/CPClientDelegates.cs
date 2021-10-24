@@ -19,9 +19,8 @@
 
 using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 
@@ -35,28 +34,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a boot notification request will be send to the central system.
     /// </summary>
-    public delegate Task OnBootNotificationRequestDelegate (DateTime                    LogTimestamp,
-                                                            DateTime                    RequestTimestamp,
-                                                            ChargePointSOAPClient       Sender,
-                                                            String                      SenderId,
-                                                            EventTracking_Id            EventTrackingId,
-
-                                                            BootNotificationRequest     Request,
-                                                            TimeSpan?                   RequestTimeout);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The reserve now request.</param>
+    public delegate Task OnBootNotificationRequestDelegate (DateTime                  LogTimestamp,
+                                                            IEventSender              Sender,
+                                                            BootNotificationRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a boot notification request was received.
     /// </summary>
-    public delegate Task OnBootNotificationResponseDelegate(DateTime                    LogTimestamp,
-                                                            DateTime                    RequestTimestamp,
-                                                            ChargePointSOAPClient       Sender,
-                                                            String                      SenderId,
-                                                            EventTracking_Id            EventTrackingId,
-
-                                                            BootNotificationRequest     Request,
-                                                            TimeSpan?                   RequestTimeout,
-                                                            BootNotificationResponse    Result,
-                                                            TimeSpan                    Runtime);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnBootNotificationResponseDelegate(DateTime                   LogTimestamp,
+                                                            IEventSender               Sender,
+                                                            BootNotificationRequest    Request,
+                                                            BootNotificationResponse   Response,
+                                                            TimeSpan                   Runtime);
 
     #endregion
 
@@ -65,24 +62,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a heartbeat request will be send to the central system.
     /// </summary>
-    public delegate Task OnHeartbeatRequestDelegate (DateTime               LogTimestamp,
-                                                     DateTime               RequestTimestamp,
-                                                     ChargePointSOAPClient  Sender,
-                                                     String                 SenderId,
-                                                     EventTracking_Id       EventTrackingId,
-                                                     TimeSpan?              RequestTimeout);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The reserve now request.</param>
+    public delegate Task OnHeartbeatRequestDelegate (DateTime           LogTimestamp,
+                                                     IEventSender       Sender,
+                                                     HeartbeatRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a heartbeat request was received.
     /// </summary>
-    public delegate Task OnHeartbeatResponseDelegate(DateTime               LogTimestamp,
-                                                     DateTime               RequestTimestamp,
-                                                     ChargePointSOAPClient  Sender,
-                                                     String                 SenderId,
-                                                     EventTracking_Id       EventTrackingId,
-                                                     TimeSpan?              RequestTimeout,
-                                                     HeartbeatResponse      Result,
-                                                     TimeSpan               Runtime);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnHeartbeatResponseDelegate(DateTime            LogTimestamp,
+                                                     IEventSender        Sender,
+                                                     HeartbeatRequest    Request,
+                                                     HeartbeatResponse   Response,
+                                                     TimeSpan            Runtime);
 
     #endregion
 
@@ -92,30 +91,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever an authorize request will be send to the central system.
     /// </summary>
-    public delegate Task OnAuthorizeRequestDelegate (DateTime               LogTimestamp,
-                                                     DateTime               RequestTimestamp,
-                                                     ChargePointSOAPClient  Sender,
-                                                     String                 SenderId,
-                                                     EventTracking_Id       EventTrackingId,
-
-                                                     IdToken                IdTag,
-
-                                                     TimeSpan?              RequestTimeout);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnAuthorizeRequestDelegate (DateTime           LogTimestamp,
+                                                     IEventSender       Sender,
+                                                     AuthorizeRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to an authorize request was received.
     /// </summary>
-    public delegate Task OnAuthorizeResponseDelegate(DateTime               LogTimestamp,
-                                                     DateTime               RequestTimestamp,
-                                                     ChargePointSOAPClient  Sender,
-                                                     String                 SenderId,
-                                                     EventTracking_Id       EventTrackingId,
-
-                                                     IdToken                IdTag,
-
-                                                     TimeSpan?              RequestTimeout,
-                                                     AuthorizeResponse      Result,
-                                                     TimeSpan               Runtime);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnAuthorizeResponseDelegate(DateTime            LogTimestamp,
+                                                     IEventSender        Sender,
+                                                     AuthorizeRequest    Request,
+                                                     AuthorizeResponse   Response,
+                                                     TimeSpan            Runtime);
 
     #endregion
 
@@ -124,38 +119,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a start transaction request will be send to the central system.
     /// </summary>
-    public delegate Task OnStartTransactionRequestDelegate (DateTime                    LogTimestamp,
-                                                            DateTime                    RequestTimestamp,
-                                                            ChargePointSOAPClient       Sender,
-                                                            String                      SenderId,
-                                                            EventTracking_Id            EventTrackingId,
-
-                                                            Connector_Id                ConnectorId,
-                                                            IdToken                     IdTag,
-                                                            DateTime                    Timestamp,
-                                                            UInt64                      MeterStart,
-                                                            Reservation_Id?             ReservationId,
-
-                                                            TimeSpan?                   RequestTimeout);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnStartTransactionRequestDelegate (DateTime                  LogTimestamp,
+                                                            IEventSender              Sender,
+                                                            StartTransactionRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a start transaction request was received.
     /// </summary>
-    public delegate Task OnStartTransactionResponseDelegate(DateTime                    LogTimestamp,
-                                                            DateTime                    RequestTimestamp,
-                                                            ChargePointSOAPClient       Sender,
-                                                            String                      SenderId,
-                                                            EventTracking_Id            EventTrackingId,
-
-                                                            Connector_Id                ConnectorId,
-                                                            IdToken                     IdTag,
-                                                            DateTime                    Timestamp,
-                                                            UInt64                      MeterStart,
-                                                            Reservation_Id?             ReservationId,
-
-                                                            TimeSpan?                   RequestTimeout,
-                                                            StartTransactionResponse    Result,
-                                                            TimeSpan                    Runtime);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnStartTransactionResponseDelegate(DateTime                   LogTimestamp,
+                                                            IEventSender               Sender,
+                                                            StartTransactionRequest    Request,
+                                                            StartTransactionResponse   Response,
+                                                            TimeSpan                   Runtime);
 
     #endregion
 
@@ -164,42 +147,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a status notification request will be send to the central system.
     /// </summary>
-    public delegate Task OnStatusNotificationRequestDelegate (DateTime                      LogTimestamp,
-                                                              DateTime                      RequestTimestamp,
-                                                              ChargePointSOAPClient         Sender,
-                                                              String                        SenderId,
-                                                              EventTracking_Id              EventTrackingId,
-
-                                                              Connector_Id                  ConnectorId,
-                                                              ChargePointStatus             Status,
-                                                              ChargePointErrorCodes         ErrorCode,
-                                                              String                        Info,
-                                                              DateTime?                     StatusTimestamp,
-                                                              String                        VendorId,
-                                                              String                        VendorErrorCode,
-
-                                                              TimeSpan?                     RequestTimeout);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnStatusNotificationRequestDelegate (DateTime                    LogTimestamp,
+                                                              IEventSender                Sender,
+                                                              StatusNotificationRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a status notification request was received.
-    /// </summary>s
-    public delegate Task OnStatusNotificationResponseDelegate(DateTime                      LogTimestamp,
-                                                              DateTime                      RequestTimestamp,
-                                                              ChargePointSOAPClient         Sender,
-                                                              String                        SenderId,
-                                                              EventTracking_Id              EventTrackingId,
-
-                                                              Connector_Id                  ConnectorId,
-                                                              ChargePointStatus             Status,
-                                                              ChargePointErrorCodes         ErrorCode,
-                                                              String                        Info,
-                                                              DateTime?                     StatusTimestamp,
-                                                              String                        VendorId,
-                                                              String                        VendorErrorCode,
-
-                                                              TimeSpan?                     RequestTimeout,
-                                                              StatusNotificationResponse    Result,
-                                                              TimeSpan                      Runtime);
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnStatusNotificationResponseDelegate(DateTime                     LogTimestamp,
+                                                              IEventSender                 Sender,
+                                                              StatusNotificationRequest    Request,
+                                                              StatusNotificationResponse   Response,
+                                                              TimeSpan                     Runtime);
 
     #endregion
 
@@ -208,34 +175,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a meter values request will be send to the central system.
     /// </summary>
-    public delegate Task OnMeterValuesRequestDelegate (DateTime                 LogTimestamp,
-                                                       DateTime                 RequestTimestamp,
-                                                       ChargePointSOAPClient    Sender,
-                                                       String                   SenderId,
-                                                       EventTracking_Id         EventTrackingId,
-
-                                                       Connector_Id             ConnectorId,
-                                                       Transaction_Id?          TransactionId,
-                                                       IEnumerable<MeterValue>  MeterValues,
-
-                                                       TimeSpan?                RequestTimeout);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnMeterValuesRequestDelegate (DateTime             LogTimestamp,
+                                                       IEventSender         Sender,
+                                                       MeterValuesRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a meter values request was received.
-    /// </summary>s
-    public delegate Task OnMeterValuesResponseDelegate(DateTime                 LogTimestamp,
-                                                       DateTime                 RequestTimestamp,
-                                                       ChargePointSOAPClient    Sender,
-                                                       String                   SenderId,
-                                                       EventTracking_Id         EventTrackingId,
-
-                                                       Connector_Id             ConnectorId,
-                                                       Transaction_Id?          TransactionId,
-                                                       IEnumerable<MeterValue>  MeterValues,
-
-                                                       TimeSpan?                RequestTimeout,
-                                                       MeterValuesResponse      Result,
-                                                       TimeSpan                 Runtime);
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnMeterValuesResponseDelegate(DateTime              LogTimestamp,
+                                                       IEventSender          Sender,
+                                                       MeterValuesRequest    Request,
+                                                       MeterValuesResponse   Response,
+                                                       TimeSpan              Runtime);
 
     #endregion
 
@@ -244,40 +203,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a stop transaction request will be send to the central system.
     /// </summary>
-    public delegate Task OnStopTransactionRequestDelegate (DateTime                   LogTimestamp,
-                                                           DateTime                   RequestTimestamp,
-                                                           ChargePointSOAPClient      Sender,
-                                                           String                     SenderId,
-                                                           EventTracking_Id           EventTrackingId,
-
-                                                           Transaction_Id             TransactionId,
-                                                           DateTime                   TransactionTimestamp,
-                                                           UInt64                     MeterStop,
-                                                           IdToken?                   IdTag,
-                                                           Reasons?                   Reason,
-                                                           IEnumerable<MeterValue>    TransactionData,
-
-                                                           TimeSpan?                  RequestTimeout);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnStopTransactionRequestDelegate (DateTime                 LogTimestamp,
+                                                           IEventSender             Sender,
+                                                           StopTransactionRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a stop transaction request was received.
     /// </summary>
-    public delegate Task OnStopTransactionResponseDelegate(DateTime                   LogTimestamp,
-                                                           DateTime                   RequestTimestamp,
-                                                           ChargePointSOAPClient      Sender,
-                                                           String                     SenderId,
-                                                           EventTracking_Id           EventTrackingId,
-
-                                                           Transaction_Id             TransactionId,
-                                                           DateTime                   TransactionTimestamp,
-                                                           UInt64                     MeterStop,
-                                                           IdToken?                   IdTag,
-                                                           Reasons?                   Reason,
-                                                           IEnumerable<MeterValue>    TransactionData,
-
-                                                           TimeSpan?                  RequestTimeout,
-                                                           StopTransactionResponse    Result,
-                                                           TimeSpan                   Runtime);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnStopTransactionResponseDelegate(DateTime                  LogTimestamp,
+                                                           IEventSender              Sender,
+                                                           StopTransactionRequest    Request,
+                                                           StopTransactionResponse   Response,
+                                                           TimeSpan                  Runtime);
 
     #endregion
 
@@ -287,34 +232,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a data transfer request will be send to the central system.
     /// </summary>
-    public delegate Task OnDataTransferRequestDelegate (DateTime                LogTimestamp,
-                                                        DateTime                RequestTimestamp,
-                                                        ChargePointSOAPClient   Sender,
-                                                        String                  SenderId,
-                                                        EventTracking_Id        EventTrackingId,
-
-                                                        String                  VendorId,
-                                                        String                  MessageId,
-                                                        String                  Data,
-
-                                                        TimeSpan?               RequestTimeout);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnDataTransferRequestDelegate (DateTime              LogTimestamp,
+                                                        IEventSender          Sender,
+                                                        DataTransferRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a data transfer request was received.
     /// </summary>
-    public delegate Task OnDataTransferResponseDelegate(DateTime                LogTimestamp,
-                                                        DateTime                RequestTimestamp,
-                                                        ChargePointSOAPClient   Sender,
-                                                        String                  SenderId,
-                                                        EventTracking_Id        EventTrackingId,
-
-                                                        String                  VendorId,
-                                                        String                  MessageId,
-                                                        String                  Data,
-
-                                                        TimeSpan?               RequestTimeout,
-                                                        DataTransferResponse    Result,
-                                                        TimeSpan                Runtime);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnDataTransferResponseDelegate(DateTime                  LogTimestamp,
+                                                        IEventSender              Sender,
+                                                        DataTransferRequest       Request,
+                                                        CS.DataTransferResponse   Response,
+                                                        TimeSpan                  Runtime);
 
     #endregion
 
@@ -323,30 +260,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a diagnostics status notification request will be send to the central system.
     /// </summary>
-    public delegate Task OnDiagnosticsStatusNotificationRequestDelegate (DateTime                                 LogTimestamp,
-                                                                         DateTime                                 RequestTimestamp,
-                                                                         ChargePointSOAPClient                    Sender,
-                                                                         String                                   SenderId,
-                                                                         EventTracking_Id                         EventTrackingId,
-
-                                                                         DiagnosticsStatus                        Status,
-
-                                                                         TimeSpan?                                RequestTimeout);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnDiagnosticsStatusNotificationRequestDelegate (DateTime                               LogTimestamp,
+                                                                         IEventSender                           Sender,
+                                                                         DiagnosticsStatusNotificationRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a diagnostics status notification request was received.
     /// </summary>
-    public delegate Task OnDiagnosticsStatusNotificationResponseDelegate(DateTime                                 LogTimestamp,
-                                                                         DateTime                                 RequestTimestamp,
-                                                                         ChargePointSOAPClient                    Sender,
-                                                                         String                                   SenderId,
-                                                                         EventTracking_Id                         EventTrackingId,
-
-                                                                         DiagnosticsStatus                        Status,
-
-                                                                         TimeSpan?                                RequestTimeout,
-                                                                         DiagnosticsStatusNotificationResponse    Result,
-                                                                         TimeSpan                                 Runtime);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnDiagnosticsStatusNotificationResponseDelegate(DateTime                                LogTimestamp,
+                                                                         IEventSender                            Sender,
+                                                                         DiagnosticsStatusNotificationRequest    Request,
+                                                                         DiagnosticsStatusNotificationResponse   Response,
+                                                                         TimeSpan                                Runtime);
 
     #endregion
 
@@ -355,32 +288,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A delegate called whenever a firmware status notification request will be send to the central system.
     /// </summary>
-    public delegate Task OnFirmwareStatusNotificationRequestDelegate (DateTime                              LogTimestamp,
-                                                                      DateTime                              RequestTimestamp,
-                                                                      ChargePointSOAPClient                 Sender,
-                                                                      String                                SenderId,
-                                                                      EventTracking_Id                      EventTrackingId,
-
-                                                                      FirmwareStatus                        Status,
-
-                                                                      TimeSpan?                             RequestTimeout);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnFirmwareStatusNotificationRequestDelegate (DateTime                            LogTimestamp,
+                                                                      IEventSender                        Sender,
+                                                                      FirmwareStatusNotificationRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a firmware status notification request was received.
     /// </summary>
-    public delegate Task OnFirmwareStatusNotificationResponseDelegate(DateTime                              LogTimestamp,
-                                                                      DateTime                              RequestTimestamp,
-                                                                      ChargePointSOAPClient                 Sender,
-                                                                      String                                SenderId,
-                                                                      EventTracking_Id                      EventTrackingId,
-
-                                                                      FirmwareStatus                        Status,
-
-                                                                      TimeSpan?                             RequestTimeout,
-                                                                      FirmwareStatusNotificationResponse    Result,
-                                                                      TimeSpan                              Runtime);
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnFirmwareStatusNotificationResponseDelegate(DateTime                             LogTimestamp,
+                                                                      IEventSender                         Sender,
+                                                                      FirmwareStatusNotificationRequest    Request,
+                                                                      FirmwareStatusNotificationResponse   Response,
+                                                                      TimeSpan                             Runtime);
 
     #endregion
-
 
 }
