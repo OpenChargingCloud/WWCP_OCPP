@@ -879,6 +879,141 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region InitSOAP(...)
+
+        public void InitSOAP(String From,
+                             String To,
+
+                             URL RemoteURL,
+                             HTTPHostname? VirtualHostname = null,
+                             String Description = null,
+                             RemoteCertificateValidationCallback RemoteCertificateValidator = null,
+                             LocalCertificateSelectionCallback ClientCertificateSelector = null,
+                             X509Certificate ClientCert = null,
+                             String HTTPUserAgent = null,
+                             HTTPPath? URLPathPrefix = null,
+                             Tuple<String, String> WSSLoginPassword = null,
+                             TimeSpan? RequestTimeout = null,
+                             TransmissionRetryDelayDelegate TransmissionRetryDelay = null,
+                             UInt16? MaxNumberOfRetries = null,
+                             Boolean UseHTTPPipelining = false,
+                             String LoggingPath = null,
+                             String LoggingContext = null,
+                             LogfileCreatorDelegate LogFileCreator = null,
+                             HTTPClientLogger HTTPLogger = null,
+
+                             String HTTPServerName = null,
+                             IPPort? TCPPort = null,
+                             String ServiceName = null,
+                             HTTPPath? URLPrefix = null,
+                             HTTPContentType ContentType = null,
+                             Boolean RegisterHTTPRootService = true,
+                             DNSClient DNSClient = null,
+                             Boolean AutoStart = false)
+
+        {
+
+            this.CPClient = new ChargePointSOAPClient(ChargeBoxId,
+                                                      From,
+                                                      To,
+
+                                                      RemoteURL,
+                                                      VirtualHostname,
+                                                      Description,
+                                                      RemoteCertificateValidator,
+                                                      ClientCertificateSelector,
+                                                      ClientCert,
+                                                      HTTPUserAgent,
+                                                      URLPathPrefix,
+                                                      WSSLoginPassword,
+                                                      RequestTimeout,
+                                                      TransmissionRetryDelay,
+                                                      MaxNumberOfRetries,
+                                                      UseHTTPPipelining,
+                                                      LoggingPath,
+                                                      LoggingContext,
+                                                      LogFileCreator,
+                                                      HTTPLogger);
+
+            this.CPServer = new ChargePointSOAPServer(HTTPServerName,
+                                                      TCPPort,
+                                                      ServiceName,
+                                                      URLPrefix,
+                                                      ContentType,
+                                                      RegisterHTTPRootService,
+                                                      DNSClient,
+                                                      AutoStart);
+
+            WireEvents(CPServer);
+
+        }
+
+        #endregion#region InitWebSocket(...)
+
+        public void InitWebSocket(String                               From,
+                                  String                               To,
+
+                                  URL                                  RemoteURL,
+                                  HTTPHostname?                        VirtualHostname              = null,
+                                  String                               Description                  = null,
+                                  RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
+                                  LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
+                                  X509Certificate                      ClientCert                   = null,
+                                  String                               HTTPUserAgent                = null,
+                                  HTTPPath?                            URLPathPrefix                = null,
+                                  Tuple<String, String>                WSSLoginPassword             = null,
+                                  TimeSpan?                            RequestTimeout               = null,
+                                  TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
+                                  UInt16?                              MaxNumberOfRetries           = null,
+                                  Boolean                              UseHTTPPipelining            = false,
+                                  String                               LoggingPath                  = null,
+                                  String                               LoggingContext               = null,
+                                  LogfileCreatorDelegate               LogFileCreator               = null,
+                                  HTTPClientLogger                     HTTPLogger                   = null,
+                                  DNSClient                            DNSClient                    = null,
+                                  Boolean                              AutoStart                    = false)
+
+        {
+
+            this.CPClient = new ChargePoint(ChargeBoxId,
+                                                      From,
+                                                      To,
+
+                                                      RemoteURL,
+                                                      VirtualHostname,
+                                                      Description,
+                                                      RemoteCertificateValidator,
+                                                      ClientCertificateSelector,
+                                                      ClientCert,
+                                                      HTTPUserAgent,
+                                                      URLPathPrefix,
+                                                      WSSLoginPassword,
+                                                      RequestTimeout,
+                                                      TransmissionRetryDelay,
+                                                      MaxNumberOfRetries,
+                                                      UseHTTPPipelining,
+                                                      LoggingPath,
+                                                      LoggingContext,
+                                                      LogFileCreator,
+                                                      HTTPLogger);
+
+            this.CPServer = new ChargePointSOAPServer(HTTPServerName,
+                                                      TCPPort,
+                                                      ServiceName,
+                                                      URLPrefix,
+                                                      ContentType,
+                                                      RegisterHTTPRootService,
+                                                      DNSClient,
+                                                      AutoStart);
+
+            WireEvents(CPServer);
+
+        }
+
+        #endregion
+
+
+
 
         #region SendBootNotification             (CancellationToken= null, EventTrackingId = null, RequestTimeout = null)
 
