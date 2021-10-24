@@ -494,37 +494,38 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
 
-        #region ConnectSOAP(...)
+        #region InitSOAP(...)
 
-        public void ConnectSOAP(String                               From,
-                                String                               To,
+        public async Task InitSOAP(String                               From,
+                                   String                               To,
 
-                                URL                                  RemoteURL,
-                                HTTPHostname?                        VirtualHostname              = null,
-                                String                               Description                  = null,
-                                RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                                LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                                X509Certificate                      ClientCert                   = null,
-                                String                               HTTPUserAgent                = null,
-                                HTTPPath?                            URLPathPrefix                = null,
-                                Tuple<String, String>                WSSLoginPassword             = null,
-                                TimeSpan?                            RequestTimeout               = null,
-                                TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
-                                UInt16?                              MaxNumberOfRetries           = null,
-                                Boolean                              UseHTTPPipelining            = false,
-                                String                               LoggingPath                  = null,
-                                String                               LoggingContext               = null,
-                                LogfileCreatorDelegate               LogFileCreator               = null,
-                                HTTPClientLogger                     HTTPLogger                   = null,
+                                   URL                                  RemoteURL,
+                                   HTTPHostname?                        VirtualHostname              = null,
+                                   String                               Description                  = null,
+                                   RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
+                                   LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
+                                   X509Certificate                      ClientCert                   = null,
+                                   String                               HTTPUserAgent                = null,
+                                   HTTPPath?                            URLPathPrefix                = null,
+                                   Tuple<String, String>                WSSLoginPassword             = null,
+                                   HTTPContentType                      HTTPContentType              = null,
+                                   TimeSpan?                            RequestTimeout               = null,
+                                   TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
+                                   UInt16?                              MaxNumberOfRetries           = null,
+                                   Boolean                              UseHTTPPipelining            = false,
+                                   String                               LoggingPath                  = null,
+                                   String                               LoggingContext               = null,
+                                   LogfileCreatorDelegate               LogFileCreator               = null,
+                                   HTTPClientLogger                     HTTPLogger                   = null,
 
-                                String                               HTTPServerName               = null,
-                                IPPort?                              TCPPort                      = null,
-                                String                               ServiceName                  = null,
-                                HTTPPath?                            URLPrefix                    = null,
-                                HTTPContentType                      ContentType                  = null,
-                                Boolean                              RegisterHTTPRootService      = true,
-                                DNSClient                            DNSClient                    = null,
-                                Boolean                              AutoStart                    = false)
+                                   String                               HTTPServerName               = null,
+                                   IPPort?                              TCPPort                      = null,
+                                   String                               ServiceName                  = null,
+                                   HTTPPath?                            URLPrefix                    = null,
+                                   HTTPContentType                      ContentType                  = null,
+                                   Boolean                              RegisterHTTPRootService      = true,
+                                   DNSClient                            DNSClient                    = null,
+                                   Boolean                              AutoStart                    = false)
 
         {
 
@@ -541,6 +542,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                       HTTPUserAgent,
                                                       URLPathPrefix,
                                                       WSSLoginPassword,
+                                                      HTTPContentType,
                                                       RequestTimeout,
                                                       TransmissionRetryDelay,
                                                       MaxNumberOfRetries,

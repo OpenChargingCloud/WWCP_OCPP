@@ -575,10 +575,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/BootNotificationResponse",
-                                                             null,
+                                                             Request_Id.Random().ToString(),
                                                              OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
-                                                             OCPPHeader.To,         // Fake it!
-                                                             OCPPHeader.From,       // Fake it!
+                                                             OCPPHeader.From,
+                                                             OCPPHeader.To,
                                                              response.ToXML()).ToUTF8Bytes()
                     };
 
@@ -731,10 +731,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/HeartbeatResponse",
-                                                             null,
+                                                             Request_Id.Random().ToString(),
                                                              OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
-                                                             OCPPHeader.To,         // Fake it!
-                                                             OCPPHeader.From,       // Fake it!
+                                                             OCPPHeader.From,
+                                                             OCPPHeader.To,
                                                              response.ToXML()).ToUTF8Bytes()
                     };
 
@@ -888,10 +888,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/AuthorizeResponse",
-                                                             null,
-                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
-                                                             OCPPHeader.To,         // Fake it!
-                                                             OCPPHeader.From,       // Fake it!
+                                                             Request_Id.Random().ToString(),
+                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
+                                                             OCPPHeader.From,
+                                                             OCPPHeader.To,
                                                              response.ToXML()).ToUTF8Bytes()
                     };
 
@@ -1044,10 +1044,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/StartTransactionResponse",
-                                                             null,
-                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
-                                                             OCPPHeader.To,         // Fake it!
-                                                             OCPPHeader.From,       // Fake it!
+                                                             Request_Id.Random().ToString(),
+                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
+                                                             OCPPHeader.From,
+                                                             OCPPHeader.To,
                                                              response.ToXML()).ToUTF8Bytes()
                     };
 
@@ -1200,10 +1200,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/StatusNotificationResponse",
-                                                             null,
-                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
-                                                             OCPPHeader.To,         // Fake it!
-                                                             OCPPHeader.From,       // Fake it!
+                                                             Request_Id.Random().ToString(),
+                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
+                                                             OCPPHeader.From,
+                                                             OCPPHeader.To,
                                                              response.ToXML()).ToUTF8Bytes()
                     };
 
@@ -1356,10 +1356,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/MeterValuesResponse",
-                                                             null,
-                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
-                                                             OCPPHeader.To,         // Fake it!
-                                                             OCPPHeader.From,       // Fake it!
+                                                             Request_Id.Random().ToString(),
+                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
+                                                             OCPPHeader.From,
+                                                             OCPPHeader.To,
                                                              response.ToXML()).ToUTF8Bytes()
                     };
 
@@ -1512,10 +1512,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/StopTransactionResponse",
-                                                             null,
-                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
-                                                             OCPPHeader.To,         // Fake it!
-                                                             OCPPHeader.From,       // Fake it!
+                                                             Request_Id.Random().ToString(),
+                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
+                                                             OCPPHeader.From,
+                                                             OCPPHeader.To,
                                                              response.ToXML()).ToUTF8Bytes()
                     };
 
@@ -1670,10 +1670,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/DataTransferResponse",
-                                                             null,
-                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
-                                                             OCPPHeader.To,         // Fake it!
-                                                             OCPPHeader.From,       // Fake it!
+                                                             Request_Id.Random().ToString(),
+                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
+                                                             OCPPHeader.From,
+                                                             OCPPHeader.To,
                                                              response.ToXML()).ToUTF8Bytes()
                     };
 
@@ -1827,10 +1827,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/DiagnosticsStatusNotificationResponse",
-                                                             null,
-                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
-                                                             OCPPHeader.To,         // Fake it!
-                                                             OCPPHeader.From,       // Fake it!
+                                                             Request_Id.Random().ToString(),
+                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
+                                                             OCPPHeader.From,
+                                                             OCPPHeader.To,
                                                              response.ToXML()).ToUTF8Bytes()
                     };
 
@@ -1984,10 +1984,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         ContentType     = HTTPContentType.XMLTEXT_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/FirmwareStatusNotificationResponse",
-                                                             null,
-                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
-                                                             OCPPHeader.To,         // Fake it!
-                                                             OCPPHeader.From,       // Fake it!
+                                                             Request_Id.Random().ToString(),
+                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
+                                                             OCPPHeader.From,
+                                                             OCPPHeader.To,
                                                              response.ToXML()).ToUTF8Bytes()
                     };
 

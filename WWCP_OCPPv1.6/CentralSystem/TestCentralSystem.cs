@@ -117,234 +117,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region Attach(CentralSystemServer)
-
-        public void Attach(ICentralSystemServer CentralSystemServer)
-        {
-
-            #region Initial checks
-
-            if (CentralSystemServer is null)
-                throw new ArgumentNullException(nameof(CentralSystemServer), "The given central system must not be null!");
-
-            #endregion
-
-
-            centralSystemServers.Add(CentralSystemServer);
-
-
-            // Wire events...
-
-            #region OnBootNotification
-
-            CentralSystemServer.OnBootNotification += async (LogTimestamp,
-                                                             Sender,
-                                                             Request,
-                                                             CancellationToken) => {
-
-                #region Send OnBootNotificationRequest event
-
-                var requestTimestamp = Timestamp.Now;
-
-                try
-                {
-
-                    OnBootNotificationRequest?.Invoke(requestTimestamp,
-                                                      this,
-                                                      Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBootNotificationRequest));
-                }
-
-                #endregion
-
-
-                await Task.Delay(100);
-
-
-                var response = new BootNotificationResponse(Request:            Request,
-                                                            Status:             RegistrationStatus.Accepted,
-                                                            CurrentTime:        Timestamp.Now,
-                                                            HeartbeatInterval:  TimeSpan.FromMinutes(5));
-
-
-                #region Send OnBootNotificationResponse event
-
-                try
-                {
-
-                    OnBootNotificationResponse?.Invoke(Timestamp.Now,
-                                                       this,
-                                                       Request,
-                                                       response,
-                                                       Timestamp.Now - requestTimestamp);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBootNotificationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnHeartbeat
-
-            CentralSystemServer.OnHeartbeat += async (LogTimestamp,
-                                                      Sender,
-                                                      Request,
-                                                      CancellationToken) => {
-
-                #region Send OnHeartbeatRequest event
-
-                var requestTimestamp = Timestamp.Now;
-
-                try
-                {
-
-                    OnHeartbeatRequest?.Invoke(requestTimestamp,
-                                               this,
-                                               Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnHeartbeatRequest));
-                }
-
-                #endregion
-
-
-                await Task.Delay(100);
-
-
-                var response = new HeartbeatResponse(Request:      Request,
-                                                     CurrentTime:  Timestamp.Now);
-
-
-                #region Send OnHeartbeatResponse event
-
-                try
-                {
-
-                    OnHeartbeatResponse?.Invoke(Timestamp.Now,
-                                                this,
-                                                Request,
-                                                response,
-                                                Timestamp.Now - requestTimestamp);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnHeartbeatResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-
-            #region OnStartTransaction
-
-            CentralSystemServer.OnStartTransaction += (Timestamp,
-                                                       Sender,
-                                                       Request,
-                                                       CancellationToken) =>
-
-                Task.FromResult(new StartTransactionResponse(Request:        Request,
-                                                             TransactionId:  Transaction_Id.Random,
-                                                             IdTagInfo:      new IdTagInfo(Status:      AuthorizationStatus.Accepted,
-                                                                                           ExpiryDate:  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.AddDays(3))));
-
-            #endregion
-
-            #region OnStatusNotification
-
-            CentralSystemServer.OnStatusNotification += (Timestamp,
-                                                         Sender,
-                                                         Request,
-                                                         CancellationToken) =>
-
-                Task.FromResult(new StatusNotificationResponse(Request));
-
-            #endregion
-
-            #region OnMeterValues
-
-            CentralSystemServer.OnMeterValues += (Timestamp,
-                                                  Sender,
-                                                  Request,
-                                                  CancellationToken) =>
-
-                Task.FromResult(new MeterValuesResponse(Request));
-
-            #endregion
-
-            #region OnStopTransaction
-
-            CentralSystemServer.OnStopTransaction += (Timestamp,
-                                                      Sender,
-                                                      Request,
-                                                      CancellationToken) =>
-
-                Task.FromResult(new StopTransactionResponse(Request:    Request,
-                                                            IdTagInfo:  new IdTagInfo(Status:      AuthorizationStatus.Accepted,
-                                                                                      ExpiryDate:  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.AddDays(3))));
-
-            #endregion
-
-
-            #region OnIncomingDataTransfer
-
-            CentralSystemServer.OnIncomingDataTransfer += (Timestamp,
-                                                           Sender,
-                                                           Request,
-                                                           CancellationToken) =>
-
-                Task.FromResult(new DataTransferResponse(Request:  Request,
-                                                         Status:   DataTransferStatus.Accepted,
-                                                         Data:     "1234!"));
-
-            #endregion
-
-            #region OnDiagnosticsStatusNotification
-
-            CentralSystemServer.OnDiagnosticsStatusNotification += (Timestamp,
-                                                                    Sender,
-                                                                    Request,
-                                                                    CancellationToken) =>
-
-                Task.FromResult(new DiagnosticsStatusNotificationResponse(Request));
-
-            #endregion
-
-            #region OnFirmwareStatusNotification
-
-            CentralSystemServer.OnFirmwareStatusNotification += (Timestamp,
-                                                                 Sender,
-                                                                 Request,
-                                                                 CancellationToken) =>
-
-                Task.FromResult(new FirmwareStatusNotificationResponse(Request));
-
-            #endregion
-
-        }
-
-        #endregion
-
         #region CreateSOAPService(...)
 
         /// <summary>
@@ -415,6 +187,243 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         }
 
         #endregion
+
+        #region Attach(CentralSystemServer)
+
+        public void Attach(ICentralSystemServer CentralSystemServer)
+        {
+
+            #region Initial checks
+
+            if (CentralSystemServer is null)
+                throw new ArgumentNullException(nameof(CentralSystemServer), "The given central system must not be null!");
+
+            #endregion
+
+
+            centralSystemServers.Add(CentralSystemServer);
+
+
+            // Wire events...
+
+            #region OnBootNotification
+
+            CentralSystemServer.OnBootNotification += async (LogTimestamp,
+                                                             Sender,
+                                                             Request,
+                                                             CancellationToken) => {
+
+                #region Send OnBootNotificationRequest event
+
+                var requestTimestamp = Timestamp.Now;
+
+                try
+                {
+
+                    OnBootNotificationRequest?.Invoke(requestTimestamp,
+                                                      this,
+                                                      Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBootNotificationRequest));
+                }
+
+                                                                 #endregion
+
+
+                Console.WriteLine("OnBootNotification: " + Request.ChargeBoxId             + ", " +
+                                                           Request.ChargePointVendor       + ", " +
+                                                           Request.ChargePointModel        + ", " +
+                                                           Request.ChargePointSerialNumber + ", " +
+                                                           Request.ChargeBoxSerialNumber);
+
+                await Task.Delay(100);
+
+
+                var response = new BootNotificationResponse(Request:            Request,
+                                                            Status:             RegistrationStatus.Accepted,
+                                                            CurrentTime:        Timestamp.Now,
+                                                            HeartbeatInterval:  TimeSpan.FromMinutes(5));
+
+
+                #region Send OnBootNotificationResponse event
+
+                try
+                {
+
+                    OnBootNotificationResponse?.Invoke(Timestamp.Now,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       Timestamp.Now - requestTimestamp);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBootNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnHeartbeat
+
+            CentralSystemServer.OnHeartbeat += async (LogTimestamp,
+                                                      Sender,
+                                                      Request,
+                                                      CancellationToken) => {
+
+                #region Send OnHeartbeatRequest event
+
+                var requestTimestamp = Timestamp.Now;
+
+                try
+                {
+
+                    OnHeartbeatRequest?.Invoke(requestTimestamp,
+                                               this,
+                                               Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnHeartbeatRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnHeartbeat: " + Request.ChargeBoxId);
+
+                await Task.Delay(100);
+
+
+                var response = new HeartbeatResponse(Request:      Request,
+                                                     CurrentTime:  Timestamp.Now);
+
+
+                #region Send OnHeartbeatResponse event
+
+                try
+                {
+
+                    OnHeartbeatResponse?.Invoke(Timestamp.Now,
+                                                this,
+                                                Request,
+                                                response,
+                                                Timestamp.Now - requestTimestamp);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnHeartbeatResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            #region OnStartTransaction
+
+            CentralSystemServer.OnStartTransaction += (LogTimestamp,
+                                                       Sender,
+                                                       Request,
+                                                       CancellationToken) =>
+
+                Task.FromResult(new StartTransactionResponse(Request:        Request,
+                                                             TransactionId:  Transaction_Id.Random,
+                                                             IdTagInfo:      new IdTagInfo(Status:      AuthorizationStatus.Accepted,
+                                                                                           ExpiryDate:  Timestamp.Now.AddDays(3))));
+
+            #endregion
+
+            #region OnStatusNotification
+
+            CentralSystemServer.OnStatusNotification += (LogTimestamp,
+                                                         Sender,
+                                                         Request,
+                                                         CancellationToken) =>
+
+                Task.FromResult(new StatusNotificationResponse(Request));
+
+            #endregion
+
+            #region OnMeterValues
+
+            CentralSystemServer.OnMeterValues += (LogTimestamp,
+                                                  Sender,
+                                                  Request,
+                                                  CancellationToken) =>
+
+                Task.FromResult(new MeterValuesResponse(Request));
+
+            #endregion
+
+            #region OnStopTransaction
+
+            CentralSystemServer.OnStopTransaction += (LogTimestamp,
+                                                      Sender,
+                                                      Request,
+                                                      CancellationToken) =>
+
+                Task.FromResult(new StopTransactionResponse(Request:    Request,
+                                                            IdTagInfo:  new IdTagInfo(Status:      AuthorizationStatus.Accepted,
+                                                                                      ExpiryDate:  Timestamp.Now.AddDays(3))));
+
+            #endregion
+
+
+            #region OnIncomingDataTransfer
+
+            CentralSystemServer.OnIncomingDataTransfer += (LogTimestamp,
+                                                           Sender,
+                                                           Request,
+                                                           CancellationToken) =>
+
+                Task.FromResult(new DataTransferResponse(Request:  Request,
+                                                         Status:   DataTransferStatus.Accepted,
+                                                         Data:     "1234!"));
+
+            #endregion
+
+            #region OnDiagnosticsStatusNotification
+
+            CentralSystemServer.OnDiagnosticsStatusNotification += (LogTimestamp,
+                                                                    Sender,
+                                                                    Request,
+                                                                    CancellationToken) =>
+
+                Task.FromResult(new DiagnosticsStatusNotificationResponse(Request));
+
+            #endregion
+
+            #region OnFirmwareStatusNotification
+
+            CentralSystemServer.OnFirmwareStatusNotification += (LogTimestamp,
+                                                                 Sender,
+                                                                 Request,
+                                                                 CancellationToken) =>
+
+                Task.FromResult(new FirmwareStatusNotificationResponse(Request));
+
+            #endregion
+
+        }
+
+        #endregion
+
 
 
         #region Reset(ChargeBoxId, ResetType, ...)
