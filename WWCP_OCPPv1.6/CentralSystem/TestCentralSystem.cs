@@ -1041,7 +1041,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region IncomingDataTransfer  (ChargeBoxId, VendorId, MessageId = null, Data = null, ...)
+        #region DataTransfer          (ChargeBoxId, VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Create a new reset request.
@@ -1050,11 +1050,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
-        public async Task<CP.DataTransferResponse> IncomingDataTransfer(ChargeBox_Id      ChargeBoxId,
-                                                                        String            VendorId,
-                                                                        String            MessageId          = null,
-                                                                        String            Data               = null,
-                                                                        EventTracking_Id  EventTrackingId    = null)
+        public async Task<CP.DataTransferResponse> DataTransfer(ChargeBox_Id      ChargeBoxId,
+                                                                String            VendorId,
+                                                                String            MessageId          = null,
+                                                                String            Data               = null,
+                                                                EventTracking_Id  EventTrackingId    = null)
         {
 
             var request = new DataTransferRequest(ChargeBoxId,
