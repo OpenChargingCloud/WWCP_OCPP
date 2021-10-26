@@ -190,6 +190,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         private readonly List<EnquedRequest> EnquedRequests;
 
+
+        public DNSClient DNSClient { get; }
+
         #endregion
 
         #region Properties
@@ -781,7 +784,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                TimeSpan?     SendHeartbeatEvery        = null,
 
-                               TimeSpan?     DefaultRequestTimeout     = null)
+                               TimeSpan?     DefaultRequestTimeout     = null,
+                               DNSClient     DNSClient                 = null)
 
         {
 
@@ -830,6 +834,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                       null,
                                                       this.SendHeartbeatEvery,
                                                       this.SendHeartbeatEvery);
+
+            this.DNSClient                = DNSClient;
 
         }
 
@@ -892,7 +898,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                       LoggingPath,
                                                       LoggingContext,
                                                       LogFileCreator,
-                                                      HTTPLogger);
+                                                      HTTPLogger,
+                                                      DNSClient ?? this.DNSClient);
 
             this.CPServer = new ChargePointSOAPServer(HTTPServerName,
                                                       TCPPort,
@@ -900,7 +907,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                       URLPrefix,
                                                       ContentType,
                                                       RegisterHTTPRootService,
-                                                      DNSClient,
+                                                      DNSClient ?? this.DNSClient,
                                                       AutoStart);
 
             WireEvents(CPServer);
@@ -957,7 +964,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                      LoggingContext,
                                                      LogFileCreator,
                                                      HTTPLogger,
-                                                     DNSClient);
+                                                     DNSClient ?? this.DNSClient);
 
             this.CPClient  = WSClient;
 

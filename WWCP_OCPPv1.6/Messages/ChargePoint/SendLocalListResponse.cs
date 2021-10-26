@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -374,6 +373,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
 
                );
+
+        #endregion
+
+        #region ToJSON(CustomSendLocalListResponseSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomSendLocalListResponseSerializer">A delegate to serialize custom send local list responses.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SendLocalListResponse>  CustomSendLocalListResponseSerializer   = null)
+        {
+
+            var JSON = JSONObject.Create(
+                           new JProperty("status",  Status.ToString())
+                       );
+
+            return CustomSendLocalListResponseSerializer != null
+                       ? CustomSendLocalListResponseSerializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 

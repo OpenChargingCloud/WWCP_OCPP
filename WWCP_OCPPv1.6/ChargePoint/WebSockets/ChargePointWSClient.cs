@@ -647,7 +647,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a data transfer SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                       OnIncomingDataTransferSOAPRequest;
+        public event WSClientRequestLogHandler               OnIncomingDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
@@ -667,7 +667,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a SOAP response to a data transfer request was sent.
         /// </summary>
-        public event AccessLogHandler                        OnIncomingDataTransferSOAPResponse;
+        public event WSClientResponseLogHandler              OnIncomingDataTransferWSResponse;
 
         #endregion
 
@@ -762,9 +762,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnReserveNow
 
         /// <summary>
-        /// An event sent whenever a reserve now SOAP request was received.
+        /// An event sent whenever a reserve now WS request was received.
         /// </summary>
-        public event RequestLogHandler             OnReserveNowSOAPRequest;
+        public event WSClientRequestLogHandler     OnReserveNowWSRequest;
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
@@ -782,18 +782,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public event OnReserveNowResponseDelegate  OnReserveNowResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a reserve now request was sent.
+        /// An event sent whenever a WS response to a reserve now request was sent.
         /// </summary>
-        public event AccessLogHandler              OnReserveNowSOAPResponse;
+        public event WSClientResponseLogHandler    OnReserveNowWSResponse;
 
         #endregion
 
         #region OnCancelReservation
 
         /// <summary>
-        /// An event sent whenever a cancel reservation SOAP request was received.
+        /// An event sent whenever a cancel reservation WS request was received.
         /// </summary>
-        public event RequestLogHandler                    OnCancelReservationSOAPRequest;
+        public event WSClientRequestLogHandler            OnCancelReservationWSRequest;
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
@@ -811,18 +811,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a cancel reservation request was sent.
+        /// An event sent whenever a WS response to a cancel reservation request was sent.
         /// </summary>
-        public event AccessLogHandler                     OnCancelReservationSOAPResponse;
+        public event WSClientResponseLogHandler           OnCancelReservationWSResponse;
 
         #endregion
 
         #region OnRemoteStartTransaction
 
         /// <summary>
-        /// An event sent whenever a remote start transaction SOAP request was received.
+        /// An event sent whenever a remote start transaction WS request was received.
         /// </summary>
-        public event RequestLogHandler                         OnRemoteStartTransactionSOAPRequest;
+        public event WSClientRequestLogHandler                 OnRemoteStartTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a remote start transaction request was received.
@@ -840,18 +840,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public event OnRemoteStartTransactionResponseDelegate  OnRemoteStartTransactionResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a remote start transaction request was sent.
+        /// An event sent whenever a WS response to a remote start transaction request was sent.
         /// </summary>
-        public event AccessLogHandler                          OnRemoteStartTransactionSOAPResponse;
+        public event WSClientResponseLogHandler                OnRemoteStartTransactionWSResponse;
 
         #endregion
 
         #region OnRemoteStopTransaction
 
         /// <summary>
-        /// An event sent whenever a remote stop transaction SOAP request was received.
+        /// An event sent whenever a remote stop transaction WS request was received.
         /// </summary>
-        public event RequestLogHandler                        OnRemoteStopTransactionSOAPRequest;
+        public event WSClientRequestLogHandler                OnRemoteStopTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a remote stop transaction request was received.
@@ -869,16 +869,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public event OnRemoteStopTransactionResponseDelegate  OnRemoteStopTransactionResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a remote stop transaction request was sent.
+        /// An event sent whenever a WS response to a remote stop transaction request was sent.
         /// </summary>
-        public event AccessLogHandler                         OnRemoteStopTransactionSOAPResponse;
+        public event WSClientResponseLogHandler               OnRemoteStopTransactionWSResponse;
 
         #endregion
 
         #region OnSetChargingProfile
 
         /// <summary>
-        /// An event sent whenever a reset SOAP request was received.
+        /// An event sent whenever a reset WS request was received.
         /// </summary>
         public event WSClientRequestLogHandler   OnSetChargingProfileWSRequest;
 
@@ -898,7 +898,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public event OnSetChargingProfileResponseDelegate     OnSetChargingProfileResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// An event sent whenever a WS response to a reset request was sent.
         /// </summary>
         public event WSClientResponseLogHandler  OnSetChargingProfileWSResponse;
 
@@ -907,7 +907,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnClearChargingProfile
 
         /// <summary>
-        /// An event sent whenever a reset SOAP request was received.
+        /// An event sent whenever a reset WS request was received.
         /// </summary>
         public event WSClientRequestLogHandler   OnClearChargingProfileWSRequest;
 
@@ -927,7 +927,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public event OnClearChargingProfileResponseDelegate     OnClearChargingProfileResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// An event sent whenever a WS response to a reset request was sent.
         /// </summary>
         public event WSClientResponseLogHandler  OnClearChargingProfileWSResponse;
 
@@ -936,7 +936,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnGetCompositeSchedule
 
         /// <summary>
-        /// An event sent whenever a reset SOAP request was received.
+        /// An event sent whenever a reset WS request was received.
         /// </summary>
         public event WSClientRequestLogHandler   OnGetCompositeScheduleWSRequest;
 
@@ -956,7 +956,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public event OnGetCompositeScheduleResponseDelegate     OnGetCompositeScheduleResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// An event sent whenever a WS response to a reset request was sent.
         /// </summary>
         public event WSClientResponseLogHandler  OnGetCompositeScheduleWSResponse;
 
@@ -965,7 +965,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnUnlockConnector
 
         /// <summary>
-        /// An event sent whenever a reset SOAP request was received.
+        /// An event sent whenever a reset WS request was received.
         /// </summary>
         public event WSClientRequestLogHandler   OnUnlockConnectorWSRequest;
 
@@ -985,7 +985,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public event OnUnlockConnectorResponseDelegate     OnUnlockConnectorResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// An event sent whenever a WS response to a reset request was sent.
         /// </summary>
         public event WSClientResponseLogHandler  OnUnlockConnectorWSResponse;
 
@@ -995,7 +995,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnGetLocalListVersion
 
         /// <summary>
-        /// An event sent whenever a reset SOAP request was received.
+        /// An event sent whenever a reset WS request was received.
         /// </summary>
         public event WSClientRequestLogHandler   OnGetLocalListVersionWSRequest;
 
@@ -1015,7 +1015,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public event OnGetLocalListVersionResponseDelegate     OnGetLocalListVersionResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// An event sent whenever a WS response to a reset request was sent.
         /// </summary>
         public event WSClientResponseLogHandler  OnGetLocalListVersionWSResponse;
 
@@ -1024,7 +1024,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnSendLocalList
 
         /// <summary>
-        /// An event sent whenever a reset SOAP request was received.
+        /// An event sent whenever a reset WS request was received.
         /// </summary>
         public event WSClientRequestLogHandler   OnSendLocalListWSRequest;
 
@@ -1044,7 +1044,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public event OnSendLocalListResponseDelegate     OnSendLocalListResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// An event sent whenever a WS response to a reset request was sent.
         /// </summary>
         public event WSClientResponseLogHandler  OnSendLocalListWSResponse;
 
@@ -1053,7 +1053,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnClearCache
 
         /// <summary>
-        /// An event sent whenever a reset SOAP request was received.
+        /// An event sent whenever a reset WS request was received.
         /// </summary>
         public event WSClientRequestLogHandler   OnClearCacheWSRequest;
 
@@ -1073,7 +1073,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public event OnClearCacheResponseDelegate     OnClearCacheResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// An event sent whenever a WS response to a reset request was sent.
         /// </summary>
         public event WSClientResponseLogHandler  OnClearCacheWSResponse;
 
@@ -1670,8 +1670,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        public CustomJObjectParserDelegate<ResetRequest>                CustomResetRequestParser                    { get; set; }
-        public CustomJObjectParserDelegate<ChangeAvailabilityRequest>   CustomChangeAvailabilityRequestParser       { get; set; }
+        public CustomJObjectParserDelegate<ResetRequest>                   CustomResetRequestParser                     { get; set; }
+        public CustomJObjectParserDelegate<ChangeAvailabilityRequest>      CustomChangeAvailabilityRequestParser        { get; set; }
+        public CustomJObjectParserDelegate<GetConfigurationRequest>        CustomGetConfigurationRequestParser          { get; set; }
+        public CustomJObjectParserDelegate<ChangeConfigurationRequest>     CustomChangeConfigurationRequestParser       { get; set; }
+        public CustomJObjectParserDelegate<DataTransferRequest>            CustomDataTransferRequestParser              { get; set; }
+        public CustomJObjectParserDelegate<GetDiagnosticsRequest>          CustomGetDiagnosticsRequestParser            { get; set; }
+        public CustomJObjectParserDelegate<TriggerMessageRequest>          CustomTriggerMessageRequestParser            { get; set; }
+        public CustomJObjectParserDelegate<UpdateFirmwareRequest>          CustomUpdateFirmwareRequestParser            { get; set; }
+
+        public CustomJObjectParserDelegate<ReserveNowRequest>              CustomReserveNowRequestParser                { get; set; }
+        public CustomJObjectParserDelegate<CancelReservationRequest>       CustomCancelReservationRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<RemoteStartTransactionRequest>  CustomRemoteStartTransactionRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<RemoteStopTransactionRequest>   CustomRemoteStopTransactionRequestParser     { get; set; }
+        public CustomJObjectParserDelegate<SetChargingProfileRequest>      CustomSetChargingProfileRequestParser        { get; set; }
+        public CustomJObjectParserDelegate<ClearChargingProfileRequest>    CustomClearChargingProfileRequestParser      { get; set; }
+        public CustomJObjectParserDelegate<GetCompositeScheduleRequest>    CustomGetCompositeScheduleRequestParser      { get; set; }
+        public CustomJObjectParserDelegate<UnlockConnectorRequest>         CustomUnlockConnectorRequestParser           { get; set; }
+
+        public CustomJObjectParserDelegate<GetLocalListVersionRequest>     CustomGetLocalListVersionRequestParser       { get; set; }
+        public CustomJObjectParserDelegate<SendLocalListRequest>           CustomSendLocalListRequestParser             { get; set; }
+        public CustomJObjectParserDelegate<ClearCacheRequest>              CustomClearCacheRequestParser                { get; set; }
 
 
         #region (Timer) DoMaintenance(State)
@@ -2044,11 +2063,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 {
 
                                     if (GetConfigurationRequest.TryParse(wsRequest.Message,
-                                                                           wsRequest.RequestId,
-                                                                           ChargeBoxIdentity,
-                                                                           out GetConfigurationRequest request,
-                                                                           out String                    ErrorResponse,
-                                                                           CustomGetConfigurationRequestParser))
+                                                                         wsRequest.RequestId,
+                                                                         ChargeBoxIdentity,
+                                                                         out GetConfigurationRequest request,
+                                                                         out String                  ErrorResponse,
+                                                                         CustomGetConfigurationRequestParser))
                                     {
 
                                         #region Send OnGetConfigurationRequest event
@@ -2194,11 +2213,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 {
 
                                     if (ChangeConfigurationRequest.TryParse(wsRequest.Message,
-                                                                           wsRequest.RequestId,
-                                                                           ChargeBoxIdentity,
-                                                                           out ChangeConfigurationRequest request,
-                                                                           out String                    ErrorResponse,
-                                                                           CustomChangeConfigurationRequestParser))
+                                                                            wsRequest.RequestId,
+                                                                            ChargeBoxIdentity,
+                                                                            out ChangeConfigurationRequest request,
+                                                                            out String                     ErrorResponse,
+                                                                            CustomChangeConfigurationRequestParser))
                                     {
 
                                         #region Send OnChangeConfigurationRequest event
@@ -2321,148 +2340,148 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                             {
 
-                                #region Send OnDataTransferWSRequest event
+                                //#region Send OnIncomingDataTransferWSRequest event
 
-                                try
-                                {
+                                //try
+                                //{
 
-                                    OnDataTransferWSRequest?.Invoke(Timestamp.Now,
-                                                             this,
-                                                             requestJSON);
+                                //    OnIncomingDataTransferWSRequest?.Invoke(Timestamp.Now,
+                                //                                            this,
+                                //                                            requestJSON);
 
-                                }
-                                catch (Exception e)
-                                {
-                                    DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnDataTransferWSRequest));
-                                }
+                                //}
+                                //catch (Exception e)
+                                //{
+                                //    DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingDataTransferWSRequest));
+                                //}
 
-                                #endregion
+                                //#endregion
 
-                                DataTransferResponse response = null;
+                                //CP.DataTransferResponse response = null;
 
-                                try
-                                {
+                                //try
+                                //{
 
-                                    if (DataTransferRequest.TryParse(wsRequest.Message,
-                                                                           wsRequest.RequestId,
-                                                                           ChargeBoxIdentity,
-                                                                           out DataTransferRequest request,
-                                                                           out String                    ErrorResponse,
-                                                                           CustomDataTransferRequestParser))
-                                    {
+                                //    if (DataTransferRequest.TryParse(wsRequest.Message,
+                                //                                     wsRequest.RequestId,
+                                //                                     ChargeBoxIdentity,
+                                //                                     out DataTransferRequest request,
+                                //                                     out String              ErrorResponse,
+                                //                                     CustomDataTransferRequestParser))
+                                //    {
 
-                                        #region Send OnDataTransferRequest event
+                                //        #region Send OnIncomingDataTransferRequest event
 
-                                        try
-                                        {
+                                //        try
+                                //        {
 
-                                            OnDataTransferRequest?.Invoke(Timestamp.Now,
-                                                                                this,
-                                                                                request);
+                                //            OnIncomingDataTransferRequest?.Invoke(Timestamp.Now,
+                                //                                                  this,
+                                //                                                  request);
 
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnDataTransferRequest));
-                                        }
+                                //        }
+                                //        catch (Exception e)
+                                //        {
+                                //            DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnDataTransferRequest));
+                                //        }
 
-                                        #endregion
+                                //        #endregion
 
-                                        #region Call async subscribers
+                                //        #region Call async subscribers
 
-                                        if (response == null)
-                                        {
+                                //        if (response == null)
+                                //        {
 
-                                            var results = OnDataTransfer?.
-                                                                GetInvocationList()?.
-                                                                SafeSelect(subscriber => (subscriber as OnDataTransferDelegate)
-                                                                    (Timestamp.Now,
-                                                                     this,
-                                                                     request,
-                                                                     cancellationTokenSource.Token)).
-                                                                ToArray();
+                                //            var results = OnIncomingDataTransfer?.
+                                //                                GetInvocationList()?.
+                                //                                SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
+                                //                                    (Timestamp.Now,
+                                //                                     this,
+                                //                                     request,
+                                //                                     cancellationTokenSource.Token)).
+                                //                                ToArray();
 
-                                            if (results?.Length > 0)
-                                            {
+                                //            if (results?.Length > 0)
+                                //            {
 
-                                                await Task.WhenAll(results);
+                                //                await Task.WhenAll(results);
 
-                                                response = results.FirstOrDefault()?.Result;
+                                //                response = results.FirstOrDefault()?.Result;
 
-                                            }
+                                //            }
 
-                                            if (results == null || response == null)
-                                                response = DataTransferResponse.Failed(request);
+                                //            if (results == null || response == null)
+                                //                response = DataTransferResponse.Failed(request);
 
-                                        }
+                                //        }
 
-                                        #endregion
+                                //        #endregion
 
-                                        #region Send OnDataTransferResponse event
+                                //        #region Send OnIncomingDataTransferResponse event
 
-                                        try
-                                        {
+                                //        try
+                                //        {
 
-                                            OnDataTransferResponse?.Invoke(Timestamp.Now,
-                                                                                 this,
-                                                                                 request,
-                                                                                 response,
-                                                                                 response.Runtime);
+                                //            OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
+                                //                                                   this,
+                                //                                                   request,
+                                //                                                   response,
+                                //                                                   response.Runtime);
 
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnDataTransferResponse));
-                                        }
+                                //        }
+                                //        catch (Exception e)
+                                //        {
+                                //            DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingDataTransferResponse));
+                                //        }
 
-                                        #endregion
+                                //        #endregion
 
-                                        OCPPResponseJSON = response.ToJSON();
+                                //        OCPPResponseJSON = response.ToJSON();
 
-                                    }
+                                //    }
 
-                                    else
-                                        ErrorMessage =  new WSErrorMessage(wsRequest.RequestId,
-                                                                            WSErrorCodes.FormationViolation,
-                                                                            "The given 'DataTransfer' request could not be parsed!",
-                                                                            new JObject(
-                                                                                new JProperty("request", requestJSON)
-                                                                            ));
+                                //    else
+                                //        ErrorMessage =  new WSErrorMessage(wsRequest.RequestId,
+                                //                                           WSErrorCodes.FormationViolation,
+                                //                                           "The given 'DataTransfer' request could not be parsed!",
+                                //                                           new JObject(
+                                //                                               new JProperty("request", requestJSON)
+                                //                                           ));
 
-                                }
-                                catch (Exception e)
-                                {
+                                //}
+                                //catch (Exception e)
+                                //{
 
-                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
-                                                                        WSErrorCodes.FormationViolation,
-                                                                        "Processing the given 'DataTransfer' request led to an exception!",
-                                                                        new JObject(
-                                                                            new JProperty("request",     requestJSON),
-                                                                            new JProperty("exception",   e.Message),
-                                                                            new JProperty("stacktrace",  e.StackTrace)
-                                                                        ));
+                                //    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                //                                      WSErrorCodes.FormationViolation,
+                                //                                      "Processing the given 'DataTransfer' request led to an exception!",
+                                //                                      new JObject(
+                                //                                          new JProperty("request",     requestJSON),
+                                //                                          new JProperty("exception",   e.Message),
+                                //                                          new JProperty("stacktrace",  e.StackTrace)
+                                //                                      ));
 
-                                }
+                                //}
 
 
-                                #region Send OnDataTransferWSResponse event
+                                //#region Send OnIncomingDataTransferWSResponse event
 
-                                try
-                                {
+                                //try
+                                //{
 
-                                    OnDataTransferWSResponse?.Invoke(Timestamp.Now,
-                                                                           this,
-                                                                           requestJSON,
-                                                                           new WSResponseMessage(wsRequest.RequestId,
-                                                                                                 OCPPResponseJSON).ToJSON());
+                                //    OnIncomingDataTransferWSResponse?.Invoke(Timestamp.Now,
+                                //                                             this,
+                                //                                             requestJSON,
+                                //                                             new WSResponseMessage(wsRequest.RequestId,
+                                //                                                                   OCPPResponseJSON).ToJSON());
 
-                                }
-                                catch (Exception e)
-                                {
-                                    DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnDataTransferWSResponse));
-                                }
+                                //}
+                                //catch (Exception e)
+                                //{
+                                //    DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingDataTransferWSResponse));
+                                //}
 
-                                #endregion
+                                //#endregion
 
                             }
                             break;
@@ -2494,11 +2513,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 {
 
                                     if (GetDiagnosticsRequest.TryParse(wsRequest.Message,
-                                                                           wsRequest.RequestId,
-                                                                           ChargeBoxIdentity,
-                                                                           out GetDiagnosticsRequest request,
-                                                                           out String                    ErrorResponse,
-                                                                           CustomGetDiagnosticsRequestParser))
+                                                                       wsRequest.RequestId,
+                                                                       ChargeBoxIdentity,
+                                                                       out GetDiagnosticsRequest request,
+                                                                       out String                ErrorResponse,
+                                                                       CustomGetDiagnosticsRequestParser))
                                     {
 
                                         #region Send OnGetDiagnosticsRequest event
@@ -2644,11 +2663,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 {
 
                                     if (TriggerMessageRequest.TryParse(wsRequest.Message,
-                                                                           wsRequest.RequestId,
-                                                                           ChargeBoxIdentity,
-                                                                           out TriggerMessageRequest request,
-                                                                           out String                    ErrorResponse,
-                                                                           CustomTriggerMessageRequestParser))
+                                                                       wsRequest.RequestId,
+                                                                       ChargeBoxIdentity,
+                                                                       out TriggerMessageRequest request,
+                                                                       out String                ErrorResponse,
+                                                                       CustomTriggerMessageRequestParser))
                                     {
 
                                         #region Send OnTriggerMessageRequest event
@@ -2794,11 +2813,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 {
 
                                     if (UpdateFirmwareRequest.TryParse(wsRequest.Message,
-                                                                           wsRequest.RequestId,
-                                                                           ChargeBoxIdentity,
-                                                                           out UpdateFirmwareRequest request,
-                                                                           out String                    ErrorResponse,
-                                                                           CustomUpdateFirmwareRequestParser))
+                                                                       wsRequest.RequestId,
+                                                                       ChargeBoxIdentity,
+                                                                       out UpdateFirmwareRequest request,
+                                                                       out String                ErrorResponse,
+                                                                       CustomUpdateFirmwareRequestParser))
                                     {
 
                                         #region Send OnUpdateFirmwareRequest event
@@ -2928,8 +2947,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 {
 
                                     OnReserveNowWSRequest?.Invoke(Timestamp.Now,
-                                                             this,
-                                                             requestJSON);
+                                                                  this,
+                                                                  requestJSON);
 
                                 }
                                 catch (Exception e)
@@ -2945,11 +2964,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 {
 
                                     if (ReserveNowRequest.TryParse(wsRequest.Message,
-                                                                           wsRequest.RequestId,
-                                                                           ChargeBoxIdentity,
-                                                                           out ReserveNowRequest request,
-                                                                           out String                    ErrorResponse,
-                                                                           CustomReserveNowRequestParser))
+                                                                   wsRequest.RequestId,
+                                                                   ChargeBoxIdentity,
+                                                                   out ReserveNowRequest request,
+                                                                   out String            ErrorResponse,
+                                                                   CustomReserveNowRequestParser))
                                     {
 
                                         #region Send OnReserveNowRequest event
@@ -2958,8 +2977,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                         {
 
                                             OnReserveNowRequest?.Invoke(Timestamp.Now,
-                                                                                this,
-                                                                                request);
+                                                                        this,
+                                                                        request);
 
                                         }
                                         catch (Exception e)
@@ -3005,10 +3024,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                         {
 
                                             OnReserveNowResponse?.Invoke(Timestamp.Now,
-                                                                                 this,
-                                                                                 request,
-                                                                                 response,
-                                                                                 response.Runtime);
+                                                                         this,
+                                                                         request,
+                                                                         response,
+                                                                         response.Runtime);
 
                                         }
                                         catch (Exception e)
@@ -3052,10 +3071,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 {
 
                                     OnReserveNowWSResponse?.Invoke(Timestamp.Now,
-                                                                           this,
-                                                                           requestJSON,
-                                                                           new WSResponseMessage(wsRequest.RequestId,
-                                                                                                 OCPPResponseJSON).ToJSON());
+                                                                   this,
+                                                                   requestJSON,
+                                                                   new WSResponseMessage(wsRequest.RequestId,
+                                                                                         OCPPResponseJSON).ToJSON());
 
                                 }
                                 catch (Exception e)

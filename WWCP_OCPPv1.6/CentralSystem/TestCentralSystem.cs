@@ -65,6 +65,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public IEnumerable<ICentralSystemServer> CentralSystemServers
             => centralSystemServers;
 
+
+        public DNSClient DNSClient { get; }
+
         #endregion
 
         #region Events
@@ -97,6 +100,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+
+        #region OnAuthorize
+
+        /// <summary>
+        /// An event sent whenever a heartbeat request was received.
+        /// </summary>
+        public event OnAuthorizeRequestDelegate   OnAuthorizeRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a heartbeat was sent.
+        /// </summary>
+        public event OnAuthorizeResponseDelegate  OnAuthorizeResponse;
+
+        #endregion
 
         #region OnStartTransaction
 
@@ -205,7 +222,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a new central system for testing.
         /// </summary>
         /// <param name="CentralSystemId">The unique identification of this central system.</param>
-        public TestCentralSystem(CentralSystem_Id CentralSystemId)
+        public TestCentralSystem(CentralSystem_Id  CentralSystemId,
+                                 DNSClient         DNSClient    = null)
         {
 
             if (CentralSystemId.IsNullOrEmpty)
@@ -214,6 +232,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             this.CentralSystemId         = CentralSystemId;
             this.centralSystemServers    = new HashSet<ICentralSystemServer>();
             this.reachableChargingBoxes  = new Dictionary<ChargeBox_Id, Tuple<CentralSystemWSServer, DateTime>>();
+
+            this.DNSClient               = DNSClient;
 
         }
 
@@ -249,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                   URLPrefix,
                                                                   ContentType,
                                                                   RegisterHTTPRootService,
-                                                                  DNSClient,
+                                                                  DNSClient ?? this.DNSClient,
                                                                   AutoStart);
 
             Attach(centralSystemServer);
@@ -280,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             var centralSystemServer = new CentralSystemWSServer(HTTPServerName,
                                                                 IPAddress,
                                                                 TCPPort,
-                                                                DNSClient,
+                                                                DNSClient ?? this.DNSClient,
                                                                 AutoStart);
 
             Attach(centralSystemServer);
@@ -478,6 +498,87 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
+            #region OnAuthorize
+
+            CentralSystemServer.OnAuthorize += async (LogTimestamp,
+                                                      Sender,
+                                                      Request,
+                                                      CancellationToken) => {
+
+                #region Send OnAuthorizeRequest event
+
+                var requestTimestamp = Timestamp.Now;
+
+                try
+                {
+
+                    OnAuthorizeRequest?.Invoke(requestTimestamp,
+                                               this,
+                                               Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAuthorizeRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnAuthorize: " + Request.ChargeBoxId + ", " +
+                                                    Request.IdTag);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CentralSystemWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                    //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
+
+                }
+                else
+                {
+
+                    if (Sender is CentralSystemWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                    //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
+
+                }
+
+                await Task.Delay(100);
+
+                var response = new AuthorizeResponse(Request:    Request,
+                                                     IdTagInfo:  new IdTagInfo(Status:      AuthorizationStatus.Accepted,
+                                                                               ExpiryDate:  Timestamp.Now.AddDays(3)));
+
+
+                #region Send OnAuthorizeResponse event
+
+                try
+                {
+
+                    OnAuthorizeResponse?.Invoke(Timestamp.Now,
+                                                this,
+                                                Request,
+                                                response,
+                                                Timestamp.Now - requestTimestamp);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAuthorizeResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
             #region OnStartTransaction
 
             CentralSystemServer.OnStartTransaction += async (LogTimestamp,
@@ -505,7 +606,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                Console.WriteLine("OnStartTransaction: " + Request.ChargeBoxId);
+                Console.WriteLine("OnStartTransaction: " + Request.ChargeBoxId + ", " +
+                                                           Request.ConnectorId + ", " +
+                                                           Request.IdTag + ", " +
+                                                           Request.StartTimestamp + ", " +
+                                                           Request.MeterStart + ", " +
+                                                           Request.ReservationId ?? "-");
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CentralSystemWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                    //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
+
+                }
+                else
+                {
+
+                    if (Sender is CentralSystemWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                    //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
+
+                }
 
                 await Task.Delay(100);
 
@@ -567,7 +692,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                Console.WriteLine("OnStatusNotification: " + Request.ChargeBoxId);
+                Console.WriteLine("OnStatusNotification: " + Request.ConnectorId     + ", " +
+                                                             Request.Status          + ", " +
+                                                             Request.ErrorCode       + ", " +
+                                                             Request.Info            + ", " +
+                                                             Request.StatusTimestamp + ", " +
+                                                             Request.VendorId        + ", " +
+                                                             Request.VendorErrorCode);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+                    if (Sender is CentralSystemWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+                }
+                else
+                {
+                    if (Sender is CentralSystemWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+                }
 
                 await Task.Delay(100);
 
@@ -623,10 +765,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnMeterValuesRequest));
                 }
 
-                #endregion
+                                                            #endregion
 
 
-                Console.WriteLine("OnMeterValues: " + Request.ChargeBoxId);
+                Console.WriteLine("OnMeterValues: " + Request.ConnectorId + ", " +
+                                                      Request.TransactionId);
+
+                Console.WriteLine(Request.MeterValues.SafeSelect(meterValue => meterValue.Timestamp.ToIso8601() +
+                                          meterValue.SampledValues.SafeSelect(sampledValue => sampledValue.Context + ", " + sampledValue.Value + ", " + sampledValue.Value).AggregateWith("; ")).AggregateWith(Environment.NewLine));
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+                    if (Sender is CentralSystemWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+                }
+                else
+                {
+                    if (Sender is CentralSystemWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+                }
 
                 await Task.Delay(100);
 
@@ -685,7 +842,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                Console.WriteLine("OnStopTransaction: " + Request.ChargeBoxId);
+                Console.WriteLine("OnStopTransaction: " + Request.TransactionId + ", " +
+                                                          Request.IdTag + ", " +
+                                                          Request.Timestamp.ToIso8601() + ", " +
+                                                          Request.MeterStop + ", " +
+                                                          Request.Reason);
+
+                Console.WriteLine(Request.TransactionData.SafeSelect(transactionData => transactionData.Timestamp.ToIso8601() +
+                                          transactionData.SampledValues.SafeSelect(sampledValue => sampledValue.Context + ", " + sampledValue.Value + ", " + sampledValue.Value).AggregateWith("; ")).AggregateWith(Environment.NewLine));
 
                 await Task.Delay(100);
 
@@ -747,7 +911,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                Console.WriteLine("OnIncomingData: " + Request.ChargeBoxId);
+                Console.WriteLine("OnIncomingDataTransfer: " + Request.VendorId  + ", " +
+                                                               Request.MessageId + ", " +
+                                                               Request.Data);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+                    if (Sender is CentralSystemWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+                }
+                else
+                {
+                    if (Sender is CentralSystemWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+                }
 
                 await Task.Delay(100);
 
@@ -808,7 +985,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                Console.WriteLine("OnDiagnosticsStatusNotification: " + Request.ChargeBoxId);
+                Console.WriteLine("OnDiagnosticsStatusNotification: " + Request.Status);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+                    if (Sender is CentralSystemWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+                }
+                else
+                {
+                    if (Sender is CentralSystemWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+                }
 
                 await Task.Delay(100);
 
@@ -867,7 +1055,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                Console.WriteLine("OnFirmwareStatus: " + Request.ChargeBoxId);
+                Console.WriteLine("OnFirmwareStatus: " + Request.Status);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+                    if (Sender is CentralSystemWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+                }
+                else
+                {
+                    if (Sender is CentralSystemWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+                }
 
                 await Task.Delay(100);
 
@@ -914,7 +1113,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ResetType">The type of reset that the charge point should perform.</param>
         public async Task<CP.ResetResponse> Reset(ChargeBox_Id      ChargeBoxId,
                                                   ResetTypes        ResetType,
-                                                  EventTracking_Id  EventTrackingId    = null)
+                                                  EventTracking_Id  EventTrackingId   = null)
         {
 
             var request = new ResetRequest(ChargeBoxId,
@@ -948,7 +1147,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<CP.ChangeAvailabilityResponse> ChangeAvailability(ChargeBox_Id      ChargeBoxId,
                                                                             Connector_Id      ConnectorId,
                                                                             Availabilities    Availability,
-                                                                            EventTracking_Id  EventTrackingId    = null)
+                                                                            EventTracking_Id  EventTrackingId   = null)
         {
 
             var request = new ChangeAvailabilityRequest(ChargeBoxId,
@@ -1017,7 +1216,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<CP.ChangeConfigurationResponse> ChangeConfiguration(ChargeBox_Id      ChargeBoxId,
                                                                               String            Key,
                                                                               String            Value,
-                                                                              EventTracking_Id  EventTrackingId    = null)
+                                                                              EventTracking_Id  EventTrackingId   = null)
         {
 
             var request = new ChangeConfigurationRequest(ChargeBoxId,
@@ -1052,9 +1251,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Data">Optional message data as text without specified length or format.</param>
         public async Task<CP.DataTransferResponse> DataTransfer(ChargeBox_Id      ChargeBoxId,
                                                                 String            VendorId,
-                                                                String            MessageId          = null,
-                                                                String            Data               = null,
-                                                                EventTracking_Id  EventTrackingId    = null)
+                                                                String            MessageId         = null,
+                                                                String            Data              = null,
+                                                                EventTracking_Id  EventTrackingId   = null)
         {
 
             var request = new DataTransferRequest(ChargeBoxId,
@@ -1092,11 +1291,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
         public async Task<CP.GetDiagnosticsResponse> GetDiagnostics(ChargeBox_Id      ChargeBoxId,
                                                                     String            Location,
-                                                                    DateTime?         StartTime          = null,
-                                                                    DateTime?         StopTime           = null,
-                                                                    Byte?             Retries            = null,
-                                                                    TimeSpan?         RetryInterval      = null,
-                                                                    EventTracking_Id  EventTrackingId    = null)
+                                                                    DateTime?         StartTime         = null,
+                                                                    DateTime?         StopTime          = null,
+                                                                    Byte?             Retries           = null,
+                                                                    TimeSpan?         RetryInterval     = null,
+                                                                    EventTracking_Id  EventTrackingId   = null)
         {
 
             var request = new GetDiagnosticsRequest(ChargeBoxId,
@@ -1216,8 +1415,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                             Reservation_Id    ReservationId,
                                                             DateTime          ExpiryDate,
                                                             IdToken           IdTag,
-                                                            IdToken?          ParentIdTag        = null,
-                                                            EventTracking_Id  EventTrackingId    = null)
+                                                            IdToken?          ParentIdTag       = null,
+                                                            EventTracking_Id  EventTrackingId   = null)
         {
 
             var request = new ReserveNowRequest(ChargeBoxId,
@@ -1253,7 +1452,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         public async Task<CP.CancelReservationResponse> CancelReservation(ChargeBox_Id      ChargeBoxId,
                                                                           Reservation_Id    ReservationId,
-                                                                          EventTracking_Id  EventTrackingId    = null)
+                                                                          EventTracking_Id  EventTrackingId   = null)
         {
 
             var request = new CancelReservationRequest(ChargeBoxId,
@@ -1287,9 +1486,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
         public async Task<CP.RemoteStartTransactionResponse> RemoteStartTransaction(ChargeBox_Id      ChargeBoxId,
                                                                                     IdToken           IdTag,
-                                                                                    Connector_Id?     ConnectorId        = null,
-                                                                                    ChargingProfile   ChargingProfile    = null,
-                                                                                    EventTracking_Id  EventTrackingId    = null)
+                                                                                    Connector_Id?     ConnectorId       = null,
+                                                                                    ChargingProfile   ChargingProfile   = null,
+                                                                                    EventTracking_Id  EventTrackingId   = null)
         {
 
             var request = new RemoteStartTransactionRequest(ChargeBoxId,
