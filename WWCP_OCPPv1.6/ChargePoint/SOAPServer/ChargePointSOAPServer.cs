@@ -93,27 +93,230 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event RequestLogHandler OnResetSOAPRequest;
+        public event RequestLogHandler         OnResetSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnResetRequestDelegate OnResetRequest;
+        public event OnResetRequestDelegate    OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnResetDelegate OnReset;
+        public event OnResetDelegate           OnReset;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnResetResponseDelegate OnResetResponse;
+        public event OnResetResponseDelegate   OnResetResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler OnResetSOAPResponse;
+        public event AccessLogHandler          OnResetSOAPResponse;
+
+        #endregion
+
+        #region OnChangeAvailability
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler         OnChangeAvailabilitySOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnChangeAvailabilityRequestDelegate    OnChangeAvailabilityRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnChangeAvailabilityDelegate           OnChangeAvailability;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnChangeAvailabilityResponseDelegate   OnChangeAvailabilityResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event AccessLogHandler          OnChangeAvailabilitySOAPResponse;
+
+        #endregion
+
+        #region OnGetConfiguration
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler         OnGetConfigurationSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetConfigurationRequestDelegate    OnGetConfigurationRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetConfigurationDelegate           OnGetConfiguration;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnGetConfigurationResponseDelegate   OnGetConfigurationResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event AccessLogHandler          OnGetConfigurationSOAPResponse;
+
+        #endregion
+
+        #region OnChangeConfiguration
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler         OnChangeConfigurationSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnChangeConfigurationRequestDelegate    OnChangeConfigurationRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnChangeConfigurationDelegate           OnChangeConfiguration;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnChangeConfigurationResponseDelegate   OnChangeConfigurationResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event AccessLogHandler          OnChangeConfigurationSOAPResponse;
+
+        #endregion
+
+        #region OnIncomingDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a data transfer SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler                        OnIncomingDataTransferSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a data transfer request was received.
+        /// </summary>
+        public event OnIncomingDataTransferRequestDelegate    OnIncomingDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a data transfer request was received.
+        /// </summary>
+        public event OnIncomingDataTransferDelegate           OnIncomingDataTransfer;
+
+        /// <summary>
+        /// An event sent whenever a response to a data transfer request was sent.
+        /// </summary>
+        public event OnIncomingDataTransferResponseDelegate   OnIncomingDataTransferResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a data transfer request was sent.
+        /// </summary>
+        public event AccessLogHandler                         OnIncomingDataTransferSOAPResponse;
+
+        #endregion
+
+        #region OnGetDiagnostics
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler         OnGetDiagnosticsSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetDiagnosticsRequestDelegate    OnGetDiagnosticsRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetDiagnosticsDelegate           OnGetDiagnostics;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnGetDiagnosticsResponseDelegate   OnGetDiagnosticsResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event AccessLogHandler          OnGetDiagnosticsSOAPResponse;
+
+        #endregion
+
+        #region OnTriggerMessage
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler         OnTriggerMessageSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnTriggerMessageRequestDelegate    OnTriggerMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnTriggerMessageDelegate           OnTriggerMessage;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnTriggerMessageResponseDelegate   OnTriggerMessageResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event AccessLogHandler          OnTriggerMessageSOAPResponse;
+
+        #endregion
+
+        #region OnUpdateFirmware
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler         OnUpdateFirmwareSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnUpdateFirmwareRequestDelegate    OnUpdateFirmwareRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnUpdateFirmwareDelegate           OnUpdateFirmware;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnUpdateFirmwareResponseDelegate   OnUpdateFirmwareResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event AccessLogHandler          OnUpdateFirmwareSOAPResponse;
 
         #endregion
 
@@ -234,33 +437,207 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-
-        #region OnIncomingDataTransfer
-
-        /// <summary>
-        /// An event sent whenever a data transfer SOAP request was received.
-        /// </summary>
-        public event RequestLogHandler OnIncomingDataTransferSOAPRequest;
+        #region OnSetChargingProfile
 
         /// <summary>
-        /// An event sent whenever a data transfer request was received.
+        /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event OnIncomingDataTransferRequestDelegate OnIncomingDataTransferRequest;
+        public event RequestLogHandler         OnSetChargingProfileSOAPRequest;
 
         /// <summary>
-        /// An event sent whenever a data transfer request was received.
+        /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnIncomingDataTransferDelegate OnIncomingDataTransfer;
+        public event OnSetChargingProfileRequestDelegate    OnSetChargingProfileRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
+        /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnIncomingDataTransferResponseDelegate OnIncomingDataTransferResponse;
+        public event OnSetChargingProfileDelegate           OnSetChargingProfile;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a data transfer request was sent.
+        /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler OnIncomingDataTransferSOAPResponse;
+        public event OnSetChargingProfileResponseDelegate   OnSetChargingProfileResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event AccessLogHandler          OnSetChargingProfileSOAPResponse;
+
+        #endregion
+
+        #region OnClearChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler         OnClearChargingProfileSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnClearChargingProfileRequestDelegate    OnClearChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnClearChargingProfileDelegate           OnClearChargingProfile;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnClearChargingProfileResponseDelegate   OnClearChargingProfileResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event AccessLogHandler          OnClearChargingProfileSOAPResponse;
+
+        #endregion
+
+        #region OnGetCompositeSchedule
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler         OnGetCompositeScheduleSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetCompositeScheduleRequestDelegate    OnGetCompositeScheduleRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetCompositeScheduleDelegate           OnGetCompositeSchedule;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnGetCompositeScheduleResponseDelegate   OnGetCompositeScheduleResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event AccessLogHandler          OnGetCompositeScheduleSOAPResponse;
+
+        #endregion
+
+        #region OnUnlockConnector
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler         OnUnlockConnectorSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnUnlockConnectorRequestDelegate    OnUnlockConnectorRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnUnlockConnectorDelegate           OnUnlockConnector;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnUnlockConnectorResponseDelegate   OnUnlockConnectorResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event AccessLogHandler          OnUnlockConnectorSOAPResponse;
+
+        #endregion
+
+
+        #region OnGetLocalListVersion
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler         OnGetLocalListVersionSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetLocalListVersionRequestDelegate    OnGetLocalListVersionRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetLocalListVersionDelegate           OnGetLocalListVersion;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnGetLocalListVersionResponseDelegate   OnGetLocalListVersionResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event AccessLogHandler          OnGetLocalListVersionSOAPResponse;
+
+        #endregion
+
+        #region OnSendLocalList
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler         OnSendLocalListSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnSendLocalListRequestDelegate    OnSendLocalListRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnSendLocalListDelegate           OnSendLocalList;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnSendLocalListResponseDelegate   OnSendLocalListResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event AccessLogHandler          OnSendLocalListSOAPResponse;
+
+        #endregion
+
+        #region OnClearCache
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler         OnClearCacheSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnClearCacheRequestDelegate    OnClearCacheRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnClearCacheDelegate           OnClearCache;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnClearCacheResponseDelegate   OnClearCacheResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event AccessLogHandler          OnClearCacheSOAPResponse;
 
         #endregion
 

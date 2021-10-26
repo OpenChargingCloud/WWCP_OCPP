@@ -77,9 +77,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ChargingSchedule">The planned composite charging schedule, the energy consumption over time. Always relative to ScheduleStart.</param>
         public GetCompositeScheduleResponse(CS.GetCompositeScheduleRequest  Request,
                                             GetCompositeScheduleStatus      Status,
-                                            Connector_Id?                   ConnectorId,
-                                            DateTime?                       ScheduleStart,
-                                            ChargingSchedule                ChargingSchedule)
+                                            Connector_Id?                   ConnectorId        = null,
+                                            DateTime?                       ScheduleStart      = null,
+                                            ChargingSchedule                ChargingSchedule   = null)
 
             : base(Request,
                    Result.OK())

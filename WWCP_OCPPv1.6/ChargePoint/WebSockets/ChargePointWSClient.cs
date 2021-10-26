@@ -39,11 +39,35 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using System.Security.Authentication;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
+
+    /// <summary>
+    /// The delegate for the WebSocket request log.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the incoming request.</param>
+    /// <param name="WebSocketClient">The sending WebSocket client.</param>
+    /// <param name="Request">The incoming request.</param>
+    public delegate Task WSClientRequestLogHandler(DateTime             Timestamp,
+                                                   ChargePointWSClient  WebSocketClient,
+                                                   JArray               Request);
+
+    /// <summary>
+    /// The delegate for the WebSocket response log.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the incoming request.</param>
+    /// <param name="WebSocketClient">The sending WebSocket client.</param>
+    /// <param name="Request">The incoming WebSocket request.</param>
+    /// <param name="Response">The outgoing WebSocket response.</param>
+    public delegate Task WSClientResponseLogHandler(DateTime             Timestamp,
+                                                    ChargePointWSClient  WebSocketClient,
+                                                    JArray               Request,
+                                                    JArray               Response);
+
 
     /// <summary>
     /// The charge point WebSockets client runs on a charge point
@@ -73,6 +97,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         private Stream           HTTPStream;
 
         private Int64            requestId;
+
+        /// <summary>
+        /// The default maintenance interval.
+        /// </summary>
+        public readonly TimeSpan DefaultMaintenanceEvery = TimeSpan.FromSeconds(1);
+        private static readonly SemaphoreSlim MaintenanceSemaphore = new SemaphoreSlim(1, 1);
+        private readonly Timer MaintenanceTimer;
+
+        protected static readonly TimeSpan SemaphoreSlimTimeout = TimeSpan.FromSeconds(5);
 
         #endregion
 
@@ -231,9 +264,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         }
 
 
+
+        /// <summary>
+        /// The maintenance interval.
+        /// </summary>
+        public TimeSpan  MaintenanceEvery            { get; }
+
+        /// <summary>
+        /// Disable all maintenance tasks.
+        /// </summary>
+        public Boolean   DisableMaintenanceTasks     { get; set; }
+
         #endregion
 
         #region Events
+
+        // Outgoing messages (to central system)
 
         #region OnBootNotificationRequest/-Response
 
@@ -478,36 +524,237 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-
-
-
+        // Incoming messages (from central system)
 
         #region OnReset
 
         /// <summary>
         /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event RequestLogHandler        OnResetSOAPRequest;
+        public event WSClientRequestLogHandler   OnResetWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnResetRequestDelegate   OnResetRequest;
+        public event OnResetRequestDelegate      OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnResetDelegate          OnReset;
+        public event OnResetDelegate             OnReset;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnResetResponseDelegate  OnResetResponse;
+        public event OnResetResponseDelegate     OnResetResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler         OnResetSOAPResponse;
+        public event WSClientResponseLogHandler  OnResetWSResponse;
+
+        #endregion
+
+        #region OnChangeAvailability
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler   OnChangeAvailabilityWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnChangeAvailabilityRequestDelegate      OnChangeAvailabilityRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnChangeAvailabilityDelegate             OnChangeAvailability;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnChangeAvailabilityResponseDelegate     OnChangeAvailabilityResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler  OnChangeAvailabilityWSResponse;
+
+        #endregion
+
+        #region OnGetConfiguration
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler   OnGetConfigurationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetConfigurationRequestDelegate      OnGetConfigurationRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetConfigurationDelegate             OnGetConfiguration;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnGetConfigurationResponseDelegate     OnGetConfigurationResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler  OnGetConfigurationWSResponse;
+
+        #endregion
+
+        #region OnChangeConfiguration
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler   OnChangeConfigurationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnChangeConfigurationRequestDelegate      OnChangeConfigurationRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnChangeConfigurationDelegate             OnChangeConfiguration;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnChangeConfigurationResponseDelegate     OnChangeConfigurationResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler  OnChangeConfigurationWSResponse;
+
+        #endregion
+
+        #region OnIncomingDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a data transfer SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler                       OnIncomingDataTransferSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a data transfer request was received.
+        /// </summary>
+        public event OnIncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a data transfer request was received.
+        /// </summary>
+        public event OnIncomingDataTransferDelegate          OnIncomingDataTransfer;
+
+        /// <summary>
+        /// An event sent whenever a response to a data transfer request was sent.
+        /// </summary>
+        public event OnIncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a data transfer request was sent.
+        /// </summary>
+        public event AccessLogHandler                        OnIncomingDataTransferSOAPResponse;
+
+        #endregion
+
+        #region OnGetDiagnostics
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler   OnGetDiagnosticsWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetDiagnosticsRequestDelegate      OnGetDiagnosticsRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetDiagnosticsDelegate             OnGetDiagnostics;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnGetDiagnosticsResponseDelegate     OnGetDiagnosticsResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler  OnGetDiagnosticsWSResponse;
+
+        #endregion
+
+        #region OnTriggerMessage
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler   OnTriggerMessageWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnTriggerMessageRequestDelegate      OnTriggerMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnTriggerMessageDelegate             OnTriggerMessage;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnTriggerMessageResponseDelegate     OnTriggerMessageResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler  OnTriggerMessageWSResponse;
+
+        #endregion
+
+        #region OnUpdateFirmware
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler   OnUpdateFirmwareWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnUpdateFirmwareRequestDelegate      OnUpdateFirmwareRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnUpdateFirmwareDelegate             OnUpdateFirmware;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnUpdateFirmwareResponseDelegate     OnUpdateFirmwareResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler  OnUpdateFirmwareWSResponse;
 
         #endregion
 
@@ -628,33 +875,207 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-
-        #region OnDataTransfer
-
-        /// <summary>
-        /// An event sent whenever a data transfer SOAP request was received.
-        /// </summary>
-        public event RequestLogHandler                       OnIncomingDataTransferSOAPRequest;
+        #region OnSetChargingProfile
 
         /// <summary>
-        /// An event sent whenever a data transfer request was received.
+        /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event OnIncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
+        public event WSClientRequestLogHandler   OnSetChargingProfileWSRequest;
 
         /// <summary>
-        /// An event sent whenever a data transfer request was received.
+        /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnIncomingDataTransferDelegate          OnIncomingDataTransfer;
+        public event OnSetChargingProfileRequestDelegate      OnSetChargingProfileRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
+        /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnIncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
+        public event OnSetChargingProfileDelegate             OnSetChargingProfile;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a data transfer request was sent.
+        /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler                        OnIncomingDataTransferSOAPResponse;
+        public event OnSetChargingProfileResponseDelegate     OnSetChargingProfileResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler  OnSetChargingProfileWSResponse;
+
+        #endregion
+
+        #region OnClearChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler   OnClearChargingProfileWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnClearChargingProfileRequestDelegate      OnClearChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnClearChargingProfileDelegate             OnClearChargingProfile;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnClearChargingProfileResponseDelegate     OnClearChargingProfileResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler  OnClearChargingProfileWSResponse;
+
+        #endregion
+
+        #region OnGetCompositeSchedule
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler   OnGetCompositeScheduleWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetCompositeScheduleRequestDelegate      OnGetCompositeScheduleRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetCompositeScheduleDelegate             OnGetCompositeSchedule;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnGetCompositeScheduleResponseDelegate     OnGetCompositeScheduleResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler  OnGetCompositeScheduleWSResponse;
+
+        #endregion
+
+        #region OnUnlockConnector
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler   OnUnlockConnectorWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnUnlockConnectorRequestDelegate      OnUnlockConnectorRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnUnlockConnectorDelegate             OnUnlockConnector;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnUnlockConnectorResponseDelegate     OnUnlockConnectorResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler  OnUnlockConnectorWSResponse;
+
+        #endregion
+
+
+        #region OnGetLocalListVersion
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler   OnGetLocalListVersionWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetLocalListVersionRequestDelegate      OnGetLocalListVersionRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnGetLocalListVersionDelegate             OnGetLocalListVersion;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnGetLocalListVersionResponseDelegate     OnGetLocalListVersionResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler  OnGetLocalListVersionWSResponse;
+
+        #endregion
+
+        #region OnSendLocalList
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler   OnSendLocalListWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnSendLocalListRequestDelegate      OnSendLocalListRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnSendLocalListDelegate             OnSendLocalList;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnSendLocalListResponseDelegate     OnSendLocalListResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler  OnSendLocalListWSResponse;
+
+        #endregion
+
+        #region OnClearCache
+
+        /// <summary>
+        /// An event sent whenever a reset SOAP request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler   OnClearCacheWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnClearCacheRequestDelegate      OnClearCacheRequest;
+
+        /// <summary>
+        /// An event sent whenever a reset request was received.
+        /// </summary>
+        public event OnClearCacheDelegate             OnClearCache;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnClearCacheResponseDelegate     OnClearCacheResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler  OnClearCacheWSResponse;
 
         #endregion
 
@@ -708,6 +1129,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                    UInt16?                              MaxNumberOfRetries           = 3,
                                    Boolean                              UseHTTPPipelining            = false,
 
+                                   TimeSpan?                            MaintenanceEvery             = null,
+
                                    String                               LoggingPath                  = null,
                                    String                               LoggingContext               = ChargePointSOAPClient.CPClientLogger.DefaultContext,
                                    LogfileCreatorDelegate               LogFileCreator               = null,
@@ -753,6 +1176,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             //                                                                            LoggingPath,
             //                                                                            LoggingContext,
             //                                                                            LogFileCreator);
+
+            this.MaintenanceEvery            = MaintenanceEvery ?? DefaultMaintenanceEvery;
+            this.MaintenanceTimer            = new Timer(DoMaintenanceSync,
+                                                         null,
+                                                         this.MaintenanceEvery,
+                                                         this.MaintenanceEvery);
 
         }
 
@@ -1241,45 +1670,502 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
+        public CustomJObjectParserDelegate<ResetRequest>                CustomResetRequestParser                    { get; set; }
+        public CustomJObjectParserDelegate<ChangeAvailabilityRequest>   CustomChangeAvailabilityRequestParser       { get; set; }
 
-        private async Task<WebSockets.WSResponseMessage> SendRequest(String   Action,
-                                                                     JObject  Message)
+
+        #region (Timer) DoMaintenance(State)
+
+        private void DoMaintenanceSync(Object State)
+        {
+            if (!DisableMaintenanceTasks)
+                DoMaintenance(State).Wait();
+        }
+
+        protected internal virtual async Task _DoMaintenance(Object State)
         {
 
-            Interlocked.Increment(ref requestId);
-
-            HTTPStream.Write(new WebSocketFrame(WebSocketFrame.Fin.Final,
-                                                WebSocketFrame.MaskStatus.On,
-                                                new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
-                                                WebSocketFrame.Opcodes.Text,
-                                                new WebSockets.WSRequestMessage(Request_Id.Parse(requestId.ToString()), Action, Message).ToByteArray(),
-                                                WebSocketFrame.Rsv.Off,
-                                                WebSocketFrame.Rsv.Off,
-                                                WebSocketFrame.Rsv.Off).ToByteArray());
-
-            HTTPStream.Flush();
-
-
-            var buffer = new Byte[64 * 1024];
-            var pos    = 0;
-
-            do
+            if (TCPStream?.DataAvailable == true)
             {
 
-                pos += HTTPStream.Read(buffer, pos, 2048);
+                var buffer = new Byte[64 * 1024];
+                var pos    = 0;
 
-                //if (sw.ElapsedMilliseconds >= RequestTimeout.Value.TotalMilliseconds)
-                //    throw new HTTPTimeoutException(sw.Elapsed);
+                do
+                {
 
-                Thread.Sleep(1);
+                    pos += HTTPStream.Read(buffer, pos, 2048);
 
-            } while (TCPStream.DataAvailable);
+                    //if (sw.ElapsedMilliseconds >= RequestTimeout.Value.TotalMilliseconds)
+                    //    throw new HTTPTimeoutException(sw.Elapsed);
 
-            Array.Resize(ref buffer, pos);
-            var frame = WebSocketFrame.Parse(buffer);
+                    Thread.Sleep(1);
 
-            if (WebSockets.WSResponseMessage.TryParse(frame.Payload.ToUTF8String(), out WebSockets.WSResponseMessage response))
-                return response;
+                } while (TCPStream.DataAvailable);
+
+                Array.Resize(ref buffer, pos);
+                var frame = WebSocketFrame.Parse(buffer);
+
+                if (WSRequestMessage.TryParse(frame.Payload.ToUTF8String(), out WSRequestMessage wsRequest))
+                {
+
+                    var requestJSON                  = JArray.Parse(frame.Payload.ToUTF8String());
+                    var cancellationTokenSource      = new CancellationTokenSource();
+                    JObject        OCPPResponseJSON  = null;
+                    WSErrorMessage ErrorMessage      = null;
+
+
+                    switch (wsRequest.Action)
+                    {
+
+                        case "Reset":
+
+                            {
+
+                                #region Send OnResetWSRequest event
+
+                                try
+                                {
+
+                                    OnResetWSRequest?.Invoke(Timestamp.Now,
+                                                             this,
+                                                             requestJSON);
+
+                                }
+                                catch (Exception e)
+                                {
+                                    DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnResetWSRequest));
+                                }
+
+                                #endregion
+
+                                ResetResponse response = null;
+
+                                try
+                                {
+
+                                    if (ResetRequest.TryParse(wsRequest.Message,
+                                                              wsRequest.RequestId,
+                                                              ChargeBoxIdentity,
+                                                              out ResetRequest request,
+                                                              out String       ErrorResponse,
+                                                              CustomResetRequestParser))
+                                    {
+
+                                        #region Send OnResetRequest event
+
+                                        try
+                                        {
+
+                                            OnResetRequest?.Invoke(Timestamp.Now,
+                                                                   this,
+                                                                   request);
+
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnResetRequest));
+                                        }
+
+                                        #endregion
+
+                                        #region Call async subscribers
+
+                                        if (response == null)
+                                        {
+
+                                            var results = OnReset?.
+                                                                GetInvocationList()?.
+                                                                SafeSelect(subscriber => (subscriber as OnResetDelegate)
+                                                                    (Timestamp.Now,
+                                                                     this,
+                                                                     request,
+                                                                     cancellationTokenSource.Token)).
+                                                                ToArray();
+
+                                            if (results?.Length > 0)
+                                            {
+
+                                                await Task.WhenAll(results);
+
+                                                response = results.FirstOrDefault()?.Result;
+
+                                            }
+
+                                            if (results == null || response == null)
+                                                response = ResetResponse.Failed(request);
+
+                                        }
+
+                                        #endregion
+
+                                        #region Send OnResetResponse event
+
+                                        try
+                                        {
+
+                                            OnResetResponse?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    request,
+                                                                    response,
+                                                                    response.Runtime);
+
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnResetResponse));
+                                        }
+
+                                        #endregion
+
+                                        OCPPResponseJSON = response.ToJSON();
+
+                                    }
+
+                                    else
+                                        ErrorMessage =  new WSErrorMessage(wsRequest.RequestId,
+                                                                            WSErrorCodes.FormationViolation,
+                                                                            "The given 'Reset' request could not be parsed!",
+                                                                            new JObject(
+                                                                                new JProperty("request", requestJSON)
+                                                                            ));
+
+                                }
+                                catch (Exception e)
+                                {
+
+                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                                        WSErrorCodes.FormationViolation,
+                                                                        "Processing the given 'Reset' request led to an exception!",
+                                                                        new JObject(
+                                                                            new JProperty("request",     requestJSON),
+                                                                            new JProperty("exception",   e.Message),
+                                                                            new JProperty("stacktrace",  e.StackTrace)
+                                                                        ));
+
+                                }
+
+
+                                #region Send OnResetWSResponse event
+
+                                try
+                                {
+
+                                    OnResetWSResponse?.Invoke(Timestamp.Now,
+                                                              this,
+                                                              requestJSON,
+                                                              new WSResponseMessage(wsRequest.RequestId,
+                                                                                    OCPPResponseJSON).ToJSON());
+
+                                }
+                                catch (Exception e)
+                                {
+                                    DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnResetWSResponse));
+                                }
+
+                                #endregion
+
+                            }
+                            break;
+
+                        case "ChangeAvailability":
+
+                            {
+
+                                #region Send OnChangeAvailabilityWSRequest event
+
+                                try
+                                {
+
+                                    OnChangeAvailabilityWSRequest?.Invoke(Timestamp.Now,
+                                                             this,
+                                                             requestJSON);
+
+                                }
+                                catch (Exception e)
+                                {
+                                    DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeAvailabilityWSRequest));
+                                }
+
+                                #endregion
+
+                                ChangeAvailabilityResponse response = null;
+
+                                try
+                                {
+
+                                    if (ChangeAvailabilityRequest.TryParse(wsRequest.Message,
+                                                                           wsRequest.RequestId,
+                                                                           ChargeBoxIdentity,
+                                                                           out ChangeAvailabilityRequest request,
+                                                                           out String                    ErrorResponse,
+                                                                           CustomChangeAvailabilityRequestParser))
+                                    {
+
+                                        #region Send OnChangeAvailabilityRequest event
+
+                                        try
+                                        {
+
+                                            OnChangeAvailabilityRequest?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request);
+
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeAvailabilityRequest));
+                                        }
+
+                                        #endregion
+
+                                        #region Call async subscribers
+
+                                        if (response == null)
+                                        {
+
+                                            var results = OnChangeAvailability?.
+                                                                GetInvocationList()?.
+                                                                SafeSelect(subscriber => (subscriber as OnChangeAvailabilityDelegate)
+                                                                    (Timestamp.Now,
+                                                                     this,
+                                                                     request,
+                                                                     cancellationTokenSource.Token)).
+                                                                ToArray();
+
+                                            if (results?.Length > 0)
+                                            {
+
+                                                await Task.WhenAll(results);
+
+                                                response = results.FirstOrDefault()?.Result;
+
+                                            }
+
+                                            if (results == null || response == null)
+                                                response = ChangeAvailabilityResponse.Failed(request);
+
+                                        }
+
+                                        #endregion
+
+                                        #region Send OnChangeAvailabilityResponse event
+
+                                        try
+                                        {
+
+                                            OnChangeAvailabilityResponse?.Invoke(Timestamp.Now,
+                                                                                 this,
+                                                                                 request,
+                                                                                 response,
+                                                                                 response.Runtime);
+
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeAvailabilityResponse));
+                                        }
+
+                                        #endregion
+
+                                        OCPPResponseJSON = response.ToJSON();
+
+                                    }
+
+                                    else
+                                        ErrorMessage =  new WSErrorMessage(wsRequest.RequestId,
+                                                                            WSErrorCodes.FormationViolation,
+                                                                            "The given 'ChangeAvailability' request could not be parsed!",
+                                                                            new JObject(
+                                                                                new JProperty("request", requestJSON)
+                                                                            ));
+
+                                }
+                                catch (Exception e)
+                                {
+
+                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                                        WSErrorCodes.FormationViolation,
+                                                                        "Processing the given 'ChangeAvailability' request led to an exception!",
+                                                                        new JObject(
+                                                                            new JProperty("request",     requestJSON),
+                                                                            new JProperty("exception",   e.Message),
+                                                                            new JProperty("stacktrace",  e.StackTrace)
+                                                                        ));
+
+                                }
+
+
+                                #region Send OnChangeAvailabilityWSResponse event
+
+                                try
+                                {
+
+                                    OnChangeAvailabilityWSResponse?.Invoke(Timestamp.Now,
+                                                                           this,
+                                                                           requestJSON,
+                                                                           new WSResponseMessage(wsRequest.RequestId,
+                                                                                                 OCPPResponseJSON).ToJSON());
+
+                                }
+                                catch (Exception e)
+                                {
+                                    DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeAvailabilityWSResponse));
+                                }
+
+                                #endregion
+
+                            }
+                            break;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            break;
+
+                    }
+
+
+                    if (OCPPResponseJSON != null)
+                    {
+
+                        HTTPStream.Write(new WebSocketFrame(WebSocketFrame.Fin.Final,
+                                                            WebSocketFrame.MaskStatus.On,
+                                                            new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
+                                                            WebSocketFrame.Opcodes.Text,
+                                                            new WSResponseMessage(wsRequest.RequestId, OCPPResponseJSON).ToByteArray(),
+                                                            WebSocketFrame.Rsv.Off,
+                                                            WebSocketFrame.Rsv.Off,
+                                                            WebSocketFrame.Rsv.Off).ToByteArray());
+
+                        HTTPStream.Flush();
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        private async Task DoMaintenance(Object State)
+        {
+
+            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
+                                           ConfigureAwait(false))
+            {
+                try
+                {
+
+                    await _DoMaintenance(State);
+
+                }
+                catch (Exception e)
+                {
+
+                    while (e.InnerException != null)
+                        e = e.InnerException;
+
+                    DebugX.LogException(e);
+
+                }
+                finally
+                {
+                    MaintenanceSemaphore.Release();
+                }
+            }
+            else
+                DebugX.LogT("Could not aquire the maintenance tasks lock!");
+
+        }
+
+        #endregion
+
+
+        private async Task<WSResponseMessage> SendRequest(String   Action,
+                                                          JObject  Message)
+        {
+
+            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
+                                           ConfigureAwait(false))
+            {
+                try
+                {
+
+                    Interlocked.Increment(ref requestId);
+
+                    HTTPStream.Write(new WebSocketFrame(WebSocketFrame.Fin.Final,
+                                                        WebSocketFrame.MaskStatus.On,
+                                                        new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
+                                                        WebSocketFrame.Opcodes.Text,
+                                                        new WSRequestMessage(Request_Id.Parse(requestId.ToString()), Action, Message).ToByteArray(),
+                                                        WebSocketFrame.Rsv.Off,
+                                                        WebSocketFrame.Rsv.Off,
+                                                        WebSocketFrame.Rsv.Off).ToByteArray());
+
+                    HTTPStream.Flush();
+
+
+                    var buffer = new Byte[64 * 1024];
+                    var pos    = 0;
+
+                    do
+                    {
+
+                        pos += HTTPStream.Read(buffer, pos, 2048);
+
+                        //if (sw.ElapsedMilliseconds >= RequestTimeout.Value.TotalMilliseconds)
+                        //    throw new HTTPTimeoutException(sw.Elapsed);
+
+                        Thread.Sleep(1);
+
+                    } while (TCPStream.DataAvailable);
+
+                    Array.Resize(ref buffer, pos);
+                    var frame = WebSocketFrame.Parse(buffer);
+
+                    if (WSResponseMessage.TryParse(frame.Payload.ToUTF8String(), out WSResponseMessage response))
+                        return response;
+
+                }
+                catch (Exception e)
+                {
+
+                    while (e.InnerException != null)
+                        e = e.InnerException;
+
+                    DebugX.LogException(e);
+
+                }
+                finally
+                {
+                    MaintenanceSemaphore.Release();
+                }
+            }
+            else
+                DebugX.LogT("Could not aquire the maintenance tasks lock!");
 
             return null;
 

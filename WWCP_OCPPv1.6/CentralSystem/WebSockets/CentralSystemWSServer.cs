@@ -2362,7 +2362,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                          TimeSpan?     Timeout   = null)
         {
 
-            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now + (Timeout ?? TimeSpan.FromMinutes(3));
+            var endTime = Timestamp.Now + (Timeout ?? TimeSpan.FromMinutes(3));
 
             var result = await SendJSON(RequestId,
                                         ClientId,
@@ -3225,7 +3225,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
         #region SendLocalList         (Request, RequestTimeout = null)
-
 
         public async Task<SendLocalListResponse> SendLocalList(SendLocalListRequest  Request,
                                                                TimeSpan?             RequestTimeout = null)

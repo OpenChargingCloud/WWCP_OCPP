@@ -66,14 +66,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public DataTransferRequest(ChargeBox_Id  ChargeBoxId,
-                                   String        VendorId,
-                                   String        MessageId          = null,
-                                   String        Data               = null,
+        public DataTransferRequest(ChargeBox_Id      ChargeBoxId,
+                                   String            VendorId,
+                                   String            MessageId          = null,
+                                   String            Data               = null,
 
-                                   Request_Id?   RequestId          = null,
-                                   DateTime?     RequestTimestamp   = null,
-                                   EventTracking_Id  EventTrackingId           = null)
+                                   Request_Id?       RequestId          = null,
+                                   DateTime?         RequestTimestamp   = null,
+                                   EventTracking_Id  EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "DataTransfer",

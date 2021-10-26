@@ -21,13 +21,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     public interface IChargePointServerEvents
     {
 
-        event OnCancelReservationRequestDelegate        OnCancelReservationRequest;
-        event OnCancelReservationDelegate               OnCancelReservation;
-        event OnCancelReservationResponseDelegate       OnCancelReservationResponse;
+        event OnResetRequestDelegate                    OnResetRequest;
+        event OnResetDelegate                           OnReset;
+        event OnResetResponseDelegate                   OnResetResponse;
+
+        event OnChangeAvailabilityRequestDelegate       OnChangeAvailabilityRequest;
+        event OnChangeAvailabilityDelegate              OnChangeAvailability;
+        event OnChangeAvailabilityResponseDelegate      OnChangeAvailabilityResponse;
+
+        event OnGetConfigurationRequestDelegate         OnGetConfigurationRequest;
+        event OnGetConfigurationDelegate                OnGetConfiguration;
+        event OnGetConfigurationResponseDelegate        OnGetConfigurationResponse;
+
+        event OnChangeConfigurationRequestDelegate      OnChangeConfigurationRequest;
+        event OnChangeConfigurationDelegate             OnChangeConfiguration;
+        event OnChangeConfigurationResponseDelegate     OnChangeConfigurationResponse;
 
         event OnIncomingDataTransferRequestDelegate     OnIncomingDataTransferRequest;
         event OnIncomingDataTransferDelegate            OnIncomingDataTransfer;
         event OnIncomingDataTransferResponseDelegate    OnIncomingDataTransferResponse;
+
+        event OnGetDiagnosticsRequestDelegate           OnGetDiagnosticsRequest;
+        event OnGetDiagnosticsDelegate                  OnGetDiagnostics;
+        event OnGetDiagnosticsResponseDelegate          OnGetDiagnosticsResponse;
+
+        event OnTriggerMessageRequestDelegate           OnTriggerMessageRequest;
+        event OnTriggerMessageDelegate                  OnTriggerMessage;
+        event OnTriggerMessageResponseDelegate          OnTriggerMessageResponse;
+
+        event OnUpdateFirmwareRequestDelegate           OnUpdateFirmwareRequest;
+        event OnUpdateFirmwareDelegate                  OnUpdateFirmware;
+        event OnUpdateFirmwareResponseDelegate          OnUpdateFirmwareResponse;
+
+
+        event OnReserveNowRequestDelegate               OnReserveNowRequest;
+        event OnReserveNowDelegate                      OnReserveNow;
+        event OnReserveNowResponseDelegate              OnReserveNowResponse;
+
+        event OnCancelReservationRequestDelegate        OnCancelReservationRequest;
+        event OnCancelReservationDelegate               OnCancelReservation;
+        event OnCancelReservationResponseDelegate       OnCancelReservationResponse;
 
         event OnRemoteStartTransactionRequestDelegate   OnRemoteStartTransactionRequest;
         event OnRemoteStartTransactionDelegate          OnRemoteStartTransaction;
@@ -37,13 +70,35 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         event OnRemoteStopTransactionDelegate           OnRemoteStopTransaction;
         event OnRemoteStopTransactionResponseDelegate   OnRemoteStopTransactionResponse;
 
-        event OnReserveNowRequestDelegate               OnReserveNowRequest;
-        event OnReserveNowDelegate                      OnReserveNow;
-        event OnReserveNowResponseDelegate              OnReserveNowResponse;
+        event OnSetChargingProfileRequestDelegate       OnSetChargingProfileRequest;
+        event OnSetChargingProfileDelegate              OnSetChargingProfile;
+        event OnSetChargingProfileResponseDelegate      OnSetChargingProfileResponse;
 
-        event OnResetRequestDelegate                    OnResetRequest;
-        event OnResetDelegate                           OnReset;
-        event OnResetResponseDelegate                   OnResetResponse;
+        event OnClearChargingProfileRequestDelegate     OnClearChargingProfileRequest;
+        event OnClearChargingProfileDelegate            OnClearChargingProfile;
+        event OnClearChargingProfileResponseDelegate    OnClearChargingProfileResponse;
+
+        event OnGetCompositeScheduleRequestDelegate     OnGetCompositeScheduleRequest;
+        event OnGetCompositeScheduleDelegate            OnGetCompositeSchedule;
+        event OnGetCompositeScheduleResponseDelegate    OnGetCompositeScheduleResponse;
+
+        event OnUnlockConnectorRequestDelegate          OnUnlockConnectorRequest;
+        event OnUnlockConnectorDelegate                 OnUnlockConnector;
+        event OnUnlockConnectorResponseDelegate         OnUnlockConnectorResponse;
+
+
+
+        event OnGetLocalListVersionRequestDelegate      OnGetLocalListVersionRequest;
+        event OnGetLocalListVersionDelegate             OnGetLocalListVersion;
+        event OnGetLocalListVersionResponseDelegate     OnGetLocalListVersionResponse;
+
+        event OnSendLocalListRequestDelegate            OnSendLocalListRequest;
+        event OnSendLocalListDelegate                   OnSendLocalList;
+        event OnSendLocalListResponseDelegate           OnSendLocalListResponse;
+
+        event OnClearCacheRequestDelegate               OnClearCacheRequest;
+        event OnClearCacheDelegate                      OnClearCache;
+        event OnClearCacheResponseDelegate              OnClearCacheResponse;
 
     }
 

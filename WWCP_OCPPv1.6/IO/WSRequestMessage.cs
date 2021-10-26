@@ -77,6 +77,58 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
                ToUTF8Bytes();
 
 
+        public static Boolean TryParse(String Text, out WSRequestMessage RequestFrame)
+        {
+
+            RequestFrame = null;
+
+            if (Text is null)
+                return false;
+
+            // [
+            //     2,                  // MessageType: CALL (Client-to-Server)
+            //    "19223201",          // RequestId
+            //    "BootNotification",  // Action
+            //    {
+            //        "chargePointVendor": "VendorX",
+            //        "chargePointModel":  "SingleSocketCharger"
+            //    }
+            // ]
+
+            try
+            {
+
+                var JSON = JArray.Parse(Text);
+
+                if (JSON.Count != 4)
+                    return false;
+
+                if (!(Byte.TryParse(JSON[0].Value<String>(), out Byte messageType)))
+                    return false;
+
+                var requestId  = Request_Id.Parse(JSON[1].Value<String>());
+                var action     = JSON[2].Value<String>();
+                var message    = JSON[3] as JObject;
+
+                if (message is null)
+                    return false;
+
+                RequestFrame = new WSRequestMessage(requestId,
+                                                    action,
+                                                    message,
+                                                    messageType);
+
+                return true;
+
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+
+
 
         public override String ToString()
 

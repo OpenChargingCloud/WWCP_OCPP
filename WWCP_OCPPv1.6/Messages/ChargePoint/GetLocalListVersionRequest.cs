@@ -43,10 +43,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public GetLocalListVersionRequest(ChargeBox_Id  ChargeBoxId,
-                                          Request_Id?   RequestId          = null,
-                                          DateTime?     RequestTimestamp   = null,
-                                       EventTracking_Id  EventTrackingId           = null)
+        public GetLocalListVersionRequest(ChargeBox_Id      ChargeBoxId,
+                                          Request_Id?       RequestId          = null,
+                                          DateTime?         RequestTimestamp   = null,
+                                          EventTracking_Id  EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "GetLocalListVersion",

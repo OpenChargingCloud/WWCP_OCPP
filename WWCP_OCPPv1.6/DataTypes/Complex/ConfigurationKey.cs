@@ -23,7 +23,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -43,12 +42,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The maximum length of a configuration key.
         /// </summary>
-        public const UInt16  MaxConfigurationKeyLength    = 50;
+        public const UInt16  MaxConfigurationKeyLength     = 50;
 
         /// <summary>
         /// The maximum length of a configuration value.
         /// </summary>
-        public const UInt16  MaxConfigurationValueLength  = 500;
+        public const UInt16  MaxConfigurationValueLength   = 500;
 
         #endregion
 

@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Properties
 
         /// <summary>
-        /// An enumeration of keys for which the configuration is requested.
+        /// An optional enumeration of keys for which the configuration is requested.
         /// Return all keys if empty.
         /// </summary>
         public IEnumerable<String>  Keys    { get; }
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a GetConfigurationn request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="Keys">An enumeration of keys for which the configuration is requested. Return all keys if empty.</param>
+        /// <param name="Keys">An optional enumeration of keys for which the configuration is requested. Return all keys if empty.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                        Request_Id?          RequestId          = null,
                                        DateTime?            RequestTimestamp   = null,
-                                       EventTracking_Id  EventTrackingId           = null)
+                                       EventTracking_Id     EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "GetConfiguration",

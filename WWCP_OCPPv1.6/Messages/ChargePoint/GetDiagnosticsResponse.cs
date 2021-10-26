@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="FileName">The name of the file with diagnostic information that will be uploaded. This field is not present when no diagnostic information is available.</param>
         public GetDiagnosticsResponse(CS.GetDiagnosticsRequest  Request,
-                                      String                    FileName = null)
+                                      String                    FileName   = null)
 
             : base(Request,
                    Result.OK())

@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                            Request_Id?         RequestId          = null,
                                            DateTime?           RequestTimestamp   = null,
-                                           EventTracking_Id  EventTrackingId           = null)
+                                           EventTracking_Id    EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "GetCompositeSchedule",
