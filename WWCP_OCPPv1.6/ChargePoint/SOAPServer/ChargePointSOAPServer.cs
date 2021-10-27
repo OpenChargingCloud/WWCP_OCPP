@@ -326,27 +326,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reserve now SOAP request was received.
         /// </summary>
-        public event RequestLogHandler OnReserveNowSOAPRequest;
+        public event RequestLogHandler              OnReserveNowSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event OnReserveNowRequestDelegate OnReserveNowRequest;
+        public event OnReserveNowRequestDelegate    OnReserveNowRequest;
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event OnReserveNowDelegate OnReserveNow;
+        public event OnReserveNowDelegate           OnReserveNow;
 
         /// <summary>
         /// An event sent whenever a response to a reserve now request was sent.
         /// </summary>
-        public event OnReserveNowResponseDelegate OnReserveNowResponse;
+        public event OnReserveNowResponseDelegate   OnReserveNowResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reserve now request was sent.
         /// </summary>
-        public event AccessLogHandler OnReserveNowSOAPResponse;
+        public event AccessLogHandler               OnReserveNowSOAPResponse;
 
         #endregion
 

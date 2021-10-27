@@ -26,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
@@ -64,6 +65,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public IEnumerable<ICentralSystemServer> CentralSystemServers
             => centralSystemServers;
+
+
+        /// <summary>
+        /// Require a HTTP Basic Authentication of all charging boxes.
+        /// </summary>
+        public Boolean RequireAuthentication { get; }
 
 
         public DNSClient DNSClient { get; }
@@ -214,6 +221,37 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+
+
+        // WebSocket events
+        public event OnNewTCPConnectionDelegate                 OnNewTCPConnection;
+
+        public event OnNewWebSocketConnectionDelegate           OnNewWebSocketConnection;
+
+        public event OnWebSocketMessageDelegate                 OnMessage;
+
+
+        public event OnWebSocketTextMessageRequestDelegate      OnTextMessageRequest;
+
+        public event OnWebSocketTextMessageDelegate             OnTextMessage;
+
+        public event OnWebSocketTextMessageResponseDelegate     OnTextMessageResponse;
+
+
+        public event OnWebSocketBinaryMessageRequestDelegate    OnBinaryMessageRequest;
+
+        public event OnWebSocketBinaryMessageDelegate           OnBinaryMessage;
+
+        public event OnWebSocketBinaryMessageResponseDelegate   OnBinaryMessageResponse;
+
+
+        public event OnWebSocketMessageDelegate                 OnPingMessage;
+
+        public event OnWebSocketMessageDelegate                 OnPongMessage;
+
+
+        public event OnCloseMessageDelegate                     OnCloseMessage;
+
         #endregion
 
         #region Constructor(s)
@@ -222,14 +260,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a new central system for testing.
         /// </summary>
         /// <param name="CentralSystemId">The unique identification of this central system.</param>
+        /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         public TestCentralSystem(CentralSystem_Id  CentralSystemId,
-                                 DNSClient         DNSClient    = null)
+                                 Boolean           RequireAuthentication   = true,
+                                 DNSClient         DNSClient               = null)
         {
 
             if (CentralSystemId.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(CentralSystemId), "The given central system identification must not be null or empty!");
 
             this.CentralSystemId         = CentralSystemId;
+            this.RequireAuthentication   = RequireAuthentication;
             this.centralSystemServers    = new HashSet<ICentralSystemServer>();
             this.reachableChargingBoxes  = new Dictionary<ChargeBox_Id, Tuple<CentralSystemWSServer, DateTime>>();
 
@@ -300,10 +341,146 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             var centralSystemServer = new CentralSystemWSServer(HTTPServerName,
                                                                 IPAddress,
                                                                 TCPPort,
+                                                                RequireAuthentication,
                                                                 DNSClient ?? this.DNSClient,
                                                                 AutoStart);
 
             Attach(centralSystemServer);
+
+
+            #region OnNewTCPConnection
+
+            centralSystemServer.OnNewTCPConnection += async (Timestamp,
+                                                             WebSocketServer,
+                                                             NewWebSocketConnection,
+                                                             EventTrackingId,
+                                                             CancellationToken) => {
+
+                OnNewTCPConnection?.Invoke(Timestamp,
+                                           WebSocketServer,
+                                           NewWebSocketConnection,
+                                           EventTrackingId,
+                                           CancellationToken);
+
+            };
+
+            #endregion
+
+            #region OnNewWebSocketConnection
+
+            centralSystemServer.OnNewWebSocketConnection += async (Timestamp,
+                                                                   WebSocketServer,
+                                                                   NewWebSocketConnection,
+                                                                   EventTrackingId,
+                                                                   CancellationToken) => {
+
+                OnNewWebSocketConnection?.Invoke(Timestamp,
+                                                 WebSocketServer,
+                                                 NewWebSocketConnection,
+                                                 EventTrackingId,
+                                                 CancellationToken);
+
+            };
+
+            #endregion
+
+
+            //OnMessage;
+
+
+            #region OnTextMessageRequest
+
+            centralSystemServer.OnTextMessageRequest += async (Timestamp,
+                                                               WebSocketServer,
+                                                               Sender,
+                                                               TextRequestMessage,
+                                                               EventTrackingId,
+                                                               CancellationToken) => {
+
+                OnTextMessageRequest?.Invoke(Timestamp,
+                                             WebSocketServer,
+                                             Sender,
+                                             TextRequestMessage,
+                                             EventTrackingId,
+                                             CancellationToken);
+
+            };
+
+            #endregion
+
+            #region OnTextMessageResponse
+
+            centralSystemServer.OnTextMessageResponse += async (Timestamp,
+                                                                WebSocketServer,
+                                                                Sender,
+                                                                TextRequestMessage,
+                                                                TextResponseMessage,
+                                                                EventTrackingId,
+                                                                CancellationToken) => {
+
+                OnTextMessageResponse?.Invoke(Timestamp,
+                                              WebSocketServer,
+                                              Sender,
+                                              TextRequestMessage,
+                                              TextResponseMessage,
+                                              EventTrackingId,
+                                              CancellationToken);
+
+            };
+
+            #endregion
+
+
+            #region OnBinaryMessageRequest
+
+            centralSystemServer.OnBinaryMessageRequest += async (Timestamp,
+                                                                 WebSocketServer,
+                                                                 Sender,
+                                                                 BinaryRequestMessage,
+                                                                 EventTrackingId,
+                                                                 CancellationToken) => {
+
+                OnBinaryMessageRequest?.Invoke(Timestamp,
+                                               WebSocketServer,
+                                               Sender,
+                                               BinaryRequestMessage,
+                                               EventTrackingId,
+                                               CancellationToken);
+
+            };
+
+            #endregion
+
+            #region OnBinaryMessageResponse
+
+            centralSystemServer.OnBinaryMessageResponse += async (Timestamp,
+                                                                  WebSocketServer,
+                                                                  Sender,
+                                                                  BinaryRequestMessage,
+                                                                  BinaryResponseMessage,
+                                                                  EventTrackingId,
+                                                                  CancellationToken) => {
+
+                OnBinaryMessageResponse?.Invoke(Timestamp,
+                                                WebSocketServer,
+                                                Sender,
+                                                BinaryRequestMessage,
+                                                BinaryResponseMessage,
+                                                EventTrackingId,
+                                                CancellationToken);
+
+            };
+
+            #endregion
+
+
+            //OnPingMessage;
+
+            //OnPongMessage;
+
+
+            //OnCloseMessage;
+
 
             return centralSystemServer;
 
@@ -1101,6 +1278,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         }
 
         #endregion
+
+
+        public void AddBasicAuth(String Login, String Password)
+        {
+
+            foreach (var centralSystemServer in centralSystemServers)
+            {
+                if (centralSystemServer is CentralSystemWSServer centralSystemWSServer)
+                {
+                    centralSystemWSServer.ChargingBoxLogins.Add(Login, Password);
+                }
+            }
+
+        }
 
 
 

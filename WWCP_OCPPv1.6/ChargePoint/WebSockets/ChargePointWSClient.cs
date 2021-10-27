@@ -264,6 +264,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         }
 
 
+        public Tuple<String, String> HTTPBasicAuth { get; }
+
 
         /// <summary>
         /// The maintenance interval.
@@ -1101,7 +1103,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ClientCert">The SSL/TLS client certificate to use of HTTP authentication.</param>
         /// <param name="HTTPUserAgent">The HTTP user agent identification.</param>
         /// <param name="URLPathPrefix">An optional default URL path prefix.</param>
-        /// <param name="WSSLoginPassword">The WebService-Security username/password.</param>
+        /// <param name="HTTPBasicAuth">The WebService-Security username/password.</param>
         /// <param name="RequestTimeout">An optional Request timeout.</param>
         /// <param name="TransmissionRetryDelay">The delay between transmission retries.</param>
         /// <param name="MaxNumberOfRetries">The maximum number of transmission retries for HTTP request.</param>
@@ -1123,7 +1125,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                    X509Certificate                      ClientCert                   = null,
                                    String                               HTTPUserAgent                = DefaultHTTPUserAgent,
                                    HTTPPath?                            URLPathPrefix                = null,
-                                   Tuple<String, String>                WSSLoginPassword             = null,
+                                   Tuple<String, String>                HTTPBasicAuth                = null,
                                    TimeSpan?                            RequestTimeout               = null,
                                    TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
                                    UInt16?                              MaxNumberOfRetries           = 3,
@@ -1160,7 +1162,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.ClientCert                  = ClientCert;
             this.HTTPUserAgent               = HTTPUserAgent;
             //this.URLPathPrefix               = URLPathPrefix;
-            //this.WSSLoginPassword            = WSSLoginPassword;
+            this.HTTPBasicAuth               = HTTPBasicAuth;
             this.RequestTimeout              = RequestTimeout     ?? TimeSpan.FromMinutes(10);
             this.TransmissionRetryDelay      = TransmissionRetryDelay;
             this.MaxNumberOfRetries          = MaxNumberOfRetries ?? 3;
@@ -1490,7 +1492,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     Upgrade               = "websocket",
                     SecWebSocketKey       = "x3JJHMbDL1EzLkh9GBhXDw==",
                     SecWebSocketProtocol  = "ocpp1.6",
-                    SecWebSocketVersion   = "13"
+                    SecWebSocketVersion   = "13",
+                    Authorization         = HTTPBasicAuth?.Item1.IsNotNullOrEmpty() == true && HTTPBasicAuth?.Item2.IsNotNullOrEmpty() == true
+                                                ? new HTTPBasicAuthentication(HTTPBasicAuth.Item1, HTTPBasicAuth.Item2)
+                                                : null
                 }.AsImmutable;
 
                 HTTPStream.Write((request.EntirePDU + "\r\n\r\n").ToUTF8Bytes());
@@ -4623,6 +4628,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                     await _DoMaintenance(State);
 
+                }
+                catch (ObjectDisposedException ode)
+                {
+                    MaintenanceTimer.Dispose();
+                    TCPStream   = null;
+                    HTTPStream  = null;
                 }
                 catch (Exception e)
                 {

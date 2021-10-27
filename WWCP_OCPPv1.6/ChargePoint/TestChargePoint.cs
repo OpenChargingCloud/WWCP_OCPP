@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         private readonly List<EnquedRequest> EnquedRequests;
 
-
+        public Tuple<String, String> HTTPBasicAuth { get; }
         public DNSClient DNSClient { get; }
 
         #endregion
@@ -767,25 +767,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="SendHeartbeatEvery">The time span between heartbeat requests.</param>
         /// 
         /// <param name="DefaultRequestTimeout">The default request timeout for all requests.</param>
-        public TestChargePoint(ChargeBox_Id  ChargeBoxId,
-                               Byte          NumberOfConnectors,
-                               String        ChargePointVendor,
-                               String        ChargePointModel,
+        public TestChargePoint(ChargeBox_Id           ChargeBoxId,
+                               Byte                   NumberOfConnectors,
+                               String                 ChargePointVendor,
+                               String                 ChargePointModel,
 
-                               I18NString    Description               = null,
-                               String        ChargePointSerialNumber   = null,
-                               String        ChargeBoxSerialNumber     = null,
-                               String        FirmwareVersion           = null,
-                               String        Iccid                     = null,
-                               String        IMSI                      = null,
-                               String        MeterType                 = null,
-                               String        MeterSerialNumber         = null,
-                               String        MeterPublicKey            = null,
+                               I18NString             Description               = null,
+                               String                 ChargePointSerialNumber   = null,
+                               String                 ChargeBoxSerialNumber     = null,
+                               String                 FirmwareVersion           = null,
+                               String                 Iccid                     = null,
+                               String                 IMSI                      = null,
+                               String                 MeterType                 = null,
+                               String                 MeterSerialNumber         = null,
+                               String                 MeterPublicKey            = null,
 
-                               TimeSpan?     SendHeartbeatEvery        = null,
+                               TimeSpan?              SendHeartbeatEvery        = null,
 
-                               TimeSpan?     DefaultRequestTimeout     = null,
-                               DNSClient     DNSClient                 = null)
+                               TimeSpan?              DefaultRequestTimeout     = null,
+                               Tuple<String, String>  HTTPBasicAuth             = null,
+                               DNSClient              DNSClient                 = null)
 
         {
 
@@ -835,6 +836,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                       this.SendHeartbeatEvery,
                                                       this.SendHeartbeatEvery);
 
+            this.HTTPBasicAuth            = HTTPBasicAuth;
             this.DNSClient                = DNSClient;
 
         }
@@ -918,27 +920,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region ConnectWebSocket(...)
 
-        public async Task ConnectWebSocket(String                               From,
-                                           String                               To,
+        public async Task<HTTPResponse> ConnectWebSocket(String                               From,
+                                                         String                               To,
 
-                                           URL                                  RemoteURL,
-                                           HTTPHostname?                        VirtualHostname              = null,
-                                           String                               Description                  = null,
-                                           RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                                           LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                                           X509Certificate                      ClientCert                   = null,
-                                           String                               HTTPUserAgent                = null,
-                                           HTTPPath?                            URLPathPrefix                = null,
-                                           Tuple<String, String>                HTTPBasicAuth                = null,
-                                           TimeSpan?                            RequestTimeout               = null,
-                                           TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
-                                           UInt16?                              MaxNumberOfRetries           = null,
-                                           Boolean                              UseHTTPPipelining            = false,
-                                           String                               LoggingPath                  = null,
-                                           String                               LoggingContext               = null,
-                                           LogfileCreatorDelegate               LogFileCreator               = null,
-                                           HTTPClientLogger                     HTTPLogger                   = null,
-                                           DNSClient                            DNSClient                    = null)
+                                                         URL                                  RemoteURL,
+                                                         HTTPHostname?                        VirtualHostname              = null,
+                                                         String                               Description                  = null,
+                                                         RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
+                                                         LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
+                                                         X509Certificate                      ClientCert                   = null,
+                                                         String                               HTTPUserAgent                = null,
+                                                         HTTPPath?                            URLPathPrefix                = null,
+                                                         Tuple<String, String>                HTTPBasicAuth                = null,
+                                                         TimeSpan?                            RequestTimeout               = null,
+                                                         TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
+                                                         UInt16?                              MaxNumberOfRetries           = null,
+                                                         Boolean                              UseHTTPPipelining            = false,
+                                                         String                               LoggingPath                  = null,
+                                                         String                               LoggingContext               = null,
+                                                         LogfileCreatorDelegate               LogFileCreator               = null,
+                                                         HTTPClientLogger                     HTTPLogger                   = null,
+                                                         DNSClient                            DNSClient                    = null)
 
         {
 
@@ -954,7 +956,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                      ClientCert,
                                                      HTTPUserAgent,
                                                      URLPathPrefix,
-                                                     HTTPBasicAuth,
+                                                     HTTPBasicAuth ?? this.HTTPBasicAuth,
                                                      RequestTimeout,
                                                      TransmissionRetryDelay,
                                                      MaxNumberOfRetries,
@@ -970,7 +972,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             WireEvents(WSClient);
 
-            await WSClient.Connect();
+            var response = await WSClient.Connect();
+
+            return response;
 
         }
 

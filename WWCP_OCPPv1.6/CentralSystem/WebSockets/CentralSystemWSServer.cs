@@ -181,6 +181,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>     CustomFirmwareStatusNotificationRequestParser       { get; set; }
 
+        /// <summary>
+        /// Require a HTTP Basic Authentication of all charging boxes.
+        /// </summary>
+        public Boolean                                                            RequireAuthentication                               { get; }
+
+        /// <summary>
+        /// Logins and passwords for HTTP Basic Authentication.
+        /// </summary>
+        public Dictionary<String, String>                                         ChargingBoxLogins                                   { get; }
+
         #endregion
 
         #region Events
@@ -536,13 +546,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
+        /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CentralSystemWSServer(String      HTTPServerName   = DefaultHTTPServerName,
-                                     IIPAddress  IPAddress        = null,
-                                     IPPort?     TCPPort          = null,
-                                     DNSClient   DNSClient        = null,
-                                     Boolean     AutoStart        = false)
+        public CentralSystemWSServer(String      HTTPServerName          = DefaultHTTPServerName,
+                                     IIPAddress  IPAddress               = null,
+                                     IPPort?     TCPPort                 = null,
+                                     Boolean     RequireAuthentication   = true,
+                                     DNSClient   DNSClient               = null,
+                                     Boolean     AutoStart               = false)
 
             : base(IPAddress,
                    TCPPort ?? IPPort.Parse(8000),
@@ -552,7 +564,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             this.requests                  = new List<SendRequestResult>();
+            this.RequireAuthentication     = RequireAuthentication;
+            this.ChargingBoxLogins         = new Dictionary<String, String>();
 
+            base.OnWebSocketHandshake     += ProcessWebSocketHandshake;
             base.OnNewWebSocketConnection += ProcessNewWebSocketConnection;
             base.OnTextMessage            += ProcessTextMessages;
 
@@ -564,25 +579,62 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region (protected) ProcessNewWebSocketConnection(Timestamp, Server, Connection, EventTrackingId, CancellationToken)
+        #region (protected) ProcessWebSocketHandshake    (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
-        protected async Task ProcessNewWebSocketConnection(DateTime             Timestamp,
+        private async Task<HTTPResponse> ProcessWebSocketHandshake(DateTime             LogTimestamp,
+                                                                   WebSocketServer      Server,
+                                                                   WebSocketConnection  Connection,
+                                                                   EventTracking_Id     EventTrackingId,
+                                                                   CancellationToken    CancellationToken)
+        {
+
+            if (RequireAuthentication)
+            {
+
+                if (HTTPBasicAuthentication.TryParse(Connection?.GetHTTPHeader("Authorization"), out HTTPBasicAuthentication basicAuthentication) &&
+                    ChargingBoxLogins.TryGetValue(basicAuthentication.Username, out String Password) &&
+                    basicAuthentication.Password == Password)
+                {
+                    return null;
+                }
+
+                return new HTTPResponse.Builder(HTTPStatusCode.Unauthorized) {
+                               Date        = Timestamp.Now,
+                               Connection  = "close"
+                           }.AsImmutable;
+
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
+
+        protected async Task ProcessNewWebSocketConnection(DateTime             LogTimestamp,
                                                            WebSocketServer      Server,
                                                            WebSocketConnection  Connection,
                                                            EventTracking_Id     EventTrackingId,
                                                            CancellationToken    CancellationToken)
         {
 
-            var chargeBoxId = Connection.HTTPPath.ToString().Substring(Connection.HTTPPath.ToString().LastIndexOf("/") + 1);
+            if (!Connection.HasCustomData("chargeBoxId"))
+            {
 
-            if (chargeBoxId.IsNotNullOrEmpty())
-                Connection.AddCustomData("chargeBoxId", ChargeBox_Id.Parse(chargeBoxId));
+                var chargeBoxId = Connection.HTTPPath.ToString().Substring(Connection.HTTPPath.ToString().LastIndexOf("/") + 1);
+
+                if (chargeBoxId.IsNotNullOrEmpty())
+                    Connection.AddCustomData("chargeBoxId", ChargeBox_Id.Parse(chargeBoxId));
+
+            }
 
         }
 
         #endregion
 
-        #region (protected) ProcessTextMessages (RequestTimestamp, Server, Connection, TextMessage, EventTrackingId, CancellationToken)
+        #region (protected) ProcessTextMessages          (RequestTimestamp, Server, Connection, TextMessage, EventTrackingId, CancellationToken)
 
         /// <summary>
         /// Process all text messages of this web socket API.
