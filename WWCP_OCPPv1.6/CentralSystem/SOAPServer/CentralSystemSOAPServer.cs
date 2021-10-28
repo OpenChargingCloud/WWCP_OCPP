@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The default TCP service name shown e.g. on service startup.
         /// </summary>
-        public     const           String           DefaultServiceName     = "OCPP " + Version.Number + " central system API";
+        public     const           String           DefaultServiceName     = "OCPP " + Version.Number + " Central System API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.

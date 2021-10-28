@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                          Request_Id?            RequestId          = null,
                                          DateTime?              RequestTimestamp   = null,
-                                         EventTracking_Id  EventTrackingId           = null)
+                                         EventTracking_Id       EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "StatusNotification",
@@ -476,26 +476,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
-                #region Info               [mandatory]
+                #region Timestamp          [optional]
+
+                if (!JSON.ParseOptional("timestamp",
+                                        "timestamp",
+                                        out DateTime? Timestamp,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse != null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Info               [optional]
 
                 if (!JSON.ParseOptional("info",
                                         "info",
                                         out String Info,
                                         out ErrorResponse))
                 {
-                    return false;
-                }
-
-                #endregion
-
-                #region Timestamp          [mandatory]
-
-                if (!JSON.ParseMandatory("timestamp",
-                                         "timestamp",
-                                         out DateTime Timestamp,
-                                         out ErrorResponse))
-                {
-                    return false;
+                    if (ErrorResponse != null)
+                        return false;
                 }
 
                 #endregion

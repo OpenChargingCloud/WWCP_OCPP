@@ -588,15 +588,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                    CancellationToken    CancellationToken)
         {
 
+            //ToDo: Validate whether "Sec-WebSocket-Protocol" == "ocpp1.6" or "ocpp1.6, ocpp2.0"
+
             if (RequireAuthentication)
             {
 
-                if (HTTPBasicAuthentication.TryParse(Connection?.GetHTTPHeader("Authorization"), out HTTPBasicAuthentication basicAuthentication) &&
-                    ChargingBoxLogins.TryGetValue(basicAuthentication.Username, out String Password) &&
-                    basicAuthentication.Password == Password)
+                if (HTTPBasicAuthentication.TryParse(Connection?.GetHTTPHeader("Authorization"), out HTTPBasicAuthentication basicAuthentication))
                 {
-                    return null;
+
+                    if (ChargingBoxLogins.TryGetValue(basicAuthentication.Username, out String Password) &&
+                        basicAuthentication.Password == Password)
+                    {
+                        return null;
+                    }
+                    else
+                        DebugX.Log(nameof(CentralSystemWSServer), " connection from " + Connection.RemoteSocket + " invalid authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
+
                 }
+                else
+                    DebugX.Log(nameof(CentralSystemWSServer), " connection from " + Connection.RemoteSocket + " missing authorization!");
 
                 return new HTTPResponse.Builder(HTTPStatusCode.Unauthorized) {
                                Date        = Timestamp.Now,
