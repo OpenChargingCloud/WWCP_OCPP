@@ -1107,7 +1107,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 var response = new DataTransferResponse(Request:  Request,
                                                         Status:   DataTransferStatus.Accepted,
-                                                        Data:     "1234!");
+                                                        Data:     Request.Data.Reverse());
 
 
                 #region Send OnIncomingDataResponse event

@@ -209,8 +209,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          BootNotificationResponseJSON,
-                         out BootNotificationResponse bootNotificationResponse,
-                         OnException))
+                         out BootNotificationResponse  bootNotificationResponse,
+                         out String                    ErrorResponse))
             {
                 return bootNotificationResponse;
             }
@@ -237,8 +237,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          BootNotificationResponseText,
-                         out BootNotificationResponse bootNotificationResponse,
-                         OnException))
+                         out BootNotificationResponse  bootNotificationResponse,
+                         out String                    ErrorResponse))
             {
                 return bootNotificationResponse;
             }
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, BootNotificationResponseJSON, out BootNotificationResponse, OnException = null)
+        #region (static) TryParse(Request, BootNotificationResponseJSON, out BootNotificationResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given JSON representation of a boot notification response.
@@ -305,11 +305,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The boot notification request leading to this response.</param>
         /// <param name="BootNotificationResponseJSON">The JSON to be parsed.</param>
         /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.BootNotificationRequest    Request,
                                        JObject                       BootNotificationResponseJSON,
                                        out BootNotificationResponse  BootNotificationResponse,
-                                       OnExceptionDelegate           OnException  = null)
+                                       out String                    ErrorResponse)
         {
 
             try
@@ -323,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                "registration status",
                                                                RegistrationStatusExtentions.Parse,
                                                                out RegistrationStatus  RegistrationStatus,
-                                                               out String              ErrorResponse))
+                                                               out                     ErrorResponse))
                 {
                     return false;
                 }
@@ -373,19 +372,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, BootNotificationResponseJSON, e);
-
-                BootNotificationResponse = null;
+                BootNotificationResponse  = null;
+                ErrorResponse             = e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, BootNotificationResponseText, out BootNotificationResponse, OnException = null)
+        #region (static) TryParse(Request, BootNotificationResponseText, out BootNotificationResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given text representation of a boot notification response.
@@ -393,12 +389,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The boot notification request leading to this response.</param>
         /// <param name="BootNotificationResponseText">The text to be parsed.</param>
         /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.BootNotificationRequest    Request,
                                        String                        BootNotificationResponseText,
                                        out BootNotificationResponse  BootNotificationResponse,
-                                       OnExceptionDelegate           OnException  = null)
+                                       out String                    ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -412,15 +409,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         TryParse(Request,
                                  JObject.Parse(BootNotificationResponseText),
                                  out BootNotificationResponse,
-                                 OnException))
+                                 out ErrorResponse))
                     {
                         return true;
                     }
 
                     if (TryParse(Request,
                                  XDocument.Parse(BootNotificationResponseText).Root,
-                                 out BootNotificationResponse,
-                                 OnException))
+                                 out BootNotificationResponse))
                     {
                         return true;
                     }
@@ -430,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(Timestamp.Now, BootNotificationResponseText, e);
+                ErrorResponse = e.Message;
             }
 
             BootNotificationResponse = null;

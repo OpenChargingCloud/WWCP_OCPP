@@ -90,10 +90,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Create a new connector identification.
         /// </summary>
-        /// <param name="Token">An integer.</param>
-        private Connector_Id(UInt64 Token)
+        /// <param name="Number">A number.</param>
+        private Connector_Id(UInt64 Number)
         {
-            this.InternalId = Token;
+            this.InternalId = Number;
         }
 
         #endregion
@@ -108,20 +108,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Connector_Id Parse(String Text)
         {
 
-            #region Initial checks
-
-            if (Text != null)
-                Text = Text.Trim();
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a connector identification must not be null or empty!");
-
-            #endregion
-
             if (TryParse(Text, out Connector_Id connectorId))
                 return connectorId;
 
-            throw new ArgumentNullException(nameof(Text), "The given text representation of a connector identification is invalid!");
+            throw new ArgumentException("Invalid text-representation of a connector identification: '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
@@ -183,22 +174,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean TryParse(String Text, out Connector_Id ConnectorId)
         {
 
-            #region Initial checks
-
             Text = Text?.Trim();
 
-            if (Text.IsNullOrEmpty())
+            if (Text.IsNotNullOrEmpty() &&
+                UInt64.TryParse(Text, out UInt64 number))
             {
-                ConnectorId = default;
-                return false;
-            }
-
-            #endregion
-
-            if (UInt64.TryParse(Text, out UInt64 number))
-            {
-                ConnectorId = new Connector_Id(number);
-                return true;
+                try
+                {
+                    ConnectorId = new Connector_Id(number);
+                    return true;
+                }
+                catch
+                { }
             }
 
             ConnectorId = default;

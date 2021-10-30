@@ -281,6 +281,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Events
 
+        #region HTTPRequest-/ResponseLog
+
+        /// <summary>
+        /// A delegate for logging the HTTP request.
+        /// </summary>
+        public event ClientRequestLogHandler   RequestLogDelegate;
+
+        /// <summary>
+        /// A delegate for logging the HTTP request/response.
+        /// </summary>
+        public event ClientResponseLogHandler  ResponseLogDelegate;
+
+        #endregion
+
+
         // Outgoing messages (to central system)
 
         #region OnBootNotificationRequest/-Response
@@ -1447,35 +1462,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 }
                 while (restart);
 
-                #endregion
-
-                this.LocalPort        = IPSocket.FromIPEndPoint(TCPStream.Socket.LocalEndPoint).Port;
-                //Request.HTTPSource    = new HTTPSource(IPSocket.FromIPEndPoint(TCPStream.Socket.LocalEndPoint));
-                //this.RemotePort       = IPSocket.FromIPEndPoint(TCPStream.Socket.RemoteEndPoint).Port;
-
-                #region Call the optional HTTP request log delegate
-
-                //try
-                //{
-
-                //    if (RequestLogDelegate != null)
-                //        await Task.WhenAll(RequestLogDelegate.GetInvocationList().
-                //                           Cast<ClientRequestLogHandler>().
-                //                           Select(e => e(DateTime.UtcNow,
-                //                                         this,
-                //                                         Request))).
-                //                           ConfigureAwait(false);
-
-                //}
-                //catch (Exception e)
-                //{
-                //    DebugX.Log(e, nameof(HTTPClient) + "." + nameof(RequestLogDelegate));
-                //}
+                this.LocalPort = IPSocket.FromIPEndPoint(TCPStream.Socket.LocalEndPoint).Port;
 
                 #endregion
 
                 #region Send Request
-
 
                 // GET /webServices/ocpp/CP3211 HTTP/1.1
                 // Host:                    some.server.com:33033
@@ -1497,6 +1488,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 ? new HTTPBasicAuthentication(HTTPBasicAuth.Item1, HTTPBasicAuth.Item2)
                                                 : null
                 }.AsImmutable;
+
+                #region Call the optional HTTP request log delegate
+
+                try
+                {
+
+                    if (RequestLogDelegate != null)
+                        await Task.WhenAll(RequestLogDelegate.GetInvocationList().
+                                           Cast<ClientRequestLogHandler>().
+                                           Select(e => e(Timestamp.Now,
+                                                         this,
+                                                         request))).
+                                           ConfigureAwait(false);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(HTTPClient) + "." + nameof(RequestLogDelegate));
+                }
+
+                #endregion
 
                 HTTPStream.Write((request.EntirePDU + "\r\n\r\n").ToUTF8Bytes());
 
@@ -1540,7 +1552,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 //var swkaSha1        = System.Security.Cryptography.SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(swka));
                 //var swkaSha1Base64  = Convert.ToBase64String(swkaSha1);
 
-
                 if (response.HTTPStatusCode.Code != 101)
                     DebugX.Log("response.HTTPStatusCode.Code != 101");
 
@@ -1573,6 +1584,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
             }
+
+            #region Catch...
+
             catch (HTTPTimeoutException e)
             {
 
@@ -1642,26 +1656,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             }
 
+            #endregion
 
             #region Call the optional HTTP response log delegate
 
-            //try
-            //{
+            try
+            {
 
-            //    if (ResponseLogDelegate != null)
-            //        await Task.WhenAll(ResponseLogDelegate.GetInvocationList().
-            //                           Cast<ClientResponseLogHandler>().
-            //                           Select(e => e(DateTime.UtcNow,
-            //                                         this,
-            //                                         Request,
-            //                                         Response))).
-            //                           ConfigureAwait(false);
+                if (ResponseLogDelegate != null)
+                    await Task.WhenAll(ResponseLogDelegate.GetInvocationList().
+                                       Cast<ClientResponseLogHandler>().
+                                       Select(e => e(Timestamp.Now,
+                                                     this,
+                                                     request,
+                                                     response))).
+                                       ConfigureAwait(false);
 
-            //}
-            //catch (Exception e2)
-            //{
-            //    DebugX.Log(e2, nameof(HTTPClient) + "." + nameof(ResponseLogDelegate));
-            //}
+            }
+            catch (Exception e2)
+            {
+                DebugX.Log(e2, nameof(HTTPClient) + "." + nameof(ResponseLogDelegate));
+            }
 
             #endregion
 
@@ -4804,9 +4819,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
-
-            BootNotificationResponse response = null;
-
             #endregion
 
             #region Send OnBootNotificationRequest event
@@ -4833,11 +4845,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             if (!BootNotificationResponse.TryParse(Request,
                                                    responseFrame?.Message,
-                                                   out response))
+                                                   out BootNotificationResponse  response,
+                                                   out String                    ErrorResponse))
             {
 
                 response = new BootNotificationResponse(Request,
-                                                        Result.OK("Nothing to upload!"));
+                                                        Result.Format(ErrorResponse));
 
             }
 
@@ -4913,9 +4926,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
-
-            HeartbeatResponse response = null;
-
             #endregion
 
             #region Send OnHeartbeatRequest event
@@ -4940,13 +4950,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                   Request.ToJSON());
 
 
-            if (HeartbeatResponse.TryParse(Request,
+            if (!HeartbeatResponse.TryParse(Request,
                                            responseFrame?.Message,
-                                           out response))
+                                           out HeartbeatResponse  response,
+                                           out String             ErrorResponse))
             {
 
                 response = new HeartbeatResponse(Request,
-                                                 Result.OK("Nothing to upload!"));
+                                                 Result.Format(ErrorResponse));
 
             }
 
@@ -5017,9 +5028,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
-
-            AuthorizeResponse response = null;
-
             #endregion
 
             #region Send OnAuthorizeRequest event
@@ -5044,13 +5052,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                   Request.ToJSON());
 
 
-            if (AuthorizeResponse.TryParse(Request,
-                                           responseFrame?.Message,
-                                           out response))
+            if (!AuthorizeResponse.TryParse(Request,
+                                            responseFrame?.Message,
+                                            out AuthorizeResponse  response,
+                                            out String             ErrorResponse))
             {
 
                 response = new AuthorizeResponse(Request,
-                                                 Result.OK("Nothing to upload!"));
+                                                 Result.Format(ErrorResponse));
 
             }
 
@@ -5120,9 +5129,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
-
-            StartTransactionResponse response = null;
-
             #endregion
 
             #region Send OnStartTransactionRequest event
@@ -5147,13 +5153,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                   Request.ToJSON());
 
 
-            if (StartTransactionResponse.TryParse(Request,
-                                                  responseFrame?.Message,
-                                                  out response))
+            if (!StartTransactionResponse.TryParse(Request,
+                                                   responseFrame?.Message,
+                                                   out StartTransactionResponse  response,
+                                                   out String                    ErrorResponse))
             {
 
                 response = new StartTransactionResponse(Request,
-                                                        Result.OK("Nothing to upload!"));
+                                                        Result.Format(ErrorResponse));
 
             }
 
@@ -5223,9 +5230,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
-
-            StatusNotificationResponse response = null;
-
             #endregion
 
             #region Send OnStatusNotificationRequest event
@@ -5250,13 +5254,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                   Request.ToJSON());
 
 
-            if (StatusNotificationResponse.TryParse(Request,
-                                                    responseFrame?.Message,
-                                                    out response))
+            if (!StatusNotificationResponse.TryParse(Request,
+                                                     responseFrame?.Message,
+                                                     out StatusNotificationResponse  response,
+                                                     out String                      ErrorResponse))
             {
 
                 response = new StatusNotificationResponse(Request,
-                                                          Result.OK("Nothing to upload!"));
+                                                          Result.Format(ErrorResponse));
 
             }
 
@@ -5326,9 +5331,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
-
-            MeterValuesResponse response = null;
-
             #endregion
 
             #region Send OnMeterValuesRequest event
@@ -5353,13 +5355,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                   Request.ToJSON());
 
 
-            if (MeterValuesResponse.TryParse(Request,
-                                             responseFrame?.Message,
-                                             out response))
+            if (!MeterValuesResponse.TryParse(Request,
+                                              responseFrame?.Message,
+                                              out MeterValuesResponse  response,
+                                              out String               ErrorResponse))
             {
 
                 response = new MeterValuesResponse(Request,
-                                                   Result.OK("Nothing to upload!"));
+                                                   Result.Format(ErrorResponse));
 
             }
 
@@ -5429,9 +5432,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
-
-            StopTransactionResponse response = null;
-
             #endregion
 
             #region Send OnStopTransactionRequest event
@@ -5458,11 +5458,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             if (!StopTransactionResponse.TryParse(Request,
                                                   responseFrame?.Message,
-                                                  out response))
+                                                  out StopTransactionResponse  response,
+                                                  out String                   ErrorResponse))
             {
 
                 response = new StopTransactionResponse(Request,
-                                                       Result.OK("Nothing to upload!"));
+                                                       Result.Format(ErrorResponse));
 
             }
 
@@ -5533,9 +5534,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
-
-            CS.DataTransferResponse response = null;
-
             #endregion
 
             #region Send OnDataTransferRequest event
@@ -5556,17 +5554,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var responseFrame = await SendRequest("StopTransaction",
+            var responseFrame = await SendRequest("DataTransfer",
                                                   Request.ToJSON());
 
 
             if (!CS.DataTransferResponse.TryParse(Request,
                                                   responseFrame?.Message,
-                                                  out response))
+                                                  out CS.DataTransferResponse  response,
+                                                  out String                   ErrorResponse))
             {
 
                 response = new CS.DataTransferResponse(Request,
-                                                       Result.OK("Nothing to upload!"));
+                                                       Result.Format(ErrorResponse));
 
             }
 
@@ -5636,9 +5635,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
-
-            DiagnosticsStatusNotificationResponse response = null;
-
             #endregion
 
             #region Send OnDiagnosticsStatusNotificationRequest event
@@ -5665,11 +5661,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             if (!DiagnosticsStatusNotificationResponse.TryParse(Request,
                                                                 responseFrame?.Message,
-                                                                out response))
+                                                                out DiagnosticsStatusNotificationResponse  response,
+                                                                out String                                 ErrorResponse))
             {
 
                 response = new DiagnosticsStatusNotificationResponse(Request,
-                                                                     Result.OK("Nothing to upload!"));
+                                                                     Result.Format(ErrorResponse));
 
             }
 
@@ -5739,9 +5736,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
-
-            FirmwareStatusNotificationResponse response = null;
-
             #endregion
 
             #region Send OnFirmwareStatusNotificationRequest event
@@ -5768,11 +5762,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             if (!FirmwareStatusNotificationResponse.TryParse(Request,
                                                              responseFrame?.Message,
-                                                             out response))
+                                                             out FirmwareStatusNotificationResponse  response,
+                                                             out String                              ErrorResponse))
             {
 
                 response = new FirmwareStatusNotificationResponse(Request,
-                                                                  Result.OK("Nothing to upload!"));
+                                                                  Result.Format(ErrorResponse));
 
             }
 

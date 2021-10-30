@@ -137,8 +137,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          FirmwareStatusNotificationResponseJSON,
-                         out FirmwareStatusNotificationResponse firmwareStatusNotificationResponse,
-                         OnException))
+                         out FirmwareStatusNotificationResponse  firmwareStatusNotificationResponse,
+                         out String                              ErrorResponse))
             {
                 return firmwareStatusNotificationResponse;
             }
@@ -164,8 +164,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          FirmwareStatusNotificationResponseText,
-                         out FirmwareStatusNotificationResponse firmwareStatusNotificationResponse,
-                         OnException))
+                         out FirmwareStatusNotificationResponse  firmwareStatusNotificationResponse,
+                         out String                              ErrorResponse))
             {
                 return firmwareStatusNotificationResponse;
             }
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, FirmwareStatusNotificationResponseJSON, out FirmwareStatusNotificationResponse, OnException = null)
+        #region (static) TryParse(Request, FirmwareStatusNotificationResponseJSON, out FirmwareStatusNotificationResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given JSON representation of a firmware status notification response.
@@ -221,12 +221,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The firmware status notification request leading to this response.</param>
         /// <param name="FirmwareStatusNotificationResponseJSON">The JSON to be parsed.</param>
         /// <param name="FirmwareStatusNotificationResponse">The parsed firmware status notification response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.FirmwareStatusNotificationRequest    Request,
                                        JObject                                 FirmwareStatusNotificationResponseJSON,
                                        out FirmwareStatusNotificationResponse  FirmwareStatusNotificationResponse,
-                                       OnExceptionDelegate                     OnException  = null)
+                                       out String                              ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -238,19 +239,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, FirmwareStatusNotificationResponseJSON, e);
-
-                FirmwareStatusNotificationResponse = null;
+                FirmwareStatusNotificationResponse  = null;
+                ErrorResponse                       = e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, FirmwareStatusNotificationResponseText, out FirmwareStatusNotificationResponse, OnException = null)
+        #region (static) TryParse(Request, FirmwareStatusNotificationResponseText, out FirmwareStatusNotificationResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given text representation of a firmware status notification response.
@@ -258,12 +256,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The firmware status notification request leading to this response.</param>
         /// <param name="FirmwareStatusNotificationResponseText">The text to be parsed.</param>
         /// <param name="FirmwareStatusNotificationResponse">The parsed firmware status notification response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.FirmwareStatusNotificationRequest    Request,
                                        String                                  FirmwareStatusNotificationResponseText,
                                        out FirmwareStatusNotificationResponse  FirmwareStatusNotificationResponse,
-                                       OnExceptionDelegate                     OnException  = null)
+                                       out String                              ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -277,15 +276,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         TryParse(Request,
                                  JObject.Parse(FirmwareStatusNotificationResponseText),
                                  out FirmwareStatusNotificationResponse,
-                                 OnException))
+                                 out ErrorResponse))
                     {
                         return true;
                     }
 
                     if (TryParse(Request,
                                  XDocument.Parse(FirmwareStatusNotificationResponseText).Root,
-                                 out FirmwareStatusNotificationResponse,
-                                 OnException))
+                                 out FirmwareStatusNotificationResponse))
                     {
                         return true;
                     }
@@ -295,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(Timestamp.Now, FirmwareStatusNotificationResponseText, e);
+                ErrorResponse = e.Message;
             }
 
             FirmwareStatusNotificationResponse = null;

@@ -203,8 +203,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          AuthorizeResponseJSON,
-                         out AuthorizeResponse authorizeResponse,
-                         OnException))
+                         out AuthorizeResponse  authorizeResponse,
+                         out String             ErrorResponse))
             {
                 return authorizeResponse;
             }
@@ -231,8 +231,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          AuthorizeResponseText,
-                         out AuthorizeResponse authorizeResponse,
-                         OnException))
+                         out AuthorizeResponse  authorizeResponse,
+                         out String             ErrorResponse))
             {
                 return authorizeResponse;
             }
@@ -286,7 +286,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, AuthorizeResponseJSON, out AuthorizeResponse, OnException = null)
+        #region (static) TryParse(Request, AuthorizeResponseJSON, out AuthorizeResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given JSON representation of an authorize response.
@@ -294,11 +294,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AuthorizeResponse">The parsed authorize response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.AuthorizeRequest    Request,
                                        JObject                JSON,
                                        out AuthorizeResponse  AuthorizeResponse,
-                                       OnExceptionDelegate    OnException  = null)
+                                       out String             ErrorResponse)
         {
 
             try
@@ -312,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                              "identification tag information",
                                              OCPPv1_6.IdTagInfo.TryParse,
                                              out IdTagInfo  IdTagInfo,
-                                             out String     ErrorResponse))
+                                             out            ErrorResponse))
                 {
                     return false;
                 }
@@ -328,19 +327,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, JSON, e);
-
-                AuthorizeResponse = null;
+                AuthorizeResponse  = null;
+                ErrorResponse      = e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, AuthorizeResponseText, out AuthorizeResponse, OnException = null)
+        #region (static) TryParse(Request, AuthorizeResponseText, out AuthorizeResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given text representation of an authorize response.
@@ -348,12 +344,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="AuthorizeResponseText">The text to be parsed.</param>
         /// <param name="AuthorizeResponse">The parsed authorize response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.AuthorizeRequest    Request,
                                        String                 AuthorizeResponseText,
                                        out AuthorizeResponse  AuthorizeResponse,
-                                       OnExceptionDelegate    OnException  = null)
+                                       out String             ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -367,15 +364,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         TryParse(Request,
                                  JObject.Parse(AuthorizeResponseText),
                                  out AuthorizeResponse,
-                                 OnException))
+                                 out ErrorResponse))
                     {
                         return true;
                     }
 
                     if (TryParse(Request,
                                  XDocument.Parse(AuthorizeResponseText).Root,
-                                 out AuthorizeResponse,
-                                 OnException))
+                                 out AuthorizeResponse))
                     {
                         return true;
                     }
@@ -385,7 +381,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(Timestamp.Now, AuthorizeResponseText, e);
+                ErrorResponse = e.Message;
             }
 
             AuthorizeResponse = null;
@@ -420,7 +416,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             var JSON = JSONObject.Create(
-                           new JProperty("IdTagInfo",  IdTagInfo.ToJSON(CustomIdTagInfoResponseSerializer))
+                           new JProperty("idTagInfo",  IdTagInfo.ToJSON(CustomIdTagInfoResponseSerializer))
                        );
 
             return CustomAuthorizeResponseSerializer != null

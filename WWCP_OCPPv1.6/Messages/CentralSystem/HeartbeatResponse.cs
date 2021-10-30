@@ -168,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          HeartbeatResponseJSON,
-                         out HeartbeatResponse heartbeatResponse,
-                         OnException))
+                         out HeartbeatResponse  heartbeatResponse,
+                         out String             ErrorResponse))
             {
                 return heartbeatResponse;
             }
@@ -195,8 +195,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          HeartbeatResponseText,
-                         out HeartbeatResponse heartbeatResponse,
-                         OnException))
+                         out HeartbeatResponse  heartbeatResponse,
+                         out String             ErrorResponse))
             {
                 return heartbeatResponse;
             }
@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, HeartbeatResponseJSON, out HeartbeatResponse, OnException = null)
+        #region (static) TryParse(Request, HeartbeatResponseJSON, out HeartbeatResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given JSON representation of a heartbeat response.
@@ -258,11 +258,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The heartbeat request leading to this response.</param>
         /// <param name="HeartbeatResponseJSON">The JSON to be parsed.</param>
         /// <param name="HeartbeatResponse">The parsed heartbeat response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.HeartbeatRequest    Request,
                                        JObject                HeartbeatResponseJSON,
                                        out HeartbeatResponse  HeartbeatResponse,
-                                       OnExceptionDelegate    OnException  = null)
+                                       out String             ErrorResponse)
         {
 
             try
@@ -275,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (!HeartbeatResponseJSON.ParseMandatory("currentTime",
                                                           "current time",
                                                           out DateTime  CurrentTime,
-                                                          out String    ErrorResponse))
+                                                          out           ErrorResponse))
                 {
                     return false;
                 }
@@ -291,19 +290,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, HeartbeatResponseJSON, e);
-
-                HeartbeatResponse = null;
+                HeartbeatResponse  = null;
+                ErrorResponse      = e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, HeartbeatResponseText, out HeartbeatResponse, OnException = null)
+        #region (static) TryParse(Request, HeartbeatResponseText, out HeartbeatResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given text representation of a heartbeat response.
@@ -311,12 +307,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The heartbeat request leading to this response.</param>
         /// <param name="HeartbeatResponseText">The text to be parsed.</param>
         /// <param name="HeartbeatResponse">The parsed heartbeat response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.HeartbeatRequest    Request,
                                        String                 HeartbeatResponseText,
                                        out HeartbeatResponse  HeartbeatResponse,
-                                       OnExceptionDelegate    OnException  = null)
+                                       out String             ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -330,15 +327,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         TryParse(Request,
                                  JObject.Parse(HeartbeatResponseText),
                                  out HeartbeatResponse,
-                                 OnException))
+                                 out ErrorResponse))
                     {
                         return true;
                     }
 
                     if (TryParse(Request,
                                  XDocument.Parse(HeartbeatResponseText).Root,
-                                 out HeartbeatResponse,
-                                 OnException))
+                                 out HeartbeatResponse))
                     {
                         return true;
                     }
@@ -348,7 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(Timestamp.Now, HeartbeatResponseText, e);
+                ErrorResponse = e.Message;
             }
 
             HeartbeatResponse = null;

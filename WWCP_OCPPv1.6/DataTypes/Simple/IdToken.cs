@@ -27,6 +27,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
+    /// Extention methods for identification tokens.
+    /// </summary>
+    public static class IdTokenExtentions
+    {
+
+        /// <summary>
+        /// Indicates whether this identification token is null or empty.
+        /// </summary>
+        /// <param name="IdToken">An identification token.</param>
+        public static Boolean IsNullOrEmpty(this IdToken? IdToken)
+            => !IdToken.HasValue || IdToken.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this identification token is null or empty.
+        /// </summary>
+        /// <param name="IdToken">An identification token.</param>
+        public static Boolean IsNotNullOrEmpty(this IdToken? IdToken)
+            => IdToken.HasValue && IdToken.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// An identification token.
     /// </summary>
     public readonly struct IdToken : IId,
@@ -36,7 +59,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Data
 
+        /// <summary>
+        /// The internal identification token.
+        /// </summary>
         private readonly String InternalId;
+
+        /// <summary>
+        /// Private non-cryptographic random number generator.
+        /// </summary>
+        private static readonly Random _random = new Random();
 
         #endregion
 
@@ -47,6 +78,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
+
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the tag identification.
@@ -70,6 +107,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
+        #region (static) Random(Length)
+
+        /// <summary>
+        /// Create a new random identification token.
+        /// </summary>
+        /// <param name="Length">The expected length of the random identification token.</param>
+        public static IdToken Random(Byte Length = 8)
+
+            => new IdToken(_random.RandomString(Length).ToUpper());
+
+        #endregion
+
         #region (static) Parse   (Text)
 
         /// <summary>
@@ -79,20 +128,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static IdToken Parse(String Text)
         {
 
-            #region Initial checks
+            if (TryParse(Text, out IdToken idToken))
+                return idToken;
 
-            if (Text != null)
-                Text = Text.Trim();
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of an identification token must not be null or empty!");
-
-            #endregion
-
-            if (TryParse(Text, out IdToken chargeBoxId))
-                return chargeBoxId;
-
-            throw new ArgumentNullException(nameof(Text), "The given text representation of an identification token is invalid!");
+            throw new ArgumentException("Invalid text-representation of an identification token: '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
@@ -107,8 +147,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static IdToken? TryParse(String Text)
         {
 
-            if (TryParse(Text, out IdToken chargeBoxId))
-                return chargeBoxId;
+            if (TryParse(Text, out IdToken idToken))
+                return idToken;
 
             return null;
 
@@ -126,25 +166,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean TryParse(String Text, out IdToken IdToken)
         {
 
-            #region Initial checks
-
             Text = Text?.Trim();
 
-            if (Text.IsNullOrEmpty())
+            if (Text.IsNotNullOrEmpty())
             {
-                IdToken = default;
-                return false;
+                try
+                {
+                    IdToken = new IdToken(Text);
+                    return true;
+                }
+                catch
+                { }
             }
-
-            #endregion
-
-            try
-            {
-                IdToken = new IdToken(Text);
-                return true;
-            }
-            catch (Exception)
-            { }
 
             IdToken = default;
             return false;
@@ -192,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator != (IdToken IdToken1,
                                            IdToken IdToken2)
 
-            => !(IdToken1 == IdToken2);
+            => !IdToken1.Equals(IdToken2);
 
         #endregion
 
@@ -222,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator <= (IdToken IdToken1,
                                            IdToken IdToken2)
 
-            => !(IdToken1 > IdToken2);
+            => IdToken1.CompareTo(IdToken2) <= 0;
 
         #endregion
 
@@ -252,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator >= (IdToken IdToken1,
                                            IdToken IdToken2)
 
-            => !(IdToken1 < IdToken2);
+            => IdToken1.CompareTo(IdToken2) >= 0;
 
         #endregion
 
@@ -283,7 +316,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="IdToken">An object to compare with.</param>
         public Int32 CompareTo(IdToken IdToken)
 
-            => InternalId.CompareTo(IdToken.InternalId);
+            => String.Compare(InternalId,
+                              IdToken.InternalId,
+                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -314,7 +349,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(IdToken IdToken)
 
-            => InternalId.Equals(IdToken.InternalId);
+            => String.Equals(InternalId,
+                             IdToken.InternalId,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -328,7 +365,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => InternalId.GetHashCode();
+            => InternalId?.ToUpper().GetHashCode() ?? 0;
 
         #endregion
 
@@ -339,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public override String ToString()
 
-            => InternalId.ToString();
+            => InternalId ?? "";
 
         #endregion
 

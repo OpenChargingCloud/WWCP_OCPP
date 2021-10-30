@@ -226,8 +226,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          StartTransactionResponseJSON,
-                         out StartTransactionResponse startTransactionResponse,
-                         OnException))
+                         out StartTransactionResponse  startTransactionResponse,
+                         out String                    ErrorResponse))
             {
                 return startTransactionResponse;
             }
@@ -253,8 +253,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          StartTransactionResponseText,
-                         out StartTransactionResponse startTransactionResponse,
-                         OnException))
+                         out StartTransactionResponse  startTransactionResponse,
+                         out String                    ErrorResponse))
             {
                 return startTransactionResponse;
             }
@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, StartTransactionResponseJSON, out StartTransactionResponse, OnException = null)
+        #region (static) TryParse(Request, StartTransactionResponseJSON, out StartTransactionResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given JSON representation of a start transaction response.
@@ -320,12 +320,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="StartTransactionResponse">The parsed start transaction response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.StartTransactionRequest    Request,
                                        JObject                       JSON,
                                        out StartTransactionResponse  StartTransactionResponse,
-                                       OnExceptionDelegate           OnException  = null)
+                                       out String                    ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -335,10 +336,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #region TransactionId
 
                 if (!JSON.ParseMandatory("transactionId",
-                                                                 "transaction identification",
-                                                                 Transaction_Id.TryParse,
-                                                                 out Transaction_Id  TransactionId,
-                                                                 out String          ErrorResponse))
+                                         "transaction identification",
+                                         Transaction_Id.TryParse,
+                                         out Transaction_Id  TransactionId,
+                                         out                 ErrorResponse))
                 {
                     return false;
                 }
@@ -368,19 +369,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, JSON, e);
-
-                StartTransactionResponse = null;
+                StartTransactionResponse  = null;
+                ErrorResponse             = null;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, StartTransactionResponseText, out StartTransactionResponse, OnException = null)
+        #region (static) TryParse(Request, StartTransactionResponseText, out StartTransactionResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given text representation of a start transaction response.
@@ -388,12 +386,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="StartTransactionResponseText">The text to be parsed.</param>
         /// <param name="StartTransactionResponse">The parsed start transaction response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.StartTransactionRequest    Request,
                                        String                        StartTransactionResponseText,
                                        out StartTransactionResponse  StartTransactionResponse,
-                                       OnExceptionDelegate           OnException  = null)
+                                       out String                    ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -407,15 +406,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         TryParse(Request,
                                  JObject.Parse(StartTransactionResponseText),
                                  out StartTransactionResponse,
-                                 OnException))
+                                 out ErrorResponse))
                     {
                         return true;
                     }
 
                     if (TryParse(Request,
                                  XDocument.Parse(StartTransactionResponseText).Root,
-                                 out StartTransactionResponse,
-                                 OnException))
+                                 out StartTransactionResponse))
                     {
                         return true;
                     }
@@ -425,7 +423,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(Timestamp.Now, StartTransactionResponseText, e);
+                ErrorResponse = e.Message;
             }
 
             StartTransactionResponse = null;
@@ -465,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var JSON = JSONObject.Create(
                            new JProperty("transactionId",  TransactionId.ToString()),
-                           new JProperty("IdTagInfo",      IdTagInfo.    ToJSON(CustomIdTagInfoResponseSerializer))
+                           new JProperty("idTagInfo",      IdTagInfo.    ToJSON(CustomIdTagInfoResponseSerializer))
                        );
 
             return CustomStartTransactionResponseSerializer != null

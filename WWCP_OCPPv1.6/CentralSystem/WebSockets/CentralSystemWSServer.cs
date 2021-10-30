@@ -558,18 +558,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             : base(IPAddress,
                    TCPPort ?? IPPort.Parse(8000),
+                   HTTPServerName,
                    DNSClient,
                    false)
 
         {
 
-            this.requests                  = new List<SendRequestResult>();
-            this.RequireAuthentication     = RequireAuthentication;
-            this.ChargingBoxLogins         = new Dictionary<String, String>();
+            this.requests                        = new List<SendRequestResult>();
+            this.RequireAuthentication           = RequireAuthentication;
+            this.ChargingBoxLogins               = new Dictionary<String, String>();
 
-            base.OnWebSocketHandshake     += ProcessWebSocketHandshake;
-            base.OnNewWebSocketConnection += ProcessNewWebSocketConnection;
-            base.OnTextMessage            += ProcessTextMessages;
+            base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
+            base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
+            base.OnTextMessage                  += ProcessTextMessages;
 
             if (AutoStart)
                 Start();
@@ -579,21 +580,53 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region (protected) ProcessWebSocketHandshake    (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
+        #region (protected) ValidateWebSocketConnection  (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
-        private async Task<HTTPResponse> ProcessWebSocketHandshake(DateTime             LogTimestamp,
-                                                                   WebSocketServer      Server,
-                                                                   WebSocketConnection  Connection,
-                                                                   EventTracking_Id     EventTrackingId,
-                                                                   CancellationToken    CancellationToken)
+        private async Task<HTTPResponse> ValidateWebSocketConnection(DateTime             LogTimestamp,
+                                                                     WebSocketServer      Server,
+                                                                     WebSocketConnection  Connection,
+                                                                     EventTracking_Id     EventTrackingId,
+                                                                     CancellationToken    CancellationToken)
         {
 
-            //ToDo: Validate whether "Sec-WebSocket-Protocol" == "ocpp1.6" or "ocpp1.6, ocpp2.0"
+            #region Verify 'Sec-WebSocket-Protocol'...
+
+            var secWebSocketProtocols = Connection.Request.SecWebSocketProtocol?.Split(',')?.Select(protocol => protocol?.Trim()).ToArray();
+
+            if (secWebSocketProtocols is null)
+                return new HTTPResponse.Builder(HTTPStatusCode.BadRequest) {
+                               Server       = HTTPServiceName,
+                               Date         = Timestamp.Now,
+                               ContentType  = HTTPContentType.JSON_UTF8,
+                               Content      = JSONObject.Create(
+                                                  new JProperty("description",
+                                                  JSONObject.Create(
+                                                      new JProperty("en", "Missing 'Sec-WebSocket-Protocol' HTTP header!")
+                                                  ))).ToUTF8Bytes(),
+                               Connection   = "close"
+                           }.AsImmutable;
+
+            else if (!secWebSocketProtocols.Contains("ocpp1.6"))
+                return new HTTPResponse.Builder(HTTPStatusCode.BadRequest) {
+                           Server       = HTTPServiceName,
+                           Date         = Timestamp.Now,
+                           ContentType  = HTTPContentType.JSON_UTF8,
+                           Content      = JSONObject.Create(
+                                              new JProperty("description",
+                                                  JSONObject.Create(
+                                                      new JProperty("en", "This web socket service only supports 'ocpp1.6'!")
+                                              ))).ToUTF8Bytes(),
+                           Connection   = "close"
+                       }.AsImmutable;
+
+            #endregion
+
+            #region Verify HTTP Authentication
 
             if (RequireAuthentication)
             {
 
-                if (HTTPBasicAuthentication.TryParse(Connection?.GetHTTPHeader("Authorization"), out HTTPBasicAuthentication basicAuthentication))
+                if (Connection.Request.Authorization is HTTPBasicAuthentication basicAuthentication)
                 {
 
                     if (ChargingBoxLogins.TryGetValue(basicAuthentication.Username, out String Password) &&
@@ -609,11 +642,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     DebugX.Log(nameof(CentralSystemWSServer), " connection from " + Connection.RemoteSocket + " missing authorization!");
 
                 return new HTTPResponse.Builder(HTTPStatusCode.Unauthorized) {
+                               Server      = HTTPServiceName,
                                Date        = Timestamp.Now,
                                Connection  = "close"
                            }.AsImmutable;
 
             }
+
+            #endregion
 
             return null;
 
@@ -633,7 +669,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (!Connection.HasCustomData("chargeBoxId"))
             {
 
-                var chargeBoxId = Connection.HTTPPath.ToString().Substring(Connection.HTTPPath.ToString().LastIndexOf("/") + 1);
+                var chargeBoxId = Connection.Request.Path.ToString().Substring(Connection.Request.Path.ToString().LastIndexOf("/") + 1);
 
                 if (chargeBoxId.IsNotNullOrEmpty())
                     Connection.AddCustomData("chargeBoxId", ChargeBox_Id.Parse(chargeBoxId));
@@ -2531,7 +2567,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 requests.Add(result);
 
 
-                var webSocketConnection  = WebSocketConnections.FirstOrDefault(ws => ws.HTTPPath.ToString().EndsWith(ClientId.ToString()));
+                var webSocketConnection  = WebSocketConnections.FirstOrDefault(ws => ws.GetCustomData<ChargeBox_Id>("chargeBoxId") == ClientId);
 
                 if (webSocketConnection == default)
                 {

@@ -137,8 +137,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          MeterValuesResponseJSON,
-                         out MeterValuesResponse meterValuesResponse,
-                         OnException))
+                         out MeterValuesResponse  meterValuesResponse,
+                         out String               ErrorResponse))
             {
                 return meterValuesResponse;
             }
@@ -164,8 +164,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          MeterValuesResponseText,
-                         out MeterValuesResponse meterValuesResponse,
-                         OnException))
+                         out MeterValuesResponse  meterValuesResponse,
+                         out String               ErrorResponse))
             {
                 return meterValuesResponse;
             }
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, MeterValuesResponseJSON, out MeterValuesResponse, OnException = null)
+        #region (static) TryParse(Request, MeterValuesResponseJSON, out MeterValuesResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given JSON representation of a meter values response.
@@ -221,12 +221,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The MeterValues request leading to this response.</param>
         /// <param name="MeterValuesResponseJSON">The JSON to be parsed.</param>
         /// <param name="MeterValuesResponse">The parsed meter values response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.MeterValuesRequest    Request,
                                        JObject                  MeterValuesResponseJSON,
                                        out MeterValuesResponse  MeterValuesResponse,
-                                       OnExceptionDelegate      OnException  = null)
+                                       out String               ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -238,19 +239,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, MeterValuesResponseJSON, e);
-
-                MeterValuesResponse = null;
+                MeterValuesResponse  = null;
+                ErrorResponse        = e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, MeterValuesResponseText, out MeterValuesResponse, OnException = null)
+        #region (static) TryParse(Request, MeterValuesResponseText, out MeterValuesResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given text representation of a meter values response.
@@ -258,12 +256,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The MeterValues request leading to this response.</param>
         /// <param name="MeterValuesResponseText">The text to be parsed.</param>
         /// <param name="MeterValuesResponse">The parsed meter values response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.MeterValuesRequest    Request,
                                        String                   MeterValuesResponseText,
                                        out MeterValuesResponse  MeterValuesResponse,
-                                       OnExceptionDelegate      OnException  = null)
+                                       out String               ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -275,17 +274,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     if (MeterValuesResponseText.StartsWith("{") &&
                         TryParse(Request,
-                                    JObject.Parse(MeterValuesResponseText),
-                                    out MeterValuesResponse,
-                                    OnException))
+                                 JObject.Parse(MeterValuesResponseText),
+                                 out MeterValuesResponse,
+                                 out ErrorResponse))
                     {
                         return true;
                     }
 
                     if (TryParse(Request,
-                                    XDocument.Parse(MeterValuesResponseText).Root,
-                                    out MeterValuesResponse,
-                                    OnException))
+                                 XDocument.Parse(MeterValuesResponseText).Root,
+                                 out MeterValuesResponse))
                     {
                         return true;
                     }
@@ -295,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(Timestamp.Now, MeterValuesResponseText, e);
+                ErrorResponse = e.Message;
             }
 
             MeterValuesResponse = null;

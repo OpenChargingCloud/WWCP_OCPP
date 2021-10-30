@@ -137,8 +137,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          DiagnosticsStatusNotificationResponseJSON,
-                         out DiagnosticsStatusNotificationResponse diagnosticsStatusNotificationResponse,
-                         OnException))
+                         out DiagnosticsStatusNotificationResponse  diagnosticsStatusNotificationResponse,
+                         out String                                 ErrorResponse))
             {
                 return diagnosticsStatusNotificationResponse;
             }
@@ -164,8 +164,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          DiagnosticsStatusNotificationResponseText,
-                         out DiagnosticsStatusNotificationResponse diagnosticsStatusNotificationResponse,
-                         OnException))
+                         out DiagnosticsStatusNotificationResponse  diagnosticsStatusNotificationResponse,
+                         out String                                 ErrorResponse))
             {
                 return diagnosticsStatusNotificationResponse;
             }
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, DiagnosticsStatusNotificationResponseJSON, out DiagnosticsStatusNotificationResponse, OnException = null)
+        #region (static) TryParse(Request, DiagnosticsStatusNotificationResponseJSON, out DiagnosticsStatusNotificationResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given JSON representation of a diagnostics status notification response.
@@ -221,12 +221,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The diagnostics status notification request leading to this response.</param>
         /// <param name="DiagnosticsStatusNotificationResponseJSON">The JSON to be parsed.</param>
         /// <param name="DiagnosticsStatusNotificationResponse">The parsed diagnostics status notification response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.DiagnosticsStatusNotificationRequest    Request,
                                        JObject                                    DiagnosticsStatusNotificationResponseJSON,
                                        out DiagnosticsStatusNotificationResponse  DiagnosticsStatusNotificationResponse,
-                                       OnExceptionDelegate                        OnException  = null)
+                                       out String                                 ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -238,19 +239,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, DiagnosticsStatusNotificationResponseJSON, e);
-
-                DiagnosticsStatusNotificationResponse = null;
+                DiagnosticsStatusNotificationResponse  = null;
+                ErrorResponse                          = e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, DiagnosticsStatusNotificationResponseText, out DiagnosticsStatusNotificationResponse, OnException = null)
+        #region (static) TryParse(Request, DiagnosticsStatusNotificationResponseText, out DiagnosticsStatusNotificationResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given text representation of a diagnostics status notification response.
@@ -258,12 +256,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The diagnostics status notification request leading to this response.</param>
         /// <param name="DiagnosticsStatusNotificationResponseText">The text to be parsed.</param>
         /// <param name="DiagnosticsStatusNotificationResponse">The parsed diagnostics status notification response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.DiagnosticsStatusNotificationRequest    Request,
                                        String                                     DiagnosticsStatusNotificationResponseText,
                                        out DiagnosticsStatusNotificationResponse  DiagnosticsStatusNotificationResponse,
-                                       OnExceptionDelegate                        OnException  = null)
+                                       out String                                 ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -277,15 +276,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         TryParse(Request,
                                  JObject.Parse(DiagnosticsStatusNotificationResponseText),
                                  out DiagnosticsStatusNotificationResponse,
-                                 OnException))
+                                 out ErrorResponse))
                     {
                         return true;
                     }
 
                     if (TryParse(Request,
                                  XDocument.Parse(DiagnosticsStatusNotificationResponseText).Root,
-                                 out DiagnosticsStatusNotificationResponse,
-                                 OnException))
+                                 out DiagnosticsStatusNotificationResponse))
                     {
                         return true;
                     }
@@ -295,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(Timestamp.Now, DiagnosticsStatusNotificationResponseText, e);
+                ErrorResponse = e.Message;
             }
 
             DiagnosticsStatusNotificationResponse = null;

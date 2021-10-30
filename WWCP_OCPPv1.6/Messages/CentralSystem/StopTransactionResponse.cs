@@ -202,8 +202,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          StopTransactionResponseJSON,
-                         out StopTransactionResponse stopTransactionResponse,
-                         OnException))
+                         out StopTransactionResponse  stopTransactionResponse,
+                         out String                   ErrorResponse))
             {
                 return stopTransactionResponse;
             }
@@ -229,8 +229,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          StopTransactionResponseText,
-                         out StopTransactionResponse stopTransactionResponse,
-                         OnException))
+                         out StopTransactionResponse  stopTransactionResponse,
+                         out String                   ErrorResponse))
             {
                 return stopTransactionResponse;
             }
@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, StopTransactionResponseJSON, out StopTransactionResponse, OnException = null)
+        #region (static) TryParse(Request, StopTransactionResponseJSON, out StopTransactionResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given text representation of a stop transaction response.
@@ -293,12 +293,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The stop transaction request leading to this response.</param>
         /// <param name="JSON">The text to be parsed.</param>
         /// <param name="StopTransactionResponse">The parsed stop transaction response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.StopTransactionRequest    Request,
                                        JObject                      JSON,
                                        out StopTransactionResponse  StopTransactionResponse,
-                                       OnExceptionDelegate          OnException  = null)
+                                       out String                   ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -311,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                              "identification tag information",
                                              OCPPv1_6.IdTagInfo.TryParse,
                                              out IdTagInfo  IdTagInfo,
-                                             out String     ErrorResponse))
+                                             out            ErrorResponse))
                 {
                     return false;
                 }
@@ -327,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(Timestamp.Now, JSON, e);
+                ErrorResponse = e.Message;
             }
 
             StopTransactionResponse = null;
@@ -337,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, StopTransactionResponseText, out StopTransactionResponse, OnException = null)
+        #region (static) TryParse(Request, StopTransactionResponseText, out StopTransactionResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given text representation of a stop transaction response.
@@ -345,27 +346,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The stop transaction request leading to this response.</param>
         /// <param name="StopTransactionResponseText">The text to be parsed.</param>
         /// <param name="StopTransactionResponse">The parsed stop transaction response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.StopTransactionRequest    Request,
                                        String                       StopTransactionResponseText,
                                        out StopTransactionResponse  StopTransactionResponse,
-                                       OnExceptionDelegate          OnException  = null)
+                                       out String                   ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
 
-                if (TryParse(Request,
-                             XDocument.Parse(StopTransactionResponseText).Root,
-                             out StopTransactionResponse,
-                             OnException))
+                StopTransactionResponseText = StopTransactionResponseText?.Trim();
 
-                    return true;
+                if (StopTransactionResponseText.IsNotNullOrEmpty())
+                {
+
+                    if (StopTransactionResponseText.StartsWith("{") &&
+                        TryParse(Request,
+                                 JObject.Parse(StopTransactionResponseText),
+                                 out StopTransactionResponse,
+                                 out ErrorResponse))
+                    {
+                        return true;
+                    }
+
+                    if (TryParse(Request,
+                                 XDocument.Parse(StopTransactionResponseText).Root,
+                                 out StopTransactionResponse))
+                    {
+                        return true;
+                    }
+
+                }
 
             }
             catch (Exception e)
             {
-                OnException?.Invoke(Timestamp.Now, StopTransactionResponseText, e);
+                ErrorResponse = e.Message;
             }
 
             StopTransactionResponse = null;
@@ -406,7 +424,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             var JSON = JSONObject.Create(
 
                            IdTagInfo.HasValue
-                               ? new JProperty("IdTagInfo",  IdTagInfo.Value.ToJSON(CustomIdTagInfoResponseSerializer))
+                               ? new JProperty("idTagInfo",  IdTagInfo.Value.ToJSON(CustomIdTagInfoResponseSerializer))
                                : null
 
                        );

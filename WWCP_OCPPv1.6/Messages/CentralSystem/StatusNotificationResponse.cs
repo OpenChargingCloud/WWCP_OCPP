@@ -136,8 +136,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          StatusNotificationResponseJSON,
-                         out StatusNotificationResponse statusNotificationResponse,
-                         OnException))
+                         out StatusNotificationResponse  statusNotificationResponse,
+                         out String                      ErrorResponse))
             {
                 return statusNotificationResponse;
             }
@@ -163,8 +163,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          StatusNotificationResponseText,
-                         out StatusNotificationResponse statusNotificationResponse,
-                         OnException))
+                         out StatusNotificationResponse  statusNotificationResponse,
+                         out String                      ErrorResponse))
             {
                 return statusNotificationResponse;
             }
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(StatusNotificationResponseJSON, out StatusNotificationResponse, OnException = null)
+        #region (static) TryParse(StatusNotificationResponseJSON, out StatusNotificationResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given JSON representation of a status notification response.
@@ -220,12 +220,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The status notification request leading to this response.</param>
         /// <param name="StatusNotificationResponseJSON">The JSON to be parsed.</param>
         /// <param name="StatusNotificationResponse">The parsed status notification response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.StatusNotificationRequest    Request,
                                        JObject                         StatusNotificationResponseJSON,
                                        out StatusNotificationResponse  StatusNotificationResponse,
-                                       OnExceptionDelegate             OnException  = null)
+                                       out String                      ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -237,19 +238,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, StatusNotificationResponseJSON, e);
-
-                StatusNotificationResponse = null;
+                StatusNotificationResponse  = null;
+                ErrorResponse               = e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(StatusNotificationResponseText, out StatusNotificationResponse, OnException = null)
+        #region (static) TryParse(StatusNotificationResponseText, out StatusNotificationResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given text representation of a status notification response.
@@ -257,12 +255,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The status notification request leading to this response.</param>
         /// <param name="StatusNotificationResponseText">The text to be parsed.</param>
         /// <param name="StatusNotificationResponse">The parsed status notification response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.StatusNotificationRequest    Request,
                                        String                          StatusNotificationResponseText,
                                        out StatusNotificationResponse  StatusNotificationResponse,
-                                       OnExceptionDelegate             OnException  = null)
+                                       out String                      ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -276,15 +275,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         TryParse(Request,
                                  JObject.Parse(StatusNotificationResponseText),
                                  out StatusNotificationResponse,
-                                 OnException))
+                                 out ErrorResponse))
                     {
                         return true;
                     }
 
                     if (TryParse(Request,
                                  XDocument.Parse(StatusNotificationResponseText).Root,
-                                 out StatusNotificationResponse,
-                                 OnException))
+                                 out StatusNotificationResponse))
                     {
                         return true;
                     }
@@ -294,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(Timestamp.Now, StatusNotificationResponseText, e);
+                ErrorResponse = e.Message;
             }
 
             StatusNotificationResponse = null;

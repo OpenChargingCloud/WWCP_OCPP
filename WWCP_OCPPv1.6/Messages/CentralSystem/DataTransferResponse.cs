@@ -188,8 +188,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          DataTransferResponseJSON,
-                         out DataTransferResponse dataTransferResponse,
-                         OnException))
+                         out DataTransferResponse  dataTransferResponse,
+                         out String                ErrorResponse))
             {
                 return dataTransferResponse;
             }
@@ -215,8 +215,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             if (TryParse(Request,
                          DataTransferResponseText,
-                         out DataTransferResponse dataTransferResponse,
-                         OnException))
+                         out DataTransferResponse  dataTransferResponse,
+                         out String                ErrorResponse))
             {
                 return dataTransferResponse;
             }
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, DataTransferResponseJSON, out DataTransferResponse, OnException = null)
+        #region (static) TryParse(Request, DataTransferResponseJSON, out DataTransferResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given JSON representation of a data transfer response.
@@ -281,11 +281,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The incoming data transfer request leading to this response.</param>
         /// <param name="DataTransferResponseJSON">The JSON to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.DataTransferRequest    Request,
                                        JObject                   DataTransferResponseJSON,
                                        out DataTransferResponse  DataTransferResponse,
-                                       OnExceptionDelegate       OnException  = null)
+                                       out String                ErrorResponse)
         {
 
             try
@@ -298,8 +297,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (!DataTransferResponseJSON.MapMandatory("status",
                                                            "data transfer status",
                                                            DataTransferStatusExtentions.Parse,
-                                                           out DataTransferStatus DataTransferStatus,
-                                                           out String ErrorResponse))
+                                                           out DataTransferStatus  DataTransferStatus,
+                                                           out                     ErrorResponse))
                 {
                     return false;
                 }
@@ -322,19 +321,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, DataTransferResponseJSON, e);
-
                 DataTransferResponse = null;
+                ErrorResponse = e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, DataTransferResponseText, out DataTransferResponse, OnException = null)
+        #region (static) TryParse(Request, DataTransferResponseText, out DataTransferResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given text representation of a data transfer response.
@@ -342,12 +338,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The incoming data transfer request leading to this response.</param>
         /// <param name="DataTransferResponseText">The text to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.DataTransferRequest    Request,
                                        String                    DataTransferResponseText,
                                        out DataTransferResponse  DataTransferResponse,
-                                       OnExceptionDelegate       OnException   = null)
+                                       out String                ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -361,15 +358,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         TryParse(Request,
                                  JObject.Parse(DataTransferResponseText),
                                  out DataTransferResponse,
-                                 OnException))
+                                 out ErrorResponse))
                     {
                         return true;
                     }
 
                     if (TryParse(Request,
                                  XDocument.Parse(DataTransferResponseText).Root,
-                                 out DataTransferResponse,
-                                 OnException))
+                                 out DataTransferResponse))
                     {
                         return true;
                     }
@@ -379,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                OnException?.Invoke(Timestamp.Now, DataTransferResponseText, e);
+                ErrorResponse = e.Message;
             }
 
             DataTransferResponse = null;
