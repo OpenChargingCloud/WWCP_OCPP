@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         private readonly HashSet<ICentralSystemServer> centralSystemServers;
 
-        private readonly Dictionary<ChargeBox_Id, Tuple<CentralSystemWSServer, DateTime>> reachableChargingBoxes;
+        private readonly Dictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>> reachableChargingBoxes;
 
         #endregion
 
@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             this.CentralSystemId         = CentralSystemId;
             this.RequireAuthentication   = RequireAuthentication;
             this.centralSystemServers    = new HashSet<ICentralSystemServer>();
-            this.reachableChargingBoxes  = new Dictionary<ChargeBox_Id, Tuple<CentralSystemWSServer, DateTime>>();
+            this.reachableChargingBoxes  = new Dictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>>();
 
             this.DNSClient               = DNSClient;
 
@@ -504,6 +504,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             centralSystemServers.Add(CentralSystemServer);
 
 
+            if (CentralSystemServer is CentralSystemWSServer centralSystemWSServer)
+            {
+                centralSystemWSServer.OnNewCentralSystemWSConnection += async (LogTimestamp,
+                                                                               CentralSystem,
+                                                                               Connection,
+                                                                               EventTrackingId,
+                                                                               CancellationToken) =>
+                {
+
+                    if (Connection.TryGetCustomData("chargeBoxId", out ChargeBox_Id chargeBoxId))
+                    {
+                        //ToDo: lock(...)
+                        if (!reachableChargingBoxes.ContainsKey(chargeBoxId))
+                            reachableChargingBoxes.Add(chargeBoxId, new Tuple<ICentralSystem, DateTime>(CentralSystem, Timestamp.Now));
+                        else
+                            reachableChargingBoxes[chargeBoxId]   = new Tuple<ICentralSystem, DateTime>(CentralSystem, Timestamp.Now);
+                    }
+
+                };
+            }
+
+
             // Wire events...
 
             #region OnBootNotification
@@ -543,7 +565,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
 
                     //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
 
@@ -552,7 +574,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
 
                     //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
 
@@ -626,7 +648,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
 
                     //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
 
@@ -635,7 +657,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
 
                     //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
 
@@ -709,7 +731,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
 
                     //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
 
@@ -718,7 +740,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
 
                     //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
 
@@ -794,7 +816,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
 
                     //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
 
@@ -803,7 +825,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
 
                     //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
 
@@ -880,12 +902,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
                 {
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
                 }
                 else
                 {
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
                 }
 
                 await Task.Delay(100);
@@ -954,12 +976,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
                 {
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
                 }
                 else
                 {
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
                 }
 
                 await Task.Delay(100);
@@ -1095,12 +1117,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
                 {
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
                 }
                 else
                 {
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
                 }
 
                 await Task.Delay(100);
@@ -1167,12 +1189,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
                 {
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
                 }
                 else
                 {
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
                 }
 
                 await Task.Delay(100);
@@ -1237,12 +1259,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
                 {
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
                 }
                 else
                 {
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<CentralSystemWSServer, DateTime>(centralSystemWSServer, Timestamp.Now);
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
                 }
 
                 await Task.Delay(100);
@@ -1315,7 +1337,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.ResetResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.Reset(request);
 
             else
@@ -1350,7 +1372,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.ChangeAvailabilityResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.ChangeAvailability(request);
 
             else
@@ -1382,7 +1404,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.GetConfigurationResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.GetConfiguration(request);
 
             else
@@ -1419,7 +1441,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.ChangeConfigurationResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.ChangeConfiguration(request);
 
             else
@@ -1457,7 +1479,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.DataTransferResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.DataTransfer(request);
 
             else
@@ -1501,7 +1523,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.GetDiagnosticsResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.GetDiagnostics(request);
 
             else
@@ -1536,7 +1558,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.TriggerMessageResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.TriggerMessage(request);
 
             else
@@ -1577,7 +1599,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.UpdateFirmwareResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.UpdateFirmware(request);
 
             else
@@ -1622,7 +1644,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.ReserveNowResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.ReserveNow(request);
 
             else
@@ -1654,7 +1676,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.CancelReservationResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.CancelReservation(request);
 
             else
@@ -1692,7 +1714,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.RemoteStartTransactionResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.RemoteStartTransaction(request);
 
             else
@@ -1724,7 +1746,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.RemoteStopTransactionResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.RemoteStopTransaction(request);
 
             else
@@ -1759,7 +1781,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.SetChargingProfileResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.SetChargingProfile(request);
 
             else
@@ -1800,7 +1822,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.ClearChargingProfileResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.ClearChargingProfile(request);
 
             else
@@ -1838,7 +1860,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.GetCompositeScheduleResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.GetCompositeSchedule(request);
 
             else
@@ -1872,7 +1894,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.UnlockConnectorResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.UnlockConnector(request);
 
             else
@@ -1902,7 +1924,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.GetLocalListVersionResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.GetLocalListVersion(request);
 
             else
@@ -1940,7 +1962,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.SendLocalListResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.SendLocalList(request);
 
             else
@@ -1969,7 +1991,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             CP.ClearCacheResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<CentralSystemWSServer, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
                 response = await webSocketServer.Item1.ClearCache(request);
 
             else

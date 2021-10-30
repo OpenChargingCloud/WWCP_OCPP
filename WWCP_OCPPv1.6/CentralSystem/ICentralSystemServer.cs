@@ -18,12 +18,13 @@
 #region Usings
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Hermod;
 
-using cloud.charging.open.protocols.OCPPv1_6.CP;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 

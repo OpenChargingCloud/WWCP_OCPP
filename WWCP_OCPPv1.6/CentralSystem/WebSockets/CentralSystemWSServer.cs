@@ -39,6 +39,14 @@ using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
+
+    public delegate Task  OnNewCentralSystemWSConnectionDelegate(DateTime             Timestamp,
+                                                                 ICentralSystem       CentralSystem,
+                                                                 WebSocketConnection  NewWebSocketConnection,
+                                                                 EventTracking_Id     EventTrackingId,
+                                                                 CancellationToken    CancellationToken);
+
+
     /// <summary>
     /// The central system HTTP/WebSocket/JSON server.
     /// </summary>
@@ -128,6 +136,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         public List<SendRequestResult> requests;
 
+        private readonly Dictionary<ChargeBox_Id, Tuple<WebSocketConnection, DateTime>> connectedChargingBoxes;
+
 
         /// <summary>
         /// A delegate to parse custom BootNotification requests.
@@ -194,6 +204,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
         #region Events
+
+        public event OnNewCentralSystemWSConnectionDelegate OnNewCentralSystemWSConnection;
+
 
         #region OnBootNotification
 
@@ -567,6 +580,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             this.requests                        = new List<SendRequestResult>();
             this.RequireAuthentication           = RequireAuthentication;
             this.ChargingBoxLogins               = new Dictionary<String, String>();
+            this.connectedChargingBoxes          = new Dictionary<ChargeBox_Id, Tuple<WebSocketConnection, DateTime>>();
 
             base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
             base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
@@ -666,13 +680,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                            CancellationToken    CancellationToken)
         {
 
-            if (!Connection.HasCustomData("chargeBoxId"))
+            if (!Connection.HasCustomData("chargeBoxId") &&
+                ChargeBox_Id.TryParse(Connection.Request.Path.ToString().Substring(Connection.Request.Path.ToString().LastIndexOf("/") + 1), out ChargeBox_Id chargeBoxId))
+            {
+                Connection.AddCustomData("chargeBoxId", chargeBoxId);
+                connectedChargingBoxes.Add(chargeBoxId, new Tuple<WebSocketConnection, DateTime>(Connection, Timestamp.Now));
+            }
+
+            var OnNewCentralSystemWSConnectionLocal = OnNewCentralSystemWSConnection;
+            if (OnNewCentralSystemWSConnectionLocal != null)
             {
 
-                var chargeBoxId = Connection.Request.Path.ToString().Substring(Connection.Request.Path.ToString().LastIndexOf("/") + 1);
-
-                if (chargeBoxId.IsNotNullOrEmpty())
-                    Connection.AddCustomData("chargeBoxId", ChargeBox_Id.Parse(chargeBoxId));
+                OnNewCentralSystemWSConnection?.Invoke(LogTimestamp,
+                                                       this,
+                                                       Connection,
+                                                       EventTrackingId,
+                                                       CancellationToken);
 
             }
 
@@ -2355,6 +2378,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                             request.Response = JSON[2] as JObject;
                     }
 
+                    return null;
+
                 }
 
                 #endregion
@@ -2660,8 +2685,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 if (ChangeAvailabilityResponse.TryParse(Request,
-                                                       result.Response,
-                                                       out ChangeAvailabilityResponse changeAvailabilityResponse))
+                                                        result.Response,
+                                                        out ChangeAvailabilityResponse changeAvailabilityResponse))
                 {
                     return changeAvailabilityResponse;
                 }
