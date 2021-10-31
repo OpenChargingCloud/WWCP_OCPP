@@ -208,9 +208,21 @@
       <Project>{477efd16-3627-4473-957d-44ca9a9dfb79}</Project>
       <Name>Hermod</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\SMSAPI\smsapi\SMSAPI2.csproj">
+      <Project>{05c2a720-2cd1-401b-a832-9ce85313c248}</Project>
+      <Name>SMSAPI2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Styx\Styx\Styx.csproj">
       <Project>{af76ecc0-2ca5-4cff-9e1e-ff5478c4b6e4}</Project>
       <Name>Styx</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TelegramBotAPI\TelegramBotAPI\TelegramBotAPI.csproj">
+      <Project>{2fee90e4-7e55-49a6-8be9-5a434ffa5a00}</Project>
+      <Name>TelegramBotAPI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\UsersAPI\UsersAPI\UsersAPI.csproj">
+      <Project>{4D5DA5F5-0DCE-4620-BCE5-74A27E5CFC47}</Project>
+      <Name>UsersAPI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

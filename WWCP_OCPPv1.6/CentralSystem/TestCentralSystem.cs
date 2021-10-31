@@ -22,11 +22,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
+using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
+using social.OpenData.UsersAPI;
 
 #endregion
 
@@ -44,6 +48,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         private readonly HashSet<ICentralSystemServer> centralSystemServers;
 
         private readonly Dictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>> reachableChargingBoxes;
+
+        private readonly UsersAPI TestAPI;
 
         #endregion
 
@@ -273,6 +279,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             this.RequireAuthentication   = RequireAuthentication;
             this.centralSystemServers    = new HashSet<ICentralSystemServer>();
             this.reachableChargingBoxes  = new Dictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>>();
+
+            this.TestAPI                 = new UsersAPI(HTTPServerPort:        IPPort.Parse(3500),
+                                                        HTTPServerName:        "GraphDefined OCPP Test Central System",
+                                                        HTTPServiceName:       "GraphDefined OCPP Test Central System Service",
+                                                        APIRobotEMailAddress:  EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
+                                                        SMTPClient:            new NullMailer(),
+                                                        DNSClient:             DNSClient,
+                                                        Autostart:             true);
 
             this.DNSClient               = DNSClient;
 
