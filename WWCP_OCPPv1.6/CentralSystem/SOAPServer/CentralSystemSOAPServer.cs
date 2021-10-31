@@ -20,14 +20,15 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-
-using cloud.charging.open.protocols.OCPPv1_6.CP;
+using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
+
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
@@ -82,6 +83,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         String IEventSender.Id
             => SOAPServer.HTTPServer.DefaultServerName;
+
+
+        /// <summary>
+        /// The unique identifications of all reachable charge boxes.
+        /// </summary>
+        public IEnumerable<ChargeBox_Id>  ChargeBoxIds    { get; }
 
         #endregion
 

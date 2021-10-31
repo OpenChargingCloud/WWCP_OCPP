@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         //        HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
         //            HTTPStatusCode  = HTTPStatusCode.BadRequest,
         //            Server          = OCPPWebAPI.HTTPServer.DefaultServerName,
-        //            Date            = DateTime.UtcNow,
+        //            Date            = Timestamp.Now,
         //            Connection      = "close"
         //        };
 
@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         //        HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
         //            HTTPStatusCode  = HTTPStatusCode.BadRequest,
         //            Server          = OCPPWebAPI.HTTPServer.DefaultServerName,
-        //            Date            = DateTime.UtcNow,
+        //            Date            = Timestamp.Now,
         //            ContentType     = HTTPContentType.JSON_UTF8,
         //            Content         = @"{ ""description"": ""Invalid remote party identification!"" }".ToUTF8Bytes(),
         //            Connection      = "close"
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         //        HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
         //            HTTPStatusCode  = HTTPStatusCode.BadRequest,
         //            Server          = OCPPWebAPI.HTTPServer.DefaultServerName,
-        //            Date            = DateTime.UtcNow,
+        //            Date            = Timestamp.Now,
         //            Connection      = "close"
         //        };
 
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         //        HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
         //            HTTPStatusCode  = HTTPStatusCode.BadRequest,
         //            Server          = OCPPWebAPI.HTTPServer.DefaultServerName,
-        //            Date            = DateTime.UtcNow,
+        //            Date            = Timestamp.Now,
         //            ContentType     = HTTPContentType.JSON_UTF8,
         //            Content         = @"{ ""description"": ""Invalid remote party identification!"" }".ToUTF8Bytes(),
         //            Connection      = "close"
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         //        HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
         //            HTTPStatusCode  = HTTPStatusCode.NotFound,
         //            Server          = OCPPWebAPI.HTTPServer.DefaultServerName,
-        //            Date            = DateTime.UtcNow,
+        //            Date            = Timestamp.Now,
         //            ContentType     = HTTPContentType.JSON_UTF8,
         //            Content         = @"{ ""description"": ""Unknown remote party identification!"" }".ToUTF8Bytes(),
         //            Connection      = "close"
@@ -199,6 +199,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     }
 
 
+    /// <summary>
+    /// The OCPP WebAPI.
+    /// </summary>
     public class OCPPWebAPI : HTTPAPI
     {
 
@@ -237,6 +240,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public static readonly HTTPEventSource_Id                   EventLogId                  = HTTPEventSource_Id.Parse("OCPPEvents");
 
+        private readonly TestCentralSystem testCentralSystem;
+
         #endregion
 
         #region Properties
@@ -244,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The HTTP URI prefix.
         /// </summary>
-        public HTTPPath?                                    URLPathPrefix1      { get; }
+        //public HTTPPath?                                    URLPathPrefix1      { get; }
 
         /// <summary>
         /// The HTTP realm, if HTTP Basic Authentication is used.
@@ -279,8 +284,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URIs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public OCPPWebAPI(HTTPServer                                 HTTPServer,
-                          HTTPPath?                                  URLPathPrefix1   = null,
+        public OCPPWebAPI(TestCentralSystem                          TestCentralSystem,
+                          HTTPServer                                 HTTPServer,
+                          //HTTPPath?                                  URLPathPrefix1   = null,
                           HTTPPath?                                  URLPathPrefix    = null,
                           HTTPPath?                                  BasePath         = null,
                           String                                     HTTPRealm        = DefaultHTTPRealm,
@@ -315,7 +321,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         {
 
-            this.URLPathPrefix1      = URLPathPrefix1;
+            this.testCentralSystem   = TestCentralSystem;
+
+            //this.URLPathPrefix1      = URLPathPrefix1;
             this.HTTPRealm           = HTTPRealm.IsNotNullOrEmpty() ? HTTPRealm : DefaultHTTPRealm;
             this.HTTPLogins          = HTTPLogins    ?? new KeyValuePair<String, String>[0];
             this.DNSClient           = HTTPServer.DNSClient;
@@ -339,7 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             RegisterURITemplates();
 
-            this.HTMLTemplate = HTMLTemplate ?? GetResourceString("template.html");
+            this.HTMLTemplate        = HTMLTemplate ?? GetResourceString("template.html");
 
         }
 
@@ -417,35 +425,60 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                "cloud.charging.open.protocols.OCPPv1_6.WebAPI.HTTPRoot",
                                                DefaultFilename: "index.html");
 
-            if (URLPathPrefix1.HasValue)
-                HTTPServer.AddMethodCallback(HTTPHostname.Any,
-                                             HTTPMethod.GET,
-                                             URLPathPrefix1.Value,
-                                             HTTPContentType.HTML_UTF8,
-                                             HTTPDelegate: Request => {
+            //if (URLPathPrefix1.HasValue)
+            //    HTTPServer.AddMethodCallback(HTTPHostname.Any,
+            //                                 HTTPMethod.GET,
+            //                                 URLPathPrefix1.Value,
+            //                                 HTTPContentType.HTML_UTF8,
+            //                                 HTTPDelegate: Request => {
 
-                                                 return Task.FromResult(
-                                                     new HTTPResponse.Builder(Request) {
-                                                         HTTPStatusCode             = HTTPStatusCode.OK,
-                                                         //Server                     = DefaultHTTPServerName,
-                                                         Date                       = DateTime.UtcNow,
-                                                         AccessControlAllowOrigin   = "*",
-                                                         AccessControlAllowMethods  = "OPTIONS, GET",
-                                                         AccessControlAllowHeaders  = "Authorization",
-                                                         ContentType                = HTTPContentType.HTML_UTF8,
-                                                         Content                    = ("<html><body>" +
-                                                                                          "This is an Open Charge Point Protocol HTTP service!<br /><br />" +
-                                                                                          "<ul>" +
-                                                                                              "<li><a href=\"versions\">Versions</a></li>" +
-                                                                                              "<li><a href=\"" + URLPathPrefix.ToString() + "/remoteParties\">Remote Parties</a></li>" +
-                                                                                              "<li><a href=\"" + URLPathPrefix.ToString() + "/clients\">Clients</a></li>" +
-                                                                                              "<li><a href=\"" + URLPathPrefix.ToString() + "/cpoclients\">CPO Clients</a></li>" +
-                                                                                              "<li><a href=\"" + URLPathPrefix.ToString() + "/emspclients\">EMSP Clients</a></li>" +
-                                                                                       "</ul><body></html>").ToUTF8Bytes(),
-                                                         Connection                 = "close"
-                                                     }.AsImmutable);
+            //                                     return Task.FromResult(
+            //                                         new HTTPResponse.Builder(Request) {
+            //                                             HTTPStatusCode             = HTTPStatusCode.OK,
+            //                                             //Server                     = DefaultHTTPServerName,
+            //                                             Date                       = Timestamp.Now,
+            //                                             AccessControlAllowOrigin   = "*",
+            //                                             AccessControlAllowMethods  = "OPTIONS, GET",
+            //                                             AccessControlAllowHeaders  = "Authorization",
+            //                                             ContentType                = HTTPContentType.HTML_UTF8,
+            //                                             Content                    = ("<html><body>" +
+            //                                                                              "This is an Open Charge Point Protocol HTTP service!<br /><br />" +
+            //                                                                              "<ul>" +
+            //                                                                                  "<li><a href=\"versions\">Versions</a></li>" +
+            //                                                                                  "<li><a href=\"" + URLPathPrefix.ToString() + "/remoteParties\">Remote Parties</a></li>" +
+            //                                                                                  "<li><a href=\"" + URLPathPrefix.ToString() + "/clients\">Clients</a></li>" +
+            //                                                                                  "<li><a href=\"" + URLPathPrefix.ToString() + "/cpoclients\">CPO Clients</a></li>" +
+            //                                                                                  "<li><a href=\"" + URLPathPrefix.ToString() + "/emspclients\">EMSP Clients</a></li>" +
+            //                                                                           "</ul><body></html>").ToUTF8Bytes(),
+            //                                             Connection                 = "close"
+            //                                         }.AsImmutable);
 
-                                             });
+            //                                 });
+
+
+            HTTPServer.AddMethodCallback(HTTPHostname.Any,
+                                         HTTPMethod.GET,
+                                         URLPathPrefix + "chargeBoxes",
+                                         HTTPContentType.JSON_UTF8,
+                                         HTTPDelegate: Request => {
+
+                                             return Task.FromResult(
+                                                 new HTTPResponse.Builder(Request) {
+                                                     HTTPStatusCode             = HTTPStatusCode.OK,
+                                                     //Server                     = DefaultHTTPServerName,
+                                                     Date                       = Timestamp.Now,
+                                                     AccessControlAllowOrigin   = "*",
+                                                     AccessControlAllowMethods  = "OPTIONS, GET",
+                                                     AccessControlAllowHeaders  = "Authorization",
+                                                     ContentType                = HTTPContentType.JSON_UTF8,
+                                                     Content                    = JSONArray.Create(
+                                                                                      testCentralSystem.ChargeBoxIds.Select(chargeBoxId => new JObject(new JProperty("@id", chargeBoxId.ToString())))
+                                                                                  ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
+                                                     Connection                 = "close"
+                                                 }.AsImmutable);
+            
+                                         });
+
 
             #endregion
 

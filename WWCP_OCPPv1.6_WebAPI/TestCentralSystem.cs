@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -32,9 +33,11 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using social.OpenData.UsersAPI;
 
+using cloud.charging.open.protocols.OCPPv1_6.CS;
+
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
@@ -49,7 +52,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         private readonly Dictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>> reachableChargingBoxes;
 
-        private readonly UsersAPI TestAPI;
+        private readonly UsersAPI    TestAPI;
+
+        private readonly OCPPWebAPI  WebAPI;
 
         #endregion
 
@@ -77,6 +82,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Require a HTTP Basic Authentication of all charging boxes.
         /// </summary>
         public Boolean RequireAuthentication { get; }
+
+
+        /// <summary>
+        /// The unique identifications of all connected or reachable charge boxes.
+        /// </summary>
+        public IEnumerable<ChargeBox_Id> ChargeBoxIds
+            => reachableChargingBoxes.Values.SelectMany(box => box.Item1.ChargeBoxIds);
 
 
         public DNSClient DNSClient { get; }
@@ -280,6 +292,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             this.centralSystemServers    = new HashSet<ICentralSystemServer>();
             this.reachableChargingBoxes  = new Dictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>>();
 
+            Directory.CreateDirectory("HTTPSSEs");
+
             this.TestAPI                 = new UsersAPI(HTTPServerPort:        IPPort.Parse(3500),
                                                         HTTPServerName:        "GraphDefined OCPP Test Central System",
                                                         HTTPServiceName:       "GraphDefined OCPP Test Central System Service",
@@ -287,6 +301,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         SMTPClient:            new NullMailer(),
                                                         DNSClient:             DNSClient,
                                                         Autostart:             true);
+
+            this.WebAPI                  = new OCPPWebAPI(this,
+                                                          TestAPI.HTTPServer);
 
             this.DNSClient               = DNSClient;
 

@@ -49,6 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestCentralSystem.cs" />
+    <Compile Include="TestChargePoint.cs" />
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
@@ -58,7 +60,7 @@
     <EmbeddedResource Include="HTTPRoot\defaults\_defaults.scss" />
     <EmbeddedResource Include="HTTPRoot\template.scss" />
     <None Include="tsconfig.json" />
-    <Compile Include="WebAPI.cs" />
+    <Compile Include="OCPPWebAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -117,6 +119,9 @@
   <ItemGroup>
     <EmbeddedResource Include="HTTPRoot\dashboard\dashboard.ts" />
     <EmbeddedResource Include="HTTPRoot\defaults\defaults.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HTTPRoot\index.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

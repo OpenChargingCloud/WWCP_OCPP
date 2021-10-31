@@ -18,21 +18,23 @@
 #region Usings
 
 using System;
+using System.Linq;
 using System.Threading;
+using System.Net.Security;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-using System.Linq;
+
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CP
+namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>

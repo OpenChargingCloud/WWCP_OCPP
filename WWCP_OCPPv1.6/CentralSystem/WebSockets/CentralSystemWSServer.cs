@@ -124,6 +124,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public static readonly TimeSpan         DefaultRequestTimeout   = TimeSpan.FromMinutes(1);
 
+
+        private readonly Dictionary<ChargeBox_Id, Tuple<WebSocketConnection, DateTime>> connectedChargingBoxes;
+
         #endregion
 
         #region Properties
@@ -136,7 +139,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         public List<SendRequestResult> requests;
 
-        private readonly Dictionary<ChargeBox_Id, Tuple<WebSocketConnection, DateTime>> connectedChargingBoxes;
+
+        public IEnumerable<ChargeBox_Id> ChargeBoxIds
+            => connectedChargingBoxes.Keys;
 
 
         /// <summary>

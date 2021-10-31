@@ -25,6 +25,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using System.Collections.Generic;
 
 #endregion
 
@@ -36,6 +37,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     public interface ICentralSystemServer : IEventSender
     {
+
+        #region properties
+
+        /// <summary>
+        /// The unique identifications of all connected charge boxes.
+        /// </summary>
+        IEnumerable<ChargeBox_Id>  ChargeBoxIds    { get; }
+
+        #endregion
 
         #region Events
 
