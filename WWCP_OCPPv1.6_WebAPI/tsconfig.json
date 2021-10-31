@@ -1,0 +1,35 @@
+﻿{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "module": "system",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "allowJs": false,
+    "target": "ES2018"
+  },
+  "files": [
+
+    "../../UsersAPI/UsersAPI/HTTPRoot/defaults/defaults.ts",
+    "../../UsersAPI/UsersAPI/HTTPRoot/defaults/views.ts",
+    "../../UsersAPI/UsersAPI/HTTPRoot/defaults/search.ts",
+    "../../UsersAPI/UsersAPI/HTTPRoot/defaults/datePicker.ts",
+    "../../UsersAPI/UsersAPI/HTTPRoot/login/SignInOut.ts",
+
+    "HTTPRoot/defaults/defaults.ts",
+
+    "HTTPRoot/dashboard/dashboard.ts",
+
+    "HTTPRoot/versions/versions.ts",
+    "HTTPRoot/versions/versionDetails.ts",
+
+    "HTTPRoot/remoteParty/remoteParties.ts",
+    "HTTPRoot/remoteParty/remoteParty.ts",
+
+    "HTTPRoot/remoteParty/remoteCPO/reserveNow.ts",
+    "HTTPRoot/remoteParty/remoteCPO/cancelReservation.ts",
+    "HTTPRoot/remoteParty/remoteCPO/startSession.ts",
+    "HTTPRoot/remoteParty/remoteCPO/stopSession.ts",
+    "HTTPRoot/remoteParty/remoteCPO/unlockConnector.ts"
+
+  ]
+}
