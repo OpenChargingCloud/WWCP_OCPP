@@ -49,6 +49,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChargeBox\ChargeBox2ChargeBoxEdge.cs" />
+    <Compile Include="ChargeBox\ChargeBox.cs" />
+    <Compile Include="ChargeBox\Results\AddChargeBoxIfNotExistsResult.cs" />
+    <Compile Include="ChargeBox\Results\AddChargeBoxResult.cs" />
+    <Compile Include="ChargeBox\Results\AddOrUpdateChargeBoxResult.cs" />
+    <Compile Include="ChargeBox\Results\DeleteChargeBoxResult.cs" />
+    <Compile Include="ChargeBox\Results\LinkChargeBoxsResult.cs" />
+    <Compile Include="ChargeBox\Results\UnlinkChargeBoxsResult.cs" />
+    <Compile Include="ChargeBox\Results\UpdateChargeBoxResult.cs" />
     <Compile Include="TestCentralSystem.cs" />
     <Compile Include="TestChargePoint.cs" />
     <None Include="compilerconfig.json" />

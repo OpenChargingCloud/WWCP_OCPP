@@ -320,27 +320,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 GetConfigurationResponse = null;
 
-                #region ConfigurationKey
+                #region ConfigurationKey    [optional]
 
-                if (!GetConfigurationResponseJSON.ParseMandatoryJSON("configurationKey",
-                                                                     "configuration keys",
-                                                                     ConfigurationKey.TryParse,
-                                                                     out IEnumerable<ConfigurationKey>  ConfigurationKeys,
-                                                                     out String                         ErrorResponse))
+                if (GetConfigurationResponseJSON.ParseOptionalJSON("configurationKey",
+                                                                   "configuration keys",
+                                                                   ConfigurationKey.TryParse2,
+                                                                   out IEnumerable<ConfigurationKey>  ConfigurationKeys,
+                                                                   out String                         ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse != null)
+                        return false;
                 }
 
                 #endregion
 
-                #region UnknownKeys
+                #region UnknownKeys         [optional]
 
-                if (!GetConfigurationResponseJSON.ParseMandatory("unknownKey",
-                                                                 "unknown keys",
-                                                                 out IEnumerable<String>  UnknownKeys,
-                                                                 out                      ErrorResponse))
+                if (GetConfigurationResponseJSON.GetOptional("unknownKey",
+                                                             "unknown keys",
+                                                             out IEnumerable<String>  UnknownKeys,
+                                                             out                      ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse != null)
+                        return false;
                 }
 
                 #endregion

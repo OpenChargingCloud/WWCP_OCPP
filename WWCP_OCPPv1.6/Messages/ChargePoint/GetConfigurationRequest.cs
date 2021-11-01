@@ -315,7 +315,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                      out IEnumerable<String> Keys,
                                      out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse != null)
+                        return false;
                 }
 
                 #endregion

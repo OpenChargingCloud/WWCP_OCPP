@@ -1691,7 +1691,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public CustomJObjectParserDelegate<ChangeAvailabilityRequest>      CustomChangeAvailabilityRequestParser        { get; set; }
         public CustomJObjectParserDelegate<GetConfigurationRequest>        CustomGetConfigurationRequestParser          { get; set; }
         public CustomJObjectParserDelegate<ChangeConfigurationRequest>     CustomChangeConfigurationRequestParser       { get; set; }
-        public CustomJObjectParserDelegate<DataTransferRequest>            CustomDataTransferRequestParser              { get; set; }
+        public CustomJObjectParserDelegate<CS.DataTransferRequest>         CustomIncomingDataTransferRequestParser      { get; set; }
         public CustomJObjectParserDelegate<GetDiagnosticsRequest>          CustomGetDiagnosticsRequestParser            { get; set; }
         public CustomJObjectParserDelegate<TriggerMessageRequest>          CustomTriggerMessageRequestParser            { get; set; }
         public CustomJObjectParserDelegate<UpdateFirmwareRequest>          CustomUpdateFirmwareRequestParser            { get; set; }
@@ -2173,24 +2173,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                 else
                                                     ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
-                                                                                        WSErrorCodes.FormationViolation,
-                                                                                        "The given 'GetConfiguration' request could not be parsed!",
-                                                                                        new JObject(
-                                                                                            new JProperty("request", requestJSON)
-                                                                                        ));
+                                                                                      WSErrorCodes.FormationViolation,
+                                                                                      "The given 'GetConfiguration' request could not be parsed!",
+                                                                                      new JObject(
+                                                                                          new JProperty("request", requestJSON)
+                                                                                      ));
 
                                             }
                                             catch (Exception e)
                                             {
 
                                                 ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
-                                                                                    WSErrorCodes.FormationViolation,
-                                                                                    "Processing the given 'GetConfiguration' request led to an exception!",
-                                                                                    new JObject(
-                                                                                        new JProperty("request", requestJSON),
-                                                                                        new JProperty("exception", e.Message),
-                                                                                        new JProperty("stacktrace", e.StackTrace)
-                                                                                    ));
+                                                                                  WSErrorCodes.FormationViolation,
+                                                                                  "Processing the given 'GetConfiguration' request led to an exception!",
+                                                                                  new JObject(
+                                                                                      new JProperty("request", requestJSON),
+                                                                                      new JProperty("exception", e.Message),
+                                                                                      new JProperty("stacktrace", e.StackTrace)
+                                                                                  ));
 
                                             }
 
@@ -2201,10 +2201,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             {
 
                                                 OnGetConfigurationWSResponse?.Invoke(Timestamp.Now,
-                                                                                       this,
-                                                                                       requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
-                                                                                                             OCPPResponseJSON).ToJSON());
+                                                                                     this,
+                                                                                     requestJSON,
+                                                                                     new WSResponseMessage(wsRequest.RequestId,
+                                                                                                           OCPPResponseJSON).ToJSON());
 
                                             }
                                             catch (Exception e)
@@ -2371,148 +2371,148 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                         {
 
-                                            //#region Send OnIncomingDataTransferWSRequest event
+                                            #region Send OnIncomingDataTransferWSRequest event
 
-                                            //try
-                                            //{
+                                            try
+                                            {
 
-                                            //    OnIncomingDataTransferWSRequest?.Invoke(Timestamp.Now,
-                                            //                                            this,
-                                            //                                            requestJSON);
+                                                OnIncomingDataTransferWSRequest?.Invoke(Timestamp.Now,
+                                                                                        this,
+                                                                                        requestJSON);
 
-                                            //}
-                                            //catch (Exception e)
-                                            //{
-                                            //    DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingDataTransferWSRequest));
-                                            //}
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingDataTransferWSRequest));
+                                            }
 
-                                            //#endregion
+                                            #endregion
 
-                                            //CP.DataTransferResponse response = null;
+                                            CP.DataTransferResponse response = null;
 
-                                            //try
-                                            //{
+                                            try
+                                            {
 
-                                            //    if (DataTransferRequest.TryParse(wsRequest.Message,
-                                            //                                     wsRequest.RequestId,
-                                            //                                     ChargeBoxIdentity,
-                                            //                                     out DataTransferRequest request,
-                                            //                                     out String              ErrorResponse,
-                                            //                                     CustomDataTransferRequestParser))
-                                            //    {
+                                                if (CS.DataTransferRequest.TryParse(wsRequest.Message,
+                                                                                    wsRequest.RequestId,
+                                                                                    ChargeBoxIdentity,
+                                                                                    out CS.DataTransferRequest  request,
+                                                                                    out String                  ErrorResponse,
+                                                                                    CustomIncomingDataTransferRequestParser))
+                                                {
 
-                                            //        #region Send OnIncomingDataTransferRequest event
+                                                    #region Send OnIncomingDataTransferRequest event
 
-                                            //        try
-                                            //        {
+                                                    try
+                                                    {
 
-                                            //            OnIncomingDataTransferRequest?.Invoke(Timestamp.Now,
-                                            //                                                  this,
-                                            //                                                  request);
+                                                        OnIncomingDataTransferRequest?.Invoke(Timestamp.Now,
+                                                                                              this,
+                                                                                              request);
 
-                                            //        }
-                                            //        catch (Exception e)
-                                            //        {
-                                            //            DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnDataTransferRequest));
-                                            //        }
+                                                    }
+                                                    catch (Exception e)
+                                                    {
+                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnDataTransferRequest));
+                                                    }
 
-                                            //        #endregion
+                                                    #endregion
 
-                                            //        #region Call async subscribers
+                                                    #region Call async subscribers
 
-                                            //        if (response == null)
-                                            //        {
+                                                    if (response == null)
+                                                    {
 
-                                            //            var results = OnIncomingDataTransfer?.
-                                            //                                GetInvocationList()?.
-                                            //                                SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
-                                            //                                    (Timestamp.Now,
-                                            //                                     this,
-                                            //                                     request,
-                                            //                                     cancellationTokenSource.Token)).
-                                            //                                ToArray();
+                                                        var results = OnIncomingDataTransfer?.
+                                                                            GetInvocationList()?.
+                                                                            SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
+                                                                                (Timestamp.Now,
+                                                                                 this,
+                                                                                 request,
+                                                                                 cancellationTokenSource.Token)).
+                                                                            ToArray();
 
-                                            //            if (results?.Length > 0)
-                                            //            {
+                                                        if (results?.Length > 0)
+                                                        {
 
-                                            //                await Task.WhenAll(results);
+                                                            await Task.WhenAll(results);
 
-                                            //                response = results.FirstOrDefault()?.Result;
+                                                            response = results.FirstOrDefault()?.Result;
 
-                                            //            }
+                                                        }
 
-                                            //            if (results == null || response == null)
-                                            //                response = DataTransferResponse.Failed(request);
+                                                        if (results == null || response == null)
+                                                            response = DataTransferResponse.Failed(request);
 
-                                            //        }
+                                                    }
 
-                                            //        #endregion
+                                                    #endregion
 
-                                            //        #region Send OnIncomingDataTransferResponse event
+                                                    #region Send OnIncomingDataTransferResponse event
 
-                                            //        try
-                                            //        {
+                                                    try
+                                                    {
 
-                                            //            OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
-                                            //                                                   this,
-                                            //                                                   request,
-                                            //                                                   response,
-                                            //                                                   response.Runtime);
+                                                        OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
+                                                                                               this,
+                                                                                               request,
+                                                                                               response,
+                                                                                               response.Runtime);
 
-                                            //        }
-                                            //        catch (Exception e)
-                                            //        {
-                                            //            DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingDataTransferResponse));
-                                            //        }
+                                                    }
+                                                    catch (Exception e)
+                                                    {
+                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingDataTransferResponse));
+                                                    }
 
-                                            //        #endregion
+                                                    #endregion
 
-                                            //        OCPPResponseJSON = response.ToJSON();
+                                                    OCPPResponseJSON = response.ToJSON();
 
-                                            //    }
+                                                }
 
-                                            //    else
-                                            //        ErrorMessage =  new WSErrorMessage(wsRequest.RequestId,
-                                            //                                           WSErrorCodes.FormationViolation,
-                                            //                                           "The given 'DataTransfer' request could not be parsed!",
-                                            //                                           new JObject(
-                                            //                                               new JProperty("request", requestJSON)
-                                            //                                           ));
+                                                else
+                                                    ErrorMessage =  new WSErrorMessage(wsRequest.RequestId,
+                                                                                       WSErrorCodes.FormationViolation,
+                                                                                       "The given 'DataTransfer' request could not be parsed!",
+                                                                                       new JObject(
+                                                                                           new JProperty("request", requestJSON)
+                                                                                       ));
 
-                                            //}
-                                            //catch (Exception e)
-                                            //{
+                                            }
+                                            catch (Exception e)
+                                            {
 
-                                            //    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
-                                            //                                      WSErrorCodes.FormationViolation,
-                                            //                                      "Processing the given 'DataTransfer' request led to an exception!",
-                                            //                                      new JObject(
-                                            //                                          new JProperty("request",     requestJSON),
-                                            //                                          new JProperty("exception",   e.Message),
-                                            //                                          new JProperty("stacktrace",  e.StackTrace)
-                                            //                                      ));
+                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                                                  WSErrorCodes.FormationViolation,
+                                                                                  "Processing the given 'DataTransfer' request led to an exception!",
+                                                                                  new JObject(
+                                                                                      new JProperty("request",     requestJSON),
+                                                                                      new JProperty("exception",   e.Message),
+                                                                                      new JProperty("stacktrace",  e.StackTrace)
+                                                                                  ));
 
-                                            //}
+                                            }
 
 
-                                            //#region Send OnIncomingDataTransferWSResponse event
+                                            #region Send OnIncomingDataTransferWSResponse event
 
-                                            //try
-                                            //{
+                                            try
+                                            {
 
-                                            //    OnIncomingDataTransferWSResponse?.Invoke(Timestamp.Now,
-                                            //                                             this,
-                                            //                                             requestJSON,
-                                            //                                             new WSResponseMessage(wsRequest.RequestId,
-                                            //                                                                   OCPPResponseJSON).ToJSON());
+                                                OnIncomingDataTransferWSResponse?.Invoke(Timestamp.Now,
+                                                                                         this,
+                                                                                         requestJSON,
+                                                                                         new WSResponseMessage(wsRequest.RequestId,
+                                                                                                               OCPPResponseJSON).ToJSON());
 
-                                            //}
-                                            //catch (Exception e)
-                                            //{
-                                            //    DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingDataTransferWSResponse));
-                                            //}
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingDataTransferWSResponse));
+                                            }
 
-                                            //#endregion
+                                            #endregion
 
                                         }
                                         break;

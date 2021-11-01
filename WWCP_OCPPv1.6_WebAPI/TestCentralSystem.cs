@@ -34,6 +34,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using social.OpenData.UsersAPI;
 
 using cloud.charging.open.protocols.OCPPv1_6.CS;
+using System.Threading;
 
 #endregion
 
@@ -56,6 +57,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         private readonly OCPPWebAPI  WebAPI;
 
+        protected static readonly SemaphoreSlim ChargeBoxesSemaphore = new SemaphoreSlim(1, 1);
+
+        protected static readonly TimeSpan SemaphoreSlimTimeout = TimeSpan.FromSeconds(5);
+
         #endregion
 
         #region Properties
@@ -70,6 +75,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         String IEventSender.Id
             => CentralSystemId.ToString();
+
+        public DNSClient DNSClient { get; }
+
 
         /// <summary>
         /// An enumeration of central system servers.
@@ -89,9 +97,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public IEnumerable<ChargeBox_Id> ChargeBoxIds
             => reachableChargingBoxes.Values.SelectMany(box => box.Item1.ChargeBoxIds);
-
-
-        public DNSClient DNSClient { get; }
 
         #endregion
 
@@ -291,6 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             this.RequireAuthentication   = RequireAuthentication;
             this.centralSystemServers    = new HashSet<ICentralSystemServer>();
             this.reachableChargingBoxes  = new Dictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>>();
+            this._ChargeBoxes            = new Dictionary<ChargeBox_Id, ChargeBox>();
 
             Directory.CreateDirectory("HTTPSSEs");
 
@@ -591,6 +597,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                            Request.ChargePointModel        + ", " +
                                                            Request.ChargePointSerialNumber + ", " +
                                                            Request.ChargeBoxSerialNumber);
+
+
+                await AddChargeBoxIfNotExists(new ChargeBox(Request.ChargeBoxId,
+                                                            1,
+                                                            Request.ChargePointVendor,
+                                                            Request.ChargePointModel,
+                                                            null,
+                                                            Request.ChargePointSerialNumber,
+                                                            Request.ChargeBoxSerialNumber,
+                                                            Request.FirmwareVersion,
+                                                            Request.Iccid,
+                                                            Request.IMSI,
+                                                            Request.MeterType,
+                                                            Request.MeterSerialNumber));
+
 
                 if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
                 {
@@ -1345,6 +1366,1881 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
 
         }
+
+
+        #region ChargeBoxes
+
+        #region Data
+
+        /// <summary>
+        /// An enumeration of all charge boxes.
+        /// </summary>
+        protected internal readonly Dictionary<ChargeBox_Id, ChargeBox> _ChargeBoxes;
+
+        /// <summary>
+        /// An enumeration of all charge boxes.
+        /// </summary>
+        public IEnumerable<ChargeBox> ChargeBoxes
+        {
+            get
+            {
+
+                if (ChargeBoxesSemaphore.Wait(SemaphoreSlimTimeout))
+                {
+                    try
+                    {
+
+                        return _ChargeBoxes.Values.ToArray();
+
+                    }
+                    finally
+                    {
+                        try
+                        {
+                            ChargeBoxesSemaphore.Release();
+                        }
+                        catch
+                        { }
+                    }
+                }
+
+                return new ChargeBox[0];
+
+            }
+        }
+
+        #endregion
+
+
+        #region (protected internal) WriteToDatabaseFileAndNotify(ChargeBox,                      MessageType,    OldChargeBox = null, ...)
+
+        ///// <summary>
+        ///// Write the given chargeBox to the database and send out notifications.
+        ///// </summary>
+        ///// <param name="ChargeBox">The charge box.</param>
+        ///// <param name="MessageType">The chargeBox notification.</param>
+        ///// <param name="OldChargeBox">The old/updated charge box.</param>
+        ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        ///// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        //protected internal async Task WriteToDatabaseFileAndNotify(ChargeBox             ChargeBox,
+        //                                                           NotificationMessageType  MessageType,
+        //                                                           ChargeBox             OldChargeBox   = null,
+        //                                                           EventTracking_Id         EventTrackingId   = null,
+        //                                                           User_Id?                 CurrentUserId     = null)
+        //{
+
+        //    if (ChargeBox is null)
+        //        throw new ArgumentNullException(nameof(ChargeBox),  "The given chargeBox must not be null or empty!");
+
+        //    if (MessageType.IsNullOrEmpty)
+        //        throw new ArgumentNullException(nameof(MessageType),   "The given message type must not be null or empty!");
+
+
+        //    var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+        //    await WriteToDatabaseFile(MessageType,
+        //                              ChargeBox.ToJSON(false, true),
+        //                              eventTrackingId,
+        //                              CurrentUserId);
+
+        //    await SendNotifications(ChargeBox,
+        //                            MessageType,
+        //                            OldChargeBox,
+        //                            eventTrackingId,
+        //                            CurrentUserId);
+
+        //}
+
+        #endregion
+
+        #region (protected internal) SendNotifications           (ChargeBox,                      MessageType(s), OldChargeBox = null, ...)
+
+        //protected virtual String ChargeBoxHTMLInfo(ChargeBox ChargeBox)
+
+        //    => String.Concat(ChargeBox.Name.IsNeitherNullNorEmpty()
+        //                         ? String.Concat("<a href=\"https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargeBox.Id, "\">", ChargeBox.Name.FirstText(), "</a> ",
+        //                                        "(<a href=\"https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargeBox.Id, "\">", ChargeBox.Id, "</a>)")
+        //                         : String.Concat("<a href=\"https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargeBox.Id, "\">", ChargeBox.Id, "</a>"));
+
+        //protected virtual String ChargeBoxTextInfo(ChargeBox ChargeBox)
+
+        //    => String.Concat(ChargeBox.Name.IsNeitherNullNorEmpty()
+        //                         ? String.Concat("'", ChargeBox.Name.FirstText(), "' (", ChargeBox.Id, ")")
+        //                         : String.Concat("'", ChargeBox.Id.ToString(), "'"));
+
+
+        ///// <summary>
+        ///// Send chargeBox notifications.
+        ///// </summary>
+        ///// <param name="ChargeBox">The charge box.</param>
+        ///// <param name="MessageType">The chargeBox notification.</param>
+        ///// <param name="OldChargeBox">The old/updated charge box.</param>
+        ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        ///// <param name="CurrentUserId">The invoking chargeBox identification</param>
+        //protected internal virtual Task SendNotifications(ChargeBox             ChargeBox,
+        //                                                  NotificationMessageType  MessageType,
+        //                                                  ChargeBox             OldChargeBox   = null,
+        //                                                  EventTracking_Id         EventTrackingId   = null,
+        //                                                  User_Id?                 CurrentUserId     = null)
+
+        //    => SendNotifications(ChargeBox,
+        //                         new NotificationMessageType[] { MessageType },
+        //                         OldChargeBox,
+        //                         EventTrackingId,
+        //                         CurrentUserId);
+
+
+        ///// <summary>
+        ///// Send chargeBox notifications.
+        ///// </summary>
+        ///// <param name="ChargeBox">The charge box.</param>
+        ///// <param name="MessageTypes">The chargeBox notifications.</param>
+        ///// <param name="OldChargeBox">The old/updated charge box.</param>
+        ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        ///// <param name="CurrentUserId">The invoking chargeBox identification</param>
+        //protected internal async virtual Task SendNotifications(ChargeBox                          ChargeBox,
+        //                                                        IEnumerable<NotificationMessageType>  MessageTypes,
+        //                                                        ChargeBox                          OldChargeBox   = null,
+        //                                                        EventTracking_Id                      EventTrackingId   = null,
+        //                                                        User_Id?                              CurrentUserId     = null)
+        //{
+
+        //    if (ChargeBox is null)
+        //        throw new ArgumentNullException(nameof(ChargeBox),  "The given chargeBox must not be null or empty!");
+
+        //    var messageTypesHash = new HashSet<NotificationMessageType>(MessageTypes.Where(messageType => !messageType.IsNullOrEmpty));
+
+        //    if (messageTypesHash.IsNullOrEmpty())
+        //        throw new ArgumentNullException(nameof(MessageTypes),  "The given enumeration of message types must not be null or empty!");
+
+        //    if (messageTypesHash.Contains(addChargeBoxIfNotExists_MessageType))
+        //        messageTypesHash.Add(addChargeBox_MessageType);
+
+        //    if (messageTypesHash.Contains(addOrUpdateChargeBox_MessageType))
+        //        messageTypesHash.Add(OldChargeBox == null
+        //                               ? addChargeBox_MessageType
+        //                               : updateChargeBox_MessageType);
+
+        //    var messageTypes = messageTypesHash.ToArray();
+
+
+        //    ComparizionResult? comparizionResult = null;
+
+        //    if (messageTypes.Contains(updateChargeBox_MessageType))
+        //        comparizionResult = ChargeBox.CompareWith(OldChargeBox);
+
+
+        //    if (!DisableNotifications)
+        //    {
+
+        //        #region Telegram Notifications
+
+        //        if (TelegramClient != null)
+        //        {
+        //            try
+        //            {
+
+        //                var AllTelegramNotifications  = ChargeBox.GetNotificationsOf<TelegramNotification>(messageTypes).
+        //                                                     ToSafeHashSet();
+
+        //                if (AllTelegramNotifications.SafeAny())
+        //                {
+
+        //                    if (messageTypes.Contains(addChargeBox_MessageType))
+        //                        await TelegramClient.SendTelegrams(ChargeBoxHTMLInfo(ChargeBox) + " was successfully created.",
+        //                                                           AllTelegramNotifications.Select(TelegramNotification => TelegramNotification.Username),
+        //                                                           Telegram.Bot.Types.Enums.ParseMode.Html);
+
+        //                    if (messageTypes.Contains(updateChargeBox_MessageType))
+        //                        await TelegramClient.SendTelegrams(ChargeBoxHTMLInfo(ChargeBox) + " information had been successfully updated.\n" + comparizionResult?.ToTelegram(),
+        //                                                           AllTelegramNotifications.Select(TelegramNotification => TelegramNotification.Username),
+        //                                                           Telegram.Bot.Types.Enums.ParseMode.Html);
+
+        //                }
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                DebugX.LogException(e);
+        //            }
+        //        }
+
+        //        #endregion
+
+        //        #region SMS Notifications
+
+        //        try
+        //        {
+
+        //            var AllSMSNotifications  = ChargeBox.GetNotificationsOf<SMSNotification>(messageTypes).
+        //                                                    ToSafeHashSet();
+
+        //            if (AllSMSNotifications.SafeAny())
+        //            {
+
+        //                if (messageTypes.Contains(addChargeBox_MessageType))
+        //                    SendSMS(String.Concat("ChargeBox '", ChargeBox.Name.FirstText(), "' was successfully created. ",
+        //                                          "https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargeBox.Id),
+        //                            AllSMSNotifications.Select(smsPhoneNumber => smsPhoneNumber.PhoneNumber.ToString()).ToArray(),
+        //                            SMSSenderName);
+
+        //                if (messageTypes.Contains(updateChargeBox_MessageType))
+        //                    SendSMS(String.Concat("ChargeBox '", ChargeBox.Name.FirstText(), "' information had been successfully updated. ",
+        //                                          "https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargeBox.Id),
+        //                                          // + {Updated information}
+        //                            AllSMSNotifications.Select(smsPhoneNumber => smsPhoneNumber.PhoneNumber.ToString()).ToArray(),
+        //                            SMSSenderName);
+
+        //            }
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.LogException(e);
+        //        }
+
+        //        #endregion
+
+        //        #region HTTPS Notifications
+
+        //        try
+        //        {
+
+        //            var AllHTTPSNotifications  = ChargeBox.GetNotificationsOf<HTTPSNotification>(messageTypes).
+        //                                                      ToSafeHashSet();
+
+        //            if (AllHTTPSNotifications.SafeAny())
+        //            {
+
+        //                if (messageTypes.Contains(addChargeBox_MessageType))
+        //                    await SendHTTPSNotifications(AllHTTPSNotifications,
+        //                                                 new JObject(
+        //                                                     new JProperty("chargeBoxCreated",
+        //                                                         ChargeBox.ToJSON()
+        //                                                     ),
+        //                                                     new JProperty("timestamp", Timestamp.Now.ToIso8601())
+        //                                                 ));
+
+        //                if (messageTypes.Contains(updateChargeBox_MessageType))
+        //                    await SendHTTPSNotifications(AllHTTPSNotifications,
+        //                                                 new JObject(
+        //                                                     new JProperty("chargeBoxUpdated",
+        //                                                         ChargeBox.ToJSON()
+        //                                                     ),
+        //                                                     new JProperty("timestamp", Timestamp.Now.ToIso8601())
+        //                                                 ));
+
+        //            }
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.LogException(e);
+        //        }
+
+        //        #endregion
+
+        //        #region EMailNotifications
+
+        //        if (SMTPClient != null)
+        //        {
+        //            try
+        //            {
+
+        //                var AllEMailNotifications  = ChargeBox.GetNotificationsOf<EMailNotification>(messageTypes).
+        //                                                          ToSafeHashSet();
+
+        //                if (AllEMailNotifications.SafeAny())
+        //                {
+
+        //                    if (messageTypes.Contains(addChargeBox_MessageType))
+        //                        await SMTPClient.Send(
+        //                                 new HTMLEMailBuilder() {
+
+        //                                     From           = Robot.EMail,
+        //                                     To             = EMailAddressListBuilder.Create(EMailAddressList.Create(AllEMailNotifications.Select(emailnotification => emailnotification.EMailAddress))),
+        //                                     Passphrase     = APIPassphrase,
+        //                                     Subject        = ChargeBoxTextInfo(ChargeBox) + " was successfully created",
+
+        //                                     HTMLText       = String.Concat(HTMLEMailHeader(ExternalDNSName, BasePath, EMailType.Notification),
+        //                                                                    ChargeBoxHTMLInfo(ChargeBox) + " was successfully created.",
+        //                                                                    HTMLEMailFooter(ExternalDNSName, BasePath, EMailType.Notification)),
+
+        //                                     PlainText      = String.Concat(TextEMailHeader(ExternalDNSName, BasePath, EMailType.Notification),
+        //                                                                    ChargeBoxTextInfo(ChargeBox) + " was successfully created.\r\n",
+        //                                                                    "https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargeBox.Id, "\r\r\r\r",
+        //                                                                    TextEMailFooter(ExternalDNSName, BasePath, EMailType.Notification)),
+
+        //                                     SecurityLevel  = EMailSecurity.autosign
+
+        //                                 });
+
+        //                    if (messageTypes.Contains(updateChargeBox_MessageType))
+        //                        await SMTPClient.Send(
+        //                                 new HTMLEMailBuilder() {
+
+        //                                     From           = Robot.EMail,
+        //                                     To             = EMailAddressListBuilder.Create(EMailAddressList.Create(AllEMailNotifications.Select(emailnotification => emailnotification.EMailAddress))),
+        //                                     Passphrase     = APIPassphrase,
+        //                                     Subject        = ChargeBoxTextInfo(ChargeBox) + " information had been successfully updated",
+
+        //                                     HTMLText       = String.Concat(HTMLEMailHeader(ExternalDNSName, BasePath, EMailType.Notification),
+        //                                                                    ChargeBoxHTMLInfo(ChargeBox) + " information had been successfully updated.<br /><br />",
+        //                                                                    comparizionResult?.ToHTML() ?? "",
+        //                                                                    HTMLEMailFooter(ExternalDNSName, BasePath, EMailType.Notification)),
+
+        //                                     PlainText      = String.Concat(TextEMailHeader(ExternalDNSName, BasePath, EMailType.Notification),
+        //                                                                    ChargeBoxTextInfo(ChargeBox) + " information had been successfully updated.\r\r\r\r",
+        //                                                                    comparizionResult?.ToText() ?? "",
+        //                                                                    "\r\r\r\r",
+        //                                                                    "https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargeBox.Id, "\r\r\r\r",
+        //                                                                    TextEMailFooter(ExternalDNSName, BasePath, EMailType.Notification)),
+
+        //                                     SecurityLevel  = EMailSecurity.autosign
+
+        //                                 });
+
+        //                }
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                DebugX.LogException(e);
+        //            }
+        //        }
+
+        //        #endregion
+
+        //    }
+
+        //}
+
+        #endregion
+
+        #region (protected internal) SendNotifications           (ChargeBox, ParentChargeBoxes, MessageType(s), ...)
+
+        ///// <summary>
+        ///// Send chargeBox notifications.
+        ///// </summary>
+        ///// <param name="ChargeBox">The charge box.</param>
+        ///// <param name="ParentChargeBoxes">The enumeration of parent charge boxes.</param>
+        ///// <param name="MessageType">The chargeBox notification.</param>
+        ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        ///// <param name="CurrentUserId">The invoking chargeBox identification</param>
+        //protected internal virtual Task SendNotifications(ChargeBox               ChargeBox,
+        //                                                  IEnumerable<ChargeBox>  ParentChargeBoxes,
+        //                                                  NotificationMessageType    MessageType,
+        //                                                  EventTracking_Id           EventTrackingId   = null,
+        //                                                  User_Id?                   CurrentUserId     = null)
+
+        //    => SendNotifications(ChargeBox,
+        //                         ParentChargeBoxes,
+        //                         new NotificationMessageType[] { MessageType },
+        //                         EventTrackingId,
+        //                         CurrentUserId);
+
+
+        ///// <summary>
+        ///// Send chargeBox notifications.
+        ///// </summary>
+        ///// <param name="ChargeBox">The charge box.</param>
+        ///// <param name="ParentChargeBoxes">The enumeration of parent charge boxes.</param>
+        ///// <param name="MessageTypes">The user notifications.</param>
+        ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        ///// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        //protected internal async virtual Task SendNotifications(ChargeBox                          ChargeBox,
+        //                                                        IEnumerable<ChargeBox>             ParentChargeBoxes,
+        //                                                        IEnumerable<NotificationMessageType>  MessageTypes,
+        //                                                        EventTracking_Id                      EventTrackingId   = null,
+        //                                                        User_Id?                              CurrentUserId     = null)
+        //{
+
+        //    if (ChargeBox is null)
+        //        throw new ArgumentNullException(nameof(ChargeBox),         "The given chargeBox must not be null or empty!");
+
+        //    if (ParentChargeBoxes is null)
+        //        ParentChargeBoxes = new ChargeBox[0];
+
+        //    var messageTypesHash = new HashSet<NotificationMessageType>(MessageTypes.Where(messageType => !messageType.IsNullOrEmpty));
+
+        //    if (messageTypesHash.IsNullOrEmpty())
+        //        throw new ArgumentNullException(nameof(MessageTypes),         "The given enumeration of message types must not be null or empty!");
+
+        //    //if (messageTypesHash.Contains(addUserIfNotExists_MessageType))
+        //    //    messageTypesHash.Add(addUser_MessageType);
+
+        //    //if (messageTypesHash.Contains(addOrUpdateUser_MessageType))
+        //    //    messageTypesHash.Add(OldChargeBox == null
+        //    //                           ? addUser_MessageType
+        //    //                           : updateUser_MessageType);
+
+        //    var messageTypes = messageTypesHash.ToArray();
+
+
+        //    if (!DisableNotifications)
+        //    {
+
+        //        #region Telegram Notifications
+
+        //        if (TelegramClient != null)
+        //        {
+        //            try
+        //            {
+
+        //                var AllTelegramNotifications  = ParentChargeBoxes.
+        //                                                    SelectMany(parent => parent.User2ChargeBoxEdges).
+        //                                                    SelectMany(edge   => edge.Source.GetNotificationsOf<TelegramNotification>(deleteChargeBox_MessageType)).
+        //                                                    ToSafeHashSet();
+
+        //                if (AllTelegramNotifications.SafeAny())
+        //                {
+
+        //                    if (messageTypes.Contains(deleteChargeBox_MessageType))
+        //                        await TelegramClient.SendTelegrams(ChargeBoxHTMLInfo(ChargeBox) + " has been deleted.",
+        //                                                           AllTelegramNotifications.Select(TelegramNotification => TelegramNotification.Username),
+        //                                                           Telegram.Bot.Types.Enums.ParseMode.Html);
+
+        //                }
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                DebugX.LogException(e);
+        //            }
+        //        }
+
+        //        #endregion
+
+        //        #region SMS Notifications
+
+        //        try
+        //        {
+
+        //            var AllSMSNotifications = ParentChargeBoxes.
+        //                                          SelectMany(parent => parent.User2ChargeBoxEdges).
+        //                                          SelectMany(edge   => edge.Source.GetNotificationsOf<SMSNotification>(deleteChargeBox_MessageType)).
+        //                                          ToSafeHashSet();
+
+        //            if (AllSMSNotifications.SafeAny())
+        //            {
+
+        //                if (messageTypes.Contains(deleteChargeBox_MessageType))
+        //                    SendSMS(String.Concat("ChargeBox '", ChargeBox.Name.FirstText(), "' has been deleted."),
+        //                            AllSMSNotifications.Select(smsPhoneNumber => smsPhoneNumber.PhoneNumber.ToString()).ToArray(),
+        //                            SMSSenderName);
+
+        //            }
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.LogException(e);
+        //        }
+
+        //        #endregion
+
+        //        #region HTTPS Notifications
+
+        //        try
+        //        {
+
+        //            var AllHTTPSNotifications = ParentChargeBoxes.
+        //                                            SelectMany(parent => parent.User2ChargeBoxEdges).
+        //                                            SelectMany(edge   => edge.Source.GetNotificationsOf<HTTPSNotification>(deleteChargeBox_MessageType)).
+        //                                            ToSafeHashSet();
+
+        //            if (AllHTTPSNotifications.SafeAny())
+        //            {
+
+        //                if (messageTypes.Contains(deleteChargeBox_MessageType))
+        //                    await SendHTTPSNotifications(AllHTTPSNotifications,
+        //                                                 new JObject(
+        //                                                     new JProperty("chargeBoxDeleted",
+        //                                                         ChargeBox.ToJSON()
+        //                                                     ),
+        //                                                     new JProperty("timestamp", Timestamp.Now.ToIso8601())
+        //                                                 ));
+
+        //            }
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            DebugX.LogException(e);
+        //        }
+
+        //        #endregion
+
+        //        #region EMailNotifications
+
+        //        if (SMTPClient != null)
+        //        {
+        //            try
+        //            {
+
+        //                var AllEMailNotifications = ParentChargeBoxes.
+        //                                                SelectMany(parent => parent.User2ChargeBoxEdges).
+        //                                                SelectMany(edge   => edge.Source.GetNotificationsOf<EMailNotification>(deleteChargeBox_MessageType)).
+        //                                                ToSafeHashSet();
+
+        //                if (AllEMailNotifications.SafeAny())
+        //                {
+
+        //                    if (messageTypes.Contains(deleteChargeBox_MessageType))
+        //                        await SMTPClient.Send(
+        //                             new HTMLEMailBuilder() {
+
+        //                                 From           = Robot.EMail,
+        //                                 To             = EMailAddressListBuilder.Create(EMailAddressList.Create(AllEMailNotifications.Select(emailnotification => emailnotification.EMailAddress))),
+        //                                 Passphrase     = APIPassphrase,
+        //                                 Subject        = ChargeBoxTextInfo(ChargeBox) + " has been deleted",
+
+        //                                 HTMLText       = String.Concat(HTMLEMailHeader(ExternalDNSName, BasePath, EMailType.Notification),
+        //                                                                ChargeBoxHTMLInfo(ChargeBox) + " has been deleted.<br />",
+        //                                                                HTMLEMailFooter(ExternalDNSName, BasePath, EMailType.Notification)),
+
+        //                                 PlainText      = String.Concat(TextEMailHeader(ExternalDNSName, BasePath, EMailType.Notification),
+        //                                                                ChargeBoxTextInfo(ChargeBox) + " has been deleted.\r\n",
+        //                                                                TextEMailFooter(ExternalDNSName, BasePath, EMailType.Notification)),
+
+        //                                 SecurityLevel  = EMailSecurity.autosign
+
+        //                             });
+
+        //                }
+
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                DebugX.LogException(e);
+        //            }
+        //        }
+
+        //        #endregion
+
+        //    }
+
+        //}
+
+        #endregion
+
+        #region (protected internal) GetChargeBoxSerializator (Request, ChargeBox)
+
+        protected internal ChargeBoxToJSONDelegate GetChargeBoxSerializator(HTTPRequest  Request,
+                                                                            User         User)
+        {
+
+            switch (User?.Id.ToString())
+            {
+
+                default:
+                    return (chargeBox,
+                            embedded,
+                            expandTags,
+                            includeCryptoHash)
+
+                            => chargeBox.ToJSON(embedded,
+                                                expandTags,
+                                                includeCryptoHash);
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region AddChargeBox           (ChargeBox, OnAdded = null, ...)
+
+        /// <summary>
+        /// A delegate called whenever a charge box was added.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when the chargeBox was added.</param>
+        /// <param name="ChargeBox">The added charge box.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
+        public delegate Task OnChargeBoxAddedDelegate(DateTime          Timestamp,
+                                                      ChargeBox         ChargeBox,
+                                                      EventTracking_Id  EventTrackingId   = null,
+                                                      User_Id?          CurrentUserId     = null);
+
+        /// <summary>
+        /// An event fired whenever a charge box was added.
+        /// </summary>
+        public event OnChargeBoxAddedDelegate OnChargeBoxAdded;
+
+
+        #region (protected internal) _AddChargeBox(ChargeBox, OnAdded = null, ...)
+
+        /// <summary>
+        /// Add the given chargeBox to the API.
+        /// </summary>
+        /// <param name="ChargeBox">A new chargeBox to be added to this API.</param>
+        /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
+        protected internal async Task<AddChargeBoxResult> _AddChargeBox(ChargeBox                            ChargeBox,
+                                                                        Action<ChargeBox, EventTracking_Id>  OnAdded           = null,
+                                                                        EventTracking_Id                     EventTrackingId   = null,
+                                                                        User_Id?                             CurrentUserId     = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (ChargeBox is null)
+                return AddChargeBoxResult.ArgumentError(ChargeBox,
+                                                        eventTrackingId,
+                                                        nameof(ChargeBox),
+                                                        "The given chargeBox must not be null!");
+
+            if (ChargeBox.API != null && ChargeBox.API != this)
+                return AddChargeBoxResult.ArgumentError(ChargeBox,
+                                                        eventTrackingId,
+                                                        nameof(ChargeBox),
+                                                        "The given chargeBox is already attached to another API!");
+
+            if (_ChargeBoxes.ContainsKey(ChargeBox.Id))
+                return AddChargeBoxResult.ArgumentError(ChargeBox,
+                                                        eventTrackingId,
+                                                        nameof(ChargeBox),
+                                                        "ChargeBox identification '" + ChargeBox.Id + "' already exists!");
+
+            //if (ChargeBox.Id.Length < MinChargeBoxIdLength)
+            //    return AddChargeBoxResult.ArgumentError(ChargeBox,
+            //                                               eventTrackingId,
+            //                                               nameof(ChargeBox),
+            //                                               "ChargeBox identification '" + ChargeBox.Id + "' is too short!");
+
+            //if (ChargeBox.Name.IsNullOrEmpty() || ChargeBox.Name.IsNullOrEmpty())
+            //    return AddChargeBoxResult.ArgumentError(ChargeBox,
+            //                                               eventTrackingId,
+            //                                               nameof(ChargeBox),
+            //                                               "The given chargeBox name must not be null!");
+
+            //if (ChargeBox.Name.Length < MinChargeBoxNameLength)
+            //    return AddChargeBoxResult.ArgumentError(ChargeBox,
+            //                                       nameof(ChargeBox),
+            //                                       "ChargeBox name '" + ChargeBox.Name + "' is too short!");
+
+            ChargeBox.API = this;
+
+
+            //await WriteToDatabaseFile(addChargeBox_MessageType,
+            //                          ChargeBox.ToJSON(false, true),
+            //                          eventTrackingId,
+            //                          CurrentUserId);
+
+            _ChargeBoxes.Add(ChargeBox.Id, ChargeBox);
+
+            OnAdded?.Invoke(ChargeBox,
+                            eventTrackingId);
+
+            var OnChargeBoxAddedLocal = OnChargeBoxAdded;
+            if (OnChargeBoxAddedLocal != null)
+                await OnChargeBoxAddedLocal?.Invoke(Timestamp.Now,
+                                                       ChargeBox,
+                                                       eventTrackingId,
+                                                       CurrentUserId);
+
+            //await SendNotifications(ChargeBox,
+            //                        addChargeBox_MessageType,
+            //                        null,
+            //                        eventTrackingId,
+            //                        CurrentUserId);
+
+            return AddChargeBoxResult.Success(ChargeBox,
+                                                 eventTrackingId);
+
+        }
+
+        #endregion
+
+        #region AddChargeBox                      (ChargeBox, OnAdded = null, ...)
+
+        /// <summary>
+        /// Add the given chargeBox and add him/her to the given charge box.
+        /// </summary>
+        /// <param name="ChargeBox">A new charge box.</param>
+        /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
+        public async Task<AddChargeBoxResult> AddChargeBox(ChargeBox                            ChargeBox,
+                                                           Action<ChargeBox, EventTracking_Id>  OnAdded           = null,
+                                                           EventTracking_Id                     EventTrackingId   = null,
+                                                           User_Id?                             CurrentUserId     = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (await ChargeBoxesSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return await _AddChargeBox(ChargeBox,
+                                               OnAdded,
+                                               eventTrackingId,
+                                               CurrentUserId);
+
+                }
+                catch (Exception e)
+                {
+
+                    DebugX.LogException(e);
+
+                    return AddChargeBoxResult.Failed(ChargeBox,
+                                                     eventTrackingId,
+                                                     e);
+
+                }
+                finally
+                {
+                    try
+                    {
+                        ChargeBoxesSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+
+            }
+
+            return AddChargeBoxResult.Failed(ChargeBox,
+                                             eventTrackingId,
+                                             "Internal locking failed!");
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region AddChargeBoxIfNotExists(ChargeBox, OnAdded = null, ...)
+
+        #region (protected internal) _AddChargeBoxIfNotExists(ChargeBox, OnAdded = null, ...)
+
+        /// <summary>
+        /// When it has not been created before, add the given chargeBox to the API.
+        /// </summary>
+        /// <param name="ChargeBox">A new chargeBox to be added to this API.</param>
+        /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
+        protected internal async Task<AddChargeBoxIfNotExistsResult> _AddChargeBoxIfNotExists(ChargeBox                            ChargeBox,
+                                                                                              Action<ChargeBox, EventTracking_Id>  OnAdded           = null,
+                                                                                              EventTracking_Id                     EventTrackingId   = null,
+                                                                                              User_Id?                             CurrentUserId     = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (ChargeBox is null)
+                return AddChargeBoxIfNotExistsResult.ArgumentError(ChargeBox,
+                                                                      eventTrackingId,
+                                                                      nameof(ChargeBox),
+                                                                      "The given chargeBox must not be null!");
+
+            if (ChargeBox.API != null && ChargeBox.API != this)
+                return AddChargeBoxIfNotExistsResult.ArgumentError(ChargeBox,
+                                                                      eventTrackingId,
+                                                                      nameof(ChargeBox),
+                                                                      "The given chargeBox is already attached to another API!");
+
+            if (_ChargeBoxes.ContainsKey(ChargeBox.Id))
+                return AddChargeBoxIfNotExistsResult.Success(_ChargeBoxes[ChargeBox.Id],
+                                                                AddedOrIgnored.Ignored,
+                                                                eventTrackingId);
+
+            //if (ChargeBox.Id.Length < MinChargeBoxIdLength)
+            //    return AddChargeBoxIfNotExistsResult.ArgumentError(ChargeBox,
+            //                                                          eventTrackingId,
+            //                                                          nameof(ChargeBox),
+            //                                                          "ChargeBox identification '" + ChargeBox.Id + "' is too short!");
+
+            //if (ChargeBox.Name.IsNullOrEmpty() || ChargeBox.Name.IsNullOrEmpty())
+            //    return AddChargeBoxIfNotExistsResult.ArgumentError(ChargeBox,
+            //                                                          eventTrackingId,
+            //                                                          nameof(ChargeBox),
+            //                                                          "The given chargeBox name must not be null!");
+
+            //if (ChargeBox.Name.Length < MinChargeBoxNameLength)
+            //    return AddChargeBoxIfNotExistsResult.ArgumentError(ChargeBox,
+            //                                                  nameof(ChargeBox),
+            //                                                  "ChargeBox name '" + ChargeBox.Name + "' is too short!");
+
+            ChargeBox.API = this;
+
+
+            //await WriteToDatabaseFile(addChargeBoxIfNotExists_MessageType,
+            //                          ChargeBox.ToJSON(false, true),
+            //                          eventTrackingId,
+            //                          CurrentUserId);
+
+            _ChargeBoxes.Add(ChargeBox.Id, ChargeBox);
+
+            OnAdded?.Invoke(ChargeBox,
+                            eventTrackingId);
+
+            var OnChargeBoxAddedLocal = OnChargeBoxAdded;
+            if (OnChargeBoxAddedLocal != null)
+                await OnChargeBoxAddedLocal?.Invoke(Timestamp.Now,
+                                               ChargeBox,
+                                               eventTrackingId,
+                                               CurrentUserId);
+
+            //await SendNotifications(ChargeBox,
+            //                        addChargeBoxIfNotExists_MessageType,
+            //                        null,
+            //                        eventTrackingId,
+            //                        CurrentUserId);
+
+            return AddChargeBoxIfNotExistsResult.Success(ChargeBox,
+                                                         AddedOrIgnored.Added,
+                                                         eventTrackingId);
+
+        }
+
+        #endregion
+
+        #region AddChargeBoxIfNotExists                      (ChargeBox, OnAdded = null, ...)
+
+        /// <summary>
+        /// Add the given chargeBox and add him/her to the given charge box.
+        /// </summary>
+        /// <param name="ChargeBox">A new charge box.</param>
+        /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
+        public async Task<AddChargeBoxIfNotExistsResult> AddChargeBoxIfNotExists(ChargeBox                            ChargeBox,
+                                                                                 Action<ChargeBox, EventTracking_Id>  OnAdded           = null,
+                                                                                 EventTracking_Id                     EventTrackingId   = null,
+                                                                                 User_Id?                             CurrentUserId     = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (await ChargeBoxesSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return await _AddChargeBoxIfNotExists(ChargeBox,
+                                                          OnAdded,
+                                                          eventTrackingId,
+                                                          CurrentUserId);
+
+                }
+                catch (Exception e)
+                {
+
+                    DebugX.LogException(e);
+
+                    return AddChargeBoxIfNotExistsResult.Failed(ChargeBox,
+                                                                eventTrackingId,
+                                                                e);
+
+                }
+                finally
+                {
+                    try
+                    {
+                        ChargeBoxesSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+
+            }
+
+            return AddChargeBoxIfNotExistsResult.Failed(ChargeBox,
+                                                        eventTrackingId,
+                                                        "Internal locking failed!");
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region AddOrUpdateChargeBox   (ChargeBox, OnAdded = null, OnUpdated = null, ...)
+
+        #region (protected internal) _AddOrUpdateChargeBox(ChargeBox, OnAdded = null, OnUpdated = null, ...)
+
+        /// <summary>
+        /// Add or update the given chargeBox to/within the API.
+        /// </summary>
+        /// <param name="ChargeBox">A charge box.</param>
+        /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
+        /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
+        protected internal async Task<AddOrUpdateChargeBoxResult> _AddOrUpdateChargeBox(ChargeBox                            ChargeBox,
+                                                                                        Action<ChargeBox, EventTracking_Id>  OnAdded           = null,
+                                                                                        Action<ChargeBox, EventTracking_Id>  OnUpdated         = null,
+                                                                                        EventTracking_Id                     EventTrackingId   = null,
+                                                                                        User_Id?                             CurrentUserId     = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (ChargeBox is null)
+                return AddOrUpdateChargeBoxResult.ArgumentError(ChargeBox,
+                                                                   eventTrackingId,
+                                                                   nameof(ChargeBox),
+                                                                   "The given chargeBox must not be null!");
+
+            if (ChargeBox.API != null && ChargeBox.API != this)
+                return AddOrUpdateChargeBoxResult.ArgumentError(ChargeBox,
+                                                                   eventTrackingId,
+                                                                   nameof(ChargeBox.API),
+                                                                   "The given chargeBox is already attached to another API!");
+
+            //if (ChargeBox.Id.Length < MinChargeBoxIdLength)
+            //    return AddOrUpdateChargeBoxResult.ArgumentError(ChargeBox,
+            //                                                       eventTrackingId,
+            //                                                       nameof(ChargeBox),
+            //                                                       "The given chargeBox identification '" + ChargeBox.Id + "' is too short!");
+
+            //if (ChargeBox.Name.IsNullOrEmpty() || ChargeBox.Name.IsNullOrEmpty())
+            //    return AddOrUpdateChargeBoxResult.ArgumentError(ChargeBox,
+            //                                                       eventTrackingId,
+            //                                                       nameof(ChargeBox),
+            //                                                       "The given chargeBox name must not be null!");
+
+            //if (ChargeBox.Name.Length < MinChargeBoxNameLength)
+            //    return AddOrUpdateChargeBoxResult.ArgumentError(ChargeBox,
+            //                                               eventTrackingId,
+            //                                               nameof(ChargeBox),
+            //                                               "ChargeBox name '" + ChargeBox.Name + "' is too short!");
+
+            ChargeBox.API = this;
+
+
+            //await WriteToDatabaseFile(addOrUpdateChargeBox_MessageType,
+            //                          ChargeBox.ToJSON(false, true),
+            //                          eventTrackingId,
+            //                          CurrentUserId);
+
+            if (_ChargeBoxes.TryGetValue(ChargeBox.Id, out ChargeBox OldChargeBox))
+            {
+                _ChargeBoxes.Remove(OldChargeBox.Id);
+                ChargeBox.CopyAllLinkedDataFrom(OldChargeBox);
+            }
+
+            _ChargeBoxes.Add(ChargeBox.Id, ChargeBox);
+
+            if (OldChargeBox is null)
+            {
+
+                OnAdded?.Invoke(ChargeBox,
+                                eventTrackingId);
+
+                var OnChargeBoxAddedLocal = OnChargeBoxAdded;
+                if (OnChargeBoxAddedLocal != null)
+                    await OnChargeBoxAddedLocal?.Invoke(Timestamp.Now,
+                                                           ChargeBox,
+                                                           eventTrackingId,
+                                                           CurrentUserId);
+
+                //await SendNotifications(ChargeBox,
+                //                        addChargeBox_MessageType,
+                //                        null,
+                //                        eventTrackingId,
+                //                        CurrentUserId);
+
+                return AddOrUpdateChargeBoxResult.Success(ChargeBox,
+                                                             AddedOrUpdated.Add,
+                                                             eventTrackingId);
+
+            }
+            else
+            {
+
+                OnAdded?.Invoke(ChargeBox,
+                                eventTrackingId);
+
+                var OnChargeBoxUpdatedLocal = OnChargeBoxUpdated;
+                if (OnChargeBoxUpdatedLocal != null)
+                    await OnChargeBoxUpdatedLocal?.Invoke(Timestamp.Now,
+                                                             ChargeBox,
+                                                             OldChargeBox,
+                                                             eventTrackingId,
+                                                             CurrentUserId);
+
+                //await SendNotifications(ChargeBox,
+                //                        updateChargeBox_MessageType,
+                //                        OldChargeBox,
+                //                        eventTrackingId,
+                //                        CurrentUserId);
+
+                return AddOrUpdateChargeBoxResult.Success(ChargeBox,
+                                                             AddedOrUpdated.Update,
+                                                             eventTrackingId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region AddOrUpdateChargeBox                      (ChargeBox, OnAdded = null, OnUpdated = null, ...)
+
+        /// <summary>
+        /// Add or update the given chargeBox to/within the API.
+        /// </summary>
+        /// <param name="ChargeBox">A charge box.</param>
+        /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
+        /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
+        public async Task<AddOrUpdateChargeBoxResult> AddOrUpdateChargeBox(ChargeBox                            ChargeBox,
+                                                                           Action<ChargeBox, EventTracking_Id>  OnAdded           = null,
+                                                                           Action<ChargeBox, EventTracking_Id>  OnUpdated         = null,
+                                                                           EventTracking_Id                     EventTrackingId   = null,
+                                                                           User_Id?                             CurrentUserId     = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (await ChargeBoxesSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return await _AddOrUpdateChargeBox(ChargeBox,
+                                                       OnAdded,
+                                                       OnUpdated,
+                                                       eventTrackingId,
+                                                       CurrentUserId);
+
+                }
+                catch (Exception e)
+                {
+
+                    DebugX.LogException(e);
+
+                    return AddOrUpdateChargeBoxResult.Failed(ChargeBox,
+                                                             eventTrackingId,
+                                                             e);
+
+                }
+                finally
+                {
+                    try
+                    {
+                        ChargeBoxesSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return AddOrUpdateChargeBoxResult.Failed(ChargeBox,
+                                                     eventTrackingId,
+                                                     "Internal locking failed!");
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region UpdateChargeBox        (ChargeBox,                 OnUpdated = null, ...)
+
+        /// <summary>
+        /// A delegate called whenever a charge box was updated.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when the chargeBox was updated.</param>
+        /// <param name="ChargeBox">The updated charge box.</param>
+        /// <param name="OldChargeBox">The old charge box.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
+        public delegate Task OnChargeBoxUpdatedDelegate(DateTime          Timestamp,
+                                                        ChargeBox         ChargeBox,
+                                                        ChargeBox         OldChargeBox,
+                                                        EventTracking_Id  EventTrackingId   = null,
+                                                        User_Id?          CurrentUserId     = null);
+
+        /// <summary>
+        /// An event fired whenever a charge box was updated.
+        /// </summary>
+        public event OnChargeBoxUpdatedDelegate OnChargeBoxUpdated;
+
+
+        #region (protected internal) _UpdateChargeBox(ChargeBox,                 OnUpdated = null, ...)
+
+        /// <summary>
+        /// Update the given chargeBox to/within the API.
+        /// </summary>
+        /// <param name="ChargeBox">A charge box.</param>
+        /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
+        protected internal async Task<UpdateChargeBoxResult> _UpdateChargeBox(ChargeBox                            ChargeBox,
+                                                                              Action<ChargeBox, EventTracking_Id>  OnUpdated         = null,
+                                                                              EventTracking_Id                     EventTrackingId   = null,
+                                                                              User_Id?                             CurrentUserId     = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (ChargeBox is null)
+                return UpdateChargeBoxResult.ArgumentError(ChargeBox,
+                                                           eventTrackingId,
+                                                           nameof(ChargeBox),
+                                                           "The given chargeBox must not be null!");
+
+            if (!_TryGetChargeBox(ChargeBox.Id, out ChargeBox OldChargeBox))
+                return UpdateChargeBoxResult.ArgumentError(ChargeBox,
+                                                           eventTrackingId,
+                                                           nameof(ChargeBox),
+                                                           "The given chargeBox '" + ChargeBox.Id + "' does not exists in this API!");
+
+            if (ChargeBox.API != null && ChargeBox.API != this)
+                return UpdateChargeBoxResult.ArgumentError(ChargeBox,
+                                                           eventTrackingId,
+                                                           nameof(ChargeBox.API),
+                                                           "The given chargeBox is already attached to another API!");
+
+            ChargeBox.API = this;
+
+
+            //await WriteToDatabaseFile(updateChargeBox_MessageType,
+            //                          ChargeBox.ToJSON(),
+            //                          eventTrackingId,
+            //                          CurrentUserId);
+
+            _ChargeBoxes.Remove(OldChargeBox.Id);
+            ChargeBox.CopyAllLinkedDataFrom(OldChargeBox);
+            _ChargeBoxes.Add(ChargeBox.Id, ChargeBox);
+
+            OnUpdated?.Invoke(ChargeBox,
+                              eventTrackingId);
+
+            var OnChargeBoxUpdatedLocal = OnChargeBoxUpdated;
+            if (OnChargeBoxUpdatedLocal != null)
+                await OnChargeBoxUpdatedLocal?.Invoke(Timestamp.Now,
+                                                         ChargeBox,
+                                                         OldChargeBox,
+                                                         eventTrackingId,
+                                                         CurrentUserId);
+
+            //await SendNotifications(ChargeBox,
+            //                        updateChargeBox_MessageType,
+            //                        OldChargeBox,
+            //                        eventTrackingId,
+            //                        CurrentUserId);
+
+            return UpdateChargeBoxResult.Success(ChargeBox,
+                                                 eventTrackingId);
+
+        }
+
+        #endregion
+
+        #region UpdateChargeBox                      (ChargeBox,                 OnUpdated = null, ...)
+
+        /// <summary>
+        /// Update the given chargeBox to/within the API.
+        /// </summary>
+        /// <param name="ChargeBox">A charge box.</param>
+        /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
+        public async Task<UpdateChargeBoxResult> UpdateChargeBox(ChargeBox                            ChargeBox,
+                                                                 Action<ChargeBox, EventTracking_Id>  OnUpdated         = null,
+                                                                 EventTracking_Id                     EventTrackingId   = null,
+                                                                 User_Id?                             CurrentUserId     = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (await ChargeBoxesSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return await _UpdateChargeBox(ChargeBox,
+                                                  OnUpdated,
+                                                  eventTrackingId,
+                                                  CurrentUserId);
+
+                }
+                catch (Exception e)
+                {
+
+                    DebugX.LogException(e);
+
+                    return UpdateChargeBoxResult.Failed(ChargeBox,
+                                                        eventTrackingId,
+                                                        e);
+
+                }
+                finally
+                {
+                    try
+                    {
+                        ChargeBoxesSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return UpdateChargeBoxResult.Failed(ChargeBox,
+                                                eventTrackingId,
+                                                "Internal locking failed!");
+
+        }
+
+        #endregion
+
+
+        #region (protected internal) _UpdateChargeBox(ChargeBox, UpdateDelegate, OnUpdated = null, ...)
+
+        /// <summary>
+        /// Update the given charge box.
+        /// </summary>
+        /// <param name="ChargeBox">An charge box.</param>
+        /// <param name="UpdateDelegate">A delegate to update the given charge box.</param>
+        /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
+        protected internal async Task<UpdateChargeBoxResult> _UpdateChargeBox(ChargeBox                            ChargeBox,
+                                                                              Action<ChargeBox.Builder>            UpdateDelegate,
+                                                                              Action<ChargeBox, EventTracking_Id>  OnUpdated         = null,
+                                                                              EventTracking_Id                     EventTrackingId   = null,
+                                                                              User_Id?                             CurrentUserId     = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (ChargeBox is null)
+                return UpdateChargeBoxResult.ArgumentError(ChargeBox,
+                                                              eventTrackingId,
+                                                              nameof(ChargeBox),
+                                                              "The given chargeBox must not be null!");
+
+            if (!_ChargeBoxExists(ChargeBox.Id))
+                return UpdateChargeBoxResult.ArgumentError(ChargeBox,
+                                                              eventTrackingId,
+                                                              nameof(ChargeBox),
+                                                              "The given chargeBox '" + ChargeBox.Id + "' does not exists in this API!");
+
+            if (ChargeBox.API != this)
+                return UpdateChargeBoxResult.ArgumentError(ChargeBox,
+                                                              eventTrackingId,
+                                                              nameof(ChargeBox.API),
+                                                              "The given chargeBox is not attached to this API!");
+
+            if (UpdateDelegate is null)
+                return UpdateChargeBoxResult.ArgumentError(ChargeBox,
+                                                              eventTrackingId,
+                                                              nameof(UpdateDelegate),
+                                                              "The given update delegate must not be null!");
+
+
+            var builder = ChargeBox.ToBuilder();
+            UpdateDelegate(builder);
+            var updatedChargeBox = builder.ToImmutable;
+
+            //await WriteToDatabaseFile(updateChargeBox_MessageType,
+            //                          updatedChargeBox.ToJSON(),
+            //                          eventTrackingId,
+            //                          CurrentUserId);
+
+            _ChargeBoxes.Remove(ChargeBox.Id);
+            updatedChargeBox.CopyAllLinkedDataFrom(ChargeBox);
+            _ChargeBoxes.Add(updatedChargeBox.Id, updatedChargeBox);
+
+            OnUpdated?.Invoke(updatedChargeBox,
+                              eventTrackingId);
+
+            var OnChargeBoxUpdatedLocal = OnChargeBoxUpdated;
+            if (OnChargeBoxUpdatedLocal != null)
+                await OnChargeBoxUpdatedLocal?.Invoke(Timestamp.Now,
+                                                         updatedChargeBox,
+                                                         ChargeBox,
+                                                         eventTrackingId,
+                                                         CurrentUserId);
+
+            //await SendNotifications(updatedChargeBox,
+            //                        updateChargeBox_MessageType,
+            //                        ChargeBox,
+            //                        eventTrackingId,
+            //                        CurrentUserId);
+
+            return UpdateChargeBoxResult.Success(ChargeBox,
+                                                    eventTrackingId);
+
+        }
+
+        #endregion
+
+        #region UpdateChargeBox                      (ChargeBox, UpdateDelegate, OnUpdated = null, ...)
+
+        /// <summary>
+        /// Update the given charge box.
+        /// </summary>
+        /// <param name="ChargeBox">An charge box.</param>
+        /// <param name="UpdateDelegate">A delegate to update the given charge box.</param>
+        /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
+        public async Task<UpdateChargeBoxResult> UpdateChargeBox(ChargeBox                            ChargeBox,
+                                                                 Action<ChargeBox.Builder>            UpdateDelegate,
+                                                                 Action<ChargeBox, EventTracking_Id>  OnUpdated         = null,
+                                                                 EventTracking_Id                     EventTrackingId   = null,
+                                                                 User_Id?                             CurrentUserId     = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (await ChargeBoxesSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return await _UpdateChargeBox(ChargeBox,
+                                                  UpdateDelegate,
+                                                  OnUpdated,
+                                                  eventTrackingId,
+                                                  CurrentUserId);
+
+                }
+                catch (Exception e)
+                {
+
+                    DebugX.LogException(e);
+
+                    return UpdateChargeBoxResult.Failed(ChargeBox,
+                                                        eventTrackingId,
+                                                        e);
+
+                }
+                finally
+                {
+                    try
+                    {
+                        ChargeBoxesSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return UpdateChargeBoxResult.Failed(ChargeBox,
+                                                eventTrackingId,
+                                                "Internal locking failed!");
+
+        }
+
+        #endregion
+
+        #endregion
+
+
+        #region ChargeBoxExists(ChargeBoxId)
+
+        /// <summary>
+        /// Determines whether the given chargeBox identification exists within this API.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        protected internal Boolean _ChargeBoxExists(ChargeBox_Id ChargeBoxId)
+
+            => ChargeBoxId.IsNotNullOrEmpty && _ChargeBoxes.ContainsKey(ChargeBoxId);
+
+        /// <summary>
+        /// Determines whether the given chargeBox identification exists within this API.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        protected internal Boolean _ChargeBoxExists(ChargeBox_Id? ChargeBoxId)
+
+            => ChargeBoxId.IsNotNullOrEmpty() && _ChargeBoxes.ContainsKey(ChargeBoxId.Value);
+
+
+        /// <summary>
+        /// Determines whether the given chargeBox identification exists within this API.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        public Boolean ChargeBoxExists(ChargeBox_Id ChargeBoxId)
+        {
+
+            if (ChargeBoxesSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return _ChargeBoxExists(ChargeBoxId);
+
+                }
+                catch
+                { }
+                finally
+                {
+                    try
+                    {
+                        ChargeBoxesSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return false;
+
+        }
+
+        /// <summary>
+        /// Determines whether the given chargeBox identification exists within this API.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        public Boolean ChargeBoxExists(ChargeBox_Id? ChargeBoxId)
+        {
+
+            if (ChargeBoxesSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return _ChargeBoxExists(ChargeBoxId);
+
+                }
+                catch
+                { }
+                finally
+                {
+                    try
+                    {
+                        ChargeBoxesSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region GetChargeBox   (ChargeBoxId)
+
+        /// <summary>
+        /// Get the chargeBox having the given unique identification.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        protected internal ChargeBox _GetChargeBox(ChargeBox_Id ChargeBoxId)
+        {
+
+            if (ChargeBoxId.IsNotNullOrEmpty && _ChargeBoxes.TryGetValue(ChargeBoxId, out ChargeBox chargeBox))
+                return chargeBox;
+
+            return null;
+
+        }
+
+        /// <summary>
+        /// Get the chargeBox having the given unique identification.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        protected internal ChargeBox _GetChargeBox(ChargeBox_Id? ChargeBoxId)
+        {
+
+            if (ChargeBoxId.IsNotNullOrEmpty() && _ChargeBoxes.TryGetValue(ChargeBoxId.Value, out ChargeBox chargeBox))
+                return chargeBox;
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Get the chargeBox having the given unique identification.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        public ChargeBox GetChargeBox(ChargeBox_Id ChargeBoxId)
+        {
+
+            if (ChargeBoxesSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return _GetChargeBox(ChargeBoxId);
+
+                }
+                catch
+                { }
+                finally
+                {
+                    try
+                    {
+                        ChargeBoxesSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return null;
+
+        }
+
+        /// <summary>
+        /// Get the chargeBox having the given unique identification.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        public ChargeBox GetChargeBox(ChargeBox_Id? ChargeBoxId)
+        {
+
+            if (ChargeBoxesSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return _GetChargeBox(ChargeBoxId);
+
+                }
+                catch
+                { }
+                finally
+                {
+                    try
+                    {
+                        ChargeBoxesSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryGetChargeBox(ChargeBoxId, out ChargeBox)
+
+        /// <summary>
+        /// Try to get the chargeBox having the given unique identification.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="ChargeBox">The charge box.</param>
+        protected internal Boolean _TryGetChargeBox(ChargeBox_Id   ChargeBoxId,
+                                                       out ChargeBox  ChargeBox)
+        {
+
+            if (ChargeBoxId.IsNotNullOrEmpty && _ChargeBoxes.TryGetValue(ChargeBoxId, out ChargeBox chargeBox))
+            {
+                ChargeBox = chargeBox;
+                return true;
+            }
+
+            ChargeBox = null;
+            return false;
+
+        }
+
+        /// <summary>
+        /// Try to get the chargeBox having the given unique identification.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="ChargeBox">The charge box.</param>
+        protected internal Boolean _TryGetChargeBox(ChargeBox_Id?  ChargeBoxId,
+                                                       out ChargeBox  ChargeBox)
+        {
+
+            if (ChargeBoxId.IsNotNullOrEmpty() && _ChargeBoxes.TryGetValue(ChargeBoxId.Value, out ChargeBox chargeBox))
+            {
+                ChargeBox = chargeBox;
+                return true;
+            }
+
+            ChargeBox = null;
+            return false;
+
+        }
+
+
+        /// <summary>
+        /// Try to get the chargeBox having the given unique identification.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="ChargeBox">The charge box.</param>
+        public Boolean TryGetChargeBox(ChargeBox_Id   ChargeBoxId,
+                                          out ChargeBox  ChargeBox)
+        {
+
+            if (ChargeBoxesSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return _TryGetChargeBox(ChargeBoxId, out ChargeBox);
+
+                }
+                catch
+                { }
+                finally
+                {
+                    try
+                    {
+                        ChargeBoxesSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            ChargeBox = null;
+            return false;
+
+        }
+
+        /// <summary>
+        /// Try to get the chargeBox having the given unique identification.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="ChargeBox">The charge box.</param>
+        public Boolean TryGetChargeBox(ChargeBox_Id?  ChargeBoxId,
+                                          out ChargeBox  ChargeBox)
+        {
+
+            if (ChargeBoxesSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return _TryGetChargeBox(ChargeBoxId, out ChargeBox);
+
+                }
+                catch
+                { }
+                finally
+                {
+                    try
+                    {
+                        ChargeBoxesSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            ChargeBox = null;
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region DeleteChargeBox(ChargeBox, OnDeleted = null, ...)
+
+        /// <summary>
+        /// A delegate called whenever a charge box was deleted.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when the chargeBox was deleted.</param>
+        /// <param name="ChargeBox">The chargeBox to be deleted.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public delegate Task OnChargeBoxDeletedDelegate(DateTime          Timestamp,
+                                                           ChargeBox      ChargeBox,
+                                                           EventTracking_Id  EventTrackingId   = null,
+                                                           User_Id?          CurrentUserId     = null);
+
+        /// <summary>
+        /// An event fired whenever a charge box was deleted.
+        /// </summary>
+        public event OnChargeBoxDeletedDelegate OnChargeBoxDeleted;
+
+
+        #region (protected internal virtual) _CanDeleteChargeBox(ChargeBox)
+
+        /// <summary>
+        /// Determines whether the chargeBox can safely be deleted from the API.
+        /// </summary>
+        /// <param name="ChargeBox">The chargeBox to be deleted.</param>
+        protected internal virtual I18NString _CanDeleteChargeBox(ChargeBox ChargeBox)
+        {
+
+            //if (ChargeBox.Users.Any())
+            //    return new I18NString(Languages.en, "The chargeBox still has members!");
+
+            //if (ChargeBox.SubChargeBoxes.Any())
+            //    return new I18NString(Languages.en, "The chargeBox still has sub chargeBoxs!");
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (protected internal) _DeleteChargeBox(ChargeBox, OnDeleted = null, ...)
+
+        /// <summary>
+        /// Delete the given charge box.
+        /// </summary>
+        /// <param name="ChargeBox">The chargeBox to be deleted.</param>
+        /// <param name="OnDeleted">A delegate run whenever the chargeBox has been deleted successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        protected internal async Task<DeleteChargeBoxResult> _DeleteChargeBox(ChargeBox                            ChargeBox,
+                                                                                    Action<ChargeBox, EventTracking_Id>  OnDeleted         = null,
+                                                                                    EventTracking_Id                        EventTrackingId   = null,
+                                                                                    User_Id?                                CurrentUserId     = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (ChargeBox is null)
+                return DeleteChargeBoxResult.ArgumentError(ChargeBox,
+                                                           eventTrackingId,
+                                                           nameof(ChargeBox),
+                                                           "The given chargeBox must not be null!");
+
+            if (ChargeBox.API != this)
+                return DeleteChargeBoxResult.ArgumentError(ChargeBox,
+                                                           eventTrackingId,
+                                                           nameof(ChargeBox),
+                                                           "The given chargeBox is not attached to this API!");
+
+            if (!_ChargeBoxes.TryGetValue(ChargeBox.Id, out ChargeBox ChargeBoxToBeDeleted))
+                return DeleteChargeBoxResult.ArgumentError(ChargeBox,
+                                                           eventTrackingId,
+                                                           nameof(ChargeBox),
+                                                           "The given chargeBox does not exists in this API!");
+
+
+            var result = _CanDeleteChargeBox(ChargeBox);
+
+            if (result != null)
+                return DeleteChargeBoxResult.Failed(ChargeBox,
+                                                    eventTrackingId,
+                                                    result);
+
+
+            //// Get all parent chargeBoxs now, because later
+            //// the --isChildOf--> edge will no longer be available!
+            //var parentChargeBoxes = ChargeBox.GetAllParents(parent => parent != NoOwner).
+            //                                       ToArray();
+
+
+            //// Remove all: this --edge--> other_chargeBox
+            //foreach (var edge in ChargeBox.ChargeBox2ChargeBoxOutEdges.ToArray())
+            //    await _UnlinkChargeBoxes(edge.Source,
+            //                               edge.EdgeLabel,
+            //                               edge.Target,
+            //                               EventTrackingId,
+            //                               SuppressNotifications:  false,
+            //                               CurrentUserId:          CurrentUserId);
+
+            //// Remove all: this <--edge-- other_chargeBox
+            //foreach (var edge in ChargeBox.ChargeBox2ChargeBoxInEdges.ToArray())
+            //    await _UnlinkChargeBoxes(edge.Target,
+            //                               edge.EdgeLabel,
+            //                               edge.Source,
+            //                               EventTrackingId,
+            //                               SuppressNotifications:  false,
+            //                               CurrentUserId:          CurrentUserId);
+
+
+            //await WriteToDatabaseFile(deleteChargeBox_MessageType,
+            //                          ChargeBox.ToJSON(false, true),
+            //                          eventTrackingId,
+            //                          CurrentUserId);
+
+            _ChargeBoxes.Remove(ChargeBox.Id);
+
+            OnDeleted?.Invoke(ChargeBox,
+                              eventTrackingId);
+
+            var OnChargeBoxDeletedLocal = OnChargeBoxDeleted;
+            if (OnChargeBoxDeletedLocal != null)
+                await OnChargeBoxDeletedLocal?.Invoke(Timestamp.Now,
+                                                      ChargeBox,
+                                                      eventTrackingId,
+                                                      CurrentUserId);
+
+            //await SendNotifications(ChargeBox,
+            //                        parentChargeBoxes,
+            //                        deleteChargeBox_MessageType,
+            //                        eventTrackingId,
+            //                        CurrentUserId);
+
+
+            return DeleteChargeBoxResult.Success(ChargeBox,
+                                                 eventTrackingId);
+
+        }
+
+        #endregion
+
+        #region DeleteChargeBox                      (ChargeBox, OnDeleted = null, ...)
+
+        /// <summary>
+        /// Delete the given charge box.
+        /// </summary>
+        /// <param name="ChargeBox">The chargeBox to be deleted.</param>
+        /// <param name="OnDeleted">A delegate run whenever the chargeBox has been deleted successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<DeleteChargeBoxResult> DeleteChargeBox(ChargeBox                            ChargeBox,
+                                                                 Action<ChargeBox, EventTracking_Id>  OnDeleted         = null,
+                                                                 EventTracking_Id                     EventTrackingId   = null,
+                                                                 User_Id?                             CurrentUserId     = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (await ChargeBoxesSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return await _DeleteChargeBox(ChargeBox,
+                                                  OnDeleted,
+                                                  eventTrackingId,
+                                                  CurrentUserId);
+
+                }
+                catch (Exception e)
+                {
+
+                    DebugX.LogException(e);
+
+                    return DeleteChargeBoxResult.Failed(ChargeBox,
+                                                        eventTrackingId,
+                                                        e);
+
+                }
+                finally
+                {
+                    try
+                    {
+                        ChargeBoxesSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+
+            }
+
+            return DeleteChargeBoxResult.Failed(ChargeBox,
+                                                eventTrackingId,
+                                                "Internal locking failed!");
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
 
 
 

@@ -42,159 +42,159 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     public static class ExtentionMethods
     {
 
-        //#region ParseRemotePartyId(this HTTPRequest, OCPPWebAPI, out RemotePartyId,                  out HTTPResponse)
+        #region ParseChargeBoxId(this HTTPRequest, OCPPWebAPI, out ChargeBoxId,                out HTTPResponse)
 
-        ///// <summary>
-        ///// Parse the given HTTP request and return the defibrillator identification
-        ///// for the given HTTP hostname and HTTP query parameter
-        ///// or an HTTP error response.
-        ///// </summary>
-        ///// <param name="HTTPRequest">A HTTP request.</param>
-        ///// <param name="OCPPWebAPI">The OCPP WebAPI.</param>
-        ///// <param name="RemotePartyId">The parsed unique defibrillator identification.</param>
-        ///// <param name="HTTPResponse">A HTTP error response.</param>
-        ///// <returns>True, when defibrillator identification was found; false else.</returns>
-        //public static Boolean ParseRemotePartyId(this HTTPRequest          HTTPRequest,
-        //                                         OCPPWebAPI                OCPPWebAPI,
-        //                                         out RemoteParty_Id?       RemotePartyId,
-        //                                         out HTTPResponse.Builder  HTTPResponse)
-        //{
+        /// <summary>
+        /// Parse the given HTTP request and return the charge box identification
+        /// for the given HTTP hostname and HTTP query parameter
+        /// or an HTTP error response.
+        /// </summary>
+        /// <param name="HTTPRequest">A HTTP request.</param>
+        /// <param name="OCPPWebAPI">The OCPP WebAPI.</param>
+        /// <param name="ChargeBoxId">The parsed unique charge box identification.</param>
+        /// <param name="HTTPResponse">A HTTP error response.</param>
+        /// <returns>True, when charge box identification was found; false else.</returns>
+        public static Boolean ParseChargeBoxId(this HTTPRequest          HTTPRequest,
+                                               OCPPWebAPI                OCPPWebAPI,
+                                               out ChargeBox_Id?         ChargeBoxId,
+                                               out HTTPResponse.Builder  HTTPResponse)
+        {
 
-        //    #region Initial checks
+            #region Initial checks
 
-        //    if (HTTPRequest == null)
-        //        throw new ArgumentNullException(nameof(HTTPRequest),  "The given HTTP request must not be null!");
+            if (HTTPRequest == null)
+                throw new ArgumentNullException(nameof(HTTPRequest),  "The given HTTP request must not be null!");
 
-        //    if (OCPPWebAPI  == null)
-        //        throw new ArgumentNullException(nameof(OCPPWebAPI),   "The given OCPP WebAPI must not be null!");
+            if (OCPPWebAPI  == null)
+                throw new ArgumentNullException(nameof(OCPPWebAPI),   "The given OCPP WebAPI must not be null!");
 
-        //    #endregion
+            #endregion
 
-        //    RemotePartyId  = null;
-        //    HTTPResponse   = null;
+            ChargeBoxId   = null;
+            HTTPResponse  = null;
 
-        //    if (HTTPRequest.ParsedURLParameters.Length < 1)
-        //    {
+            if (HTTPRequest.ParsedURLParameters.Length < 1)
+            {
 
-        //        HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
-        //            HTTPStatusCode  = HTTPStatusCode.BadRequest,
-        //            Server          = OCPPWebAPI.HTTPServer.DefaultServerName,
-        //            Date            = Timestamp.Now,
-        //            Connection      = "close"
-        //        };
+                HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
+                    HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                    Server          = OCPPWebAPI.DefaultHTTPServerName,
+                    Date            = Timestamp.Now,
+                    Connection      = "close"
+                };
 
-        //        return false;
+                return false;
 
-        //    }
+            }
 
-        //    RemotePartyId = RemoteParty_Id.TryParse(HTTPRequest.ParsedURLParameters[0]);
+            ChargeBoxId = ChargeBox_Id.TryParse(HTTPRequest.ParsedURLParameters[0]);
 
-        //    if (!RemotePartyId.HasValue)
-        //    {
+            if (!ChargeBoxId.HasValue)
+            {
 
-        //        HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
-        //            HTTPStatusCode  = HTTPStatusCode.BadRequest,
-        //            Server          = OCPPWebAPI.HTTPServer.DefaultServerName,
-        //            Date            = Timestamp.Now,
-        //            ContentType     = HTTPContentType.JSON_UTF8,
-        //            Content         = @"{ ""description"": ""Invalid remote party identification!"" }".ToUTF8Bytes(),
-        //            Connection      = "close"
-        //        };
+                HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
+                    HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                    Server          = OCPPWebAPI.DefaultHTTPServerName,
+                    Date            = Timestamp.Now,
+                    ContentType     = HTTPContentType.JSON_UTF8,
+                    Content         = @"{ ""description"": ""Invalid charge box identification!"" }".ToUTF8Bytes(),
+                    Connection      = "close"
+                };
 
-        //        return false;
+                return false;
 
-        //    }
+            }
 
-        //    return true;
+            return true;
 
-        //}
+        }
 
-        //#endregion
+        #endregion
 
-        //#region ParseRemoteParty  (this HTTPRequest, OCPPWebAPI, out RemotePartyId, out RemoteParty, out HTTPResponse)
+        #region ParseChargeBox  (this HTTPRequest, OCPPWebAPI, out ChargeBoxId, out ChargeBox, out HTTPResponse)
 
-        ///// <summary>
-        ///// Parse the given HTTP request and return the defibrillator identification
-        ///// for the given HTTP hostname and HTTP query parameter
-        ///// or an HTTP error response.
-        ///// </summary>
-        ///// <param name="HTTPRequest">A HTTP request.</param>
-        ///// <param name="OCPPWebAPI">The OCPP WebAPI.</param>
-        ///// <param name="RemotePartyId">The parsed unique defibrillator identification.</param>
-        ///// <param name="RemoteParty">The resolved defibrillator.</param>
-        ///// <param name="HTTPResponse">A HTTP error response.</param>
-        ///// <returns>True, when defibrillator identification was found; false else.</returns>
-        //public static Boolean ParseRemoteParty(this HTTPRequest          HTTPRequest,
-        //                                       OCPPWebAPI                OCPPWebAPI,
-        //                                       out RemoteParty_Id?       RemotePartyId,
-        //                                       out RemoteParty           RemoteParty,
-        //                                       out HTTPResponse.Builder  HTTPResponse)
-        //{
+        /// <summary>
+        /// Parse the given HTTP request and return the charge box identification
+        /// for the given HTTP hostname and HTTP query parameter
+        /// or an HTTP error response.
+        /// </summary>
+        /// <param name="HTTPRequest">A HTTP request.</param>
+        /// <param name="OCPPWebAPI">The OCPP WebAPI.</param>
+        /// <param name="ChargeBoxId">The parsed unique charge box identification.</param>
+        /// <param name="ChargeBox">The resolved charge box.</param>
+        /// <param name="HTTPResponse">A HTTP error response.</param>
+        /// <returns>True, when charge box identification was found; false else.</returns>
+        public static Boolean ParseChargeBox(this HTTPRequest          HTTPRequest,
+                                             OCPPWebAPI                OCPPWebAPI,
+                                             out ChargeBox_Id?         ChargeBoxId,
+                                             out ChargeBox             ChargeBox,
+                                             out HTTPResponse.Builder  HTTPResponse)
+        {
 
-        //    #region Initial checks
+            #region Initial checks
 
-        //    if (HTTPRequest == null)
-        //        throw new ArgumentNullException(nameof(HTTPRequest),  "The given HTTP request must not be null!");
+            if (HTTPRequest == null)
+                throw new ArgumentNullException(nameof(HTTPRequest),  "The given HTTP request must not be null!");
 
-        //    if (OCPPWebAPI  == null)
-        //        throw new ArgumentNullException(nameof(OCPPWebAPI),   "The given OCPP WebAPI must not be null!");
+            if (OCPPWebAPI  == null)
+                throw new ArgumentNullException(nameof(OCPPWebAPI),   "The given OCPP WebAPI must not be null!");
 
-        //    #endregion
+            #endregion
 
-        //    RemotePartyId  = null;
-        //    RemoteParty    = null;
-        //    HTTPResponse   = null;
+            ChargeBoxId   = null;
+            ChargeBox     = null;
+            HTTPResponse  = null;
 
-        //    if (HTTPRequest.ParsedURLParameters.Length < 1) {
+            if (HTTPRequest.ParsedURLParameters.Length < 1) {
 
-        //        HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
-        //            HTTPStatusCode  = HTTPStatusCode.BadRequest,
-        //            Server          = OCPPWebAPI.HTTPServer.DefaultServerName,
-        //            Date            = Timestamp.Now,
-        //            Connection      = "close"
-        //        };
+                HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
+                    HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                    Server          = OCPPWebAPI.DefaultHTTPServerName,
+                    Date            = Timestamp.Now,
+                    Connection      = "close"
+                };
 
-        //        return false;
+                return false;
 
-        //    }
+            }
 
-        //    RemotePartyId = RemoteParty_Id.TryParse(HTTPRequest.ParsedURLParameters[0]);
+            ChargeBoxId = ChargeBox_Id.TryParse(HTTPRequest.ParsedURLParameters[0]);
 
-        //    if (!RemotePartyId.HasValue) {
+            if (!ChargeBoxId.HasValue) {
 
-        //        HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
-        //            HTTPStatusCode  = HTTPStatusCode.BadRequest,
-        //            Server          = OCPPWebAPI.HTTPServer.DefaultServerName,
-        //            Date            = Timestamp.Now,
-        //            ContentType     = HTTPContentType.JSON_UTF8,
-        //            Content         = @"{ ""description"": ""Invalid remote party identification!"" }".ToUTF8Bytes(),
-        //            Connection      = "close"
-        //        };
+                HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
+                    HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                    Server          = OCPPWebAPI.DefaultHTTPServerName,
+                    Date            = Timestamp.Now,
+                    ContentType     = HTTPContentType.JSON_UTF8,
+                    Content         = @"{ ""description"": ""Invalid charge box identification!"" }".ToUTF8Bytes(),
+                    Connection      = "close"
+                };
 
-        //        return false;
+                return false;
 
-        //    }
+            }
 
-        //    if (!OCPPWebAPI.CommonAPI.TryGetRemoteParty(RemotePartyId.Value, out RemoteParty)) {
+            if (!OCPPWebAPI.CentralSystem.TryGetChargeBox(ChargeBoxId.Value, out ChargeBox)) {
 
-        //        HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
-        //            HTTPStatusCode  = HTTPStatusCode.NotFound,
-        //            Server          = OCPPWebAPI.HTTPServer.DefaultServerName,
-        //            Date            = Timestamp.Now,
-        //            ContentType     = HTTPContentType.JSON_UTF8,
-        //            Content         = @"{ ""description"": ""Unknown remote party identification!"" }".ToUTF8Bytes(),
-        //            Connection      = "close"
-        //        };
+                HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
+                    HTTPStatusCode  = HTTPStatusCode.NotFound,
+                    Server          = OCPPWebAPI.DefaultHTTPServerName,
+                    Date            = Timestamp.Now,
+                    ContentType     = HTTPContentType.JSON_UTF8,
+                    Content         = @"{ ""description"": ""Unknown charge box identification!"" }".ToUTF8Bytes(),
+                    Connection      = "close"
+                };
 
-        //        return false;
+                return false;
 
-        //    }
+            }
 
-        //    return true;
+            return true;
 
-        //}
+        }
 
-        //#endregion
+        #endregion
 
     }
 
@@ -206,6 +206,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     {
 
         #region Data
+
+        /// <summary>
+        /// The default HTTP server name.
+        /// </summary>
+        public new const           String                           DefaultHTTPServerName       = "GraphDefined OCPP v1.6 WebAPI";
 
         /// <summary>
         /// The default HTTP URI prefix.
@@ -240,8 +245,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public static readonly HTTPEventSource_Id                   EventLogId                  = HTTPEventSource_Id.Parse("OCPPEvents");
 
-        private readonly TestCentralSystem testCentralSystem;
-
         #endregion
 
         #region Properties
@@ -267,6 +270,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public HTTPEventSource<JObject>                     EventLog            { get; }
 
+
+        public TestCentralSystem CentralSystem { get; }
 
         /// <summary>
         /// The DNS client to use.
@@ -321,15 +326,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         {
 
-            this.testCentralSystem   = TestCentralSystem;
+            this.CentralSystem   = TestCentralSystem;
 
             //this.URLPathPrefix1      = URLPathPrefix1;
             this.HTTPRealm           = HTTPRealm.IsNotNullOrEmpty() ? HTTPRealm : DefaultHTTPRealm;
             this.HTTPLogins          = HTTPLogins    ?? new KeyValuePair<String, String>[0];
             this.DNSClient           = HTTPServer.DNSClient;
-
-            //this.CPOClients          = new List<CPOClient>();
-            //this.EMSPClients         = new List<EMSPClient>();
 
             // Link HTTP events...
             //HTTPServer.RequestLog   += (HTTPProcessor, ServerTimestamp, Request)                                 => RequestLog. WhenAll(HTTPProcessor, ServerTimestamp, Request);
@@ -425,36 +427,62 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                "cloud.charging.open.protocols.OCPPv1_6.WebAPI.HTTPRoot",
                                                DefaultFilename: "index.html");
 
-            //if (URLPathPrefix1.HasValue)
-            //    HTTPServer.AddMethodCallback(HTTPHostname.Any,
-            //                                 HTTPMethod.GET,
-            //                                 URLPathPrefix1.Value,
-            //                                 HTTPContentType.HTML_UTF8,
-            //                                 HTTPDelegate: Request => {
+            //HTTPServer.AddMethodCallback(HTTPHostname.Any,
+            //                             HTTPMethod.GET,
+            //                             URLPathPrefix,
+            //                             HTTPDelegate: Request => {
 
-            //                                     return Task.FromResult(
-            //                                         new HTTPResponse.Builder(Request) {
-            //                                             HTTPStatusCode             = HTTPStatusCode.OK,
-            //                                             //Server                     = DefaultHTTPServerName,
-            //                                             Date                       = Timestamp.Now,
-            //                                             AccessControlAllowOrigin   = "*",
-            //                                             AccessControlAllowMethods  = "OPTIONS, GET",
-            //                                             AccessControlAllowHeaders  = "Authorization",
-            //                                             ContentType                = HTTPContentType.HTML_UTF8,
-            //                                             Content                    = ("<html><body>" +
-            //                                                                              "This is an Open Charge Point Protocol HTTP service!<br /><br />" +
-            //                                                                              "<ul>" +
-            //                                                                                  "<li><a href=\"versions\">Versions</a></li>" +
-            //                                                                                  "<li><a href=\"" + URLPathPrefix.ToString() + "/remoteParties\">Remote Parties</a></li>" +
-            //                                                                                  "<li><a href=\"" + URLPathPrefix.ToString() + "/clients\">Clients</a></li>" +
-            //                                                                                  "<li><a href=\"" + URLPathPrefix.ToString() + "/cpoclients\">CPO Clients</a></li>" +
-            //                                                                                  "<li><a href=\"" + URLPathPrefix.ToString() + "/emspclients\">EMSP Clients</a></li>" +
-            //                                                                           "</ul><body></html>").ToUTF8Bytes(),
-            //                                             Connection                 = "close"
-            //                                         }.AsImmutable);
+            //                                 return Task.FromResult(
+            //                                     new HTTPResponse.Builder(Request) {
+            //                                         HTTPStatusCode             = HTTPStatusCode.OK,
+            //                                         Server                     = DefaultHTTPServerName,
+            //                                         Date                       = Timestamp.Now,
+            //                                         AccessControlAllowOrigin   = "*",
+            //                                         AccessControlAllowMethods  = "OPTIONS, GET",
+            //                                         AccessControlAllowHeaders  = "Authorization",
+            //                                         ContentType                = HTTPContentType.HTML_UTF8,
+            //                                         Content                    = ("<html><body>" +
+            //                                                                          "This is an Open Charge Point Protocol v1.6 HTTP service!<br /><br />" +
+            //                                                                          "<ul>" +
+            //                                                                              "<li><a href=\"" + URLPathPrefix.ToString() + "/chargeBoxes\">Charge Boxes</a></li>" +
+            //                                                                          "</ul>" +
+            //                                                                       "<body></html>").ToUTF8Bytes(),
+            //                                         Connection                 = "close"
+            //                                     }.AsImmutable);
 
-            //                                 });
+            //                             });
 
+            #endregion
+
+
+            #region ~/chargeBoxIds
+
+            HTTPServer.AddMethodCallback(HTTPHostname.Any,
+                                         HTTPMethod.GET,
+                                         URLPathPrefix + "chargeBoxIds",
+                                         HTTPContentType.JSON_UTF8,
+                                         HTTPDelegate: Request => {
+
+                                             return Task.FromResult(
+                                                 new HTTPResponse.Builder(Request) {
+                                                     HTTPStatusCode             = HTTPStatusCode.OK,
+                                                     Server                     = DefaultHTTPServerName,
+                                                     Date                       = Timestamp.Now,
+                                                     AccessControlAllowOrigin   = "*",
+                                                     AccessControlAllowMethods  = "OPTIONS, GET",
+                                                     AccessControlAllowHeaders  = "Authorization",
+                                                     ContentType                = HTTPContentType.JSON_UTF8,
+                                                     Content                    = JSONArray.Create(
+                                                                                      CentralSystem.ChargeBoxIds.Select(chargeBoxId => new JObject(new JProperty("@id", chargeBoxId.ToString())))
+                                                                                  ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
+                                                     Connection                 = "close"
+                                                 }.AsImmutable);
+
+                                         });
+
+            #endregion
+
+            #region ~/chargeBoxes
 
             HTTPServer.AddMethodCallback(HTTPHostname.Any,
                                          HTTPMethod.GET,
@@ -465,99 +493,73 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                              return Task.FromResult(
                                                  new HTTPResponse.Builder(Request) {
                                                      HTTPStatusCode             = HTTPStatusCode.OK,
-                                                     //Server                     = DefaultHTTPServerName,
+                                                     Server                     = DefaultHTTPServerName,
                                                      Date                       = Timestamp.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = "OPTIONS, GET",
                                                      AccessControlAllowHeaders  = "Authorization",
                                                      ContentType                = HTTPContentType.JSON_UTF8,
                                                      Content                    = JSONArray.Create(
-                                                                                      testCentralSystem.ChargeBoxIds.Select(chargeBoxId => new JObject(new JProperty("@id", chargeBoxId.ToString())))
+                                                                                      CentralSystem.ChargeBoxes.Select(chargeBox => chargeBox.ToJSON())
                                                                                   ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
                                                      Connection                 = "close"
                                                  }.AsImmutable);
-            
+
                                          });
 
-
             #endregion
 
 
+            #region ~/chargeBoxes/{chargeBoxId}
+
+            HTTPServer.AddMethodCallback(HTTPHostname.Any,
+                                         HTTPMethod.GET,
+                                         URLPathPrefix + "chargeBoxes/{chargeBoxId}",
+                                         HTTPContentType.JSON_UTF8,
+                                         HTTPDelegate: Request => {
+
+                                             #region Get HTTP user and its organizations
+
+                                             //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                                             //if (!TryGetHTTPUser(Request,
+                                             //                    out User                   HTTPUser,
+                                             //                    out HashSet<Organization>  HTTPOrganizations,
+                                             //                    out HTTPResponse.Builder   Response,
+                                             //                    AccessLevel:               Access_Levels.ReadOnly,
+                                             //                    Recursive:                 true))
+                                             //{
+                                             //    return Task.FromResult(Response.AsImmutable);
+                                             //}
+
+                                             #endregion
+
+                                             #region Check ChargeBoxId URL parameter
+
+                                             if (!Request.ParseChargeBox(this,
+                                                                         out ChargeBox_Id?         ChargeBoxId,
+                                                                         out ChargeBox             ChargeBox,
+                                                                         out HTTPResponse.Builder  Response))
+                                             {
+                                                 return Task.FromResult(Response.AsImmutable);
+                                             }
+
+                                             #endregion
 
 
-            #region GET      ~/clients
+                                             return Task.FromResult(
+                                                 new HTTPResponse.Builder(Request) {
+                                                     HTTPStatusCode             = HTTPStatusCode.OK,
+                                                     Server                     = DefaultHTTPServerName,
+                                                     Date                       = Timestamp.Now,
+                                                     AccessControlAllowOrigin   = "*",
+                                                     AccessControlAllowMethods  = "OPTIONS, GET",
+                                                     AccessControlAllowHeaders  = "Authorization",
+                                                     ContentType                = HTTPContentType.JSON_UTF8,
+                                                     Content                    = ChargeBox.ToJSON().ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
+                                                     Connection                 = "close"
+                                                 }.AsImmutable);
 
-            //HTTPServer.AddMethodCallback(HTTPHostname.Any,
-            //                             HTTPMethod.GET,
-            //                             URLPathPrefix + "clients",
-            //                             HTTPContentType.JSON_UTF8,
-            //                             HTTPDelegate: Request => {
-
-            //                                 var clients = new List<CommonClient>();
-            //                                 clients.AddRange(CPOClients);
-            //                                 clients.AddRange(EMSPClients);
-
-            //                                 return Task.FromResult(
-            //                                     new HTTPResponse.Builder(Request) {
-            //                                         HTTPStatusCode             = HTTPStatusCode.OK,
-            //                                         ContentType                = HTTPContentType.JSON_UTF8,
-            //                                         Content                    = new JArray(clients.OrderBy(client => client.Description).Select(client => client.ToJSON())).ToUTF8Bytes(),
-            //                                         AccessControlAllowMethods  = "OPTIONS, GET",
-            //                                         AccessControlAllowHeaders  = "Authorization"
-            //                                         //LastModified               = Location.LastUpdated.ToIso8601(),
-            //                                         //ETag                       = Location.SHA256Hash
-            //                                     }.AsImmutable);
-
-            //                             });
-
-            #endregion
-
-            #region GET      ~/cpoclients
-
-            //HTTPServer.AddMethodCallback(HTTPHostname.Any,
-            //                             HTTPMethod.GET,
-            //                             URLPathPrefix + "cpoclients",
-            //                             HTTPContentType.JSON_UTF8,
-            //                             HTTPDelegate: Request => {
-
-
-            //                                 return Task.FromResult(
-            //                                     new HTTPResponse.Builder(Request)
-            //                                     {
-            //                                         HTTPStatusCode = HTTPStatusCode.OK,
-            //                                         ContentType = HTTPContentType.JSON_UTF8,
-            //                                         Content = new JArray(CPOClients.OrderBy(client => client.Description).Select(client => client.ToJSON())).ToUTF8Bytes(),
-            //                                         AccessControlAllowMethods = "OPTIONS, GET",
-            //                                         AccessControlAllowHeaders = "Authorization"
-            //                                         //LastModified               = Location.LastUpdated.ToIso8601(),
-            //                                         //ETag                       = Location.SHA256Hash
-            //                                     }.AsImmutable);
-
-            //                             });
-
-            #endregion
-
-            #region GET      ~/emspclients
-
-            //HTTPServer.AddMethodCallback(HTTPHostname.Any,
-            //                             HTTPMethod.GET,
-            //                             URLPathPrefix + "emspclients",
-            //                             HTTPContentType.JSON_UTF8,
-            //                             HTTPDelegate: Request => {
-
-
-            //                                 return Task.FromResult(
-            //                                     new HTTPResponse.Builder(Request) {
-            //                                         HTTPStatusCode             = HTTPStatusCode.OK,
-            //                                         ContentType                = HTTPContentType.JSON_UTF8,
-            //                                         Content                    = new JArray(EMSPClients.OrderBy(client => client.Description).Select(client => client.ToJSON())).ToUTF8Bytes(),
-            //                                         AccessControlAllowMethods  = "OPTIONS, GET",
-            //                                         AccessControlAllowHeaders  = "Authorization"
-            //                                         //LastModified               = Location.LastUpdated.ToIso8601(),
-            //                                         //ETag                       = Location.SHA256Hash
-            //                                     }.AsImmutable);
-
-            //                             });
+                                         });
 
             #endregion
 

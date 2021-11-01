@@ -159,20 +159,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (ConfigurationKeyJSON, OnException = null)
+        #region (static) Parse   (ConfigurationKeyJSON)
 
         /// <summary>
         /// Parse the given JSON representation of a configuration key value pair.
         /// </summary>
         /// <param name="ConfigurationKeyJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ConfigurationKey Parse(JObject              ConfigurationKeyJSON,
-                                             OnExceptionDelegate  OnException = null)
+        public static ConfigurationKey Parse(JObject ConfigurationKeyJSON)
         {
 
-            if (TryParse(ConfigurationKeyJSON,
-                         out ConfigurationKey configurationKey,
-                         OnException))
+            if (TryParse2(ConfigurationKeyJSON,
+                         out ConfigurationKey  configurationKey,
+                         out String            ErrorResponse))
             {
                 return configurationKey;
             }
@@ -183,20 +181,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (ConfigurationKeyText, OnException = null)
+        #region (static) Parse   (ConfigurationKeyText)
 
         /// <summary>
         /// Parse the given text representation of a configuration key value pair.
         /// </summary>
         /// <param name="ConfigurationKeyText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ConfigurationKey Parse(String               ConfigurationKeyText,
-                                             OnExceptionDelegate  OnException = null)
+        public static ConfigurationKey Parse(String ConfigurationKeyText)
         {
 
             if (TryParse(ConfigurationKeyText,
-                         out ConfigurationKey configurationKey,
-                         OnException))
+                         out ConfigurationKey  configurationKey,
+                         out String            ErrorResponse))
             {
                 return configurationKey;
             }
@@ -248,17 +244,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(ConfigurationKeyJSON, out ConfigurationKey, OnException = null)
+        #region (static) TryParse(ConfigurationKeyJSON, out ConfigurationKey, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given JSON representation of a configuration key value pair.
         /// </summary>
         /// <param name="ConfigurationKeyJSON">The JSON to be parsed.</param>
         /// <param name="ConfigurationKey">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject               ConfigurationKeyJSON,
+        public static Boolean TryParse2(JObject               ConfigurationKeyJSON,
                                        out ConfigurationKey  ConfigurationKey,
-                                       OnExceptionDelegate   OnException  = null)
+                                       out String            ErrorResponse)
         {
 
             try
@@ -271,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (!ConfigurationKeyJSON.ParseMandatoryText("key",
                                                              "configuration key",
                                                              out String  Key,
-                                                             out String  ErrorResponse))
+                                                             out         ErrorResponse))
                 {
                     return false;
                 }
@@ -315,30 +310,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ConfigurationKeyJSON, e);
-
+                ErrorResponse    = e.Message;
                 ConfigurationKey = default;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(ConfigurationKeyText, out ConfigurationKey, OnException = null)
+        #region (static) TryParse(ConfigurationKeyText, out ConfigurationKey, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given text representation of a configuration key value pair.
         /// </summary>
         /// <param name="ConfigurationKeyText">The text to be parsed.</param>
         /// <param name="ConfigurationKey">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                ConfigurationKeyText,
                                        out ConfigurationKey  ConfigurationKey,
-                                       OnExceptionDelegate   OnException  = null)
+                                       out String            ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             try
             {
@@ -349,16 +342,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 {
 
                     if (ConfigurationKeyText.StartsWith("{") &&
-                        TryParse(JObject.Parse(ConfigurationKeyText),
+                        TryParse2(JObject.Parse(ConfigurationKeyText),
                                  out ConfigurationKey,
-                                 OnException))
+                                 out ErrorResponse))
                     {
                         return true;
                     }
 
                     if (TryParse(XDocument.Parse(ConfigurationKeyText).Root,
-                                 out ConfigurationKey,
-                                 OnException))
+                                 out ConfigurationKey))
                     {
                         return true;
                     }
@@ -368,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ConfigurationKeyText, e);
+                ErrorResponse = e.Message;
             }
 
             ConfigurationKey = default;

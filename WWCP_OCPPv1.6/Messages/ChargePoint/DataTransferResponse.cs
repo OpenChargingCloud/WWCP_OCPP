@@ -418,7 +418,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         {
 
             var JSON = JSONObject.Create(
-                           new JProperty("status",  Status.AsText())
+
+                           new JProperty("status",  Status.AsText()),
+
+                           Data.IsNotNullOrEmpty()
+                               ? new JProperty("data", Data)
+                               : null
+
                        );
 
             return CustomDataTransferResponseSerializer != null

@@ -813,6 +813,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
 
             this.Configuration            = new Dictionary<String, ConfigurationData>();
+            this.Configuration.Add("doNotChangeMe", new ConfigurationData("never", true, false));
             this.EnquedRequests           = new List<EnquedRequest>();
 
             this.ChargePointVendor        = ChargePointVendor;
@@ -1195,18 +1196,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     var _configurationKeys  = new List<ConfigurationKey>();
                     var _unkownKeys         = new List<String>();
 
-                    foreach (var key in Request.Keys)
+                    if (Request.Keys.SafeAny())
                     {
+                        foreach (var key in Request.Keys)
+                        {
 
-                        if (Configuration.TryGetValue(key, out ConfigurationData Data))
-                            _configurationKeys.Add(new ConfigurationKey(key,
-                                                                        Data.IsReadOnly,
-                                                                        Data.Value));
+                            if (Configuration.TryGetValue(key, out ConfigurationData Data))
+                                _configurationKeys.Add(new ConfigurationKey(key,
+                                                                            Data.IsReadOnly,
+                                                                            Data.Value));
 
-                        else
-                            _unkownKeys.Add(key);
+                            else
+                                _unkownKeys.Add(key);
 
+                        }
                     }
+                    else
+                    {
+                        foreach (var configuration in Configuration)
+                        {
+                            _configurationKeys.Add(new ConfigurationKey(configuration.Key,
+                                                                        configuration.Value.IsReadOnly,
+                                                                        configuration.Value.Value));
+                        }
+                    }
+
 
                     response = new GetConfigurationResponse(Request,
                                                             _configurationKeys,
@@ -1287,20 +1301,38 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming ChangeConfiguration for '" + Request.Key + "' with value '" + Request.Value + "'.");
 
-                    if (Configuration.TryGetValue(Request.Key, out ConfigurationData Data) &&
-                        !Data.IsReadOnly)
+                    if (Configuration.TryGetValue(Request.Key, out ConfigurationData Data))
                     {
+                        if (Data.IsReadOnly)
+                        {
 
-                        Data.Value  = Request.Value;
-                        response    = new ChangeConfigurationResponse(Request,
-                                                                      Data.RebootRequired
-                                                                          ? ConfigurationStatus.RebootRequired
-                                                                          : ConfigurationStatus.Accepted);
+                            response = new ChangeConfigurationResponse(Request,
+                                                                       ConfigurationStatus.Rejected);
 
+                        }
+                        else
+                        {
+
+                            Data.Value  = Request.Value;
+
+                            response    = new ChangeConfigurationResponse(Request,
+                                                                          Data.RebootRequired
+                                                                              ? ConfigurationStatus.RebootRequired
+                                                                              : ConfigurationStatus.Accepted);
+
+                        }
                     }
                     else
-                        response = new ChangeConfigurationResponse(Request,
-                                                                   ConfigurationStatus.Rejected);
+                    {
+
+                        Configuration.Add(Request.Key, new ConfigurationData(Request.Value,
+                                                                             false,
+                                                                             false));
+
+                        response    = new ChangeConfigurationResponse(Request,
+                                                                      ConfigurationStatus.Accepted);
+
+                    }
 
                 }
 
@@ -1375,10 +1407,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming DataTransfer request: " + Request.VendorId + "/" + Request.MessageId);
+                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming DataTransfer request: " + Request.VendorId + "." + Request.MessageId + ": " + (Request.Data ?? ""));
 
-                    response = new DataTransferResponse(Request,
-                                                        DataTransferStatus.Rejected);
+                    if (Request.VendorId. ToLower() == "graphdefined" &&
+                        Request.MessageId.ToLower() == "hello" &&
+                        Request.Data.     ToLower() == "world!")
+                    {
+                        response = new DataTransferResponse(Request,
+                                                            DataTransferStatus.Accepted,
+                                                            "Hello World!");
+                    }
+                    else
+                        response = new DataTransferResponse(Request,
+                                                            DataTransferStatus.Rejected);
 
                 }
 
