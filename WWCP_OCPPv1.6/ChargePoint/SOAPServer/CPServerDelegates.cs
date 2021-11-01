@@ -38,9 +38,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnResetRequestDelegate(DateTime          Timestamp,
-                               IEventSender      Sender,
-                               CS.ResetRequest   Request);
+        ResetRequestDelegate(DateTime          Timestamp,
+                             IEventSender      Sender,
+                             CS.ResetRequest   Request);
 
 
     /// <summary>
@@ -68,11 +68,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnResetResponseDelegate(DateTime           Timestamp,
-                                IEventSender       Sender,
-                                CS.ResetRequest    Request,
-                                CP.ResetResponse   Response,
-                                TimeSpan           Runtime);
+        ResetResponseDelegate(DateTime           Timestamp,
+                              IEventSender       Sender,
+                              CS.ResetRequest    Request,
+                              CP.ResetResponse   Response,
+                              TimeSpan           Runtime);
 
     #endregion
 
@@ -86,9 +86,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnChangeAvailabilityRequestDelegate(DateTime                       Timestamp,
-                                            IEventSender                   Sender,
-                                            CS.ChangeAvailabilityRequest   Request);
+        ChangeAvailabilityRequestDelegate(DateTime                       Timestamp,
+                                          IEventSender                   Sender,
+                                          CS.ChangeAvailabilityRequest   Request);
 
 
     /// <summary>
@@ -116,11 +116,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnChangeAvailabilityResponseDelegate(DateTime                        Timestamp,
-                                             IEventSender                    Sender,
-                                             CS.ChangeAvailabilityRequest    Request,
-                                             CP.ChangeAvailabilityResponse   Response,
-                                             TimeSpan                        Runtime);
+        ChangeAvailabilityResponseDelegate(DateTime                        Timestamp,
+                                           IEventSender                    Sender,
+                                           CS.ChangeAvailabilityRequest    Request,
+                                           CP.ChangeAvailabilityResponse   Response,
+                                           TimeSpan                        Runtime);
 
     #endregion
 
@@ -134,9 +134,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnGetConfigurationRequestDelegate(DateTime                     Timestamp,
-                                          IEventSender                 Sender,
-                                          CS.GetConfigurationRequest   Request);
+        GetConfigurationRequestDelegate(DateTime                     Timestamp,
+                                        IEventSender                 Sender,
+                                        CS.GetConfigurationRequest   Request);
 
 
     /// <summary>
@@ -164,11 +164,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnGetConfigurationResponseDelegate(DateTime                      Timestamp,
-                                           IEventSender                  Sender,
-                                           CS.GetConfigurationRequest    Request,
-                                           CP.GetConfigurationResponse   Response,
-                                           TimeSpan                      Runtime);
+        GetConfigurationResponseDelegate(DateTime                      Timestamp,
+                                         IEventSender                  Sender,
+                                         CS.GetConfigurationRequest    Request,
+                                         CP.GetConfigurationResponse   Response,
+                                         TimeSpan                      Runtime);
 
     #endregion
 
@@ -182,9 +182,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnChangeConfigurationRequestDelegate(DateTime                        Timestamp,
-                                             IEventSender                    Sender,
-                                             CS.ChangeConfigurationRequest   Request);
+        ChangeConfigurationRequestDelegate(DateTime                        Timestamp,
+                                           IEventSender                    Sender,
+                                           CS.ChangeConfigurationRequest   Request);
 
 
     /// <summary>
@@ -212,11 +212,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnChangeConfigurationResponseDelegate(DateTime                         Timestamp,
-                                              IEventSender                     Sender,
-                                              CS.ChangeConfigurationRequest    Request,
-                                              CP.ChangeConfigurationResponse   Response,
-                                              TimeSpan                         Runtime);
+        ChangeConfigurationResponseDelegate(DateTime                         Timestamp,
+                                            IEventSender                     Sender,
+                                            CS.ChangeConfigurationRequest    Request,
+                                            CP.ChangeConfigurationResponse   Response,
+                                            TimeSpan                         Runtime);
 
     #endregion
 
@@ -230,9 +230,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The data transfer request.</param>
     public delegate Task
 
-        OnIncomingDataTransferRequestDelegate(DateTime                 Timestamp,
-                                              IEventSender             Sender,
-                                              CS.DataTransferRequest   Request);
+        IncomingDataTransferRequestDelegate(DateTime                 Timestamp,
+                                            IEventSender             Sender,
+                                            CS.DataTransferRequest   Request);
 
 
     /// <summary>
@@ -260,11 +260,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnIncomingDataTransferResponseDelegate(DateTime                  Timestamp,
-                                               IEventSender              Sender,
-                                               CS.DataTransferRequest    Request,
-                                               CP.DataTransferResponse   Response,
-                                               TimeSpan                  Runtime);
+        IncomingDataTransferResponseDelegate(DateTime                  Timestamp,
+                                             IEventSender              Sender,
+                                             CS.DataTransferRequest    Request,
+                                             CP.DataTransferResponse   Response,
+                                             TimeSpan                  Runtime);
 
     #endregion
 
@@ -278,9 +278,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnGetDiagnosticsRequestDelegate(DateTime                   Timestamp,
-                                        IEventSender               Sender,
-                                        CS.GetDiagnosticsRequest   Request);
+        GetDiagnosticsRequestDelegate(DateTime                   Timestamp,
+                                      IEventSender               Sender,
+                                      CS.GetDiagnosticsRequest   Request);
 
 
     /// <summary>
@@ -308,11 +308,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnGetDiagnosticsResponseDelegate(DateTime                    Timestamp,
-                                         IEventSender                Sender,
-                                         CS.GetDiagnosticsRequest    Request,
-                                         CP.GetDiagnosticsResponse   Response,
-                                         TimeSpan                    Runtime);
+        GetDiagnosticsResponseDelegate(DateTime                    Timestamp,
+                                       IEventSender                Sender,
+                                       CS.GetDiagnosticsRequest    Request,
+                                       CP.GetDiagnosticsResponse   Response,
+                                       TimeSpan                    Runtime);
 
     #endregion
 
@@ -326,9 +326,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnTriggerMessageRequestDelegate(DateTime                   Timestamp,
-                                        IEventSender               Sender,
-                                        CS.TriggerMessageRequest   Request);
+        TriggerMessageRequestDelegate(DateTime                   Timestamp,
+                                      IEventSender               Sender,
+                                      CS.TriggerMessageRequest   Request);
 
 
     /// <summary>
@@ -356,11 +356,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnTriggerMessageResponseDelegate(DateTime                    Timestamp,
-                                         IEventSender                Sender,
-                                         CS.TriggerMessageRequest    Request,
-                                         CP.TriggerMessageResponse   Response,
-                                         TimeSpan                    Runtime);
+        TriggerMessageResponseDelegate(DateTime                    Timestamp,
+                                       IEventSender                Sender,
+                                       CS.TriggerMessageRequest    Request,
+                                       CP.TriggerMessageResponse   Response,
+                                       TimeSpan                    Runtime);
 
     #endregion
 
@@ -374,9 +374,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnUpdateFirmwareRequestDelegate(DateTime                   Timestamp,
-                                        IEventSender               Sender,
-                                        CS.UpdateFirmwareRequest   Request);
+        UpdateFirmwareRequestDelegate(DateTime                   Timestamp,
+                                      IEventSender               Sender,
+                                      CS.UpdateFirmwareRequest   Request);
 
 
     /// <summary>
@@ -404,11 +404,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnUpdateFirmwareResponseDelegate(DateTime                    Timestamp,
-                                         IEventSender                Sender,
-                                         CS.UpdateFirmwareRequest    Request,
-                                         CP.UpdateFirmwareResponse   Response,
-                                         TimeSpan                    Runtime);
+        UpdateFirmwareResponseDelegate(DateTime                    Timestamp,
+                                       IEventSender                Sender,
+                                       CS.UpdateFirmwareRequest    Request,
+                                       CP.UpdateFirmwareResponse   Response,
+                                       TimeSpan                    Runtime);
 
     #endregion
 
@@ -423,9 +423,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnReserveNowRequestDelegate(DateTime               Timestamp,
-                                    IEventSender           Sender,
-                                    CS.ReserveNowRequest   Request);
+        ReserveNowRequestDelegate(DateTime               Timestamp,
+                                  IEventSender           Sender,
+                                  CS.ReserveNowRequest   Request);
 
 
     /// <summary>
@@ -453,11 +453,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnReserveNowResponseDelegate(DateTime                Timestamp,
-                                     IEventSender            Sender,
-                                     CS.ReserveNowRequest    Request,
-                                     CP.ReserveNowResponse   Response,
-                                     TimeSpan                Runtime);
+        ReserveNowResponseDelegate(DateTime                Timestamp,
+                                   IEventSender            Sender,
+                                   CS.ReserveNowRequest    Request,
+                                   CP.ReserveNowResponse   Response,
+                                   TimeSpan                Runtime);
 
     #endregion
 
@@ -471,9 +471,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The cancel reservation request.</param>
     public delegate Task
 
-        OnCancelReservationRequestDelegate(DateTime                      Timestamp,
-                                           IEventSender                  Sender,
-                                           CS.CancelReservationRequest   Request);
+        CancelReservationRequestDelegate(DateTime                      Timestamp,
+                                         IEventSender                  Sender,
+                                         CS.CancelReservationRequest   Request);
 
 
     /// <summary>
@@ -501,11 +501,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnCancelReservationResponseDelegate(DateTime                       Timestamp,
-                                            IEventSender                   Sender,
-                                            CS.CancelReservationRequest    Request,
-                                            CP.CancelReservationResponse   Response,
-                                            TimeSpan                       Runtime);
+        CancelReservationResponseDelegate(DateTime                       Timestamp,
+                                          IEventSender                   Sender,
+                                          CS.CancelReservationRequest    Request,
+                                          CP.CancelReservationResponse   Response,
+                                          TimeSpan                       Runtime);
 
     #endregion
 
@@ -519,9 +519,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The remote start transaction request.</param>
     public delegate Task
 
-        OnRemoteStartTransactionRequestDelegate(DateTime                           Timestamp,
-                                                IEventSender                       Sender,
-                                                CS.RemoteStartTransactionRequest   Request);
+        RemoteStartTransactionRequestDelegate(DateTime                           Timestamp,
+                                              IEventSender                       Sender,
+                                              CS.RemoteStartTransactionRequest   Request);
 
 
     /// <summary>
@@ -549,11 +549,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnRemoteStartTransactionResponseDelegate(DateTime                            Timestamp,
-                                                 IEventSender                        Sender,
-                                                 CS.RemoteStartTransactionRequest    Request,
-                                                 CP.RemoteStartTransactionResponse   Response,
-                                                 TimeSpan                            Runtime);
+        RemoteStartTransactionResponseDelegate(DateTime                            Timestamp,
+                                               IEventSender                        Sender,
+                                               CS.RemoteStartTransactionRequest    Request,
+                                               CP.RemoteStartTransactionResponse   Response,
+                                               TimeSpan                            Runtime);
 
     #endregion
 
@@ -567,9 +567,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The remote stop transaction request.</param>
     public delegate Task
 
-        OnRemoteStopTransactionRequestDelegate(DateTime                          Timestamp,
-                                               IEventSender                      Sender,
-                                               CS.RemoteStopTransactionRequest   Request);
+        RemoteStopTransactionRequestDelegate(DateTime                          Timestamp,
+                                             IEventSender                      Sender,
+                                             CS.RemoteStopTransactionRequest   Request);
 
 
     /// <summary>
@@ -597,11 +597,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnRemoteStopTransactionResponseDelegate(DateTime                           Timestamp,
-                                                IEventSender                       Sender,
-                                                CS.RemoteStopTransactionRequest    Request,
-                                                CP.RemoteStopTransactionResponse   Response,
-                                                TimeSpan                           Runtime);
+        RemoteStopTransactionResponseDelegate(DateTime                           Timestamp,
+                                              IEventSender                       Sender,
+                                              CS.RemoteStopTransactionRequest    Request,
+                                              CP.RemoteStopTransactionResponse   Response,
+                                              TimeSpan                           Runtime);
 
     #endregion
 
@@ -615,9 +615,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnSetChargingProfileRequestDelegate(DateTime                       Timestamp,
-                                            IEventSender                   Sender,
-                                            CS.SetChargingProfileRequest   Request);
+        SetChargingProfileRequestDelegate(DateTime                       Timestamp,
+                                          IEventSender                   Sender,
+                                          CS.SetChargingProfileRequest   Request);
 
 
     /// <summary>
@@ -645,11 +645,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnSetChargingProfileResponseDelegate(DateTime                        Timestamp,
-                                             IEventSender                    Sender,
-                                             CS.SetChargingProfileRequest    Request,
-                                             CP.SetChargingProfileResponse   Response,
-                                             TimeSpan                        Runtime);
+        SetChargingProfileResponseDelegate(DateTime                        Timestamp,
+                                           IEventSender                    Sender,
+                                           CS.SetChargingProfileRequest    Request,
+                                           CP.SetChargingProfileResponse   Response,
+                                           TimeSpan                        Runtime);
 
     #endregion
 
@@ -663,9 +663,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnClearChargingProfileRequestDelegate(DateTime                         Timestamp,
-                                              IEventSender                     Sender,
-                                              CS.ClearChargingProfileRequest   Request);
+        ClearChargingProfileRequestDelegate(DateTime                         Timestamp,
+                                            IEventSender                     Sender,
+                                            CS.ClearChargingProfileRequest   Request);
 
 
     /// <summary>
@@ -693,11 +693,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnClearChargingProfileResponseDelegate(DateTime                          Timestamp,
-                                               IEventSender                      Sender,
-                                               CS.ClearChargingProfileRequest    Request,
-                                               CP.ClearChargingProfileResponse   Response,
-                                               TimeSpan                          Runtime);
+        ClearChargingProfileResponseDelegate(DateTime                          Timestamp,
+                                             IEventSender                      Sender,
+                                             CS.ClearChargingProfileRequest    Request,
+                                             CP.ClearChargingProfileResponse   Response,
+                                             TimeSpan                          Runtime);
 
     #endregion
 
@@ -711,9 +711,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnGetCompositeScheduleRequestDelegate(DateTime                         Timestamp,
-                                              IEventSender                     Sender,
-                                              CS.GetCompositeScheduleRequest   Request);
+        GetCompositeScheduleRequestDelegate(DateTime                         Timestamp,
+                                            IEventSender                     Sender,
+                                            CS.GetCompositeScheduleRequest   Request);
 
 
     /// <summary>
@@ -741,11 +741,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnGetCompositeScheduleResponseDelegate(DateTime                          Timestamp,
-                                               IEventSender                      Sender,
-                                               CS.GetCompositeScheduleRequest    Request,
-                                               CP.GetCompositeScheduleResponse   Response,
-                                               TimeSpan                          Runtime);
+        GetCompositeScheduleResponseDelegate(DateTime                          Timestamp,
+                                             IEventSender                      Sender,
+                                             CS.GetCompositeScheduleRequest    Request,
+                                             CP.GetCompositeScheduleResponse   Response,
+                                             TimeSpan                          Runtime);
 
     #endregion
 
@@ -759,9 +759,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnUnlockConnectorRequestDelegate(DateTime                    Timestamp,
-                                         IEventSender                Sender,
-                                         CS.UnlockConnectorRequest   Request);
+        UnlockConnectorRequestDelegate(DateTime                    Timestamp,
+                                       IEventSender                Sender,
+                                       CS.UnlockConnectorRequest   Request);
 
 
     /// <summary>
@@ -789,11 +789,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnUnlockConnectorResponseDelegate(DateTime                     Timestamp,
-                                          IEventSender                 Sender,
-                                          CS.UnlockConnectorRequest    Request,
-                                          CP.UnlockConnectorResponse   Response,
-                                          TimeSpan                     Runtime);
+        UnlockConnectorResponseDelegate(DateTime                     Timestamp,
+                                        IEventSender                 Sender,
+                                        CS.UnlockConnectorRequest    Request,
+                                        CP.UnlockConnectorResponse   Response,
+                                        TimeSpan                     Runtime);
 
     #endregion
 
@@ -808,9 +808,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnGetLocalListVersionRequestDelegate(DateTime                        Timestamp,
-                                             IEventSender                    Sender,
-                                             CS.GetLocalListVersionRequest   Request);
+        GetLocalListVersionRequestDelegate(DateTime                        Timestamp,
+                                           IEventSender                    Sender,
+                                           CS.GetLocalListVersionRequest   Request);
 
 
     /// <summary>
@@ -838,11 +838,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnGetLocalListVersionResponseDelegate(DateTime                         Timestamp,
-                                              IEventSender                     Sender,
-                                              CS.GetLocalListVersionRequest    Request,
-                                              CP.GetLocalListVersionResponse   Response,
-                                              TimeSpan                         Runtime);
+        GetLocalListVersionResponseDelegate(DateTime                         Timestamp,
+                                            IEventSender                     Sender,
+                                            CS.GetLocalListVersionRequest    Request,
+                                            CP.GetLocalListVersionResponse   Response,
+                                            TimeSpan                         Runtime);
 
     #endregion
 
@@ -856,9 +856,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnSendLocalListRequestDelegate(DateTime                  Timestamp,
-                                       IEventSender              Sender,
-                                       CS.SendLocalListRequest   Request);
+        SendLocalListRequestDelegate(DateTime                  Timestamp,
+                                     IEventSender              Sender,
+                                     CS.SendLocalListRequest   Request);
 
 
     /// <summary>
@@ -886,11 +886,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnSendLocalListResponseDelegate(DateTime                   Timestamp,
-                                        IEventSender               Sender,
-                                        CS.SendLocalListRequest    Request,
-                                        CP.SendLocalListResponse   Response,
-                                        TimeSpan                   Runtime);
+        SendLocalListResponseDelegate(DateTime                   Timestamp,
+                                      IEventSender               Sender,
+                                      CS.SendLocalListRequest    Request,
+                                      CP.SendLocalListResponse   Response,
+                                      TimeSpan                   Runtime);
 
     #endregion
 
@@ -904,9 +904,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnClearCacheRequestDelegate(DateTime               Timestamp,
-                                    IEventSender           Sender,
-                                    CS.ClearCacheRequest   Request);
+        ClearCacheRequestDelegate(DateTime               Timestamp,
+                                  IEventSender           Sender,
+                                  CS.ClearCacheRequest   Request);
 
 
     /// <summary>
@@ -934,11 +934,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnClearCacheResponseDelegate(DateTime                Timestamp,
-                                     IEventSender            Sender,
-                                     CS.ClearCacheRequest    Request,
-                                     CP.ClearCacheResponse   Response,
-                                     TimeSpan                Runtime);
+        ClearCacheResponseDelegate(DateTime                Timestamp,
+                                   IEventSender            Sender,
+                                   CS.ClearCacheRequest    Request,
+                                   CP.ClearCacheResponse   Response,
+                                   TimeSpan                Runtime);
 
     #endregion
 

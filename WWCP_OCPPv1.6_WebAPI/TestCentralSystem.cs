@@ -105,17 +105,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Events
 
+        // CP -> CS
+
         #region OnBootNotification
 
         /// <summary>
         /// An event sent whenever a boot notification request was received.
         /// </summary>
-        event BootNotificationRequestDelegate   OnBootNotificationRequest;
+        public event BootNotificationRequestDelegate   OnBootNotificationRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a boot notification was sent.
+        /// An event sent whenever a response to a boot notification request was sent.
         /// </summary>
-        event BootNotificationResponseDelegate  OnBootNotificationResponse;
+        public event BootNotificationResponseDelegate  OnBootNotificationResponse;
 
         #endregion
 
@@ -127,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public event HeartbeatRequestDelegate   OnHeartbeatRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a heartbeat was sent.
+        /// An event sent whenever a response to a heartbeat request was sent.
         /// </summary>
         public event HeartbeatResponseDelegate  OnHeartbeatResponse;
 
@@ -137,70 +139,70 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region OnAuthorize
 
         /// <summary>
-        /// An event sent whenever a heartbeat request was received.
+        /// An event sent whenever an authorize request was received.
         /// </summary>
-        public event OnAuthorizeRequestDelegate   OnAuthorizeRequest;
+        public event AuthorizeRequestDelegate   OnAuthorizeRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a heartbeat was sent.
+        /// An event sent whenever a response to an authorize request was sent.
         /// </summary>
-        public event OnAuthorizeResponseDelegate  OnAuthorizeResponse;
+        public event AuthorizeResponseDelegate  OnAuthorizeResponse;
 
         #endregion
 
         #region OnStartTransaction
 
         /// <summary>
-        /// An event sent whenever a heartbeat request was received.
+        /// An event sent whenever a StartTransaction request was received.
         /// </summary>
-        public event OnStartTransactionRequestDelegate   OnStartTransactionRequest;
+        public event StartTransactionRequestDelegate   OnStartTransactionRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a heartbeat was sent.
+        /// An event sent whenever a response to a StartTransaction request was sent.
         /// </summary>
-        public event OnStartTransactionResponseDelegate  OnStartTransactionResponse;
+        public event StartTransactionResponseDelegate  OnStartTransactionResponse;
 
         #endregion
 
         #region OnStatusNotification
 
         /// <summary>
-        /// An event sent whenever a heartbeat request was received.
+        /// An event sent whenever a StatusNotification request was received.
         /// </summary>
-        public event OnStatusNotificationRequestDelegate   OnStatusNotificationRequest;
+        public event StatusNotificationRequestDelegate   OnStatusNotificationRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a heartbeat was sent.
+        /// An event sent whenever a response to a StatusNotification request was sent.
         /// </summary>
-        public event OnStatusNotificationResponseDelegate  OnStatusNotificationResponse;
+        public event StatusNotificationResponseDelegate  OnStatusNotificationResponse;
 
         #endregion
 
         #region OnMeterValues
 
         /// <summary>
-        /// An event sent whenever a heartbeat request was received.
+        /// An event sent whenever a MeterValues request was received.
         /// </summary>
-        public event OnMeterValuesRequestDelegate   OnMeterValuesRequest;
+        public event MeterValuesRequestDelegate   OnMeterValuesRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a heartbeat was sent.
+        /// An event sent whenever a response to a MeterValues request was sent.
         /// </summary>
-        public event OnMeterValuesResponseDelegate  OnMeterValuesResponse;
+        public event MeterValuesResponseDelegate  OnMeterValuesResponse;
 
         #endregion
 
         #region OnStopTransaction
 
         /// <summary>
-        /// An event sent whenever a heartbeat request was received.
+        /// An event sent whenever a StopTransaction request was received.
         /// </summary>
-        public event OnStopTransactionRequestDelegate   OnStopTransactionRequest;
+        public event StopTransactionRequestDelegate   OnStopTransactionRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a heartbeat was sent.
+        /// An event sent whenever a response to a StopTransaction request was sent.
         /// </summary>
-        public event OnStopTransactionResponseDelegate  OnStopTransactionResponse;
+        public event StopTransactionResponseDelegate  OnStopTransactionResponse;
 
         #endregion
 
@@ -208,54 +210,335 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region OnIncomingDataTransfer
 
         /// <summary>
-        /// An event sent whenever a heartbeat request was received.
+        /// An event sent whenever an IncomingDataTransfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
+        public event IncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a heartbeat was sent.
+        /// An event sent whenever a response to an IncomingDataTransfer request was sent.
         /// </summary>
-        public event OnIncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
+        public event IncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
 
         #endregion
 
         #region OnDiagnosticsStatusNotification
 
         /// <summary>
-        /// An event sent whenever a heartbeat request was received.
+        /// An event sent whenever a DiagnosticsStatusNotification request was received.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationRequestDelegate   OnDiagnosticsStatusNotificationRequest;
+        public event DiagnosticsStatusNotificationRequestDelegate   OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a heartbeat was sent.
+        /// An event sent whenever a response to a DiagnosticsStatusNotification request was sent.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
+        public event DiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
 
         #endregion
 
         #region OnFirmwareStatusNotification
 
         /// <summary>
-        /// An event sent whenever a heartbeat request was received.
+        /// An event sent whenever a FirmwareStatusNotification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
+        public event FirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a heartbeat was sent.
+        /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
         /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
+        public event FirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
+
+        #endregion
+
+
+        // CS -> CP
+
+        #region OnReset
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.ResetRequestDelegate   OnResetRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.ResetResponseDelegate  OnResetResponse;
+
+        #endregion
+
+        #region OnChangeAvailability
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.ChangeAvailabilityRequestDelegate   OnChangeAvailabilityRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.ChangeAvailabilityResponseDelegate  OnChangeAvailabilityResponse;
+
+        #endregion
+
+        #region OnGetConfiguration
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.GetConfigurationRequestDelegate   OnGetConfigurationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.GetConfigurationResponseDelegate  OnGetConfigurationResponse;
+
+        #endregion
+
+        #region OnChangeConfiguration
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.ChangeConfigurationRequestDelegate   OnChangeConfigurationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.ChangeConfigurationResponseDelegate  OnChangeConfigurationResponse;
+
+        #endregion
+
+        #region OnDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.IncomingDataTransferRequestDelegate   OnDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.IncomingDataTransferResponseDelegate  OnDataTransferResponse;
+
+        #endregion
+
+        #region OnGetDiagnostics
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.GetDiagnosticsRequestDelegate   OnGetDiagnosticsRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.GetDiagnosticsResponseDelegate  OnGetDiagnosticsResponse;
+
+        #endregion
+
+        #region OnTriggerMessage
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.TriggerMessageRequestDelegate   OnTriggerMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.TriggerMessageResponseDelegate  OnTriggerMessageResponse;
+
+        #endregion
+
+        #region OnUpdateFirmware
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.UpdateFirmwareRequestDelegate   OnUpdateFirmwareRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.UpdateFirmwareResponseDelegate  OnUpdateFirmwareResponse;
+
+        #endregion
+
+
+        #region OnReserveNow
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.ReserveNowRequestDelegate   OnReserveNowRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.ReserveNowResponseDelegate  OnReserveNowResponse;
+
+        #endregion
+
+        #region OnCancelReservation
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.CancelReservationRequestDelegate   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.CancelReservationResponseDelegate  OnCancelReservationResponse;
+
+        #endregion
+
+        #region OnRemoteStartTransaction
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.RemoteStartTransactionRequestDelegate   OnRemoteStartTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.RemoteStartTransactionResponseDelegate  OnRemoteStartTransactionResponse;
+
+        #endregion
+
+        #region OnRemoteStopTransaction
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.RemoteStopTransactionRequestDelegate   OnRemoteStopTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.RemoteStopTransactionResponseDelegate  OnRemoteStopTransactionResponse;
+
+        #endregion
+
+        #region OnSetChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.SetChargingProfileRequestDelegate   OnSetChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.SetChargingProfileResponseDelegate  OnSetChargingProfileResponse;
+
+        #endregion
+
+        #region OnClearChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.ClearChargingProfileRequestDelegate   OnClearChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.ClearChargingProfileResponseDelegate  OnClearChargingProfileResponse;
+
+        #endregion
+
+        #region OnGetCompositeSchedule
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.GetCompositeScheduleRequestDelegate   OnGetCompositeScheduleRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.GetCompositeScheduleResponseDelegate  OnGetCompositeScheduleResponse;
+
+        #endregion
+
+        #region OnUnlockConnector
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.UnlockConnectorRequestDelegate   OnUnlockConnectorRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.UnlockConnectorResponseDelegate  OnUnlockConnectorResponse;
+
+        #endregion
+
+
+        #region OnGetLocalListVersion
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.GetLocalListVersionRequestDelegate   OnGetLocalListVersionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.GetLocalListVersionResponseDelegate  OnGetLocalListVersionResponse;
+
+        #endregion
+
+        #region OnSendLocalList
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.SendLocalListRequestDelegate   OnSendLocalListRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.SendLocalListResponseDelegate  OnSendLocalListResponse;
+
+        #endregion
+
+        #region OnClearCache
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event CP.ClearCacheRequestDelegate   OnClearCacheRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event CP.ClearCacheResponseDelegate  OnClearCacheResponse;
 
         #endregion
 
 
 
         // WebSocket events
+
+        #region OnNewTCPConnection
+
         public event OnNewTCPConnectionDelegate                 OnNewTCPConnection;
 
         public event OnNewWebSocketConnectionDelegate           OnNewWebSocketConnection;
 
+        #endregion
+
+        #region OnMessage
+
         public event OnWebSocketMessageDelegate                 OnMessage;
 
+        #endregion
+
+        #region OnTextMessage  (Request/Response)
 
         public event OnWebSocketTextMessageRequestDelegate      OnTextMessageRequest;
 
@@ -263,6 +546,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         public event OnWebSocketTextMessageResponseDelegate     OnTextMessageResponse;
 
+        #endregion
+
+        #region OnBinaryMessage(Request/Response)
 
         public event OnWebSocketBinaryMessageRequestDelegate    OnBinaryMessageRequest;
 
@@ -270,13 +556,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         public event OnWebSocketBinaryMessageResponseDelegate   OnBinaryMessageResponse;
 
+        #endregion
+
+        #region On(Ping/Pong)Message
 
         public event OnWebSocketMessageDelegate                 OnPingMessage;
 
         public event OnWebSocketMessageDelegate                 OnPongMessage;
 
+        #endregion
+
+        #region OnCloseMessage
 
         public event OnCloseMessageDelegate                     OnCloseMessage;
+
+        #endregion
 
         #endregion
 
@@ -3257,7 +3551,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
 
-
         #region Reset                 (ChargeBoxId, ResetType, ...)
 
         /// <summary>
@@ -3276,6 +3569,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                            null,
                                            EventTrackingId);
 
+            #region Send OnResetRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnResetRequest?.Invoke(requestTimestamp,
+                                       this,
+                                       request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnResetRequest));
+            }
+
+            #endregion
+
+
             CP.ResetResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3283,6 +3595,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.ResetResponse(request, ResetStatus.Rejected);
+
+
+            if (response is null)
+                response = new CP.ResetResponse(request,
+                                                Result.Server("Response is null!"));
+
+
+            #region Send OnResetResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnResetResponse?.Invoke(responseTimestamp,
+                                        this,
+                                        request,
+                                        response,
+                                        responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnResetResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3311,6 +3650,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                         null,
                                                         EventTrackingId);
 
+            #region Send OnChangeAvailabilityRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnChangeAvailabilityRequest?.Invoke(requestTimestamp,
+                                                    this,
+                                                    request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnChangeAvailabilityRequest));
+            }
+
+            #endregion
+
+
             CP.ChangeAvailabilityResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3318,6 +3676,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.ChangeAvailabilityResponse(request, AvailabilityStatus.Rejected);
+
+
+            if (response is null)
+                response = new CP.ChangeAvailabilityResponse(request,
+                                                             Result.Server("Response is null!"));
+
+
+            #region Send OnChangeAvailabilityResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnChangeAvailabilityResponse?.Invoke(responseTimestamp,
+                                                     this,
+                                                     request,
+                                                     response,
+                                                     responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnChangeAvailabilityResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3343,6 +3728,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                       null,
                                                       EventTrackingId);
 
+            #region Send OnGetConfigurationRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnGetConfigurationRequest?.Invoke(requestTimestamp,
+                                                  this,
+                                                  request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetConfigurationRequest));
+            }
+
+            #endregion
+
+
             CP.GetConfigurationResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3352,6 +3756,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.GetConfigurationResponse(request,
                                                            new ConfigurationKey[0],
                                                            Keys);
+
+
+            if (response is null)
+                response = new CP.GetConfigurationResponse(request,
+                                                           Result.Server("Response is null!"));
+
+
+            #region Send OnGetConfigurationResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnGetConfigurationResponse?.Invoke(responseTimestamp,
+                                                   this,
+                                                   request,
+                                                   response,
+                                                   responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetConfigurationResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3380,6 +3811,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                          null,
                                                          EventTrackingId);
 
+            #region Send OnChangeConfigurationRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnChangeConfigurationRequest?.Invoke(requestTimestamp,
+                                                     this,
+                                                     request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnChangeConfigurationRequest));
+            }
+
+            #endregion
+
+
             CP.ChangeConfigurationResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3387,6 +3837,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.ChangeConfigurationResponse(request, ConfigurationStatus.Rejected);
+
+
+            if (response is null)
+                response = new CP.ChangeConfigurationResponse(request,
+                                                              Result.Server("Response is null!"));
+
+
+            #region Send OnChangeConfigurationResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnChangeConfigurationResponse?.Invoke(responseTimestamp,
+                                                      this,
+                                                      request,
+                                                      response,
+                                                      responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnChangeConfigurationResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3418,6 +3895,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                   null,
                                                   EventTrackingId);
 
+            #region Send OnDataTransferRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnDataTransferRequest?.Invoke(requestTimestamp,
+                                              this,
+                                              request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnDataTransferRequest));
+            }
+
+            #endregion
+
+
             CP.DataTransferResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3425,6 +3921,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.DataTransferResponse(request, DataTransferStatus.Rejected);
+
+
+            if (response is null)
+                response = new CP.DataTransferResponse(request,
+                                                       Result.Server("Response is null!"));
+
+
+            #region Send OnDataTransferResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnDataTransferResponse?.Invoke(responseTimestamp,
+                                               this,
+                                               request,
+                                               response,
+                                               responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnDataTransferResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3462,6 +3985,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                     null,
                                                     EventTrackingId);
 
+            #region Send OnGetDiagnosticsRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnGetDiagnosticsRequest?.Invoke(requestTimestamp,
+                                                this,
+                                                request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetDiagnosticsRequest));
+            }
+
+            #endregion
+
+
             CP.GetDiagnosticsResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3469,6 +4011,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.GetDiagnosticsResponse(request);
+
+
+            if (response is null)
+                response = new CP.GetDiagnosticsResponse(request,
+                                                         Result.Server("Response is null!"));
+
+
+            #region Send OnGetDiagnosticsResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnGetDiagnosticsResponse?.Invoke(responseTimestamp,
+                                                 this,
+                                                 request,
+                                                 response,
+                                                 responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetDiagnosticsResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3497,6 +4066,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                     null,
                                                     EventTrackingId);
 
+            #region Send OnTriggerMessageRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnTriggerMessageRequest?.Invoke(requestTimestamp,
+                                                this,
+                                                request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnTriggerMessageRequest));
+            }
+
+            #endregion
+
+
             CP.TriggerMessageResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3504,6 +4092,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.TriggerMessageResponse(request, TriggerMessageStatus.Rejected);
+
+
+            if (response is null)
+                response = new CP.TriggerMessageResponse(request,
+                                                         Result.Server("Response is null!"));
+
+
+            #region Send OnTriggerMessageResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnTriggerMessageResponse?.Invoke(responseTimestamp,
+                                                 this,
+                                                 request,
+                                                 response,
+                                                 responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnTriggerMessageResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3538,6 +4153,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                     null,
                                                     EventTrackingId);
 
+            #region Send OnUpdateFirmwareRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateFirmwareRequest?.Invoke(requestTimestamp,
+                                                this,
+                                                request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnUpdateFirmwareRequest));
+            }
+
+            #endregion
+
+
             CP.UpdateFirmwareResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3545,6 +4179,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.UpdateFirmwareResponse(request);
+
+
+            if (response is null)
+                response = new CP.UpdateFirmwareResponse(request,
+                                                         Result.Server("Response is null!"));
+
+
+            #region Send OnUpdateFirmwareResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnUpdateFirmwareResponse?.Invoke(responseTimestamp,
+                                                 this,
+                                                 request,
+                                                 response,
+                                                 responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnUpdateFirmwareResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3583,6 +4244,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                 null,
                                                 EventTrackingId);
 
+            #region Send OnReserveNowRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnReserveNowRequest?.Invoke(requestTimestamp,
+                                            this,
+                                            request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnReserveNowRequest));
+            }
+
+            #endregion
+
+
             CP.ReserveNowResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3590,6 +4270,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.ReserveNowResponse(request, ReservationStatus.Rejected);
+
+
+            if (response is null)
+                response = new CP.ReserveNowResponse(request,
+                                                     Result.Server("Response is null!"));
+
+
+            #region Send OnReserveNowResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnReserveNowResponse?.Invoke(responseTimestamp,
+                                             this,
+                                             request,
+                                             response,
+                                             responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnReserveNowResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3615,6 +4322,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                        null,
                                                        EventTrackingId);
 
+            #region Send OnCancelReservationRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnCancelReservationRequest?.Invoke(requestTimestamp,
+                                                   this,
+                                                   request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnCancelReservationRequest));
+            }
+
+            #endregion
+
+
             CP.CancelReservationResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3622,6 +4348,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.CancelReservationResponse(request, CancelReservationStatus.Rejected);
+
+
+            if (response is null)
+                response = new CP.CancelReservationResponse(request,
+                                                            Result.Server("Response is null!"));
+
+
+            #region Send OnCancelReservationResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnCancelReservationResponse?.Invoke(responseTimestamp,
+                                                    this,
+                                                    request,
+                                                    response,
+                                                    responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnCancelReservationResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3653,6 +4406,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                             null,
                                                             EventTrackingId);
 
+            #region Send OnRemoteStartTransactionRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnRemoteStartTransactionRequest?.Invoke(requestTimestamp,
+                                                        this,
+                                                        request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnRemoteStartTransactionRequest));
+            }
+
+            #endregion
+
+
             CP.RemoteStartTransactionResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3660,6 +4432,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.RemoteStartTransactionResponse(request, RemoteStartStopStatus.Rejected);
+
+
+            if (response is null)
+                response = new CP.RemoteStartTransactionResponse(request,
+                                                                 Result.Server("Response is null!"));
+
+
+            #region Send OnRemoteStartTransactionResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnRemoteStartTransactionResponse?.Invoke(responseTimestamp,
+                                                         this,
+                                                         request,
+                                                         response,
+                                                         responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnRemoteStartTransactionResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3685,6 +4484,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                            null,
                                                            EventTrackingId);
 
+            #region Send OnRemoteStopTransactionRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnRemoteStopTransactionRequest?.Invoke(requestTimestamp,
+                                                       this,
+                                                       request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnRemoteStopTransactionRequest));
+            }
+
+            #endregion
+
+
             CP.RemoteStopTransactionResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3692,6 +4510,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.RemoteStopTransactionResponse(request, RemoteStartStopStatus.Rejected);
+
+
+            if (response is null)
+                response = new CP.RemoteStopTransactionResponse(request,
+                                                                Result.Server("Response is null!"));
+
+
+            #region Send OnRemoteStopTransactionResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnRemoteStopTransactionResponse?.Invoke(responseTimestamp,
+                                                        this,
+                                                        request,
+                                                        response,
+                                                        responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnRemoteStopTransactionResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3720,6 +4565,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                         null,
                                                         EventTrackingId);
 
+            #region Send OnSetChargingProfileRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnSetChargingProfileRequest?.Invoke(requestTimestamp,
+                                                    this,
+                                                    request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSetChargingProfileRequest));
+            }
+
+            #endregion
+
+
             CP.SetChargingProfileResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3727,6 +4591,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.SetChargingProfileResponse(request, ChargingProfileStatus.NotSupported);
+
+
+            if (response is null)
+                response = new CP.SetChargingProfileResponse(request,
+                                                             Result.Server("Response is null!"));
+
+
+            #region Send OnSetChargingProfileResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnSetChargingProfileResponse?.Invoke(responseTimestamp,
+                                                     this,
+                                                     request,
+                                                     response,
+                                                     responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSetChargingProfileResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3761,6 +4652,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                           null,
                                                           EventTrackingId);
 
+            #region Send OnClearChargingProfileRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnClearChargingProfileRequest?.Invoke(requestTimestamp,
+                                                      this,
+                                                      request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnClearChargingProfileRequest));
+            }
+
+            #endregion
+
+
             CP.ClearChargingProfileResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3768,6 +4678,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.ClearChargingProfileResponse(request, ClearChargingProfileStatus.Unknown);
+
+
+            if (response is null)
+                response = new CP.ClearChargingProfileResponse(request,
+                                                               Result.Server("Response is null!"));
+
+
+            #region Send OnClearChargingProfileResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnClearChargingProfileResponse?.Invoke(responseTimestamp,
+                                                       this,
+                                                       request,
+                                                       response,
+                                                       responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnClearChargingProfileResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3799,6 +4736,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                           null,
                                                           EventTrackingId);
 
+            #region Send OnGetCompositeScheduleRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnGetCompositeScheduleRequest?.Invoke(requestTimestamp,
+                                                      this,
+                                                      request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetCompositeScheduleRequest));
+            }
+
+            #endregion
+
+
             CP.GetCompositeScheduleResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3808,6 +4764,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.GetCompositeScheduleResponse(request,
                                                                GetCompositeScheduleStatus.Rejected,
                                                                ConnectorId);
+
+
+            if (response is null)
+                response = new CP.GetCompositeScheduleResponse(request,
+                                                               Result.Server("Response is null!"));
+
+
+            #region Send OnGetCompositeScheduleResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnGetCompositeScheduleResponse?.Invoke(responseTimestamp,
+                                                       this,
+                                                       request,
+                                                       response,
+                                                       responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetCompositeScheduleResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3833,6 +4816,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                      null,
                                                      EventTrackingId);
 
+            #region Send OnUnlockConnectorRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnUnlockConnectorRequest?.Invoke(requestTimestamp,
+                                                 this,
+                                                 request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnUnlockConnectorRequest));
+            }
+
+            #endregion
+
+
             CP.UnlockConnectorResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3840,6 +4842,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.UnlockConnectorResponse(request, UnlockStatus.NotSupported);
+
+
+            if (response is null)
+                response = new CP.UnlockConnectorResponse(request,
+                                                          Result.Server("Response is null!"));
+
+
+            #region Send OnUnlockConnectorResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnUnlockConnectorResponse?.Invoke(responseTimestamp,
+                                                  this,
+                                                  request,
+                                                  response,
+                                                  responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnUnlockConnectorResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3863,6 +4892,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                          null,
                                                          EventTrackingId);
 
+            #region Send OnGetLocalListVersionRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnGetLocalListVersionRequest?.Invoke(requestTimestamp,
+                                                     this,
+                                                     request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetLocalListVersionRequest));
+            }
+
+            #endregion
+
+
             CP.GetLocalListVersionResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3870,6 +4918,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.GetLocalListVersionResponse(request, 0);
+
+
+            if (response is null)
+                response = new CP.GetLocalListVersionResponse(request,
+                                                              Result.Server("Response is null!"));
+
+
+            #region Send OnGetLocalListVersionResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnGetLocalListVersionResponse?.Invoke(responseTimestamp,
+                                                      this,
+                                                      request,
+                                                      response,
+                                                      responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetLocalListVersionResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3901,6 +4976,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                    null,
                                                    EventTrackingId);
 
+            #region Send OnSendLocalListRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnSendLocalListRequest?.Invoke(requestTimestamp,
+                                               this,
+                                               request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSendLocalListRequest));
+            }
+
+            #endregion
+
+
             CP.SendLocalListResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3908,6 +5002,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.SendLocalListResponse(request, UpdateStatus.NotSupported);
+
+
+            if (response is null)
+                response = new CP.SendLocalListResponse(request,
+                                                        Result.Server("Response is null!"));
+
+
+            #region Send OnSendLocalListResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnSendLocalListResponse?.Invoke(responseTimestamp,
+                                                this,
+                                                request,
+                                                response,
+                                                responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSendLocalListResponse));
+            }
+
+            #endregion
 
             return response;
 
@@ -3930,6 +5051,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                 null,
                                                 EventTrackingId);
 
+            #region Send OnClearCacheRequest event
+
+            var requestTimestamp = Timestamp.Now;
+
+            try
+            {
+
+                OnClearCacheRequest?.Invoke(requestTimestamp,
+                                            this,
+                                            request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnClearCacheRequest));
+            }
+
+            #endregion
+
+
             CP.ClearCacheResponse response;
 
             if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
@@ -3937,6 +5077,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.ClearCacheResponse(request, ClearCacheStatus.Rejected);
+
+
+            if (response is null)
+                response = new CP.ClearCacheResponse(request,
+                                                     Result.Server("Response is null!"));
+
+
+            #region Send OnClearCacheResponse event
+
+            try
+            {
+
+                var responseTimestamp = Timestamp.Now;
+
+                OnClearCacheResponse?.Invoke(responseTimestamp,
+                                             this,
+                                             request,
+                                             response,
+                                             responseTimestamp - requestTimestamp);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnClearCacheResponse));
+            }
+
+            #endregion
 
             return response;
 

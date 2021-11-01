@@ -553,7 +553,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnResetRequestDelegate      OnResetRequest;
+        public event ResetRequestDelegate      OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -563,7 +563,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnResetResponseDelegate     OnResetResponse;
+        public event ResetResponseDelegate     OnResetResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
@@ -582,7 +582,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnChangeAvailabilityRequestDelegate      OnChangeAvailabilityRequest;
+        public event ChangeAvailabilityRequestDelegate      OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -592,7 +592,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnChangeAvailabilityResponseDelegate     OnChangeAvailabilityResponse;
+        public event ChangeAvailabilityResponseDelegate     OnChangeAvailabilityResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
@@ -611,7 +611,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetConfigurationRequestDelegate      OnGetConfigurationRequest;
+        public event GetConfigurationRequestDelegate      OnGetConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -621,7 +621,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnGetConfigurationResponseDelegate     OnGetConfigurationResponse;
+        public event GetConfigurationResponseDelegate     OnGetConfigurationResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
@@ -640,7 +640,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnChangeConfigurationRequestDelegate      OnChangeConfigurationRequest;
+        public event ChangeConfigurationRequestDelegate      OnChangeConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -650,7 +650,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnChangeConfigurationResponseDelegate     OnChangeConfigurationResponse;
+        public event ChangeConfigurationResponseDelegate     OnChangeConfigurationResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
@@ -669,7 +669,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
+        public event IncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
@@ -679,7 +679,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event OnIncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
+        public event IncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a data transfer request was sent.
@@ -698,7 +698,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetDiagnosticsRequestDelegate      OnGetDiagnosticsRequest;
+        public event GetDiagnosticsRequestDelegate      OnGetDiagnosticsRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -708,7 +708,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnGetDiagnosticsResponseDelegate     OnGetDiagnosticsResponse;
+        public event GetDiagnosticsResponseDelegate     OnGetDiagnosticsResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
@@ -727,7 +727,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnTriggerMessageRequestDelegate      OnTriggerMessageRequest;
+        public event TriggerMessageRequestDelegate      OnTriggerMessageRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -737,7 +737,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnTriggerMessageResponseDelegate     OnTriggerMessageResponse;
+        public event TriggerMessageResponseDelegate     OnTriggerMessageResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
@@ -756,7 +756,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnUpdateFirmwareRequestDelegate      OnUpdateFirmwareRequest;
+        public event UpdateFirmwareRequestDelegate      OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -766,7 +766,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnUpdateFirmwareResponseDelegate     OnUpdateFirmwareResponse;
+        public event UpdateFirmwareResponseDelegate     OnUpdateFirmwareResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
@@ -786,7 +786,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event OnReserveNowRequestDelegate   OnReserveNowRequest;
+        public event ReserveNowRequestDelegate   OnReserveNowRequest;
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
@@ -796,7 +796,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reserve now request was sent.
         /// </summary>
-        public event OnReserveNowResponseDelegate  OnReserveNowResponse;
+        public event ReserveNowResponseDelegate  OnReserveNowResponse;
 
         /// <summary>
         /// An event sent whenever a WS response to a reserve now request was sent.
@@ -815,7 +815,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event OnCancelReservationRequestDelegate   OnCancelReservationRequest;
+        public event CancelReservationRequestDelegate   OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
@@ -825,7 +825,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a cancel reservation request was sent.
         /// </summary>
-        public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
+        public event CancelReservationResponseDelegate  OnCancelReservationResponse;
 
         /// <summary>
         /// An event sent whenever a WS response to a cancel reservation request was sent.
@@ -844,7 +844,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a remote start transaction request was received.
         /// </summary>
-        public event OnRemoteStartTransactionRequestDelegate   OnRemoteStartTransactionRequest;
+        public event RemoteStartTransactionRequestDelegate   OnRemoteStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a remote start transaction was received.
@@ -854,7 +854,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a remote start transaction request was sent.
         /// </summary>
-        public event OnRemoteStartTransactionResponseDelegate  OnRemoteStartTransactionResponse;
+        public event RemoteStartTransactionResponseDelegate  OnRemoteStartTransactionResponse;
 
         /// <summary>
         /// An event sent whenever a WS response to a remote start transaction request was sent.
@@ -873,7 +873,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a remote stop transaction request was received.
         /// </summary>
-        public event OnRemoteStopTransactionRequestDelegate   OnRemoteStopTransactionRequest;
+        public event RemoteStopTransactionRequestDelegate   OnRemoteStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a remote stop transaction was received.
@@ -883,7 +883,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a remote stop transaction request was sent.
         /// </summary>
-        public event OnRemoteStopTransactionResponseDelegate  OnRemoteStopTransactionResponse;
+        public event RemoteStopTransactionResponseDelegate  OnRemoteStopTransactionResponse;
 
         /// <summary>
         /// An event sent whenever a WS response to a remote stop transaction request was sent.
@@ -902,7 +902,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnSetChargingProfileRequestDelegate      OnSetChargingProfileRequest;
+        public event SetChargingProfileRequestDelegate      OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -912,7 +912,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnSetChargingProfileResponseDelegate     OnSetChargingProfileResponse;
+        public event SetChargingProfileResponseDelegate     OnSetChargingProfileResponse;
 
         /// <summary>
         /// An event sent whenever a WS response to a reset request was sent.
@@ -931,7 +931,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnClearChargingProfileRequestDelegate      OnClearChargingProfileRequest;
+        public event ClearChargingProfileRequestDelegate      OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -941,7 +941,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnClearChargingProfileResponseDelegate     OnClearChargingProfileResponse;
+        public event ClearChargingProfileResponseDelegate     OnClearChargingProfileResponse;
 
         /// <summary>
         /// An event sent whenever a WS response to a reset request was sent.
@@ -960,7 +960,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetCompositeScheduleRequestDelegate      OnGetCompositeScheduleRequest;
+        public event GetCompositeScheduleRequestDelegate      OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -970,7 +970,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnGetCompositeScheduleResponseDelegate     OnGetCompositeScheduleResponse;
+        public event GetCompositeScheduleResponseDelegate     OnGetCompositeScheduleResponse;
 
         /// <summary>
         /// An event sent whenever a WS response to a reset request was sent.
@@ -989,7 +989,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnUnlockConnectorRequestDelegate      OnUnlockConnectorRequest;
+        public event UnlockConnectorRequestDelegate      OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -999,7 +999,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnUnlockConnectorResponseDelegate     OnUnlockConnectorResponse;
+        public event UnlockConnectorResponseDelegate     OnUnlockConnectorResponse;
 
         /// <summary>
         /// An event sent whenever a WS response to a reset request was sent.
@@ -1019,7 +1019,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetLocalListVersionRequestDelegate      OnGetLocalListVersionRequest;
+        public event GetLocalListVersionRequestDelegate      OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -1029,7 +1029,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnGetLocalListVersionResponseDelegate     OnGetLocalListVersionResponse;
+        public event GetLocalListVersionResponseDelegate     OnGetLocalListVersionResponse;
 
         /// <summary>
         /// An event sent whenever a WS response to a reset request was sent.
@@ -1048,7 +1048,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnSendLocalListRequestDelegate      OnSendLocalListRequest;
+        public event SendLocalListRequestDelegate      OnSendLocalListRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -1058,7 +1058,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnSendLocalListResponseDelegate     OnSendLocalListResponse;
+        public event SendLocalListResponseDelegate     OnSendLocalListResponse;
 
         /// <summary>
         /// An event sent whenever a WS response to a reset request was sent.
@@ -1077,7 +1077,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnClearCacheRequestDelegate      OnClearCacheRequest;
+        public event ClearCacheRequestDelegate      OnClearCacheRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -1087,7 +1087,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnClearCacheResponseDelegate     OnClearCacheResponse;
+        public event ClearCacheResponseDelegate     OnClearCacheResponse;
 
         /// <summary>
         /// An event sent whenever a WS response to a reset request was sent.

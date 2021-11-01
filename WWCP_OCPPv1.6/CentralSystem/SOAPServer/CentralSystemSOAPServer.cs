@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a boot notification was received.
         /// </summary>
-        public event BootNotificationDelegate          OnBootNotification;
+        public event OnBootNotificationDelegate          OnBootNotification;
 
         /// <summary>
         /// An event sent whenever a response to a boot notification was sent.
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a heartbeat was received.
         /// </summary>
-        public event HeartbeatDelegate          OnHeartbeat;
+        public event OnHeartbeatDelegate          OnHeartbeat;
 
         /// <summary>
         /// An event sent whenever a response to a heartbeat was sent.
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever an authorize request was received.
         /// </summary>
-        public event OnAuthorizeRequestDelegate   OnAuthorizeRequest;
+        public event AuthorizeRequestDelegate   OnAuthorizeRequest;
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever an authorize response was sent.
         /// </summary>
-        public event OnAuthorizeResponseDelegate  OnAuthorizeResponse;
+        public event AuthorizeResponseDelegate  OnAuthorizeResponse;
 
         /// <summary>
         /// An event sent whenever an authorize SOAP response was sent.
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        public event OnStartTransactionRequestDelegate   OnStartTransactionRequest;
+        public event StartTransactionRequestDelegate   OnStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a start transaction request was received.
@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a response to a start transaction request was sent.
         /// </summary>
-        public event OnStartTransactionResponseDelegate  OnStartTransactionResponse;
+        public event StartTransactionResponseDelegate  OnStartTransactionResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a start transaction request was sent.
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a status notification request was received.
         /// </summary>
-        public event OnStatusNotificationRequestDelegate   OnStatusNotificationRequest;
+        public event StatusNotificationRequestDelegate   OnStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a response to a status notification request was sent.
         /// </summary>
-        public event OnStatusNotificationResponseDelegate  OnStatusNotificationResponse;
+        public event StatusNotificationResponseDelegate  OnStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a status notification request was sent.
@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a meter values request was received.
         /// </summary>
-        public event OnMeterValuesRequestDelegate   OnMeterValuesRequest;
+        public event MeterValuesRequestDelegate   OnMeterValuesRequest;
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a response to a meter values request was sent.
         /// </summary>
-        public event OnMeterValuesResponseDelegate  OnMeterValuesResponse;
+        public event MeterValuesResponseDelegate  OnMeterValuesResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a meter values request was sent.
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
         /// </summary>
-        public event OnStopTransactionRequestDelegate   OnStopTransactionRequest;
+        public event StopTransactionRequestDelegate   OnStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a response to a stop transaction request was sent.
         /// </summary>
-        public event OnStopTransactionResponseDelegate  OnStopTransactionResponse;
+        public event StopTransactionResponseDelegate  OnStopTransactionResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a stop transaction request was sent.
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
+        public event IncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
@@ -319,7 +319,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event OnIncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
+        public event IncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a data transfer request was sent.
@@ -338,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationRequestDelegate   OnDiagnosticsStatusNotificationRequest;
+        public event DiagnosticsStatusNotificationRequestDelegate   OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
@@ -348,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a response to a diagnostics status notification request was sent.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
+        public event DiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a diagnostics status notification request was sent.
@@ -367,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
+        public event FirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
@@ -377,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a response to a firmware status notification request was sent.
         /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
+        public event FirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a firmware status notification request was sent.
@@ -528,7 +528,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         var results = OnBootNotification?.
                                           GetInvocationList()?.
-                                          SafeSelect(subscriber => (subscriber as BootNotificationDelegate)
+                                          SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)
                                               (Timestamp.Now,
                                                this,
                                                request,
@@ -684,7 +684,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         var results = OnHeartbeat?.
                                           GetInvocationList()?.
-                                          SafeSelect(subscriber => (subscriber as HeartbeatDelegate)
+                                          SafeSelect(subscriber => (subscriber as OnHeartbeatDelegate)
                                               (Timestamp.Now,
                                                this,
                                                request,

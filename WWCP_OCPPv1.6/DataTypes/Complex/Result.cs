@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Description">A human-readable error description.</param>
         public static Result OK(String Description = null)
 
-            => new Result(ResultCodes.Unknown,
+            => new Result(ResultCodes.OK,
                           Description);
 
 
@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Description">A human-readable error description.</param>
         public static Result Partly(String Description = null)
 
-            => new Result(ResultCodes.Unknown,
+            => new Result(ResultCodes.Partly,
                           Description);
 
 
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Description">A human-readable error description.</param>
         public static Result NotAuthorized(String Description = null)
 
-            => new Result(ResultCodes.Unknown,
+            => new Result(ResultCodes.NotAuthorized,
                           Description);
 
 
@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Description">A human-readable error description.</param>
         public static Result InvalidId(String Description = null)
 
-            => new Result(ResultCodes.Unknown,
+            => new Result(ResultCodes.InvalidId,
                           Description);
 
 
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Description">A human-readable error description.</param>
         public static Result Server(String Description = null)
 
-            => new Result(ResultCodes.Unknown,
+            => new Result(ResultCodes.Server,
                           Description);
 
 
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Description">A human-readable error description.</param>
         public static Result Format(String Description = null)
 
-            => new Result(ResultCodes.Unknown,
+            => new Result(ResultCodes.Format,
                           Description);
 
         #endregion

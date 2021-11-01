@@ -485,12 +485,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnResetRequestDelegate   OnResetRequest;
+        public event ResetRequestDelegate   OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnResetResponseDelegate  OnResetResponse;
+        public event ResetResponseDelegate  OnResetResponse;
 
         #endregion
 
@@ -499,12 +499,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnChangeAvailabilityRequestDelegate   OnChangeAvailabilityRequest;
+        public event ChangeAvailabilityRequestDelegate   OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnChangeAvailabilityResponseDelegate  OnChangeAvailabilityResponse;
+        public event ChangeAvailabilityResponseDelegate  OnChangeAvailabilityResponse;
 
         #endregion
 
@@ -513,12 +513,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetConfigurationRequestDelegate   OnGetConfigurationRequest;
+        public event GetConfigurationRequestDelegate   OnGetConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnGetConfigurationResponseDelegate  OnGetConfigurationResponse;
+        public event GetConfigurationResponseDelegate  OnGetConfigurationResponse;
 
         #endregion
 
@@ -527,12 +527,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnChangeConfigurationRequestDelegate   OnChangeConfigurationRequest;
+        public event ChangeConfigurationRequestDelegate   OnChangeConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnChangeConfigurationResponseDelegate  OnChangeConfigurationResponse;
+        public event ChangeConfigurationResponseDelegate  OnChangeConfigurationResponse;
 
         #endregion
 
@@ -541,12 +541,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
+        public event IncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event OnIncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
+        public event IncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
 
         #endregion
 
@@ -555,12 +555,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetDiagnosticsRequestDelegate   OnGetDiagnosticsRequest;
+        public event GetDiagnosticsRequestDelegate   OnGetDiagnosticsRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnGetDiagnosticsResponseDelegate  OnGetDiagnosticsResponse;
+        public event GetDiagnosticsResponseDelegate  OnGetDiagnosticsResponse;
 
         #endregion
 
@@ -569,12 +569,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnTriggerMessageRequestDelegate   OnTriggerMessageRequest;
+        public event TriggerMessageRequestDelegate   OnTriggerMessageRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnTriggerMessageResponseDelegate  OnTriggerMessageResponse;
+        public event TriggerMessageResponseDelegate  OnTriggerMessageResponse;
 
         #endregion
 
@@ -583,12 +583,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnUpdateFirmwareRequestDelegate   OnUpdateFirmwareRequest;
+        public event UpdateFirmwareRequestDelegate   OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnUpdateFirmwareResponseDelegate  OnUpdateFirmwareResponse;
+        public event UpdateFirmwareResponseDelegate  OnUpdateFirmwareResponse;
 
         #endregion
 
@@ -598,12 +598,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event OnReserveNowRequestDelegate   OnReserveNowRequest;
+        public event ReserveNowRequestDelegate   OnReserveNowRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reserve now request was sent.
         /// </summary>
-        public event OnReserveNowResponseDelegate  OnReserveNowResponse;
+        public event ReserveNowResponseDelegate  OnReserveNowResponse;
 
         #endregion
 
@@ -612,12 +612,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event OnCancelReservationRequestDelegate   OnCancelReservationRequest;
+        public event CancelReservationRequestDelegate   OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a cancel reservation request was sent.
         /// </summary>
-        public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
+        public event CancelReservationResponseDelegate  OnCancelReservationResponse;
 
         #endregion
 
@@ -626,12 +626,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a remote start transaction request was received.
         /// </summary>
-        public event OnRemoteStartTransactionRequestDelegate   OnRemoteStartTransactionRequest;
+        public event RemoteStartTransactionRequestDelegate   OnRemoteStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a remote start transaction request was sent.
         /// </summary>
-        public event OnRemoteStartTransactionResponseDelegate  OnRemoteStartTransactionResponse;
+        public event RemoteStartTransactionResponseDelegate  OnRemoteStartTransactionResponse;
 
         #endregion
 
@@ -640,12 +640,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a remote stop transaction request was received.
         /// </summary>
-        public event OnRemoteStopTransactionRequestDelegate   OnRemoteStopTransactionRequest;
+        public event RemoteStopTransactionRequestDelegate   OnRemoteStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a remote stop transaction request was sent.
         /// </summary>
-        public event OnRemoteStopTransactionResponseDelegate  OnRemoteStopTransactionResponse;
+        public event RemoteStopTransactionResponseDelegate  OnRemoteStopTransactionResponse;
 
         #endregion
 
@@ -654,12 +654,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnSetChargingProfileRequestDelegate   OnSetChargingProfileRequest;
+        public event SetChargingProfileRequestDelegate   OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnSetChargingProfileResponseDelegate  OnSetChargingProfileResponse;
+        public event SetChargingProfileResponseDelegate  OnSetChargingProfileResponse;
 
         #endregion
 
@@ -668,12 +668,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnClearChargingProfileRequestDelegate   OnClearChargingProfileRequest;
+        public event ClearChargingProfileRequestDelegate   OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnClearChargingProfileResponseDelegate  OnClearChargingProfileResponse;
+        public event ClearChargingProfileResponseDelegate  OnClearChargingProfileResponse;
 
         #endregion
 
@@ -682,12 +682,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetCompositeScheduleRequestDelegate   OnGetCompositeScheduleRequest;
+        public event GetCompositeScheduleRequestDelegate   OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnGetCompositeScheduleResponseDelegate  OnGetCompositeScheduleResponse;
+        public event GetCompositeScheduleResponseDelegate  OnGetCompositeScheduleResponse;
 
         #endregion
 
@@ -696,12 +696,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnUnlockConnectorRequestDelegate   OnUnlockConnectorRequest;
+        public event UnlockConnectorRequestDelegate   OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnUnlockConnectorResponseDelegate  OnUnlockConnectorResponse;
+        public event UnlockConnectorResponseDelegate  OnUnlockConnectorResponse;
 
         #endregion
 
@@ -711,12 +711,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetLocalListVersionRequestDelegate   OnGetLocalListVersionRequest;
+        public event GetLocalListVersionRequestDelegate   OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnGetLocalListVersionResponseDelegate  OnGetLocalListVersionResponse;
+        public event GetLocalListVersionResponseDelegate  OnGetLocalListVersionResponse;
 
         #endregion
 
@@ -725,12 +725,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnSendLocalListRequestDelegate   OnSendLocalListRequest;
+        public event SendLocalListRequestDelegate   OnSendLocalListRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnSendLocalListResponseDelegate  OnSendLocalListResponse;
+        public event SendLocalListResponseDelegate  OnSendLocalListResponse;
 
         #endregion
 
@@ -739,12 +739,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnClearCacheRequestDelegate   OnClearCacheRequest;
+        public event ClearCacheRequestDelegate   OnClearCacheRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnClearCacheResponseDelegate  OnClearCacheResponse;
+        public event ClearCacheResponseDelegate  OnClearCacheResponse;
 
         #endregion
 
@@ -2729,7 +2729,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = await CPClient.SendBootNotification(request,
+            var response = await CPClient?.SendBootNotification(request,
 
                                                                 requestTimestamp,
                                                                 CancellationToken,
@@ -2758,6 +2758,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 }
             }
+            else
+                response = new CS.BootNotificationResponse(request,
+                                                           Result.Server("Response is null!"));
 
 
             #region Send OnBootNotificationResponse event
@@ -2831,17 +2834,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient.SendHeartbeat(request,
+            var response = await CPClient?.SendHeartbeat(request,
 
-                                                        requestTimestamp,
-                                                        CancellationToken,
-                                                        EventTrackingId,
-                                                        RequestTimeout ?? DefaultRequestTimeout);
+                                                         requestTimestamp,
+                                                         CancellationToken,
+                                                         EventTrackingId,
+                                                         RequestTimeout ?? DefaultRequestTimeout);
 
             if (response != null)
             {
                 this.CentralSystemTime = response.CurrentTime;
             }
+            else
+                response = new CS.HeartbeatResponse(request,
+                                                    Result.Server("Response is null!"));
 
 
             #region Send OnHeartbeatResponse event
@@ -2921,12 +2927,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient.Authorize(request,
+            var response = await CPClient?.Authorize(request,
 
-                                                    requestTimestamp,
-                                                    CancellationToken,
-                                                    EventTrackingId,
-                                                    RequestTimeout ?? DefaultRequestTimeout);
+                                                     requestTimestamp,
+                                                     CancellationToken,
+                                                     EventTrackingId,
+                                                     RequestTimeout ?? DefaultRequestTimeout);
+
+            if (response is null)
+                response = new CS.AuthorizeResponse(request,
+                                                    Result.Server("Response is null!"));
 
 
             #region Send OnAuthorizeResponse event
@@ -3017,12 +3027,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient.StartTransaction(request,
+            var response = await CPClient?.StartTransaction(request,
 
-                                                           requestTimestamp,
-                                                           CancellationToken,
-                                                           EventTrackingId,
-                                                           RequestTimeout ?? DefaultRequestTimeout);
+                                                            requestTimestamp,
+                                                            CancellationToken,
+                                                            EventTrackingId,
+                                                            RequestTimeout ?? DefaultRequestTimeout);
+
+            if (response is null)
+                response = new CS.StartTransactionResponse(request,
+                                                           Result.Server("Response is null!"));
 
 
             #region Send OnStartTransactionResponse event
@@ -3119,12 +3133,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient.SendStatusNotification(request,
+            var response = await CPClient?.SendStatusNotification(request,
 
-                                                                 requestTimestamp,
-                                                                 CancellationToken,
-                                                                 EventTrackingId,
-                                                                 RequestTimeout ?? DefaultRequestTimeout);
+                                                                  requestTimestamp,
+                                                                  CancellationToken,
+                                                                  EventTrackingId,
+                                                                  RequestTimeout ?? DefaultRequestTimeout);
+
+            if (response is null)
+                response = new CS.StatusNotificationResponse(request,
+                                                             Result.Server("Response is null!"));
 
 
             #region Send OnStatusNotificationResponse event
@@ -3209,12 +3227,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient.SendMeterValues(request,
+            var response = await CPClient?.SendMeterValues(request,
 
-                                                          requestTimestamp,
-                                                          CancellationToken,
-                                                          EventTrackingId,
-                                                          RequestTimeout ?? DefaultRequestTimeout);
+                                                           requestTimestamp,
+                                                           CancellationToken,
+                                                           EventTrackingId,
+                                                           RequestTimeout ?? DefaultRequestTimeout);
+
+            if (response is null)
+                response = new CS.MeterValuesResponse(request,
+                                                      Result.Server("Response is null!"));
 
 
             #region Send OnMeterValuesResponse event
@@ -3308,12 +3330,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient.StopTransaction(request,
+            var response = await CPClient?.StopTransaction(request,
 
-                                                          requestTimestamp,
-                                                          CancellationToken,
-                                                          EventTrackingId,
-                                                          RequestTimeout ?? DefaultRequestTimeout);
+                                                           requestTimestamp,
+                                                           CancellationToken,
+                                                           EventTrackingId,
+                                                           RequestTimeout ?? DefaultRequestTimeout);
+
+            if (response is null)
+                response = new CS.StopTransactionResponse(request,
+                                                          Result.Server("Response is null!"));
 
 
             #region Send OnStopTransactionResponse event
@@ -3399,12 +3425,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient.TransferData(request,
+            var response = await CPClient?.TransferData(request,
 
-                                                       requestTimestamp,
-                                                       CancellationToken,
-                                                       EventTrackingId,
-                                                       RequestTimeout ?? DefaultRequestTimeout);
+                                                        requestTimestamp,
+                                                        CancellationToken,
+                                                        EventTrackingId,
+                                                        RequestTimeout ?? DefaultRequestTimeout);
+
+            if (response is null)
+                response = new CS.DataTransferResponse(request,
+                                                       Result.Server("Response is null!"));
 
 
             #region Send OnDataTransferResponse event
@@ -3483,12 +3513,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient.SendDiagnosticsStatusNotification(request,
+            var response = await CPClient?.SendDiagnosticsStatusNotification(request,
 
-                                                                            requestTimestamp,
-                                                                            CancellationToken,
-                                                                            EventTrackingId,
-                                                                            RequestTimeout ?? DefaultRequestTimeout);
+                                                                             requestTimestamp,
+                                                                             CancellationToken,
+                                                                             EventTrackingId,
+                                                                             RequestTimeout ?? DefaultRequestTimeout);
+
+            if (response is null)
+                response = new CS.DiagnosticsStatusNotificationResponse(request,
+                                                                        Result.Server("Response is null!"));
 
 
             #region Send OnDiagnosticsStatusNotificationResponse event
@@ -3567,12 +3601,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient.SendFirmwareStatusNotification(request,
+            var response = await CPClient?.SendFirmwareStatusNotification(request,
 
-                                                                         requestTimestamp,
-                                                                         CancellationToken,
-                                                                         EventTrackingId,
-                                                                         RequestTimeout ?? DefaultRequestTimeout);
+                                                                          requestTimestamp,
+                                                                          CancellationToken,
+                                                                          EventTrackingId,
+                                                                          RequestTimeout ?? DefaultRequestTimeout);
+
+            if (response is null)
+                response = new CS.FirmwareStatusNotificationResponse(request,
+                                                                     Result.Server("Response is null!"));
 
 
             #region Send OnFirmwareStatusNotificationResponse event

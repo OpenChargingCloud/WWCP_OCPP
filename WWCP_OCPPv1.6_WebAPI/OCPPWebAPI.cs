@@ -291,7 +291,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
         public OCPPWebAPI(TestCentralSystem                          TestCentralSystem,
                           HTTPServer                                 HTTPServer,
-                          //HTTPPath?                                  URLPathPrefix1   = null,
                           HTTPPath?                                  URLPathPrefix    = null,
                           HTTPPath?                                  BasePath         = null,
                           String                                     HTTPRealm        = DefaultHTTPRealm,
@@ -326,9 +325,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         {
 
-            this.CentralSystem   = TestCentralSystem;
+            this.CentralSystem       = TestCentralSystem;
 
-            //this.URLPathPrefix1      = URLPathPrefix1;
             this.HTTPRealm           = HTTPRealm.IsNotNullOrEmpty() ? HTTPRealm : DefaultHTTPRealm;
             this.HTTPLogins          = HTTPLogins    ?? new KeyValuePair<String, String>[0];
             this.DNSClient           = HTTPServer.DNSClient;
@@ -350,6 +348,859 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             RegisterURITemplates();
 
             this.HTMLTemplate        = HTMLTemplate ?? GetResourceString("template.html");
+
+
+            #region HTTP-SSEs: ChargePoint   -> CentralSystem
+
+            #region OnBootNotificationRequest/-Response
+
+            this.CentralSystem.OnBootNotificationRequest += async (logTimestamp,
+                                                                   sender,
+                                                                   request) =>
+
+                await this.EventLog.SubmitEvent("OnBootNotificationRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnBootNotificationResponse += async (logTimestamp,
+                                                                    sender,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
+
+                await this.EventLog.SubmitEvent("OnBootNotificationResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnHeartbeatRequest/-Response
+
+            this.CentralSystem.OnHeartbeatRequest += async (logTimestamp,
+                                                            sender,
+                                                            request) =>
+
+                await this.EventLog.SubmitEvent("OnHeartbeatRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+            this.CentralSystem.OnHeartbeatResponse += async (logTimestamp,
+                                                             sender,
+                                                             request,
+                                                             response,
+                                                             runtime) =>
+
+                await this.EventLog.SubmitEvent("OnHeartbeatResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+
+            #region OnAuthorizeRequest/-Response
+
+            this.CentralSystem.OnAuthorizeRequest += async (logTimestamp,
+                                                            sender,
+                                                            request) =>
+
+                await this.EventLog.SubmitEvent("OnAuthorizeRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnAuthorizeResponse += async (logTimestamp,
+                                                             sender,
+                                                             request,
+                                                             response,
+                                                             runtime) =>
+
+                await this.EventLog.SubmitEvent("OnAuthorizeResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnStartTransactionRequest/-Response
+
+            this.CentralSystem.OnStartTransactionRequest += async (logTimestamp,
+                                                                   sender,
+                                                                   request) =>
+
+                await this.EventLog.SubmitEvent("OnStartTransactionRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnStartTransactionResponse += async (logTimestamp,
+                                                                    sender,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
+
+                await this.EventLog.SubmitEvent("OnStartTransactionResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnStatusNotificationRequest/-Response
+
+            this.CentralSystem.OnStatusNotificationRequest += async (logTimestamp,
+                                                                     sender,
+                                                                     request) =>
+
+                await this.EventLog.SubmitEvent("OnStatusNotificationRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnStatusNotificationResponse += async (logTimestamp,
+                                                                      sender,
+                                                                      request,
+                                                                      response,
+                                                                      runtime) =>
+
+                await this.EventLog.SubmitEvent("OnStatusNotificationResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnMeterValuesRequest/-Response
+
+            this.CentralSystem.OnMeterValuesRequest += async (logTimestamp,
+                                                              sender,
+                                                              request) =>
+
+                await this.EventLog.SubmitEvent("OnMeterValuesRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnMeterValuesResponse += async (logTimestamp,
+                                                               sender,
+                                                               request,
+                                                               response,
+                                                               runtime) =>
+
+                await this.EventLog.SubmitEvent("OnMeterValuesResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnStopTransactionRequest/-Response
+
+            this.CentralSystem.OnStopTransactionRequest += async (logTimestamp,
+                                                                  sender,
+                                                                  request) =>
+
+                await this.EventLog.SubmitEvent("OnStopTransactionRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnStopTransactionResponse += async (logTimestamp,
+                                                                   sender,
+                                                                   request,
+                                                                   response,
+                                                                   runtime) =>
+
+                await this.EventLog.SubmitEvent("OnStopTransactionResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+
+            #region OnIncomingDataTransferRequest/-Response
+
+            this.CentralSystem.OnIncomingDataTransferRequest += async (logTimestamp,
+                                                                       sender,
+                                                                       request) =>
+
+                await this.EventLog.SubmitEvent("OnIncomingDataTransferRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnIncomingDataTransferResponse += async (logTimestamp,
+                                                                        sender,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
+
+                await this.EventLog.SubmitEvent("OnIncomingDataTransferResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnDiagnosticsStatusNotificationRequest/-Response
+
+            this.CentralSystem.OnDiagnosticsStatusNotificationRequest += async (logTimestamp,
+                                                                                sender,
+                                                                                request) =>
+
+                await this.EventLog.SubmitEvent("OnDiagnosticsStatusNotificationRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnDiagnosticsStatusNotificationResponse += async (logTimestamp,
+                                                                                 sender,
+                                                                                 request,
+                                                                                 response,
+                                                                                 runtime) =>
+
+                await this.EventLog.SubmitEvent("OnDiagnosticsStatusNotificationResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnFirmwareStatusNotificationRequest/-Response
+
+            this.CentralSystem.OnFirmwareStatusNotificationRequest += async (logTimestamp,
+                                                                             sender,
+                                                                             request) =>
+
+                await this.EventLog.SubmitEvent("OnFirmwareStatusNotificationRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnFirmwareStatusNotificationResponse += async (logTimestamp,
+                                                                              sender,
+                                                                              request,
+                                                                              response,
+                                                                              runtime) =>
+
+                await this.EventLog.SubmitEvent("OnFirmwareStatusNotificationResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #endregion
+
+            #region HTTP-SSEs: CentralSystem -> ChargePoint
+
+            #region OnResetRequest/-Response
+
+            this.CentralSystem.OnResetRequest += async (logTimestamp,
+                                                        sender,
+                                                        request) =>
+
+                await this.EventLog.SubmitEvent("OnResetRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnResetResponse += async (logTimestamp,
+                                                         sender,
+                                                         request,
+                                                         response,
+                                                         runtime) =>
+
+                await this.EventLog.SubmitEvent("OnResetResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnChangeAvailabilityRequest/-Response
+
+            this.CentralSystem.OnChangeAvailabilityRequest += async (logTimestamp,
+                                                                     sender,
+                                                                     request) =>
+
+                await this.EventLog.SubmitEvent("OnChangeAvailabilityRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnChangeAvailabilityResponse += async (logTimestamp,
+                                                                      sender,
+                                                                      request,
+                                                                      response,
+                                                                      runtime) =>
+
+                await this.EventLog.SubmitEvent("OnChangeAvailabilityResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnGetConfigurationRequest/-Response
+
+            this.CentralSystem.OnGetConfigurationRequest += async (logTimestamp,
+                                                                   sender,
+                                                                   request) =>
+
+                await this.EventLog.SubmitEvent("OnGetConfigurationRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnGetConfigurationResponse += async (logTimestamp,
+                                                                    sender,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
+
+                await this.EventLog.SubmitEvent("OnGetConfigurationResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnChangeConfigurationRequest/-Response
+
+            this.CentralSystem.OnChangeConfigurationRequest += async (logTimestamp,
+                                                                      sender,
+                                                                      request) =>
+
+                await this.EventLog.SubmitEvent("OnChangeConfigurationRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnChangeConfigurationResponse += async (logTimestamp,
+                                                                       sender,
+                                                                       request,
+                                                                       response,
+                                                                       runtime) =>
+
+                await this.EventLog.SubmitEvent("OnChangeConfigurationResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnDataTransferRequest/-Response
+
+            this.CentralSystem.OnDataTransferRequest += async (logTimestamp,
+                                                               sender,
+                                                               request) =>
+
+                await this.EventLog.SubmitEvent("OnDataTransferRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnDataTransferResponse += async (logTimestamp,
+                                                                sender,
+                                                                request,
+                                                                response,
+                                                                runtime) =>
+
+                await this.EventLog.SubmitEvent("OnDataTransferResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnGetDiagnosticsRequest/-Response
+
+            this.CentralSystem.OnGetDiagnosticsRequest += async (logTimestamp,
+                                                                 sender,
+                                                                 request) =>
+
+                await this.EventLog.SubmitEvent("OnGetDiagnosticsRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnGetDiagnosticsResponse += async (logTimestamp,
+                                                                  sender,
+                                                                  request,
+                                                                  response,
+                                                                  runtime) =>
+
+                await this.EventLog.SubmitEvent("OnGetDiagnosticsResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnTriggerMessageRequest/-Response
+
+            this.CentralSystem.OnTriggerMessageRequest += async (logTimestamp,
+                                                                 sender,
+                                                                 request) =>
+
+                await this.EventLog.SubmitEvent("OnTriggerMessageRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnTriggerMessageResponse += async (logTimestamp,
+                                                                  sender,
+                                                                  request,
+                                                                  response,
+                                                                  runtime) =>
+
+                await this.EventLog.SubmitEvent("OnTriggerMessageResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnUpdateFirmwareRequest/-Response
+
+            this.CentralSystem.OnUpdateFirmwareRequest += async (logTimestamp,
+                                                                 sender,
+                                                                 request) =>
+
+                await this.EventLog.SubmitEvent("OnUpdateFirmwareRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnUpdateFirmwareResponse += async (logTimestamp,
+                                                                  sender,
+                                                                  request,
+                                                                  response,
+                                                                  runtime) =>
+
+                await this.EventLog.SubmitEvent("OnUpdateFirmwareResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+
+            #region OnReserveNowRequest/-Response
+
+            this.CentralSystem.OnReserveNowRequest += async (logTimestamp,
+                                                             sender,
+                                                             request) =>
+
+                await this.EventLog.SubmitEvent("OnReserveNowRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnReserveNowResponse += async (logTimestamp,
+                                                              sender,
+                                                              request,
+                                                              response,
+                                                              runtime) =>
+
+                await this.EventLog.SubmitEvent("OnReserveNowResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnCancelReservationRequest/-Response
+
+            this.CentralSystem.OnCancelReservationRequest += async (logTimestamp,
+                                                                    sender,
+                                                                    request) =>
+
+                await this.EventLog.SubmitEvent("OnCancelReservationRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnCancelReservationResponse += async (logTimestamp,
+                                                                     sender,
+                                                                     request,
+                                                                     response,
+                                                                     runtime) =>
+
+                await this.EventLog.SubmitEvent("OnCancelReservationResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnRemoteStartTransactionRequest/-Response
+
+            this.CentralSystem.OnRemoteStartTransactionRequest += async (logTimestamp,
+                                                                         sender,
+                                                                         request) =>
+
+                await this.EventLog.SubmitEvent("OnRemoteStartTransactionRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnRemoteStartTransactionResponse += async (logTimestamp,
+                                                                          sender,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
+
+                await this.EventLog.SubmitEvent("OnRemoteStartTransactionResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnRemoteStopTransactionRequest/-Response
+
+            this.CentralSystem.OnRemoteStopTransactionRequest += async (logTimestamp,
+                                                                        sender,
+                                                                        request) =>
+
+                await this.EventLog.SubmitEvent("OnRemoteStopTransactionRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnRemoteStopTransactionResponse += async (logTimestamp,
+                                                                         sender,
+                                                                         request,
+                                                                         response,
+                                                                         runtime) =>
+
+                await this.EventLog.SubmitEvent("OnRemoteStopTransactionResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnSetChargingProfileRequest/-Response
+
+            this.CentralSystem.OnSetChargingProfileRequest += async (logTimestamp,
+                                                                     sender,
+                                                                     request) =>
+
+                await this.EventLog.SubmitEvent("OnSetChargingProfileRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnSetChargingProfileResponse += async (logTimestamp,
+                                                                      sender,
+                                                                      request,
+                                                                      response,
+                                                                      runtime) =>
+
+                await this.EventLog.SubmitEvent("OnSetChargingProfileResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnClearChargingProfileRequest/-Response
+
+            this.CentralSystem.OnClearChargingProfileRequest += async (logTimestamp,
+                                                                       sender,
+                                                                       request) =>
+
+                await this.EventLog.SubmitEvent("OnClearChargingProfileRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnClearChargingProfileResponse += async (logTimestamp,
+                                                                        sender,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
+
+                await this.EventLog.SubmitEvent("OnClearChargingProfileResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnGetCompositeScheduleRequest/-Response
+
+            this.CentralSystem.OnGetCompositeScheduleRequest += async (logTimestamp,
+                                                                       sender,
+                                                                       request) =>
+
+                await this.EventLog.SubmitEvent("OnGetCompositeScheduleRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnGetCompositeScheduleResponse += async (logTimestamp,
+                                                                        sender,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
+
+                await this.EventLog.SubmitEvent("OnGetCompositeScheduleResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnUnlockConnectorRequest/-Response
+
+            this.CentralSystem.OnUnlockConnectorRequest += async (logTimestamp,
+                                                                  sender,
+                                                                  request) =>
+
+                await this.EventLog.SubmitEvent("OnUnlockConnectorRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnUnlockConnectorResponse += async (logTimestamp,
+                                                                   sender,
+                                                                   request,
+                                                                   response,
+                                                                   runtime) =>
+
+                await this.EventLog.SubmitEvent("OnUnlockConnectorResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+
+            #region OnGetLocalListVersionRequest/-Response
+
+            this.CentralSystem.OnGetLocalListVersionRequest += async (logTimestamp,
+                                                                      sender,
+                                                                      request) =>
+
+                await this.EventLog.SubmitEvent("OnGetLocalListVersionRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnGetLocalListVersionResponse += async (logTimestamp,
+                                                                       sender,
+                                                                       request,
+                                                                       response,
+                                                                       runtime) =>
+
+                await this.EventLog.SubmitEvent("OnGetLocalListVersionResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnSendLocalListRequest/-Response
+
+            this.CentralSystem.OnSendLocalListRequest += async (logTimestamp,
+                                                                sender,
+                                                                request) =>
+
+                await this.EventLog.SubmitEvent("OnSendLocalListRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnSendLocalListResponse += async (logTimestamp,
+                                                                 sender,
+                                                                 request,
+                                                                 response,
+                                                                 runtime) =>
+
+                await this.EventLog.SubmitEvent("OnSendLocalListResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnClearCacheRequest/-Response
+
+            this.CentralSystem.OnClearCacheRequest += async (logTimestamp,
+                                                             sender,
+                                                             request) =>
+
+                await this.EventLog.SubmitEvent("OnClearCacheRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON())
+                                                ));
+
+
+            this.CentralSystem.OnClearCacheResponse += async (logTimestamp,
+                                                              sender,
+                                                              request,
+                                                              response,
+                                                              runtime) =>
+
+                await this.EventLog.SubmitEvent("OnClearCacheResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",  logTimestamp.ToIso8601()),
+                                                    new JProperty("request",    request.     ToJSON()),
+                                                    new JProperty("response",   response.    ToJSON()),
+                                                    new JProperty("runtime",    runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #endregion
 
         }
 
@@ -567,6 +1418,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         }
 
         #endregion
+
 
 
     }
