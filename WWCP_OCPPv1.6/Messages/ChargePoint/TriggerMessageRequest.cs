@@ -481,8 +481,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        public override JObject ToJSON()
+            => ToJSON(null);
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         /// <param name="CustomTriggerMessageRequestSerializer">A delegate to serialize custom TriggerMessage requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<TriggerMessageRequest> CustomTriggerMessageRequestSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<TriggerMessageRequest> CustomTriggerMessageRequestSerializer)
         {
 
             var JSON = JSONObject.Create(

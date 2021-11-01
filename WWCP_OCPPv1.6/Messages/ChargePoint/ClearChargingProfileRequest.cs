@@ -555,8 +555,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        public override JObject ToJSON()
+            => ToJSON(null);
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         /// <param name="CustomClearChargingProfileRequestSerializer">A delegate to serialize custom ClearChargingProfile requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileRequest> CustomClearChargingProfileRequestSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileRequest> CustomClearChargingProfileRequestSerializer)
         {
 
             var JSON = JSONObject.Create(

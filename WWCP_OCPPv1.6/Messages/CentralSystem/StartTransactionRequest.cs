@@ -80,15 +80,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public StartTransactionRequest(ChargeBox_Id     ChargeBoxId,
-                                       Connector_Id     ConnectorId,
-                                       IdToken          IdTag,
-                                       DateTime         StartTimestamp,
-                                       UInt64           MeterStart,
-                                       Reservation_Id?  ReservationId      = null,
-                                       Request_Id?      RequestId          = null,
-                                       DateTime?        RequestTimestamp   = null,
-                                       EventTracking_Id  EventTrackingId           = null)
+        public StartTransactionRequest(ChargeBox_Id      ChargeBoxId,
+                                       Connector_Id      ConnectorId,
+                                       IdToken           IdTag,
+                                       DateTime          StartTimestamp,
+                                       UInt64            MeterStart,
+                                       Reservation_Id?   ReservationId      = null,
+                                       Request_Id?       RequestId          = null,
+                                       DateTime?         RequestTimestamp   = null,
+                                       EventTracking_Id  EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "StartTransaction",
@@ -567,15 +567,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        public override JObject ToJSON()
+            => ToJSON(null);
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         /// <param name="CustomStartTransactionRequestSerializer">A delegate to serialize custom StartTransaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<StartTransactionRequest> CustomStartTransactionRequestSerializer  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StartTransactionRequest> CustomStartTransactionRequestSerializer)
         {
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("connectorId",          ConnectorId.ToString()),
-                           new JProperty("idTag",                IdTag.      ToString()),
-                           new JProperty("timestamp",            StartTimestamp.  ToIso8601()),
+                           new JProperty("connectorId",          ConnectorId.        ToString()),
+                           new JProperty("idTag",                IdTag.              ToString()),
+                           new JProperty("timestamp",            StartTimestamp.     ToIso8601()),
                            new JProperty("meterStart",           MeterStart),
 
                            ReservationId.HasValue

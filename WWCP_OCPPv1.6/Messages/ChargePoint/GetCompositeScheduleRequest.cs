@@ -508,8 +508,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        public override JObject ToJSON()
+            => ToJSON(null);
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         /// <param name="CustomGetCompositeScheduleRequestSerializer">A delegate to serialize custom start transaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleRequest> CustomGetCompositeScheduleRequestSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleRequest> CustomGetCompositeScheduleRequestSerializer)
         {
 
             var JSON = JSONObject.Create(

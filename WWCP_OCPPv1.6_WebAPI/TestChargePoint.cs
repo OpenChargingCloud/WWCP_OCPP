@@ -146,6 +146,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 Finished
             }
 
+            public String          Command           { get; }
+
             public IRequest        Request           { get; }
 
             public DateTime        EnqueTimestamp    { get; }
@@ -154,12 +156,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             public Action<Object>  ResponseAction    { get; }
 
-            public EnquedRequest(IRequest        Request,
+            public EnquedRequest(String          Command,
+                                 IRequest        Request,
                                  DateTime        EnqueTimestamp,
                                  EnquedStatus    Status,
                                  Action<Object>  ResponseAction)
             {
 
+                this.Command         = Command;
                 this.Request         = Request;
                 this.EnqueTimestamp  = EnqueTimestamp;
                 this.Status          = Status;
@@ -183,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The default maintenance interval.
         /// </summary>
-        public readonly TimeSpan DefaultMaintenanceEvery = TimeSpan.FromMinutes(1);
+        public readonly TimeSpan DefaultMaintenanceEvery = TimeSpan.FromSeconds(1);
         private static readonly SemaphoreSlim MaintenanceSemaphore = new SemaphoreSlim(1, 1);
         private readonly Timer MaintenanceTimer;
 
@@ -784,7 +788,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                String                 MeterSerialNumber         = null,
                                String                 MeterPublicKey            = null,
 
+                               Boolean                DisableSendHeartbeats     = false,
                                TimeSpan?              SendHeartbeatEvery        = null,
+
+                               Boolean                DisableMaintenanceTasks   = false,
+                               TimeSpan?              MaintenanceEvery          = null,
 
                                TimeSpan?              DefaultRequestTimeout     = null,
                                Tuple<String, String>  HTTPBasicAuth             = null,
@@ -829,15 +837,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             this.MeterSerialNumber        = MeterSerialNumber;
             this.MeterPublicKey           = MeterPublicKey;
 
-            this.SendHeartbeatEvery       = SendHeartbeatEvery    ?? DefaultSendHeartbeatEvery;
-
             this.DefaultRequestTimeout    = DefaultRequestTimeout ?? TimeSpan.FromMinutes(1);
 
-            this.DisableSendHeartbeats    = true;
+            this.DisableSendHeartbeats    = DisableSendHeartbeats;
+            this.SendHeartbeatEvery       = SendHeartbeatEvery    ?? DefaultSendHeartbeatEvery;
             this.SendHeartbeatTimer       = new Timer(DoSendHeartbeatSync,
                                                       null,
                                                       this.SendHeartbeatEvery,
                                                       this.SendHeartbeatEvery);
+
+            this.DisableMaintenanceTasks  = DisableMaintenanceTasks;
+            this.MaintenanceEvery         = MaintenanceEvery      ?? DefaultMaintenanceEvery;
+            this.MaintenanceTimer         = new Timer(DoMaintenanceSync,
+                                                      null,
+                                                      this.MaintenanceEvery,
+                                                      this.MaintenanceEvery);
 
             this.HTTPBasicAuth            = HTTPBasicAuth;
             this.DNSClient                = DNSClient;
@@ -1857,21 +1871,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         connector.IsCharging      = true;
                         connector.StartTimestamp  = Timestamp.Now;
 
-                        EnquedRequests.Add(new EnquedRequest(new StartTransactionRequest(ChargeBoxId,
-                                                                                         Request.ConnectorId ?? Connector_Id.Parse(0),
-                                                                                         Request.IdTag,
-                                                                                         Timestamp.Now,
-                                                                                         connector.MeterStartValue,
-                                                                                         null), // ReservationId
+                        var request = new StartTransactionRequest(ChargeBoxId,
+                                                                  Request.ConnectorId ?? Connector_Id.Parse(0),
+                                                                  Request.IdTag,
+                                                                  Timestamp.Now,
+                                                                  connector.MeterStartValue,
+                                                                  null);
+
+                        EnquedRequests.Add(new EnquedRequest("StartTransaction",
+                                                             request, // ReservationId
                                                              Timestamp.Now,
                                                              EnquedRequest.EnquedStatus.New,
                                                              response => {
-                                                                 if (response is CS.StartTransactionResponse startTransactionResponse)
+                                                                 if (response is WebSockets.WSResponseMessage wsResponseMessage &&
+                                                                     CS.StartTransactionResponse.TryParse(request,
+                                                                                                          wsResponseMessage.Message,
+                                                                                                          out CS.StartTransactionResponse  startTransactionResponse,
+                                                                                                          out String                       ErrorResponse))
                                                                  {
                                                                      connector.IdToken          = Request.IdTag;
                                                                      connector.ChargingProfile  = Request.ChargingProfile;
                                                                      connector.IdTagInfo        = startTransactionResponse.IdTagInfo;
                                                                      connector.TransactionId    = startTransactionResponse.TransactionId;
+                                                                     DebugX.Log(nameof(TestChargePoint), "Connector " + request.ConnectorId + " started charging...");
                                                                  }
                                                              }));
 
@@ -1967,19 +1989,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                         connector.StopTimestamp  = Timestamp.Now;
 
-                        EnquedRequests.Add(new EnquedRequest(new StopTransactionRequest(ChargeBoxId,
-                                                                                        Request.TransactionId,
-                                                                                        Timestamp.Now,
-                                                                                        connector.MeterStopValue,
-                                                                                        null,  // IdTag
-                                                                                        Reasons.SoftReset,
-                                                                                        null), // TransactionData
+                        var request = new StopTransactionRequest(ChargeBoxId,
+                                                                 Request.TransactionId,
+                                                                 Timestamp.Now,
+                                                                 connector.MeterStopValue,
+                                                                 null,  // IdTag
+                                                                 Reasons.Remote,
+                                                                 null);
+
+                        EnquedRequests.Add(new EnquedRequest("StopTransaction",
+                                                             request, // TransactionData
                                                              Timestamp.Now,
                                                              EnquedRequest.EnquedStatus.New,
                                                              response => {
-                                                                 if (response is CS.StopTransactionResponse stopTransactionResponse)
+                                                                 if (response is WebSockets.WSResponseMessage wsResponseMessage &&
+                                                                     CS.StopTransactionResponse.TryParse(request,
+                                                                                                         wsResponseMessage.Message,
+                                                                                                         out CS.StopTransactionResponse  stopTransactionResponse,
+                                                                                                         out String                      ErrorResponse))
                                                                  {
                                                                      connector.IsCharging = false;
+                                                                     DebugX.Log(nameof(TestChargePoint), "Connector " + connector.Id + " stopped charging...");
                                                                  }
                                                              }));
 
@@ -2585,6 +2615,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         protected internal virtual async Task _DoMaintenance(Object State)
         {
+
+            foreach (var enquedRequest in EnquedRequests.ToArray())
+            {
+                if (CPClient is ChargePointWSClient wsClient)
+                {
+                    var response = await wsClient.SendRequest(enquedRequest.Command,
+                                                              enquedRequest.Request.ToJSON());
+                    enquedRequest.ResponseAction(response);
+                    EnquedRequests.Remove(enquedRequest);
+                }
+            }
 
         }
 

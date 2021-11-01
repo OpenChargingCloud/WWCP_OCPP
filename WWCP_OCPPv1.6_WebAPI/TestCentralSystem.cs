@@ -98,6 +98,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public IEnumerable<ChargeBox_Id> ChargeBoxIds
             => reachableChargingBoxes.Values.SelectMany(box => box.Item1.ChargeBoxIds);
 
+
+        public Dictionary<String, Transaction_Id> TransactionIds = new Dictionary<String, Transaction_Id>();
+
         #endregion
 
         #region Events
@@ -890,6 +893,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                             IdTagInfo:      new IdTagInfo(Status:      AuthorizationStatus.Accepted,
                                                                                           ExpiryDate:  Timestamp.Now.AddDays(3)));
 
+                var key = Request.ChargeBoxId + "*" + Request.ConnectorId;
+
+                if (TransactionIds.ContainsKey(key))
+                    TransactionIds[key] = response.TransactionId;
+                else
+                    TransactionIds.Add(key, response.TransactionId);
+
 
                 #region Send OnStartTransactionResponse event
 
@@ -1107,6 +1117,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 var response = new StopTransactionResponse(Request:    Request,
                                                            IdTagInfo:  new IdTagInfo(Status:      AuthorizationStatus.Accepted,
                                                                                      ExpiryDate:  Timestamp.Now.AddDays(3)));
+
+                var kvp = TransactionIds.Where(trid => trid.Value == Request.TransactionId).ToArray();
+                if (kvp.SafeAny())
+                    TransactionIds.Remove(kvp.First().Key);
 
 
                 #region Send OnStopTransactionResponse event

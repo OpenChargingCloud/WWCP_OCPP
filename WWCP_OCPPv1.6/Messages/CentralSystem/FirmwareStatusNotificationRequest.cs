@@ -440,8 +440,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        public override JObject ToJSON()
+            => ToJSON(null);
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         /// <param name="CustomFirmwareStatusNotificationRequestSerializer">A delegate to serialize custom FirmwareStatusNotification requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<FirmwareStatusNotificationRequest> CustomFirmwareStatusNotificationRequestSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<FirmwareStatusNotificationRequest> CustomFirmwareStatusNotificationRequestSerializer)
         {
 
             var JSON = JSONObject.Create(

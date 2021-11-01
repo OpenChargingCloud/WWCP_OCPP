@@ -440,8 +440,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        public override JObject ToJSON()
+            => ToJSON(null);
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         /// <param name="CustomResetRequestSerializer">A delegate to serialize custom reset requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ResetRequest>  CustomResetRequestSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ResetRequest> CustomResetRequestSerializer)
         {
 
             var JSON = JSONObject.Create(

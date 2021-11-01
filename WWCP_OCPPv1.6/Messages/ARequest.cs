@@ -19,6 +19,8 @@
 
 using System;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -125,6 +127,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public abstract Boolean Equals(T ARequest);
 
         #endregion
+
+        public abstract JObject ToJSON();
 
     }
 

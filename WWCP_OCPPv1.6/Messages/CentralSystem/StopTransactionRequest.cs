@@ -670,7 +670,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                     MeterStop,
                                                                     IdTag,
                                                                     Reason,
-                                                                    TransactionData.Any() ? TransactionData : null,
+                                                                    TransactionData,
                                                                     RequestId);
 
                 if (CustomStopTransactionRequestParser != null)
@@ -785,10 +785,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        public override JObject ToJSON()
+            => ToJSON(null);
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         /// <param name="CustomStopTransactionRequestRequestSerializer">A delegate to serialize custom StopTransaction requests.</param>
         /// <param name="CustomMeterValueSerializer">A delegate to serialize custom meter values.</param>
         /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<StopTransactionRequest>  CustomStopTransactionRequestRequestSerializer   = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StopTransactionRequest>  CustomStopTransactionRequestRequestSerializer,
                               CustomJObjectSerializerDelegate<MeterValue>              CustomMeterValueSerializer                      = null,
                               CustomJObjectSerializerDelegate<SampledValue>            CustomSampledValueSerializer                    = null)
         {

@@ -671,10 +671,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        public override JObject ToJSON()
+            => ToJSON(null, null, null);
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         /// <param name="CustomMeterValuesRequestSerializer">A delegate to serialize custom MeterValues requests.</param>
         /// <param name="CustomMeterValueSerializer">A delegate to serialize custom MeterValues.</param>
         /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesRequest>  CustomMeterValuesRequestSerializer   = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesRequest>  CustomMeterValuesRequestSerializer,
                               CustomJObjectSerializerDelegate<MeterValue>          CustomMeterValueSerializer           = null,
                               CustomJObjectSerializerDelegate<SampledValue>        CustomSampledValueSerializer         = null)
         {

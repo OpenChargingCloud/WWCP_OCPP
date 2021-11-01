@@ -438,8 +438,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        public override JObject ToJSON()
+            => ToJSON(null);
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         /// <param name="CustomDiagnosticsStatusNotificationRequestSerializer">A delegate to serialize custom DiagnosticsStatusNotification requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<DiagnosticsStatusNotificationRequest> CustomDiagnosticsStatusNotificationRequestSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DiagnosticsStatusNotificationRequest> CustomDiagnosticsStatusNotificationRequestSerializer)
         {
 
             var JSON = JSONObject.Create(

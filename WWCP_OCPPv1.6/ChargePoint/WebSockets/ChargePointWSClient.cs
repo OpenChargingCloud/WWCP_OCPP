@@ -4702,8 +4702,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        private async Task<WSResponseMessage> SendRequest(String   Action,
-                                                          JObject  Message)
+        public async Task<WSResponseMessage> SendRequest(String   Action,
+                                                         JObject  Message)
         {
 
             if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
@@ -4757,8 +4757,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                         //var frame = WebSocketFrame.Parse(buffer);
 
                         if (WebSocketFrame.TryParse(buffer, out WebSocketFrame frame, out UInt64 frameLength))
-                        if (WSResponseMessage.TryParse(frame.Payload.ToUTF8String(), out WSResponseMessage response))
-                            return response;
+                        {
+                            if (WSResponseMessage.TryParse(frame.Payload.ToUTF8String(), out WSResponseMessage response))
+                                return response;
+                            else
+                                DebugX.Log(nameof(ChargePointWSClient), " error: " + frame.Payload.ToUTF8String());
+                        }
 
                     }
                     else

@@ -574,10 +574,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        public override JObject ToJSON()
+            => ToJSON(null, null, null);
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         /// <param name="CustomSendLocalListRequestSerializer">A delegate to serialize custom start transaction requests.</param>
         /// <param name="CustomAuthorizationDataSerializer">A delegate to serialize custom start transaction requests.</param>
         /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SendLocalListRequest> CustomSendLocalListRequestSerializer  = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SendLocalListRequest> CustomSendLocalListRequestSerializer,
                               CustomJObjectSerializerDelegate<AuthorizationData>    CustomAuthorizationDataSerializer     = null,
                               CustomJObjectSerializerDelegate<IdTagInfo>            CustomIdTagInfoResponseSerializer     = null)
         {

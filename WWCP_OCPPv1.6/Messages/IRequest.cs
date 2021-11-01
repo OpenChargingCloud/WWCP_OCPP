@@ -19,6 +19,8 @@
 
 using System;
 
+using Newtonsoft.Json.Linq;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6
@@ -34,6 +36,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The timestamp of the request message creation.
         /// </summary>
         DateTime  RequestTimestamp   { get; }
+
+
+        JObject ToJSON();
 
     }
 

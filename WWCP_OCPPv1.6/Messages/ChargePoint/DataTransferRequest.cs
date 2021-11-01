@@ -486,8 +486,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        public override JObject ToJSON()
+            => ToJSON(null);
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         /// <param name="CustomDataTransferRequestSerializer">A delegate to serialize custom DataTransfer requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest> CustomDataTransferRequestSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest> CustomDataTransferRequestSerializer)
         {
 
             var JSON = JSONObject.Create(

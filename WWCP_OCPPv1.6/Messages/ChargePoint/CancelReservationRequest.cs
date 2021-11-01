@@ -436,8 +436,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        public override JObject ToJSON()
+            => ToJSON(null);
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         /// <param name="CustomCancelReservationRequestSerializer">A delegate to serialize custom CancelReservation requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationRequest>  CustomCancelReservationRequestSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationRequest> CustomCancelReservationRequestSerializer)
         {
 
             var JSON = JSONObject.Create(
