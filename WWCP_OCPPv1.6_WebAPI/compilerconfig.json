@@ -6,5 +6,9 @@
   {
     "outputFile": "HTTPRoot/dashboard/dashboard.css",
     "inputFile": "HTTPRoot/dashboard/dashboard.scss"
+  },
+  {
+    "outputFile": "HTTPRoot/events/events.css",
+    "inputFile": "HTTPRoot/events/events.scss"
   }
 ]

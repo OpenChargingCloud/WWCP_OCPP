@@ -725,7 +725,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            new JProperty("chargingProfileId",       ChargingProfileId.ToString()),
 
                            TransactionId != null
-                               ? new JProperty("transactionId",     TransactionId.    ToString())
+                               ? new JProperty("transactionId",     TransactionId.    Value)
                                : null,
 
                            new JProperty("stackLevel",              StackLevel),

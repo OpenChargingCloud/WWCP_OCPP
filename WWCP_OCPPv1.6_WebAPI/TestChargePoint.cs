@@ -2667,7 +2667,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         private void DoSendHeartbeatSync(Object State)
         {
             if (!DisableSendHeartbeats)
-                SendHeartbeat().Wait();
+            {
+                try
+                {
+                    SendHeartbeat().Wait();
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, nameof(DoSendHeartbeatSync));
+                }
+            }
         }
 
         #endregion
@@ -2729,12 +2738,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient?.SendBootNotification(request,
+            CS.BootNotificationResponse response = null;
 
-                                                                requestTimestamp,
-                                                                CancellationToken,
-                                                                EventTrackingId,
-                                                                RequestTimeout ?? DefaultRequestTimeout);
+            if (CPClient != null)
+                response = await CPClient.SendBootNotification(request,
+
+                                                               requestTimestamp,
+                                                               CancellationToken,
+                                                               EventTrackingId,
+                                                               RequestTimeout ?? DefaultRequestTimeout);
 
             if (response != null)
             {
@@ -2834,12 +2846,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient?.SendHeartbeat(request,
+            CS.HeartbeatResponse response = null;
 
-                                                         requestTimestamp,
-                                                         CancellationToken,
-                                                         EventTrackingId,
-                                                         RequestTimeout ?? DefaultRequestTimeout);
+            if (CPClient != null)
+                response = await CPClient.SendHeartbeat(request,
+
+                                                        requestTimestamp,
+                                                        CancellationToken,
+                                                        EventTrackingId,
+                                                        RequestTimeout ?? DefaultRequestTimeout);
 
             if (response != null)
             {
@@ -2927,12 +2942,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient?.Authorize(request,
+            CS.AuthorizeResponse response = null;
 
-                                                     requestTimestamp,
-                                                     CancellationToken,
-                                                     EventTrackingId,
-                                                     RequestTimeout ?? DefaultRequestTimeout);
+            if (CPClient != null)
+                response = await CPClient.Authorize(request,
+
+                                                    requestTimestamp,
+                                                    CancellationToken,
+                                                    EventTrackingId,
+                                                    RequestTimeout ?? DefaultRequestTimeout);
 
             if (response is null)
                 response = new CS.AuthorizeResponse(request,
@@ -3027,12 +3045,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient?.StartTransaction(request,
+            CS.StartTransactionResponse response = null;
 
-                                                            requestTimestamp,
-                                                            CancellationToken,
-                                                            EventTrackingId,
-                                                            RequestTimeout ?? DefaultRequestTimeout);
+            if (CPClient != null)
+                response = await CPClient.StartTransaction(request,
+
+                                                           requestTimestamp,
+                                                           CancellationToken,
+                                                           EventTrackingId,
+                                                           RequestTimeout ?? DefaultRequestTimeout);
 
             if (response is null)
                 response = new CS.StartTransactionResponse(request,
@@ -3133,12 +3154,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient?.SendStatusNotification(request,
+            CS.StatusNotificationResponse response = null;
 
-                                                                  requestTimestamp,
-                                                                  CancellationToken,
-                                                                  EventTrackingId,
-                                                                  RequestTimeout ?? DefaultRequestTimeout);
+            if (CPClient != null)
+                response = await CPClient.SendStatusNotification(request,
+
+                                                                 requestTimestamp,
+                                                                 CancellationToken,
+                                                                 EventTrackingId,
+                                                                 RequestTimeout ?? DefaultRequestTimeout);
 
             if (response is null)
                 response = new CS.StatusNotificationResponse(request,
@@ -3227,12 +3251,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient?.SendMeterValues(request,
+            CS.MeterValuesResponse response = null;
 
-                                                           requestTimestamp,
-                                                           CancellationToken,
-                                                           EventTrackingId,
-                                                           RequestTimeout ?? DefaultRequestTimeout);
+            if (CPClient != null)
+                response = await CPClient.SendMeterValues(request,
+
+                                                          requestTimestamp,
+                                                          CancellationToken,
+                                                          EventTrackingId,
+                                                          RequestTimeout ?? DefaultRequestTimeout);
 
             if (response is null)
                 response = new CS.MeterValuesResponse(request,
@@ -3330,12 +3357,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient?.StopTransaction(request,
+            CS.StopTransactionResponse response = null;
 
-                                                           requestTimestamp,
-                                                           CancellationToken,
-                                                           EventTrackingId,
-                                                           RequestTimeout ?? DefaultRequestTimeout);
+            if (CPClient != null)
+                response = await CPClient.StopTransaction(request,
+
+                                                          requestTimestamp,
+                                                          CancellationToken,
+                                                          EventTrackingId,
+                                                          RequestTimeout ?? DefaultRequestTimeout);
 
             if (response is null)
                 response = new CS.StopTransactionResponse(request,
@@ -3425,12 +3455,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient?.TransferData(request,
+            CS.DataTransferResponse response = null;
 
-                                                        requestTimestamp,
-                                                        CancellationToken,
-                                                        EventTrackingId,
-                                                        RequestTimeout ?? DefaultRequestTimeout);
+            if (CPClient != null)
+                response = await CPClient.TransferData(request,
+
+                                                       requestTimestamp,
+                                                       CancellationToken,
+                                                       EventTrackingId,
+                                                       RequestTimeout ?? DefaultRequestTimeout);
 
             if (response is null)
                 response = new CS.DataTransferResponse(request,
@@ -3513,12 +3546,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient?.SendDiagnosticsStatusNotification(request,
+            CS.DiagnosticsStatusNotificationResponse response = null;
 
-                                                                             requestTimestamp,
-                                                                             CancellationToken,
-                                                                             EventTrackingId,
-                                                                             RequestTimeout ?? DefaultRequestTimeout);
+            if (CPClient != null)
+                response = await CPClient.SendDiagnosticsStatusNotification(request,
+
+                                                                            requestTimestamp,
+                                                                            CancellationToken,
+                                                                            EventTrackingId,
+                                                                            RequestTimeout ?? DefaultRequestTimeout);
 
             if (response is null)
                 response = new CS.DiagnosticsStatusNotificationResponse(request,
@@ -3601,12 +3637,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = await CPClient?.SendFirmwareStatusNotification(request,
+            CS.FirmwareStatusNotificationResponse response = null;
 
-                                                                          requestTimestamp,
-                                                                          CancellationToken,
-                                                                          EventTrackingId,
-                                                                          RequestTimeout ?? DefaultRequestTimeout);
+            if (CPClient != null)
+                response = await CPClient.SendFirmwareStatusNotification(request,
+
+                                                                         requestTimestamp,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         RequestTimeout ?? DefaultRequestTimeout);
 
             if (response is null)
                 response = new CS.FirmwareStatusNotificationResponse(request,

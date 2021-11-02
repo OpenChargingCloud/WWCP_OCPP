@@ -678,7 +678,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             var JSON = JSONObject.Create(
 
                            ConnectorId.HasValue
-                                  ? new JProperty("connectorId",   ConnectorId.Value.ToString())
+                                  ? new JProperty("connectorId",   ConnectorId.Value.Value)
                                   : null,
 
                            new JProperty("idTag",                  IdTag.            ToString()),

@@ -68,6 +68,13 @@
     <EmbeddedResource Include="HTTPRoot\defaults\defaults.js.map" />
     <EmbeddedResource Include="HTTPRoot\defaults\_defaults.scss" />
     <EmbeddedResource Include="HTTPRoot\template.scss" />
+    <EmbeddedResource Include="HTTPRoot\events\events.scss" />
+    <EmbeddedResource Include="HTTPRoot\dashboard\dashboard.js.map">
+      <DependentUpon>dashboard.ts</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HTTPRoot\events\events.js.map">
+      <DependentUpon>events.ts</DependentUpon>
+    </EmbeddedResource>
     <None Include="tsconfig.json" />
     <Compile Include="OCPPWebAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -132,5 +139,30 @@
   <ItemGroup>
     <EmbeddedResource Include="HTTPRoot\index.html" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HTTPRoot\events\events.shtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HTTPRoot\events\events.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HTTPRoot\events\events.css">
+      <DependentUpon>events.scss</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HTTPRoot\events\events.min.css">
+      <DependentUpon>events.css</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HTTPRoot\dashboard\dashboard.js">
+      <DependentUpon>dashboard.ts</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HTTPRoot\events\events.js">
+      <DependentUpon>events.ts</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>tsc</PreBuildEvent>
+  </PropertyGroup>
 </Project>

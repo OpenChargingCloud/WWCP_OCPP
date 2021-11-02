@@ -886,7 +886,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBootNotificationRequest));
                 }
 
-                                                                 #endregion
+                #endregion
 
 
                 Console.WriteLine("OnBootNotification: " + Request.ChargeBoxId             + ", " +

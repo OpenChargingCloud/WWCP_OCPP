@@ -1,0 +1,61 @@
+﻿@import "../defaults/_defaults.scss";
+
+body {
+    #page {
+        #bottom {
+            #right {
+                overflow-y: scroll;
+
+                #text {
+                    #OCPPEventMessages {
+
+                        #controls {
+                            display: none;
+                        }
+
+                        #EventsDiv {
+                            display: table;
+
+                            .LogLine {
+
+                                .timestamp {
+                                    padding:        6px 6px 2px 6px;
+                                    font-size:      80%;
+                                }
+
+                                .eventTrackingId {
+                                    display:        none;
+                                }
+
+                                .sender {
+                                    padding:        2px 6px 2px 6px;
+                                    display:        inline;
+                                }
+
+                                .category {
+                                    padding:        2px 0px 2px 0px;
+                                    display:        inline;
+                                    font-weight:    bold;
+                                }
+
+                                .request {
+                                    padding:        6px 6px 2px 6px;
+                                    font-family:    monospace;
+                                    white-space:    pre;
+                                }
+
+                                .response {
+                                    padding:        6px 6px 2px 6px;
+                                    font-family:    monospace;
+                                    white-space:    pre;
+                                    border-bottom: #eeeeee 1px solid;
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -570,8 +570,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 if (!JSON.ParseMandatory("transactionId",
                                          "transaction identification",
                                          Transaction_Id.TryParse,
-                                         out Transaction_Id TransactionId,
-                                         out ErrorResponse))
+                                         out Transaction_Id  TransactionId,
+                                         out                 ErrorResponse))
                 {
                     return false;
                 }
@@ -802,7 +802,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("transactionId",          TransactionId.ToString()),
+                           new JProperty("transactionId",          TransactionId.Value),
                            new JProperty("timestamp",              Timestamp.    ToIso8601()),
                            new JProperty("meterStop",              MeterStop),
 

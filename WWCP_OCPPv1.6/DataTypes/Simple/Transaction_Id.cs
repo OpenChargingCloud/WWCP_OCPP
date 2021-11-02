@@ -59,7 +59,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Data
 
-        private readonly UInt64 InternalId;
+        /// <summary>
+        /// The nummeric value of the transaction identification.
+        /// </summary>
+        public readonly UInt64 Value;
 
         private static readonly Random random = new Random();
 
@@ -71,19 +74,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Indicates whether this identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
-            => InternalId == 0;
+            => Value == 0;
 
         /// <summary>
         /// Indicates whether this identification is NOT null or empty.
         /// </summary>
         public Boolean IsNotNullOrEmpty
-            => InternalId != 0;
+            => Value != 0;
 
         /// <summary>
         /// The length of the tag identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId.ToString().Length;
+            => (UInt64) Value.ToString().Length;
 
         #endregion
 
@@ -95,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Integer">An integer.</param>
         private Transaction_Id(UInt64 Integer)
         {
-            this.InternalId = Integer;
+            this.Value = Integer;
         }
 
         #endregion
@@ -245,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Clone this transaction identification.
         /// </summary>
         public Transaction_Id Clone
-            => new Transaction_Id(InternalId);
+            => new Transaction_Id(Value);
 
         #endregion
 
@@ -369,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="TransactionId">An object to compare with.</param>
         public Int32 CompareTo(Transaction_Id TransactionId)
 
-            => InternalId.CompareTo(TransactionId.InternalId);
+            => Value.CompareTo(TransactionId.Value);
 
         #endregion
 
@@ -400,7 +403,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Transaction_Id TransactionId)
 
-            => InternalId.Equals(TransactionId.InternalId);
+            => Value.Equals(TransactionId.Value);
 
         #endregion
 
@@ -414,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => InternalId.GetHashCode();
+            => Value.GetHashCode();
 
         #endregion
 
@@ -425,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public override String ToString()
 
-            => InternalId.ToString();
+            => Value.ToString();
 
         #endregion
 

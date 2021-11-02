@@ -4717,15 +4717,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                         Interlocked.Increment(ref requestId);
 
-                        var x = new WebSocketFrame(WebSocketFrame.Fin.Final,
-                                                            WebSocketFrame.MaskStatus.On,
-                                                            new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
-                                                            WebSocketFrame.Opcodes.Text,
-                                                            new WSRequestMessage(Request_Id.Parse(requestId.ToString()), Action, Message).ToByteArray(),
-                                                            WebSocketFrame.Rsv.Off,
-                                                            WebSocketFrame.Rsv.Off,
-                                                            WebSocketFrame.Rsv.Off);
-
                         HTTPStream.Write(new WebSocketFrame(WebSocketFrame.Fin.Final,
                                                             WebSocketFrame.MaskStatus.On,
                                                             new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },

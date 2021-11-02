@@ -462,7 +462,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             var JSON = JSONObject.Create(
-                           new JProperty("transactionId",  TransactionId.ToString()),
+                           new JProperty("transactionId",  TransactionId.Value),
                            new JProperty("idTagInfo",      IdTagInfo.    ToJSON(CustomIdTagInfoResponseSerializer))
                        );
 

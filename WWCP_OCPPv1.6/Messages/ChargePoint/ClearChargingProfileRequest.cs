@@ -573,7 +573,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                : null,
 
                            ConnectorId.HasValue
-                               ? new JProperty("connectorId",             ConnectorId.           Value.ToString())
+                               ? new JProperty("connectorId",             ConnectorId.           Value.Value)
                                : null,
 
                            ChargingProfilePurpose.HasValue

@@ -59,7 +59,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Data
 
-        private readonly UInt64 InternalId;
+        /// <summary>
+        /// The nummeric value of the connector identification.
+        /// </summary>
+        public readonly UInt64 Value;
 
         #endregion
 
@@ -81,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The length of the tag identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId.ToString().Length;
+            => (UInt64) Value.ToString().Length;
 
         #endregion
 
@@ -93,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Number">A number.</param>
         private Connector_Id(UInt64 Number)
         {
-            this.InternalId = Number;
+            this.Value = Number;
         }
 
         #endregion
@@ -219,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Clone this connector identification.
         /// </summary>
         public Connector_Id Clone
-            => new Connector_Id(InternalId);
+            => new Connector_Id(Value);
 
         #endregion
 
@@ -343,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ConnectorId">An object to compare with.</param>
         public Int32 CompareTo(Connector_Id ConnectorId)
 
-            => InternalId.CompareTo(ConnectorId.InternalId);
+            => Value.CompareTo(ConnectorId.Value);
 
         #endregion
 
@@ -374,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Connector_Id ConnectorId)
 
-            => InternalId.Equals(ConnectorId.InternalId);
+            => Value.Equals(ConnectorId.Value);
 
         #endregion
 
@@ -388,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => InternalId.GetHashCode();
+            => Value.GetHashCode();
 
         #endregion
 
@@ -399,7 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public override String ToString()
 
-            => InternalId.ToString();
+            => Value.ToString();
 
         #endregion
 
