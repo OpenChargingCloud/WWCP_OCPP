@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -126,6 +127,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
         private readonly Dictionary<ChargeBox_Id, Tuple<WebSocketConnection, DateTime>> connectedChargingBoxes;
+
+        private const String LogfileName = "CentralSystemWSServer.log";
 
         #endregion
 
@@ -734,6 +737,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 JSON = JArray.Parse(TextMessage);
+
+                File.AppendAllText(LogfileName,
+                                   String.Concat("Timestamp: ",        Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
+                                                 "ChargeBoxId: ",      Connection.GetCustomData<ChargeBox_Id>("chargeBoxId").ToString(),         Environment.NewLine,
+                                                 "Message received: ", JSON.ToString(Newtonsoft.Json.Formatting.Indented),                       Environment.NewLine,
+                                                 "--------------------------------------------------------------------------------------------", Environment.NewLine));
 
                 #region MessageType 2: CALL       (Client-to-Server)
 
@@ -2570,34 +2579,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region SendJSON   (RequestId, ClientId, Action, Data,    Timeout)
+        #region SendJSON   (RequestId, ChargeBoxId, Action, Data,    Timeout)
 
         public async Task<SendJSONResults> SendJSON(Request_Id    RequestId,
-                                                    ChargeBox_Id  ClientId,
+                                                    ChargeBox_Id  ChargeBoxId,
                                                     String        Action,
                                                     JObject       Data,
                                                     DateTime      Timeout)
         {
 
-            WSRequestMessage  request  = default;
-            SendRequestResult result   = default;
+            WSRequestMessage  wsRequestMessage  = default;
+            SendRequestResult result            = default;
 
             try
             {
 
-                request  = new WSRequestMessage(RequestId,
-                                                Action,
-                                                Data);
+                wsRequestMessage  = new WSRequestMessage(RequestId,
+                                                         Action,
+                                                         Data);
 
-                result   = new SendRequestResult(Timestamp.Now,
-                                                 ClientId,
-                                                 request,
-                                                 Timeout);
+                result            = new SendRequestResult(Timestamp.Now,
+                                                          ChargeBoxId,
+                                                          wsRequestMessage,
+                                                          Timeout);
 
                 requests.Add(result);
 
 
-                var webSocketConnection  = WebSocketConnections.FirstOrDefault(ws => ws.GetCustomData<ChargeBox_Id>("chargeBoxId") == ClientId);
+                var webSocketConnection  = WebSocketConnections.LastOrDefault(ws => ws.GetCustomData<ChargeBox_Id>("chargeBoxId") == ChargeBoxId);
 
                 if (webSocketConnection == default)
                 {
@@ -2610,12 +2619,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                               WebSocketFrame.MaskStatus.Off,
                                                               new Byte[4],
                                                               WebSocketFrame.Opcodes.Text,
-                                                              request.ToJSON().ToString(Newtonsoft.Json.Formatting.None).ToUTF8Bytes(),
+                                                              wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.None).ToUTF8Bytes(),
                                                               WebSocketFrame.Rsv.Off,
                                                               WebSocketFrame.Rsv.Off,
                                                               WebSocketFrame.Rsv.Off);
 
                 await networkStream.WriteAsync(WSFrame.ToByteArray());
+
+                File.AppendAllText(LogfileName,
+                                   String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                               Environment.NewLine,
+                                                 "ChargeBoxId: ",  ChargeBoxId.ToString(),                                                  Environment.NewLine,
+                                                 "Message sent: ", wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
+                                                 "--------------------------------------------------------------------------------------------", Environment.NewLine));
 
                 return SendJSONResults.ok;
 

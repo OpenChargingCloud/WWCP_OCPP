@@ -383,7 +383,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         {
 
             var JSON = JSONObject.Create(
-                           new JProperty("fileName",  FileName.SubstringMax(MaxFileNameLength))
+
+                           FileName.IsNotNullOrEmpty()
+                               ? new JProperty("fileName",  FileName.SubstringMax(MaxFileNameLength))
+                               : null
+
                        );
 
             return CustomGetDiagnosticsResponseSerializer != null

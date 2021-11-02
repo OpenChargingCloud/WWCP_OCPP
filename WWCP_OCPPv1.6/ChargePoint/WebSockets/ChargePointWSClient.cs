@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         private SslStream        TLSStream;
         private Stream           HTTPStream;
 
-        private Int64            requestId;
+        private Int64            requestId = 100000;
 
         /// <summary>
         /// The default maintenance interval.
@@ -105,7 +105,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         private static readonly SemaphoreSlim MaintenanceSemaphore = new SemaphoreSlim(1, 1);
         private readonly Timer MaintenanceTimer;
 
+        public readonly TimeSpan DefaultWebSocketPingEvery = TimeSpan.FromSeconds(30);
+        //private static readonly SemaphoreSlim WebSocketPingSemaphore = new SemaphoreSlim(1, 1);
+        private readonly Timer WebSocketPingTimer;
+
         protected static readonly TimeSpan SemaphoreSlimTimeout = TimeSpan.FromSeconds(5);
+
+        private const String LogfileName = "ChargePointWSClient.log";
 
         #endregion
 
@@ -158,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The remote SSL/TLS certificate validator.
         /// </summary>
-        public RemoteCertificateValidationCallback  RemoteCertificateValidator    { get; }
+        public RemoteCertificateValidationCallback  RemoteCertificateValidator    { get; private set; }
 
         /// <summary>
         /// A delegate to select a TLS client certificate.
@@ -264,18 +270,56 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         }
 
 
-        public Tuple<String, String> HTTPBasicAuth { get; }
+        public Tuple<String, String> HTTPBasicAuth      { get; }
 
-
-        /// <summary>
-        /// The maintenance interval.
-        /// </summary>
-        public TimeSpan  MaintenanceEvery            { get; }
 
         /// <summary>
         /// Disable all maintenance tasks.
         /// </summary>
-        public Boolean   DisableMaintenanceTasks     { get; set; }
+        public Boolean   DisableMaintenanceTasks        { get; set; }
+
+        /// <summary>
+        /// The maintenance interval.
+        /// </summary>
+        public TimeSpan  MaintenanceEvery               { get; }
+
+
+        /// <summary>
+        /// Disable web socket pings.
+        /// </summary>
+        public Boolean   DisableWebSocketPingTasks      { get; set; }
+
+        /// <summary>
+        /// The web socket ping interval.
+        /// </summary>
+        public TimeSpan  WebSocketPingEvery             { get; }
+
+
+        #region CustomRequestParsers
+
+        public CustomJObjectParserDelegate<ResetRequest>                   CustomResetRequestParser                     { get; set; }
+        public CustomJObjectParserDelegate<ChangeAvailabilityRequest>      CustomChangeAvailabilityRequestParser        { get; set; }
+        public CustomJObjectParserDelegate<GetConfigurationRequest>        CustomGetConfigurationRequestParser          { get; set; }
+        public CustomJObjectParserDelegate<ChangeConfigurationRequest>     CustomChangeConfigurationRequestParser       { get; set; }
+        public CustomJObjectParserDelegate<CS.DataTransferRequest>         CustomIncomingDataTransferRequestParser      { get; set; }
+        public CustomJObjectParserDelegate<GetDiagnosticsRequest>          CustomGetDiagnosticsRequestParser            { get; set; }
+        public CustomJObjectParserDelegate<TriggerMessageRequest>          CustomTriggerMessageRequestParser            { get; set; }
+        public CustomJObjectParserDelegate<UpdateFirmwareRequest>          CustomUpdateFirmwareRequestParser            { get; set; }
+
+        public CustomJObjectParserDelegate<ReserveNowRequest>              CustomReserveNowRequestParser                { get; set; }
+        public CustomJObjectParserDelegate<CancelReservationRequest>       CustomCancelReservationRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<RemoteStartTransactionRequest>  CustomRemoteStartTransactionRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<RemoteStopTransactionRequest>   CustomRemoteStopTransactionRequestParser     { get; set; }
+        public CustomJObjectParserDelegate<SetChargingProfileRequest>      CustomSetChargingProfileRequestParser        { get; set; }
+        public CustomJObjectParserDelegate<ClearChargingProfileRequest>    CustomClearChargingProfileRequestParser      { get; set; }
+        public CustomJObjectParserDelegate<GetCompositeScheduleRequest>    CustomGetCompositeScheduleRequestParser      { get; set; }
+        public CustomJObjectParserDelegate<UnlockConnectorRequest>         CustomUnlockConnectorRequestParser           { get; set; }
+
+        public CustomJObjectParserDelegate<GetLocalListVersionRequest>     CustomGetLocalListVersionRequestParser       { get; set; }
+        public CustomJObjectParserDelegate<SendLocalListRequest>           CustomSendLocalListRequestParser             { get; set; }
+        public CustomJObjectParserDelegate<ClearCacheRequest>              CustomClearCacheRequestParser                { get; set; }
+
+        #endregion
 
         #endregion
 
@@ -1147,6 +1191,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                    Boolean                              UseHTTPPipelining            = false,
 
                                    TimeSpan?                            MaintenanceEvery             = null,
+                                   TimeSpan?                            WebSocketPingEvery           = null,
 
                                    String                               LoggingPath                  = null,
                                    String                               LoggingContext               = ChargePointSOAPClient.CPClientLogger.DefaultContext,
@@ -1194,11 +1239,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             //                                                                            LoggingContext,
             //                                                                            LogFileCreator);
 
-            this.MaintenanceEvery            = MaintenanceEvery ?? DefaultMaintenanceEvery;
+            this.MaintenanceEvery            = MaintenanceEvery   ?? DefaultMaintenanceEvery;
             this.MaintenanceTimer            = new Timer(DoMaintenanceSync,
                                                          null,
                                                          this.MaintenanceEvery,
                                                          this.MaintenanceEvery);
+
+            this.WebSocketPingEvery          = WebSocketPingEvery ?? DefaultWebSocketPingEvery;
+            this.WebSocketPingTimer          = new Timer(DoWebSocketPingSync,
+                                                         null,
+                                                         this.WebSocketPingEvery,
+                                                         this.WebSocketPingEvery);
 
         }
 
@@ -1413,6 +1464,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region Create (Crypto-)Stream
 
+                    if (RemoteCertificateValidator == null &&
+                       (RemoteURL.Protocol == URLProtocols.wss || RemoteURL.Protocol == URLProtocols.https))
+                    {
+                        RemoteCertificateValidator = (sender, certificate, chain, sslPolicyErrors) => {
+                            return true;
+                        };
+                    }
+
                     if (RemoteCertificateValidator != null)
                     {
 
@@ -1512,6 +1571,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 HTTPStream.Write((request.EntirePDU + "\r\n\r\n").ToUTF8Bytes());
 
+                File.AppendAllText(LogfileName,
+                                   String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
+                                                 "ChargeBoxId: ", ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
+                                                 "HTTP request: ", Environment.NewLine, Environment.NewLine,
+                                                 request.EntirePDU, Environment.NewLine,
+                                                 "--------------------------------------------------------------------------------------------",  Environment.NewLine));
+
                 #endregion
 
                 #region Wait for HTTP response
@@ -1551,6 +1617,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 //var swka            = swk + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
                 //var swkaSha1        = System.Security.Cryptography.SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(swka));
                 //var swkaSha1Base64  = Convert.ToBase64String(swkaSha1);
+
+                File.AppendAllText(LogfileName,
+                                   String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
+                                                 "ChargeBoxId: ", ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
+                                                 "HTTP response: ", Environment.NewLine, Environment.NewLine,
+                                                 response.EntirePDU, Environment.NewLine,
+                                                 "--------------------------------------------------------------------------------------------",  Environment.NewLine));
 
                 if (response.HTTPStatusCode.Code != 101)
                     DebugX.Log("response.HTTPStatusCode.Code != 101");
@@ -1687,27 +1760,104 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        public CustomJObjectParserDelegate<ResetRequest>                   CustomResetRequestParser                     { get; set; }
-        public CustomJObjectParserDelegate<ChangeAvailabilityRequest>      CustomChangeAvailabilityRequestParser        { get; set; }
-        public CustomJObjectParserDelegate<GetConfigurationRequest>        CustomGetConfigurationRequestParser          { get; set; }
-        public CustomJObjectParserDelegate<ChangeConfigurationRequest>     CustomChangeConfigurationRequestParser       { get; set; }
-        public CustomJObjectParserDelegate<CS.DataTransferRequest>         CustomIncomingDataTransferRequestParser      { get; set; }
-        public CustomJObjectParserDelegate<GetDiagnosticsRequest>          CustomGetDiagnosticsRequestParser            { get; set; }
-        public CustomJObjectParserDelegate<TriggerMessageRequest>          CustomTriggerMessageRequestParser            { get; set; }
-        public CustomJObjectParserDelegate<UpdateFirmwareRequest>          CustomUpdateFirmwareRequestParser            { get; set; }
+        #region (Timer) DoWebSocketPing(State)
 
-        public CustomJObjectParserDelegate<ReserveNowRequest>              CustomReserveNowRequestParser                { get; set; }
-        public CustomJObjectParserDelegate<CancelReservationRequest>       CustomCancelReservationRequestParser         { get; set; }
-        public CustomJObjectParserDelegate<RemoteStartTransactionRequest>  CustomRemoteStartTransactionRequestParser    { get; set; }
-        public CustomJObjectParserDelegate<RemoteStopTransactionRequest>   CustomRemoteStopTransactionRequestParser     { get; set; }
-        public CustomJObjectParserDelegate<SetChargingProfileRequest>      CustomSetChargingProfileRequestParser        { get; set; }
-        public CustomJObjectParserDelegate<ClearChargingProfileRequest>    CustomClearChargingProfileRequestParser      { get; set; }
-        public CustomJObjectParserDelegate<GetCompositeScheduleRequest>    CustomGetCompositeScheduleRequestParser      { get; set; }
-        public CustomJObjectParserDelegate<UnlockConnectorRequest>         CustomUnlockConnectorRequestParser           { get; set; }
+        private void DoWebSocketPingSync(Object State)
+        {
+            if (!DisableWebSocketPingTasks)
+                DoWebSocketPing(State).Wait();
+        }
 
-        public CustomJObjectParserDelegate<GetLocalListVersionRequest>     CustomGetLocalListVersionRequestParser       { get; set; }
-        public CustomJObjectParserDelegate<SendLocalListRequest>           CustomSendLocalListRequestParser             { get; set; }
-        public CustomJObjectParserDelegate<ClearCacheRequest>              CustomClearCacheRequestParser                { get; set; }
+        private async Task DoWebSocketPing(Object State)
+        {
+
+            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
+                                           ConfigureAwait(false))
+            {
+                try
+                {
+                    if (HTTPStream != null)
+                    {
+
+                        HTTPStream.Write(new WebSocketFrame(WebSocketFrame.Fin.Final,
+                                                            WebSocketFrame.MaskStatus.On,
+                                                            new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
+                                                            WebSocketFrame.Opcodes.Ping,
+                                                            Guid.NewGuid().ToByteArray(),
+                                                            WebSocketFrame.Rsv.Off,
+                                                            WebSocketFrame.Rsv.Off,
+                                                            WebSocketFrame.Rsv.Off).ToByteArray());
+
+                        HTTPStream.Flush();
+
+                        File.AppendAllText(LogfileName,
+                                           String.Concat("Timestamp: ",   Timestamp.Now.ToIso8601(),    Environment.NewLine,
+                                                         "ChargeBoxId: ", ChargeBoxIdentity.ToString(), Environment.NewLine,
+                                                         "Ping sent: ",   Environment.NewLine,
+                                                         "--------------------------------------------------------------------------------------------", Environment.NewLine));
+
+                        //var buffer   = new Byte[64 * 1024];
+                        //var pos      = 0;
+                        //var sw       = Stopwatch.StartNew();
+                        //var timeout  = (Int64) TimeSpan.FromSeconds(5).TotalMilliseconds;
+
+                        //do
+                        //{
+
+                        //    pos += HTTPStream.Read(buffer, pos, 2048);
+
+                        //    if (sw.ElapsedMilliseconds >= timeout)
+                        //        break;
+
+                        //    Thread.Sleep(5);
+
+                        //} while (TCPStream.DataAvailable);
+
+                        //Array.Resize(ref buffer, pos);
+
+                        //if (WebSocketFrame.TryParse(buffer, out WebSocketFrame frame, out UInt64 frameLength))
+                        //{
+
+
+                        //        File.AppendAllText(LogfileName,
+                        //                           String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
+                        //                                         "ChargeBoxId: ", ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
+                        //                                         "Message received: ",  wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
+                        //                                         "--------------------------------------------------------------------------------------------",  Environment.NewLine));
+
+                        //        return wsResponseMessage;
+
+                        //    }
+                        //    else
+                        //        DebugX.Log(nameof(ChargePointWSClient), " error: " + frame.Payload.ToUTF8String());
+                        //}
+
+                    }
+                }
+                catch (ObjectDisposedException ode)
+                {
+                    WebSocketPingTimer.Dispose();
+                }
+                catch (Exception e)
+                {
+
+                    while (e.InnerException != null)
+                        e = e.InnerException;
+
+                    DebugX.LogException(e);
+
+                }
+                finally
+                {
+                    MaintenanceSemaphore.Release();
+                }
+            }
+            else
+                DebugX.LogT("Could not aquire the web socket ping task lock!");
+
+        }
+
+        #endregion
 
 
         #region (Timer) DoMaintenance(State)
@@ -1755,8 +1905,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             if (textPayload == "[]")
                                 DebugX.Log(nameof(ChargePointWSClient), " [] received!");
 
-                            else if (WSRequestMessage.TryParse(textPayload, out WSRequestMessage wsRequest))
+                            else if (WSRequestMessage.TryParse(textPayload, out WSRequestMessage wsRequestMessage))
                             {
+
+                                File.AppendAllText(LogfileName,
+                                                   String.Concat("timestamp: ",         Timestamp.Now.ToIso8601(),                                               Environment.NewLine,
+                                                                 "ChargeBoxId: ", ChargeBoxIdentity.ToString(),                                            Environment.NewLine,
+                                                                 "Message received: ",  wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
+                                                                 "--------------------------------------------------------------------------------------------", Environment.NewLine));
+
 
                                 var requestJSON                  = JArray.Parse(textPayload);
                                 var cancellationTokenSource      = new CancellationTokenSource();
@@ -1764,7 +1921,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 JObject        OCPPResponseJSON  = null;
                                 WSErrorMessage ErrorMessage      = null;
 
-                                switch (wsRequest.Action)
+                                switch (wsRequestMessage.Action)
                                 {
 
                                     case "Reset":
@@ -1793,8 +1950,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (ResetRequest.TryParse(wsRequest.Message,
-                                                                          wsRequest.RequestId,
+                                                if (ResetRequest.TryParse(wsRequestMessage.Message,
+                                                                          wsRequestMessage.RequestId,
                                                                           ChargeBoxIdentity,
                                                                           out ResetRequest request,
                                                                           out String ErrorResponse,
@@ -1872,7 +2029,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'Reset' request could not be parsed!",
                                                                                         new JObject(
@@ -1883,7 +2040,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'Reset' request led to an exception!",
                                                                                     new JObject(
@@ -1903,7 +2060,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnResetWSResponse?.Invoke(Timestamp.Now,
                                                                           this,
                                                                           requestJSON,
-                                                                          new WSResponseMessage(wsRequest.RequestId,
+                                                                          new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                 OCPPResponseJSON).ToJSON());
 
                                             }
@@ -1943,8 +2100,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (ChangeAvailabilityRequest.TryParse(wsRequest.Message,
-                                                                                       wsRequest.RequestId,
+                                                if (ChangeAvailabilityRequest.TryParse(wsRequestMessage.Message,
+                                                                                       wsRequestMessage.RequestId,
                                                                                        ChargeBoxIdentity,
                                                                                        out ChangeAvailabilityRequest request,
                                                                                        out String ErrorResponse,
@@ -2022,7 +2179,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'ChangeAvailability' request could not be parsed!",
                                                                                         new JObject(
@@ -2033,7 +2190,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'ChangeAvailability' request led to an exception!",
                                                                                     new JObject(
@@ -2053,7 +2210,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnChangeAvailabilityWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
+                                                                                       new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
@@ -2093,8 +2250,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (GetConfigurationRequest.TryParse(wsRequest.Message,
-                                                                                     wsRequest.RequestId,
+                                                if (GetConfigurationRequest.TryParse(wsRequestMessage.Message,
+                                                                                     wsRequestMessage.RequestId,
                                                                                      ChargeBoxIdentity,
                                                                                      out GetConfigurationRequest request,
                                                                                      out String ErrorResponse,
@@ -2172,7 +2329,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                       WSErrorCodes.FormationViolation,
                                                                                       "The given 'GetConfiguration' request could not be parsed!",
                                                                                       new JObject(
@@ -2183,7 +2340,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                   WSErrorCodes.FormationViolation,
                                                                                   "Processing the given 'GetConfiguration' request led to an exception!",
                                                                                   new JObject(
@@ -2203,7 +2360,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnGetConfigurationWSResponse?.Invoke(Timestamp.Now,
                                                                                      this,
                                                                                      requestJSON,
-                                                                                     new WSResponseMessage(wsRequest.RequestId,
+                                                                                     new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                            OCPPResponseJSON).ToJSON());
 
                                             }
@@ -2243,8 +2400,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (ChangeConfigurationRequest.TryParse(wsRequest.Message,
-                                                                                        wsRequest.RequestId,
+                                                if (ChangeConfigurationRequest.TryParse(wsRequestMessage.Message,
+                                                                                        wsRequestMessage.RequestId,
                                                                                         ChargeBoxIdentity,
                                                                                         out ChangeConfigurationRequest request,
                                                                                         out String ErrorResponse,
@@ -2322,7 +2479,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'ChangeConfiguration' request could not be parsed!",
                                                                                         new JObject(
@@ -2333,7 +2490,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'ChangeConfiguration' request led to an exception!",
                                                                                     new JObject(
@@ -2353,7 +2510,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnChangeConfigurationWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
+                                                                                       new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
@@ -2393,8 +2550,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (CS.DataTransferRequest.TryParse(wsRequest.Message,
-                                                                                    wsRequest.RequestId,
+                                                if (CS.DataTransferRequest.TryParse(wsRequestMessage.Message,
+                                                                                    wsRequestMessage.RequestId,
                                                                                     ChargeBoxIdentity,
                                                                                     out CS.DataTransferRequest  request,
                                                                                     out String                  ErrorResponse,
@@ -2472,7 +2629,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage =  new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage =  new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                        WSErrorCodes.FormationViolation,
                                                                                        "The given 'DataTransfer' request could not be parsed!",
                                                                                        new JObject(
@@ -2483,7 +2640,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                   WSErrorCodes.FormationViolation,
                                                                                   "Processing the given 'DataTransfer' request led to an exception!",
                                                                                   new JObject(
@@ -2503,7 +2660,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnIncomingDataTransferWSResponse?.Invoke(Timestamp.Now,
                                                                                          this,
                                                                                          requestJSON,
-                                                                                         new WSResponseMessage(wsRequest.RequestId,
+                                                                                         new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                                OCPPResponseJSON).ToJSON());
 
                                             }
@@ -2543,8 +2700,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (GetDiagnosticsRequest.TryParse(wsRequest.Message,
-                                                                                   wsRequest.RequestId,
+                                                if (GetDiagnosticsRequest.TryParse(wsRequestMessage.Message,
+                                                                                   wsRequestMessage.RequestId,
                                                                                    ChargeBoxIdentity,
                                                                                    out GetDiagnosticsRequest request,
                                                                                    out String ErrorResponse,
@@ -2622,7 +2779,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'GetDiagnostics' request could not be parsed!",
                                                                                         new JObject(
@@ -2633,7 +2790,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'GetDiagnostics' request led to an exception!",
                                                                                     new JObject(
@@ -2653,7 +2810,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnGetDiagnosticsWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
+                                                                                       new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
@@ -2693,8 +2850,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (TriggerMessageRequest.TryParse(wsRequest.Message,
-                                                                                   wsRequest.RequestId,
+                                                if (TriggerMessageRequest.TryParse(wsRequestMessage.Message,
+                                                                                   wsRequestMessage.RequestId,
                                                                                    ChargeBoxIdentity,
                                                                                    out TriggerMessageRequest request,
                                                                                    out String ErrorResponse,
@@ -2772,7 +2929,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'TriggerMessage' request could not be parsed!",
                                                                                         new JObject(
@@ -2783,7 +2940,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'TriggerMessage' request led to an exception!",
                                                                                     new JObject(
@@ -2803,7 +2960,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnTriggerMessageWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
+                                                                                       new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
@@ -2843,8 +3000,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (UpdateFirmwareRequest.TryParse(wsRequest.Message,
-                                                                                   wsRequest.RequestId,
+                                                if (UpdateFirmwareRequest.TryParse(wsRequestMessage.Message,
+                                                                                   wsRequestMessage.RequestId,
                                                                                    ChargeBoxIdentity,
                                                                                    out UpdateFirmwareRequest request,
                                                                                    out String ErrorResponse,
@@ -2922,7 +3079,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'UpdateFirmware' request could not be parsed!",
                                                                                         new JObject(
@@ -2933,7 +3090,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'UpdateFirmware' request led to an exception!",
                                                                                     new JObject(
@@ -2953,7 +3110,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnUpdateFirmwareWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
+                                                                                       new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
@@ -2994,8 +3151,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (ReserveNowRequest.TryParse(wsRequest.Message,
-                                                                               wsRequest.RequestId,
+                                                if (ReserveNowRequest.TryParse(wsRequestMessage.Message,
+                                                                               wsRequestMessage.RequestId,
                                                                                ChargeBoxIdentity,
                                                                                out ReserveNowRequest request,
                                                                                out String ErrorResponse,
@@ -3073,7 +3230,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'ReserveNow' request could not be parsed!",
                                                                                         new JObject(
@@ -3084,7 +3241,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'ReserveNow' request led to an exception!",
                                                                                     new JObject(
@@ -3104,7 +3261,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnReserveNowWSResponse?.Invoke(Timestamp.Now,
                                                                                this,
                                                                                requestJSON,
-                                                                               new WSResponseMessage(wsRequest.RequestId,
+                                                                               new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                      OCPPResponseJSON).ToJSON());
 
                                             }
@@ -3144,8 +3301,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (CancelReservationRequest.TryParse(wsRequest.Message,
-                                                                                       wsRequest.RequestId,
+                                                if (CancelReservationRequest.TryParse(wsRequestMessage.Message,
+                                                                                       wsRequestMessage.RequestId,
                                                                                        ChargeBoxIdentity,
                                                                                        out CancelReservationRequest request,
                                                                                        out String ErrorResponse,
@@ -3223,7 +3380,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'CancelReservation' request could not be parsed!",
                                                                                         new JObject(
@@ -3234,7 +3391,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'CancelReservation' request led to an exception!",
                                                                                     new JObject(
@@ -3254,7 +3411,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnCancelReservationWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
+                                                                                       new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
@@ -3294,8 +3451,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (RemoteStartTransactionRequest.TryParse(wsRequest.Message,
-                                                                                       wsRequest.RequestId,
+                                                if (RemoteStartTransactionRequest.TryParse(wsRequestMessage.Message,
+                                                                                       wsRequestMessage.RequestId,
                                                                                        ChargeBoxIdentity,
                                                                                        out RemoteStartTransactionRequest request,
                                                                                        out String ErrorResponse,
@@ -3373,7 +3530,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'RemoteStartTransaction' request could not be parsed!",
                                                                                         new JObject(
@@ -3384,7 +3541,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'RemoteStartTransaction' request led to an exception!",
                                                                                     new JObject(
@@ -3404,7 +3561,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnRemoteStartTransactionWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
+                                                                                       new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
@@ -3444,8 +3601,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (RemoteStopTransactionRequest.TryParse(wsRequest.Message,
-                                                                                       wsRequest.RequestId,
+                                                if (RemoteStopTransactionRequest.TryParse(wsRequestMessage.Message,
+                                                                                       wsRequestMessage.RequestId,
                                                                                        ChargeBoxIdentity,
                                                                                        out RemoteStopTransactionRequest request,
                                                                                        out String ErrorResponse,
@@ -3523,7 +3680,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'RemoteStopTransaction' request could not be parsed!",
                                                                                         new JObject(
@@ -3534,7 +3691,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'RemoteStopTransaction' request led to an exception!",
                                                                                     new JObject(
@@ -3554,7 +3711,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnRemoteStopTransactionWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
+                                                                                       new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
@@ -3594,8 +3751,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (SetChargingProfileRequest.TryParse(wsRequest.Message,
-                                                                                       wsRequest.RequestId,
+                                                if (SetChargingProfileRequest.TryParse(wsRequestMessage.Message,
+                                                                                       wsRequestMessage.RequestId,
                                                                                        ChargeBoxIdentity,
                                                                                        out SetChargingProfileRequest request,
                                                                                        out String ErrorResponse,
@@ -3673,7 +3830,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'SetChargingProfile' request could not be parsed!",
                                                                                         new JObject(
@@ -3684,7 +3841,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'SetChargingProfile' request led to an exception!",
                                                                                     new JObject(
@@ -3704,7 +3861,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnSetChargingProfileWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
+                                                                                       new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
@@ -3744,8 +3901,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (ClearChargingProfileRequest.TryParse(wsRequest.Message,
-                                                                                       wsRequest.RequestId,
+                                                if (ClearChargingProfileRequest.TryParse(wsRequestMessage.Message,
+                                                                                       wsRequestMessage.RequestId,
                                                                                        ChargeBoxIdentity,
                                                                                        out ClearChargingProfileRequest request,
                                                                                        out String ErrorResponse,
@@ -3823,7 +3980,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'ClearChargingProfile' request could not be parsed!",
                                                                                         new JObject(
@@ -3834,7 +3991,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'ClearChargingProfile' request led to an exception!",
                                                                                     new JObject(
@@ -3854,7 +4011,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnClearChargingProfileWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
+                                                                                       new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
@@ -3894,8 +4051,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (GetCompositeScheduleRequest.TryParse(wsRequest.Message,
-                                                                                       wsRequest.RequestId,
+                                                if (GetCompositeScheduleRequest.TryParse(wsRequestMessage.Message,
+                                                                                       wsRequestMessage.RequestId,
                                                                                        ChargeBoxIdentity,
                                                                                        out GetCompositeScheduleRequest request,
                                                                                        out String ErrorResponse,
@@ -3973,7 +4130,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'GetCompositeSchedule' request could not be parsed!",
                                                                                         new JObject(
@@ -3984,7 +4141,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'GetCompositeSchedule' request led to an exception!",
                                                                                     new JObject(
@@ -4004,7 +4161,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnGetCompositeScheduleWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
+                                                                                       new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
@@ -4044,8 +4201,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (UnlockConnectorRequest.TryParse(wsRequest.Message,
-                                                                                       wsRequest.RequestId,
+                                                if (UnlockConnectorRequest.TryParse(wsRequestMessage.Message,
+                                                                                       wsRequestMessage.RequestId,
                                                                                        ChargeBoxIdentity,
                                                                                        out UnlockConnectorRequest request,
                                                                                        out String ErrorResponse,
@@ -4123,7 +4280,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'UnlockConnector' request could not be parsed!",
                                                                                         new JObject(
@@ -4134,7 +4291,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'UnlockConnector' request led to an exception!",
                                                                                     new JObject(
@@ -4154,7 +4311,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnUnlockConnectorWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
+                                                                                       new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
@@ -4195,8 +4352,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (GetLocalListVersionRequest.TryParse(wsRequest.Message,
-                                                                                       wsRequest.RequestId,
+                                                if (GetLocalListVersionRequest.TryParse(wsRequestMessage.Message,
+                                                                                       wsRequestMessage.RequestId,
                                                                                        ChargeBoxIdentity,
                                                                                        out GetLocalListVersionRequest request,
                                                                                        out String ErrorResponse,
@@ -4274,7 +4431,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'GetLocalListVersion' request could not be parsed!",
                                                                                         new JObject(
@@ -4285,7 +4442,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'GetLocalListVersion' request led to an exception!",
                                                                                     new JObject(
@@ -4305,7 +4462,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnGetLocalListVersionWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
+                                                                                       new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
@@ -4345,8 +4502,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (SendLocalListRequest.TryParse(wsRequest.Message,
-                                                                                       wsRequest.RequestId,
+                                                if (SendLocalListRequest.TryParse(wsRequestMessage.Message,
+                                                                                       wsRequestMessage.RequestId,
                                                                                        ChargeBoxIdentity,
                                                                                        out SendLocalListRequest request,
                                                                                        out String ErrorResponse,
@@ -4424,7 +4581,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'SendLocalList' request could not be parsed!",
                                                                                         new JObject(
@@ -4435,7 +4592,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'SendLocalList' request led to an exception!",
                                                                                     new JObject(
@@ -4455,7 +4612,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnSendLocalListWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
+                                                                                       new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
@@ -4495,8 +4652,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             try
                                             {
 
-                                                if (ClearCacheRequest.TryParse(wsRequest.Message,
-                                                                                       wsRequest.RequestId,
+                                                if (ClearCacheRequest.TryParse(wsRequestMessage.Message,
+                                                                                       wsRequestMessage.RequestId,
                                                                                        ChargeBoxIdentity,
                                                                                        out ClearCacheRequest request,
                                                                                        out String ErrorResponse,
@@ -4574,7 +4731,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
 
                                                 else
-                                                    ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                    ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                         WSErrorCodes.FormationViolation,
                                                                                         "The given 'ClearCache' request could not be parsed!",
                                                                                         new JObject(
@@ -4585,7 +4742,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             catch (Exception e)
                                             {
 
-                                                ErrorMessage = new WSErrorMessage(wsRequest.RequestId,
+                                                ErrorMessage = new WSErrorMessage(wsRequestMessage.RequestId,
                                                                                     WSErrorCodes.FormationViolation,
                                                                                     "Processing the given 'ClearCache' request led to an exception!",
                                                                                     new JObject(
@@ -4605,7 +4762,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 OnClearCacheWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        requestJSON,
-                                                                                       new WSResponseMessage(wsRequest.RequestId,
+                                                                                       new WSResponseMessage(wsRequestMessage.RequestId,
                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
@@ -4624,14 +4781,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 if (OCPPResponseJSON != null)
                                 {
 
+                                    var wsResponseMessage = new WSResponseMessage(wsRequestMessage.RequestId, OCPPResponseJSON);
+
                                     HTTPStream.Write(new WebSocketFrame(WebSocketFrame.Fin.Final,
                                                                         WebSocketFrame.MaskStatus.On,
                                                                         new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
                                                                         WebSocketFrame.Opcodes.Text,
-                                                                        new WSResponseMessage(wsRequest.RequestId, OCPPResponseJSON).ToByteArray(),
+                                                                        wsResponseMessage.ToByteArray(),
                                                                         WebSocketFrame.Rsv.Off,
                                                                         WebSocketFrame.Rsv.Off,
                                                                         WebSocketFrame.Rsv.Off).ToByteArray());
+
+                                    File.AppendAllText(LogfileName,
+                                                       String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
+                                                                     "ChargeBoxId: ", ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
+                                                                     "Message sent: ",      wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
+                                                                     "--------------------------------------------------------------------------------------------",  Environment.NewLine));
 
                                     HTTPStream.Flush();
 
@@ -4642,6 +4807,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP request message: " + textPayload);
 
                         }
+
+                        else if (frame.Opcode == WebSocketFrame.Opcodes.Ping)
+                        {
+
+                            DebugX.Log(nameof(ChargePointWSClient) + ": Ping received!");
+
+                            HTTPStream.Write(new WebSocketFrame(WebSocketFrame.Fin.Final,
+                                                                WebSocketFrame.MaskStatus.On,
+                                                                new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
+                                                                WebSocketFrame.Opcodes.Pong,
+                                                                frame.Payload,
+                                                                WebSocketFrame.Rsv.Off,
+                                                                WebSocketFrame.Rsv.Off,
+                                                                WebSocketFrame.Rsv.Off).ToByteArray());
+
+                            HTTPStream.Flush();
+
+                        }
+
+                        else if (frame.Opcode == WebSocketFrame.Opcodes.Pong)
+                        {
+                            DebugX.Log(nameof(ChargePointWSClient) + ": Pong received!");
+                        }
+
                         else
                             DebugX.Log(nameof(ChargePointWSClient), " Received unknown " + frame.Opcode + " frame!");
 
@@ -4717,17 +4906,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                         Interlocked.Increment(ref requestId);
 
+                        var wsRequestMessage = new WSRequestMessage(Request_Id.Parse(requestId.ToString()), Action, Message);
+
                         HTTPStream.Write(new WebSocketFrame(WebSocketFrame.Fin.Final,
                                                             WebSocketFrame.MaskStatus.On,
                                                             new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
                                                             WebSocketFrame.Opcodes.Text,
-                                                            new WSRequestMessage(Request_Id.Parse(requestId.ToString()), Action, Message).ToByteArray(),
+                                                            wsRequestMessage.ToByteArray(),
                                                             WebSocketFrame.Rsv.Off,
                                                             WebSocketFrame.Rsv.Off,
                                                             WebSocketFrame.Rsv.Off).ToByteArray());
 
                         HTTPStream.Flush();
 
+                        File.AppendAllText(LogfileName,
+                                           String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                               Environment.NewLine,
+                                                         "ChargeBoxId: ", ChargeBoxIdentity.ToString(),                                            Environment.NewLine,
+                                                         "Message sent: ",      wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
+                                                         "--------------------------------------------------------------------------------------------", Environment.NewLine));
 
                         var buffer = new Byte[64 * 1024];
                         var pos    = 0;
@@ -4749,8 +4945,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                         if (WebSocketFrame.TryParse(buffer, out WebSocketFrame frame, out UInt64 frameLength))
                         {
-                            if (WSResponseMessage.TryParse(frame.Payload.ToUTF8String(), out WSResponseMessage response))
-                                return response;
+                            if (WSResponseMessage.TryParse(frame.Payload.ToUTF8String(), out WSResponseMessage wsResponseMessage))
+                            {
+
+                                File.AppendAllText(LogfileName,
+                                                   String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
+                                                                 "ChargeBoxId: ", ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
+                                                                 "Message received: ",  wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
+                                                                 "--------------------------------------------------------------------------------------------",  Environment.NewLine));
+
+                                return wsResponseMessage;
+
+                            }
                             else
                                 DebugX.Log(nameof(ChargePointWSClient), " error: " + frame.Payload.ToUTF8String());
                         }
@@ -4758,7 +4964,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     }
                     else
                     {
-                        DebugX.Log("Invalid connection!");
+                        DebugX.Log("Invalid web socket connection!");
                     }
 
                 }

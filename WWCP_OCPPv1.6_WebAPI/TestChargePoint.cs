@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The default time span between heartbeat requests.
         /// </summary>
-        public readonly TimeSpan DefaultSendHeartbeatEvery = TimeSpan.FromMinutes(5);
+        public readonly TimeSpan DefaultSendHeartbeatEvery = TimeSpan.FromSeconds(30);
 
         protected static readonly TimeSpan SemaphoreSlimTimeout = TimeSpan.FromSeconds(5);
 
@@ -978,6 +978,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                      TransmissionRetryDelay,
                                                      MaxNumberOfRetries,
                                                      UseHTTPPipelining,
+                                                     null,
                                                      null,
                                                      LoggingPath,
                                                      LoggingContext,
@@ -1868,33 +1869,62 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     if (connector != null && connector.IsCharging == false)
                     {
 
-                        connector.IsCharging      = true;
-                        connector.StartTimestamp  = Timestamp.Now;
+                        connector.IsCharging         = true;
+                        connector.StartTimestamp     = Timestamp.Now;
 
-                        var request = new StartTransactionRequest(ChargeBoxId,
-                                                                  Request.ConnectorId ?? Connector_Id.Parse(0),
-                                                                  Request.IdTag,
-                                                                  Timestamp.Now,
-                                                                  connector.MeterStartValue,
-                                                                  null);
+                        var startTransactionRequest  = new StartTransactionRequest(ChargeBoxId,
+                                                                                   Request.ConnectorId ?? Connector_Id.Parse(0),
+                                                                                   Request.IdTag,
+                                                                                   Timestamp.Now,
+                                                                                   connector.MeterStartValue,
+                                                                                   null); // ReservationId
 
                         EnquedRequests.Add(new EnquedRequest("StartTransaction",
-                                                             request, // ReservationId
+                                                             startTransactionRequest,
                                                              Timestamp.Now,
                                                              EnquedRequest.EnquedStatus.New,
                                                              response => {
                                                                  if (response is WebSockets.WSResponseMessage wsResponseMessage &&
-                                                                     CS.StartTransactionResponse.TryParse(request,
+                                                                     CS.StartTransactionResponse.TryParse(startTransactionRequest,
                                                                                                           wsResponseMessage.Message,
                                                                                                           out CS.StartTransactionResponse  startTransactionResponse,
                                                                                                           out String                       ErrorResponse))
                                                                  {
+
+
                                                                      connector.IdToken          = Request.IdTag;
                                                                      connector.ChargingProfile  = Request.ChargingProfile;
                                                                      connector.IdTagInfo        = startTransactionResponse.IdTagInfo;
                                                                      connector.TransactionId    = startTransactionResponse.TransactionId;
-                                                                     DebugX.Log(nameof(TestChargePoint), "Connector " + request.ConnectorId + " started charging...");
+
+                                                                     DebugX.Log(nameof(TestChargePoint), "Connector " + startTransactionRequest.ConnectorId + " started charging... " + startTransactionResponse.TransactionId);
+
                                                                  }
+                                                             }));
+
+                        // ToDo: StartTransaction request might fail!
+                        var statusNotificationRequest  = new StatusNotificationRequest(ChargeBoxId,
+                                                                                       Request.ConnectorId ?? Connector_Id.Parse(0),
+                                                                                       ChargePointStatus.Charging,
+                                                                                       ChargePointErrorCodes.NoError);
+
+                        EnquedRequests.Add(new EnquedRequest("StatusNotification",
+                                                             statusNotificationRequest,
+                                                             Timestamp.Now,
+                                                             EnquedRequest.EnquedStatus.New,
+                                                             response => {
+                                                                 //if (response is WebSockets.WSResponseMessage wsResponseMessage &&
+                                                                 //    CS.StartTransactionResponse.TryParse(startTransactionRequest,
+                                                                 //                                         wsResponseMessage.Message,
+                                                                 //                                         out CS.StartTransactionResponse  startTransactionResponse,
+                                                                 //                                         out String                       ErrorResponse))
+                                                                 //{
+                                                                 //    connector.IdToken          = Request.IdTag;
+                                                                 //    connector.ChargingProfile  = Request.ChargingProfile;
+                                                                 //    connector.IdTagInfo        = startTransactionResponse.IdTagInfo;
+                                                                 //    connector.TransactionId    = startTransactionResponse.TransactionId;
+                                                                 //    DebugX.Log(nameof(TestChargePoint), "Connector " + startTransactionRequest.ConnectorId + " started charging...");
+                                                                 //}
                                                              }));
 
                         response = new RemoteStartTransactionResponse(Request,
@@ -1982,12 +2012,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     // ToDo: lock(connectors)
 
-                    var connector = connectors.Values.Where(conn => conn.TransactionId == Request.TransactionId).FirstOrDefault();
+                    var connector = connectors.Values.Where(conn => conn.IsCharging && conn.TransactionId == Request.TransactionId).FirstOrDefault();
 
-                    if (connector != null && connector.IsCharging == true)
+                    if (connector != null)
                     {
 
                         connector.StopTimestamp  = Timestamp.Now;
+                        connector.IsCharging     = false;
 
                         var request = new StopTransactionRequest(ChargeBoxId,
                                                                  Request.TransactionId,
@@ -2008,10 +2039,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                                                          out CS.StopTransactionResponse  stopTransactionResponse,
                                                                                                          out String                      ErrorResponse))
                                                                  {
-                                                                     connector.IsCharging = false;
                                                                      DebugX.Log(nameof(TestChargePoint), "Connector " + connector.Id + " stopped charging...");
                                                                  }
                                                              }));
+
+
+                        // ToDo: StopTransaction request might fail!
+                        var statusNotificationRequest  = new StatusNotificationRequest(ChargeBoxId,
+                                                                                       connector.Id,
+                                                                                       ChargePointStatus.Available,
+                                                                                       ChargePointErrorCodes.NoError);
+
+                        EnquedRequests.Add(new EnquedRequest("StatusNotification",
+                                                             statusNotificationRequest,
+                                                             Timestamp.Now,
+                                                             EnquedRequest.EnquedStatus.New,
+                                                             response => {
+                                                                 //if (response is WebSockets.WSResponseMessage wsResponseMessage &&
+                                                                 //    CS.StartTransactionResponse.TryParse(startTransactionRequest,
+                                                                 //                                         wsResponseMessage.Message,
+                                                                 //                                         out CS.StartTransactionResponse  startTransactionResponse,
+                                                                 //                                         out String                       ErrorResponse))
+                                                                 //{
+                                                                 //    connector.IdToken          = Request.IdTag;
+                                                                 //    connector.ChargingProfile  = Request.ChargingProfile;
+                                                                 //    connector.IdTagInfo        = startTransactionResponse.IdTagInfo;
+                                                                 //    connector.TransactionId    = startTransactionResponse.TransactionId;
+                                                                 //    DebugX.Log(nameof(TestChargePoint), "Connector " + startTransactionRequest.ConnectorId + " started charging...");
+                                                                 //}
+                                                             }));
+
 
                         response = new RemoteStopTransactionResponse(Request,
                                                                      RemoteStartStopStatus.Accepted);
@@ -3055,7 +3112,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                            EventTrackingId,
                                                            RequestTimeout ?? DefaultRequestTimeout);
 
-            if (response is null)
+            if (response != null)
+            {
+
+                var connector = connectors.Values.Where(conn => conn.Id == ConnectorId).FirstOrDefault();
+
+                connector.IsCharging     = true;
+                connector.IdToken        = IdTag;
+                connector.IdTagInfo      = response.IdTagInfo;
+                connector.TransactionId  = response.TransactionId;
+                DebugX.Log(nameof(TestChargePoint), "Connector " + ConnectorId + " started (local) charging with transaction identification " + response.TransactionId + "...");
+
+            }
+
+            else
                 response = new CS.StartTransactionResponse(request,
                                                            Result.Server("Response is null!"));
 
