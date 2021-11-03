@@ -61,6 +61,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         protected static readonly TimeSpan SemaphoreSlimTimeout = TimeSpan.FromSeconds(5);
 
+        public static readonly IPPort DefaultHTTPUploadPort = IPPort.Parse(9901);
+
         #endregion
 
         #region Properties
@@ -76,7 +78,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         String IEventSender.Id
             => CentralSystemId.ToString();
 
-        public DNSClient DNSClient { get; }
+
+        public UploadAPI  HTTPUploadAPI     { get; }
+
+        public IPPort     HTTPUploadPort    { get; }
+
+        public DNSClient  DNSClient         { get; }
 
 
         /// <summary>
@@ -583,6 +590,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         public TestCentralSystem(CentralSystem_Id  CentralSystemId,
                                  Boolean           RequireAuthentication   = true,
+                                 IPPort?           HTTPUploadPort          = null,
                                  DNSClient         DNSClient               = null)
         {
 
@@ -591,6 +599,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             this.CentralSystemId         = CentralSystemId;
             this.RequireAuthentication   = RequireAuthentication;
+            this.HTTPUploadPort          = HTTPUploadPort ?? DefaultHTTPUploadPort;
             this.centralSystemServers    = new HashSet<ICentralSystemServer>();
             this.reachableChargingBoxes  = new Dictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>>();
             this._ChargeBoxes            = new Dictionary<ChargeBox_Id, ChargeBox>();
@@ -604,6 +613,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                         SMTPClient:            new NullMailer(),
                                                         DNSClient:             DNSClient,
                                                         Autostart:             true);
+
+            this.HTTPUploadAPI           = new UploadAPI(this,
+                                                         new HTTPServer(this.HTTPUploadPort,
+                                                                        "Open Charging Cloud OCPP Upload Server",
+                                                                        "Open Charging Cloud OCPP Upload Service"));
 
             this.WebAPI                  = new OCPPWebAPI(this,
                                                           TestAPI.HTTPServer);

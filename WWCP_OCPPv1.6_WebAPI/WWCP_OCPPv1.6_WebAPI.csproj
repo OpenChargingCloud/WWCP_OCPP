@@ -58,6 +58,7 @@
     <Compile Include="ChargeBox\Results\LinkChargeBoxsResult.cs" />
     <Compile Include="ChargeBox\Results\UnlinkChargeBoxsResult.cs" />
     <Compile Include="ChargeBox\Results\UpdateChargeBoxResult.cs" />
+    <Compile Include="UploadAPI.cs" />
     <Compile Include="TestCentralSystem.cs" />
     <Compile Include="TestChargePoint.cs" />
     <None Include="compilerconfig.json" />
