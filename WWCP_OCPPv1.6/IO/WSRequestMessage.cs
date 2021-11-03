@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
                 if (JSON.Count != 4)
                     return false;
 
-                if (!(Byte.TryParse(JSON[0].Value<String>(), out Byte messageType)))
+                if (!Byte.TryParse(JSON[0].Value<String>(), out Byte messageType))
                     return false;
 
                 var requestId  = Request_Id.Parse(JSON[1].Value<String>());

@@ -36,7 +36,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Data
 
-        private readonly UInt64 InternalId;
+        /// <summary>
+        /// The nummeric value of the reservation identification.
+        /// </summary>
+        public readonly UInt64 Value;
+
+        private static readonly Random random = new Random();
 
         #endregion
 
@@ -52,23 +57,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The length of this identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId.ToString().Length;
+            => (UInt64) Value.ToString().Length;
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new OCPP reservation identification.
+        /// Create a new reservation identification.
         /// </summary>
         /// <param name="Token">An integer.</param>
         private Reservation_Id(UInt64 Token)
         {
-            this.InternalId = Token;
+            this.Value = Token;
         }
 
         #endregion
 
+
+        #region (static) Random
+
+        /// <summary>
+        /// Create a new random reservation identification.
+        /// </summary>
+        public static Reservation_Id Random
+
+            => new Reservation_Id((UInt64) random.Next());
+
+        #endregion
 
         #region (static) Parse   (Text)
 
@@ -203,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Clone this reservation identification.
         /// </summary>
         public Reservation_Id Clone
-            => new Reservation_Id(InternalId);
+            => new Reservation_Id(Value);
 
         #endregion
 
@@ -327,7 +343,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ReservationId">An object to compare with.</param>
         public Int32 CompareTo(Reservation_Id ReservationId)
 
-            => InternalId.CompareTo(ReservationId.InternalId);
+            => Value.CompareTo(ReservationId.Value);
 
         #endregion
 
@@ -358,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Reservation_Id ReservationId)
 
-            => InternalId.Equals(ReservationId.InternalId);
+            => Value.Equals(ReservationId.Value);
 
         #endregion
 
@@ -372,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => InternalId.GetHashCode();
+            => Value.GetHashCode();
 
         #endregion
 
@@ -383,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public override String ToString()
 
-            => InternalId.ToString();
+            => Value.ToString();
 
         #endregion
 

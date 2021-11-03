@@ -448,7 +448,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             var JSON = JSONObject.Create(
-                           new JProperty("reservationId",  ReservationId.ToString())
+                           new JProperty("reservationId",  ReservationId.Value)
                        );
 
             return CustomCancelReservationRequestSerializer != null

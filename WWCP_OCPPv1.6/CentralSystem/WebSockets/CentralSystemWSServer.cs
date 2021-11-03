@@ -2499,7 +2499,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                          TimeSpan?     Timeout   = null)
         {
 
-            var endTime = Timestamp.Now + (Timeout ?? TimeSpan.FromMinutes(3));
+            var endTime = Timestamp.Now + (Timeout ?? TimeSpan.FromSeconds(10));
 
             var result = await SendJSON(RequestId,
                                         ClientId,

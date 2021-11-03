@@ -84,6 +84,68 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
                           ErrorDescription,
                           ErrorDetails);
 
+
+        public static Boolean TryParse(String Text, out WSErrorMessage RequestFrame)
+        {
+
+            RequestFrame = null;
+
+            if (Text is null)
+                return false;
+
+            // [
+            //     4,
+            //    "100007",
+            //    "InternalError",
+            //    "An internal error occurred and the receiver was not able to process the requested Action successfully",
+            //    {}
+            // ]
+
+            // [
+            //     2,                  // MessageType: CALL (Client-to-Server)
+            //    "19223201",          // RequestId
+            //    "BootNotification",  // Action
+            //    {
+            //        "chargePointVendor": "VendorX",
+            //        "chargePointModel":  "SingleSocketCharger"
+            //    }
+            // ]
+
+            try
+            {
+
+                var JSON = JArray.Parse(Text);
+
+                if (JSON.Count != 5)
+                    return false;
+
+                if (!Byte.TryParse(JSON[0].Value<String>(), out Byte messageType))
+                    return false;
+
+                var requestId    = Request_Id.Parse(JSON[1].Value<String>());
+                var error        = Enum.TryParse(JSON[2].Value<String>(), out WSErrorCodes wsErrorCodes);
+                var description  = JSON[3].Value<String>();
+                var details      = JSON[4] as JObject;
+
+                if (details is null)
+                    return false;
+
+                RequestFrame = new WSErrorMessage(requestId,
+                                                  error ? WSErrorCodes.GenericError : wsErrorCodes,
+                                                  description,
+                                                  details);
+
+                return true;
+
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+
+
         public override String ToString()
 
             => String.Concat(RequestId,

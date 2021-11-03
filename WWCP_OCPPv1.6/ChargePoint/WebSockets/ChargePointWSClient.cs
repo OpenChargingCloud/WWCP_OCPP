@@ -1905,7 +1905,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             if (textPayload == "[]")
                                 DebugX.Log(nameof(ChargePointWSClient), " [] received!");
 
-                            else if (WSRequestMessage.TryParse(textPayload, out WSRequestMessage wsRequestMessage))
+                            else if (WSRequestMessage. TryParse(textPayload, out WSRequestMessage  wsRequestMessage))
                             {
 
                                 File.AppendAllText(LogfileName,
@@ -4803,8 +4803,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                             }
+
+                            else if (WSResponseMessage.TryParse(textPayload, out WSResponseMessage wsResponseMessage))
+                            {
+
+                            }
+
+                            else if (WSErrorMessage.   TryParse(textPayload, out WSErrorMessage    wsErrorMessage))
+                            {
+
+                            }
+
                             else
-                                DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP request message: " + textPayload);
+                                DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP request/response message: " + textPayload);
 
                         }
 
@@ -4957,6 +4968,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 return wsResponseMessage;
 
                             }
+                            else if (WSRequestMessage.TryParse(frame.Payload.ToUTF8String(), out WSRequestMessage wsRequestMessage2))
+                            {
+                                DebugX.Log(nameof(ChargePointWSClient), " received a WSRequestMessage when we expected a response message: " + frame.Payload.ToUTF8String());
+                            }
+                            else if (WSErrorMessage.TryParse(frame.Payload.ToUTF8String(), out WSErrorMessage wsErrorMessage))
+                            {
+                                DebugX.Log(nameof(ChargePointWSClient), " received a WSErrorMessage when we expected a response message: " + frame.Payload.ToUTF8String());
+                            }
                             else
                                 DebugX.Log(nameof(ChargePointWSClient), " error: " + frame.Payload.ToUTF8String());
                         }
@@ -4964,7 +4983,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     }
                     else
                     {
-                        DebugX.Log("Invalid web socket connection!");
+
+                        DebugX.Log("Invalid web socket connection! Will try to reconnect!");
+
+                        await Connect();
+
                     }
 
                 }

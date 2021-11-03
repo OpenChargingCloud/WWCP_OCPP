@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region (static) Random
 
         /// <summary>
-        /// Create a new random request identification.
+        /// Create a new random transaction identification.
         /// </summary>
         public static Transaction_Id Random
 

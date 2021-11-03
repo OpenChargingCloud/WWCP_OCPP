@@ -587,7 +587,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            new JProperty("connectorId",        ConnectorId.Value),
                            new JProperty("expiryDate",         ExpiryDate.       ToIso8601()),
                            new JProperty("idTag",              IdTag.            ToString()),
-                           new JProperty("reservationId",      ReservationId.    ToString()),
+                           new JProperty("reservationId",      ReservationId.Value),
 
                            ParentIdTag.HasValue
                                ? new JProperty("parentIdTag",  ParentIdTag.Value.ToString())
