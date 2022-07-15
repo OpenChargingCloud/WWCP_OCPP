@@ -1884,7 +1884,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                              Timestamp.Now,
                                                              EnquedRequest.EnquedStatus.New,
                                                              response => {
-                                                                 if (response is WebSockets.WSResponseMessage wsResponseMessage &&
+                                                                 if (response is WebSockets.OCPP_WebSocket_ResponseMessage wsResponseMessage &&
                                                                      CS.StartTransactionResponse.TryParse(startTransactionRequest,
                                                                                                           wsResponseMessage.Message,
                                                                                                           out CS.StartTransactionResponse  startTransactionResponse,
@@ -2033,7 +2033,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                              Timestamp.Now,
                                                              EnquedRequest.EnquedStatus.New,
                                                              response => {
-                                                                 if (response is WebSockets.WSResponseMessage wsResponseMessage &&
+                                                                 if (response is WebSockets.OCPP_WebSocket_ResponseMessage wsResponseMessage &&
                                                                      CS.StopTransactionResponse.TryParse(request,
                                                                                                          wsResponseMessage.Message,
                                                                                                          out CS.StopTransactionResponse  stopTransactionResponse,

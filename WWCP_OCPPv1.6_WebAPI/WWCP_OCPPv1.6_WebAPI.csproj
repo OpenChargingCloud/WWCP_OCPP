@@ -1,170 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C43097A0-D42C-4429-9A8B-AEC0495E8BDC}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>cloud.charging.open.protocols.OCPPv1_6.WebAPI</RootNamespace>
-    <AssemblyName>cloud.charging.open.protocols.OCPPv1_6.WebAPI</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <LangVersion>8.0</LangVersion>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>WWCP_OCPPv1._6_WebAPI</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\cloud.charging.open.protocols.OCPPv1_6.WebAPI.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>..\libs\WWCP_Core\WWCP.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Styx\libs\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="ChargeBox\ChargeBox2ChargeBoxEdge.cs" />
-    <Compile Include="ChargeBox\ChargeBox.cs" />
-    <Compile Include="ChargeBox\Results\AddChargeBoxIfNotExistsResult.cs" />
-    <Compile Include="ChargeBox\Results\AddChargeBoxResult.cs" />
-    <Compile Include="ChargeBox\Results\AddOrUpdateChargeBoxResult.cs" />
-    <Compile Include="ChargeBox\Results\DeleteChargeBoxResult.cs" />
-    <Compile Include="ChargeBox\Results\LinkChargeBoxsResult.cs" />
-    <Compile Include="ChargeBox\Results\UnlinkChargeBoxsResult.cs" />
-    <Compile Include="ChargeBox\Results\UpdateChargeBoxResult.cs" />
-    <Compile Include="UploadAPI.cs" />
-    <Compile Include="TestCentralSystem.cs" />
-    <Compile Include="TestChargePoint.cs" />
-    <None Include="compilerconfig.json" />
-    <None Include="compilerconfig.json.defaults">
-      <DependentUpon>compilerconfig.json</DependentUpon>
-    </None>
-    <EmbeddedResource Include="HTTPRoot\dashboard\dashboard.scss" />
-    <EmbeddedResource Include="HTTPRoot\defaults\defaults.js.map" />
-    <EmbeddedResource Include="HTTPRoot\defaults\_defaults.scss" />
-    <EmbeddedResource Include="HTTPRoot\template.scss" />
-    <EmbeddedResource Include="HTTPRoot\events\events.scss" />
-    <EmbeddedResource Include="HTTPRoot\dashboard\dashboard.js.map">
-      <DependentUpon>dashboard.ts</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HTTPRoot\events\events.js.map">
-      <DependentUpon>events.ts</DependentUpon>
-    </EmbeddedResource>
-    <None Include="tsconfig.json" />
-    <Compile Include="OCPPWebAPI.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj" />
+    <ProjectReference Include="..\..\Styx\Styx\Styx.csproj" />
+    <ProjectReference Include="..\..\UsersAPI\UsersAPI\UsersAPI.csproj" />
+    <ProjectReference Include="..\WWCP_OCPPv1.6\WWCP_OCPPv1.6.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\BouncyCastle\crypto\crypto.csproj">
-      <Project>{38872a5f-e87e-4fad-b109-8eb7b2e6a4a0}</Project>
-      <Name>crypto</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj">
-      <Project>{477efd16-3627-4473-957d-44ca9a9dfb79}</Project>
-      <Name>Hermod</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SMSAPI\smsapi\SMSAPI2.csproj">
-      <Project>{05c2a720-2cd1-401b-a832-9ce85313c248}</Project>
-      <Name>SMSAPI2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Styx\Styx\Styx.csproj">
-      <Project>{af76ecc0-2ca5-4cff-9e1e-ff5478c4b6e4}</Project>
-      <Name>Styx</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TelegramBotAPI\TelegramBotAPI\TelegramBotAPI.csproj">
-      <Project>{2fee90e4-7e55-49a6-8be9-5a434ffa5a00}</Project>
-      <Name>TelegramBotAPI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\UsersAPI\UsersAPI\UsersAPI.csproj">
-      <Project>{4d5da5f5-0dce-4620-bce5-74a27e5cfc47}</Project>
-      <Name>UsersAPI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\WWCP_Core\WWCP_Core\WWCP_Core.csproj">
-      <Project>{33836742-af1d-4aa4-963f-b0a8e60e6480}</Project>
-      <Name>WWCP_Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WWCP_OCPPv1.6\WWCP_OCPPv1.6.csproj">
-      <Project>{621ccb6b-7f0c-4dea-9482-cd70c2278453}</Project>
-      <Name>WWCP_OCPPv1.6</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="HTTPRoot\dashboard\dashboard.css">
-      <DependentUpon>dashboard.scss</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HTTPRoot\dashboard\dashboard.min.css">
-      <DependentUpon>dashboard.css</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HTTPRoot\dashboard\dashboard.html" />
-    <EmbeddedResource Include="HTTPRoot\defaults\defaults.js" />
-    <EmbeddedResource Include="HTTPRoot\favicon.png" />
-    <EmbeddedResource Include="HTTPRoot\images\favicon_big.png" />
-    <EmbeddedResource Include="HTTPRoot\template.css">
-      <DependentUpon>template.scss</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HTTPRoot\template.html" />
-    <EmbeddedResource Include="HTTPRoot\template.min.css">
-      <DependentUpon>template.css</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="HTTPRoot\dashboard\dashboard.ts" />
-    <EmbeddedResource Include="HTTPRoot\defaults\defaults.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="HTTPRoot\index.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="HTTPRoot\events\events.shtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="HTTPRoot\events\events.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="HTTPRoot\events\events.css">
-      <DependentUpon>events.scss</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HTTPRoot\events\events.min.css">
-      <DependentUpon>events.css</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="HTTPRoot\dashboard\dashboard.js">
-      <DependentUpon>dashboard.ts</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HTTPRoot\events\events.js">
-      <DependentUpon>events.ts</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>tsc</PreBuildEvent>
-  </PropertyGroup>
+
 </Project>
