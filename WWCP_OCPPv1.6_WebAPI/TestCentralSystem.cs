@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2021 GraphDefined GmbH
+ * Copyright (c) 2014-2022 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -541,7 +541,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region OnMessage
 
-        public event OnWebSocketMessageDelegate                 OnMessage;
+        //public event OnWebSocketMessageDelegate                 OnMessage;
 
         #endregion
 
@@ -549,7 +549,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         public event OnWebSocketTextMessageRequestDelegate      OnTextMessageRequest;
 
-        public event OnWebSocketTextMessageDelegate             OnTextMessage;
+        //public event OnWebSocketTextMessageDelegate             OnTextMessage;
 
         public event OnWebSocketTextMessageResponseDelegate     OnTextMessageResponse;
 
@@ -559,7 +559,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         public event OnWebSocketBinaryMessageRequestDelegate    OnBinaryMessageRequest;
 
-        public event OnWebSocketBinaryMessageDelegate           OnBinaryMessage;
+        //public event OnWebSocketBinaryMessageDelegate           OnBinaryMessage;
 
         public event OnWebSocketBinaryMessageResponseDelegate   OnBinaryMessageResponse;
 
@@ -567,9 +567,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region On(Ping/Pong)Message
 
-        public event OnWebSocketMessageDelegate                 OnPingMessage;
+        //public event OnWebSocketMessageDelegate                 OnPingMessage;
 
-        public event OnWebSocketMessageDelegate                 OnPongMessage;
+        //public event OnWebSocketMessageDelegate                 OnPongMessage;
 
         #endregion
 
@@ -738,86 +738,90 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region OnTextMessageRequest
 
-            centralSystemServer.OnTextMessageRequest += async (Timestamp,
-                                                               WebSocketServer,
-                                                               Sender,
-                                                               TextRequestMessage,
-                                                               EventTrackingId,
-                                                               CancellationToken) => {
 
-                OnTextMessageRequest?.Invoke(Timestamp,
-                                             WebSocketServer,
-                                             Sender,
-                                             TextRequestMessage,
-                                             EventTrackingId,
-                                             CancellationToken);
+            centralSystemServer.OnTextMessageRequest += (timestamp,
+                                                         webSocketServer,
+                                                         webSocketConnection,
+                                                         webSocketTextMessageRequest,
+                                                         cancellationToken) => {
+
+                throw new NotImplementedException();
+
+            //    OnTextMessageRequest?.Invoke(Timestamp,
+            //                                 WebSocketServer,
+            //                                 Sender,
+            //                                 TextRequestMessage,
+            //                                 EventTrackingId,
+            //                                 CancellationToken);
+
 
             };
+
 
             #endregion
 
             #region OnTextMessageResponse
 
-            centralSystemServer.OnTextMessageResponse += async (Timestamp,
-                                                                WebSocketServer,
-                                                                Sender,
-                                                                TextRequestMessage,
-                                                                TextResponseMessage,
-                                                                EventTrackingId,
-                                                                CancellationToken) => {
+            //centralSystemServer.OnTextMessageResponse += async (Timestamp,
+            //                                                    WebSocketServer,
+            //                                                    Sender,
+            //                                                    TextRequestMessage,
+            //                                                    TextResponseMessage,
+            //                                                    EventTrackingId,
+            //                                                    CancellationToken) => {
 
-                OnTextMessageResponse?.Invoke(Timestamp,
-                                              WebSocketServer,
-                                              Sender,
-                                              TextRequestMessage,
-                                              TextResponseMessage,
-                                              EventTrackingId,
-                                              CancellationToken);
+            //    OnTextMessageResponse?.Invoke(Timestamp,
+            //                                  WebSocketServer,
+            //                                  Sender,
+            //                                  TextRequestMessage,
+            //                                  TextResponseMessage,
+            //                                  EventTrackingId,
+            //                                  CancellationToken);
 
-            };
+            //};
 
             #endregion
 
 
             #region OnBinaryMessageRequest
 
-            centralSystemServer.OnBinaryMessageRequest += async (Timestamp,
-                                                                 WebSocketServer,
-                                                                 Sender,
-                                                                 BinaryRequestMessage,
-                                                                 EventTrackingId,
-                                                                 CancellationToken) => {
+            //centralSystemServer.OnBinaryMessageRequest += async (Timestamp,
+            //                                                     WebSocketServer,
+            //                                                     Sender,
+            //                                                     BinaryRequestMessage,
+            //                                                     EventTrackingId,
+            //                                                     CancellationToken) => {
 
-                OnBinaryMessageRequest?.Invoke(Timestamp,
-                                               WebSocketServer,
-                                               Sender,
-                                               BinaryRequestMessage,
-                                               EventTrackingId,
-                                               CancellationToken);
+            //    OnBinaryMessageRequest?.Invoke(Timestamp,
+            //                                   WebSocketServer,
+            //                                   Sender,
+            //                                   BinaryRequestMessage,
+            //                                   EventTrackingId,
+            //                                   CancellationToken);
 
-            };
+            //};
 
             #endregion
 
             #region OnBinaryMessageResponse
 
-            centralSystemServer.OnBinaryMessageResponse += async (Timestamp,
-                                                                  WebSocketServer,
-                                                                  Sender,
-                                                                  BinaryRequestMessage,
-                                                                  BinaryResponseMessage,
-                                                                  EventTrackingId,
-                                                                  CancellationToken) => {
+            //centralSystemServer.OnBinaryMessageResponse += async (Timestamp,
+            //                                                      WebSocketServer,
+            //                                                      Sender,
+            //                                                      BinaryRequestMessage,
+            //                                                      BinaryResponseMessage,
+            //                                                      EventTrackingId,
+            //                                                      CancellationToken) => {
 
-                OnBinaryMessageResponse?.Invoke(Timestamp,
-                                                WebSocketServer,
-                                                Sender,
-                                                BinaryRequestMessage,
-                                                BinaryResponseMessage,
-                                                EventTrackingId,
-                                                CancellationToken);
+            //    OnBinaryMessageResponse?.Invoke(Timestamp,
+            //                                    WebSocketServer,
+            //                                    Sender,
+            //                                    BinaryRequestMessage,
+            //                                    BinaryResponseMessage,
+            //                                    EventTrackingId,
+            //                                    CancellationToken);
 
-            };
+            //};
 
             #endregion
 
