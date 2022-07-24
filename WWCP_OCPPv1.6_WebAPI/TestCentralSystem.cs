@@ -739,13 +739,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #region OnTextMessageRequest
 
 
-            centralSystemServer.OnTextMessageRequest += (timestamp,
-                                                         webSocketServer,
-                                                         webSocketConnection,
-                                                         webSocketTextMessageRequest,
-                                                         cancellationToken) => {
-
-                throw new NotImplementedException();
+            //centralSystemServer.OnTextMessageRequest += (timestamp,
+            //                                             webSocketServer,
+            //                                             webSocketConnection,
+            //                                             webSocketTextMessageRequest,
+            //                                             cancellationToken) => {
 
             //    OnTextMessageRequest?.Invoke(Timestamp,
             //                                 WebSocketServer,
@@ -754,8 +752,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             //                                 EventTrackingId,
             //                                 CancellationToken);
 
-
-            };
+            //};
 
 
             #endregion
