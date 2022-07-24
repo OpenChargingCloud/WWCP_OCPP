@@ -405,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                        );
 
-            return CustomChargingSchedulePeriodSerializer != null
+            return CustomChargingSchedulePeriodSerializer is not null
                        ? CustomChargingSchedulePeriodSerializer(this, JSON)
                        : JSON;
 

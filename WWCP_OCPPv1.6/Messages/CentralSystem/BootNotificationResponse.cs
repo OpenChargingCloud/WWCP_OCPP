@@ -468,7 +468,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            new JProperty("interval",     (UInt32) HeartbeatInterval.TotalSeconds)
                        );
 
-            return CustomBootNotificationResponseSerializer != null
+            return CustomBootNotificationResponseSerializer is not null
                        ? CustomBootNotificationResponseSerializer(this, JSON)
                        : JSON;
 

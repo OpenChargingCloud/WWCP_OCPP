@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var JSON = JSONObject.Create();
 
-            return CustomFirmwareStatusNotificationResponseSerializer != null
+            return CustomFirmwareStatusNotificationResponseSerializer is not null
                        ? CustomFirmwareStatusNotificationResponseSerializer(this, JSON)
                        : JSON;
 

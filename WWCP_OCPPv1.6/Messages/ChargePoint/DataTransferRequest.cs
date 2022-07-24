@@ -40,17 +40,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The vendor identification or namespace of the given message.
         /// </summary>
-        public String  VendorId     { get; }
+        [Mandatory]
+        public String   VendorId     { get; }
 
         /// <summary>
         /// An optional message identification field.
         /// </summary>
-        public String  MessageId    { get; }
+        [Optional]
+        public String?  MessageId    { get; }
 
         /// <summary>
         /// Optional message data as text without specified length or format.
         /// </summary>
-        public String  Data         { get; }
+        [Optional]
+        public String?  Data         { get; }
 
         #endregion
 
@@ -66,14 +69,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public DataTransferRequest(ChargeBox_Id      ChargeBoxId,
-                                   String            VendorId,
-                                   String            MessageId          = null,
-                                   String            Data               = null,
+        public DataTransferRequest(ChargeBox_Id       ChargeBoxId,
+                                   String             VendorId,
+                                   String?            MessageId          = null,
+                                   String?            Data               = null,
 
-                                   Request_Id?       RequestId          = null,
-                                   DateTime?         RequestTimestamp   = null,
-                                   EventTracking_Id  EventTrackingId    = null)
+                                   Request_Id?        RequestId          = null,
+                                   DateTime?          RequestTimestamp   = null,
+                                   EventTracking_Id?  EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "DataTransfer",
@@ -381,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                               Data,
                                                               RequestId);
 
-                if (CustomDataTransferRequestParser != null)
+                if (CustomDataTransferRequestParser is not null)
                     DataTransferRequest = CustomDataTransferRequestParser(JSON,
                                                                           DataTransferRequest);
 
@@ -511,7 +514,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                        );
 
-            return CustomDataTransferRequestSerializer != null
+            return CustomDataTransferRequestSerializer is not null
                        ? CustomDataTransferRequestSerializer(this, JSON)
                        : JSON;
 

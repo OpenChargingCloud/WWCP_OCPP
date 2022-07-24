@@ -427,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                        );
 
-            return CustomDataTransferResponseSerializer != null
+            return CustomDataTransferResponseSerializer is not null
                        ? CustomDataTransferResponseSerializer(this, JSON)
                        : JSON;
 

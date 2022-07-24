@@ -78,15 +78,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public UpdateFirmwareRequest(ChargeBox_Id      ChargeBoxId,
-                                     String            Location,
-                                     DateTime          RetrieveDate,
-                                     Byte?             Retries            = null,
-                                     TimeSpan?         RetryInterval      = null,
+        public UpdateFirmwareRequest(ChargeBox_Id       ChargeBoxId,
+                                     String             Location,
+                                     DateTime           RetrieveDate,
+                                     Byte?              Retries            = null,
+                                     TimeSpan?          RetryInterval      = null,
 
-                                     Request_Id?       RequestId          = null,
-                                     DateTime?         RequestTimestamp   = null,
-                                     EventTracking_Id  EventTrackingId    = null)
+                                     Request_Id?        RequestId          = null,
+                                     DateTime?          RequestTimestamp   = null,
+                                     EventTracking_Id?  EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "UpdateFirmware",
@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region Initial checks
 
-            Location = Location?.Trim();
+            Location = Location.Trim();
 
             if (Location.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Location),  "The given location must not be null or empty!");
@@ -444,7 +444,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                   RetryInterval,
                                                                   RequestId);
 
-                if (CustomUpdateFirmwareRequestParser != null)
+                if (CustomUpdateFirmwareRequestParser is not null)
                     UpdateFirmwareRequest = CustomUpdateFirmwareRequestParser(JSON,
                                                                               UpdateFirmwareRequest);
 
@@ -576,7 +576,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                        );
 
-            return CustomUpdateFirmwareRequestSerializer != null
+            return CustomUpdateFirmwareRequestSerializer is not null
                        ? CustomUpdateFirmwareRequestSerializer(this, JSON)
                        : JSON;
 

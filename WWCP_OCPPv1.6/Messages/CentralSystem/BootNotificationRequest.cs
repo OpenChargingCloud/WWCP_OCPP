@@ -545,7 +545,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                               RequestId
                                           );
 
-                if (CustomBootNotificationRequestParser != null)
+                if (CustomBootNotificationRequestParser is not null)
                     BootNotificationRequest = CustomBootNotificationRequestParser(JSON,
                                                                                   BootNotificationRequest);
 
@@ -717,7 +717,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                        );
 
-            return CustomBootNotificationRequestSerializer != null
+            return CustomBootNotificationRequestSerializer is not null
                        ? CustomBootNotificationRequestSerializer(this, JSON)
                        : JSON;
 

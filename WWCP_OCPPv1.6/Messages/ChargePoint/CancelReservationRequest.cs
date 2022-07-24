@@ -55,12 +55,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public CancelReservationRequest(ChargeBox_Id      ChargeBoxId,
-                                        Reservation_Id    ReservationId,
+        public CancelReservationRequest(ChargeBox_Id       ChargeBoxId,
+                                        Reservation_Id     ReservationId,
 
-                                        Request_Id?       RequestId          = null,
-                                        DateTime?         RequestTimestamp   = null,
-                                        EventTracking_Id  EventTrackingId    = null)
+                                        Request_Id?        RequestId          = null,
+                                        DateTime?          RequestTimestamp   = null,
+                                        EventTracking_Id?  EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "CancelReservation",
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                         ReservationId,
                                                                         RequestId);
 
-                if (CustomCancelReservationRequestParser != null)
+                if (CustomCancelReservationRequestParser is not null)
                     CancelReservationRequest = CustomCancelReservationRequestParser(JSON,
                                                                                     CancelReservationRequest);
 
@@ -451,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            new JProperty("reservationId",  ReservationId.Value)
                        );
 
-            return CustomCancelReservationRequestSerializer != null
+            return CustomCancelReservationRequestSerializer is not null
                        ? CustomCancelReservationRequestSerializer(this, JSON)
                        : JSON;
 

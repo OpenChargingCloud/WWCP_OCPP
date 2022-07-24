@@ -387,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                            new JProperty("status",  Status.AsText())
                        );
 
-            return CustomChangeAvailabilityResponseSerializer != null
+            return CustomChangeAvailabilityResponseSerializer is not null
                        ? CustomChangeAvailabilityResponseSerializer(this, JSON)
                        : JSON;
 

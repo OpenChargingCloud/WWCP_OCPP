@@ -879,7 +879,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             #region Call async subscribers
 
-                                            BootNotificationResponse bootNotificationResponse = null;
+                                            BootNotificationResponse? bootNotificationResponse = null;
 
                                             var resultTasks = OnBootNotification?.
                                                                   GetInvocationList()?.
@@ -1028,7 +1028,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             #region Call async subscribers
 
-                                            if (response == null)
+                                            if (response is null)
                                             {
 
                                                 var results = OnHeartbeat?.
@@ -1049,7 +1049,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                 }
 
-                                                if (results == null || response == null)
+                                                if (results is null || response is null)
                                                     response = HeartbeatResponse.Failed(request);
 
                                             }
@@ -1182,17 +1182,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             #region Call async subscribers
 
-                                            if (response == null)
+                                            if (response is null)
                                             {
 
                                                 var results = OnAuthorize?.
-                                                                    GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)
-                                                                        (Timestamp.Now,
-                                                                         this,
-                                                                         request,
-                                                                         CancellationToken)).
-                                                                    ToArray();
+                                                                  GetInvocationList()?.
+                                                                  SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)
+                                                                      (Timestamp.Now,
+                                                                       this,
+                                                                       request,
+                                                                       CancellationToken)).
+                                                                  ToArray();
 
                                                 if (results?.Length > 0)
                                                 {
@@ -1203,7 +1203,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                 }
 
-                                                if (results == null || response == null)
+                                                if (results is null || response is null)
                                                     response = AuthorizeResponse.Failed(request);
 
                                             }
@@ -1335,7 +1335,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             #region Call async subscribers
 
-                                            if (response == null)
+                                            if (response is null)
                                             {
 
                                                 var results = OnStartTransaction?.
@@ -1356,7 +1356,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                 }
 
-                                                if (results == null || response == null)
+                                                if (results is null || response is null)
                                                     response = StartTransactionResponse.Failed(request);
 
                                             }
@@ -1488,7 +1488,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             #region Call async subscribers
 
-                                            if (response == null)
+                                            if (response is null)
                                             {
 
                                                 var results = OnStatusNotification?.
@@ -1509,7 +1509,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                 }
 
-                                                if (results == null || response == null)
+                                                if (results is null || response is null)
                                                     response = StatusNotificationResponse.Failed(request);
 
                                             }
@@ -1788,7 +1788,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             #region Call async subscribers
 
-                                            if (response == null)
+                                            if (response is null)
                                             {
 
                                                 var results = OnStopTransaction?.
@@ -1809,7 +1809,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                 }
 
-                                                if (results == null || response == null)
+                                                if (results is null || response is null)
                                                     response = StopTransactionResponse.Failed(request);
 
                                             }
@@ -1942,7 +1942,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             #region Call async subscribers
 
-                                            if (response == null)
+                                            if (response is null)
                                             {
 
                                                 var results = OnIncomingDataTransfer?.
@@ -1963,7 +1963,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                 }
 
-                                                if (results == null || response == null)
+                                                if (results is null || response is null)
                                                     response = DataTransferResponse.Failed(request);
 
                                             }
@@ -2095,7 +2095,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             #region Call async subscribers
 
-                                            if (response == null)
+                                            if (response is null)
                                             {
 
                                                 var results = OnDiagnosticsStatusNotification?.
@@ -2116,7 +2116,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                 }
 
-                                                if (results == null || response == null)
+                                                if (results is null || response is null)
                                                     response = DiagnosticsStatusNotificationResponse.Failed(request);
 
                                             }
@@ -2248,7 +2248,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             #region Call async subscribers
 
-                                            if (response == null)
+                                            if (response is null)
                                             {
 
                                                 var results = OnFirmwareStatusNotification?.
@@ -2269,7 +2269,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                                 }
 
-                                                if (results == null || response == null)
+                                                if (results is null || response is null)
                                                     response = FirmwareStatusNotificationResponse.Failed(request);
 
                                             }

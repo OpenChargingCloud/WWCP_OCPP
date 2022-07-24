@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                            Request_Id?         RequestId          = null,
                                            DateTime?           RequestTimestamp   = null,
-                                           EventTracking_Id    EventTrackingId    = null)
+                                           EventTracking_Id?   EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "GetCompositeSchedule",
@@ -406,7 +406,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                               ChargingRateUnit,
                                                                               RequestId);
 
-                if (CustomGetCompositeScheduleRequestParser != null)
+                if (CustomGetCompositeScheduleRequestParser is not null)
                     GetCompositeScheduleRequest = CustomGetCompositeScheduleRequestParser(JSON,
                                                                                           GetCompositeScheduleRequest);
 
@@ -530,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                        );
 
-            return CustomGetCompositeScheduleRequestSerializer != null
+            return CustomGetCompositeScheduleRequestSerializer is not null
                        ? CustomGetCompositeScheduleRequestSerializer(this, JSON)
                        : JSON;
 

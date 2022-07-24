@@ -429,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                        );
 
-            return CustomStopTransactionResponseSerializer != null
+            return CustomStopTransactionResponseSerializer is not null
                        ? CustomStopTransactionResponseSerializer(this, JSON)
                        : JSON;
 

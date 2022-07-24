@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 HeartbeatRequest  = new HeartbeatRequest(ChargeBoxId,
                                                          RequestId);
 
-                if (CustomHeartbeatRequestParser != null)
+                if (CustomHeartbeatRequestParser is not null)
                     HeartbeatRequest = CustomHeartbeatRequestParser(JSON,
                                                                     HeartbeatRequest);
 
@@ -396,7 +396,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             var JSON = JSONObject.Create();
 
-            return CustomHeartbeatRequestSerializer != null
+            return CustomHeartbeatRequestSerializer is not null
                        ? CustomHeartbeatRequestSerializer(this, JSON)
                        : JSON;
 

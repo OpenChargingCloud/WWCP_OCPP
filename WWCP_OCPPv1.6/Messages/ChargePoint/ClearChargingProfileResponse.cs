@@ -365,7 +365,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                            new JProperty("status",  Status.AsText())
                        );
 
-            return CustomClearChargingProfileResponseSerializer != null
+            return CustomClearChargingProfileResponseSerializer is not null
                        ? CustomClearChargingProfileResponseSerializer(this, JSON)
                        : JSON;
 

@@ -85,16 +85,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public GetDiagnosticsRequest(ChargeBox_Id      ChargeBoxId,
-                                     String            Location,
-                                     DateTime?         StartTime          = null,
-                                     DateTime?         StopTime           = null,
-                                     Byte?             Retries            = null,
-                                     TimeSpan?         RetryInterval      = null,
+        public GetDiagnosticsRequest(ChargeBox_Id       ChargeBoxId,
+                                     String             Location,
+                                     DateTime?          StartTime          = null,
+                                     DateTime?          StopTime           = null,
+                                     Byte?              Retries            = null,
+                                     TimeSpan?          RetryInterval      = null,
 
-                                     Request_Id?       RequestId          = null,
-                                     DateTime?         RequestTimestamp   = null,
-                                     EventTracking_Id  EventTrackingId    = null)
+                                     Request_Id?        RequestId          = null,
+                                     DateTime?          RequestTimestamp   = null,
+                                     EventTracking_Id?  EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "GetDiagnostics",
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region Initial checks
 
-            Location = Location?.Trim();
+            Location = Location.Trim();
 
             if (Location.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Location), "The given location must not be null or empty!");
@@ -479,7 +479,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                   RetryInterval,
                                                                   RequestId);
 
-                if (CustomGetDiagnosticsRequestParser != null)
+                if (CustomGetDiagnosticsRequestParser is not null)
                     GetDiagnosticsRequest = CustomGetDiagnosticsRequestParser(JSON,
                                                                               GetDiagnosticsRequest);
 
@@ -625,7 +625,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                        );
 
-            return CustomGetDiagnosticsRequestSerializer != null
+            return CustomGetDiagnosticsRequestSerializer is not null
                        ? CustomGetDiagnosticsRequestSerializer(this, JSON)
                        : JSON;
 

@@ -389,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                            new JProperty("status",  Status.AsText())
                        );
 
-            return CustomTriggerMessageResponseSerializer != null
+            return CustomTriggerMessageResponseSerializer is not null
                        ? CustomTriggerMessageResponseSerializer(this, JSON)
                        : JSON;
 

@@ -40,20 +40,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The identification tag to start the charging transaction.
         /// </summary>
-        public IdToken          IdTag              { get; }
+        public IdToken           IdTag              { get; }
 
         /// <summary>
         /// An optional connector identification on which the charging
         /// transaction should be started (SHALL be > 0).
         /// </summary>
-        public Connector_Id?    ConnectorId        { get; }
+        public Connector_Id?     ConnectorId        { get; }
 
         /// <summary>
         /// An optional charging profile to be used by the charge point
         /// for the requested charging transaction.
         /// The 'ChargingProfilePurpose' MUST be set to 'TxProfile'.
         /// </summary>
-        public ChargingProfile  ChargingProfile    { get; }
+        public ChargingProfile?  ChargingProfile    { get; }
 
         #endregion
 
@@ -69,14 +69,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public RemoteStartTransactionRequest(ChargeBox_Id      ChargeBoxId,
-                                             IdToken           IdTag,
-                                             Connector_Id?     ConnectorId        = null,
-                                             ChargingProfile   ChargingProfile    = null,
+        public RemoteStartTransactionRequest(ChargeBox_Id       ChargeBoxId,
+                                             IdToken            IdTag,
+                                             Connector_Id?      ConnectorId        = null,
+                                             ChargingProfile?   ChargingProfile    = null,
 
-                                             Request_Id?       RequestId          = null,
-                                             DateTime?         RequestTimestamp   = null,
-                                             EventTracking_Id  EventTrackingId    = null)
+                                             Request_Id?        RequestId          = null,
+                                             DateTime?          RequestTimestamp   = null,
+                                             EventTracking_Id?  EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "RemoteStartTransaction",
@@ -555,7 +555,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                                   ChargingProfile,
                                                                                   RequestId);
 
-                if (CustomRemoteStartTransactionRequestParser != null)
+                if (CustomRemoteStartTransactionRequestParser is not null)
                     RemoteStartTransactionRequest = CustomRemoteStartTransactionRequestParser(JSON,
                                                                                               RemoteStartTransactionRequest);
 
@@ -691,7 +691,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                        );
 
-            return CustomRemoteStartTransactionRequestSerializer != null
+            return CustomRemoteStartTransactionRequestSerializer is not null
                        ? CustomRemoteStartTransactionRequestSerializer(this, JSON)
                        : JSON;
 

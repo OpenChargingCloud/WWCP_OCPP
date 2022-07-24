@@ -559,7 +559,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                           VendorErrorCode,
                                                                           RequestId);
 
-                if (CustomStatusNotificationRequestParser != null)
+                if (CustomStatusNotificationRequestParser is not null)
                     StatusNotificationRequest = CustomStatusNotificationRequestParser(JSON,
                                                                                       StatusNotificationRequest);
 
@@ -707,7 +707,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                ? new JProperty("vendorErrorCode",   VendorErrorCode)
                                : null);
 
-            return CustomStatusNotificationRequestSerializer != null
+            return CustomStatusNotificationRequestSerializer is not null
                        ? CustomStatusNotificationRequestSerializer(this, JSON)
                        : JSON;
 

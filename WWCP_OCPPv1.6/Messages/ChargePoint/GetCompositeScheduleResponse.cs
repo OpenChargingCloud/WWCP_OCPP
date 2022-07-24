@@ -583,7 +583,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                        );
 
-            return CustomGetCompositeScheduleResponseSerializer != null
+            return CustomGetCompositeScheduleResponseSerializer is not null
                        ? CustomGetCompositeScheduleResponseSerializer(this, JSON)
                        : JSON;
 

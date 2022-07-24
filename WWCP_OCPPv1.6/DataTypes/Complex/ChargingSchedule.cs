@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                         StartSchedule,
                                                         MinChargingRate);
 
-                if (CustomChargingScheduleParser != null)
+                if (CustomChargingScheduleParser is not null)
                     ChargingSchedule = CustomChargingScheduleParser(JSON,
                                                                     ChargingSchedule);
 
@@ -558,7 +558,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                        );
 
-            return CustomChargingScheduleSerializer != null
+            return CustomChargingScheduleSerializer is not null
                        ? CustomChargingScheduleSerializer(this, JSON)
                        : JSON;
 

@@ -58,12 +58,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public GetConfigurationRequest(ChargeBox_Id         ChargeBoxId,
-                                       IEnumerable<String>  Keys               = null,
+        public GetConfigurationRequest(ChargeBox_Id          ChargeBoxId,
+                                       IEnumerable<String>?  Keys               = null,
 
-                                       Request_Id?          RequestId          = null,
-                                       DateTime?            RequestTimestamp   = null,
-                                       EventTracking_Id     EventTrackingId    = null)
+                                       Request_Id?           RequestId          = null,
+                                       DateTime?             RequestTimestamp   = null,
+                                       EventTracking_Id?     EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "GetConfiguration",
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                       Keys,
                                                                       RequestId);
 
-                if (CustomGetConfigurationRequestParser != null)
+                if (CustomGetConfigurationRequestParser is not null)
                     GetConfigurationRequest = CustomGetConfigurationRequestParser(JSON,
                                                                                   GetConfigurationRequest);
 
@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                        );
 
-            return CustomGetConfigurationRequestSerializer != null
+            return CustomGetConfigurationRequestSerializer is not null
                        ? CustomGetConfigurationRequestSerializer(this, JSON)
                        : JSON;
 

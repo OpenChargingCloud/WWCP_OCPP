@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                            Request_Id?               RequestId                = null,
                                            DateTime?                 RequestTimestamp         = null,
-                                           EventTracking_Id          EventTrackingId          = null)
+                                           EventTracking_Id?         EventTrackingId          = null)
 
             : base(ChargeBoxId,
                    "ClearChargingProfile",
@@ -444,7 +444,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                               StackLevel,
                                                                               RequestId);
 
-                if (CustomClearChargingProfileRequestParser != null)
+                if (CustomClearChargingProfileRequestParser is not null)
                     ClearChargingProfileRequest = CustomClearChargingProfileRequestParser(JSON,
                                                                                           ClearChargingProfileRequest);
 
@@ -586,7 +586,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                        );
 
-            return CustomClearChargingProfileRequestSerializer != null
+            return CustomClearChargingProfileRequestSerializer is not null
                        ? CustomClearChargingProfileRequestSerializer(this, JSON)
                        : JSON;
 

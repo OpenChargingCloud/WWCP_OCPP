@@ -390,7 +390,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                        );
 
-            return CustomGetDiagnosticsResponseSerializer != null
+            return CustomGetDiagnosticsResponseSerializer is not null
                        ? CustomGetDiagnosticsResponseSerializer(this, JSON)
                        : JSON;
 

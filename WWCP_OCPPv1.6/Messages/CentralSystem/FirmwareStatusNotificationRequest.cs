@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                                           FirmwareStatus,
                                                                                           RequestId);
 
-                if (CustomFirmwareStatusNotificationRequestParser != null)
+                if (CustomFirmwareStatusNotificationRequestParser is not null)
                     FirmwareStatusNotificationRequest = CustomFirmwareStatusNotificationRequestParser(JSON,
                                                                                                       FirmwareStatusNotificationRequest);
 
@@ -455,7 +455,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                            new JProperty("status",  Status.AsText())
                        );
 
-            return CustomFirmwareStatusNotificationRequestSerializer != null
+            return CustomFirmwareStatusNotificationRequestSerializer is not null
                        ? CustomFirmwareStatusNotificationRequestSerializer(this, JSON)
                        : JSON;
 

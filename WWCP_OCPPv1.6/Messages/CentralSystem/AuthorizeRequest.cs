@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                         IdTag,
                                                         RequestId);
 
-                if (CustomAuthorizeRequestParser != null)
+                if (CustomAuthorizeRequestParser is not null)
                     AuthorizeRequest = CustomAuthorizeRequestParser(JSON,
                                                                     AuthorizeRequest);
 
@@ -446,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                            new JProperty("idTag",  IdTag.ToString())
                        );
 
-            return CustomAuthorizeRequestSerializer != null
+            return CustomAuthorizeRequestSerializer is not null
                        ? CustomAuthorizeRequestSerializer(this, JSON)
                        : JSON;
 

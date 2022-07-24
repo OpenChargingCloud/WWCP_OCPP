@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                           ExpiryDate,
                                           ParentIdTag);
 
-                if (CustomIdTagInfoParser != null)
+                if (CustomIdTagInfoParser is not null)
                     IdTagInfo = CustomIdTagInfoParser(JSON,
                                                       IdTagInfo);
 
@@ -448,7 +448,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                        );
 
-            return CustomIdTagInfoResponseSerializer != null
+            return CustomIdTagInfoResponseSerializer is not null
                        ? CustomIdTagInfoResponseSerializer(this, JSON)
                        : JSON;
 

@@ -600,7 +600,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                       ValidFrom,
                                                       ValidTo);
 
-                if (CustomChargingProfileParser != null)
+                if (CustomChargingProfileParser is not null)
                     ChargingProfile = CustomChargingProfileParser(JSON,
                                                                   ChargingProfile);
 
@@ -749,7 +749,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                        );
 
-            return CustomChargingProfileSerializer != null
+            return CustomChargingProfileSerializer is not null
                        ? CustomChargingProfileSerializer(this, JSON)
                        : JSON;
 

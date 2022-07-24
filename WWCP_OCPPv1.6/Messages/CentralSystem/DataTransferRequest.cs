@@ -382,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                               Data,
                                                               RequestId);
 
-                if (CustomDataTransferRequestParser != null)
+                if (CustomDataTransferRequestParser is not null)
                     DataTransferRequest = CustomDataTransferRequestParser(JSON,
                                                                           DataTransferRequest);
 
@@ -512,7 +512,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                        );
 
-            return CustomDataTransferSerializer != null
+            return CustomDataTransferSerializer is not null
                        ? CustomDataTransferSerializer(this, JSON)
                        : JSON;
 

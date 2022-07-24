@@ -54,12 +54,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public ResetRequest(ChargeBox_Id      ChargeBoxId,
-                            ResetTypes        ResetType,
+        public ResetRequest(ChargeBox_Id       ChargeBoxId,
+                            ResetTypes         ResetType,
 
-                            Request_Id?       RequestId          = null,
-                            DateTime?         RequestTimestamp   = null,
-                            EventTracking_Id  EventTrackingId    = null)
+                            Request_Id?        RequestId          = null,
+                            DateTime?          RequestTimestamp   = null,
+                            EventTracking_Id?  EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "Reset",
@@ -343,7 +343,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 ResetType,
                                                 RequestId);
 
-                if (CustomResetRequestParser != null)
+                if (CustomResetRequestParser is not null)
                     ResetRequest = CustomResetRequestParser(JSON,
                                                             ResetRequest);
 
@@ -455,7 +455,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            new JProperty("type",  ResetType.AsText())
                        );
 
-            return CustomResetRequestSerializer != null
+            return CustomResetRequestSerializer is not null
                        ? CustomResetRequestSerializer(this, JSON)
                        : JSON;
 

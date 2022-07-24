@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var JSON = JSONObject.Create();
 
-            return CustomMeterValuesResponseSerializer != null
+            return CustomMeterValuesResponseSerializer is not null
                        ? CustomMeterValuesResponseSerializer(this, JSON)
                        : JSON;
 

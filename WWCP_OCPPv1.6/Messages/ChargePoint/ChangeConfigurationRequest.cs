@@ -60,13 +60,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public ChangeConfigurationRequest(ChargeBox_Id      ChargeBoxId,
-                                          String            Key,
-                                          String            Value,
+        public ChangeConfigurationRequest(ChargeBox_Id       ChargeBoxId,
+                                          String             Key,
+                                          String             Value,
 
-                                          Request_Id?       RequestId          = null,
-                                          DateTime?         RequestTimestamp   = null,
-                                          EventTracking_Id  EventTrackingId    = null)
+                                          Request_Id?        RequestId          = null,
+                                          DateTime?          RequestTimestamp   = null,
+                                          EventTracking_Id?  EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "ChangeConfiguration",
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         {
 
-            Key = Key?.Trim();
+            Key = Key.Trim();
 
             this.Key    = Key ?? throw new ArgumentNullException(nameof(Key), "The given configuration key must not be null or empty!");
             this.Value  = Value;
@@ -367,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                             Value,
                                                                             RequestId);
 
-                if (CustomChangeConfigurationRequestParser != null)
+                if (CustomChangeConfigurationRequestParser is not null)
                     ChangeConfigurationRequest = CustomChangeConfigurationRequestParser(JSON,
                                                                                         ChangeConfigurationRequest);
 
@@ -481,7 +481,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            new JProperty("value",  Value)
                        );
 
-            return CustomChangeConfigurationRequestSerializer != null
+            return CustomChangeConfigurationRequestSerializer is not null
                        ? CustomChangeConfigurationRequestSerializer(this, JSON)
                        : JSON;
 

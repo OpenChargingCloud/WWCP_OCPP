@@ -673,7 +673,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                     TransactionData,
                                                                     RequestId);
 
-                if (CustomStopTransactionRequestParser != null)
+                if (CustomStopTransactionRequestParser is not null)
                     StopTransactionRequest = CustomStopTransactionRequestParser(JSON,
                                                                                 StopTransactionRequest);
 
@@ -821,7 +821,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                        );
 
-            return CustomStopTransactionRequestRequestSerializer != null
+            return CustomStopTransactionRequestRequestSerializer is not null
                        ? CustomStopTransactionRequestRequestSerializer(this, JSON)
                        : JSON;
 

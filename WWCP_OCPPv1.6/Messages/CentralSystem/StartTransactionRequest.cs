@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                       ReservationId,
                                                                       RequestId);
 
-                if (CustomStartTransactionRequestParser != null)
+                if (CustomStartTransactionRequestParser is not null)
                     StartTransactionRequest = CustomStartTransactionRequestParser(JSON,
                                                                                   StartTransactionRequest);
 
@@ -591,7 +591,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                        );
 
-            return CustomStartTransactionRequestSerializer != null
+            return CustomStartTransactionRequestSerializer is not null
                        ? CustomStartTransactionRequestSerializer(this, JSON)
                        : JSON;
 

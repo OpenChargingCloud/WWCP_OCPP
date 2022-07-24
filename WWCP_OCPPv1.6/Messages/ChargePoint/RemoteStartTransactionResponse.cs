@@ -386,7 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                            new JProperty("status",  Status.AsText())
                        );
 
-            return CustomRemoteStartTransactionResponseSerializer != null
+            return CustomRemoteStartTransactionResponseSerializer is not null
                        ? CustomRemoteStartTransactionResponseSerializer(this, JSON)
                        : JSON;
 

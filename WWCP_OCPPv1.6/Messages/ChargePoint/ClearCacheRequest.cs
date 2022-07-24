@@ -43,10 +43,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public ClearCacheRequest(ChargeBox_Id      ChargeBoxId,
-                                 Request_Id?       RequestId          = null,
-                                 DateTime?         RequestTimestamp   = null,
-                                 EventTracking_Id  EventTrackingId    = null)
+        public ClearCacheRequest(ChargeBox_Id       ChargeBoxId,
+                                 Request_Id?        RequestId          = null,
+                                 DateTime?          RequestTimestamp   = null,
+                                 EventTracking_Id?  EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "ClearCache",
@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 ClearCacheRequest = new ClearCacheRequest(ChargeBoxId,
                                                            RequestId);
 
-                if (CustomClearCacheRequestParser != null)
+                if (CustomClearCacheRequestParser is not null)
                     ClearCacheRequest = CustomClearCacheRequestParser(JSON,
                                                                       ClearCacheRequest);
 
@@ -396,7 +396,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var JSON = JSONObject.Create();
 
-            return CustomClearCacheRequestSerializer != null
+            return CustomClearCacheRequestSerializer is not null
                        ? CustomClearCacheRequestSerializer(this, JSON)
                        : JSON;
 

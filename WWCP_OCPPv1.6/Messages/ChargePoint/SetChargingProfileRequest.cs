@@ -62,13 +62,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public SetChargingProfileRequest(ChargeBox_Id      ChargeBoxId,
-                                         Connector_Id      ConnectorId,
-                                         ChargingProfile   ChargingProfile,
+        public SetChargingProfileRequest(ChargeBox_Id       ChargeBoxId,
+                                         Connector_Id       ConnectorId,
+                                         ChargingProfile    ChargingProfile,
 
-                                         Request_Id?       RequestId          = null,
-                                         DateTime?         RequestTimestamp   = null,
-                                         EventTracking_Id  EventTrackingId    = null)
+                                         Request_Id?        RequestId          = null,
+                                         DateTime?          RequestTimestamp   = null,
+                                         EventTracking_Id?  EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "SetChargingProfile",
@@ -522,7 +522,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                           ChargingProfile,
                                                                           RequestId);
 
-                if (CustomSetChargingProfileRequestParser != null)
+                if (CustomSetChargingProfileRequestParser is not null)
                     SetChargingProfileRequest = CustomSetChargingProfileRequestParser(JSON,
                                                                                       SetChargingProfileRequest);
 
@@ -644,7 +644,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                                        CustomChargingSchedulePeriodSerializer))
                        );
 
-            return CustomSetChargingProfileRequestSerializer != null
+            return CustomSetChargingProfileRequestSerializer is not null
                        ? CustomSetChargingProfileRequestSerializer(this, JSON)
                        : JSON;
 

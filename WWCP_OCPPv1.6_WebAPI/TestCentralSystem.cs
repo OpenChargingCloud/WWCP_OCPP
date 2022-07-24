@@ -119,12 +119,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a boot notification request was received.
         /// </summary>
-        public event BootNotificationRequestDelegate   OnBootNotificationRequest;
+        public event BootNotificationRequestDelegate?   OnBootNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a boot notification request was sent.
         /// </summary>
-        public event BootNotificationResponseDelegate  OnBootNotificationResponse;
+        public event BootNotificationResponseDelegate?  OnBootNotificationResponse;
 
         #endregion
 
@@ -133,12 +133,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a heartbeat request was received.
         /// </summary>
-        public event HeartbeatRequestDelegate   OnHeartbeatRequest;
+        public event HeartbeatRequestDelegate?   OnHeartbeatRequest;
 
         /// <summary>
         /// An event sent whenever a response to a heartbeat request was sent.
         /// </summary>
-        public event HeartbeatResponseDelegate  OnHeartbeatResponse;
+        public event HeartbeatResponseDelegate?  OnHeartbeatResponse;
 
         #endregion
 
@@ -148,12 +148,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever an authorize request was received.
         /// </summary>
-        public event AuthorizeRequestDelegate   OnAuthorizeRequest;
+        public event AuthorizeRequestDelegate?   OnAuthorizeRequest;
 
         /// <summary>
         /// An event sent whenever a response to an authorize request was sent.
         /// </summary>
-        public event AuthorizeResponseDelegate  OnAuthorizeResponse;
+        public event AuthorizeResponseDelegate?  OnAuthorizeResponse;
 
         #endregion
 
@@ -162,12 +162,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a StartTransaction request was received.
         /// </summary>
-        public event StartTransactionRequestDelegate   OnStartTransactionRequest;
+        public event StartTransactionRequestDelegate?   OnStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a StartTransaction request was sent.
         /// </summary>
-        public event StartTransactionResponseDelegate  OnStartTransactionResponse;
+        public event StartTransactionResponseDelegate?  OnStartTransactionResponse;
 
         #endregion
 
@@ -176,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a StatusNotification request was received.
         /// </summary>
-        public event StatusNotificationRequestDelegate   OnStatusNotificationRequest;
+        public event StatusNotificationRequestDelegate?   OnStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a StatusNotification request was sent.
         /// </summary>
-        public event StatusNotificationResponseDelegate  OnStatusNotificationResponse;
+        public event StatusNotificationResponseDelegate?  OnStatusNotificationResponse;
 
         #endregion
 
@@ -190,12 +190,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a MeterValues request was received.
         /// </summary>
-        public event MeterValuesRequestDelegate   OnMeterValuesRequest;
+        public event MeterValuesRequestDelegate?   OnMeterValuesRequest;
 
         /// <summary>
         /// An event sent whenever a response to a MeterValues request was sent.
         /// </summary>
-        public event MeterValuesResponseDelegate  OnMeterValuesResponse;
+        public event MeterValuesResponseDelegate?  OnMeterValuesResponse;
 
         #endregion
 
@@ -204,12 +204,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a StopTransaction request was received.
         /// </summary>
-        public event StopTransactionRequestDelegate   OnStopTransactionRequest;
+        public event StopTransactionRequestDelegate?   OnStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a StopTransaction request was sent.
         /// </summary>
-        public event StopTransactionResponseDelegate  OnStopTransactionResponse;
+        public event StopTransactionResponseDelegate?  OnStopTransactionResponse;
 
         #endregion
 
@@ -219,12 +219,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever an IncomingDataTransfer request was received.
         /// </summary>
-        public event IncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
+        public event IncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to an IncomingDataTransfer request was sent.
         /// </summary>
-        public event IncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
+        public event IncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
 
         #endregion
 
@@ -233,12 +233,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a DiagnosticsStatusNotification request was received.
         /// </summary>
-        public event DiagnosticsStatusNotificationRequestDelegate   OnDiagnosticsStatusNotificationRequest;
+        public event DiagnosticsStatusNotificationRequestDelegate?   OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a DiagnosticsStatusNotification request was sent.
         /// </summary>
-        public event DiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
+        public event DiagnosticsStatusNotificationResponseDelegate?  OnDiagnosticsStatusNotificationResponse;
 
         #endregion
 
@@ -247,12 +247,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a FirmwareStatusNotification request was received.
         /// </summary>
-        public event FirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
+        public event FirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
         /// </summary>
-        public event FirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
+        public event FirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
 
         #endregion
 
@@ -264,12 +264,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.ResetRequestDelegate   OnResetRequest;
+        public event CP.ResetRequestDelegate?   OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.ResetResponseDelegate  OnResetResponse;
+        public event CP.ResetResponseDelegate?  OnResetResponse;
 
         #endregion
 
@@ -278,12 +278,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.ChangeAvailabilityRequestDelegate   OnChangeAvailabilityRequest;
+        public event CP.ChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.ChangeAvailabilityResponseDelegate  OnChangeAvailabilityResponse;
+        public event CP.ChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
 
         #endregion
 
@@ -292,12 +292,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.GetConfigurationRequestDelegate   OnGetConfigurationRequest;
+        public event CP.GetConfigurationRequestDelegate?   OnGetConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.GetConfigurationResponseDelegate  OnGetConfigurationResponse;
+        public event CP.GetConfigurationResponseDelegate?  OnGetConfigurationResponse;
 
         #endregion
 
@@ -306,12 +306,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.ChangeConfigurationRequestDelegate   OnChangeConfigurationRequest;
+        public event CP.ChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.ChangeConfigurationResponseDelegate  OnChangeConfigurationResponse;
+        public event CP.ChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
 
         #endregion
 
@@ -320,12 +320,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.IncomingDataTransferRequestDelegate   OnDataTransferRequest;
+        public event CP.IncomingDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.IncomingDataTransferResponseDelegate  OnDataTransferResponse;
+        public event CP.IncomingDataTransferResponseDelegate?  OnDataTransferResponse;
 
         #endregion
 
@@ -334,12 +334,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.GetDiagnosticsRequestDelegate   OnGetDiagnosticsRequest;
+        public event CP.GetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.GetDiagnosticsResponseDelegate  OnGetDiagnosticsResponse;
+        public event CP.GetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
 
         #endregion
 
@@ -348,12 +348,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.TriggerMessageRequestDelegate   OnTriggerMessageRequest;
+        public event CP.TriggerMessageRequestDelegate?   OnTriggerMessageRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.TriggerMessageResponseDelegate  OnTriggerMessageResponse;
+        public event CP.TriggerMessageResponseDelegate?  OnTriggerMessageResponse;
 
         #endregion
 
@@ -362,12 +362,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.UpdateFirmwareRequestDelegate   OnUpdateFirmwareRequest;
+        public event CP.UpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.UpdateFirmwareResponseDelegate  OnUpdateFirmwareResponse;
+        public event CP.UpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
 
         #endregion
 
@@ -377,12 +377,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.ReserveNowRequestDelegate   OnReserveNowRequest;
+        public event CP.ReserveNowRequestDelegate?   OnReserveNowRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.ReserveNowResponseDelegate  OnReserveNowResponse;
+        public event CP.ReserveNowResponseDelegate?  OnReserveNowResponse;
 
         #endregion
 
@@ -391,12 +391,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.CancelReservationRequestDelegate   OnCancelReservationRequest;
+        public event CP.CancelReservationRequestDelegate?   OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.CancelReservationResponseDelegate  OnCancelReservationResponse;
+        public event CP.CancelReservationResponseDelegate?  OnCancelReservationResponse;
 
         #endregion
 
@@ -405,12 +405,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.RemoteStartTransactionRequestDelegate   OnRemoteStartTransactionRequest;
+        public event CP.RemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.RemoteStartTransactionResponseDelegate  OnRemoteStartTransactionResponse;
+        public event CP.RemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
 
         #endregion
 
@@ -419,12 +419,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.RemoteStopTransactionRequestDelegate   OnRemoteStopTransactionRequest;
+        public event CP.RemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.RemoteStopTransactionResponseDelegate  OnRemoteStopTransactionResponse;
+        public event CP.RemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
 
         #endregion
 
@@ -433,12 +433,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.SetChargingProfileRequestDelegate   OnSetChargingProfileRequest;
+        public event CP.SetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.SetChargingProfileResponseDelegate  OnSetChargingProfileResponse;
+        public event CP.SetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
 
         #endregion
 
@@ -447,12 +447,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.ClearChargingProfileRequestDelegate   OnClearChargingProfileRequest;
+        public event CP.ClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.ClearChargingProfileResponseDelegate  OnClearChargingProfileResponse;
+        public event CP.ClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
 
         #endregion
 
@@ -461,12 +461,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.GetCompositeScheduleRequestDelegate   OnGetCompositeScheduleRequest;
+        public event CP.GetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.GetCompositeScheduleResponseDelegate  OnGetCompositeScheduleResponse;
+        public event CP.GetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
 
         #endregion
 
@@ -475,12 +475,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.UnlockConnectorRequestDelegate   OnUnlockConnectorRequest;
+        public event CP.UnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.UnlockConnectorResponseDelegate  OnUnlockConnectorResponse;
+        public event CP.UnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
 
         #endregion
 
@@ -490,12 +490,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.GetLocalListVersionRequestDelegate   OnGetLocalListVersionRequest;
+        public event CP.GetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.GetLocalListVersionResponseDelegate  OnGetLocalListVersionResponse;
+        public event CP.GetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
 
         #endregion
 
@@ -504,12 +504,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.SendLocalListRequestDelegate   OnSendLocalListRequest;
+        public event CP.SendLocalListRequestDelegate?   OnSendLocalListRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.SendLocalListResponseDelegate  OnSendLocalListResponse;
+        public event CP.SendLocalListResponseDelegate?  OnSendLocalListResponse;
 
         #endregion
 
@@ -518,12 +518,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CP.ClearCacheRequestDelegate   OnClearCacheRequest;
+        public event CP.ClearCacheRequestDelegate?   OnClearCacheRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CP.ClearCacheResponseDelegate  OnClearCacheResponse;
+        public event CP.ClearCacheResponseDelegate?  OnClearCacheResponse;
 
         #endregion
 
@@ -533,9 +533,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region OnNewTCPConnection
 
-        public event OnNewTCPConnectionDelegate                 OnNewTCPConnection;
+        public event OnNewTCPConnectionDelegate?                 OnNewTCPConnection;
 
-        public event OnNewWebSocketConnectionDelegate           OnNewWebSocketConnection;
+        public event OnNewWebSocketConnectionDelegate?           OnNewWebSocketConnection;
 
         #endregion
 
@@ -547,21 +547,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region OnTextMessage  (Request/Response)
 
-        public event OnWebSocketTextMessageRequestDelegate      OnTextMessageRequest;
+        public event OnWebSocketTextMessageRequestDelegate?      OnTextMessageRequest;
 
         //public event OnWebSocketTextMessageDelegate             OnTextMessage;
 
-        public event OnWebSocketTextMessageResponseDelegate     OnTextMessageResponse;
+        public event OnWebSocketTextMessageResponseDelegate?     OnTextMessageResponse;
 
         #endregion
 
         #region OnBinaryMessage(Request/Response)
 
-        public event OnWebSocketBinaryMessageRequestDelegate    OnBinaryMessageRequest;
+        public event OnWebSocketBinaryMessageRequestDelegate?    OnBinaryMessageRequest;
 
         //public event OnWebSocketBinaryMessageDelegate           OnBinaryMessage;
 
-        public event OnWebSocketBinaryMessageResponseDelegate   OnBinaryMessageResponse;
+        public event OnWebSocketBinaryMessageResponseDelegate?   OnBinaryMessageResponse;
 
         #endregion
 
@@ -575,7 +575,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region OnCloseMessage
 
-        public event OnCloseMessageDelegate                     OnCloseMessage;
+        public event OnCloseMessageDelegate?                     OnCloseMessage;
 
         #endregion
 
@@ -2285,15 +2285,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargeBox">The added charge box.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        public delegate Task OnChargeBoxAddedDelegate(DateTime          Timestamp,
-                                                      ChargeBox         ChargeBox,
-                                                      EventTracking_Id  EventTrackingId   = null,
-                                                      User_Id?          CurrentUserId     = null);
+        public delegate Task OnChargeBoxAddedDelegate(DateTime           Timestamp,
+                                                      ChargeBox          ChargeBox,
+                                                      EventTracking_Id?  EventTrackingId   = null,
+                                                      User_Id?           CurrentUserId     = null);
 
         /// <summary>
         /// An event fired whenever a charge box was added.
         /// </summary>
-        public event OnChargeBoxAddedDelegate OnChargeBoxAdded;
+        public event OnChargeBoxAddedDelegate? OnChargeBoxAdded;
 
 
         #region (protected internal) _AddChargeBox(ChargeBox, OnAdded = null, ...)
@@ -2305,21 +2305,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        protected internal async Task<AddChargeBoxResult> _AddChargeBox(ChargeBox                            ChargeBox,
-                                                                        Action<ChargeBox, EventTracking_Id>  OnAdded           = null,
-                                                                        EventTracking_Id                     EventTrackingId   = null,
-                                                                        User_Id?                             CurrentUserId     = null)
+        protected internal async Task<AddChargeBoxResult> _AddChargeBox(ChargeBox                             ChargeBox,
+                                                                        Action<ChargeBox, EventTracking_Id>?  OnAdded           = null,
+                                                                        EventTracking_Id?                     EventTrackingId   = null,
+                                                                        User_Id?                              CurrentUserId     = null)
         {
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
             if (ChargeBox is null)
-                return AddChargeBoxResult.ArgumentError(ChargeBox,
+                return AddChargeBoxResult.ArgumentError(null,
                                                         eventTrackingId,
                                                         nameof(ChargeBox),
                                                         "The given chargeBox must not be null!");
 
-            if (ChargeBox.API != null && ChargeBox.API != this)
+            if (ChargeBox.API is not null && ChargeBox.API != this)
                 return AddChargeBoxResult.ArgumentError(ChargeBox,
                                                         eventTrackingId,
                                                         nameof(ChargeBox),
@@ -2362,11 +2362,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                             eventTrackingId);
 
             var OnChargeBoxAddedLocal = OnChargeBoxAdded;
-            if (OnChargeBoxAddedLocal != null)
+            if (OnChargeBoxAddedLocal is not null)
                 await OnChargeBoxAddedLocal?.Invoke(Timestamp.Now,
-                                                       ChargeBox,
-                                                       eventTrackingId,
-                                                       CurrentUserId);
+                                                    ChargeBox,
+                                                    eventTrackingId,
+                                                    CurrentUserId);
 
             //await SendNotifications(ChargeBox,
             //                        addChargeBox_MessageType,
@@ -2375,7 +2375,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             //                        CurrentUserId);
 
             return AddChargeBoxResult.Success(ChargeBox,
-                                                 eventTrackingId);
+                                              eventTrackingId);
 
         }
 
@@ -2390,10 +2390,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        public async Task<AddChargeBoxResult> AddChargeBox(ChargeBox                            ChargeBox,
-                                                           Action<ChargeBox, EventTracking_Id>  OnAdded           = null,
-                                                           EventTracking_Id                     EventTrackingId   = null,
-                                                           User_Id?                             CurrentUserId     = null)
+        public async Task<AddChargeBoxResult> AddChargeBox(ChargeBox                             ChargeBox,
+                                                           Action<ChargeBox, EventTracking_Id>?  OnAdded           = null,
+                                                           EventTracking_Id?                     EventTrackingId   = null,
+                                                           User_Id?                              CurrentUserId     = null)
         {
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
@@ -2452,30 +2452,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        protected internal async Task<AddChargeBoxIfNotExistsResult> _AddChargeBoxIfNotExists(ChargeBox                            ChargeBox,
-                                                                                              Action<ChargeBox, EventTracking_Id>  OnAdded           = null,
-                                                                                              EventTracking_Id                     EventTrackingId   = null,
-                                                                                              User_Id?                             CurrentUserId     = null)
+        protected internal async Task<AddChargeBoxIfNotExistsResult> _AddChargeBoxIfNotExists(ChargeBox                             ChargeBox,
+                                                                                              Action<ChargeBox, EventTracking_Id>?  OnAdded           = null,
+                                                                                              EventTracking_Id?                     EventTrackingId   = null,
+                                                                                              User_Id?                              CurrentUserId     = null)
         {
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
             if (ChargeBox is null)
                 return AddChargeBoxIfNotExistsResult.ArgumentError(ChargeBox,
-                                                                      eventTrackingId,
-                                                                      nameof(ChargeBox),
-                                                                      "The given chargeBox must not be null!");
+                                                                   eventTrackingId,
+                                                                   nameof(ChargeBox),
+                                                                   "The given chargeBox must not be null!");
 
             if (ChargeBox.API != null && ChargeBox.API != this)
                 return AddChargeBoxIfNotExistsResult.ArgumentError(ChargeBox,
-                                                                      eventTrackingId,
-                                                                      nameof(ChargeBox),
-                                                                      "The given chargeBox is already attached to another API!");
+                                                                   eventTrackingId,
+                                                                   nameof(ChargeBox),
+                                                                   "The given chargeBox is already attached to another API!");
 
             if (_ChargeBoxes.ContainsKey(ChargeBox.Id))
                 return AddChargeBoxIfNotExistsResult.Success(_ChargeBoxes[ChargeBox.Id],
-                                                                AddedOrIgnored.Ignored,
-                                                                eventTrackingId);
+                                                             AddedOrIgnored.Ignored,
+                                                             eventTrackingId);
 
             //if (ChargeBox.Id.Length < MinChargeBoxIdLength)
             //    return AddChargeBoxIfNotExistsResult.ArgumentError(ChargeBox,
@@ -2510,9 +2510,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var OnChargeBoxAddedLocal = OnChargeBoxAdded;
             if (OnChargeBoxAddedLocal != null)
                 await OnChargeBoxAddedLocal?.Invoke(Timestamp.Now,
-                                               ChargeBox,
-                                               eventTrackingId,
-                                               CurrentUserId);
+                                                    ChargeBox,
+                                                    eventTrackingId,
+                                                    CurrentUserId);
 
             //await SendNotifications(ChargeBox,
             //                        addChargeBoxIfNotExists_MessageType,
@@ -2537,10 +2537,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        public async Task<AddChargeBoxIfNotExistsResult> AddChargeBoxIfNotExists(ChargeBox                            ChargeBox,
-                                                                                 Action<ChargeBox, EventTracking_Id>  OnAdded           = null,
-                                                                                 EventTracking_Id                     EventTrackingId   = null,
-                                                                                 User_Id?                             CurrentUserId     = null)
+        public async Task<AddChargeBoxIfNotExistsResult> AddChargeBoxIfNotExists(ChargeBox                             ChargeBox,
+                                                                                 Action<ChargeBox, EventTracking_Id>?  OnAdded           = null,
+                                                                                 EventTracking_Id?                     EventTrackingId   = null,
+                                                                                 User_Id?                              CurrentUserId     = null)
         {
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
@@ -2781,11 +2781,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OldChargeBox">The old charge box.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        public delegate Task OnChargeBoxUpdatedDelegate(DateTime          Timestamp,
-                                                        ChargeBox         ChargeBox,
-                                                        ChargeBox         OldChargeBox,
-                                                        EventTracking_Id  EventTrackingId   = null,
-                                                        User_Id?          CurrentUserId     = null);
+        public delegate Task OnChargeBoxUpdatedDelegate(DateTime           Timestamp,
+                                                        ChargeBox          ChargeBox,
+                                                        ChargeBox          OldChargeBox,
+                                                        EventTracking_Id?  EventTrackingId   = null,
+                                                        User_Id?           CurrentUserId     = null);
 
         /// <summary>
         /// An event fired whenever a charge box was updated.
@@ -2802,10 +2802,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        protected internal async Task<UpdateChargeBoxResult> _UpdateChargeBox(ChargeBox                            ChargeBox,
-                                                                              Action<ChargeBox, EventTracking_Id>  OnUpdated         = null,
-                                                                              EventTracking_Id                     EventTrackingId   = null,
-                                                                              User_Id?                             CurrentUserId     = null)
+        protected internal async Task<UpdateChargeBoxResult> _UpdateChargeBox(ChargeBox                             ChargeBox,
+                                                                              Action<ChargeBox, EventTracking_Id>?  OnUpdated         = null,
+                                                                              EventTracking_Id?                     EventTrackingId   = null,
+                                                                              User_Id?                              CurrentUserId     = null)
         {
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
@@ -2844,7 +2844,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                               eventTrackingId);
 
             var OnChargeBoxUpdatedLocal = OnChargeBoxUpdated;
-            if (OnChargeBoxUpdatedLocal != null)
+            if (OnChargeBoxUpdatedLocal is not null)
                 await OnChargeBoxUpdatedLocal?.Invoke(Timestamp.Now,
                                                          ChargeBox,
                                                          OldChargeBox,
@@ -2873,10 +2873,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        public async Task<UpdateChargeBoxResult> UpdateChargeBox(ChargeBox                            ChargeBox,
-                                                                 Action<ChargeBox, EventTracking_Id>  OnUpdated         = null,
-                                                                 EventTracking_Id                     EventTrackingId   = null,
-                                                                 User_Id?                             CurrentUserId     = null)
+        public async Task<UpdateChargeBoxResult> UpdateChargeBox(ChargeBox                             ChargeBox,
+                                                                 Action<ChargeBox, EventTracking_Id>?  OnUpdated         = null,
+                                                                 EventTracking_Id?                     EventTrackingId   = null,
+                                                                 User_Id?                              CurrentUserId     = null)
         {
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
@@ -2932,38 +2932,38 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        protected internal async Task<UpdateChargeBoxResult> _UpdateChargeBox(ChargeBox                            ChargeBox,
-                                                                              Action<ChargeBox.Builder>            UpdateDelegate,
-                                                                              Action<ChargeBox, EventTracking_Id>  OnUpdated         = null,
-                                                                              EventTracking_Id                     EventTrackingId   = null,
-                                                                              User_Id?                             CurrentUserId     = null)
+        protected internal async Task<UpdateChargeBoxResult> _UpdateChargeBox(ChargeBox                             ChargeBox,
+                                                                              Action<ChargeBox.Builder>             UpdateDelegate,
+                                                                              Action<ChargeBox, EventTracking_Id>?  OnUpdated         = null,
+                                                                              EventTracking_Id?                     EventTrackingId   = null,
+                                                                              User_Id?                              CurrentUserId     = null)
         {
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
             if (ChargeBox is null)
                 return UpdateChargeBoxResult.ArgumentError(ChargeBox,
-                                                              eventTrackingId,
-                                                              nameof(ChargeBox),
-                                                              "The given chargeBox must not be null!");
+                                                           eventTrackingId,
+                                                           nameof(ChargeBox),
+                                                           "The given chargeBox must not be null!");
 
             if (!_ChargeBoxExists(ChargeBox.Id))
                 return UpdateChargeBoxResult.ArgumentError(ChargeBox,
-                                                              eventTrackingId,
-                                                              nameof(ChargeBox),
-                                                              "The given chargeBox '" + ChargeBox.Id + "' does not exists in this API!");
+                                                           eventTrackingId,
+                                                           nameof(ChargeBox),
+                                                           "The given chargeBox '" + ChargeBox.Id + "' does not exists in this API!");
 
             if (ChargeBox.API != this)
                 return UpdateChargeBoxResult.ArgumentError(ChargeBox,
-                                                              eventTrackingId,
-                                                              nameof(ChargeBox.API),
-                                                              "The given chargeBox is not attached to this API!");
+                                                           eventTrackingId,
+                                                           nameof(ChargeBox.API),
+                                                           "The given chargeBox is not attached to this API!");
 
             if (UpdateDelegate is null)
                 return UpdateChargeBoxResult.ArgumentError(ChargeBox,
-                                                              eventTrackingId,
-                                                              nameof(UpdateDelegate),
-                                                              "The given update delegate must not be null!");
+                                                           eventTrackingId,
+                                                           nameof(UpdateDelegate),
+                                                           "The given update delegate must not be null!");
 
 
             var builder = ChargeBox.ToBuilder();
@@ -2983,12 +2983,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                               eventTrackingId);
 
             var OnChargeBoxUpdatedLocal = OnChargeBoxUpdated;
-            if (OnChargeBoxUpdatedLocal != null)
+            if (OnChargeBoxUpdatedLocal is not null)
                 await OnChargeBoxUpdatedLocal?.Invoke(Timestamp.Now,
-                                                         updatedChargeBox,
-                                                         ChargeBox,
-                                                         eventTrackingId,
-                                                         CurrentUserId);
+                                                      updatedChargeBox,
+                                                      ChargeBox,
+                                                      eventTrackingId,
+                                                      CurrentUserId);
 
             //await SendNotifications(updatedChargeBox,
             //                        updateChargeBox_MessageType,
@@ -2997,7 +2997,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             //                        CurrentUserId);
 
             return UpdateChargeBoxResult.Success(ChargeBox,
-                                                    eventTrackingId);
+                                                 eventTrackingId);
 
         }
 
@@ -3013,11 +3013,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        public async Task<UpdateChargeBoxResult> UpdateChargeBox(ChargeBox                            ChargeBox,
-                                                                 Action<ChargeBox.Builder>            UpdateDelegate,
-                                                                 Action<ChargeBox, EventTracking_Id>  OnUpdated         = null,
-                                                                 EventTracking_Id                     EventTrackingId   = null,
-                                                                 User_Id?                             CurrentUserId     = null)
+        public async Task<UpdateChargeBoxResult> UpdateChargeBox(ChargeBox                             ChargeBox,
+                                                                 Action<ChargeBox.Builder>             UpdateDelegate,
+                                                                 Action<ChargeBox, EventTracking_Id>?  OnUpdated         = null,
+                                                                 EventTracking_Id?                     EventTrackingId   = null,
+                                                                 User_Id?                              CurrentUserId     = null)
         {
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
@@ -3157,13 +3157,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Get the chargeBox having the given unique identification.
         /// </summary>
         /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        protected internal ChargeBox _GetChargeBox(ChargeBox_Id ChargeBoxId)
+        protected internal ChargeBox? _GetChargeBox(ChargeBox_Id ChargeBoxId)
         {
 
-            if (ChargeBoxId.IsNotNullOrEmpty && _ChargeBoxes.TryGetValue(ChargeBoxId, out ChargeBox chargeBox))
+            if (ChargeBoxId.IsNotNullOrEmpty && _ChargeBoxes.TryGetValue(ChargeBoxId, out ChargeBox? chargeBox))
                 return chargeBox;
 
-            return null;
+            return default;
 
         }
 
@@ -3171,13 +3171,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Get the chargeBox having the given unique identification.
         /// </summary>
         /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        protected internal ChargeBox _GetChargeBox(ChargeBox_Id? ChargeBoxId)
+        protected internal ChargeBox? _GetChargeBox(ChargeBox_Id? ChargeBoxId)
         {
 
-            if (ChargeBoxId.IsNotNullOrEmpty() && _ChargeBoxes.TryGetValue(ChargeBoxId.Value, out ChargeBox chargeBox))
+            if (ChargeBoxId is not null && _ChargeBoxes.TryGetValue(ChargeBoxId.Value, out ChargeBox? chargeBox))
                 return chargeBox;
 
-            return null;
+            return default;
 
         }
 
@@ -3186,7 +3186,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Get the chargeBox having the given unique identification.
         /// </summary>
         /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        public ChargeBox GetChargeBox(ChargeBox_Id ChargeBoxId)
+        public ChargeBox? GetChargeBox(ChargeBox_Id ChargeBoxId)
         {
 
             if (ChargeBoxesSemaphore.Wait(SemaphoreSlimTimeout))
@@ -3218,7 +3218,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Get the chargeBox having the given unique identification.
         /// </summary>
         /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        public ChargeBox GetChargeBox(ChargeBox_Id? ChargeBoxId)
+        public ChargeBox? GetChargeBox(ChargeBox_Id? ChargeBoxId)
         {
 
             if (ChargeBoxesSemaphore.Wait(SemaphoreSlimTimeout))
@@ -3255,11 +3255,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
         /// <param name="ChargeBox">The charge box.</param>
-        protected internal Boolean _TryGetChargeBox(ChargeBox_Id   ChargeBoxId,
-                                                       out ChargeBox  ChargeBox)
+        protected internal Boolean _TryGetChargeBox(ChargeBox_Id    ChargeBoxId,
+                                                    out ChargeBox?  ChargeBox)
         {
 
-            if (ChargeBoxId.IsNotNullOrEmpty && _ChargeBoxes.TryGetValue(ChargeBoxId, out ChargeBox chargeBox))
+            if (ChargeBoxId.IsNotNullOrEmpty && _ChargeBoxes.TryGetValue(ChargeBoxId, out ChargeBox? chargeBox))
             {
                 ChargeBox = chargeBox;
                 return true;
@@ -3275,11 +3275,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
         /// <param name="ChargeBox">The charge box.</param>
-        protected internal Boolean _TryGetChargeBox(ChargeBox_Id?  ChargeBoxId,
-                                                       out ChargeBox  ChargeBox)
+        protected internal Boolean _TryGetChargeBox(ChargeBox_Id?   ChargeBoxId,
+                                                    out ChargeBox?  ChargeBox)
         {
 
-            if (ChargeBoxId.IsNotNullOrEmpty() && _ChargeBoxes.TryGetValue(ChargeBoxId.Value, out ChargeBox chargeBox))
+            if (ChargeBoxId is not null && _ChargeBoxes.TryGetValue(ChargeBoxId.Value, out ChargeBox? chargeBox))
             {
                 ChargeBox = chargeBox;
                 return true;
@@ -3296,8 +3296,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
         /// <param name="ChargeBox">The charge box.</param>
-        public Boolean TryGetChargeBox(ChargeBox_Id   ChargeBoxId,
-                                          out ChargeBox  ChargeBox)
+        public Boolean TryGetChargeBox(ChargeBox_Id    ChargeBoxId,
+                                       out ChargeBox?  ChargeBox)
         {
 
             if (ChargeBoxesSemaphore.Wait(SemaphoreSlimTimeout))
@@ -3331,8 +3331,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
         /// <param name="ChargeBox">The charge box.</param>
-        public Boolean TryGetChargeBox(ChargeBox_Id?  ChargeBoxId,
-                                          out ChargeBox  ChargeBox)
+        public Boolean TryGetChargeBox(ChargeBox_Id?   ChargeBoxId,
+                                       out ChargeBox?  ChargeBox)
         {
 
             if (ChargeBoxesSemaphore.Wait(SemaphoreSlimTimeout))
@@ -3373,10 +3373,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargeBox">The chargeBox to be deleted.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public delegate Task OnChargeBoxDeletedDelegate(DateTime          Timestamp,
-                                                           ChargeBox      ChargeBox,
-                                                           EventTracking_Id  EventTrackingId   = null,
-                                                           User_Id?          CurrentUserId     = null);
+        public delegate Task OnChargeBoxDeletedDelegate(DateTime           Timestamp,
+                                                        ChargeBox          ChargeBox,
+                                                        EventTracking_Id?  EventTrackingId   = null,
+                                                        User_Id?           CurrentUserId     = null);
 
         /// <summary>
         /// An event fired whenever a charge box was deleted.
@@ -3390,7 +3390,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Determines whether the chargeBox can safely be deleted from the API.
         /// </summary>
         /// <param name="ChargeBox">The chargeBox to be deleted.</param>
-        protected internal virtual I18NString _CanDeleteChargeBox(ChargeBox ChargeBox)
+        protected internal virtual I18NString? _CanDeleteChargeBox(ChargeBox ChargeBox)
         {
 
             //if (ChargeBox.Users.Any())
@@ -3414,10 +3414,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnDeleted">A delegate run whenever the chargeBox has been deleted successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        protected internal async Task<DeleteChargeBoxResult> _DeleteChargeBox(ChargeBox                            ChargeBox,
-                                                                                    Action<ChargeBox, EventTracking_Id>  OnDeleted         = null,
-                                                                                    EventTracking_Id                        EventTrackingId   = null,
-                                                                                    User_Id?                                CurrentUserId     = null)
+        protected internal async Task<DeleteChargeBoxResult> _DeleteChargeBox(ChargeBox                             ChargeBox,
+                                                                              Action<ChargeBox, EventTracking_Id>?  OnDeleted         = null,
+                                                                              EventTracking_Id?                     EventTrackingId   = null,
+                                                                              User_Id?                              CurrentUserId     = null)
         {
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
@@ -3434,7 +3434,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                            nameof(ChargeBox),
                                                            "The given chargeBox is not attached to this API!");
 
-            if (!_ChargeBoxes.TryGetValue(ChargeBox.Id, out ChargeBox ChargeBoxToBeDeleted))
+            if (!_ChargeBoxes.TryGetValue(ChargeBox.Id, out ChargeBox? ChargeBoxToBeDeleted))
                 return DeleteChargeBoxResult.ArgumentError(ChargeBox,
                                                            eventTrackingId,
                                                            nameof(ChargeBox),
@@ -3443,7 +3443,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var result = _CanDeleteChargeBox(ChargeBox);
 
-            if (result != null)
+            if (result is not null)
                 return DeleteChargeBoxResult.Failed(ChargeBox,
                                                     eventTrackingId,
                                                     result);
@@ -3485,7 +3485,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                               eventTrackingId);
 
             var OnChargeBoxDeletedLocal = OnChargeBoxDeleted;
-            if (OnChargeBoxDeletedLocal != null)
+            if (OnChargeBoxDeletedLocal is not null)
                 await OnChargeBoxDeletedLocal?.Invoke(Timestamp.Now,
                                                       ChargeBox,
                                                       eventTrackingId,
@@ -3514,10 +3514,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnDeleted">A delegate run whenever the chargeBox has been deleted successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public async Task<DeleteChargeBoxResult> DeleteChargeBox(ChargeBox                            ChargeBox,
-                                                                 Action<ChargeBox, EventTracking_Id>  OnDeleted         = null,
-                                                                 EventTracking_Id                     EventTrackingId   = null,
-                                                                 User_Id?                             CurrentUserId     = null)
+        public async Task<DeleteChargeBoxResult> DeleteChargeBox(ChargeBox                             ChargeBox,
+                                                                 Action<ChargeBox, EventTracking_Id>?  OnDeleted         = null,
+                                                                 EventTracking_Id?                     EventTrackingId   = null,
+                                                                 User_Id?                              CurrentUserId     = null)
         {
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
@@ -3576,9 +3576,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ResetType">The type of reset that the charge point should perform.</param>
-        public async Task<CP.ResetResponse> Reset(ChargeBox_Id      ChargeBoxId,
-                                                  ResetTypes        ResetType,
-                                                  EventTracking_Id  EventTrackingId   = null)
+        public async Task<CP.ResetResponse> Reset(ChargeBox_Id       ChargeBoxId,
+                                                  ResetTypes         ResetType,
+                                                  EventTracking_Id?  EventTrackingId   = null)
         {
 
             var request = new ResetRequest(ChargeBoxId,
@@ -3608,7 +3608,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.ResetResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.Reset(request);
 
             else
@@ -3655,10 +3655,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The identification of the connector for which its availability should be changed. Id '0' (zero) is used if the availability of the entire charge point and all its connectors should be changed.</param>
         /// <param name="Availability">The new availability of the charge point or charge point connector.</param>
-        public async Task<CP.ChangeAvailabilityResponse> ChangeAvailability(ChargeBox_Id      ChargeBoxId,
-                                                                            Connector_Id      ConnectorId,
-                                                                            Availabilities    Availability,
-                                                                            EventTracking_Id  EventTrackingId   = null)
+        public async Task<CP.ChangeAvailabilityResponse> ChangeAvailability(ChargeBox_Id       ChargeBoxId,
+                                                                            Connector_Id       ConnectorId,
+                                                                            Availabilities     Availability,
+                                                                            EventTracking_Id?  EventTrackingId   = null)
         {
 
             var request = new ChangeAvailabilityRequest(ChargeBoxId,
@@ -3689,7 +3689,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.ChangeAvailabilityResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.ChangeAvailability(request);
 
             else
@@ -3735,9 +3735,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Keys">An optional enumeration of keys for which the configuration is requested. Return all keys if empty.</param>
-        public async Task<CP.GetConfigurationResponse> GetConfiguration(ChargeBox_Id         ChargeBoxId,
-                                                                        IEnumerable<String>  Keys              = null,
-                                                                        EventTracking_Id     EventTrackingId   = null)
+        public async Task<CP.GetConfigurationResponse> GetConfiguration(ChargeBox_Id          ChargeBoxId,
+                                                                        IEnumerable<String>?  Keys              = null,
+                                                                        EventTracking_Id?     EventTrackingId   = null)
         {
 
             var request = new GetConfigurationRequest(ChargeBoxId,
@@ -3767,7 +3767,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.GetConfigurationResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.GetConfiguration(request);
 
             else
@@ -3816,10 +3816,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Key">The name of the configuration setting to change.</param>
         /// <param name="Value">The new value as string for the setting.</param>
-        public async Task<CP.ChangeConfigurationResponse> ChangeConfiguration(ChargeBox_Id      ChargeBoxId,
-                                                                              String            Key,
-                                                                              String            Value,
-                                                                              EventTracking_Id  EventTrackingId   = null)
+        public async Task<CP.ChangeConfigurationResponse> ChangeConfiguration(ChargeBox_Id       ChargeBoxId,
+                                                                              String             Key,
+                                                                              String             Value,
+                                                                              EventTracking_Id?  EventTrackingId   = null)
         {
 
             var request = new ChangeConfigurationRequest(ChargeBoxId,
@@ -3850,7 +3850,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.ChangeConfigurationResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.ChangeConfiguration(request);
 
             else
@@ -3898,11 +3898,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
-        public async Task<CP.DataTransferResponse> DataTransfer(ChargeBox_Id      ChargeBoxId,
-                                                                String            VendorId,
-                                                                String            MessageId         = null,
-                                                                String            Data              = null,
-                                                                EventTracking_Id  EventTrackingId   = null)
+        public async Task<CP.DataTransferResponse> DataTransfer(ChargeBox_Id       ChargeBoxId,
+                                                                String             VendorId,
+                                                                String?            MessageId         = null,
+                                                                String?            Data              = null,
+                                                                EventTracking_Id?  EventTrackingId   = null)
         {
 
             var request = new DataTransferRequest(ChargeBoxId,
@@ -3934,7 +3934,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.DataTransferResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.DataTransfer(request);
 
             else
@@ -3984,13 +3984,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="StopTime">The timestamp of the latest logging information to include in the diagnostics.</param>
         /// <param name="Retries">The optional number of retries of a charge point for trying to upload the diagnostics before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
-        public async Task<CP.GetDiagnosticsResponse> GetDiagnostics(ChargeBox_Id      ChargeBoxId,
-                                                                    String            Location,
-                                                                    DateTime?         StartTime         = null,
-                                                                    DateTime?         StopTime          = null,
-                                                                    Byte?             Retries           = null,
-                                                                    TimeSpan?         RetryInterval     = null,
-                                                                    EventTracking_Id  EventTrackingId   = null)
+        public async Task<CP.GetDiagnosticsResponse> GetDiagnostics(ChargeBox_Id       ChargeBoxId,
+                                                                    String             Location,
+                                                                    DateTime?          StartTime         = null,
+                                                                    DateTime?          StopTime          = null,
+                                                                    Byte?              Retries           = null,
+                                                                    TimeSpan?          RetryInterval     = null,
+                                                                    EventTracking_Id?  EventTrackingId   = null)
         {
 
             var request = new GetDiagnosticsRequest(ChargeBoxId,
@@ -4024,7 +4024,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.GetDiagnosticsResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.GetDiagnostics(request);
 
             else
@@ -4071,10 +4071,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="ConnectorId">Optional connector identification whenever the message applies to a specific connector.</param>
-        public async Task<CP.TriggerMessageResponse> TriggerMessage(ChargeBox_Id      ChargeBoxId,
-                                                                    MessageTriggers   RequestedMessage,
-                                                                    Connector_Id?     ConnectorId       = null,
-                                                                    EventTracking_Id  EventTrackingId   = null)
+        public async Task<CP.TriggerMessageResponse> TriggerMessage(ChargeBox_Id       ChargeBoxId,
+                                                                    MessageTriggers    RequestedMessage,
+                                                                    Connector_Id?      ConnectorId       = null,
+                                                                    EventTracking_Id?  EventTrackingId   = null)
         {
 
             var request = new TriggerMessageRequest(ChargeBoxId,
@@ -4105,7 +4105,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.TriggerMessageResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.TriggerMessage(request);
 
             else
@@ -4154,12 +4154,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="RetrieveDate">The timestamp after which the charge point must retrieve the firmware.</param>
         /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
-        public async Task<CP.UpdateFirmwareResponse> UpdateFirmware(ChargeBox_Id      ChargeBoxId,
-                                                                    String            Location,
-                                                                    DateTime          RetrieveDate,
-                                                                    Byte?             Retries           = null,
-                                                                    TimeSpan?         RetryInterval     = null,
-                                                                    EventTracking_Id  EventTrackingId   = null)
+        public async Task<CP.UpdateFirmwareResponse> UpdateFirmware(ChargeBox_Id       ChargeBoxId,
+                                                                    String             Location,
+                                                                    DateTime           RetrieveDate,
+                                                                    Byte?              Retries           = null,
+                                                                    TimeSpan?          RetryInterval     = null,
+                                                                    EventTracking_Id?  EventTrackingId   = null)
         {
 
             var request = new UpdateFirmwareRequest(ChargeBoxId,
@@ -4192,7 +4192,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.UpdateFirmwareResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.UpdateFirmware(request);
 
             else
@@ -4243,13 +4243,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
         /// <param name="IdTag">The identifier for which the charge point has to reserve a connector.</param>
         /// <param name="ParentIdTag">An optional ParentIdTag.</param>
-        public async Task<CP.ReserveNowResponse> ReserveNow(ChargeBox_Id      ChargeBoxId,
-                                                            Connector_Id      ConnectorId,
-                                                            Reservation_Id    ReservationId,
-                                                            DateTime          ExpiryDate,
-                                                            IdToken           IdTag,
-                                                            IdToken?          ParentIdTag       = null,
-                                                            EventTracking_Id  EventTrackingId   = null)
+        public async Task<CP.ReserveNowResponse> ReserveNow(ChargeBox_Id       ChargeBoxId,
+                                                            Connector_Id       ConnectorId,
+                                                            Reservation_Id     ReservationId,
+                                                            DateTime           ExpiryDate,
+                                                            IdToken            IdTag,
+                                                            IdToken?           ParentIdTag       = null,
+                                                            EventTracking_Id?  EventTrackingId   = null)
         {
 
             var request = new ReserveNowRequest(ChargeBoxId,
@@ -4283,7 +4283,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.ReserveNowResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.ReserveNow(request);
 
             else
@@ -4329,9 +4329,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
-        public async Task<CP.CancelReservationResponse> CancelReservation(ChargeBox_Id      ChargeBoxId,
-                                                                          Reservation_Id    ReservationId,
-                                                                          EventTracking_Id  EventTrackingId   = null)
+        public async Task<CP.CancelReservationResponse> CancelReservation(ChargeBox_Id       ChargeBoxId,
+                                                                          Reservation_Id     ReservationId,
+                                                                          EventTracking_Id?  EventTrackingId   = null)
         {
 
             var request = new CancelReservationRequest(ChargeBoxId,
@@ -4361,7 +4361,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.CancelReservationResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.CancelReservation(request);
 
             else
@@ -4409,11 +4409,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="IdTag">The identification tag to start the charging transaction.</param>
         /// <param name="ConnectorId">An optional connector identification on which the charging transaction should be started (SHALL be > 0).</param>
         /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
-        public async Task<CP.RemoteStartTransactionResponse> RemoteStartTransaction(ChargeBox_Id      ChargeBoxId,
-                                                                                    IdToken           IdTag,
-                                                                                    Connector_Id?     ConnectorId       = null,
-                                                                                    ChargingProfile   ChargingProfile   = null,
-                                                                                    EventTracking_Id  EventTrackingId   = null)
+        public async Task<CP.RemoteStartTransactionResponse> RemoteStartTransaction(ChargeBox_Id       ChargeBoxId,
+                                                                                    IdToken            IdTag,
+                                                                                    Connector_Id?      ConnectorId       = null,
+                                                                                    ChargingProfile?   ChargingProfile   = null,
+                                                                                    EventTracking_Id?  EventTrackingId   = null)
         {
 
             var request = new RemoteStartTransactionRequest(ChargeBoxId,
@@ -4445,7 +4445,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.RemoteStartTransactionResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.RemoteStartTransaction(request);
 
             else
@@ -4491,9 +4491,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="TransactionId">The identification of the transaction which the charge point is requested to stop.</param>
-        public async Task<CP.RemoteStopTransactionResponse> RemoteStopTransaction(ChargeBox_Id      ChargeBoxId,
-                                                                                  Transaction_Id    TransactionId,
-                                                                                  EventTracking_Id  EventTrackingId   = null)
+        public async Task<CP.RemoteStopTransactionResponse> RemoteStopTransaction(ChargeBox_Id       ChargeBoxId,
+                                                                                  Transaction_Id     TransactionId,
+                                                                                  EventTracking_Id?  EventTrackingId   = null)
         {
 
             var request = new RemoteStopTransactionRequest(ChargeBoxId,
@@ -4523,7 +4523,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.RemoteStopTransactionResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.RemoteStopTransaction(request);
 
             else
@@ -4570,10 +4570,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The connector to which the charging profile applies. If connectorId = 0, the message contains an overall limit for the charge point.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
-        public async Task<CP.SetChargingProfileResponse> SetChargingProfile(ChargeBox_Id      ChargeBoxId,
-                                                                            Connector_Id      ConnectorId,
-                                                                            ChargingProfile   ChargingProfile,
-                                                                            EventTracking_Id  EventTrackingId   = null)
+        public async Task<CP.SetChargingProfileResponse> SetChargingProfile(ChargeBox_Id       ChargeBoxId,
+                                                                            Connector_Id       ConnectorId,
+                                                                            ChargingProfile    ChargingProfile,
+                                                                            EventTracking_Id?  EventTrackingId   = null)
         {
 
             var request = new SetChargingProfileRequest(ChargeBoxId,
@@ -4604,7 +4604,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.SetChargingProfileResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.SetChargingProfile(request);
 
             else
@@ -4658,7 +4658,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                                 Connector_Id?             ConnectorId              = null,
                                                                                 ChargingProfilePurposes?  ChargingProfilePurpose   = null,
                                                                                 UInt32?                   StackLevel               = null,
-                                                                                EventTracking_Id          EventTrackingId          = null)
+                                                                                EventTracking_Id?         EventTrackingId          = null)
         {
 
             var request = new ClearChargingProfileRequest(ChargeBoxId,
@@ -4691,7 +4691,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.ClearChargingProfileResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.ClearChargingProfile(request);
 
             else
@@ -4743,7 +4743,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                                 Connector_Id        ConnectorId,
                                                                                 TimeSpan            Duration,
                                                                                 ChargingRateUnits?  ChargingRateUnit   = null,
-                                                                                EventTracking_Id    EventTrackingId    = null)
+                                                                                EventTracking_Id?   EventTrackingId    = null)
         {
 
             var request = new GetCompositeScheduleRequest(ChargeBoxId,
@@ -4775,7 +4775,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.GetCompositeScheduleResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.GetCompositeSchedule(request);
 
             else
@@ -4823,9 +4823,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
-        public async Task<CP.UnlockConnectorResponse> UnlockConnector(ChargeBox_Id      ChargeBoxId,
-                                                                      Connector_Id      ConnectorId,
-                                                                      EventTracking_Id  EventTrackingId   = null)
+        public async Task<CP.UnlockConnectorResponse> UnlockConnector(ChargeBox_Id       ChargeBoxId,
+                                                                      Connector_Id       ConnectorId,
+                                                                      EventTracking_Id?  EventTrackingId   = null)
         {
 
             var request = new UnlockConnectorRequest(ChargeBoxId,
@@ -4855,7 +4855,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.UnlockConnectorResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.UnlockConnector(request);
 
             else
@@ -4901,8 +4901,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Create a new reset request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        public async Task<CP.GetLocalListVersionResponse> GetLocalListVersion(ChargeBox_Id      ChargeBoxId,
-                                                                              EventTracking_Id  EventTrackingId   = null)
+        public async Task<CP.GetLocalListVersionResponse> GetLocalListVersion(ChargeBox_Id       ChargeBoxId,
+                                                                              EventTracking_Id?  EventTrackingId   = null)
         {
 
             var request = new GetLocalListVersionRequest(ChargeBoxId,
@@ -4931,7 +4931,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.GetLocalListVersionResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.GetLocalListVersion(request);
 
             else
@@ -4979,11 +4979,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ListVersion">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
         /// <param name="UpdateType">The type of update (full or differential).</param>
         /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charge point. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
-        public async Task<CP.SendLocalListResponse> SendLocalList(ChargeBox_Id                    ChargeBoxId,
-                                                                  UInt64                          ListVersion,
-                                                                  UpdateTypes                     UpdateType,
-                                                                  IEnumerable<AuthorizationData>  LocalAuthorizationList   = null,
-                                                                  EventTracking_Id                EventTrackingId          = null)
+        public async Task<CP.SendLocalListResponse> SendLocalList(ChargeBox_Id                     ChargeBoxId,
+                                                                  UInt64                           ListVersion,
+                                                                  UpdateTypes                      UpdateType,
+                                                                  IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
+                                                                  EventTracking_Id?                EventTrackingId          = null)
         {
 
             var request = new SendLocalListRequest(ChargeBoxId,
@@ -5015,7 +5015,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.SendLocalListResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.SendLocalList(request);
 
             else
@@ -5060,8 +5060,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Create a new reset request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        public async Task<CP.ClearCacheResponse> ClearCache(ChargeBox_Id      ChargeBoxId,
-                                                            EventTracking_Id  EventTrackingId   = null)
+        public async Task<CP.ClearCacheResponse> ClearCache(ChargeBox_Id       ChargeBoxId,
+                                                            EventTracking_Id?  EventTrackingId   = null)
         {
 
             var request = new ClearCacheRequest(ChargeBoxId,
@@ -5090,7 +5090,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             CP.ClearCacheResponse response;
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime> webSocketServer))
+            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out Tuple<ICentralSystem, DateTime>? webSocketServer))
                 response = await webSocketServer.Item1.ClearCache(request);
 
             else

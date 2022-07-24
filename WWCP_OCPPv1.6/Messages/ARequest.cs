@@ -86,7 +86,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             this.RequestId         = Request_Id.Parse("0");
             this.RequestTimestamp  = Timestamp.Now;
+            this.EventTrackingId   = EventTracking_Id.New;
             this.ChargeBoxId       = ChargeBox_Id.Parse("0");
+            this.WebSocketAction   = "";
 
         }
 
@@ -98,12 +100,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
-        public ARequest(ChargeBox_Id      ChargeBoxId,
-                        String            WebSocketAction,
-                        Request_Id?       RequestId          = null,
-                        EventTracking_Id  EventTrackingId    = null,
-                        DateTime?         RequestTimestamp   = null,
-                        TimeSpan?         RequestTimeout     = null)
+        public ARequest(ChargeBox_Id       ChargeBoxId,
+                        String             WebSocketAction,
+                        Request_Id?        RequestId          = null,
+                        EventTracking_Id?  EventTrackingId    = null,
+                        DateTime?          RequestTimestamp   = null,
+                        TimeSpan?          RequestTimeout     = null)
         {
 
             this.ChargeBoxId       = ChargeBoxId;
@@ -124,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compare two requests for equality.
         /// </summary>
         /// <param name="ARequest">Another abstract generic OCPP request.</param>
-        public abstract Boolean Equals(T ARequest);
+        public abstract Boolean Equals(T? ARequest);
 
         #endregion
 

@@ -42,12 +42,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// should be changed. Id '0' (zero) is used if the availability of
         /// the entire charge point and all its connectors should be changed.
         /// </summary>
-        public Connector_Id       ConnectorId    { get; }
+        public Connector_Id    ConnectorId     { get; }
 
         /// <summary>
         /// The new availability of the charge point or charge point connector.
         /// </summary>
-        public Availabilities  Availability           { get; }
+        public Availabilities  Availability    { get; }
 
         #endregion
 
@@ -62,13 +62,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public ChangeAvailabilityRequest(ChargeBox_Id      ChargeBoxId,
-                                         Connector_Id      ConnectorId,
-                                         Availabilities    Availability,
+        public ChangeAvailabilityRequest(ChargeBox_Id       ChargeBoxId,
+                                         Connector_Id       ConnectorId,
+                                         Availabilities     Availability,
 
-                                         Request_Id?       RequestId          = null,
-                                         DateTime?         RequestTimestamp   = null,
-                                         EventTracking_Id  EventTrackingId    = null)
+                                         Request_Id?        RequestId          = null,
+                                         DateTime?          RequestTimestamp   = null,
+                                         EventTracking_Id?  EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "ChangeAvailability",
@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                           Type,
                                                                           RequestId);
 
-                if (CustomChangeAvailabilityRequestParser != null)
+                if (CustomChangeAvailabilityRequestParser is not null)
                     ChangeAvailabilityRequest = CustomChangeAvailabilityRequestParser(JSON,
                                                                                       ChangeAvailabilityRequest);
 
@@ -489,7 +489,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            new JProperty("type",         Availability.AsText())
                        );
 
-            return CustomChangeAvailabilityRequestSerializer != null
+            return CustomChangeAvailabilityRequestSerializer is not null
                        ? CustomChangeAvailabilityRequestSerializer(this, JSON)
                        : JSON;
 

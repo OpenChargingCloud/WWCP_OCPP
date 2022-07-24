@@ -429,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 MeterValue = new MeterValue(Timestamp,
                                             SampledValues);
 
-                if (CustomMeterValueParser != null)
+                if (CustomMeterValueParser is not null)
                     MeterValue = CustomMeterValueParser(JSON,
                                                         MeterValue);
 
@@ -537,7 +537,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                        );
 
-            return CustomMeterValueSerializer != null
+            return CustomMeterValueSerializer is not null
                        ? CustomMeterValueSerializer(this, JSON)
                        : JSON;
 

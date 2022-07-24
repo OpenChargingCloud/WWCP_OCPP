@@ -389,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                            new JProperty("status",  Status.ToString())
                        );
 
-            return CustomSendLocalListResponseSerializer != null
+            return CustomSendLocalListResponseSerializer is not null
                        ? CustomSendLocalListResponseSerializer(this, JSON)
                        : JSON;
 

@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            new JProperty("currentTime",  CurrentTime.ToIso8601())
                        );
 
-            return CustomHeartbeatResponseSerializer != null
+            return CustomHeartbeatResponseSerializer is not null
                        ? CustomHeartbeatResponseSerializer(this, JSON)
                        : JSON;
 

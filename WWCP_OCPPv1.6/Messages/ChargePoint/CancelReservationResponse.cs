@@ -386,7 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                            new JProperty("status",  Status.AsText())
                        );
 
-            return CustomCancelReservationResponseSerializer != null
+            return CustomCancelReservationResponseSerializer is not null
                        ? CustomCancelReservationResponseSerializer(this, JSON)
                        : JSON;
 

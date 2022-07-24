@@ -387,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                            new JProperty("status",  Status.AsText())
                        );
 
-            return CustomUnlockConnectorResponseSerializer != null
+            return CustomUnlockConnectorResponseSerializer is not null
                        ? CustomUnlockConnectorResponseSerializer(this, JSON)
                        : JSON;
 

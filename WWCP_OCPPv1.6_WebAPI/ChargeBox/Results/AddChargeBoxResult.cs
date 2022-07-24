@@ -31,15 +31,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     public class AddChargeBoxResult : AResult<ChargeBox>
     {
 
-        public ChargeBox  ChargeBox
+        public ChargeBox?  ChargeBox
             => Object;
 
 
-        public AddChargeBoxResult(ChargeBox         ChargeBox,
+        public AddChargeBoxResult(ChargeBox?        ChargeBox,
                                   EventTracking_Id  EventTrackingId,
                                   Boolean           IsSuccess,
-                                  String            Argument           = null,
-                                  I18NString        ErrorDescription   = null)
+                                  String?           Argument           = null,
+                                  I18NString?       ErrorDescription   = null)
 
             : base(ChargeBox,
                    EventTrackingId,
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                       null);
 
 
-        public static AddChargeBoxResult ArgumentError(ChargeBox         ChargeBox,
+        public static AddChargeBoxResult ArgumentError(ChargeBox?        ChargeBox,
                                                        EventTracking_Id  EventTrackingId,
                                                        String            Argument,
                                                        String            Description)
@@ -72,10 +72,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                       I18NString.Create(Languages.en,
                                                         Description));
 
-        public static AddChargeBoxResult ArgumentError(ChargeBox         ChargeBox,
+        public static AddChargeBoxResult ArgumentError(ChargeBox?        ChargeBox,
                                                        EventTracking_Id  EventTrackingId,
-                                                       String            Argument,
-                                                       I18NString        Description)
+                                                       String?           Argument,
+                                                       I18NString?       Description)
 
             => new AddChargeBoxResult(ChargeBox,
                                       EventTrackingId,

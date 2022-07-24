@@ -566,7 +566,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                             TransactionId,
                                                             RequestId);
 
-                if (CustomMeterValuesRequestParser != null)
+                if (CustomMeterValuesRequestParser is not null)
                     MeterValuesRequest = CustomMeterValuesRequestParser(JSON,
                                                                         MeterValuesRequest);
 
@@ -701,7 +701,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                        );
 
-            return CustomMeterValuesRequestSerializer != null
+            return CustomMeterValuesRequestSerializer is not null
                        ? CustomMeterValuesRequestSerializer(this, JSON)
                        : JSON;
 

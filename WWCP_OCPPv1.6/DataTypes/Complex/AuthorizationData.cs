@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 AuthorizationData = new AuthorizationData(IdTag,
                                                           IdTagInfo);
 
-                if (CustomAuthorizationDataParser != null)
+                if (CustomAuthorizationDataParser is not null)
                     AuthorizationData = CustomAuthorizationDataParser(JSON,
                                                                       AuthorizationData);
 
@@ -440,7 +440,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                        );
 
-            return CustomAuthorizationDataSerializer != null
+            return CustomAuthorizationDataSerializer is not null
                        ? CustomAuthorizationDataSerializer(this, JSON)
                        : JSON;
 

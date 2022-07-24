@@ -418,7 +418,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            new JProperty("idTagInfo",  IdTagInfo.ToJSON(CustomIdTagInfoResponseSerializer))
                        );
 
-            return CustomAuthorizeResponseSerializer != null
+            return CustomAuthorizeResponseSerializer is not null
                        ? CustomAuthorizeResponseSerializer(this, JSON)
                        : JSON;
 

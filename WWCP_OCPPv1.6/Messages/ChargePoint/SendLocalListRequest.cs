@@ -75,14 +75,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public SendLocalListRequest(ChargeBox_Id                    ChargeBoxId,
-                                    UInt64                          ListVersion,
-                                    UpdateTypes                     UpdateType,
-                                    IEnumerable<AuthorizationData>  LocalAuthorizationList   = null,
+        public SendLocalListRequest(ChargeBox_Id                     ChargeBoxId,
+                                    UInt64                           ListVersion,
+                                    UpdateTypes                      UpdateType,
+                                    IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
 
-                                    Request_Id?                     RequestId                = null,
-                                    DateTime?                       RequestTimestamp         = null,
-                                    EventTracking_Id                EventTrackingId          = null)
+                                    Request_Id?                      RequestId                = null,
+                                    DateTime?                        RequestTimestamp         = null,
+                                    EventTracking_Id?                EventTrackingId          = null)
 
             : base(ChargeBoxId,
                    "SendLocalList",
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             this.ListVersion             = ListVersion;
             this.UpdateType              = UpdateType;
-            this.LocalAuthorizationList  = LocalAuthorizationList ?? new AuthorizationData[0];
+            this.LocalAuthorizationList  = LocalAuthorizationList ?? Array.Empty<AuthorizationData>();
 
         }
 
@@ -471,7 +471,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                 LocalAuthorizationList,
                                                                 RequestId);
 
-                if (CustomSendLocalListRequestParser != null)
+                if (CustomSendLocalListRequestParser is not null)
                     SendLocalListRequest = CustomSendLocalListRequestParser(JSON,
                                                                             SendLocalListRequest);
 
@@ -601,7 +601,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                        );
 
-            return CustomSendLocalListRequestSerializer != null
+            return CustomSendLocalListRequestSerializer is not null
                        ? CustomSendLocalListRequestSerializer(this, JSON)
                        : JSON;
 

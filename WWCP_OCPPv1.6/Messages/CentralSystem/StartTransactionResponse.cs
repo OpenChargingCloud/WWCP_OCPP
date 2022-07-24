@@ -466,7 +466,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            new JProperty("idTagInfo",      IdTagInfo.    ToJSON(CustomIdTagInfoResponseSerializer))
                        );
 
-            return CustomStartTransactionResponseSerializer != null
+            return CustomStartTransactionResponseSerializer is not null
                        ? CustomStartTransactionResponseSerializer(this, JSON)
                        : JSON;
 

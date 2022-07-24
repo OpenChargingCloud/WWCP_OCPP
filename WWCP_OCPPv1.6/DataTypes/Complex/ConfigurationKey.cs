@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                        );
 
-            return CustomConfigurationKeySerializer != null
+            return CustomConfigurationKeySerializer is not null
                        ? CustomConfigurationKeySerializer(this, JSON)
                        : JSON;
 

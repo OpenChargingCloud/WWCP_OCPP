@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                 Location,
                                                 Unit);
 
-                if (CustomSampledValueParser != null)
+                if (CustomSampledValueParser is not null)
                     SampledValue = CustomSampledValueParser(JSON,
                                                             SampledValue);
 
@@ -692,7 +692,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                        );
 
-            return CustomSampledValueSerializer != null
+            return CustomSampledValueSerializer is not null
                        ? CustomSampledValueSerializer(this, JSON)
                        : JSON;
 

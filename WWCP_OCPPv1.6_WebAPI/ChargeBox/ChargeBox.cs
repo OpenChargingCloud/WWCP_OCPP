@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         private readonly Timer SendHeartbeatTimer;
 
-        public Tuple<String, String> HTTPBasicAuth { get; }
+        //public Tuple<String, String> HTTPBasicAuth { get; }
         public DNSClient DNSClient { get; }
 
         #endregion
@@ -276,47 +276,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The optional multi-language charge box description.
         /// </summary>
-        public I18NString               Description                 { get; }
+        public I18NString?              Description                 { get; }
 
         /// <summary>
         /// The optional serial number of the charge point.
         /// </summary>
-        public String                   ChargePointSerialNumber     { get; }
+        public String?                  ChargePointSerialNumber     { get; }
 
         /// <summary>
         /// The optional serial number of the charge point.
         /// </summary>
-        public String                   ChargeBoxSerialNumber       { get; }
+        public String?                  ChargeBoxSerialNumber       { get; }
 
         /// <summary>
         /// The optional firmware version of the charge point.
         /// </summary>
-        public String                   FirmwareVersion             { get; }
+        public String?                  FirmwareVersion             { get; }
 
         /// <summary>
         /// The optional ICCID of the charge point's SIM card.
         /// </summary>
-        public String                   Iccid                       { get; }
+        public String?                  Iccid                       { get; }
 
         /// <summary>
         /// The optional IMSI of the charge point’s SIM card.
         /// </summary>
-        public String                   IMSI                        { get; }
+        public String?                  IMSI                        { get; }
 
         /// <summary>
         /// The optional meter type of the main power meter of the charge point.
         /// </summary>
-        public String                   MeterType                   { get; }
+        public String?                  MeterType                   { get; }
 
         /// <summary>
         /// The optional serial number of the main power meter of the charge point.
         /// </summary>
-        public String                   MeterSerialNumber           { get; }
+        public String?                  MeterSerialNumber           { get; }
 
         /// <summary>
         /// The optional public key of the main power meter of the charge point.
         /// </summary>
-        public String                   MeterPublicKey              { get; }
+        public String?                  MeterPublicKey              { get; }
 
 
         /// <summary>
@@ -815,28 +815,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          String                                      ChargePointVendor,
                          String                                      ChargePointModel,
 
-                         I18NString                                  Description                         = null,
-                         String                                      ChargePointSerialNumber             = null,
-                         String                                      ChargeBoxSerialNumber               = null,
-                         String                                      FirmwareVersion                     = null,
-                         String                                      Iccid                               = null,
-                         String                                      IMSI                                = null,
-                         String                                      MeterType                           = null,
-                         String                                      MeterSerialNumber                   = null,
-                         String                                      MeterPublicKey                      = null,
+                         I18NString?                                 Description                         = null,
+                         String?                                     ChargePointSerialNumber             = null,
+                         String?                                     ChargeBoxSerialNumber               = null,
+                         String?                                     FirmwareVersion                     = null,
+                         String?                                     Iccid                               = null,
+                         String?                                     IMSI                                = null,
+                         String?                                     MeterType                           = null,
+                         String?                                     MeterSerialNumber                   = null,
+                         String?                                     MeterPublicKey                      = null,
 
                          TimeSpan?                                   ExpectHeartbeatEvery                = null,
 
-                         IEnumerable<ANotification>                  Notifications                       = null,
+                         IEnumerable<ANotification>?                 Notifications                       = null,
 
-                         //IEnumerable<Organization2ChargeBoxEdge>     Organization2ChargeBoxEdges         = null,
-                         IEnumerable<ChargeBox2ChargeBoxEdge>        ChargeBox2ChargeBoxInEdges          = null,
-                         IEnumerable<ChargeBox2ChargeBoxEdge>        ChargeBox2ChargeBoxOutEdges         = null,
+                         //IEnumerable<Organization2ChargeBoxEdge>?    Organization2ChargeBoxEdges         = null,
+                         IEnumerable<ChargeBox2ChargeBoxEdge>?       ChargeBox2ChargeBoxInEdges          = null,
+                         IEnumerable<ChargeBox2ChargeBoxEdge>?       ChargeBox2ChargeBoxOutEdges         = null,
 
-                         JObject                                     CustomData                          = default,
-                         IEnumerable<AttachedFile>                   AttachedFiles                       = default,
+                         JObject?                                    CustomData                          = default,
+                         IEnumerable<AttachedFile>?                  AttachedFiles                       = default,
                          JSONLDContext?                              JSONLDContext                       = default,
-                         String                                      DataSource                          = default,
+                         String?                                     DataSource                          = default,
                          DateTime?                                   LastChange                          = default)
 
             : base(Id,
@@ -879,7 +879,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             this.ExpectHeartbeatEvery     = ExpectHeartbeatEvery ?? DefaultExpectHeartbeatEvery;
 
-            this.HTTPBasicAuth            = HTTPBasicAuth;
+            //this.HTTPBasicAuth            = HTTPBasicAuth;
 
         }
 
