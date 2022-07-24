@@ -32,6 +32,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP.v1_2;
+using System.Security.Authentication;
 
 #endregion
 
@@ -65,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The unique identification of this charge box.
         /// </summary>
-        public ChargeBox_Id    ChargeBoxIdentity   { get; }
+        public ChargeBox_Id    ChargeBoxIdentity    { get; }
 
         /// <summary>
         /// The sender identification.
@@ -76,18 +77,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The source URI of the SOAP message.
         /// </summary>
-        public String          From                { get; }
+        public String          From                 { get; }
 
         /// <summary>
         /// The destination URI of the SOAP message.
         /// </summary>
-        public String          To                  { get; }
+        public String          To                   { get; }
 
 
         /// <summary>
         /// The attached OCPP CS client (HTTP/SOAP client) logger.
         /// </summary>
-        public CSClientLogger  Logger              { get; }
+        public CSClientLogger  Logger               { get; }
 
         #endregion
 
@@ -98,22 +99,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a cancel reservation request will be send to a charge point.
         /// </summary>
-        public event OnCancelReservationRequestDelegate   OnCancelReservationRequest;
+        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
         /// <summary>
         /// An event fired whenever a cancel reservation SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler              OnCancelReservationSOAPRequest;
+        public event ClientRequestLogHandler?              OnCancelReservationSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a cancel reservation SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler             OnCancelReservationSOAPResponse;
+        public event ClientResponseLogHandler?             OnCancelReservationSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a cancel reservation request was received.
         /// </summary>
-        public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
+        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
 
         #endregion
 
@@ -122,22 +123,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a change availability request will be send to a charge point.
         /// </summary>
-        public event OnChangeAvailabilityRequestDelegate   OnChangeAvailabilityRequest;
+        public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event fired whenever a change availability SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler               OnChangeAvailabilitySOAPRequest;
+        public event ClientRequestLogHandler?               OnChangeAvailabilitySOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a change availability SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler              OnChangeAvailabilitySOAPResponse;
+        public event ClientResponseLogHandler?              OnChangeAvailabilitySOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a change availability request was received.
         /// </summary>
-        public event OnChangeAvailabilityResponseDelegate  OnChangeAvailabilityResponse;
+        public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
 
         #endregion
 
@@ -146,22 +147,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a change configuration request will be send to a charge point.
         /// </summary>
-        public event OnChangeConfigurationRequestDelegate   OnChangeConfigurationRequest;
+        public event OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
 
         /// <summary>
         /// An event fired whenever a change configuration SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler                OnChangeConfigurationSOAPRequest;
+        public event ClientRequestLogHandler?                OnChangeConfigurationSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a change configuration SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler               OnChangeConfigurationSOAPResponse;
+        public event ClientResponseLogHandler?               OnChangeConfigurationSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a change configuration request was received.
         /// </summary>
-        public event OnChangeConfigurationResponseDelegate  OnChangeConfigurationResponse;
+        public event OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
 
         #endregion
 
@@ -170,22 +171,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a clear cache request will be send to a charge point.
         /// </summary>
-        public event OnClearCacheRequestDelegate   OnClearCacheRequest;
+        public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
 
         /// <summary>
         /// An event fired whenever a clear cache SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler       OnClearCacheSOAPRequest;
+        public event ClientRequestLogHandler?       OnClearCacheSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a clear cache SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler      OnClearCacheSOAPResponse;
+        public event ClientResponseLogHandler?      OnClearCacheSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a clear cache request was received.
         /// </summary>
-        public event OnClearCacheResponseDelegate  OnClearCacheResponse;
+        public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
 
         #endregion
 
@@ -194,22 +195,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a clear charging profile request will be send to a charge point.
         /// </summary>
-        public event OnClearChargingProfileRequestDelegate   OnClearChargingProfileRequest;
+        public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event fired whenever a clear charging profile SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler                 OnClearChargingProfileSOAPRequest;
+        public event ClientRequestLogHandler?                 OnClearChargingProfileSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a clear charging profile SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler                OnClearChargingProfileSOAPResponse;
+        public event ClientResponseLogHandler?                OnClearChargingProfileSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a clear charging profile request was received.
         /// </summary>
-        public event OnClearChargingProfileResponseDelegate  OnClearChargingProfileResponse;
+        public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
 
         #endregion
 
@@ -218,22 +219,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a data transfer request will be send to a charge point.
         /// </summary>
-        public event OnDataTransferRequestDelegate   OnDataTransferRequest;
+        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a data transfer SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler         OnDataTransferSOAPRequest;
+        public event ClientRequestLogHandler?         OnDataTransferSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler        OnDataTransferSOAPResponse;
+        public event ClientResponseLogHandler?        OnDataTransferSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
-        public event OnDataTransferResponseDelegate  OnDataTransferResponse;
+        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
         #endregion
 
@@ -242,22 +243,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a get composite schedule request will be send to a charge point.
         /// </summary>
-        public event OnGetCompositeScheduleRequestDelegate   OnGetCompositeScheduleRequest;
+        public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event fired whenever a get composite schedule SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler                 OnGetCompositeScheduleSOAPRequest;
+        public event ClientRequestLogHandler?                 OnGetCompositeScheduleSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a get composite schedule SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler                OnGetCompositeScheduleSOAPResponse;
+        public event ClientResponseLogHandler?                OnGetCompositeScheduleSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a get composite schedule request was received.
         /// </summary>
-        public event OnGetCompositeScheduleResponseDelegate  OnGetCompositeScheduleResponse;
+        public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
 
         #endregion
 
@@ -266,22 +267,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a get configuration request will be send to a charge point.
         /// </summary>
-        public event OnGetConfigurationRequestDelegate   OnGetConfigurationRequest;
+        public event OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
 
         /// <summary>
         /// An event fired whenever a get configuration SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler             OnGetConfigurationSOAPRequest;
+        public event ClientRequestLogHandler?             OnGetConfigurationSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a get configuration SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler            OnGetConfigurationSOAPResponse;
+        public event ClientResponseLogHandler?            OnGetConfigurationSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a get configuration request was received.
         /// </summary>
-        public event OnGetConfigurationResponseDelegate  OnGetConfigurationResponse;
+        public event OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
 
         #endregion
 
@@ -290,22 +291,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a get diagnostics request will be send to a charge point.
         /// </summary>
-        public event OnGetDiagnosticsRequestDelegate   OnGetDiagnosticsRequest;
+        public event OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
 
         /// <summary>
         /// An event fired whenever a get diagnostics SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler           OnGetDiagnosticsSOAPRequest;
+        public event ClientRequestLogHandler?           OnGetDiagnosticsSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a get diagnostics SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler          OnGetDiagnosticsSOAPResponse;
+        public event ClientResponseLogHandler?          OnGetDiagnosticsSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a get diagnostics request was received.
         /// </summary>
-        public event OnGetDiagnosticsResponseDelegate  OnGetDiagnosticsResponse;
+        public event OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
 
         #endregion
 
@@ -314,22 +315,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a get local list version request will be send to a charge point.
         /// </summary>
-        public event OnGetLocalListVersionRequestDelegate   OnGetLocalListVersionRequest;
+        public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event fired whenever a get local list version SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler                OnGetLocalListVersionSOAPRequest;
+        public event ClientRequestLogHandler?                OnGetLocalListVersionSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a get local list version SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler               OnGetLocalListVersionSOAPResponse;
+        public event ClientResponseLogHandler?               OnGetLocalListVersionSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a get local list version request was received.
         /// </summary>
-        public event OnGetLocalListVersionResponseDelegate  OnGetLocalListVersionResponse;
+        public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
 
         #endregion
 
@@ -338,22 +339,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a remote start transaction request will be send to a charge point.
         /// </summary>
-        public event OnRemoteStartTransactionRequestDelegate   OnRemoteStartTransactionRequest;
+        public event OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a remote start transaction SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler                   OnRemoteStartTransactionSOAPRequest;
+        public event ClientRequestLogHandler?                   OnRemoteStartTransactionSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a remote start transaction SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler                  OnRemoteStartTransactionSOAPResponse;
+        public event ClientResponseLogHandler?                  OnRemoteStartTransactionSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a remote start transaction request was received.
         /// </summary>
-        public event OnRemoteStartTransactionResponseDelegate  OnRemoteStartTransactionResponse;
+        public event OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
 
         #endregion
 
@@ -362,22 +363,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a remote stop transaction request will be send to a charge point.
         /// </summary>
-        public event OnRemoteStopTransactionRequestDelegate   OnRemoteStopTransactionRequest;
+        public event OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a remote stop transaction SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler                  OnRemoteStopTransactionSOAPRequest;
+        public event ClientRequestLogHandler?                  OnRemoteStopTransactionSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a remote stop transaction SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler                 OnRemoteStopTransactionSOAPResponse;
+        public event ClientResponseLogHandler?                 OnRemoteStopTransactionSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a remote stop transaction request was received.
         /// </summary>
-        public event OnRemoteStopTransactionResponseDelegate  OnRemoteStopTransactionResponse;
+        public event OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
 
         #endregion
 
@@ -386,22 +387,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a reserve now request will be send to a charge point.
         /// </summary>
-        public event OnReserveNowRequestDelegate   OnReserveNowRequest;
+        public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
 
         /// <summary>
         /// An event fired whenever a reserve now SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler       OnReserveNowSOAPRequest;
+        public event ClientRequestLogHandler?       OnReserveNowSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a reserve now SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler      OnReserveNowSOAPResponse;
+        public event ClientResponseLogHandler?      OnReserveNowSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a reserve now request was received.
         /// </summary>
-        public event OnReserveNowResponseDelegate  OnReserveNowResponse;
+        public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
 
         #endregion
 
@@ -410,22 +411,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a reset request will be send to a charge point.
         /// </summary>
-        public event OnResetRequestDelegate    OnResetRequest;
+        public event OnResetRequestDelegate?    OnResetRequest;
 
         /// <summary>
         /// An event fired whenever a reset SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler   OnResetSOAPRequest;
+        public event ClientRequestLogHandler?   OnResetSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a reset SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler  OnResetSOAPResponse;
+        public event ClientResponseLogHandler?  OnResetSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a reset request was received.
         /// </summary>
-        public event OnResetResponseDelegate   OnResetResponse;
+        public event OnResetResponseDelegate?   OnResetResponse;
 
         #endregion
 
@@ -434,22 +435,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a send local list request will be send to a charge point.
         /// </summary>
-        public event OnSendLocalListRequestDelegate   OnSendLocalListRequest;
+        public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
 
         /// <summary>
         /// An event fired whenever a send local list SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler          OnSendLocalListSOAPRequest;
+        public event ClientRequestLogHandler?          OnSendLocalListSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a send local list SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler         OnSendLocalListSOAPResponse;
+        public event ClientResponseLogHandler?         OnSendLocalListSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a send local list request was received.
         /// </summary>
-        public event OnSendLocalListResponseDelegate  OnSendLocalListResponse;
+        public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
 
         #endregion
 
@@ -458,22 +459,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a set charging profile request will be send to a charge point.
         /// </summary>
-        public event OnSetChargingProfileRequestDelegate   OnSetChargingProfileRequest;
+        public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event fired whenever a set charging profile SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler               OnSetChargingProfileSOAPRequest;
+        public event ClientRequestLogHandler?               OnSetChargingProfileSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a set charging profile SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler              OnSetChargingProfileSOAPResponse;
+        public event ClientResponseLogHandler?              OnSetChargingProfileSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a set charging profile request was received.
         /// </summary>
-        public event OnSetChargingProfileResponseDelegate  OnSetChargingProfileResponse;
+        public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
 
         #endregion
 
@@ -482,22 +483,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a trigger message request will be send to a charge point.
         /// </summary>
-        public event OnTriggerMessageRequestDelegate   OnTriggerMessageRequest;
+        public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
 
         /// <summary>
         /// An event fired whenever a trigger message SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler           OnTriggerMessageSOAPRequest;
+        public event ClientRequestLogHandler?           OnTriggerMessageSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a trigger message SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler          OnTriggerMessageSOAPResponse;
+        public event ClientResponseLogHandler?          OnTriggerMessageSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a trigger message request was received.
         /// </summary>
-        public event OnTriggerMessageResponseDelegate  OnTriggerMessageResponse;
+        public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
 
         #endregion
 
@@ -506,22 +507,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a unlock connector request will be send to a charge point.
         /// </summary>
-        public event OnUnlockConnectorRequestDelegate   OnUnlockConnectorRequest;
+        public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event fired whenever a unlock connector SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler            OnUnlockConnectorSOAPRequest;
+        public event ClientRequestLogHandler?            OnUnlockConnectorSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a unlock connector SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler           OnUnlockConnectorSOAPResponse;
+        public event ClientResponseLogHandler?           OnUnlockConnectorSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a unlock connector request was received.
         /// </summary>
-        public event OnUnlockConnectorResponseDelegate  OnUnlockConnectorResponse;
+        public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
 
         #endregion
 
@@ -530,22 +531,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a update firmware request will be send to a charge point.
         /// </summary>
-        public event OnUpdateFirmwareRequestDelegate   OnUpdateFirmwareRequest;
+        public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event fired whenever a update firmware SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler           OnUpdateFirmwareSOAPRequest;
+        public event ClientRequestLogHandler?           OnUpdateFirmwareSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a update firmware SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler          OnUpdateFirmwareSOAPResponse;
+        public event ClientResponseLogHandler?          OnUpdateFirmwareSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a update firmware request was received.
         /// </summary>
-        public event OnUpdateFirmwareResponseDelegate  OnUpdateFirmwareResponse;
+        public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
 
         #endregion
 
@@ -581,30 +582,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
-        public CentralSystemSOAPClient(ChargeBox_Id                         ChargeBoxIdentity,
-                                       String                               From,
-                                       String                               To,
+        public CentralSystemSOAPClient(ChargeBox_Id                          ChargeBoxIdentity,
+                                       String                                From,
+                                       String                                To,
 
-                                       URL                                  RemoteURL,
-                                       HTTPHostname?                        VirtualHostname              = null,
-                                       String                               Description                  = null,
-                                       RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                                       LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                                       X509Certificate                      ClientCert                   = null,
-                                       String                               HTTPUserAgent                = DefaultHTTPUserAgent,
-                                       HTTPPath?                            URLPathPrefix                = null,
-                                       Tuple<String, String>                WSSLoginPassword             = null,
-                                       HTTPContentType                      HTTPContentType              = null,
-                                       TimeSpan?                            RequestTimeout               = null,
-                                       TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
-                                       UInt16?                              MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
-                                       Boolean                              UseHTTPPipelining            = false,
+                                       URL                                   RemoteURL,
+                                       HTTPHostname?                         VirtualHostname              = null,
+                                       String?                               Description                  = null,
+                                       RemoteCertificateValidationCallback?  RemoteCertificateValidator   = null,
+                                       LocalCertificateSelectionCallback?    ClientCertificateSelector    = null,
+                                       X509Certificate?                      ClientCert                   = null,
+                                       SslProtocols?                         TLSProtocol                  = null,
+                                       Boolean?                              PreferIPv4                   = null,
+                                       String                                HTTPUserAgent                = DefaultHTTPUserAgent,
+                                       HTTPPath?                             URLPathPrefix                = null,
+                                       Tuple<String, String>?                WSSLoginPassword             = null,
+                                       HTTPContentType?                      HTTPContentType              = null,
+                                       TimeSpan?                             RequestTimeout               = null,
+                                       TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
+                                       UInt16?                               MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
+                                       Boolean                               UseHTTPPipelining            = false,
 
-                                       String                               LoggingPath                  = null,
-                                       String                               LoggingContext               = CSClientLogger.DefaultContext,
-                                       LogfileCreatorDelegate               LogFileCreator               = null,
-                                       HTTPClientLogger                     HTTPLogger                   = null,
-                                       DNSClient                            DNSClient                    = null)
+                                       String?                               LoggingPath                  = null,
+                                       String                                LoggingContext               = CSClientLogger.DefaultContext,
+                                       LogfileCreatorDelegate?               LogFileCreator               = null,
+                                       HTTPClientLogger?                     HTTPLogger                   = null,
+                                       DNSClient?                            DNSClient                    = null)
 
             : base(RemoteURL,
                    VirtualHostname,
@@ -612,6 +615,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    RemoteCertificateValidator,
                    ClientCertificateSelector,
                    ClientCert,
+                   TLSProtocol,
+                   PreferIPv4,
                    HTTPUserAgent,
                    URLPathPrefix ?? DefaultURLPathPrefix,
                    WSSLoginPassword,
@@ -754,7 +759,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                   DateTime?           Timestamp           = null,
                   CancellationToken?  CancellationToken   = null,
-                  EventTracking_Id    EventTrackingId     = null,
+                  EventTracking_Id?   EventTrackingId     = null,
                   TimeSpan?           RequestTimeout      = null)
 
         {
@@ -810,6 +815,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -910,7 +917,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<ResetResponse>.OK(new ResetResponse(Request,
                                                                           Result.OK("Nothing to upload!")));
 
@@ -959,7 +966,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                DateTime?           Timestamp           = null,
                                CancellationToken?  CancellationToken   = null,
-                               EventTracking_Id    EventTrackingId     = null,
+                               EventTracking_Id?   EventTrackingId     = null,
                                TimeSpan?           RequestTimeout      = null)
 
         {
@@ -1026,6 +1033,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -1126,7 +1135,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<ChangeAvailabilityResponse>.OK(new ChangeAvailabilityResponse(request,
                                                                                                     Result.OK("Nothing to upload!")));
 
@@ -1175,12 +1184,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<GetConfigurationResponse>>
 
-            GetConfiguration(IEnumerable<String> Keys                = null,
+            GetConfiguration(IEnumerable<String>?  Keys                = null,
 
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null)
+                             DateTime?             Timestamp           = null,
+                             CancellationToken?    CancellationToken   = null,
+                             EventTracking_Id?     EventTrackingId     = null,
+                             TimeSpan?             RequestTimeout      = null)
 
         {
 
@@ -1240,6 +1249,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -1340,7 +1351,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<GetConfigurationResponse>.OK(new GetConfigurationResponse(request,
                                                                                                 Result.OK("Nothing to upload!")));
 
@@ -1394,7 +1405,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                 DateTime?           Timestamp           = null,
                                 CancellationToken?  CancellationToken   = null,
-                                EventTracking_Id    EventTrackingId     = null,
+                                EventTracking_Id?   EventTrackingId     = null,
                                 TimeSpan?           RequestTimeout      = null)
 
         {
@@ -1461,6 +1472,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -1561,7 +1574,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<ChangeConfigurationResponse>.OK(new ChangeConfigurationResponse(request,
                                                                                                       Result.OK("Nothing to upload!")));
 
@@ -1613,12 +1626,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<HTTPResponse<CP.DataTransferResponse>>
 
             DataTransfer(String              VendorId,
-                         String              MessageId           = null,
-                         String              Data                = null,
+                         String?             MessageId           = null,
+                         String?             Data                = null,
 
                          DateTime?           Timestamp           = null,
                          CancellationToken?  CancellationToken   = null,
-                         EventTracking_Id    EventTrackingId     = null,
+                         EventTracking_Id?   EventTrackingId     = null,
                          TimeSpan?           RequestTimeout      = null)
 
         {
@@ -1675,111 +1688,121 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                   MessageId,
                                                   Data);
 
-
-            using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                    VirtualHostname,
-                                                    true,
-                                                    null,
-                                                    RemoteCertificateValidator,
-                                                    ClientCertificateSelector,
-                                                    ClientCert,
-                                                    HTTPUserAgent,
-                                                    URLPathPrefix,
-                                                    WSSLoginPassword,
-                                                    HTTPContentType,
-                                                    RequestTimeout,
-                                                    TransmissionRetryDelay,
-                                                    MaxNumberOfRetries,
-                                                    UseHTTPPipelining,
-                                                    HTTPLogger,
-                                                    DNSClient))
+            try
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                    "/DataTransfer",
-                                                                    NextMessageId(),
-                                                                    From,
-                                                                    To,
-                                                                    request.ToXML()),
-                                                 "DataTransfer",
-                                                 RequestLogDelegate:   OnDataTransferSOAPRequest,
-                                                 ResponseLogDelegate:  OnDataTransferSOAPResponse,
-                                                 CancellationToken:    CancellationToken,
-                                                 EventTrackingId:      EventTrackingId,
-                                                 RequestTimeout:       RequestTimeout,
+                using (var _OCPPClient = new SOAPClient(RemoteURL,
+                                                        VirtualHostname,
+                                                        true,
+                                                        null,
+                                                        RemoteCertificateValidator,
+                                                        ClientCertificateSelector,
+                                                        ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
+                                                        HTTPUserAgent,
+                                                        URLPathPrefix,
+                                                        WSSLoginPassword,
+                                                        HTTPContentType,
+                                                        RequestTimeout,
+                                                        TransmissionRetryDelay,
+                                                        MaxNumberOfRetries,
+                                                        UseHTTPPipelining,
+                                                        HTTPLogger,
+                                                        DNSClient))
+                {
 
-                                                 #region OnSuccess
+                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                        "/DataTransfer",
+                                                                        NextMessageId(),
+                                                                        From,
+                                                                        To,
+                                                                        request.ToXML()),
+                                                     "DataTransfer",
+                                                     RequestLogDelegate:   OnDataTransferSOAPRequest,
+                                                     ResponseLogDelegate:  OnDataTransferSOAPResponse,
+                                                     CancellationToken:    CancellationToken,
+                                                     EventTrackingId:      EventTrackingId,
+                                                     RequestTimeout:       RequestTimeout,
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                      CP.DataTransferResponse.Parse),
+                                                     #region OnSuccess
 
-                                                 #endregion
+                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
+                                                                                                          CP.DataTransferResponse.Parse),
 
-                                                 #region OnSOAPFault
+                                                     #endregion
 
-                                                 OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                                                     #region OnSOAPFault
 
-                                                     SendSOAPError(timestamp, this, httpresponse.Content);
+                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                     return new HTTPResponse<CP.DataTransferResponse>(httpresponse,
-                                                                                                      new CP.DataTransferResponse(
-                                                                                                          request,
-                                                                                                          Result.Format(
-                                                                                                              "Invalid SOAP => " +
-                                                                                                              httpresponse.HTTPBody.ToUTF8String()
-                                                                                                          )
-                                                                                                      ),
-                                                                                                      IsFault: true);
+                                                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                 },
+                                                         return new HTTPResponse<CP.DataTransferResponse>(httpresponse,
+                                                                                                          new CP.DataTransferResponse(
+                                                                                                              request,
+                                                                                                              Result.Format(
+                                                                                                                  "Invalid SOAP => " +
+                                                                                                                  httpresponse.HTTPBody.ToUTF8String()
+                                                                                                              )
+                                                                                                          ),
+                                                                                                          IsFault: true);
 
-                                                 #endregion
+                                                     },
 
-                                                 #region OnHTTPError
+                                                     #endregion
 
-                                                 OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                                                     #region OnHTTPError
 
-                                                     SendHTTPError(timestamp, this, httpresponse);
+                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                     return new HTTPResponse<CP.DataTransferResponse>(httpresponse,
-                                                                                                      new CP.DataTransferResponse(
-                                                                                                          request,
-                                                                                                          Result.Server(
-                                                                                                               httpresponse.HTTPStatusCode.ToString() +
-                                                                                                               " => " +
-                                                                                                               httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                          )
-                                                                                                      ),
-                                                                                                      IsFault: true);
+                                                         SendHTTPError(timestamp, this, httpresponse);
 
-                                                 },
+                                                         return new HTTPResponse<CP.DataTransferResponse>(httpresponse,
+                                                                                                          new CP.DataTransferResponse(
+                                                                                                              request,
+                                                                                                              Result.Server(
+                                                                                                                   httpresponse.HTTPStatusCode.ToString() +
+                                                                                                                   " => " +
+                                                                                                                   httpresponse.HTTPBody.      ToUTF8String()
+                                                                                                              )
+                                                                                                          ),
+                                                                                                          IsFault: true);
 
-                                                 #endregion
+                                                     },
 
-                                                 #region OnException
+                                                     #endregion
 
-                                                 OnException: (timestamp, sender, exception) => {
+                                                     #region OnException
 
-                                                     SendException(timestamp, sender, exception);
+                                                     OnException: (timestamp, sender, exception) => {
 
-                                                     return HTTPResponse<CP.DataTransferResponse>.ExceptionThrown(new CP.DataTransferResponse(
-                                                                                                                      request,
-                                                                                                                      Result.Format(exception.Message +
-                                                                                                                                    " => " +
-                                                                                                                                    exception.StackTrace)),
-                                                                                                                  exception);
+                                                         SendException(timestamp, sender, exception);
 
-                                                 }
+                                                         return HTTPResponse<CP.DataTransferResponse>.ExceptionThrown(new CP.DataTransferResponse(
+                                                                                                                          request,
+                                                                                                                          Result.Format(exception.Message +
+                                                                                                                                        " => " +
+                                                                                                                                        exception.StackTrace)),
+                                                                                                                      exception);
 
-                                                 #endregion
+                                                     }
 
-                                                );
+                                                     #endregion
+
+                                                    );
+
+                }
+
+            }
+            catch (Exception e)
+            {
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<CP.DataTransferResponse>.OK(new CP.DataTransferResponse(request,
-                                                                                              Result.OK("Nothing to upload!")));
+                                                                                                Result.OK("Nothing to upload!")));
 
 
             #region Send OnDataTransferResponse event
@@ -1838,7 +1861,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                            DateTime?           Timestamp           = null,
                            CancellationToken?  CancellationToken   = null,
-                           EventTracking_Id    EventTrackingId     = null,
+                           EventTracking_Id?   EventTrackingId     = null,
                            TimeSpan?           RequestTimeout      = null)
 
         {
@@ -1911,6 +1934,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -2011,7 +2036,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<GetDiagnosticsResponse>.OK(new GetDiagnosticsResponse(request,
                                                                                             Result.OK("Nothing to upload!")));
 
@@ -2069,7 +2094,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                            DateTime?           Timestamp           = null,
                            CancellationToken?  CancellationToken   = null,
-                           EventTracking_Id    EventTrackingId     = null,
+                           EventTracking_Id?   EventTrackingId     = null,
                            TimeSpan?           RequestTimeout      = null)
 
         {
@@ -2132,6 +2157,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -2232,7 +2259,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<TriggerMessageResponse>.OK(new TriggerMessageResponse(request,
                                                                                             Result.OK("Nothing to upload!")));
 
@@ -2291,7 +2318,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                            DateTime?           Timestamp          = null,
                            CancellationToken?  CancellationToken  = null,
-                           EventTracking_Id    EventTrackingId    = null,
+                           EventTracking_Id?   EventTrackingId    = null,
                            TimeSpan?           RequestTimeout     = null)
 
         {
@@ -2362,6 +2389,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -2462,7 +2491,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<UpdateFirmwareResponse>.OK(new UpdateFirmwareResponse(request,
                                                                                             Result.OK("Nothing to upload!")));
 
@@ -2514,7 +2543,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             GetLocalListVersion(DateTime?           Timestamp           = null,
                                 CancellationToken?  CancellationToken   = null,
-                                EventTracking_Id    EventTrackingId     = null,
+                                EventTracking_Id?   EventTrackingId     = null,
                                 TimeSpan?           RequestTimeout      = null)
 
         {
@@ -2573,6 +2602,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -2673,7 +2704,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<GetLocalListVersionResponse>.OK(new GetLocalListVersionResponse(request,
                                                                                                       Result.OK("Nothing to upload!")));
 
@@ -2722,14 +2753,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HTTPResponse<SendLocalListResponse>>
 
-            SendLocalList(UInt64                          ListVersion,
-                          UpdateTypes                     UpdateType,
-                          IEnumerable<AuthorizationData>  LocalAuthorizationList   = null,
+            SendLocalList(UInt64                           ListVersion,
+                          UpdateTypes                      UpdateType,
+                          IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
 
-                          DateTime?                       Timestamp                = null,
-                          CancellationToken?              CancellationToken        = null,
-                          EventTracking_Id                EventTrackingId          = null,
-                          TimeSpan?                       RequestTimeout           = null)
+                          DateTime?                        Timestamp                = null,
+                          CancellationToken?               CancellationToken        = null,
+                          EventTracking_Id?                EventTrackingId          = null,
+                          TimeSpan?                        RequestTimeout           = null)
 
         {
 
@@ -2793,6 +2824,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -2893,7 +2926,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<SendLocalListResponse>.OK(new SendLocalListResponse(request,
                                                                                           Result.OK("Nothing to upload!")));
 
@@ -2943,7 +2976,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             ClearCache(DateTime?           Timestamp           = null,
                        CancellationToken?  CancellationToken   = null,
-                       EventTracking_Id    EventTrackingId     = null,
+                       EventTracking_Id?   EventTrackingId     = null,
                        TimeSpan?           RequestTimeout      = null)
 
         {
@@ -3002,6 +3035,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -3102,7 +3137,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<ClearCacheResponse>.OK(new ClearCacheResponse(request,
                                                                                     Result.OK("Nothing to upload!")));
 
@@ -3154,7 +3189,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                        DateTime?           Timestamp           = null,
                        CancellationToken?  CancellationToken   = null,
-                       EventTracking_Id    EventTrackingId     = null,
+                       EventTracking_Id?   EventTrackingId     = null,
                        TimeSpan?           RequestTimeout      = null)
 
         {
@@ -3210,6 +3245,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -3310,7 +3347,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<ReserveNowResponse>.OK(new ReserveNowResponse(Request,
                                                                                     Result.OK("Nothing to upload!")));
 
@@ -3357,7 +3394,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                               DateTime?           Timestamp           = null,
                               CancellationToken?  CancellationToken   = null,
-                              EventTracking_Id    EventTrackingId     = null,
+                              EventTracking_Id?   EventTrackingId     = null,
                               TimeSpan?           RequestTimeout      = null)
 
         {
@@ -3422,6 +3459,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -3522,7 +3561,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<CancelReservationResponse>.OK(new CancelReservationResponse(request,
                                                                                                   Result.OK("Nothing to upload!")));
 
@@ -3574,11 +3613,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             RemoteStartTransaction(IdToken             IdTag,
                                    Connector_Id?       ConnectorId         = null,
-                                   ChargingProfile     ChargingProfile     = null,
+                                   ChargingProfile?    ChargingProfile     = null,
 
                                    DateTime?           Timestamp           = null,
                                    CancellationToken?  CancellationToken   = null,
-                                   EventTracking_Id    EventTrackingId     = null,
+                                   EventTracking_Id?   EventTrackingId     = null,
                                    TimeSpan?           RequestTimeout      = null)
 
         {
@@ -3647,6 +3686,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -3748,7 +3789,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<RemoteStartTransactionResponse>.OK(new RemoteStartTransactionResponse(request,
                                                                                                             Result.OK("Nothing to upload!")));
 
@@ -3802,7 +3843,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                   DateTime?           Timestamp           = null,
                                   CancellationToken?  CancellationToken   = null,
-                                  EventTracking_Id    EventTrackingId     = null,
+                                  EventTracking_Id?   EventTrackingId     = null,
                                   TimeSpan?           RequestTimeout      = null)
 
         {
@@ -3867,6 +3908,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -3967,7 +4010,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<RemoteStopTransactionResponse>.OK(new RemoteStopTransactionResponse(request,
                                                                                                           Result.OK("Nothing to upload!")));
 
@@ -4019,7 +4062,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                             DateTime?           Timestamp           = null,
                             CancellationToken?  CancellationToken   = null,
-                            EventTracking_Id    EventTrackingId     = null,
+                            EventTracking_Id?   EventTrackingId     = null,
                             TimeSpan?           RequestTimeout      = null)
 
         {
@@ -4084,6 +4127,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -4184,7 +4229,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<UnlockConnectorResponse>.OK(new UnlockConnectorResponse(request,
                                                                                               Result.OK("Nothing to upload!")));
 
@@ -4238,7 +4283,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                DateTime?           Timestamp           = null,
                                CancellationToken?  CancellationToken   = null,
-                               EventTracking_Id    EventTrackingId     = null,
+                               EventTracking_Id?   EventTrackingId     = null,
                                TimeSpan?           RequestTimeout      = null)
 
         {
@@ -4308,6 +4353,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -4408,7 +4455,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<SetChargingProfileResponse>.OK(new SetChargingProfileResponse(request,
                                                                                                     Result.OK("Nothing to upload!")));
 
@@ -4467,7 +4514,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                  DateTime?                 Timestamp                = null,
                                  CancellationToken?        CancellationToken        = null,
-                                 EventTracking_Id          EventTrackingId          = null,
+                                 EventTracking_Id?         EventTrackingId          = null,
                                  TimeSpan?                 RequestTimeout           = null)
 
         {
@@ -4534,6 +4581,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -4634,7 +4683,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<ClearChargingProfileResponse>.OK(new ClearChargingProfileResponse(request,
                                                                                                         Result.OK("Nothing to upload!")));
 
@@ -4693,7 +4742,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                  DateTime?           Timestamp           = null,
                                  CancellationToken?  CancellationToken   = null,
-                                 EventTracking_Id    EventTrackingId     = null,
+                                 EventTracking_Id?   EventTrackingId     = null,
                                  TimeSpan?           RequestTimeout      = null)
 
         {
@@ -4762,6 +4811,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                         RemoteCertificateValidator,
                                                         ClientCertificateSelector,
                                                         ClientCert,
+                                                        TLSProtocol,
+                                                        PreferIPv4,
                                                         HTTPUserAgent,
                                                         URLPathPrefix,
                                                         WSSLoginPassword,
@@ -4862,7 +4913,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<GetCompositeScheduleResponse>.OK(new GetCompositeScheduleResponse(request,
                                                                                                         Result.OK("Nothing to upload!")));
 

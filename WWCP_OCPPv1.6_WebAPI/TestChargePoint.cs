@@ -31,6 +31,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPPv1_6.CP;
+using System.Security.Authentication;
 
 #endregion
 
@@ -863,36 +864,38 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region InitSOAP(...)
 
-        public async Task InitSOAP(String                               From,
-                                   String                               To,
+        public async Task InitSOAP(String                                From,
+                                   String                                To,
 
-                                   URL                                  RemoteURL,
-                                   HTTPHostname?                        VirtualHostname              = null,
-                                   String                               Description                  = null,
-                                   RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                                   LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                                   X509Certificate                      ClientCert                   = null,
-                                   String                               HTTPUserAgent                = null,
-                                   HTTPPath?                            URLPathPrefix                = null,
-                                   Tuple<String, String>                WSSLoginPassword             = null,
-                                   HTTPContentType                      HTTPContentType              = null,
-                                   TimeSpan?                            RequestTimeout               = null,
-                                   TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
-                                   UInt16?                              MaxNumberOfRetries           = null,
-                                   Boolean                              UseHTTPPipelining            = false,
-                                   String                               LoggingPath                  = null,
-                                   String                               LoggingContext               = null,
-                                   LogfileCreatorDelegate               LogFileCreator               = null,
-                                   HTTPClientLogger                     HTTPLogger                   = null,
+                                   URL                                   RemoteURL,
+                                   HTTPHostname?                         VirtualHostname              = null,
+                                   String?                               Description                  = null,
+                                   RemoteCertificateValidationCallback?  RemoteCertificateValidator   = null,
+                                   LocalCertificateSelectionCallback?    ClientCertificateSelector    = null,
+                                   X509Certificate?                      ClientCert                   = null,
+                                   SslProtocols?                         TLSProtocol                  = null,
+                                   Boolean?                              PreferIPv4                   = null,
+                                   String?                               HTTPUserAgent                = null,
+                                   HTTPPath?                             URLPathPrefix                = null,
+                                   Tuple<String, String>?                WSSLoginPassword             = null,
+                                   HTTPContentType?                      HTTPContentType              = null,
+                                   TimeSpan?                             RequestTimeout               = null,
+                                   TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
+                                   UInt16?                               MaxNumberOfRetries           = null,
+                                   Boolean                               UseHTTPPipelining            = false,
+                                   String?                               LoggingPath                  = null,
+                                   String?                               LoggingContext               = null,
+                                   LogfileCreatorDelegate?               LogFileCreator               = null,
+                                   HTTPClientLogger?                     HTTPLogger                   = null,
 
-                                   String                               HTTPServerName               = null,
-                                   IPPort?                              TCPPort                      = null,
-                                   String                               ServiceName                  = null,
-                                   HTTPPath?                            URLPrefix                    = null,
-                                   HTTPContentType                      ContentType                  = null,
-                                   Boolean                              RegisterHTTPRootService      = true,
-                                   DNSClient                            DNSClient                    = null,
-                                   Boolean                              AutoStart                    = false)
+                                   String?                               HTTPServerName               = null,
+                                   IPPort?                               TCPPort                      = null,
+                                   String?                               ServiceName                  = null,
+                                   HTTPPath?                             URLPrefix                    = null,
+                                   HTTPContentType?                      ContentType                  = null,
+                                   Boolean                               RegisterHTTPRootService      = true,
+                                   DNSClient?                            DNSClient                    = null,
+                                   Boolean                               AutoStart                    = false)
 
         {
 
@@ -906,6 +909,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                       RemoteCertificateValidator,
                                                       ClientCertificateSelector,
                                                       ClientCert,
+                                                      TLSProtocol,
+                                                      PreferIPv4,
                                                       HTTPUserAgent,
                                                       URLPathPrefix,
                                                       WSSLoginPassword,
@@ -937,27 +942,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region ConnectWebSocket(...)
 
-        public async Task<HTTPResponse> ConnectWebSocket(String                               From,
-                                                         String                               To,
+        public async Task<HTTPResponse> ConnectWebSocket(String                                From,
+                                                         String                                To,
 
-                                                         URL                                  RemoteURL,
-                                                         HTTPHostname?                        VirtualHostname              = null,
-                                                         String                               Description                  = null,
-                                                         RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                                                         LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                                                         X509Certificate                      ClientCert                   = null,
-                                                         String                               HTTPUserAgent                = null,
-                                                         HTTPPath?                            URLPathPrefix                = null,
-                                                         Tuple<String, String>                HTTPBasicAuth                = null,
-                                                         TimeSpan?                            RequestTimeout               = null,
-                                                         TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
-                                                         UInt16?                              MaxNumberOfRetries           = null,
-                                                         Boolean                              UseHTTPPipelining            = false,
-                                                         String                               LoggingPath                  = null,
-                                                         String                               LoggingContext               = null,
-                                                         LogfileCreatorDelegate               LogFileCreator               = null,
-                                                         HTTPClientLogger                     HTTPLogger                   = null,
-                                                         DNSClient                            DNSClient                    = null)
+                                                         URL                                   RemoteURL,
+                                                         HTTPHostname?                         VirtualHostname              = null,
+                                                         String?                               Description                  = null,
+                                                         RemoteCertificateValidationCallback?  RemoteCertificateValidator   = null,
+                                                         LocalCertificateSelectionCallback?    ClientCertificateSelector    = null,
+                                                         X509Certificate?                      ClientCert                   = null,
+                                                         SslProtocols?                         TLSProtocol                  = null,
+                                                         Boolean?                              PreferIPv4                   = null,
+                                                         String?                               HTTPUserAgent                = null,
+                                                         HTTPPath?                             URLPathPrefix                = null,
+                                                         Tuple<String, String>?                HTTPBasicAuth                = null,
+                                                         TimeSpan?                             RequestTimeout               = null,
+                                                         TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
+                                                         UInt16?                               MaxNumberOfRetries           = null,
+                                                         Boolean                               UseHTTPPipelining            = false,
+                                                         String?                               LoggingPath                  = null,
+                                                         String?                               LoggingContext               = null,
+                                                         LogfileCreatorDelegate?               LogFileCreator               = null,
+                                                         HTTPClientLogger?                     HTTPLogger                   = null,
+                                                         DNSClient?                            DNSClient                    = null)
 
         {
 
@@ -973,6 +980,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                      ClientCert,
                                                      HTTPUserAgent,
                                                      URLPathPrefix,
+                                                     TLSProtocol,
+                                                     PreferIPv4,
                                                      HTTPBasicAuth ?? this.HTTPBasicAuth,
                                                      RequestTimeout,
                                                      TransmissionRetryDelay,

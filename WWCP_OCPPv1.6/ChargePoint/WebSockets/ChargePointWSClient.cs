@@ -31,8 +31,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.SOAP;
-using org.GraphDefined.Vanaheimr.Hermod.SOAP.v1_2;
+//using org.GraphDefined.Vanaheimr.Hermod.Websocket;
+//using org.GraphDefined.Vanaheimr.Hermod.Websocket.v1_2;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.IO;
@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// and connects to a central system to invoke methods.
     /// </summary>
     public partial class ChargePointWSClient : IHTTPClient,
-                                               ICPClient,
+                                               ICPWSClient,
                                                IChargePointServerEvents
     {
 
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The unique identification of this charge box.
         /// </summary>
-        public ChargeBox_Id    ChargeBoxIdentity   { get; }
+        public ChargeBox_Id                         ChargeBoxIdentity               { get; }
 
         /// <summary>
         /// The sender identification.
@@ -129,82 +129,92 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             => ChargeBoxIdentity.ToString();
 
         /// <summary>
-        /// The source URI of the SOAP message.
+        /// The source URI of the websocket message.
         /// </summary>
-        public String          From                { get; }
+        public String                                From                            { get; }
 
         /// <summary>
-        /// The destination URI of the SOAP message.
+        /// The destination URI of the websocket message.
         /// </summary>
-        public String          To                  { get; }
+        public String                                To                              { get; }
 
 
         /// <summary>
-        /// The attached OCPP CP client (HTTP/SOAP client) logger.
+        /// The attached OCPP CP client (HTTP/websocket client) logger.
         /// </summary>
-        public ChargePointSOAPClient.CPClientLogger Logger              { get; }
+        public ChargePointWSClient.CPClientLogger    Logger                          { get; }
 
 
 
         /// <summary>
         /// The remote URL of the HTTP endpoint to connect to.
         /// </summary>
-        public URL                                  RemoteURL                     { get; }
+        public URL                                   RemoteURL                       { get; }
 
         /// <summary>
         /// The virtual HTTP hostname to connect to.
         /// </summary>
-        public HTTPHostname?                        VirtualHostname               { get; }
+        public HTTPHostname?                         VirtualHostname                 { get; }
 
         /// <summary>
         /// An optional description of this HTTP client.
         /// </summary>
-        public String                               Description                   { get; set; }
+        public String?                               Description                     { get; set; }
 
         /// <summary>
         /// The remote SSL/TLS certificate validator.
         /// </summary>
-        public RemoteCertificateValidationCallback  RemoteCertificateValidator    { get; private set; }
+        public RemoteCertificateValidationCallback?  RemoteCertificateValidator      { get; private set; }
 
         /// <summary>
         /// A delegate to select a TLS client certificate.
         /// </summary>
-        public LocalCertificateSelectionCallback    ClientCertificateSelector     { get; }
+        public LocalCertificateSelectionCallback?    ClientCertificateSelector       { get; }
 
         /// <summary>
         /// The SSL/TLS client certificate to use of HTTP authentication.
         /// </summary>
-        public X509Certificate                      ClientCert                    { get; }
+        public X509Certificate?                      ClientCert                      { get; }
+
+        /// <summary>
+        /// The TLS protocol to use.
+        /// </summary>
+        public SslProtocols                          TLSProtocol                     { get; }
+
+        /// <summary>
+        /// Prefer IPv4 instead of IPv6.
+        /// </summary>
+        public Boolean                               PreferIPv4                      { get; }
 
         /// <summary>
         /// The HTTP user agent identification.
         /// </summary>
-        public String                               HTTPUserAgent                 { get; }
+        public String                                HTTPUserAgent                   { get; }
 
         /// <summary>
         /// The timeout for upstream requests.
         /// </summary>
-        public TimeSpan                             RequestTimeout                { get; set; }
+        public TimeSpan                              RequestTimeout                  { get; set; }
 
         /// <summary>
         /// The delay between transmission retries.
         /// </summary>
-        public TransmissionRetryDelayDelegate       TransmissionRetryDelay        { get; }
+        public TransmissionRetryDelayDelegate        TransmissionRetryDelay          { get; }
 
         /// <summary>
         /// The maximum number of retries when communicationg with the remote OICP service.
         /// </summary>
-        public UInt16                               MaxNumberOfRetries            { get; }
+        public UInt16                                MaxNumberOfRetries              { get; }
 
         /// <summary>
         /// Whether to pipeline multiple HTTP request through a single HTTP/TCP connection.
         /// </summary>
-        public Boolean                              UseHTTPPipelining             { get; }
+        public Boolean                               UseHTTPPipelining               { get; }
 
         /// <summary>
         /// The CPO client (HTTP client) logger.
         /// </summary>
-        public HTTPClientLogger                     HTTPLogger                    { get; set; }
+        public HTTPClientLogger                      HTTPLogger                      { get; set; }
 
 
 
@@ -212,19 +222,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The DNS client defines which DNS servers to use.
         /// </summary>
-        public DNSClient                            DNSClient                     { get; }
+        public DNSClient                             DNSClient                       { get; }
 
 
 
         /// <summary>
         /// Our local IP port.
         /// </summary>
-        public IPPort           LocalPort           { get; private set; }
+        public IPPort                                LocalPort                       { get; private set; }
 
         /// <summary>
         /// The IP Address to connect to.
         /// </summary>
-        public IIPAddress       RemoteIPAddress     { get; protected set; }
+        public IIPAddress                            RemoteIPAddress                 { get; protected set; }
 
 
         public Int32 Available
@@ -233,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public Boolean Connected
             => TCPSocket.Connected;
 
-        public LingerOption LingerState
+        public LingerOption? LingerState
         {
             get
             {
@@ -270,29 +280,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         }
 
 
-        public Tuple<String, String> HTTPBasicAuth      { get; }
+        public Tuple<String, String>?               HTTPBasicAuth                   { get; }
 
 
         /// <summary>
         /// Disable all maintenance tasks.
         /// </summary>
-        public Boolean   DisableMaintenanceTasks        { get; set; }
+        public Boolean                              DisableMaintenanceTasks         { get; set; }
 
         /// <summary>
         /// The maintenance interval.
         /// </summary>
-        public TimeSpan  MaintenanceEvery               { get; }
+        public TimeSpan                             MaintenanceEvery                { get; }
 
 
         /// <summary>
         /// Disable web socket pings.
         /// </summary>
-        public Boolean   DisableWebSocketPingTasks      { get; set; }
+        public Boolean                              DisableWebSocketPingTasks       { get; set; }
 
         /// <summary>
         /// The web socket ping interval.
         /// </summary>
-        public TimeSpan  WebSocketPingEvery             { get; }
+        public TimeSpan                             WebSocketPingEvery              { get; }
 
 
         #region CustomRequestParsers
@@ -330,12 +340,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// A delegate for logging the HTTP request.
         /// </summary>
-        public event ClientRequestLogHandler   RequestLogDelegate;
+        public event ClientRequestLogHandler?   RequestLogDelegate;
 
         /// <summary>
         /// A delegate for logging the HTTP request/response.
         /// </summary>
-        public event ClientResponseLogHandler  ResponseLogDelegate;
+        public event ClientResponseLogHandler?  ResponseLogDelegate;
 
         #endregion
 
@@ -347,22 +357,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a boot notification Request will be send to the central system.
         /// </summary>
-        public event OnBootNotificationRequestDelegate   OnBootNotificationRequest;
+        public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a boot notification SOAP Request will be send to the central system.
+        /// An event fired whenever a boot notification websocket Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler             OnBootNotificationSOAPRequest;
+        public event ClientRequestLogHandler?             OnBootNotificationWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a boot notification SOAP Request was received.
+        /// An event fired whenever a response to a boot notification websocket Request was received.
         /// </summary>
-        public event ClientResponseLogHandler            OnBootNotificationSOAPResponse;
+        public event ClientResponseLogHandler?            OnBootNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a boot notification Request was received.
         /// </summary>
-        public event OnBootNotificationResponseDelegate  OnBootNotificationResponse;
+        public event OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
 
         #endregion
 
@@ -371,22 +381,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a heartbeat Request will be send to the central system.
         /// </summary>
-        public event OnHeartbeatRequestDelegate   OnHeartbeatRequest;
+        public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
 
         /// <summary>
-        /// An event fired whenever a heartbeat SOAP Request will be send to the central system.
+        /// An event fired whenever a heartbeat websocket Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler      OnHeartbeatSOAPRequest;
+        public event ClientRequestLogHandler?      OnHeartbeatWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a heartbeat SOAP Request was received.
+        /// An event fired whenever a response to a heartbeat websocket Request was received.
         /// </summary>
-        public event ClientResponseLogHandler     OnHeartbeatSOAPResponse;
+        public event ClientResponseLogHandler?     OnHeartbeatWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a heartbeat Request was received.
         /// </summary>
-        public event OnHeartbeatResponseDelegate  OnHeartbeatResponse;
+        public event OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
 
         #endregion
 
@@ -396,22 +406,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever an authorize Request will be send to the central system.
         /// </summary>
-        public event OnAuthorizeRequestDelegate   OnAuthorizeRequest;
+        public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
 
         /// <summary>
-        /// An event fired whenever an authorize SOAP Request will be send to the central system.
+        /// An event fired whenever an authorize websocket Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler      OnAuthorizeSOAPRequest;
+        public event ClientRequestLogHandler?      OnAuthorizeWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to an authorize SOAP Request was received.
+        /// An event fired whenever a response to an authorize websocket Request was received.
         /// </summary>
-        public event ClientResponseLogHandler     OnAuthorizeSOAPResponse;
+        public event ClientResponseLogHandler?     OnAuthorizeWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to an authorize Request was received.
         /// </summary>
-        public event OnAuthorizeResponseDelegate  OnAuthorizeResponse;
+        public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
 
         #endregion
 
@@ -420,22 +430,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a start transaction Request will be send to the central system.
         /// </summary>
-        public event OnStartTransactionRequestDelegate   OnStartTransactionRequest;
+        public event OnStartTransactionRequestDelegate?   OnStartTransactionRequest;
 
         /// <summary>
-        /// An event fired whenever a start transaction SOAP Request will be send to the central system.
+        /// An event fired whenever a start transaction websocket Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler             OnStartTransactionSOAPRequest;
+        public event ClientRequestLogHandler?             OnStartTransactionWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a start transaction SOAP Request was received.
+        /// An event fired whenever a response to a start transaction websocket Request was received.
         /// </summary>
-        public event ClientResponseLogHandler            OnStartTransactionSOAPResponse;
+        public event ClientResponseLogHandler?            OnStartTransactionWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a start transaction Request was received.
         /// </summary>
-        public event OnStartTransactionResponseDelegate  OnStartTransactionResponse;
+        public event OnStartTransactionResponseDelegate?  OnStartTransactionResponse;
 
         #endregion
 
@@ -444,22 +454,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a status notification Request will be send to the central system.
         /// </summary>
-        public event OnStatusNotificationRequestDelegate   OnStatusNotificationRequest;
+        public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a status notification SOAP Request will be send to the central system.
+        /// An event fired whenever a status notification websocket Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler               OnStatusNotificationSOAPRequest;
+        public event ClientRequestLogHandler?               OnStatusNotificationWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a status notification SOAP Request was received.
+        /// An event fired whenever a response to a status notification websocket Request was received.
         /// </summary>
-        public event ClientResponseLogHandler              OnStatusNotificationSOAPResponse;
+        public event ClientResponseLogHandler?              OnStatusNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a status notification Request was received.
         /// </summary>
-        public event OnStatusNotificationResponseDelegate  OnStatusNotificationResponse;
+        public event OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
 
         #endregion
 
@@ -468,22 +478,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a meter values Request will be send to the central system.
         /// </summary>
-        public event OnMeterValuesRequestDelegate   OnMeterValuesRequest;
+        public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
 
         /// <summary>
-        /// An event fired whenever a meter values SOAP Request will be send to the central system.
+        /// An event fired whenever a meter values websocket Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler        OnMeterValuesSOAPRequest;
+        public event ClientRequestLogHandler?        OnMeterValuesWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a meter values SOAP Request was received.
+        /// An event fired whenever a response to a meter values websocket Request was received.
         /// </summary>
-        public event ClientResponseLogHandler       OnMeterValuesSOAPResponse;
+        public event ClientResponseLogHandler?       OnMeterValuesWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a meter values Request was received.
         /// </summary>
-        public event OnMeterValuesResponseDelegate  OnMeterValuesResponse;
+        public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
 
         #endregion
 
@@ -492,22 +502,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a stop transaction Request will be send to the central system.
         /// </summary>
-        public event OnStopTransactionRequestDelegate   OnStopTransactionRequest;
+        public event OnStopTransactionRequestDelegate?   OnStopTransactionRequest;
 
         /// <summary>
-        /// An event fired whenever a stop transaction SOAP Request will be send to the central system.
+        /// An event fired whenever a stop transaction websocket Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler            OnStopTransactionSOAPRequest;
+        public event ClientRequestLogHandler?            OnStopTransactionWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a stop transaction SOAP Request was received.
+        /// An event fired whenever a response to a stop transaction websocket Request was received.
         /// </summary>
-        public event ClientResponseLogHandler           OnStopTransactionSOAPResponse;
+        public event ClientResponseLogHandler?           OnStopTransactionWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a stop transaction Request was received.
         /// </summary>
-        public event OnStopTransactionResponseDelegate  OnStopTransactionResponse;
+        public event OnStopTransactionResponseDelegate?  OnStopTransactionResponse;
 
         #endregion
 
@@ -517,22 +527,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a data transfer Request will be send to the central system.
         /// </summary>
-        public event OnDataTransferRequestDelegate   OnDataTransferRequest;
+        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
-        /// An event fired whenever a data transfer SOAP Request will be send to the central system.
+        /// An event fired whenever a data transfer websocket Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler         OnDataTransferSOAPRequest;
+        public event ClientRequestLogHandler?         OnDataTransferWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a data transfer SOAP Request was received.
+        /// An event fired whenever a response to a data transfer websocket Request was received.
         /// </summary>
-        public event ClientResponseLogHandler        OnDataTransferSOAPResponse;
+        public event ClientResponseLogHandler?        OnDataTransferWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer Request was received.
         /// </summary>
-        public event OnDataTransferResponseDelegate  OnDataTransferResponse;
+        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
         #endregion
 
@@ -541,22 +551,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a diagnostics status notification Request will be send to the central system.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationRequestDelegate   OnDiagnosticsStatusNotificationRequest;
+        public event OnDiagnosticsStatusNotificationRequestDelegate?   OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a diagnostics status notification SOAP Request will be send to the central system.
+        /// An event fired whenever a diagnostics status notification websocket Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler                          OnDiagnosticsStatusNotificationSOAPRequest;
+        public event ClientRequestLogHandler?                          OnDiagnosticsStatusNotificationWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a diagnostics status notification SOAP Request was received.
+        /// An event fired whenever a response to a diagnostics status notification websocket Request was received.
         /// </summary>
-        public event ClientResponseLogHandler                         OnDiagnosticsStatusNotificationSOAPResponse;
+        public event ClientResponseLogHandler?                         OnDiagnosticsStatusNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a diagnostics status notification Request was received.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
+        public event OnDiagnosticsStatusNotificationResponseDelegate?  OnDiagnosticsStatusNotificationResponse;
 
         #endregion
 
@@ -565,22 +575,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a firmware status notification Request will be send to the central system.
         /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
+        public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a firmware status notification SOAP Request will be send to the central system.
+        /// An event fired whenever a firmware status notification websocket Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler                       OnFirmwareStatusNotificationSOAPRequest;
+        public event ClientRequestLogHandler?                       OnFirmwareStatusNotificationWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a firmware status notification SOAP Request was received.
+        /// An event fired whenever a response to a firmware status notification websocket Request was received.
         /// </summary>
-        public event ClientResponseLogHandler                      OnFirmwareStatusNotificationSOAPResponse;
+        public event ClientResponseLogHandler?                      OnFirmwareStatusNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a firmware status notification Request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
+        public event OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
 
         #endregion
 
@@ -590,232 +600,232 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnReset
 
         /// <summary>
-        /// An event sent whenever a reset SOAP request was received.
+        /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler   OnResetWSRequest;
+        public event WSClientRequestLogHandler?     OnResetWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ResetRequestDelegate      OnResetRequest;
+        public event ResetRequestDelegate?          OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnResetDelegate             OnReset;
+        public event OnResetDelegate?               OnReset;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ResetResponseDelegate     OnResetResponse;
+        public event ResetResponseDelegate?         OnResetResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler  OnResetWSResponse;
+        public event WSClientResponseLogHandler?    OnResetWSResponse;
 
         #endregion
 
         #region OnChangeAvailability
 
         /// <summary>
-        /// An event sent whenever a reset SOAP request was received.
+        /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler   OnChangeAvailabilityWSRequest;
+        public event WSClientRequestLogHandler?             OnChangeAvailabilityWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ChangeAvailabilityRequestDelegate      OnChangeAvailabilityRequest;
+        public event ChangeAvailabilityRequestDelegate?     OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnChangeAvailabilityDelegate             OnChangeAvailability;
+        public event OnChangeAvailabilityDelegate?          OnChangeAvailability;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ChangeAvailabilityResponseDelegate     OnChangeAvailabilityResponse;
+        public event ChangeAvailabilityResponseDelegate?    OnChangeAvailabilityResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler  OnChangeAvailabilityWSResponse;
+        public event WSClientResponseLogHandler?            OnChangeAvailabilityWSResponse;
 
         #endregion
 
         #region OnGetConfiguration
 
         /// <summary>
-        /// An event sent whenever a reset SOAP request was received.
+        /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler   OnGetConfigurationWSRequest;
+        public event WSClientRequestLogHandler?           OnGetConfigurationWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetConfigurationRequestDelegate      OnGetConfigurationRequest;
+        public event GetConfigurationRequestDelegate?     OnGetConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetConfigurationDelegate             OnGetConfiguration;
+        public event OnGetConfigurationDelegate?          OnGetConfiguration;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetConfigurationResponseDelegate     OnGetConfigurationResponse;
+        public event GetConfigurationResponseDelegate?    OnGetConfigurationResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler  OnGetConfigurationWSResponse;
+        public event WSClientResponseLogHandler?          OnGetConfigurationWSResponse;
 
         #endregion
 
         #region OnChangeConfiguration
 
         /// <summary>
-        /// An event sent whenever a reset SOAP request was received.
+        /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler   OnChangeConfigurationWSRequest;
+        public event WSClientRequestLogHandler?              OnChangeConfigurationWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ChangeConfigurationRequestDelegate      OnChangeConfigurationRequest;
+        public event ChangeConfigurationRequestDelegate?     OnChangeConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnChangeConfigurationDelegate             OnChangeConfiguration;
+        public event OnChangeConfigurationDelegate?          OnChangeConfiguration;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ChangeConfigurationResponseDelegate     OnChangeConfigurationResponse;
+        public event ChangeConfigurationResponseDelegate?    OnChangeConfigurationResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler  OnChangeConfigurationWSResponse;
+        public event WSClientResponseLogHandler?             OnChangeConfigurationWSResponse;
 
         #endregion
 
         #region OnIncomingDataTransfer
 
         /// <summary>
-        /// An event sent whenever a data transfer SOAP request was received.
+        /// An event sent whenever a data transfer websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler               OnIncomingDataTransferWSRequest;
+        public event WSClientRequestLogHandler?               OnIncomingDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event IncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
+        public event IncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferDelegate          OnIncomingDataTransfer;
+        public event OnIncomingDataTransferDelegate?          OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event IncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
+        public event IncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a data transfer request was sent.
+        /// An event sent whenever a websocket response to a data transfer request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler              OnIncomingDataTransferWSResponse;
+        public event WSClientResponseLogHandler?              OnIncomingDataTransferWSResponse;
 
         #endregion
 
         #region OnGetDiagnostics
 
         /// <summary>
-        /// An event sent whenever a reset SOAP request was received.
+        /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler   OnGetDiagnosticsWSRequest;
+        public event WSClientRequestLogHandler?         OnGetDiagnosticsWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetDiagnosticsRequestDelegate      OnGetDiagnosticsRequest;
+        public event GetDiagnosticsRequestDelegate?     OnGetDiagnosticsRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetDiagnosticsDelegate             OnGetDiagnostics;
+        public event OnGetDiagnosticsDelegate?          OnGetDiagnostics;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetDiagnosticsResponseDelegate     OnGetDiagnosticsResponse;
+        public event GetDiagnosticsResponseDelegate?    OnGetDiagnosticsResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler  OnGetDiagnosticsWSResponse;
+        public event WSClientResponseLogHandler?        OnGetDiagnosticsWSResponse;
 
         #endregion
 
         #region OnTriggerMessage
 
         /// <summary>
-        /// An event sent whenever a reset SOAP request was received.
+        /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler   OnTriggerMessageWSRequest;
+        public event WSClientRequestLogHandler?         OnTriggerMessageWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event TriggerMessageRequestDelegate      OnTriggerMessageRequest;
+        public event TriggerMessageRequestDelegate?     OnTriggerMessageRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnTriggerMessageDelegate             OnTriggerMessage;
+        public event OnTriggerMessageDelegate?          OnTriggerMessage;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event TriggerMessageResponseDelegate     OnTriggerMessageResponse;
+        public event TriggerMessageResponseDelegate?    OnTriggerMessageResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler  OnTriggerMessageWSResponse;
+        public event WSClientResponseLogHandler?        OnTriggerMessageWSResponse;
 
         #endregion
 
         #region OnUpdateFirmware
 
         /// <summary>
-        /// An event sent whenever a reset SOAP request was received.
+        /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler   OnUpdateFirmwareWSRequest;
+        public event WSClientRequestLogHandler?         OnUpdateFirmwareWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event UpdateFirmwareRequestDelegate      OnUpdateFirmwareRequest;
+        public event UpdateFirmwareRequestDelegate?     OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnUpdateFirmwareDelegate             OnUpdateFirmware;
+        public event OnUpdateFirmwareDelegate?          OnUpdateFirmware;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event UpdateFirmwareResponseDelegate     OnUpdateFirmwareResponse;
+        public event UpdateFirmwareResponseDelegate?    OnUpdateFirmwareResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a reset request was sent.
+        /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler  OnUpdateFirmwareWSResponse;
+        public event WSClientResponseLogHandler?        OnUpdateFirmwareWSResponse;
 
         #endregion
 
@@ -823,232 +833,232 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnReserveNow
 
         /// <summary>
-        /// An event sent whenever a reserve now WS request was received.
+        /// An event sent whenever a reserve now websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler     OnReserveNowWSRequest;
+        public event WSClientRequestLogHandler?     OnReserveNowWSRequest;
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event ReserveNowRequestDelegate   OnReserveNowRequest;
+        public event ReserveNowRequestDelegate?     OnReserveNowRequest;
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event OnReserveNowDelegate          OnReserveNow;
+        public event OnReserveNowDelegate?          OnReserveNow;
 
         /// <summary>
         /// An event sent whenever a response to a reserve now request was sent.
         /// </summary>
-        public event ReserveNowResponseDelegate  OnReserveNowResponse;
+        public event ReserveNowResponseDelegate?    OnReserveNowResponse;
 
         /// <summary>
-        /// An event sent whenever a WS response to a reserve now request was sent.
+        /// An event sent whenever a websocket response to a reserve now request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler    OnReserveNowWSResponse;
+        public event WSClientResponseLogHandler?    OnReserveNowWSResponse;
 
         #endregion
 
         #region OnCancelReservation
 
         /// <summary>
-        /// An event sent whenever a cancel reservation WS request was received.
+        /// An event sent whenever a cancel reservation websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler            OnCancelReservationWSRequest;
+        public event WSClientRequestLogHandler?            OnCancelReservationWSRequest;
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event CancelReservationRequestDelegate   OnCancelReservationRequest;
+        public event CancelReservationRequestDelegate?     OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event OnCancelReservationDelegate          OnCancelReservation;
+        public event OnCancelReservationDelegate?          OnCancelReservation;
 
         /// <summary>
         /// An event sent whenever a response to a cancel reservation request was sent.
         /// </summary>
-        public event CancelReservationResponseDelegate  OnCancelReservationResponse;
+        public event CancelReservationResponseDelegate?    OnCancelReservationResponse;
 
         /// <summary>
-        /// An event sent whenever a WS response to a cancel reservation request was sent.
+        /// An event sent whenever a websocket response to a cancel reservation request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler           OnCancelReservationWSResponse;
+        public event WSClientResponseLogHandler?           OnCancelReservationWSResponse;
 
         #endregion
 
         #region OnRemoteStartTransaction
 
         /// <summary>
-        /// An event sent whenever a remote start transaction WS request was received.
+        /// An event sent whenever a remote start transaction websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler                 OnRemoteStartTransactionWSRequest;
+        public event WSClientRequestLogHandler?                 OnRemoteStartTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a remote start transaction request was received.
         /// </summary>
-        public event RemoteStartTransactionRequestDelegate   OnRemoteStartTransactionRequest;
+        public event RemoteStartTransactionRequestDelegate?     OnRemoteStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a remote start transaction was received.
         /// </summary>
-        public event OnRemoteStartTransactionDelegate          OnRemoteStartTransaction;
+        public event OnRemoteStartTransactionDelegate?          OnRemoteStartTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a remote start transaction request was sent.
         /// </summary>
-        public event RemoteStartTransactionResponseDelegate  OnRemoteStartTransactionResponse;
+        public event RemoteStartTransactionResponseDelegate?    OnRemoteStartTransactionResponse;
 
         /// <summary>
-        /// An event sent whenever a WS response to a remote start transaction request was sent.
+        /// An event sent whenever a websocket response to a remote start transaction request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler                OnRemoteStartTransactionWSResponse;
+        public event WSClientResponseLogHandler?                OnRemoteStartTransactionWSResponse;
 
         #endregion
 
         #region OnRemoteStopTransaction
 
         /// <summary>
-        /// An event sent whenever a remote stop transaction WS request was received.
+        /// An event sent whenever a remote stop transaction websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler                OnRemoteStopTransactionWSRequest;
+        public event WSClientRequestLogHandler?                OnRemoteStopTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a remote stop transaction request was received.
         /// </summary>
-        public event RemoteStopTransactionRequestDelegate   OnRemoteStopTransactionRequest;
+        public event RemoteStopTransactionRequestDelegate?     OnRemoteStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a remote stop transaction was received.
         /// </summary>
-        public event OnRemoteStopTransactionDelegate          OnRemoteStopTransaction;
+        public event OnRemoteStopTransactionDelegate?          OnRemoteStopTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a remote stop transaction request was sent.
         /// </summary>
-        public event RemoteStopTransactionResponseDelegate  OnRemoteStopTransactionResponse;
+        public event RemoteStopTransactionResponseDelegate?    OnRemoteStopTransactionResponse;
 
         /// <summary>
-        /// An event sent whenever a WS response to a remote stop transaction request was sent.
+        /// An event sent whenever a websocket response to a remote stop transaction request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler               OnRemoteStopTransactionWSResponse;
+        public event WSClientResponseLogHandler?               OnRemoteStopTransactionWSResponse;
 
         #endregion
 
         #region OnSetChargingProfile
 
         /// <summary>
-        /// An event sent whenever a reset WS request was received.
+        /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler   OnSetChargingProfileWSRequest;
+        public event WSClientRequestLogHandler?             OnSetChargingProfileWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event SetChargingProfileRequestDelegate      OnSetChargingProfileRequest;
+        public event SetChargingProfileRequestDelegate?     OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnSetChargingProfileDelegate             OnSetChargingProfile;
+        public event OnSetChargingProfileDelegate?          OnSetChargingProfile;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event SetChargingProfileResponseDelegate     OnSetChargingProfileResponse;
+        public event SetChargingProfileResponseDelegate?    OnSetChargingProfileResponse;
 
         /// <summary>
-        /// An event sent whenever a WS response to a reset request was sent.
+        /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler  OnSetChargingProfileWSResponse;
+        public event WSClientResponseLogHandler?            OnSetChargingProfileWSResponse;
 
         #endregion
 
         #region OnClearChargingProfile
 
         /// <summary>
-        /// An event sent whenever a reset WS request was received.
+        /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler   OnClearChargingProfileWSRequest;
+        public event WSClientRequestLogHandler?               OnClearChargingProfileWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ClearChargingProfileRequestDelegate      OnClearChargingProfileRequest;
+        public event ClearChargingProfileRequestDelegate?     OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnClearChargingProfileDelegate             OnClearChargingProfile;
+        public event OnClearChargingProfileDelegate?          OnClearChargingProfile;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ClearChargingProfileResponseDelegate     OnClearChargingProfileResponse;
+        public event ClearChargingProfileResponseDelegate?    OnClearChargingProfileResponse;
 
         /// <summary>
-        /// An event sent whenever a WS response to a reset request was sent.
+        /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler  OnClearChargingProfileWSResponse;
+        public event WSClientResponseLogHandler?              OnClearChargingProfileWSResponse;
 
         #endregion
 
         #region OnGetCompositeSchedule
 
         /// <summary>
-        /// An event sent whenever a reset WS request was received.
+        /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler   OnGetCompositeScheduleWSRequest;
+        public event WSClientRequestLogHandler?               OnGetCompositeScheduleWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetCompositeScheduleRequestDelegate      OnGetCompositeScheduleRequest;
+        public event GetCompositeScheduleRequestDelegate?     OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetCompositeScheduleDelegate             OnGetCompositeSchedule;
+        public event OnGetCompositeScheduleDelegate?          OnGetCompositeSchedule;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetCompositeScheduleResponseDelegate     OnGetCompositeScheduleResponse;
+        public event GetCompositeScheduleResponseDelegate?    OnGetCompositeScheduleResponse;
 
         /// <summary>
-        /// An event sent whenever a WS response to a reset request was sent.
+        /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler  OnGetCompositeScheduleWSResponse;
+        public event WSClientResponseLogHandler?              OnGetCompositeScheduleWSResponse;
 
         #endregion
 
         #region OnUnlockConnector
 
         /// <summary>
-        /// An event sent whenever a reset WS request was received.
+        /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler   OnUnlockConnectorWSRequest;
+        public event WSClientRequestLogHandler?          OnUnlockConnectorWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event UnlockConnectorRequestDelegate      OnUnlockConnectorRequest;
+        public event UnlockConnectorRequestDelegate?     OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnUnlockConnectorDelegate             OnUnlockConnector;
+        public event OnUnlockConnectorDelegate?          OnUnlockConnector;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event UnlockConnectorResponseDelegate     OnUnlockConnectorResponse;
+        public event UnlockConnectorResponseDelegate?    OnUnlockConnectorResponse;
 
         /// <summary>
-        /// An event sent whenever a WS response to a reset request was sent.
+        /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler  OnUnlockConnectorWSResponse;
+        public event WSClientResponseLogHandler?         OnUnlockConnectorWSResponse;
 
         #endregion
 
@@ -1056,87 +1066,87 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnGetLocalListVersion
 
         /// <summary>
-        /// An event sent whenever a reset WS request was received.
+        /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler   OnGetLocalListVersionWSRequest;
+        public event WSClientRequestLogHandler?              OnGetLocalListVersionWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetLocalListVersionRequestDelegate      OnGetLocalListVersionRequest;
+        public event GetLocalListVersionRequestDelegate?     OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetLocalListVersionDelegate             OnGetLocalListVersion;
+        public event OnGetLocalListVersionDelegate?          OnGetLocalListVersion;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetLocalListVersionResponseDelegate     OnGetLocalListVersionResponse;
+        public event GetLocalListVersionResponseDelegate?    OnGetLocalListVersionResponse;
 
         /// <summary>
-        /// An event sent whenever a WS response to a reset request was sent.
+        /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler  OnGetLocalListVersionWSResponse;
+        public event WSClientResponseLogHandler?             OnGetLocalListVersionWSResponse;
 
         #endregion
 
         #region OnSendLocalList
 
         /// <summary>
-        /// An event sent whenever a reset WS request was received.
+        /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler   OnSendLocalListWSRequest;
+        public event WSClientRequestLogHandler?        OnSendLocalListWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event SendLocalListRequestDelegate      OnSendLocalListRequest;
+        public event SendLocalListRequestDelegate?     OnSendLocalListRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnSendLocalListDelegate             OnSendLocalList;
+        public event OnSendLocalListDelegate?          OnSendLocalList;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event SendLocalListResponseDelegate     OnSendLocalListResponse;
+        public event SendLocalListResponseDelegate?    OnSendLocalListResponse;
 
         /// <summary>
-        /// An event sent whenever a WS response to a reset request was sent.
+        /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler  OnSendLocalListWSResponse;
+        public event WSClientResponseLogHandler?       OnSendLocalListWSResponse;
 
         #endregion
 
         #region OnClearCache
 
         /// <summary>
-        /// An event sent whenever a reset WS request was received.
+        /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler   OnClearCacheWSRequest;
+        public event WSClientRequestLogHandler?     OnClearCacheWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ClearCacheRequestDelegate      OnClearCacheRequest;
+        public event ClearCacheRequestDelegate?     OnClearCacheRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnClearCacheDelegate             OnClearCache;
+        public event OnClearCacheDelegate?          OnClearCache;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ClearCacheResponseDelegate     OnClearCacheResponse;
+        public event ClearCacheResponseDelegate?    OnClearCacheResponse;
 
         /// <summary>
-        /// An event sent whenever a WS response to a reset request was sent.
+        /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler  OnClearCacheWSResponse;
+        public event WSClientResponseLogHandler?    OnClearCacheWSResponse;
 
         #endregion
 
@@ -1147,16 +1157,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region ChargePointWSClient(Request.ChargeBoxId, Hostname, ..., LoggingContext = CPClientLogger.DefaultContext, ...)
 
         /// <summary>
-        /// Create a new charge point SOAP client running on a charge point
+        /// Create a new charge point websocket client running on a charge point
         /// and connecting to a central system to invoke methods.
         /// </summary>
         /// <param name="ChargeBoxIdentity">The unique identification of this charge box.</param>
-        /// <param name="From">The source URI of the SOAP message.</param>
-        /// <param name="To">The destination URI of the SOAP message.</param>
+        /// <param name="From">The source URI of the websocket message.</param>
+        /// <param name="To">The destination URI of the websocket message.</param>
         /// 
         /// <param name="RemoteURL">The remote URL of the HTTP endpoint to connect to.</param>
         /// <param name="VirtualHostname">An optional HTTP virtual hostname.</param>
-        /// <param name="Description">An optional description of this HTTP/SOAP client.</param>
+        /// <param name="Description">An optional description of this HTTP/websocket client.</param>
         /// <param name="RemoteCertificateValidator">The remote SSL/TLS certificate validator.</param>
         /// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
         /// <param name="ClientCert">The SSL/TLS client certificate to use of HTTP authentication.</param>
@@ -1172,32 +1182,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
-        public ChargePointWSClient(ChargeBox_Id                         ChargeBoxIdentity,
-                                   String                               From,
-                                   String                               To,
+        public ChargePointWSClient(ChargeBox_Id                          ChargeBoxIdentity,
+                                   String                                From,
+                                   String                                To,
 
-                                   URL                                  RemoteURL,
-                                   HTTPHostname?                        VirtualHostname              = null,
-                                   String                               Description                  = null,
-                                   RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                                   LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                                   X509Certificate                      ClientCert                   = null,
-                                   String                               HTTPUserAgent                = DefaultHTTPUserAgent,
-                                   HTTPPath?                            URLPathPrefix                = null,
-                                   Tuple<String, String>                HTTPBasicAuth                = null,
-                                   TimeSpan?                            RequestTimeout               = null,
-                                   TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
-                                   UInt16?                              MaxNumberOfRetries           = 3,
-                                   Boolean                              UseHTTPPipelining            = false,
+                                   URL                                   RemoteURL,
+                                   HTTPHostname?                         VirtualHostname              = null,
+                                   String?                               Description                  = null,
+                                   RemoteCertificateValidationCallback?  RemoteCertificateValidator   = null,
+                                   LocalCertificateSelectionCallback?    ClientCertificateSelector    = null,
+                                   X509Certificate?                      ClientCert                   = null,
+                                   String                                HTTPUserAgent                = DefaultHTTPUserAgent,
+                                   HTTPPath?                             URLPathPrefix                = null,
+                                   SslProtocols?                         TLSProtocol                  = null,
+                                   Boolean?                              PreferIPv4                   = null,
+                                   Tuple<String, String>?                HTTPBasicAuth                = null,
+                                   TimeSpan?                             RequestTimeout               = null,
+                                   TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
+                                   UInt16?                               MaxNumberOfRetries           = 3,
+                                   Boolean                               UseHTTPPipelining            = false,
 
-                                   TimeSpan?                            MaintenanceEvery             = null,
-                                   TimeSpan?                            WebSocketPingEvery           = null,
+                                   TimeSpan?                             MaintenanceEvery             = null,
+                                   TimeSpan?                             WebSocketPingEvery           = null,
 
-                                   String                               LoggingPath                  = null,
-                                   String                               LoggingContext               = ChargePointSOAPClient.CPClientLogger.DefaultContext,
-                                   LogfileCreatorDelegate               LogFileCreator               = null,
-                                   HTTPClientLogger                     HTTPLogger                   = null,
-                                   DNSClient                            DNSClient                    = null)
+                                   String?                               LoggingPath                  = null,
+                                   String                                LoggingContext               = ChargePointWSClient.CPClientLogger.DefaultContext,
+                                   LogfileCreatorDelegate?               LogFileCreator               = null,
+                                   HTTPClientLogger?                     HTTPLogger                   = null,
+                                   DNSClient?                            DNSClient                    = null)
 
         {
 
@@ -1207,10 +1219,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 throw new ArgumentNullException(nameof(ChargeBoxIdentity),  "The given charge box identification must not be null or empty!");
 
             if (From.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(From),               "The given SOAP message source must not be null or empty!");
+                throw new ArgumentNullException(nameof(From),               "The given websocket message source must not be null or empty!");
 
             if (To.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(To),                 "The given SOAP message destination must not be null or empty!");
+                throw new ArgumentNullException(nameof(To),                 "The given websocket message destination must not be null or empty!");
 
             #endregion
 
@@ -1222,6 +1234,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.ClientCert                  = ClientCert;
             this.HTTPUserAgent               = HTTPUserAgent;
             //this.URLPathPrefix               = URLPathPrefix;
+            this.TLSProtocol                 = TLSProtocol        ?? SslProtocols.Tls12 | SslProtocols.Tls13;
+            this.PreferIPv4                  = PreferIPv4         ?? false;
             this.HTTPBasicAuth               = HTTPBasicAuth;
             this.RequestTimeout              = RequestTimeout     ?? TimeSpan.FromMinutes(10);
             this.TransmissionRetryDelay      = TransmissionRetryDelay;
@@ -1234,7 +1248,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.From                        = From;
             this.To                          = To;
 
-            //this.Logger                      = new ChargePointSOAPClient.CPClientLogger(this,
+            //this.Logger                      = new ChargePointwebsocketClient.CPClientLogger(this,
             //                                                                            LoggingPath,
             //                                                                            LoggingContext,
             //                                                                            LogFileCreator);
@@ -1258,11 +1272,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region ChargePointWSClient(Request.ChargeBoxId, Logger, Hostname, ...)
 
         /// <summary>
-        /// Create a new charge point SOAP client.
+        /// Create a new charge point websocket client.
         /// </summary>
         /// <param name="ChargeBoxIdentity">A unqiue identification of this client.</param>
-        /// <param name="From">The source URI of the SOAP message.</param>
-        /// <param name="To">The destination URI of the SOAP message.</param>
+        /// <param name="From">The source URI of the websocket message.</param>
+        /// <param name="To">The destination URI of the websocket message.</param>
         /// 
         /// <param name="Hostname">The OCPP hostname to connect to.</param>
         /// <param name="RemotePort">An optional OCPP TCP port to connect to.</param>
@@ -1312,10 +1326,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         //        throw new ArgumentNullException(nameof(ChargeBoxIdentity),  "The given charge box identification must not be null or empty!");
 
         //    if (From.IsNullOrEmpty())
-        //        throw new ArgumentNullException(nameof(From),               "The given SOAP message source must not be null or empty!");
+        //        throw new ArgumentNullException(nameof(From),               "The given websocket message source must not be null or empty!");
 
         //    if (To.IsNullOrEmpty())
-        //        throw new ArgumentNullException(nameof(To),                 "The given SOAP message destination must not be null or empty!");
+        //        throw new ArgumentNullException(nameof(To),                 "The given websocket message destination must not be null or empty!");
 
         //    #endregion
 
@@ -2658,10 +2672,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             {
 
                                                 OnIncomingDataTransferWSResponse?.Invoke(Timestamp.Now,
-                                                                                         this,
-                                                                                         requestJSON,
-                                                                                         new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                               OCPPResponseJSON).ToJSON());
+                                                                                           this,
+                                                                                           requestJSON,
+                                                                                           new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                                              OCPPResponseJSON).ToJSON());
 
                                             }
                                             catch (Exception e)
@@ -4903,7 +4917,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
         public async Task<OCPP_WebSocket_ResponseMessage> SendRequest(String   Action,
-                                                         JObject  Message)
+                                                                      JObject  Message)
         {
 
             if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
@@ -5031,7 +5045,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                  DateTime?                Timestamp           = null,
                                  CancellationToken?       CancellationToken   = null,
-                                 EventTracking_Id         EventTrackingId     = null,
+                                 EventTracking_Id?        EventTrackingId     = null,
                                  TimeSpan?                RequestTimeout      = null)
 
         {
@@ -5089,8 +5103,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             }
 
-            //RequestLogDelegate:   OnBootNotificationSOAPRequest,
-            //ResponseLogDelegate:  OnBootNotificationSOAPResponse,
+            //RequestLogDelegate:   OnBootNotificationwebsocketRequest,
+            //ResponseLogDelegate:  OnBootNotificationwebsocketResponse,
             //CancellationToken:    CancellationToken,
             //EventTrackingId:      EventTrackingId,
             //RequestTimeout:       RequestTimeout,
@@ -5138,7 +5152,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
+                          EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null)
 
         {
@@ -5240,7 +5254,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                       DateTime?           Timestamp           = null,
                       CancellationToken?  CancellationToken   = null,
-                      EventTracking_Id    EventTrackingId     = null,
+                      EventTracking_Id?   EventTrackingId     = null,
                       TimeSpan?           RequestTimeout      = null)
 
         {
@@ -5341,7 +5355,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                              DateTime?                Timestamp          = null,
                              CancellationToken?       CancellationToken  = null,
-                             EventTracking_Id         EventTrackingId    = null,
+                             EventTracking_Id?        EventTrackingId    = null,
                              TimeSpan?                RequestTimeout     = null)
 
         {
@@ -5442,7 +5456,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                    DateTime?                  Timestamp          = null,
                                    CancellationToken?         CancellationToken  = null,
-                                   EventTracking_Id           EventTrackingId    = null,
+                                   EventTracking_Id?          EventTrackingId    = null,
                                    TimeSpan?                  RequestTimeout     = null)
 
         {
@@ -5543,7 +5557,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                             DateTime?           Timestamp          = null,
                             CancellationToken?  CancellationToken  = null,
-                            EventTracking_Id    EventTrackingId    = null,
+                            EventTracking_Id?   EventTrackingId    = null,
                             TimeSpan?           RequestTimeout     = null)
 
         {
@@ -5644,7 +5658,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                             DateTime?               Timestamp          = null,
                             CancellationToken?      CancellationToken  = null,
-                            EventTracking_Id        EventTrackingId    = null,
+                            EventTracking_Id?       EventTrackingId    = null,
                             TimeSpan?               RequestTimeout     = null)
 
         {
@@ -5746,7 +5760,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                          DateTime?            Timestamp          = null,
                          CancellationToken?   CancellationToken  = null,
-                         EventTracking_Id     EventTrackingId    = null,
+                         EventTracking_Id?    EventTrackingId    = null,
                          TimeSpan?            RequestTimeout     = null)
 
         {
@@ -5847,7 +5861,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                               DateTime?                             Timestamp          = null,
                                               CancellationToken?                    CancellationToken  = null,
-                                              EventTracking_Id                      EventTrackingId    = null,
+                                              EventTracking_Id?                     EventTrackingId    = null,
                                               TimeSpan?                             RequestTimeout     = null)
 
         {
@@ -5948,7 +5962,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                            DateTime?                          Timestamp          = null,
                                            CancellationToken?                 CancellationToken  = null,
-                                           EventTracking_Id                   EventTrackingId    = null,
+                                           EventTracking_Id?                  EventTrackingId    = null,
                                            TimeSpan?                          RequestTimeout     = null)
 
         {

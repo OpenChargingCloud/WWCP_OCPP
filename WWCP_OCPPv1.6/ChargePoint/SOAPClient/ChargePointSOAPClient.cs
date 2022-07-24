@@ -32,6 +32,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP.v1_2;
+using System.Security.Authentication;
 
 #endregion
 
@@ -43,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// and connects to a central system to invoke methods.
     /// </summary>
     public partial class ChargePointSOAPClient : ASOAPClient,
-                                                 ICPClient
+                                                 ICPSOAPClient
     {
 
         #region Data
@@ -377,6 +378,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                      RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
                                      LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
                                      X509Certificate                      ClientCert                   = null,
+                                     SslProtocols?                        TLSProtocol                  = null,
+                                     Boolean?                             PreferIPv4                   = null,
                                      String                               HTTPUserAgent                = DefaultHTTPUserAgent,
                                      HTTPPath?                            URLPathPrefix                = null,
                                      Tuple<String, String>                WSSLoginPassword             = null,
@@ -399,6 +402,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    RemoteCertificateValidator,
                    ClientCertificateSelector,
                    ClientCert,
+                   TLSProtocol,
+                   PreferIPv4,
                    HTTPUserAgent,
                    URLPathPrefix ?? DefaultURLPathPrefix,
                    WSSLoginPassword,
@@ -587,6 +592,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     ClientCert,
+                                                    TLSProtocol,
+                                                    PreferIPv4,
                                                     HTTPUserAgent,
                                                     URLPathPrefix,
                                                     WSSLoginPassword,
@@ -779,6 +786,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     ClientCert,
+                                                    TLSProtocol,
+                                                    PreferIPv4,
                                                     HTTPUserAgent,
                                                     URLPathPrefix,
                                                     WSSLoginPassword,
@@ -972,6 +981,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     ClientCert,
+                                                    TLSProtocol,
+                                                    PreferIPv4,
                                                     HTTPUserAgent,
                                                     URLPathPrefix,
                                                     WSSLoginPassword,
@@ -1165,6 +1176,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     ClientCert,
+                                                    TLSProtocol,
+                                                    PreferIPv4,
                                                     HTTPUserAgent,
                                                     URLPathPrefix,
                                                     WSSLoginPassword,
@@ -1357,6 +1370,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     ClientCert,
+                                                    TLSProtocol,
+                                                    PreferIPv4,
                                                     HTTPUserAgent,
                                                     URLPathPrefix,
                                                     WSSLoginPassword,
@@ -1551,6 +1566,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     ClientCert,
+                                                    TLSProtocol,
+                                                    PreferIPv4,
                                                     HTTPUserAgent,
                                                     URLPathPrefix,
                                                     WSSLoginPassword,
@@ -1745,6 +1762,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     ClientCert,
+                                                    TLSProtocol,
+                                                    PreferIPv4,
                                                     HTTPUserAgent,
                                                     URLPathPrefix,
                                                     WSSLoginPassword,
@@ -1939,6 +1958,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     ClientCert,
+                                                    TLSProtocol,
+                                                    PreferIPv4,
                                                     HTTPUserAgent,
                                                     URLPathPrefix,
                                                     WSSLoginPassword,
@@ -2133,6 +2154,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     ClientCert,
+                                                    TLSProtocol,
+                                                    PreferIPv4,
                                                     HTTPUserAgent,
                                                     URLPathPrefix,
                                                     WSSLoginPassword,
@@ -2327,6 +2350,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     ClientCert,
+                                                    TLSProtocol,
+                                                    PreferIPv4,
                                                     HTTPUserAgent,
                                                     URLPathPrefix,
                                                     WSSLoginPassword,

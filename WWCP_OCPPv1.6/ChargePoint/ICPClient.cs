@@ -18,8 +18,6 @@
 #region Usings
 
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -31,6 +29,308 @@ using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
+
+    /// <summary>
+    /// The common interface of all SOAP charge point clients.
+    /// </summary>
+    public interface ICPSOAPClient : ICPClient
+    {
+
+        #region OnBootNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a boot notification SOAP request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler             OnBootNotificationSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a boot notification SOAP request was received.
+        /// </summary>
+        event ClientResponseLogHandler            OnBootNotificationSOAPResponse;
+
+        #endregion
+
+        #region OnHeartbeatRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a heartbeat SOAP request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler      OnHeartbeatSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a heartbeat SOAP request was received.
+        /// </summary>
+        event ClientResponseLogHandler     OnHeartbeatSOAPResponse;
+
+        #endregion
+
+
+        #region OnAuthorizeRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever an authorize SOAP request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler      OnAuthorizeSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an authorize SOAP request was received.
+        /// </summary>
+        event ClientResponseLogHandler     OnAuthorizeSOAPResponse;
+
+        #endregion
+
+        #region OnStartTransactionRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a start transaction SOAP request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler             OnStartTransactionSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a start transaction SOAP request was received.
+        /// </summary>
+        event ClientResponseLogHandler            OnStartTransactionSOAPResponse;
+
+        #endregion
+
+        #region OnStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a status notification SOAP request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler               OnStatusNotificationSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a status notification SOAP request was received.
+        /// </summary>
+        event ClientResponseLogHandler              OnStatusNotificationSOAPResponse;
+
+        #endregion
+
+        #region OnMeterValuesRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a meter values SOAP request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler        OnMeterValuesSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a meter values SOAP request was received.
+        /// </summary>
+        event ClientResponseLogHandler       OnMeterValuesSOAPResponse;
+
+        #endregion
+
+        #region OnStopTransactionRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a stop transaction SOAP request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler            OnStopTransactionSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a stop transaction SOAP request was received.
+        /// </summary>
+        event ClientResponseLogHandler           OnStopTransactionSOAPResponse;
+
+        #endregion
+
+
+        #region OnDataTransferRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a data transfer SOAP request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler         OnDataTransferSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a data transfer SOAP request was received.
+        /// </summary>
+        event ClientResponseLogHandler        OnDataTransferSOAPResponse;
+
+        #endregion
+
+        #region OnDiagnosticsStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a diagnostics status notification SOAP request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler                          OnDiagnosticsStatusNotificationSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a diagnostics status notification SOAP request was received.
+        /// </summary>
+        event ClientResponseLogHandler                         OnDiagnosticsStatusNotificationSOAPResponse;
+
+        #endregion
+
+        #region OnFirmwareStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a firmware status notification SOAP request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler                       OnFirmwareStatusNotificationSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a firmware status notification SOAP request was received.
+        /// </summary>
+        event ClientResponseLogHandler                      OnFirmwareStatusNotificationSOAPResponse;
+
+        #endregion
+
+    }
+
+
+    /// <summary>
+    /// The common interface of all websocket charge point clients.
+    /// </summary>
+    public interface ICPWSClient : ICPClient
+    {
+
+        #region OnBootNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a boot notification WS request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler             OnBootNotificationWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a boot notification WS request was received.
+        /// </summary>
+        event ClientResponseLogHandler            OnBootNotificationWSResponse;
+
+        #endregion
+
+        #region OnHeartbeatRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a heartbeat WS request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler      OnHeartbeatWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a heartbeat WS request was received.
+        /// </summary>
+        event ClientResponseLogHandler     OnHeartbeatWSResponse;
+
+        #endregion
+
+
+        #region OnAuthorizeRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever an authorize WS request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler      OnAuthorizeWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an authorize WS request was received.
+        /// </summary>
+        event ClientResponseLogHandler     OnAuthorizeWSResponse;
+
+        #endregion
+
+        #region OnStartTransactionRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a start transaction WS request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler             OnStartTransactionWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a start transaction WS request was received.
+        /// </summary>
+        event ClientResponseLogHandler            OnStartTransactionWSResponse;
+
+        #endregion
+
+        #region OnStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a status notification WS request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler               OnStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a status notification WS request was received.
+        /// </summary>
+        event ClientResponseLogHandler              OnStatusNotificationWSResponse;
+
+        #endregion
+
+        #region OnMeterValuesRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a meter values WS request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler        OnMeterValuesWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a meter values WS request was received.
+        /// </summary>
+        event ClientResponseLogHandler       OnMeterValuesWSResponse;
+
+        #endregion
+
+        #region OnStopTransactionRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a stop transaction WS request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler            OnStopTransactionWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a stop transaction WS request was received.
+        /// </summary>
+        event ClientResponseLogHandler           OnStopTransactionWSResponse;
+
+        #endregion
+
+
+        #region OnDataTransferRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a data transfer WS request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler         OnDataTransferWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a data transfer WS request was received.
+        /// </summary>
+        event ClientResponseLogHandler        OnDataTransferWSResponse;
+
+        #endregion
+
+        #region OnDiagnosticsStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a diagnostics status notification WS request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler                          OnDiagnosticsStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a diagnostics status notification WS request was received.
+        /// </summary>
+        event ClientResponseLogHandler                         OnDiagnosticsStatusNotificationWSResponse;
+
+        #endregion
+
+        #region OnFirmwareStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a firmware status notification WS request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler                       OnFirmwareStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a firmware status notification WS request was received.
+        /// </summary>
+        event ClientResponseLogHandler                      OnFirmwareStatusNotificationWSResponse;
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// The common interface of all charge point clients.
@@ -48,16 +348,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         event OnBootNotificationRequestDelegate   OnBootNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a boot notification SOAP request will be send to the central system.
-        /// </summary>
-        event ClientRequestLogHandler             OnBootNotificationSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a boot notification SOAP request was received.
-        /// </summary>
-        event ClientResponseLogHandler            OnBootNotificationSOAPResponse;
-
-        /// <summary>
         /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
         event OnBootNotificationResponseDelegate  OnBootNotificationResponse;
@@ -70,16 +360,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// An event fired whenever a heartbeat request will be send to the central system.
         /// </summary>
         event OnHeartbeatRequestDelegate   OnHeartbeatRequest;
-
-        /// <summary>
-        /// An event fired whenever a heartbeat SOAP request will be send to the central system.
-        /// </summary>
-        event ClientRequestLogHandler      OnHeartbeatSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a heartbeat SOAP request was received.
-        /// </summary>
-        event ClientResponseLogHandler     OnHeartbeatSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a heartbeat request was received.
@@ -97,16 +377,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         event OnAuthorizeRequestDelegate   OnAuthorizeRequest;
 
         /// <summary>
-        /// An event fired whenever an authorize SOAP request will be send to the central system.
-        /// </summary>
-        event ClientRequestLogHandler      OnAuthorizeSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to an authorize SOAP request was received.
-        /// </summary>
-        event ClientResponseLogHandler     OnAuthorizeSOAPResponse;
-
-        /// <summary>
         /// An event fired whenever a response to an authorize request was received.
         /// </summary>
         event OnAuthorizeResponseDelegate  OnAuthorizeResponse;
@@ -119,16 +389,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// An event fired whenever a start transaction request will be send to the central system.
         /// </summary>
         event OnStartTransactionRequestDelegate   OnStartTransactionRequest;
-
-        /// <summary>
-        /// An event fired whenever a start transaction SOAP request will be send to the central system.
-        /// </summary>
-        event ClientRequestLogHandler             OnStartTransactionSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a start transaction SOAP request was received.
-        /// </summary>
-        event ClientResponseLogHandler            OnStartTransactionSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a start transaction request was received.
@@ -145,16 +405,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         event OnStatusNotificationRequestDelegate   OnStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a status notification SOAP request will be send to the central system.
-        /// </summary>
-        event ClientRequestLogHandler               OnStatusNotificationSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a status notification SOAP request was received.
-        /// </summary>
-        event ClientResponseLogHandler              OnStatusNotificationSOAPResponse;
-
-        /// <summary>
         /// An event fired whenever a response to a status notification request was received.
         /// </summary>
         event OnStatusNotificationResponseDelegate  OnStatusNotificationResponse;
@@ -169,16 +419,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         event OnMeterValuesRequestDelegate   OnMeterValuesRequest;
 
         /// <summary>
-        /// An event fired whenever a meter values SOAP request will be send to the central system.
-        /// </summary>
-        event ClientRequestLogHandler        OnMeterValuesSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a meter values SOAP request was received.
-        /// </summary>
-        event ClientResponseLogHandler       OnMeterValuesSOAPResponse;
-
-        /// <summary>
         /// An event fired whenever a response to a meter values request was received.
         /// </summary>
         event OnMeterValuesResponseDelegate  OnMeterValuesResponse;
@@ -191,16 +431,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// An event fired whenever a stop transaction request will be send to the central system.
         /// </summary>
         event OnStopTransactionRequestDelegate   OnStopTransactionRequest;
-
-        /// <summary>
-        /// An event fired whenever a stop transaction SOAP request will be send to the central system.
-        /// </summary>
-        event ClientRequestLogHandler            OnStopTransactionSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a stop transaction SOAP request was received.
-        /// </summary>
-        event ClientResponseLogHandler           OnStopTransactionSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a stop transaction request was received.
@@ -218,16 +448,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         event OnDataTransferRequestDelegate   OnDataTransferRequest;
 
         /// <summary>
-        /// An event fired whenever a data transfer SOAP request will be send to the central system.
-        /// </summary>
-        event ClientRequestLogHandler         OnDataTransferSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a data transfer SOAP request was received.
-        /// </summary>
-        event ClientResponseLogHandler        OnDataTransferSOAPResponse;
-
-        /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
         event OnDataTransferResponseDelegate  OnDataTransferResponse;
@@ -242,16 +462,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         event OnDiagnosticsStatusNotificationRequestDelegate   OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a diagnostics status notification SOAP request will be send to the central system.
-        /// </summary>
-        event ClientRequestLogHandler                          OnDiagnosticsStatusNotificationSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a diagnostics status notification SOAP request was received.
-        /// </summary>
-        event ClientResponseLogHandler                         OnDiagnosticsStatusNotificationSOAPResponse;
-
-        /// <summary>
         /// An event fired whenever a response to a diagnostics status notification request was received.
         /// </summary>
         event OnDiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
@@ -264,16 +474,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// An event fired whenever a firmware status notification request will be send to the central system.
         /// </summary>
         event OnFirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
-
-        /// <summary>
-        /// An event fired whenever a firmware status notification SOAP request will be send to the central system.
-        /// </summary>
-        event ClientRequestLogHandler                       OnFirmwareStatusNotificationSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a firmware status notification SOAP request was received.
-        /// </summary>
-        event ClientResponseLogHandler                      OnFirmwareStatusNotificationSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a firmware status notification request was received.
@@ -300,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                  DateTime?                Timestamp           = null,
                                  CancellationToken?       CancellationToken   = null,
-                                 EventTracking_Id         EventTrackingId     = null,
+                                 EventTracking_Id?        EventTrackingId     = null,
                                  TimeSpan?                RequestTimeout      = null);
 
 
@@ -319,7 +519,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
+                          EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
 
@@ -339,7 +539,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                       DateTime?           Timestamp           = null,
                       CancellationToken?  CancellationToken   = null,
-                      EventTracking_Id    EventTrackingId     = null,
+                      EventTracking_Id?   EventTrackingId     = null,
                       TimeSpan?           RequestTimeout      = null);
 
 
@@ -358,7 +558,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                              DateTime?                Timestamp          = null,
                              CancellationToken?       CancellationToken  = null,
-                             EventTracking_Id         EventTrackingId    = null,
+                             EventTracking_Id?        EventTrackingId    = null,
                              TimeSpan?                RequestTimeout     = null);
 
 
@@ -377,7 +577,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                    DateTime?                  Timestamp          = null,
                                    CancellationToken?         CancellationToken  = null,
-                                   EventTracking_Id           EventTrackingId    = null,
+                                   EventTracking_Id?          EventTrackingId    = null,
                                    TimeSpan?                  RequestTimeout     = null);
 
 
@@ -396,7 +596,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                             DateTime?           Timestamp          = null,
                             CancellationToken?  CancellationToken  = null,
-                            EventTracking_Id    EventTrackingId    = null,
+                            EventTracking_Id?   EventTrackingId    = null,
                             TimeSpan?           RequestTimeout     = null);
 
 
@@ -415,7 +615,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                             DateTime?               Timestamp          = null,
                             CancellationToken?      CancellationToken  = null,
-                            EventTracking_Id        EventTrackingId    = null,
+                            EventTracking_Id?       EventTrackingId    = null,
                             TimeSpan?               RequestTimeout     = null);
 
 
@@ -434,7 +634,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                          DateTime?            Timestamp          = null,
                          CancellationToken?   CancellationToken  = null,
-                         EventTracking_Id     EventTrackingId    = null,
+                         EventTracking_Id?    EventTrackingId    = null,
                          TimeSpan?            RequestTimeout     = null);
 
 
@@ -453,7 +653,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                               DateTime?                             Timestamp          = null,
                                               CancellationToken?                    CancellationToken  = null,
-                                              EventTracking_Id                      EventTrackingId    = null,
+                                              EventTracking_Id?                     EventTrackingId    = null,
                                               TimeSpan?                             RequestTimeout     = null);
 
 
@@ -472,7 +672,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                            DateTime?                          Timestamp          = null,
                                            CancellationToken?                 CancellationToken  = null,
-                                           EventTracking_Id                   EventTrackingId    = null,
+                                           EventTracking_Id?                  EventTrackingId    = null,
                                            TimeSpan?                          RequestTimeout     = null);
 
     }

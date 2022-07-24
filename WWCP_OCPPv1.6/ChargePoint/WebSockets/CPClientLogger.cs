@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A CP client.
     /// </summary>
-    public partial class ChargePointSOAPClient : ASOAPClient
+    public partial class ChargePointWSClient
     {
 
         /// <summary>
@@ -45,14 +45,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             /// <summary>
             /// The default context for this logger.
             /// </summary>
-            public const String DefaultContext = "OCPP_SOAP_CPClient";
+            public const String DefaultContext = "OCPP_WS_CPClient";
 
             #endregion
 
             #region Properties
 
             /// <summary>
-            /// The attached OCPP websocket CP client.
+            /// The attached OCPP SOAP CP client.
             /// </summary>
             public ICPClient  CPClient    { get; }
 
@@ -69,10 +69,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             /// <param name="LoggingPath">The logging path.</param>
             /// <param name="Context">A context of this API.</param>
             /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-            public CPClientLogger(ChargePointSOAPClient    CPClient,
-                                  String                   LoggingPath,
-                                  String                   Context          = DefaultContext,
-                                  LogfileCreatorDelegate?  LogFileCreator   = null)
+            public CPClientLogger(ChargePointSOAPClient   CPClient,
+                                  String                  LoggingPath,
+                                  String                  Context         = DefaultContext,
+                                  LogfileCreatorDelegate  LogFileCreator  = null)
 
                 : this(CPClient,
                        LoggingPath,
@@ -113,26 +113,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             /// <param name="LogHTTPError_toHTTPSSE">A delegate to log HTTP errors to a HTTP client sent events source.</param>
             /// 
             /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-            public CPClientLogger(ICPClient                    CPClient,
-                                  String                       LoggingPath,
-                                  String                       Context,
+            public CPClientLogger(ICPClient                   CPClient,
+                                  String                      LoggingPath,
+                                  String                      Context,
 
-                                  HTTPRequestLoggerDelegate?   LogHTTPRequest_toConsole    = null,
-                                  HTTPResponseLoggerDelegate?  LogHTTPResponse_toConsole   = null,
-                                  HTTPRequestLoggerDelegate?   LogHTTPRequest_toDisc       = null,
-                                  HTTPResponseLoggerDelegate?  LogHTTPResponse_toDisc      = null,
+                                  HTTPRequestLoggerDelegate   LogHTTPRequest_toConsole,
+                                  HTTPResponseLoggerDelegate  LogHTTPResponse_toConsole,
+                                  HTTPRequestLoggerDelegate   LogHTTPRequest_toDisc,
+                                  HTTPResponseLoggerDelegate  LogHTTPResponse_toDisc,
 
-                                  HTTPRequestLoggerDelegate?   LogHTTPRequest_toNetwork    = null,
-                                  HTTPResponseLoggerDelegate?  LogHTTPResponse_toNetwork   = null,
-                                  HTTPRequestLoggerDelegate?   LogHTTPRequest_toHTTPSSE    = null,
-                                  HTTPResponseLoggerDelegate?  LogHTTPResponse_toHTTPSSE   = null,
+                                  HTTPRequestLoggerDelegate   LogHTTPRequest_toNetwork    = null,
+                                  HTTPResponseLoggerDelegate  LogHTTPResponse_toNetwork   = null,
+                                  HTTPRequestLoggerDelegate   LogHTTPRequest_toHTTPSSE    = null,
+                                  HTTPResponseLoggerDelegate  LogHTTPResponse_toHTTPSSE   = null,
 
-                                  HTTPResponseLoggerDelegate?  LogHTTPError_toConsole      = null,
-                                  HTTPResponseLoggerDelegate?  LogHTTPError_toDisc         = null,
-                                  HTTPResponseLoggerDelegate?  LogHTTPError_toNetwork      = null,
-                                  HTTPResponseLoggerDelegate?  LogHTTPError_toHTTPSSE      = null,
+                                  HTTPResponseLoggerDelegate  LogHTTPError_toConsole      = null,
+                                  HTTPResponseLoggerDelegate  LogHTTPError_toDisc         = null,
+                                  HTTPResponseLoggerDelegate  LogHTTPError_toNetwork      = null,
+                                  HTTPResponseLoggerDelegate  LogHTTPError_toHTTPSSE      = null,
 
-                                  LogfileCreatorDelegate?      LogFileCreator              = null)
+                                  LogfileCreatorDelegate      LogFileCreator              = null)
 
                 : base(CPClient,
                        LoggingPath,
