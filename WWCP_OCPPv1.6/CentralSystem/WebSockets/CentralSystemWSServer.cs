@@ -145,59 +145,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public IEnumerable<ChargeBox_Id> ChargeBoxIds
             => connectedChargingBoxes.Keys;
 
-
-        /// <summary>
-        /// A delegate to parse custom BootNotification requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<BootNotificationRequest>               CustomBootNotificationRequestParser                 { get; set; }
-
-        /// <summary>
-        /// A delegate to parse custom Heartbeat requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<HeartbeatRequest>                      CustomHeartbeatRequestParser                        { get; set; }
-
-
-        /// <summary>
-        /// A delegate to parse custom Authorize requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<AuthorizeRequest>                      CustomAuthorizeRequestParser                        { get; set; }
-
-        /// <summary>
-        /// A delegate to parse custom StartTransaction requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<StartTransactionRequest>               CustomStartTransactionRequestParser                 { get; set; }
-
-        /// <summary>
-        /// A delegate to parse custom StatusNotification requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<StatusNotificationRequest>             CustomStatusNotificationRequestParser               { get; set; }
-
-        /// <summary>
-        /// A delegate to parse custom MeterValues requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<MeterValuesRequest>                    CustomMeterValuesRequestParser                      { get; set; }
-
-        /// <summary>
-        /// A delegate to parse custom StopTransaction requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<StopTransactionRequest>                CustomStopTransactionRequestParser                  { get; set; }
-
-
-        /// <summary>
-        /// A delegate to parse custom DataTransfer requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<CP.DataTransferRequest>                CustomDataTransferRequestParser                     { get; set; }
-
-        /// <summary>
-        /// A delegate to parse custom DiagnosticsStatusNotification requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<DiagnosticsStatusNotificationRequest>  CustomDiagnosticsStatusNotificationRequestParser    { get; set; }
-
-        /// <summary>
-        /// A delegate to parse custom FirmwareStatusNotification requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>     CustomFirmwareStatusNotificationRequestParser       { get; set; }
-
         /// <summary>
         /// Require a HTTP Basic Authentication of all charging boxes.
         /// </summary>
@@ -206,13 +153,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Logins and passwords for HTTP Basic Authentication.
         /// </summary>
-        public Dictionary<String, String>                                         ChargingBoxLogins                                   { get; }
+        public Dictionary<String, String?>                                        ChargingBoxLogins                                   { get; }
 
         #endregion
 
         #region Events
 
-        public event OnNewCentralSystemWSConnectionDelegate OnNewCentralSystemWSConnection;
+        public event OnNewCentralSystemWSConnectionDelegate? OnNewCentralSystemWSConnection;
 
 
         #region OnBootNotification
@@ -220,27 +167,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a boot notification WebSocket request was received.
         /// </summary>
-        public event WSRequestLogHandler               OnBootNotificationWSRequest;
+        public event WSRequestLogHandler?                 OnBootNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a boot notification request was received.
         /// </summary>
-        public event BootNotificationRequestDelegate   OnBootNotificationRequest;
+        public event BootNotificationRequestDelegate?     OnBootNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a boot notification was received.
         /// </summary>
-        public event OnBootNotificationDelegate          OnBootNotification;
+        public event OnBootNotificationDelegate?          OnBootNotification;
 
         /// <summary>
         /// An event sent whenever a response to a boot notification was sent.
         /// </summary>
-        public event BootNotificationResponseDelegate  OnBootNotificationResponse;
+        public event BootNotificationResponseDelegate?    OnBootNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a boot notification was sent.
         /// </summary>
-        public event WSResponseLogHandler              OnBootNotificationWSResponse;
+        public event WSResponseLogHandler?                OnBootNotificationWSResponse;
 
         #endregion
 
@@ -249,27 +196,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a heartbeat WebSocket request was received.
         /// </summary>
-        public event WSRequestLogHandler        OnHeartbeatWSRequest;
+        public event WSRequestLogHandler?          OnHeartbeatWSRequest;
 
         /// <summary>
         /// An event sent whenever a heartbeat request was received.
         /// </summary>
-        public event HeartbeatRequestDelegate   OnHeartbeatRequest;
+        public event HeartbeatRequestDelegate?     OnHeartbeatRequest;
 
         /// <summary>
         /// An event sent whenever a heartbeat was received.
         /// </summary>
-        public event OnHeartbeatDelegate          OnHeartbeat;
+        public event OnHeartbeatDelegate?          OnHeartbeat;
 
         /// <summary>
         /// An event sent whenever a response to a heartbeat was sent.
         /// </summary>
-        public event HeartbeatResponseDelegate  OnHeartbeatResponse;
+        public event HeartbeatResponseDelegate?    OnHeartbeatResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a heartbeat was sent.
         /// </summary>
-        public event WSResponseLogHandler       OnHeartbeatWSResponse;
+        public event WSResponseLogHandler?         OnHeartbeatWSResponse;
 
         #endregion
 
@@ -279,27 +226,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever an authorize WebSocket request was received.
         /// </summary>
-        public event WSRequestLogHandler          OnAuthorizeWSRequest;
+        public event WSRequestLogHandler?          OnAuthorizeWSRequest;
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
         /// </summary>
-        public event AuthorizeRequestDelegate   OnAuthorizeRequest;
+        public event AuthorizeRequestDelegate?     OnAuthorizeRequest;
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
         /// </summary>
-        public event OnAuthorizeDelegate          OnAuthorize;
+        public event OnAuthorizeDelegate?          OnAuthorize;
 
         /// <summary>
         /// An event sent whenever an authorize response was sent.
         /// </summary>
-        public event AuthorizeResponseDelegate  OnAuthorizeResponse;
+        public event AuthorizeResponseDelegate?    OnAuthorizeResponse;
 
         /// <summary>
         /// An event sent whenever an authorize WebSocket response was sent.
         /// </summary>
-        public event WSResponseLogHandler         OnAuthorizeWSResponse;
+        public event WSResponseLogHandler?         OnAuthorizeWSResponse;
 
         #endregion
 
@@ -308,27 +255,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a start transaction WebSocket request was received.
         /// </summary>
-        public event WSRequestLogHandler                 OnStartTransactionWSRequest;
+        public event WSRequestLogHandler?                 OnStartTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        public event StartTransactionRequestDelegate   OnStartTransactionRequest;
+        public event StartTransactionRequestDelegate?     OnStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        public event OnStartTransactionDelegate          OnStartTransaction;
+        public event OnStartTransactionDelegate?          OnStartTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a start transaction request was sent.
         /// </summary>
-        public event StartTransactionResponseDelegate  OnStartTransactionResponse;
+        public event StartTransactionResponseDelegate?    OnStartTransactionResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a start transaction request was sent.
         /// </summary>
-        public event WSResponseLogHandler                OnStartTransactionWSResponse;
+        public event WSResponseLogHandler?                OnStartTransactionWSResponse;
 
         #endregion
 
@@ -337,27 +284,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a status notification WebSocket request was received.
         /// </summary>
-        public event WSRequestLogHandler                   OnStatusNotificationWSRequest;
+        public event WSRequestLogHandler?                   OnStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
         /// </summary>
-        public event StatusNotificationRequestDelegate   OnStatusNotificationRequest;
+        public event StatusNotificationRequestDelegate?     OnStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
         /// </summary>
-        public event OnStatusNotificationDelegate          OnStatusNotification;
+        public event OnStatusNotificationDelegate?          OnStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a status notification request was sent.
         /// </summary>
-        public event StatusNotificationResponseDelegate  OnStatusNotificationResponse;
+        public event StatusNotificationResponseDelegate?    OnStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a status notification request was sent.
         /// </summary>
-        public event WSResponseLogHandler                  OnStatusNotificationWSResponse;
+        public event WSResponseLogHandler?                  OnStatusNotificationWSResponse;
 
         #endregion
 
@@ -366,27 +313,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a meter values WebSocket request was received.
         /// </summary>
-        public event WSRequestLogHandler            OnMeterValuesWSRequest;
+        public event WSRequestLogHandler?            OnMeterValuesWSRequest;
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
         /// </summary>
-        public event MeterValuesRequestDelegate   OnMeterValuesRequest;
+        public event MeterValuesRequestDelegate?     OnMeterValuesRequest;
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
         /// </summary>
-        public event OnMeterValuesDelegate          OnMeterValues;
+        public event OnMeterValuesDelegate?          OnMeterValues;
 
         /// <summary>
         /// An event sent whenever a response to a meter values request was sent.
         /// </summary>
-        public event MeterValuesResponseDelegate  OnMeterValuesResponse;
+        public event MeterValuesResponseDelegate?    OnMeterValuesResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a meter values request was sent.
         /// </summary>
-        public event WSResponseLogHandler           OnMeterValuesWSResponse;
+        public event WSResponseLogHandler?           OnMeterValuesWSResponse;
 
         #endregion
 
@@ -395,27 +342,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a stop transaction WebSocket request was received.
         /// </summary>
-        public event WSRequestLogHandler                OnStopTransactionWSRequest;
+        public event WSRequestLogHandler?                OnStopTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
         /// </summary>
-        public event StopTransactionRequestDelegate   OnStopTransactionRequest;
+        public event StopTransactionRequestDelegate?     OnStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
         /// </summary>
-        public event OnStopTransactionDelegate          OnStopTransaction;
+        public event OnStopTransactionDelegate?          OnStopTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a stop transaction request was sent.
         /// </summary>
-        public event StopTransactionResponseDelegate  OnStopTransactionResponse;
+        public event StopTransactionResponseDelegate?    OnStopTransactionResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a stop transaction request was sent.
         /// </summary>
-        public event WSResponseLogHandler               OnStopTransactionWSResponse;
+        public event WSResponseLogHandler?               OnStopTransactionWSResponse;
 
         #endregion
 
@@ -425,27 +372,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a data transfer WebSocket request was received.
         /// </summary>
-        public event WSRequestLogHandler                     OnIncomingDataTransferWSRequest;
+        public event WSRequestLogHandler?                     OnIncomingDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event IncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
+        public event IncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferDelegate          OnIncomingDataTransfer;
+        public event OnIncomingDataTransferDelegate?          OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event IncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
+        public event IncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a data transfer request was sent.
         /// </summary>
-        public event WSResponseLogHandler                    OnIncomingDataTransferWSResponse;
+        public event WSResponseLogHandler?                    OnIncomingDataTransferWSResponse;
 
         #endregion
 
@@ -454,27 +401,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a diagnostics status notification WebSocket request was received.
         /// </summary>
-        public event WSRequestLogHandler                              OnDiagnosticsStatusNotificationWSRequest;
+        public event WSRequestLogHandler?                              OnDiagnosticsStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
         /// </summary>
-        public event DiagnosticsStatusNotificationRequestDelegate   OnDiagnosticsStatusNotificationRequest;
+        public event DiagnosticsStatusNotificationRequestDelegate?     OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationDelegate          OnDiagnosticsStatusNotification;
+        public event OnDiagnosticsStatusNotificationDelegate?          OnDiagnosticsStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a diagnostics status notification request was sent.
         /// </summary>
-        public event DiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
+        public event DiagnosticsStatusNotificationResponseDelegate?    OnDiagnosticsStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a diagnostics status notification request was sent.
         /// </summary>
-        public event WSResponseLogHandler                             OnDiagnosticsStatusNotificationWSResponse;
+        public event WSResponseLogHandler?                             OnDiagnosticsStatusNotificationWSResponse;
 
         #endregion
 
@@ -483,78 +430,132 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a firmware status notification WebSocket request was received.
         /// </summary>
-        public event WSRequestLogHandler                           OnFirmwareStatusNotificationWSRequest;
+        public event WSRequestLogHandler?                           OnFirmwareStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
         /// </summary>
-        public event FirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
+        public event FirmwareStatusNotificationRequestDelegate?     OnFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationDelegate          OnFirmwareStatusNotification;
+        public event OnFirmwareStatusNotificationDelegate?          OnFirmwareStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a firmware status notification request was sent.
         /// </summary>
-        public event FirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
+        public event FirmwareStatusNotificationResponseDelegate?    OnFirmwareStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a firmware status notification request was sent.
         /// </summary>
-        public event WSResponseLogHandler                          OnFirmwareStatusNotificationWSResponse;
+        public event WSResponseLogHandler?                          OnFirmwareStatusNotificationWSResponse;
 
         #endregion
 
         #endregion
 
-        #region Custom JSON serializer delegates
+        #region Custom JSON parser/serializer delegates
 
-        public CustomJObjectSerializerDelegate<ResetRequest>                   CustomResetRequestSerializer                     { get; set; }
+        /// <summary>
+        /// A delegate to parse custom BootNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<BootNotificationRequest>?               CustomBootNotificationRequestParser                 { get; set; }
 
-        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>      CustomChangeAvailabilityRequestSerializer        { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetConfigurationRequest>        CustomGetConfigurationRequestSerializer          { get; set; }
-
-        public CustomJObjectSerializerDelegate<ChangeConfigurationRequest>     CustomChangeConfigurationRequestSerializer       { get; set; }
-
-        public CustomJObjectSerializerDelegate<DataTransferRequest>            CustomDataTransferRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetDiagnosticsRequest>          CustomGetDiagnosticsRequestSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<TriggerMessageRequest>          CustomTriggerMessageRequestSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>          CustomUpdateFirmwareRequestSerializer            { get; set; }
+        /// <summary>
+        /// A delegate to parse custom Heartbeat requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<HeartbeatRequest>?                      CustomHeartbeatRequestParser                        { get; set; }
 
 
+        /// <summary>
+        /// A delegate to parse custom Authorize requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<AuthorizeRequest>?                      CustomAuthorizeRequestParser                        { get; set; }
 
-        public CustomJObjectSerializerDelegate<ReserveNowRequest>              CustomReserveNowRequestSerializer                { get; set; }
+        /// <summary>
+        /// A delegate to parse custom StartTransaction requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<StartTransactionRequest>?               CustomStartTransactionRequestParser                 { get; set; }
 
-        public CustomJObjectSerializerDelegate<CancelReservationRequest>       CustomCancelReservationRequestSerializer         { get; set; }
+        /// <summary>
+        /// A delegate to parse custom StatusNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<StatusNotificationRequest>?             CustomStatusNotificationRequestParser               { get; set; }
 
-        public CustomJObjectSerializerDelegate<RemoteStartTransactionRequest>  CustomRemoteStartTransactionRequestSerializer    { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingProfile>                CustomChargingProfileSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedule>               CustomChargingScheduleSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>         CustomChargingSchedulePeriodSerializer           { get; set; }
+        /// <summary>
+        /// A delegate to parse custom MeterValues requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<MeterValuesRequest>?                    CustomMeterValuesRequestParser                      { get; set; }
 
-        public CustomJObjectSerializerDelegate<RemoteStopTransactionRequest>   CustomRemoteStopTransactionRequestSerializer     { get; set; }
-
-        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>      CustomSetChargingProfileRequestSerializer        { get; set; }
-
-        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>    CustomClearChargingProfileRequestSerializer      { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>    CustomGetCompositeScheduleRequestSerializer      { get; set; }
-
-        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>         CustomUnlockConnectorRequestSerializer           { get; set; }
+        /// <summary>
+        /// A delegate to parse custom StopTransaction requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<StopTransactionRequest>?                CustomStopTransactionRequestParser                  { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>     CustomGetLocalListVersionRequestSerializer       { get; set; }
+        /// <summary>
+        /// A delegate to parse custom DataTransfer requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<CP.DataTransferRequest>?                CustomDataTransferRequestParser                     { get; set; }
 
-        public CustomJObjectSerializerDelegate<SendLocalListRequest>           CustomSendLocalListRequestSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<AuthorizationData>              CustomAuthorizationDataSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<IdTagInfo>                      CustomIdTagInfoResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<ClearCacheRequest>              CustomClearCacheRequestSerializer                { get; set; }
+        /// <summary>
+        /// A delegate to parse custom DiagnosticsStatusNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<DiagnosticsStatusNotificationRequest>?  CustomDiagnosticsStatusNotificationRequestParser    { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom FirmwareStatusNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>?     CustomFirmwareStatusNotificationRequestParser       { get; set; }
+
+
+
+        public CustomJObjectSerializerDelegate<ResetRequest>?                   CustomResetRequestSerializer                     { get; set; }
+
+        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?      CustomChangeAvailabilityRequestSerializer        { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetConfigurationRequest>?        CustomGetConfigurationRequestSerializer          { get; set; }
+
+        public CustomJObjectSerializerDelegate<ChangeConfigurationRequest>?     CustomChangeConfigurationRequestSerializer       { get; set; }
+
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?            CustomDataTransferRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetDiagnosticsRequest>?          CustomGetDiagnosticsRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?          CustomTriggerMessageRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?          CustomUpdateFirmwareRequestSerializer            { get; set; }
+
+
+
+        public CustomJObjectSerializerDelegate<ReserveNowRequest>?              CustomReserveNowRequestSerializer                { get; set; }
+
+        public CustomJObjectSerializerDelegate<CancelReservationRequest>?       CustomCancelReservationRequestSerializer         { get; set; }
+
+        public CustomJObjectSerializerDelegate<RemoteStartTransactionRequest>?  CustomRemoteStartTransactionRequestSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfile>?                CustomChargingProfileSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedule>?               CustomChargingScheduleSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?         CustomChargingSchedulePeriodSerializer           { get; set; }
+
+        public CustomJObjectSerializerDelegate<RemoteStopTransactionRequest>?   CustomRemoteStopTransactionRequestSerializer     { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?      CustomSetChargingProfileRequestSerializer        { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?    CustomClearChargingProfileRequestSerializer      { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?    CustomGetCompositeScheduleRequestSerializer      { get; set; }
+
+        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?         CustomUnlockConnectorRequestSerializer           { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?     CustomGetLocalListVersionRequestSerializer       { get; set; }
+
+        public CustomJObjectSerializerDelegate<SendLocalListRequest>?           CustomSendLocalListRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<AuthorizationData>?              CustomAuthorizationDataSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<IdTagInfo>?                      CustomIdTagInfoResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<ClearCacheRequest>?              CustomClearCacheRequestSerializer                { get; set; }
 
         #endregion
 
@@ -569,12 +570,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CentralSystemWSServer(String      HTTPServerName          = DefaultHTTPServerName,
-                                     IIPAddress  IPAddress               = null,
-                                     IPPort?     TCPPort                 = null,
-                                     Boolean     RequireAuthentication   = true,
-                                     DNSClient   DNSClient               = null,
-                                     Boolean     AutoStart               = false)
+        public CentralSystemWSServer(String       HTTPServerName          = DefaultHTTPServerName,
+                                     IIPAddress?  IPAddress               = null,
+                                     IPPort?      TCPPort                 = null,
+                                     Boolean      RequireAuthentication   = true,
+                                     DNSClient?   DNSClient               = null,
+                                     Boolean      AutoStart               = false)
 
             : base(IPAddress,
                    TCPPort ?? IPPort.Parse(8000),
@@ -586,7 +587,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             this.requests                        = new List<SendRequestResult>();
             this.RequireAuthentication           = RequireAuthentication;
-            this.ChargingBoxLogins               = new Dictionary<String, String>();
+            this.ChargingBoxLogins               = new Dictionary<String, String?>();
             this.connectedChargingBoxes          = new Dictionary<ChargeBox_Id, Tuple<WebSocketConnection, DateTime>>();
 
             base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
@@ -603,11 +604,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (protected) ValidateWebSocketConnection  (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
-        private async Task<HTTPResponse> ValidateWebSocketConnection(DateTime             LogTimestamp,
-                                                                     WebSocketServer      Server,
-                                                                     WebSocketConnection  Connection,
-                                                                     EventTracking_Id     EventTrackingId,
-                                                                     CancellationToken    CancellationToken)
+        private async Task<HTTPResponse?> ValidateWebSocketConnection(DateTime             LogTimestamp,
+                                                                      WebSocketServer      Server,
+                                                                      WebSocketConnection  Connection,
+                                                                      EventTracking_Id     EventTrackingId,
+                                                                      CancellationToken    CancellationToken)
         {
 
             #region Verify 'Sec-WebSocket-Protocol'...
@@ -615,19 +616,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             var secWebSocketProtocols = Connection.Request.SecWebSocketProtocol?.Split(',')?.Select(protocol => protocol?.Trim()).ToArray();
 
             if (secWebSocketProtocols is null)
-                return new HTTPResponse.Builder(HTTPStatusCode.BadRequest) {
-                               Server       = HTTPServiceName,
-                               Date         = Timestamp.Now,
-                               ContentType  = HTTPContentType.JSON_UTF8,
-                               Content      = JSONObject.Create(
-                                                  new JProperty("description",
-                                                  JSONObject.Create(
-                                                      new JProperty("en", "Missing 'Sec-WebSocket-Protocol' HTTP header!")
-                                                  ))).ToUTF8Bytes(),
-                               Connection   = "close"
-                           }.AsImmutable;
+            {
 
+                DebugX.Log("Missing 'Sec-WebSocket-Protocol' HTTP header!");
+
+                return new HTTPResponse.Builder(HTTPStatusCode.BadRequest) {
+                           Server       = HTTPServiceName,
+                           Date         = Timestamp.Now,
+                           ContentType  = HTTPContentType.JSON_UTF8,
+                           Content      = JSONObject.Create(
+                                              new JProperty("description",
+                                              JSONObject.Create(
+                                                  new JProperty("en", "Missing 'Sec-WebSocket-Protocol' HTTP header!")
+                                              ))).ToUTF8Bytes(),
+                           Connection   = "close"
+                       }.AsImmutable;
+
+            }
             else if (!secWebSocketProtocols.Contains("ocpp1.6"))
+            {
+
+                DebugX.Log("This web socket service only supports 'ocpp1.6'!");
+
                 return new HTTPResponse.Builder(HTTPStatusCode.BadRequest) {
                            Server       = HTTPServiceName,
                            Date         = Timestamp.Now,
@@ -640,6 +650,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            Connection   = "close"
                        }.AsImmutable;
 
+            }
+
             #endregion
 
             #region Verify HTTP Authentication
@@ -650,9 +662,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (Connection.Request.Authorization is HTTPBasicAuthentication basicAuthentication)
                 {
 
-                    if (ChargingBoxLogins.TryGetValue(basicAuthentication.Username, out String Password) &&
+                    if (ChargingBoxLogins.TryGetValue(basicAuthentication.Username, out String? Password) &&
                         basicAuthentication.Password == Password)
                     {
+                        DebugX.Log(nameof(CentralSystemWSServer), " connection from " + Connection.RemoteSocket + " using authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
                         return null;
                     }
                     else
@@ -663,10 +676,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     DebugX.Log(nameof(CentralSystemWSServer), " connection from " + Connection.RemoteSocket + " missing authorization!");
 
                 return new HTTPResponse.Builder(HTTPStatusCode.Unauthorized) {
-                               Server      = HTTPServiceName,
-                               Date        = Timestamp.Now,
-                               Connection  = "close"
-                           }.AsImmutable;
+                           Server      = HTTPServiceName,
+                           Date        = Timestamp.Now,
+                           Connection  = "close"
+                       }.AsImmutable;
 
             }
 
@@ -695,7 +708,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
             var OnNewCentralSystemWSConnectionLocal = OnNewCentralSystemWSConnection;
-            if (OnNewCentralSystemWSConnectionLocal != null)
+            if (OnNewCentralSystemWSConnectionLocal is not null)
             {
 
                 OnNewCentralSystemWSConnection?.Invoke(LogTimestamp,
@@ -712,11 +725,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
         public virtual Task<WebSocketTextMessageResponse> OnTextMessageProc(DateTime             Timestamp,
-                                                                           WebSocketServer      WebSocketServer,
-                                                                           WebSocketConnection  Sender,
-                                                                           String               TextMessage,
-                                                                           EventTracking_Id     EventTrackingId,
-                                                                           CancellationToken    CancellationToken)
+                                                                            WebSocketServer      WebSocketServer,
+                                                                            WebSocketConnection  Sender,
+                                                                            String               TextMessage,
+                                                                            EventTracking_Id     EventTrackingId,
+                                                                            CancellationToken    CancellationToken)
         {
             return null;
         }
