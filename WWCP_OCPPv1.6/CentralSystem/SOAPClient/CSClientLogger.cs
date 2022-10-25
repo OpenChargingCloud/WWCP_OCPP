@@ -17,11 +17,10 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 #endregion
 
@@ -29,7 +28,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A CS client.
+    /// A central system client.
     /// </summary>
     public partial class CentralSystemSOAPClient : ASOAPClient
     {
@@ -54,13 +53,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             /// <summary>
             /// The attached OCPP CS client.
             /// </summary>
-            public ICSClient  CSClient   { get; }
+            public ICSClient  CSClient    { get; }
 
             #endregion
 
             #region Constructor(s)
 
-            #region CSClientLogger(CSClient, Context = DefaultContext, LogFileCreator = null)
+            #region CSClientLogger(CSClient, Context = DefaultContext, LogfileCreator = null)
 
             /// <summary>
             /// Create a new CS client logger using the default logging delegates.
@@ -68,11 +67,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             /// <param name="CSClient">A OCPP CS client.</param>
             /// <param name="LoggingPath">The logging path.</param>
             /// <param name="Context">A context of this API.</param>
-            /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
+            /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
             public CSClientLogger(CentralSystemSOAPClient  CSClient,
                                   String                   LoggingPath,
                                   String                   Context          = DefaultContext,
-                                  LogfileCreatorDelegate   LogFileCreator   = null)
+                                  LogfileCreatorDelegate?  LogfileCreator   = null)
 
                 : this(CSClient,
                        LoggingPath,
@@ -82,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                        null,
                        null,
 
-                       LogFileCreator: LogFileCreator)
+                       LogfileCreator: LogfileCreator)
 
             { }
 
@@ -112,27 +111,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             /// <param name="LogHTTPError_toNetwork">A delegate to log HTTP errors to a network target.</param>
             /// <param name="LogHTTPError_toHTTPSSE">A delegate to log HTTP errors to a HTTP client sent events source.</param>
             /// 
-            /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-            public CSClientLogger(ICSClient                   CSClient,
-                                  String                      LoggingPath,
-                                  String                      Context,
+            /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
+            public CSClientLogger(ICSClient                    CSClient,
+                                  String                       LoggingPath,
+                                  String                       Context,
 
-                                  HTTPRequestLoggerDelegate   LogHTTPRequest_toConsole,
-                                  HTTPResponseLoggerDelegate  LogHTTPResponse_toConsole,
-                                  HTTPRequestLoggerDelegate   LogHTTPRequest_toDisc,
-                                  HTTPResponseLoggerDelegate  LogHTTPResponse_toDisc,
+                                  HTTPRequestLoggerDelegate?   LogHTTPRequest_toConsole    = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPResponse_toConsole   = null,
+                                  HTTPRequestLoggerDelegate?   LogHTTPRequest_toDisc       = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPResponse_toDisc      = null,
 
-                                  HTTPRequestLoggerDelegate   LogHTTPRequest_toNetwork    = null,
-                                  HTTPResponseLoggerDelegate  LogHTTPResponse_toNetwork   = null,
-                                  HTTPRequestLoggerDelegate   LogHTTPRequest_toHTTPSSE    = null,
-                                  HTTPResponseLoggerDelegate  LogHTTPResponse_toHTTPSSE   = null,
+                                  HTTPRequestLoggerDelegate?   LogHTTPRequest_toNetwork    = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPResponse_toNetwork   = null,
+                                  HTTPRequestLoggerDelegate?   LogHTTPRequest_toHTTPSSE    = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPResponse_toHTTPSSE   = null,
 
-                                  HTTPResponseLoggerDelegate  LogHTTPError_toConsole      = null,
-                                  HTTPResponseLoggerDelegate  LogHTTPError_toDisc         = null,
-                                  HTTPResponseLoggerDelegate  LogHTTPError_toNetwork      = null,
-                                  HTTPResponseLoggerDelegate  LogHTTPError_toHTTPSSE      = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPError_toConsole      = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPError_toDisc         = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPError_toNetwork      = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPError_toHTTPSSE      = null,
 
-                                  LogfileCreatorDelegate      LogFileCreator              = null)
+                                  LogfileCreatorDelegate?      LogfileCreator              = null)
 
                 : base(CSClient,
                        LoggingPath,
@@ -153,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                        LogHTTPError_toNetwork,
                        LogHTTPError_toHTTPSSE,
 
-                       LogFileCreator)
+                       LogfileCreator)
 
             {
 

@@ -64,8 +64,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         private readonly String InternalId;
 
-        private static readonly Random random = new Random();
-
         #endregion
 
         #region Properties
@@ -114,8 +112,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Request_Id Random(Byte      Length    = 30,
                                         Boolean?  IsLocal   = false)
 
-            => new Request_Id((IsLocal == true ? "Local:" : "") +
-                              random.RandomString(Length));
+            => new ((IsLocal == true ? "Local:" : "") +
+                    RandomExtensions.RandomString(Length));
 
         #endregion
 

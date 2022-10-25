@@ -17,10 +17,9 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 #endregion
 
@@ -47,13 +46,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The linked OCPP central service SOAP server.
         /// </summary>
-        public CentralSystemSOAPServer CSServer { get; }
+        public CentralSystemSOAPServer  CSServer    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region CSServerLogger(CSServer, Context = DefaultContext, LogFileCreator = null)
+        #region CSServerLogger(CSServer, Context = DefaultContext, LogfileCreator = null)
 
         /// <summary>
         /// Create a new central service SOAP server logger using the default logging delegates.
@@ -61,11 +60,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CSServer">A OCPP central service SOAP server.</param>
         /// <param name="LoggingPath">The logging path.</param>
         /// <param name="Context">A context of this API.</param>
-        /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
+        /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         public CSServerLogger(CentralSystemSOAPServer  CSServer,
                               String                   LoggingPath,
-                              String                   Context         = DefaultContext,
-                              LogfileCreatorDelegate   LogFileCreator  = null)
+                              String                   Context          = DefaultContext,
+                              LogfileCreatorDelegate?  LogfileCreator   = null)
 
             : this(CSServer,
                    LoggingPath,
@@ -75,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    null,
                    null,
 
-                   LogFileCreator: LogFileCreator)
+                   LogfileCreator: LogfileCreator)
 
         { }
 
@@ -105,27 +104,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="LogHTTPError_toNetwork">A delegate to log HTTP errors to a network target.</param>
         /// <param name="LogHTTPError_toHTTPSSE">A delegate to log HTTP errors to a HTTP server sent events source.</param>
         /// 
-        /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CSServerLogger(CentralSystemSOAPServer     CSServer,
-                              String                      LoggingPath,
-                              String                      Context,
+        /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
+        public CSServerLogger(CentralSystemSOAPServer      CSServer,
+                              String                       LoggingPath,
+                              String                       Context,
 
-                              HTTPRequestLoggerDelegate   LogHTTPRequest_toConsole,
-                              HTTPResponseLoggerDelegate  LogHTTPResponse_toConsole,
-                              HTTPRequestLoggerDelegate   LogHTTPRequest_toDisc,
-                              HTTPResponseLoggerDelegate  LogHTTPResponse_toDisc,
+                              HTTPRequestLoggerDelegate?   LogHTTPRequest_toConsole    = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPResponse_toConsole   = null,
+                              HTTPRequestLoggerDelegate?   LogHTTPRequest_toDisc       = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPResponse_toDisc      = null,
 
-                              HTTPRequestLoggerDelegate   LogHTTPRequest_toNetwork    = null,
-                              HTTPResponseLoggerDelegate  LogHTTPResponse_toNetwork   = null,
-                              HTTPRequestLoggerDelegate   LogHTTPRequest_toHTTPSSE    = null,
-                              HTTPResponseLoggerDelegate  LogHTTPResponse_toHTTPSSE   = null,
+                              HTTPRequestLoggerDelegate?   LogHTTPRequest_toNetwork    = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPResponse_toNetwork   = null,
+                              HTTPRequestLoggerDelegate?   LogHTTPRequest_toHTTPSSE    = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPResponse_toHTTPSSE   = null,
 
-                              HTTPResponseLoggerDelegate  LogHTTPError_toConsole      = null,
-                              HTTPResponseLoggerDelegate  LogHTTPError_toDisc         = null,
-                              HTTPResponseLoggerDelegate  LogHTTPError_toNetwork      = null,
-                              HTTPResponseLoggerDelegate  LogHTTPError_toHTTPSSE      = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPError_toConsole      = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPError_toDisc         = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPError_toNetwork      = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPError_toHTTPSSE      = null,
 
-                              LogfileCreatorDelegate      LogFileCreator              = null)
+                              LogfileCreatorDelegate?      LogfileCreator              = null)
 
             : base(CSServer.SOAPServer.HTTPServer,
                    LoggingPath,
@@ -146,16 +145,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    LogHTTPError_toNetwork,
                    LogHTTPError_toHTTPSSE,
 
-                   LogFileCreator)
+                   LogfileCreator)
 
         {
 
             #region Initial checks
 
-            if (CSServer == null)
-                throw new ArgumentNullException(nameof(CSServer), "The given CS server must not be null!");
-
-            this.CSServer = CSServer;
+            this.CSServer = CSServer ?? throw new ArgumentNullException(nameof(CSServer), "The given CS server must not be null!");
 
             #endregion
 

@@ -33,6 +33,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP.v1_2;
 using System.Security.Authentication;
+using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 #endregion
 
@@ -365,7 +366,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="UseHTTPPipelining">Whether to pipeline multiple HTTP Request through a single HTTP/TCP connection.</param>
         /// <param name="LoggingPath">The logging path.</param>
         /// <param name="LoggingContext">An optional context for logging client methods.</param>
-        /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
+        /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
         public ChargePointSOAPClient(ChargeBox_Id                         ChargeBoxIdentity,
@@ -391,7 +392,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                      String                               LoggingPath                  = null,
                                      String                               LoggingContext               = CPClientLogger.DefaultContext,
-                                     LogfileCreatorDelegate               LogFileCreator               = null,
+                                     LogfileCreatorDelegate               LogfileCreator               = null,
                                      HTTPClientLogger                     HTTPLogger                   = null,
                                      DNSClient                            DNSClient                    = null)
 
@@ -437,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.Logger             = new CPClientLogger(this,
                                                          LoggingPath,
                                                          LoggingContext,
-                                                         LogFileCreator);
+                                                         LogfileCreator);
 
         }
 

@@ -17,29 +17,23 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
+using System.Diagnostics;
+using System.Net.Sockets;
 using System.Net.Security;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
-using cloud.charging.open.protocols.OCPPv1_6.CS;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-//using org.GraphDefined.Vanaheimr.Hermod.Websocket;
-//using org.GraphDefined.Vanaheimr.Hermod.Websocket.v1_2;
-using System.Diagnostics;
-using System.Net.Sockets;
-using System.IO;
-using Newtonsoft.Json.Linq;
-using System.Security.Authentication;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Logging;
+
 using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
@@ -1179,7 +1173,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="UseHTTPPipelining">Whether to pipeline multiple HTTP Request through a single HTTP/TCP connection.</param>
         /// <param name="LoggingPath">The logging path.</param>
         /// <param name="LoggingContext">An optional context for logging client methods.</param>
-        /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
+        /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
         public ChargePointWSClient(ChargeBox_Id                          ChargeBoxIdentity,
@@ -1207,7 +1201,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                    String?                               LoggingPath                  = null,
                                    String                                LoggingContext               = ChargePointWSClient.CPClientLogger.DefaultContext,
-                                   LogfileCreatorDelegate?               LogFileCreator               = null,
+                                   LogfileCreatorDelegate?               LogfileCreator               = null,
                                    HTTPClientLogger?                     HTTPLogger                   = null,
                                    DNSClient?                            DNSClient                    = null)
 
@@ -1251,7 +1245,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             //this.Logger                      = new ChargePointwebsocketClient.CPClientLogger(this,
             //                                                                            LoggingPath,
             //                                                                            LoggingContext,
-            //                                                                            LogFileCreator);
+            //                                                                            LogfileCreator);
 
             this.MaintenanceEvery            = MaintenanceEvery   ?? DefaultMaintenanceEvery;
             this.MaintenanceTimer            = new Timer(DoMaintenanceSync,

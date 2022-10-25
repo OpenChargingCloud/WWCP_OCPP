@@ -17,11 +17,9 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.SOAP;
+using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 #endregion
 
@@ -60,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Constructor(s)
 
-            #region CPClientLogger(CPClient, Context = DefaultContext, LogFileCreator = null)
+            #region CPClientLogger(CPClient, Context = DefaultContext, LogfileCreator = null)
 
             /// <summary>
             /// Create a new CP client logger using the default logging delegates.
@@ -68,11 +66,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             /// <param name="CPClient">A OCPP CP client.</param>
             /// <param name="LoggingPath">The logging path.</param>
             /// <param name="Context">A context of this API.</param>
-            /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-            public CPClientLogger(ChargePointSOAPClient   CPClient,
-                                  String                  LoggingPath,
-                                  String                  Context         = DefaultContext,
-                                  LogfileCreatorDelegate  LogFileCreator  = null)
+            /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
+            public CPClientLogger(ChargePointSOAPClient    CPClient,
+                                  String                   LoggingPath,
+                                  String                   Context          = DefaultContext,
+                                  LogfileCreatorDelegate?  LogfileCreator   = null)
 
                 : this(CPClient,
                        LoggingPath,
@@ -82,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                        null,
                        null,
 
-                       LogFileCreator: LogFileCreator)
+                       LogfileCreator: LogfileCreator)
 
             { }
 
@@ -112,27 +110,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             /// <param name="LogHTTPError_toNetwork">A delegate to log HTTP errors to a network target.</param>
             /// <param name="LogHTTPError_toHTTPSSE">A delegate to log HTTP errors to a HTTP client sent events source.</param>
             /// 
-            /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-            public CPClientLogger(ICPClient                   CPClient,
-                                  String                      LoggingPath,
-                                  String                      Context,
+            /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
+            public CPClientLogger(ICPClient                    CPClient,
+                                  String                       LoggingPath,
+                                  String                       Context,
 
-                                  HTTPRequestLoggerDelegate   LogHTTPRequest_toConsole,
-                                  HTTPResponseLoggerDelegate  LogHTTPResponse_toConsole,
-                                  HTTPRequestLoggerDelegate   LogHTTPRequest_toDisc,
-                                  HTTPResponseLoggerDelegate  LogHTTPResponse_toDisc,
+                                  HTTPRequestLoggerDelegate?   LogHTTPRequest_toConsole    = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPResponse_toConsole   = null,
+                                  HTTPRequestLoggerDelegate?   LogHTTPRequest_toDisc       = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPResponse_toDisc      = null,
 
-                                  HTTPRequestLoggerDelegate   LogHTTPRequest_toNetwork    = null,
-                                  HTTPResponseLoggerDelegate  LogHTTPResponse_toNetwork   = null,
-                                  HTTPRequestLoggerDelegate   LogHTTPRequest_toHTTPSSE    = null,
-                                  HTTPResponseLoggerDelegate  LogHTTPResponse_toHTTPSSE   = null,
+                                  HTTPRequestLoggerDelegate?   LogHTTPRequest_toNetwork    = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPResponse_toNetwork   = null,
+                                  HTTPRequestLoggerDelegate?   LogHTTPRequest_toHTTPSSE    = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPResponse_toHTTPSSE   = null,
 
-                                  HTTPResponseLoggerDelegate  LogHTTPError_toConsole      = null,
-                                  HTTPResponseLoggerDelegate  LogHTTPError_toDisc         = null,
-                                  HTTPResponseLoggerDelegate  LogHTTPError_toNetwork      = null,
-                                  HTTPResponseLoggerDelegate  LogHTTPError_toHTTPSSE      = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPError_toConsole      = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPError_toDisc         = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPError_toNetwork      = null,
+                                  HTTPResponseLoggerDelegate?  LogHTTPError_toHTTPSSE      = null,
 
-                                  LogfileCreatorDelegate      LogFileCreator              = null)
+                                  LogfileCreatorDelegate?      LogfileCreator              = null)
 
                 : base(CPClient,
                        LoggingPath,
@@ -153,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                        LogHTTPError_toNetwork,
                        LogHTTPError_toHTTPSSE,
 
-                       LogFileCreator)
+                       LogfileCreator)
 
             {
 

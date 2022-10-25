@@ -17,11 +17,8 @@
 
 #region Usings
 
-using System;
-using System.Threading;
 using System.Net.Security;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
 using cloud.charging.open.protocols.OCPPv1_6.CP;
@@ -32,7 +29,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP.v1_2;
-using System.Security.Authentication;
+using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 #endregion
 
@@ -579,7 +576,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="UseHTTPPipelining">Whether to pipeline multiple HTTP request through a single HTTP/TCP connection.</param>
         /// <param name="LoggingPath">The logging path.</param>
         /// <param name="LoggingContext">An optional context for logging client methods.</param>
-        /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
+        /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
         public CentralSystemSOAPClient(ChargeBox_Id                          ChargeBoxIdentity,
@@ -605,7 +602,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                        String?                               LoggingPath                  = null,
                                        String                                LoggingContext               = CSClientLogger.DefaultContext,
-                                       LogfileCreatorDelegate?               LogFileCreator               = null,
+                                       LogfileCreatorDelegate?               LogfileCreator               = null,
                                        HTTPClientLogger?                     HTTPLogger                   = null,
                                        DNSClient?                            DNSClient                    = null)
 
@@ -650,7 +647,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             this.Logger             = new CSClientLogger(this,
                                                          LoggingPath,
                                                          LoggingContext,
-                                                         LogFileCreator);
+                                                         LogfileCreator);
 
         }
 
@@ -4949,6 +4946,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         }
 
         #endregion
+
 
     }
 

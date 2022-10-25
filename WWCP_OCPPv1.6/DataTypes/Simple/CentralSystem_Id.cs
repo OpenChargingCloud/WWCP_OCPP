@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -63,8 +61,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The internal identification.
         /// </summary>
         private readonly String InternalId;
-
-        private static readonly Random random = new Random();
 
         #endregion
 
@@ -112,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Length">The expected length of the central system identification.</param>
         public static CentralSystem_Id Random(Byte Length = 30)
 
-            => new CentralSystem_Id(random.RandomString(Length));
+            => new (RandomExtensions.RandomString(Length));
 
         #endregion
 

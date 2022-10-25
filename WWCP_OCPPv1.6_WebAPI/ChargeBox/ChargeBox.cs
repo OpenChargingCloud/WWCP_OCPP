@@ -841,9 +841,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             : base(Id,
                    JSONLDContext ?? DefaultJSONLDContext,
+                   LastChange,
+                   null,
                    CustomData,
-                   DataSource,
-                   LastChange)
+                   DataSource)
 
         {
 
@@ -892,31 +893,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
-        /// <param name="IncludeCryptoHash">Include the crypto hash value of this object.</param>
-        public override JObject ToJSON(Boolean  Embedded           = false,
-                                       Boolean  IncludeCryptoHash  = false)
+        public override JObject ToJSON(Boolean  Embedded   = false)
 
-            => ToJSON(Embedded:                false,
-                      ExpandTags:              InfoStatus.ShowIdOnly,
-                      IncludeCryptoHash:       true);
+            => ToJSON(Embedded:    false,
+                      ExpandTags:  InfoStatus.ShowIdOnly);
 
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomChargeBoxSerializer">A delegate to serialize custom charge boxes.</param>
-        public JObject ToJSON(Boolean                                     Embedded                    = false,
-                              InfoStatus                                  ExpandTags                  = InfoStatus.ShowIdOnly,
-                              Boolean                                     IncludeLastChange           = true,
-                              Boolean                                     IncludeCryptoHash           = true,
-                              CustomJObjectSerializerDelegate<ChargeBox>  CustomChargeBoxSerializer   = null)
+        public JObject ToJSON(Boolean                                      Embedded                    = false,
+                              InfoStatus                                   ExpandTags                  = InfoStatus.ShowIdOnly,
+                              Boolean                                      IncludeLastChange           = true,
+                              CustomJObjectSerializerDelegate<ChargeBox>?  CustomChargeBoxSerializer   = null)
         {
 
-            var JSON = base.ToJSON(Embedded,
+            var json = base.ToJSON(Embedded,
                                    IncludeLastChange,
-                                   IncludeCryptoHash,
                                    null,
-                                   new JProperty[] {
+                                   new JProperty?[] {
 
                                        ChargePointSerialNumber.IsNotNullOrEmpty()
                                            ? new JProperty("chargePointVendor",         ChargePointVendor)
@@ -960,9 +956,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                    });
 
-            return CustomChargeBoxSerializer != null
-                       ? CustomChargeBoxSerializer(this, JSON)
-                       : JSON;
+            return CustomChargeBoxSerializer is not null
+                       ? CustomChargeBoxSerializer(this, json)
+                       : json;
 
         }
 
@@ -1213,34 +1209,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="NewChargeBoxId">An optional new chargeBox identification.</param>
         public Builder ToBuilder(ChargeBox_Id? NewChargeBoxId = null)
 
-            => new Builder(NewChargeBoxId ?? Id,
-                           1, //NumberOfConnectors,
-                           ChargePointVendor,
-                           ChargePointModel,
+            => new (NewChargeBoxId ?? Id,
+                    1, //NumberOfConnectors,
+                    ChargePointVendor,
+                    ChargePointModel,
 
-                           Description,
-                           ChargePointSerialNumber,
-                           ChargeBoxSerialNumber,
-                           FirmwareVersion,
-                           Iccid,
-                           IMSI,
-                           MeterType,
-                           MeterSerialNumber,
-                           MeterPublicKey,
+                    Description,
+                    ChargePointSerialNumber,
+                    ChargeBoxSerialNumber,
+                    FirmwareVersion,
+                    Iccid,
+                    IMSI,
+                    MeterType,
+                    MeterSerialNumber,
+                    MeterPublicKey,
 
-                           ExpectHeartbeatEvery,
+                    ExpectHeartbeatEvery,
 
-                           null, //_Notifications,
+                    null, //_Notifications,
 
-                           //_User2ChargeBox_Edges,
-                           null, //_ChargeBox2ChargeBox_InEdges,
-                           null, //_ChargeBox2ChargeBox_OutEdges,
+                    //_User2ChargeBox_Edges,
+                    null, //_ChargeBox2ChargeBox_InEdges,
+                    null, //_ChargeBox2ChargeBox_OutEdges,
 
-                           CustomData,
-                           null, //AttachedFiles,
-                           JSONLDContext,
-                           DataSource,
-                           LastChange);
+                    CustomData,
+                    null, //AttachedFiles,
+                    JSONLDContext,
+                    DataSource,
+                    LastChangeDate);
 
         #endregion
 
@@ -1604,9 +1600,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 : base(Id,
                        JSONLDContext ?? DefaultJSONLDContext,
+                       LastChange,
+                       null,
                        CustomData,
-                       DataSource,
-                       LastChange)
+                       DataSource)
 
             {
 
@@ -1814,7 +1811,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                           AttachedFiles,
                                                           JSONLDContext,
                                                           DataSource,
-                                                          LastChange);
+                                                          LastChangeDate);
 
                 }
             }

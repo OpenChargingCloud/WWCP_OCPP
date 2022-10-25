@@ -32,6 +32,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using System.Security.Authentication;
+using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 #endregion
 
@@ -885,7 +886,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                    Boolean                               UseHTTPPipelining            = false,
                                    String?                               LoggingPath                  = null,
                                    String?                               LoggingContext               = null,
-                                   LogfileCreatorDelegate?               LogFileCreator               = null,
+                                   LogfileCreatorDelegate?               LogfileCreator               = null,
                                    HTTPClientLogger?                     HTTPLogger                   = null,
 
                                    String?                               HTTPServerName               = null,
@@ -921,7 +922,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                       UseHTTPPipelining,
                                                       LoggingPath,
                                                       LoggingContext,
-                                                      LogFileCreator,
+                                                      LogfileCreator,
                                                       HTTPLogger,
                                                       DNSClient ?? this.DNSClient);
 
@@ -962,7 +963,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                          Boolean                               UseHTTPPipelining            = false,
                                                          String?                               LoggingPath                  = null,
                                                          String?                               LoggingContext               = null,
-                                                         LogfileCreatorDelegate?               LogFileCreator               = null,
+                                                         LogfileCreatorDelegate?               LogfileCreator               = null,
                                                          HTTPClientLogger?                     HTTPLogger                   = null,
                                                          DNSClient?                            DNSClient                    = null)
 
@@ -991,7 +992,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                      null,
                                                      LoggingPath,
                                                      LoggingContext,
-                                                     LogFileCreator,
+                                                     LogfileCreator,
                                                      HTTPLogger,
                                                      DNSClient ?? this.DNSClient);
 

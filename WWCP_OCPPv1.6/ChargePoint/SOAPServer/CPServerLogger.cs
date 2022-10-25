@@ -17,10 +17,9 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 #endregion
 
@@ -28,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A CP server logger.
+    /// A charge point server logger.
     /// </summary>
     public class CPServerLogger : HTTPServerLogger
     {
@@ -47,13 +46,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The linked OCPP charge point SOAP server.
         /// </summary>
-        public ChargePointSOAPServer CPServer { get; }
+        public ChargePointSOAPServer  CPServer    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region CPServerLogger(CPServer, Context = DefaultContext, LogFileCreator = null)
+        #region CPServerLogger(CPServer, Context = DefaultContext, LogfileCreator = null)
 
         /// <summary>
         /// Create a new charge point SOAP server logger using the default logging delegates.
@@ -61,11 +60,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CPServer">A OCPP charge point SOAP server.</param>
         /// <param name="LoggingPath">The logging path.</param>
         /// <param name="Context">A context of this API.</param>
-        /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CPServerLogger(ChargePointSOAPServer   CPServer,
-                              String                  LoggingPath,
-                              String                  Context         = DefaultContext,
-                              LogfileCreatorDelegate  LogFileCreator  = null)
+        /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
+        public CPServerLogger(ChargePointSOAPServer    CPServer,
+                              String                   LoggingPath,
+                              String                   Context          = DefaultContext,
+                              LogfileCreatorDelegate?  LogfileCreator   = null)
 
             : this(CPServer,
                    LoggingPath,
@@ -75,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    null,
                    null,
 
-                   LogFileCreator: LogFileCreator)
+                   LogfileCreator: LogfileCreator)
 
         { }
 
@@ -105,27 +104,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="LogHTTPError_toNetwork">A delegate to log HTTP errors to a network target.</param>
         /// <param name="LogHTTPError_toHTTPSSE">A delegate to log HTTP errors to a HTTP server sent events source.</param>
         /// 
-        /// <param name="LogFileCreator">A delegate to create a log file from the given context and log file name.</param>
-        public CPServerLogger(ChargePointSOAPServer       CPServer,
-                              String                      LoggingPath,
-                              String                      Context,
+        /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
+        public CPServerLogger(ChargePointSOAPServer        CPServer,
+                              String                       LoggingPath,
+                              String                       Context,
 
-                              HTTPRequestLoggerDelegate   LogHTTPRequest_toConsole,
-                              HTTPResponseLoggerDelegate  LogHTTPResponse_toConsole,
-                              HTTPRequestLoggerDelegate   LogHTTPRequest_toDisc,
-                              HTTPResponseLoggerDelegate  LogHTTPResponse_toDisc,
+                              HTTPRequestLoggerDelegate?   LogHTTPRequest_toConsole    = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPResponse_toConsole   = null,
+                              HTTPRequestLoggerDelegate?   LogHTTPRequest_toDisc       = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPResponse_toDisc      = null,
 
-                              HTTPRequestLoggerDelegate   LogHTTPRequest_toNetwork    = null,
-                              HTTPResponseLoggerDelegate  LogHTTPResponse_toNetwork   = null,
-                              HTTPRequestLoggerDelegate   LogHTTPRequest_toHTTPSSE    = null,
-                              HTTPResponseLoggerDelegate  LogHTTPResponse_toHTTPSSE   = null,
+                              HTTPRequestLoggerDelegate?   LogHTTPRequest_toNetwork    = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPResponse_toNetwork   = null,
+                              HTTPRequestLoggerDelegate?   LogHTTPRequest_toHTTPSSE    = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPResponse_toHTTPSSE   = null,
 
-                              HTTPResponseLoggerDelegate  LogHTTPError_toConsole      = null,
-                              HTTPResponseLoggerDelegate  LogHTTPError_toDisc         = null,
-                              HTTPResponseLoggerDelegate  LogHTTPError_toNetwork      = null,
-                              HTTPResponseLoggerDelegate  LogHTTPError_toHTTPSSE      = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPError_toConsole      = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPError_toDisc         = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPError_toNetwork      = null,
+                              HTTPResponseLoggerDelegate?  LogHTTPError_toHTTPSSE      = null,
 
-                              LogfileCreatorDelegate      LogFileCreator              = null)
+                              LogfileCreatorDelegate?      LogfileCreator              = null)
 
             : base(CPServer.SOAPServer.HTTPServer,
                    LoggingPath,
@@ -146,16 +145,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    LogHTTPError_toNetwork,
                    LogHTTPError_toHTTPSSE,
 
-                   LogFileCreator)
+                   LogfileCreator)
 
         {
 
             #region Initial checks
 
-            if (CPServer == null)
-                throw new ArgumentNullException(nameof(CPServer), "The given CP server must not be null!");
-
-            this.CPServer = CPServer;
+            this.CPServer = CPServer ?? throw new ArgumentNullException(nameof(CPServer), "The given CP server must not be null!");
 
             #endregion
 
