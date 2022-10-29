@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -48,19 +46,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Type of detail value: start, end or sample.
         /// Default = “Sample.Periodic”.
         /// </summary>
-        public ReadingContexts?  Context      { get; }
+        public ReadingContexts   Context      { get; }
 
         /// <summary>
         /// Raw or signed data.
         /// Default = “Raw”.
         /// </summary>
-        public ValueFormats?     Format       { get; }
+        public ValueFormats      Format       { get; }
 
         /// <summary>
         /// Type of measurement.
         /// Default = “Energy.Active.Import.Register”.
         /// </summary>
-        public Measurands?       Measurand    { get; }
+        public Measurands        Measurand    { get; }
 
         /// <summary>
         /// Indicates how the measured value is to be interpreted.
@@ -74,13 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Location of measurement. Default=”Outlet”.
         /// </summary>
-        public Locations?        Location     { get; }
+        public Locations         Location     { get; }
 
         /// <summary>
         /// Unit of the value.
         /// Default = “Wh” if the (default) measurand is an “Energy” type.
         /// </summary>
-        public UnitsOfMeasure?   Unit         { get; }
+        public UnitsOfMeasure    Unit         { get; }
 
         #endregion
 
@@ -107,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region Initial checks
 
-            Value = Value?.Trim();
+            Value = Value.Trim();
 
             if (Value.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Value),  "The given sampled value must not be null or empty!");
@@ -116,12 +114,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             this.Value      = Value;
 
-            this.Context    = Context;   //?? ReadingContexts.SamplePeriodic;
-            this.Format     = Format;    //?? ValueFormats.Raw;
-            this.Measurand  = Measurand; //?? Measurands.EnergyActiveImportRegister;
+            this.Context    = Context   ?? ReadingContexts.SamplePeriodic;
+            this.Format     = Format    ?? ValueFormats.Raw;
+            this.Measurand  = Measurand ?? Measurands.EnergyActiveImportRegister;
             this.Phase      = Phase;
-            this.Location   = Location;  //?? Locations.Outlet;
-            this.Unit       = Unit;
+            this.Location   = Location  ?? Locations.Outlet;
+            this.Unit       = Unit      ?? UnitsOfMeasure.Wh;
 
         }
 
@@ -278,12 +276,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="SampledValueXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SampledValue Parse(XElement             SampledValueXML,
-                                         OnExceptionDelegate  OnException = null)
+        public static SampledValue? Parse(XElement              SampledValueXML,
+                                          OnExceptionDelegate?  OnException   = null)
         {
 
             if (TryParse(SampledValueXML,
-                         out SampledValue sampledValue,
+                         out var sampledValue,
                          OnException))
             {
                 return sampledValue;
@@ -302,19 +300,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="JSON">The text to be parsed.</param>
         /// <param name="CustomSampledValueParser">A delegate to parse custom DataTransfer requests.</param>
-        public static SampledValue Parse(JObject                                    JSON,
-                                         CustomJObjectParserDelegate<SampledValue>  CustomSampledValueParser   = null)
+        public static SampledValue? Parse(JObject                                     JSON,
+                                          CustomJObjectParserDelegate<SampledValue>?  CustomSampledValueParser   = null)
         {
 
             if (TryParse(JSON,
-                         out SampledValue  sampledValue,
-                         out String        ErrorResponse,
+                         out var sampledValue,
+                         out var errorResponse,
                          CustomSampledValueParser))
             {
                 return sampledValue;
             }
 
-            throw new ArgumentException("The given JSON representation of a SampledValue is invalid: " + ErrorResponse, nameof(JSON));
+            throw new ArgumentException("The given JSON representation of a SampledValue is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
@@ -327,12 +326,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="SampledValueText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SampledValue Parse(String               SampledValueText,
-                                         OnExceptionDelegate  OnException = null)
+        public static SampledValue? Parse(String                SampledValueText,
+                                          OnExceptionDelegate?  OnException   = null)
         {
 
             if (TryParse(SampledValueText,
-                         out SampledValue sampledValue,
+                         out var sampledValue,
                          OnException))
             {
                 return sampledValue;
@@ -352,9 +351,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SampledValueXML">The XML to be parsed.</param>
         /// <param name="SampledValue">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement             SampledValueXML,
-                                       out SampledValue     SampledValue,
-                                       OnExceptionDelegate  OnException  = null)
+        public static Boolean TryParse(XElement              SampledValueXML,
+                                       out SampledValue?     SampledValue,
+                                       OnExceptionDelegate?  OnException   = null)
         {
 
             try
@@ -390,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, SampledValueXML, e);
+                OnException?.Invoke(Timestamp.Now, SampledValueXML, e);
 
                 SampledValue = null;
                 return false;
@@ -411,9 +410,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The text to be parsed.</param>
         /// <param name="SampledValue">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject           JSON,
-                                       out SampledValue  SampledValue,
-                                       out String        ErrorResponse)
+        public static Boolean TryParse(JObject            JSON,
+                                       out SampledValue?  SampledValue,
+                                       out String?        ErrorResponse)
 
             => TryParse(JSON,
                         out SampledValue,
@@ -428,10 +427,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SampledValue">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSampledValueParser">A delegate to parse custom SampledValues.</param>
-        public static Boolean TryParse(JObject                                    JSON,
-                                       out SampledValue                           SampledValue,
-                                       out String                                 ErrorResponse,
-                                       CustomJObjectParserDelegate<SampledValue>  CustomSampledValueParser)
+        public static Boolean TryParse(JObject                                     JSON,
+                                       out SampledValue?                           SampledValue,
+                                       out String?                                 ErrorResponse,
+                                       CustomJObjectParserDelegate<SampledValue>?  CustomSampledValueParser)
         {
 
             try
@@ -570,15 +569,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SampledValueText">The text to be parsed.</param>
         /// <param name="SampledValue">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               SampledValueText,
-                                       out SampledValue     SampledValue,
-                                       OnExceptionDelegate  OnException  = null)
+        public static Boolean TryParse(String                SampledValueText,
+                                       out SampledValue?     SampledValue,
+                                       OnExceptionDelegate?  OnException   = null)
         {
 
             try
             {
 
-                SampledValueText = SampledValueText?.Trim();
+                SampledValueText = SampledValueText.Trim();
 
                 if (SampledValueText.IsNotNullOrEmpty())
                 {
@@ -586,7 +585,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     if (SampledValueText.StartsWith("{") &&
                         TryParse(JObject.Parse(SampledValueText),
                                  out SampledValue,
-                                 out String ErrorResponse))
+                                 out var errorResponse))
                     {
                         return true;
                     }
@@ -603,7 +602,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, SampledValueText, e);
+                OnException?.Invoke(Timestamp.Now, SampledValueText, e);
             }
 
             SampledValue = null;
@@ -619,35 +618,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a XML representation of this object.
         /// </summary>
         /// <param name="XName">An alternative XML element name [default: "OCPPv1_6_CS:idTagInfo"]</param>
-        public XElement ToXML(XName XName = null)
+        public XElement ToXML(XName? XName = null)
 
             => new XElement(XName ?? OCPPNS.OCPPv1_6_CS + "sampledValue",
 
                    new XElement(OCPPNS.OCPPv1_6_CS + "value",  Value),
-
-                   Context.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "context",     Context.  Value.AsText())
-                       : null,
-
-                   Format.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "format",      Format.   Value.AsText())
-                       : null,
-
-                   Measurand.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "measurand",   Measurand.Value.AsText())
-                       : null,
+                   new XElement(OCPPNS.OCPPv1_6_CS + "context",     Context.        AsText()),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "format",      Format.         AsText()),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "measurand",   Measurand.      AsText()),
 
                    Phase.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "phase",       Phase.    Value.AsText())
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "phase", Phase.    Value.AsText())
                        : null,
 
-                   Location.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "location",    Location. Value.AsText())
-                       : null,
-
-                   Unit.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "unit",        Unit.     Value.AsText())
-                       : null
+                   new XElement(OCPPNS.OCPPv1_6_CS + "location",    Location.       AsText()),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "unit",        Unit.           AsText())
 
                );
 
@@ -659,42 +644,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SampledValue>  CustomSampledValueSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SampledValue>?  CustomSampledValueSerializer   = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                           new JProperty("value",            Value),
+                           new JProperty("value",        Value),
 
-                           Context.HasValue
-                               ? new JProperty("context",    Context.  Value.AsText())
-                               : null,
-
-                           Format.HasValue
-                               ? new JProperty("format",     Format.   Value.AsText())
-                               : null,
-
-                           Measurand.HasValue
-                               ? new JProperty("measurand",  Measurand.Value.AsText())
-                               : null,
+                           new JProperty("context",      Context.        AsText()),
+                           new JProperty("format",       Format.         AsText()),
+                           new JProperty("measurand",    Measurand.      AsText()),
 
                            Phase.HasValue
-                               ? new JProperty("phase",      Phase.    Value.AsText())
+                               ? new JProperty("phase",  Phase.    Value.AsText())
                                : null,
 
-                           Location.HasValue
-                               ? new JProperty("location",   Location. Value.AsText())
-                               : null,
-
-                           Unit.HasValue
-                               ? new JProperty("unit",       Unit.     Value.AsText())
-                               : null
+                           new JProperty("location",     Location.       AsText()),
+                           new JProperty("unit",         Unit.           AsText())
 
                        );
 
             return CustomSampledValueSerializer is not null
-                       ? CustomSampledValueSerializer(this, JSON)
-                       : JSON;
+                       ? CustomSampledValueSerializer(this, json)
+                       : json;
 
         }
 
@@ -719,11 +691,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 return true;
 
             // If one is null, but not both, return false.
-            if ((SampledValue1 is null) || (SampledValue2 is null))
+            if (SampledValue1 is null || SampledValue2 is null)
                 return false;
-
-            if ((Object) SampledValue1 == null)
-                throw new ArgumentNullException(nameof(SampledValue1),  "The given id tag info must not be null!");
 
             return SampledValue1.Equals(SampledValue2);
 
@@ -740,6 +709,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SampledValue2">Another id tag info.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (SampledValue SampledValue1, SampledValue SampledValue2)
+
             => !(SampledValue1 == SampledValue2);
 
         #endregion
@@ -751,59 +721,35 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two sampled values for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A sampled value to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is SampledValue SampledValue))
-                return false;
-
-            return Equals(SampledValue);
-
-        }
+            => Object is SampledValue sampledValue &&
+                   Equals(sampledValue);
 
         #endregion
 
         #region Equals(SampledValue)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two sampled values for equality.
         /// </summary>
-        /// <param name="SampledValue">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(SampledValue SampledValue)
-        {
+        /// <param name="SampledValue">A sampled value to compare with.</param>
+        public Boolean Equals(SampledValue? SampledValue)
 
-            if (SampledValue is null)
-                return false;
+            => SampledValue is not null &&
 
-            return Value.Equals(SampledValue.Value) &&
+               Value.    Equals(SampledValue.Value)     &&
+               Context.  Equals(SampledValue.Context)   &&
+               Format.   Equals(SampledValue.Format)    &&
+               Measurand.Equals(SampledValue.Measurand) &&
+               Location. Equals(SampledValue.Location)  &&
+               Unit.     Equals(SampledValue.Unit)      &&
 
-                   ((!Context.  HasValue && !SampledValue.Context.  HasValue) ||
-                     (Context.  HasValue &&  SampledValue.Context.  HasValue && Context.  Value.Equals(SampledValue.Context.  Value))) &&
-
-                   ((!Format.   HasValue && !SampledValue.Format.   HasValue) ||
-                     (Format.   HasValue &&  SampledValue.Format.   HasValue && Format.   Value.Equals(SampledValue.Format.   Value))) &&
-
-                   ((!Measurand.HasValue && !SampledValue.Measurand.HasValue) ||
-                     (Measurand.HasValue &&  SampledValue.Measurand.HasValue && Measurand.Value.Equals(SampledValue.Measurand.Value))) &&
-
-                   ((!Phase.    HasValue && !SampledValue.Phase.    HasValue) ||
-                     (Phase.    HasValue &&  SampledValue.Phase.    HasValue && Phase.    Value.Equals(SampledValue.Phase.    Value))) &&
-
-                   ((!Location. HasValue && !SampledValue.Location. HasValue) ||
-                     (Location. HasValue &&  SampledValue.Location. HasValue && Location. Value.Equals(SampledValue.Location. Value))) &&
-
-                   ((!Unit.     HasValue && !SampledValue.Unit.     HasValue) ||
-                     (Unit.     HasValue &&  SampledValue.Unit.     HasValue && Unit.     Value.Equals(SampledValue.Unit.     Value)));
-
-        }
+               ((!Phase.HasValue && !SampledValue.Phase.HasValue) ||
+                 (Phase.HasValue &&  SampledValue.Phase.HasValue && Phase.Value.Equals(SampledValue.Phase.Value)));
 
         #endregion
 
@@ -820,31 +766,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             unchecked
             {
 
-                return Value.GetHashCode() * 23 ^
+                return Value.    GetHashCode() * 17 ^
+                       Context.  GetHashCode() * 13 ^
+                       Format.   GetHashCode() * 11 ^
+                       Measurand.GetHashCode() *  7 ^
+                       Location. GetHashCode() *  5 ^
+                       Unit.     GetHashCode() *  3 ^
 
-                       (Context.  HasValue
-                            ? Context.  GetHashCode() * 19
-                            : 0) ^
-
-                       (Format.   HasValue
-                            ? Format.   GetHashCode() * 17
-                            : 0) ^
-
-                       (Measurand.HasValue
-                            ? Measurand.GetHashCode() * 13
-                            : 0) ^
-
-                       (Phase.    HasValue
-                            ? Phase.    GetHashCode() * 11
-                            : 0) ^
-
-                       (Location. HasValue
-                            ? Location. GetHashCode() *  7
-                            : 0) ^
-
-                       (Unit.     HasValue
-                            ? Unit.     GetHashCode() *  5
-                            : 0);
+                      (Phase?.   GetHashCode() ?? 0);
 
             }
         }
@@ -859,14 +788,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public override String ToString()
 
             => String.Concat(Value,
-
-                             Unit.HasValue
-                                 ? " " + Unit.Value
-                                 : "",
-
-                             Location.HasValue
-                                 ? " measured at " + Location.Value
-                                 : "");
+                             Unit,
+                             " measured at " + Location);
 
         #endregion
 

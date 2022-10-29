@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,60 +27,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static UpdateStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Accepted":
-                    return UpdateStatus.Accepted;
-
-                case "Failed":
-                    return UpdateStatus.Failed;
-
-                case "NotSupported":
-                    return UpdateStatus.NotSupported;
-
-                case "VersionMismatch":
-                    return UpdateStatus.VersionMismatch;
-
-
-                default:
-                    return UpdateStatus.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Accepted"         => UpdateStatus.Accepted,
+                   "Failed"           => UpdateStatus.Failed,
+                   "NotSupported"     => UpdateStatus.NotSupported,
+                   "VersionMismatch"  => UpdateStatus.VersionMismatch,
+                   _                  => UpdateStatus.Unknown
+               };
 
         #endregion
 
         #region AsText(this UpdateStatus)
 
         public static String AsText(this UpdateStatus UpdateStatus)
-        {
 
-            switch (UpdateStatus)
-            {
-
-                case UpdateStatus.Accepted:
-                    return "Accepted";
-
-                case UpdateStatus.Failed:
-                    return "Failed";
-
-                case UpdateStatus.NotSupported:
-                    return "NotSupported";
-
-                case UpdateStatus.VersionMismatch:
-                    return "VersionMismatch";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => UpdateStatus switch {
+                   UpdateStatus.Accepted         => "Accepted",
+                   UpdateStatus.Failed           => "Failed",
+                   UpdateStatus.NotSupported     => "NotSupported",
+                   UpdateStatus.VersionMismatch  => "VersionMismatch",
+                   _                             => "unknown"
+               };
 
         #endregion
 

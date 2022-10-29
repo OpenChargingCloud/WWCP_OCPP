@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -33,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// An identification tag info.
     /// </summary>
-    public struct IdTagInfo : IEquatable<IdTagInfo>
+    public readonly struct IdTagInfo : IEquatable<IdTagInfo>
     {
 
         #region Properties
@@ -41,18 +39,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The authentication result.
         /// </summary>
-        public AuthorizationStatus  Status        { get; }
+        public AuthorizationStatus  Status         { get; }
 
         /// <summary>
         /// An optional date at which the idTag should be removed
         /// from the authorization cache.
         /// </summary>
-        public DateTime?            ExpiryDate    { get; }
+        public DateTime?            ExpiryDate     { get; }
 
         /// <summary>
         /// An optional the parent-identifier.
         /// </summary>
-        public IdToken?             ParentIdTag   { get; }
+        public IdToken?             ParentIdTag    { get; }
 
         #endregion
 
@@ -133,12 +131,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="IdTagInfoXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static IdTagInfo Parse(XElement             IdTagInfoXML,
-                                      OnExceptionDelegate  OnException = null)
+        public static IdTagInfo Parse(XElement              IdTagInfoXML,
+                                      OnExceptionDelegate?  OnException   = null)
         {
 
             if (TryParse(IdTagInfoXML,
-                         out IdTagInfo idTagInfo,
+                         out var idTagInfo,
                          OnException))
             {
                 return idTagInfo;
@@ -157,19 +155,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomIdTagInfoParser">A delegate to parse custom IdTagInfo JSON objects.</param>
-        public static IdTagInfo Parse(JObject                                 JSON,
-                                      CustomJObjectParserDelegate<IdTagInfo>  CustomIdTagInfoParser)
+        public static IdTagInfo Parse(JObject                                  JSON,
+                                      CustomJObjectParserDelegate<IdTagInfo>?  CustomIdTagInfoParser   = null)
         {
 
             if (TryParse(JSON,
-                         out IdTagInfo  idTagInfo,
-                         out String     ErrorResponse,
+                         out var idTagInfo,
+                         out var errorResponse,
                          CustomIdTagInfoParser))
             {
                 return idTagInfo;
             }
 
-            throw new ArgumentException("The given JSON representation of an IdTagInfo is invalid: " + ErrorResponse, nameof(JSON));
+            throw new ArgumentException("The given JSON representation of an IdTagInfo is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
@@ -182,13 +181,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="IdTagInfoText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static IdTagInfo Parse(String               IdTagInfoText,
-                                      OnExceptionDelegate  OnException   = null)
+        public static IdTagInfo Parse(String                IdTagInfoText,
+                                      OnExceptionDelegate?  OnException   = null)
         {
 
 
             if (TryParse(IdTagInfoText,
-                         out IdTagInfo idTagInfo,
+                         out var idTagInfo,
                          OnException))
             {
                 return idTagInfo;
@@ -208,9 +207,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="IdTagInfoXML">The XML to be parsed.</param>
         /// <param name="IdTagInfo">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement             IdTagInfoXML,
-                                       out IdTagInfo        IdTagInfo,
-                                       OnExceptionDelegate  OnException  = null)
+        public static Boolean TryParse(XElement              IdTagInfoXML,
+                                       out IdTagInfo         IdTagInfo,
+                                       OnExceptionDelegate?  OnException  = null)
         {
 
             try
@@ -235,9 +234,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, IdTagInfoXML, e);
+                OnException?.Invoke(Timestamp.Now, IdTagInfoXML, e);
 
-                IdTagInfo = default(IdTagInfo);
+                IdTagInfo = default;
                 return false;
 
             }
@@ -256,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject        JSON,
                                        out IdTagInfo  IdTagInfo,
-                                       out String     ErrorResponse)
+                                       out String?    ErrorResponse)
 
             => TryParse(JSON,
                         out IdTagInfo,
@@ -271,10 +270,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="IdTagInfo">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomIdTagInfoParser">A delegate to parse custom IdTagInfo JSON objects.</param>
-        public static Boolean TryParse(JObject                                 JSON,
-                                       out IdTagInfo                           IdTagInfo,
-                                       out String                              ErrorResponse,
-                                       CustomJObjectParserDelegate<IdTagInfo>  CustomIdTagInfoParser)
+        public static Boolean TryParse(JObject                                  JSON,
+                                       out IdTagInfo                            IdTagInfo,
+                                       out String?                              ErrorResponse,
+                                       CustomJObjectParserDelegate<IdTagInfo>?  CustomIdTagInfoParser)
         {
 
             try
@@ -357,15 +356,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="IdTagInfoText">The text to be parsed.</param>
         /// <param name="IdTagInfo">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               IdTagInfoText,
-                                       out IdTagInfo        IdTagInfo,
-                                       OnExceptionDelegate  OnException  = null)
+        public static Boolean TryParse(String                IdTagInfoText,
+                                       out IdTagInfo         IdTagInfo,
+                                       OnExceptionDelegate?  OnException   = null)
         {
 
             try
             {
 
-                IdTagInfoText = IdTagInfoText?.Trim();
+                IdTagInfoText = IdTagInfoText.Trim();
 
                 if (IdTagInfoText.IsNotNullOrEmpty())
                 {
@@ -373,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     if (IdTagInfoText.StartsWith("{") &&
                         TryParse(JObject.Parse(IdTagInfoText),
                                  out IdTagInfo,
-                                 out String ErrorResponse,
+                                 out var errorResponse,
                                  null))
                     {
                         return true;
@@ -391,7 +390,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, IdTagInfoText, e);
+                OnException?.Invoke(Timestamp.Now, IdTagInfoText, e);
             }
 
             IdTagInfo = default;
@@ -407,7 +406,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a XML representation of this object.
         /// </summary>
         /// <param name="XName">An alternative XML element name [default: "OCPPv1_6_CS:idTagInfo"]</param>
-        public XElement ToXML(XName XName = null)
+        public XElement ToXML(XName? XName = null)
 
             => new XElement(XName ?? OCPPNS.OCPPv1_6_CS + "idTagInfo",
 
@@ -431,10 +430,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<IdTagInfo> CustomIdTagInfoResponseSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<IdTagInfo>? CustomIdTagInfoResponseSerializer = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("status",        Status.           AsText()),
 
@@ -449,8 +448,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                        );
 
             return CustomIdTagInfoResponseSerializer is not null
-                       ? CustomIdTagInfoResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomIdTagInfoResponseSerializer(this, json)
+                       : json;
 
         }
 
@@ -467,23 +466,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="IdTagInfo1">An id tag info.</param>
         /// <param name="IdTagInfo2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (IdTagInfo IdTagInfo1, IdTagInfo IdTagInfo2)
-        {
+        public static Boolean operator == (IdTagInfo IdTagInfo1,
+                                           IdTagInfo IdTagInfo2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(IdTagInfo1, IdTagInfo2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) IdTagInfo1 == null) || ((Object) IdTagInfo2 == null))
-                return false;
-
-            if ((Object) IdTagInfo1 == null)
-                throw new ArgumentNullException(nameof(IdTagInfo1),  "The given id tag info must not be null!");
-
-            return IdTagInfo1.Equals(IdTagInfo2);
-
-        }
+            => IdTagInfo1.Equals(IdTagInfo2);
 
         #endregion
 
@@ -495,8 +481,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="IdTagInfo1">An id tag info.</param>
         /// <param name="IdTagInfo2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (IdTagInfo IdTagInfo1, IdTagInfo IdTagInfo2)
-            => !(IdTagInfo1 == IdTagInfo2);
+        public static Boolean operator != (IdTagInfo IdTagInfo1,
+                                           IdTagInfo IdTagInfo2)
+
+            => !IdTagInfo1.Equals(IdTagInfo2);
 
         #endregion
 
@@ -507,22 +495,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two id tag infos for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">An id tag info to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is IdTagInfo IdTagInfo))
-                return false;
-
-            return Equals(IdTagInfo);
-
-        }
+            => Object is IdTagInfo idTagInfo &&
+                   Equals(idTagInfo);
 
         #endregion
 
@@ -532,22 +511,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compares two id tag infos for equality.
         /// </summary>
         /// <param name="IdTagInfo">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(IdTagInfo IdTagInfo)
-        {
 
-            if ((Object) IdTagInfo == null)
-                return false;
+            => Status.Equals(IdTagInfo.Status) &&
 
-            return Status.Equals(IdTagInfo.Status) &&
+            ((!ExpiryDate.HasValue  && !IdTagInfo.ExpiryDate. HasValue) ||
+              (ExpiryDate.HasValue  &&  IdTagInfo.ExpiryDate. HasValue && ExpiryDate. Value.Equals(IdTagInfo.ExpiryDate. Value))) &&
 
-                   ((!ExpiryDate.HasValue  && !IdTagInfo.ExpiryDate. HasValue) ||
-                     (ExpiryDate.HasValue  &&  IdTagInfo.ExpiryDate. HasValue && ExpiryDate. Value.Equals(IdTagInfo.ExpiryDate. Value))) &&
+            ((!ParentIdTag.HasValue && !IdTagInfo.ParentIdTag.HasValue) ||
+              (ParentIdTag.HasValue &&  IdTagInfo.ParentIdTag.HasValue && ParentIdTag.Value.Equals(IdTagInfo.ParentIdTag.Value)));
 
-                   ((!ParentIdTag.HasValue && !IdTagInfo.ParentIdTag.HasValue) ||
-                     (ParentIdTag.HasValue &&  IdTagInfo.ParentIdTag.HasValue && ParentIdTag.Value.Equals(IdTagInfo.ParentIdTag.Value)));
-
-        }
 
         #endregion
 
@@ -564,15 +537,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             unchecked
             {
 
-                return (ParentIdTag.HasValue
-                            ? ParentIdTag.GetHashCode() * 7
-                            : 0) ^
-
-                       (ExpiryDate.HasValue
-                            ? ExpiryDate. GetHashCode() * 5
-                            : 0) ^
-
-                       Status.GetHashCode();
+                return (ParentIdTag?.GetHashCode() ?? 0) * 5 ^
+                       (ExpiryDate?. GetHashCode() ?? 0) * 3 ^
+                        Status.      GetHashCode();
 
             }
         }

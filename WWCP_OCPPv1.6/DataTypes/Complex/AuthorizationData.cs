@@ -17,14 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
-using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -34,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// Authorization data.
     /// </summary>
-    public struct AuthorizationData : IEquatable<AuthorizationData>
+    public readonly struct AuthorizationData : IEquatable<AuthorizationData>
     {
 
         #region Properties
@@ -150,12 +147,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="AuthorizationDataXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AuthorizationData Parse(XElement             AuthorizationDataXML,
-                                              OnExceptionDelegate  OnException = null)
+        public static AuthorizationData Parse(XElement              AuthorizationDataXML,
+                                              OnExceptionDelegate?  OnException   = null)
         {
 
             if (TryParse(AuthorizationDataXML,
-                         out AuthorizationData authorizationData,
+                         out var authorizationData,
                          OnException))
             {
                 return authorizationData;
@@ -174,19 +171,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomAuthorizationDataParser">A delegate to parse custom AuthorizationData JSON objects.</param>
-        public static AuthorizationData Parse(JObject                                         JSON,
-                                              CustomJObjectParserDelegate<AuthorizationData>  CustomAuthorizationDataParser)
+        public static AuthorizationData Parse(JObject                                          JSON,
+                                              CustomJObjectParserDelegate<AuthorizationData>?  CustomAuthorizationDataParser   = null)
         {
 
             if (TryParse(JSON,
-                         out AuthorizationData  authorizationData,
-                         out String             ErrorResponse,
+                         out var authorizationData,
+                         out var errorResponse,
                          CustomAuthorizationDataParser))
             {
                 return authorizationData;
             }
 
-            throw new ArgumentException("The given JSON representation of an AuthorizationData is invalid: " + ErrorResponse, nameof(JSON));
+            throw new ArgumentException("The given JSON representation of an AuthorizationData is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
@@ -199,12 +197,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="AuthorizationDataText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AuthorizationData Parse(String               AuthorizationDataText,
-                                              OnExceptionDelegate  OnException = null)
+        public static AuthorizationData Parse(String                AuthorizationDataText,
+                                              OnExceptionDelegate?  OnException   = null)
         {
 
             if (TryParse(AuthorizationDataText,
-                         out AuthorizationData authorizationData,
+                         out var authorizationData,
                          OnException))
             {
                 return authorizationData;
@@ -226,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement               AuthorizationDataXML,
                                        out AuthorizationData  AuthorizationData,
-                                       OnExceptionDelegate    OnException  = null)
+                                       OnExceptionDelegate?   OnException   = null)
         {
 
             try
@@ -248,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, AuthorizationDataXML, e);
+                OnException?.Invoke(Timestamp.Now, AuthorizationDataXML, e);
 
                 AuthorizationData = default;
                 return false;
@@ -271,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                AuthorizationDataJSON,
                                        out AuthorizationData  AuthorizationData,
-                                       out String             ErrorResponse)
+                                       out String?            ErrorResponse)
 
             => TryParse(AuthorizationDataJSON,
                         out AuthorizationData,
@@ -286,10 +284,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="AuthorizationData">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomAuthorizationDataParser">A delegate to parse custom AuthorizationData JSON objects.</param>
-        public static Boolean TryParse(JObject                                         JSON,
-                                       out AuthorizationData                           AuthorizationData,
-                                       out String                                      ErrorResponse,
-                                       CustomJObjectParserDelegate<AuthorizationData>  CustomAuthorizationDataParser)
+        public static Boolean TryParse(JObject                                          JSON,
+                                       out AuthorizationData                            AuthorizationData,
+                                       out String?                                      ErrorResponse,
+                                       CustomJObjectParserDelegate<AuthorizationData>?  CustomAuthorizationDataParser)
         {
 
             try
@@ -358,13 +356,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                 AuthorizationDataText,
                                        out AuthorizationData  AuthorizationData,
-                                       OnExceptionDelegate    OnException  = null)
+                                       OnExceptionDelegate?   OnException   = null)
         {
 
             try
             {
 
-                AuthorizationDataText = AuthorizationDataText?.Trim();
+                AuthorizationDataText = AuthorizationDataText.Trim();
 
                 if (AuthorizationDataText.IsNotNullOrEmpty())
                 {
@@ -372,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     if (AuthorizationDataText.StartsWith("{") &&
                         TryParse(JObject.Parse(AuthorizationDataText),
                                  out AuthorizationData,
-                                 out String ErrorResponse))
+                                 out var errorResponse))
                     {
                         return true;
                     }
@@ -389,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, AuthorizationDataText, e);
+                OnException?.Invoke(Timestamp.Now, AuthorizationDataText, e);
             }
 
             AuthorizationData = default;
@@ -405,7 +403,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a XML representation of this object.
         /// </summary>
         /// <param name="XName">An alternative XML element name [default: "OCPPv1_6_CP:authorizationData"]</param>
-        public XElement ToXML(XName XName = null)
+        public XElement ToXML(XName? XName = null)
 
             => new XElement(XName ?? OCPPNS.OCPPv1_6_CP + "authorizationData",
 
@@ -426,11 +424,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="CustomAuthorizationDataSerializer">A delegate to serialize custom start transaction requests.</param>
         /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizationData> CustomAuthorizationDataSerializer   = null,
-                              CustomJObjectSerializerDelegate<IdTagInfo>         CustomIdTagInfoResponseSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizationData>? CustomAuthorizationDataSerializer   = null,
+                              CustomJObjectSerializerDelegate<IdTagInfo>?         CustomIdTagInfoResponseSerializer   = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            new JProperty("idTag",            IdTag.          ToString()),
 
@@ -441,8 +439,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                        );
 
             return CustomAuthorizationDataSerializer is not null
-                       ? CustomAuthorizationDataSerializer(this, JSON)
-                       : JSON;
+                       ? CustomAuthorizationDataSerializer(this, json)
+                       : json;
 
         }
 
@@ -459,23 +457,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="AuthorizationData1">An configuration key value pair.</param>
         /// <param name="AuthorizationData2">Another configuration key value pair.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (AuthorizationData AuthorizationData1, AuthorizationData AuthorizationData2)
-        {
+        public static Boolean operator == (AuthorizationData AuthorizationData1,
+                                           AuthorizationData AuthorizationData2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(AuthorizationData1, AuthorizationData2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) AuthorizationData1 == null) || ((Object) AuthorizationData2 == null))
-                return false;
-
-            if ((Object) AuthorizationData1 == null)
-                throw new ArgumentNullException(nameof(AuthorizationData1),  "The given configuration key value pair must not be null!");
-
-            return AuthorizationData1.Equals(AuthorizationData2);
-
-        }
+            => AuthorizationData1.Equals(AuthorizationData2);
 
         #endregion
 
@@ -487,8 +472,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="AuthorizationData1">An configuration key value pair.</param>
         /// <param name="AuthorizationData2">Another configuration key value pair.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (AuthorizationData AuthorizationData1, AuthorizationData AuthorizationData2)
-            => !(AuthorizationData1 == AuthorizationData2);
+        public static Boolean operator != (AuthorizationData AuthorizationData1,
+                                           AuthorizationData AuthorizationData2)
+
+            => !AuthorizationData1.Equals(AuthorizationData2);
 
         #endregion
 
@@ -499,44 +486,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two authorization data for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">Authorization data to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is AuthorizationData AuthorizationData))
-                return false;
-
-            return Equals(AuthorizationData);
-
-        }
+            => Object is AuthorizationData authorizationData &&
+                   Equals(authorizationData);
 
         #endregion
 
         #region Equals(AuthorizationData)
 
         /// <summary>
-        /// Compares two configuration key value pairs for equality.
+        /// Compares two authorization data for equality.
         /// </summary>
-        /// <param name="AuthorizationData">An configuration key value pair to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="AuthorizationData">Authorization data to compare with.</param>
         public Boolean Equals(AuthorizationData AuthorizationData)
-        {
 
-            if ((Object) AuthorizationData == null)
-                return false;
+            => IdTag.Equals(AuthorizationData.IdTag) &&
 
-            return IdTag.Equals(AuthorizationData.IdTag) &&
-
-                   ((IdTagInfo == null && AuthorizationData.IdTagInfo == null) ||
-                    (IdTagInfo != null && AuthorizationData.IdTagInfo != null && IdTagInfo.Equals(AuthorizationData.IdTagInfo)));
-
-        }
+            ((!IdTagInfo.HasValue && !AuthorizationData.IdTagInfo.HasValue) ||
+              (IdTagInfo.HasValue &&  AuthorizationData.IdTagInfo.HasValue && IdTagInfo.Equals(AuthorizationData.IdTagInfo)));
 
         #endregion
 
@@ -553,11 +524,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             unchecked
             {
 
-                return IdTag.GetHashCode() * 5 ^
-
-                       (IdTagInfo != null
-                            ? IdTagInfo.GetHashCode()
-                            : 0);
+                return IdTag.     GetHashCode() * 3 ^
+                       IdTagInfo?.GetHashCode() ?? 0;
 
             }
         }
@@ -573,8 +541,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             => String.Concat(IdTag,
 
-                             IdTagInfo != null
-                                 ? " => " + IdTagInfo
+                             IdTagInfo.HasValue
+                                 ? " => " + IdTagInfo.Value
                                  : "");
 
         #endregion

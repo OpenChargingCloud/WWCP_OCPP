@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,60 +27,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static Locations Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Body":
-                    return Locations.Body;
-
-                case "Cable":
-                    return Locations.Cable;
-
-                case "EV":
-                    return Locations.EV;
-
-                case "Inlet":
-                    return Locations.Inlet;
-
-
-                default:
-                    return Locations.Outlet;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Body"   => Locations.Body,
+                   "Cable"  => Locations.Cable,
+                   "EV"     => Locations.EV,
+                   "Inlet"  => Locations.Inlet,
+                   _        => Locations.Outlet
+               };
 
         #endregion
 
         #region AsText(this Location)
 
         public static String AsText(this Locations Location)
-        {
 
-            switch (Location)
-            {
-
-                case Locations.Body:
-                    return "Body";
-
-                case Locations.Cable:
-                    return "Cable";
-
-                case Locations.EV:
-                    return "EV";
-
-                case Locations.Inlet:
-                    return "Inlet";
-
-
-                default:
-                    return "Outlet";
-
-            }
-
-        }
+            => Location switch {
+                   Locations.Body   => "Body",
+                   Locations.Cable  => "Cable",
+                   Locations.EV     => "EV",
+                   Locations.Inlet  => "Inlet",
+                   _                => "Outlet",
+               };
 
         #endregion
 

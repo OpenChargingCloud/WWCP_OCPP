@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -37,39 +31,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="Text">A string representation of a firmware status.</param>
         public static FirmwareStatus Parse(String Text)
-        {
 
-            switch (Text?.ToLower())
-            {
-
-                case "downloaded":
-                    return FirmwareStatus.Downloaded;
-
-                case "downloadfailed":
-                    return FirmwareStatus.DownloadFailed;
-
-                case "downloading":
-                    return FirmwareStatus.Downloading;
-
-                case "idle":
-                    return FirmwareStatus.Idle;
-
-                case "installationfailed":
-                    return FirmwareStatus.InstallationFailed;
-
-                case "installed":
-                    return FirmwareStatus.Installed;
-
-                case "installing":
-                    return FirmwareStatus.Installing;
-
-
-                default:
-                    return FirmwareStatus.Unknown;
-
-            }
-
-        }
+            => Text.ToLower() switch {
+                   "downloaded"          => FirmwareStatus.Downloaded,
+                   "downloadfailed"      => FirmwareStatus.DownloadFailed,
+                   "downloading"         => FirmwareStatus.Downloading,
+                   "idle"                => FirmwareStatus.Idle,
+                   "installationfailed"  => FirmwareStatus.InstallationFailed,
+                   "installed"           => FirmwareStatus.Installed,
+                   "installing"          => FirmwareStatus.Installing,
+                   _                     => FirmwareStatus.Unknown
+               };
 
         #endregion
 
@@ -80,39 +52,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="FirmwareStatus">A firmware status.</param>
         public static String AsText(this FirmwareStatus FirmwareStatus)
-        {
 
-            switch (FirmwareStatus)
-            {
-
-                case FirmwareStatus.Downloaded:
-                    return "Downloaded";
-
-                case FirmwareStatus.DownloadFailed:
-                    return "DownloadFailed";
-
-                case FirmwareStatus.Downloading:
-                    return "Downloading";
-
-                case FirmwareStatus.Idle:
-                    return "Idle";
-
-                case FirmwareStatus.InstallationFailed:
-                    return "InstallationFailed";
-
-                case FirmwareStatus.Installed:
-                    return "Installed";
-
-                case FirmwareStatus.Installing:
-                    return "Installing";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => FirmwareStatus switch {
+                   FirmwareStatus.Downloaded          => "Downloaded",
+                   FirmwareStatus.DownloadFailed      => "DownloadFailed",
+                   FirmwareStatus.Downloading         => "Downloading",
+                   FirmwareStatus.Idle                => "Idle",
+                   FirmwareStatus.InstallationFailed  => "InstallationFailed",
+                   FirmwareStatus.Installed           => "Installed",
+                   FirmwareStatus.Installing          => "Installing",
+                   _                                  => "unknown"
+               };
 
         #endregion
 

@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,48 +27,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static ResetStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Accepted":
-                    return ResetStatus.Accepted;
-
-                case "Rejected":
-                    return ResetStatus.Rejected;
-
-
-                default:
-                    return ResetStatus.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Accepted"  => ResetStatus.Accepted,
+                   "Rejected"  => ResetStatus.Rejected,
+                   _           => ResetStatus.Unknown
+               };
 
         #endregion
 
         #region AsText(this ResetStatus)
 
         public static String AsText(this ResetStatus ResetStatus)
-        {
 
-            switch (ResetStatus)
-            {
-
-                case ResetStatus.Accepted:
-                    return "Accepted";
-
-                case ResetStatus.Rejected:
-                    return "Rejected";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => ResetStatus switch {
+                   ResetStatus.Accepted  => "Accepted",
+                   ResetStatus.Rejected  => "Rejected",
+                   _                     => "unknown"
+               };
 
         #endregion
 

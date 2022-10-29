@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,48 +27,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static Availabilities Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Inoperative":
-                    return Availabilities.Inoperative;
-
-                case "Operative":
-                    return Availabilities.Operative;
-
-
-                default:
-                    return Availabilities.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Inoperative"  => Availabilities.Inoperative,
+                   "Operative"    => Availabilities.Operative,
+                   _              => Availabilities.Unknown
+               };
 
         #endregion
 
         #region AsText(this AvailabilityType)
 
         public static String AsText(this Availabilities AvailabilityType)
-        {
 
-            switch (AvailabilityType)
-            {
-
-                case Availabilities.Inoperative:
-                    return "Inoperative";
-
-                case Availabilities.Operative:
-                    return "Operative";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => AvailabilityType switch {
+                   Availabilities.Inoperative  => "Inoperative",
+                   Availabilities.Operative    => "Operative",
+                   _                           => "unknown"
+               };
 
         #endregion
 

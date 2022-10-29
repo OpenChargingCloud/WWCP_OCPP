@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,48 +27,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static GetCompositeScheduleStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Accepted":
-                    return GetCompositeScheduleStatus.Accepted;
-
-                case "Rejected":
-                    return GetCompositeScheduleStatus.Rejected;
-
-
-                default:
-                    return GetCompositeScheduleStatus.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Accepted"  => GetCompositeScheduleStatus.Accepted,
+                   "Rejected"  => GetCompositeScheduleStatus.Rejected,
+                   _           => GetCompositeScheduleStatus.Unknown,
+               };
 
         #endregion
 
         #region AsText(this GetCompositeScheduleStatus)
 
         public static String AsText(this GetCompositeScheduleStatus GetCompositeScheduleStatus)
-        {
 
-            switch (GetCompositeScheduleStatus)
-            {
-
-                case GetCompositeScheduleStatus.Accepted:
-                    return "Accepted";
-
-                case GetCompositeScheduleStatus.Rejected:
-                    return "Rejected";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => GetCompositeScheduleStatus switch {
+                   GetCompositeScheduleStatus.Accepted => "Accepted",
+                   GetCompositeScheduleStatus.Rejected => "Rejected",
+                   _ => "unknown",
+               };
 
         #endregion
 

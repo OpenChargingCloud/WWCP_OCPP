@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -102,15 +100,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region (static) Random  (Length = 30, IsLocal = false)
+        #region (static) NewRandom(Length = 30, IsLocal = false)
 
         /// <summary>
         /// Create a new random request identification.
         /// </summary>
         /// <param name="Length">The expected length of the request identification.</param>
         /// <param name="IsLocal">The request identification was generated locally and not received via network.</param>
-        public static Request_Id Random(Byte      Length    = 30,
-                                        Boolean?  IsLocal   = false)
+        public static Request_Id NewRandom(Byte      Length    = 30,
+                                           Boolean?  IsLocal   = false)
 
             => new ((IsLocal == true ? "Local:" : "") +
                     RandomExtensions.RandomString(Length));
@@ -126,13 +124,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Request_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out Request_Id requestId))
+            if (TryParse(Text, out var requestId))
                 return requestId;
 
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a request identification must not be null or empty!");
-
-            throw new ArgumentException("The given text representation of a request identification is invalid!", nameof(Text));
+            throw new ArgumentException("Invalid text representation of a request identification: '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
@@ -147,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Request_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Request_Id requestId))
+            if (TryParse(Text, out var requestId))
                 return requestId;
 
             return null;
@@ -166,15 +162,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean TryParse(String Text, out Request_Id RequestId)
         {
 
+            Text = Text.Trim();
+
             if (Text.IsNotNullOrEmpty())
             {
-                try
-                {
-                    RequestId = new Request_Id(Text.Trim());
-                    return true;
-                }
-                catch (Exception)
-                { }
+                RequestId = new Request_Id(Text);
+                return true;
             }
 
             RequestId = default;
@@ -191,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public Request_Id Clone
 
-            => new Request_Id(
+            => new (
                    new String(InternalId?.ToCharArray())
                );
 
@@ -297,10 +290,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two request identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        /// <param name="Object">A request identification to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
             => Object is Request_Id requestId
                    ? CompareTo(requestId)
@@ -312,9 +305,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region CompareTo(RequestId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two request identifications.
         /// </summary>
-        /// <param name="RequestId">An object to compare with.</param>
+        /// <param name="RequestId">A request identification to compare with.</param>
         public Int32 CompareTo(Request_Id RequestId)
 
             => String.Compare(InternalId,
@@ -330,11 +323,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two request identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        /// <param name="Object">A request identification to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
             => Object is Request_Id requestId &&
                    Equals(requestId);
@@ -347,7 +339,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compares two request identifications for equality.
         /// </summary>
         /// <param name="RequestId">A request identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Request_Id RequestId)
 
             => String.Equals(InternalId,

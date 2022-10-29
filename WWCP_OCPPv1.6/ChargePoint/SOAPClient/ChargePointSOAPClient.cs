@@ -609,7 +609,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/BootNotification",
-                                                                    Request_Id.Random().ToString(),
+                                                                    Request_Id.NewRandom().ToString(),
                                                                     From,
                                                                     To,
                                                                     Request.ToXML()),
@@ -803,7 +803,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/Heartbeat",
-                                                                    Request_Id.Random().ToString(),
+                                                                    Request_Id.NewRandom().ToString(),
                                                                     From,
                                                                     To,
                                                                     Request.ToXML()),
@@ -998,7 +998,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/Authorize",
-                                                                    Request_Id.Random().ToString(),
+                                                                    Request_Id.NewRandom().ToString(),
                                                                     From,
                                                                     To,
                                                                     Request.ToXML()),
@@ -1193,7 +1193,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/StartTransaction",
-                                                                    Request_Id.Random().ToString(),
+                                                                    Request_Id.NewRandom().ToString(),
                                                                     From,
                                                                     To,
                                                                     Request.ToXML()),
@@ -1387,7 +1387,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/StatusNotification",
-                                                                    Request_Id.Random().ToString(),
+                                                                    Request_Id.NewRandom().ToString(),
                                                                     From,
                                                                     To,
                                                                     Request.ToXML()),
@@ -1583,7 +1583,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/MeterValues",
-                                                                    Request_Id.Random().ToString(),
+                                                                    Request_Id.NewRandom().ToString(),
                                                                     From,
                                                                     To,
                                                                     Request.ToXML()),
@@ -1779,7 +1779,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/StopTransaction",
-                                                                    Request_Id.Random().ToString(),
+                                                                    Request_Id.NewRandom().ToString(),
                                                                     From,
                                                                     To,
                                                                     Request.ToXML()),
@@ -1975,7 +1975,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/DataTransfer",
-                                                                    Request_Id.Random().ToString(),
+                                                                    Request_Id.NewRandom().ToString(),
                                                                     From,
                                                                     To,
                                                                     Request.ToXML()),
@@ -2171,7 +2171,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/DiagnosticsStatusNotification",
-                                                                    Request_Id.Random().ToString(),
+                                                                    Request_Id.NewRandom().ToString(),
                                                                     From,
                                                                     To,
                                                                     Request.ToXML()),
@@ -2367,7 +2367,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/FirmwareStatusNotification",
-                                                                    Request_Id.Random().ToString(),
+                                                                    Request_Id.NewRandom().ToString(),
                                                                     From,
                                                                     To,
                                                                     Request.ToXML()),

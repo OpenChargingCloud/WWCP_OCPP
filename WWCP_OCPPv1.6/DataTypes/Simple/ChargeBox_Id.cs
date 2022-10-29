@@ -100,13 +100,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region (static) Random  (Length = 30)
+        #region (static) NewRandom(Length = 30)
 
         /// <summary>
         /// Create a new random charge box identification.
         /// </summary>
         /// <param name="Length">The expected length of the charge box identification.</param>
-        public static ChargeBox_Id Random(Byte Length = 30)
+        public static ChargeBox_Id NewRandom(Byte Length = 30)
 
             => new (RandomExtensions.RandomString(Length));
 
@@ -121,13 +121,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static ChargeBox_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out ChargeBox_Id chargeBoxId))
+            if (TryParse(Text, out var chargeBoxId))
                 return chargeBoxId;
 
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a charge box identification must not be null or empty!");
-
-            throw new ArgumentException("The given text representation of a charge box identification is invalid!", nameof(Text));
+            throw new ArgumentException("Invalid text representation of a charge box identification: '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
@@ -142,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static ChargeBox_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out ChargeBox_Id chargeBoxId))
+            if (TryParse(Text, out var chargeBoxId))
                 return chargeBoxId;
 
             return null;
@@ -161,15 +159,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean TryParse(String Text, out ChargeBox_Id ChargeBoxId)
         {
 
+            Text = Text.Trim();
+
             if (Text.IsNotNullOrEmpty())
             {
-                try
-                {
-                    ChargeBoxId = new ChargeBox_Id(Text.Trim());
-                    return true;
-                }
-                catch (Exception)
-                { }
+                ChargeBoxId = new ChargeBox_Id(Text);
+                return true;
             }
 
             ChargeBoxId = default;
@@ -186,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public ChargeBox_Id Clone
 
-            => new ChargeBox_Id(
+            => new (
                    new String(InternalId?.ToCharArray())
                );
 
@@ -292,10 +287,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charge box identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        /// <param name="Object">A charge box identification to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
             => Object is ChargeBox_Id chargeBoxId
                    ? CompareTo(chargeBoxId)
@@ -307,9 +302,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region CompareTo(ChargeBoxId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charge box identifications.
         /// </summary>
-        /// <param name="ChargeBoxId">An object to compare with.</param>
+        /// <param name="ChargeBoxId">A charge box identification to compare with.</param>
         public Int32 CompareTo(ChargeBox_Id ChargeBoxId)
 
             => String.Compare(InternalId,
@@ -325,11 +320,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charge box identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        /// <param name="Object">A charge box identification to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
             => Object is ChargeBox_Id chargeBoxId &&
                    Equals(chargeBoxId);
@@ -342,7 +336,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compares two charge box identifications for equality.
         /// </summary>
         /// <param name="ChargeBoxId">A charge box identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargeBox_Id ChargeBoxId)
 
             => String.Equals(InternalId,

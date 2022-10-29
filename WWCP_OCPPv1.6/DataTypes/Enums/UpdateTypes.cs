@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,48 +27,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static UpdateTypes Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Differential":
-                    return UpdateTypes.Differential;
-
-                case "Full":
-                    return UpdateTypes.Full;
-
-
-                default:
-                    return UpdateTypes.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Differential"  => UpdateTypes.Differential,
+                   "Full"          => UpdateTypes.Full,
+                   _               => UpdateTypes.Unknown
+               };
 
         #endregion
 
         #region AsText(this UpdateType)
 
         public static String AsText(this UpdateTypes UpdateType)
-        {
 
-            switch (UpdateType)
-            {
-
-                case UpdateTypes.Differential:
-                    return "Differential";
-
-                case UpdateTypes.Full:
-                    return "Full";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => UpdateType switch {
+                   UpdateTypes.Differential  => "Differential",
+                   UpdateTypes.Full          => "Full",
+                   _                         => "unknown"
+               };
 
         #endregion
 

@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,54 +27,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static AvailabilityStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Accepted":
-                    return AvailabilityStatus.Accepted;
-
-                case "Rejected":
-                    return AvailabilityStatus.Rejected;
-
-                case "Scheduled":
-                    return AvailabilityStatus.Scheduled;
-
-
-                default:
-                    return AvailabilityStatus.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Accepted"   => AvailabilityStatus.Accepted,
+                   "Rejected"   => AvailabilityStatus.Rejected,
+                   "Scheduled"  => AvailabilityStatus.Scheduled,
+                   _            => AvailabilityStatus.Unknown
+               };
 
         #endregion
 
         #region AsText(this AvailabilityStatus)
 
         public static String AsText(this AvailabilityStatus AvailabilityStatus)
-        {
 
-            switch (AvailabilityStatus)
-            {
-
-                case AvailabilityStatus.Accepted:
-                    return "Accepted";
-
-                case AvailabilityStatus.Rejected:
-                    return "Rejected";
-
-                case AvailabilityStatus.Scheduled:
-                    return "Scheduled";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => AvailabilityStatus switch {
+                   AvailabilityStatus.Accepted   => "Accepted",
+                   AvailabilityStatus.Rejected   => "Rejected",
+                   AvailabilityStatus.Scheduled  => "Scheduled",
+                   _                             => "unknown"
+               };
 
         #endregion
 

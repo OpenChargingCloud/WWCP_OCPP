@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -33,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// A charging schedule period.
     /// </summary>
-    public struct ChargingSchedulePeriod : IEquatable<ChargingSchedulePeriod>
+    public readonly struct ChargingSchedulePeriod : IEquatable<ChargingSchedulePeriod>
     {
 
         #region Properties
@@ -66,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="NumberPhases">The number of phases that can be used for charging.</param>
         public ChargingSchedulePeriod(UInt32   StartPeriod,
                                       Decimal  Limit,
-                                      Byte?    NumberPhases  = null)
+                                      Byte?    NumberPhases   = null)
         {
 
             this.StartPeriod   = StartPeriod;
@@ -126,12 +124,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ChargingSchedulePeriodXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingSchedulePeriod Parse(XElement             ChargingSchedulePeriodXML,
-                                                   OnExceptionDelegate  OnException = null)
+        public static ChargingSchedulePeriod Parse(XElement              ChargingSchedulePeriodXML,
+                                                   OnExceptionDelegate?  OnException   = null)
         {
 
             if (TryParse(ChargingSchedulePeriodXML,
-                         out ChargingSchedulePeriod chargingSchedulePeriod,
+                         out var chargingSchedulePeriod,
                          OnException))
             {
                 return chargingSchedulePeriod;
@@ -150,12 +148,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ChargingSchedulePeriodJSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingSchedulePeriod Parse(JObject              ChargingSchedulePeriodJSON,
-                                                   OnExceptionDelegate  OnException = null)
+        public static ChargingSchedulePeriod Parse(JObject               ChargingSchedulePeriodJSON,
+                                                   OnExceptionDelegate?  OnException   = null)
         {
 
             if (TryParse(ChargingSchedulePeriodJSON,
-                         out ChargingSchedulePeriod chargingSchedulePeriod,
+                         out var chargingSchedulePeriod,
                          OnException))
             {
                 return chargingSchedulePeriod;
@@ -174,12 +172,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ChargingSchedulePeriodText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingSchedulePeriod Parse(String               ChargingSchedulePeriodText,
-                                                   OnExceptionDelegate  OnException = null)
+        public static ChargingSchedulePeriod Parse(String                ChargingSchedulePeriodText,
+                                                   OnExceptionDelegate?  OnException   = null)
         {
 
             if (TryParse(ChargingSchedulePeriodText,
-                         out ChargingSchedulePeriod chargingSchedulePeriod,
+                         out var chargingSchedulePeriod,
                          OnException))
             {
                 return chargingSchedulePeriod;
@@ -201,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                    ChargingSchedulePeriodXML,
                                        out ChargingSchedulePeriod  ChargingSchedulePeriod,
-                                       OnExceptionDelegate         OnException  = null)
+                                       OnExceptionDelegate?        OnException   = null)
         {
 
             try
@@ -226,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ChargingSchedulePeriodXML, e);
+                OnException?.Invoke(Timestamp.Now, ChargingSchedulePeriodXML, e);
 
                 ChargingSchedulePeriod = default;
                 return false;
@@ -247,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(JObject                     ChargingSchedulePeriodJSON,
                                        out ChargingSchedulePeriod  ChargingSchedulePeriod,
-                                       OnExceptionDelegate         OnException  = null)
+                                       OnExceptionDelegate?        OnException   = null)
         {
 
             try
@@ -305,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ChargingSchedulePeriodJSON, e);
+                OnException?.Invoke(Timestamp.Now, ChargingSchedulePeriodJSON, e);
 
                 ChargingSchedulePeriod = default;
                 return false;
@@ -326,13 +324,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(String                      ChargingSchedulePeriodText,
                                        out ChargingSchedulePeriod  ChargingSchedulePeriod,
-                                       OnExceptionDelegate         OnException  = null)
+                                       OnExceptionDelegate?        OnException   = null)
         {
 
             try
             {
 
-                ChargingSchedulePeriodText = ChargingSchedulePeriodText?.Trim();
+                ChargingSchedulePeriodText = ChargingSchedulePeriodText.Trim();
 
                 if (ChargingSchedulePeriodText.IsNotNullOrEmpty())
                 {
@@ -357,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ChargingSchedulePeriodText, e);
+                OnException?.Invoke(Timestamp.Now, ChargingSchedulePeriodText, e);
             }
 
             ChargingSchedulePeriod = default(ChargingSchedulePeriod);
@@ -373,7 +371,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a XML representation of this object.
         /// </summary>
         /// <param name="XName">An alternative XML element name [default: "OCPPv1_6_CP:chargingSchedulePeriod"]</param>
-        public XElement ToXML(XName XName = null)
+        public XElement ToXML(XName? XName = null)
 
             => new XElement(XName ?? OCPPNS.OCPPv1_6_CP + "chargingSchedulePeriod",
 
@@ -391,10 +389,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingSchedulePeriod> CustomChargingSchedulePeriodSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingSchedulePeriod>? CustomChargingSchedulePeriodSerializer = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            new JProperty("startPeriod",         StartPeriod.ToString()),
                            new JProperty("limit",               Limit.      ToString("0.#")),
@@ -406,8 +404,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                        );
 
             return CustomChargingSchedulePeriodSerializer is not null
-                       ? CustomChargingSchedulePeriodSerializer(this, JSON)
-                       : JSON;
+                       ? CustomChargingSchedulePeriodSerializer(this, json)
+                       : json;
 
         }
 
@@ -424,23 +422,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargingSchedulePeriod1">An id tag info.</param>
         /// <param name="ChargingSchedulePeriod2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingSchedulePeriod ChargingSchedulePeriod1, ChargingSchedulePeriod ChargingSchedulePeriod2)
-        {
+        public static Boolean operator == (ChargingSchedulePeriod ChargingSchedulePeriod1,
+                                           ChargingSchedulePeriod ChargingSchedulePeriod2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargingSchedulePeriod1, ChargingSchedulePeriod2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ChargingSchedulePeriod1 == null) || ((Object) ChargingSchedulePeriod2 == null))
-                return false;
-
-            if ((Object) ChargingSchedulePeriod1 == null)
-                throw new ArgumentNullException(nameof(ChargingSchedulePeriod1),  "The given id tag info must not be null!");
-
-            return ChargingSchedulePeriod1.Equals(ChargingSchedulePeriod2);
-
-        }
+            => ChargingSchedulePeriod1.Equals(ChargingSchedulePeriod2);
 
         #endregion
 
@@ -452,8 +437,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargingSchedulePeriod1">An id tag info.</param>
         /// <param name="ChargingSchedulePeriod2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingSchedulePeriod ChargingSchedulePeriod1, ChargingSchedulePeriod ChargingSchedulePeriod2)
-            => !(ChargingSchedulePeriod1 == ChargingSchedulePeriod2);
+        public static Boolean operator != (ChargingSchedulePeriod ChargingSchedulePeriod1,
+                                           ChargingSchedulePeriod ChargingSchedulePeriod2)
+
+            => !ChargingSchedulePeriod1.Equals(ChargingSchedulePeriod2);
 
         #endregion
 
@@ -464,46 +451,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging schedule periods for equality..
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A charging schedule period to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            // Check if the given object is a id tag info.
-            if (!(Object is ChargingSchedulePeriod))
-                return false;
-
-            return this.Equals((ChargingSchedulePeriod) Object);
-
-        }
+            => Object is ChargingSchedulePeriod chargingSchedulePeriod &&
+                   Equals(chargingSchedulePeriod);
 
         #endregion
 
         #region Equals(ChargingSchedulePeriod)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two charging schedule periods for equality.
         /// </summary>
-        /// <param name="ChargingSchedulePeriod">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="ChargingSchedulePeriod">A charging schedule period to compare with.</param>
         public Boolean Equals(ChargingSchedulePeriod ChargingSchedulePeriod)
-        {
 
-            if ((Object) ChargingSchedulePeriod == null)
-                return false;
+            => StartPeriod. Equals(ChargingSchedulePeriod.StartPeriod) &&
+               Limit.       Equals(ChargingSchedulePeriod.Limit)       &&
 
-            return StartPeriod. Equals(ChargingSchedulePeriod.StartPeriod) &&
-                   Limit.       Equals(ChargingSchedulePeriod.Limit)       &&
-
-                   ((!NumberPhases.HasValue && !ChargingSchedulePeriod.NumberPhases.HasValue) ||
-                     (NumberPhases.HasValue &&  ChargingSchedulePeriod.NumberPhases.HasValue && NumberPhases.Value.Equals(ChargingSchedulePeriod.NumberPhases.Value)));
-
-        }
+            ((!NumberPhases.HasValue && !ChargingSchedulePeriod.NumberPhases.HasValue) ||
+              (NumberPhases.HasValue &&  ChargingSchedulePeriod.NumberPhases.HasValue && NumberPhases.Value.Equals(ChargingSchedulePeriod.NumberPhases.Value)));
 
         #endregion
 
@@ -520,12 +490,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             unchecked
             {
 
-                return StartPeriod.       GetHashCode() * 7 ^
-                       Limit.             GetHashCode() * 5 ^
+                return StartPeriod.  GetHashCode() * 5 ^
+                       Limit.        GetHashCode() * 3 ^
 
-                       (NumberPhases.HasValue
-                           ? NumberPhases.GetHashCode() * 3
-                           : 0);
+                      (NumberPhases?.GetHashCode() ?? 0);
 
             }
         }

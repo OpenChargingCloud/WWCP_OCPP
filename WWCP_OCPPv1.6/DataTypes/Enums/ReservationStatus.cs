@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,66 +27,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static ReservationStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Accepted":
-                    return ReservationStatus.Accepted;
-
-                case "Faulted":
-                    return ReservationStatus.Faulted;
-
-                case "Occupied":
-                    return ReservationStatus.Occupied;
-
-                case "Rejected":
-                    return ReservationStatus.Rejected;
-
-                case "Unavailable":
-                    return ReservationStatus.Unavailable;
-
-
-                default:
-                    return ReservationStatus.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Accepted"     => ReservationStatus.Accepted,
+                   "Faulted"      => ReservationStatus.Faulted,
+                   "Occupied"     => ReservationStatus.Occupied,
+                   "Rejected"     => ReservationStatus.Rejected,
+                   "Unavailable"  => ReservationStatus.Unavailable,
+                   _              => ReservationStatus.Unknown
+               };
 
         #endregion
 
         #region AsText(this ReservationStatus)
 
         public static String AsText(this ReservationStatus ReservationStatus)
-        {
 
-            switch (ReservationStatus)
-            {
-
-                case ReservationStatus.Accepted:
-                    return "Accepted";
-
-                case ReservationStatus.Faulted:
-                    return "Faulted";
-
-                case ReservationStatus.Occupied:
-                    return "Occupied";
-
-                case ReservationStatus.Rejected:
-                    return "Rejected";
-
-                case ReservationStatus.Unavailable:
-                    return "Unavailable";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => ReservationStatus switch {
+                   ReservationStatus.Accepted     => "Accepted",
+                   ReservationStatus.Faulted      => "Faulted",
+                   ReservationStatus.Occupied     => "Occupied",
+                   ReservationStatus.Rejected     => "Rejected",
+                   ReservationStatus.Unavailable  => "Unavailable",
+                   _                              => "unknown"
+               };
 
         #endregion
 

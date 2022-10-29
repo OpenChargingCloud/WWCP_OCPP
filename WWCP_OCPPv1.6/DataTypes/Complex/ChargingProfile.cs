@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
@@ -112,10 +111,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                ChargingProfileKinds     ChargingProfileKind,
                                ChargingSchedule         ChargingSchedule,
 
-                               Transaction_Id?          TransactionId   = null,
-                               RecurrencyKinds?         RecurrencyKind  = null,
-                               DateTime?                ValidFrom       = null,
-                               DateTime?                ValidTo         = null)
+                               Transaction_Id?          TransactionId    = null,
+                               RecurrencyKinds?         RecurrencyKind   = null,
+                               DateTime?                ValidFrom        = null,
+                               DateTime?                ValidTo          = null)
 
         {
 
@@ -125,10 +124,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             this.ChargingProfileKind     = ChargingProfileKind;
             this.ChargingSchedule        = ChargingSchedule ?? throw new ArgumentNullException(nameof(ChargingSchedule),   "The given charging schedule must not be null!");
 
-            this.TransactionId           = TransactionId    ?? new Transaction_Id?();
-            this.RecurrencyKind          = RecurrencyKind   ?? new RecurrencyKinds?();
-            this.ValidFrom               = ValidFrom        ?? new DateTime?();
-            this.ValidTo                 = ValidTo          ?? new DateTime?();
+            this.TransactionId           = TransactionId;
+            this.RecurrencyKind          = RecurrencyKind;
+            this.ValidFrom               = ValidFrom;
+            this.ValidTo                 = ValidTo;
 
         }
 
@@ -303,12 +302,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ChargingProfileXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingProfile Parse(XElement             ChargingProfileXML,
-                                            OnExceptionDelegate  OnException = null)
+        public static ChargingProfile? Parse(XElement              ChargingProfileXML,
+                                             OnExceptionDelegate?  OnException = null)
         {
 
             if (TryParse(ChargingProfileXML,
-                         out ChargingProfile chargingProfile,
+                         out var chargingProfile,
                          OnException))
             {
                 return chargingProfile;
@@ -327,19 +326,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomChargingProfileParser">A delegate to parse custom charging profiles.</param>
-        public static ChargingProfile Parse(JObject                                       JSON,
-                                            CustomJObjectParserDelegate<ChargingProfile>  CustomChargingProfileParser = null)
+        public static ChargingProfile? Parse(JObject                                        JSON,
+                                             CustomJObjectParserDelegate<ChargingProfile>?  CustomChargingProfileParser   = null)
         {
 
             if (TryParse(JSON,
-                         out ChargingProfile  chargingProfile,
-                         out String           ErrorResponse,
+                         out var chargingProfile,
+                         out var errorResponse,
                          CustomChargingProfileParser))
             {
                 return chargingProfile;
             }
 
-            throw new ArgumentException("The given JSON representation of a charging profile is invalid: " + ErrorResponse, nameof(JSON));
+            throw new ArgumentException("The given JSON representation of a charging profile is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
@@ -352,12 +352,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ChargingProfileText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingProfile Parse(String               ChargingProfileText,
-                                            OnExceptionDelegate  OnException = null)
+        public static ChargingProfile? Parse(String                ChargingProfileText,
+                                             OnExceptionDelegate?  OnException   = null)
         {
 
             if (TryParse(ChargingProfileText,
-                         out ChargingProfile chargingProfile,
+                         out var chargingProfile,
                          OnException))
             {
                 return chargingProfile;
@@ -377,9 +377,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargingProfileXML">The XML to be parsed.</param>
         /// <param name="ChargingProfile">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement             ChargingProfileXML,
-                                       out ChargingProfile  ChargingProfile,
-                                       OnExceptionDelegate  OnException  = null)
+        public static Boolean TryParse(XElement              ChargingProfileXML,
+                                       out ChargingProfile?  ChargingProfile,
+                                       OnExceptionDelegate?  OnException   = null)
         {
 
             try
@@ -422,7 +422,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ChargingProfileXML, e);
+                OnException?.Invoke(Timestamp.Now, ChargingProfileXML, e);
 
                 ChargingProfile = null;
                 return false;
@@ -443,9 +443,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingProfile">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject              JSON,
-                                       out ChargingProfile  ChargingProfile,
-                                       out String           ErrorResponse)
+        public static Boolean TryParse(JObject               JSON,
+                                       out ChargingProfile?  ChargingProfile,
+                                       out String?           ErrorResponse)
 
             => TryParse(JSON,
                         out ChargingProfile,
@@ -460,10 +460,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargingProfile">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomChargingProfileParser">A delegate to parse custom charging profiles.</param>
-        public static Boolean TryParse(JObject                                       JSON,
-                                       out ChargingProfile                           ChargingProfile,
-                                       out String                                    ErrorResponse,
-                                       CustomJObjectParserDelegate<ChargingProfile>  CustomChargingProfileParser)
+        public static Boolean TryParse(JObject                                        JSON,
+                                       out ChargingProfile?                           ChargingProfile,
+                                       out String?                                    ErrorResponse,
+                                       CustomJObjectParserDelegate<ChargingProfile>?  CustomChargingProfileParser)
         {
 
             try
@@ -527,11 +527,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (!JSON.ParseMandatoryJSON2("chargingSchedule",
                                               "charging schedule",
                                               OCPPv1_6.ChargingSchedule.TryParse,
-                                              out ChargingSchedule ChargingSchedule,
-                                              out                  ErrorResponse))
+                                              out ChargingSchedule? ChargingSchedule,
+                                              out                   ErrorResponse))
                 {
                     return false;
                 }
+
+                if (ChargingSchedule is null)
+                    return false;
 
                 #endregion
 
@@ -626,15 +629,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargingProfileText">The text to be parsed.</param>
         /// <param name="ChargingProfile">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               ChargingProfileText,
-                                       out ChargingProfile  ChargingProfile,
-                                       OnExceptionDelegate  OnException  = null)
+        public static Boolean TryParse(String                ChargingProfileText,
+                                       out ChargingProfile?  ChargingProfile,
+                                       OnExceptionDelegate?  OnException   = null)
         {
 
             try
             {
 
-                ChargingProfileText = ChargingProfileText?.Trim();
+                ChargingProfileText = ChargingProfileText.Trim();
 
                 if (ChargingProfileText.IsNotNullOrEmpty())
                 {
@@ -642,7 +645,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     if (ChargingProfileText.StartsWith("{") &&
                         TryParse(JObject.Parse(ChargingProfileText),
                                  out ChargingProfile,
-                                 out String ErrorResponse))
+                                 out var errorResponse))
                     {
                         return true;
                     }
@@ -659,7 +662,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ChargingProfileText, e);
+                OnException?.Invoke(Timestamp.Now, ChargingProfileText, e);
             }
 
             ChargingProfile = null;
@@ -675,7 +678,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a XML representation of this object.
         /// </summary>
         /// <param name="XName">An alternative XML element name [default: "OCPPv1_6_CP:chargingProfile"]</param>
-        public XElement ToXML(XName XName = null)
+        public XElement ToXML(XName? XName = null)
 
             => new XElement(XName ?? OCPPNS.OCPPv1_6_CP + "chargingProfile",
 
@@ -715,16 +718,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="CustomChargingProfileSerializer">A delegate to serialize custom charging profiles.</param>
         /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedule requests.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingProfile>         CustomChargingProfileSerializer          = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedule>        CustomChargingScheduleSerializer         = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>  CustomChargingSchedulePeriodSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingProfile>?         CustomChargingProfileSerializer          = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedule>?        CustomChargingScheduleSerializer         = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?  CustomChargingSchedulePeriodSerializer   = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            new JProperty("chargingProfileId",       ChargingProfileId.ToString()),
 
-                           TransactionId != null
+                           TransactionId is not null
                                ? new JProperty("transactionId",     TransactionId.    Value)
                                : null,
 
@@ -733,15 +736,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            new JProperty("chargingProfileKind",     ChargingProfileKind.   AsText()),
 
                            ValidFrom.HasValue
-                               ? new JProperty("validFrom",         ValidFrom.     Value.ToIso8601())
+                               ? new JProperty("validFrom",         ValidFrom.        Value.ToIso8601())
                                : null,
 
                            ValidTo.HasValue
-                               ? new JProperty("validTo",           ValidTo.       Value.ToIso8601())
+                               ? new JProperty("validTo",           ValidTo.          Value.ToIso8601())
                                : null,
 
                            RecurrencyKind.HasValue
-                               ? new JProperty("recurrencyKind",    RecurrencyKind.Value.AsText())
+                               ? new JProperty("recurrencyKind",    RecurrencyKind.   Value.AsText())
                                : null,
 
                            new JProperty("chargingSchedule",        ChargingSchedule.ToJSON(CustomChargingScheduleSerializer,
@@ -750,8 +753,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                        );
 
             return CustomChargingProfileSerializer is not null
-                       ? CustomChargingProfileSerializer(this, JSON)
-                       : JSON;
+                       ? CustomChargingProfileSerializer(this, json)
+                       : json;
 
         }
 
@@ -776,7 +779,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 return true;
 
             // If one is null, but not both, return false.
-            if ((ChargingProfile1 is null) || (ChargingProfile2 is null))
+            if (ChargingProfile1 is null || ChargingProfile2 is null)
                 return false;
 
             return ChargingProfile1.Equals(ChargingProfile2);
@@ -793,7 +796,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargingProfile1">An id tag info.</param>
         /// <param name="ChargingProfile2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingProfile ChargingProfile1, ChargingProfile ChargingProfile2)
+        public static Boolean operator != (ChargingProfile ChargingProfile1,
+                                           ChargingProfile ChargingProfile2)
+
             => !(ChargingProfile1 == ChargingProfile2);
 
         #endregion
@@ -805,22 +810,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two id tag infos for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">An id tag info to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is ChargingProfile ChargingProfile))
-                return false;
-
-            return Equals(ChargingProfile);
-
-        }
+            => Object is ChargingProfile chargingProfile &&
+                   Equals(chargingProfile);
 
         #endregion
 
@@ -830,32 +826,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compares two id tag infos for equality.
         /// </summary>
         /// <param name="ChargingProfile">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingProfile ChargingProfile)
-        {
+        public Boolean Equals(ChargingProfile? ChargingProfile)
 
-            if (ChargingProfile is null)
-                return false;
+            => ChargingProfile is not null                                           &&
 
-            return ChargingProfileId.     Equals(ChargingProfile.ChargingProfileId)      &&
-                   StackLevel.            Equals(ChargingProfile.StackLevel)             &&
-                   ChargingProfilePurpose.Equals(ChargingProfile.ChargingProfilePurpose) &&
-                   ChargingProfileKind.   Equals(ChargingProfile.ChargingProfileKind)    &&
-                   ChargingSchedule.      Equals(ChargingProfile.ChargingSchedule)       &&
+               ChargingProfileId.     Equals(ChargingProfile.ChargingProfileId)      &&
+               StackLevel.            Equals(ChargingProfile.StackLevel)             &&
+               ChargingProfilePurpose.Equals(ChargingProfile.ChargingProfilePurpose) &&
+               ChargingProfileKind.   Equals(ChargingProfile.ChargingProfileKind)    &&
+               ChargingSchedule.      Equals(ChargingProfile.ChargingSchedule)       &&
 
-                   ((!TransactionId. HasValue && !ChargingProfile.TransactionId. HasValue) ||
-                     (TransactionId. HasValue &&  ChargingProfile.TransactionId. HasValue && TransactionId. Value.Equals(ChargingProfile.TransactionId. Value))) &&
+               ((!TransactionId. HasValue && !ChargingProfile.TransactionId. HasValue) ||
+                 (TransactionId. HasValue &&  ChargingProfile.TransactionId. HasValue && TransactionId. Value.Equals(ChargingProfile.TransactionId. Value))) &&
 
-                   ((!RecurrencyKind.HasValue && !ChargingProfile.RecurrencyKind.HasValue) ||
-                     (RecurrencyKind.HasValue &&  ChargingProfile.RecurrencyKind.HasValue && RecurrencyKind.Value.Equals(ChargingProfile.RecurrencyKind.Value))) &&
+               ((!RecurrencyKind.HasValue && !ChargingProfile.RecurrencyKind.HasValue) ||
+                 (RecurrencyKind.HasValue &&  ChargingProfile.RecurrencyKind.HasValue && RecurrencyKind.Value.Equals(ChargingProfile.RecurrencyKind.Value))) &&
 
-                   ((!ValidFrom.     HasValue && !ChargingProfile.ValidFrom.     HasValue) ||
-                     (ValidFrom.     HasValue &&  ChargingProfile.ValidFrom.     HasValue && ValidFrom.     Value.Equals(ChargingProfile.ValidFrom.     Value))) &&
+               ((!ValidFrom.     HasValue && !ChargingProfile.ValidFrom.     HasValue) ||
+                 (ValidFrom.     HasValue &&  ChargingProfile.ValidFrom.     HasValue && ValidFrom.     Value.Equals(ChargingProfile.ValidFrom.     Value))) &&
 
-                   ((!ValidTo.       HasValue && !ChargingProfile.ValidTo.       HasValue) ||
-                     (ValidTo.       HasValue &&  ChargingProfile.ValidTo.       HasValue && ValidTo.       Value.Equals(ChargingProfile.ValidTo.       Value)));
-
-        }
+               ((!ValidTo.       HasValue && !ChargingProfile.ValidTo.       HasValue) ||
+                 (ValidTo.       HasValue &&  ChargingProfile.ValidTo.       HasValue && ValidTo.       Value.Equals(ChargingProfile.ValidTo.       Value)));
 
         #endregion
 
@@ -872,27 +863,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             unchecked
             {
 
-                return ChargingProfileId     .GetHashCode() * 31 ^
-                       StackLevel            .GetHashCode() * 29 ^
-                       ChargingProfilePurpose.GetHashCode() * 23 ^
-                       ChargingProfileKind   .GetHashCode() * 19 ^
-                       ChargingSchedule      .GetHashCode() * 17 ^
+                return ChargingProfileId     .GetHashCode()       * 29 ^
+                       StackLevel            .GetHashCode()       * 23 ^
+                       ChargingProfilePurpose.GetHashCode()       * 19 ^
+                       ChargingProfileKind   .GetHashCode()       * 17 ^
+                       ChargingSchedule      .GetHashCode()       * 13 ^
 
-                       (TransactionId != null
-                            ? TransactionId. GetHashCode() * 13
-                            : 0) ^
-
-                       (RecurrencyKind.HasValue
-                            ? RecurrencyKind.GetHashCode() * 11
-                            : 0) ^
-
-                       (ValidFrom.HasValue
-                            ? ValidFrom.     GetHashCode() * 7
-                            : 0) ^
-
-                       (ValidTo.HasValue
-                            ? ValidTo.       GetHashCode() * 5
-                            : 0);
+                       (TransactionId?.       GetHashCode() ?? 0) * 11 ^
+                       (RecurrencyKind?.      GetHashCode() ?? 0) *  7 ^
+                       (ValidFrom?.           GetHashCode() ?? 0) *  5 ^
+                       (ValidTo?.             GetHashCode() ?? 0) *  3;
 
             }
         }

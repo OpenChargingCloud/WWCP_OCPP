@@ -2781,7 +2781,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                 MeterType,
                                                                 MeterSerialNumber,
 
-                                                                Request_Id.Random(),
+                                                                Request_Id.NewRandom(),
                                                                 requestTimestamp,
                                                                 EventTrackingId ?? EventTracking_Id.New);
 
@@ -2889,7 +2889,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var request           = new HeartbeatRequest(ChargeBoxId,
 
-                                                         Request_Id.Random(),
+                                                         Request_Id.NewRandom(),
                                                          requestTimestamp,
                                                          EventTrackingId ?? EventTracking_Id.New);
 
@@ -2985,7 +2985,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var request           = new AuthorizeRequest(ChargeBoxId,
                                                          IdTag,
 
-                                                         Request_Id.Random(),
+                                                         Request_Id.NewRandom(),
                                                          requestTimestamp,
                                                          EventTrackingId ?? EventTracking_Id.New);
 
@@ -3088,7 +3088,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                 MeterStart,
                                                                 ReservationId,
 
-                                                                Request_Id.Random(),
+                                                                Request_Id.NewRandom(),
                                                                 requestTimestamp,
                                                                 EventTrackingId ?? EventTracking_Id.New);
 
@@ -3210,7 +3210,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                   VendorId,
                                                                   VendorErrorCode,
 
-                                                                  Request_Id.Random(),
+                                                                  Request_Id.NewRandom(),
                                                                   requestTimestamp,
                                                                   EventTrackingId ?? EventTracking_Id.New);
 
@@ -3307,7 +3307,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                            MeterValues,
                                                            TransactionId,
 
-                                                           Request_Id.Random(),
+                                                           Request_Id.NewRandom(),
                                                            requestTimestamp,
                                                            EventTrackingId ?? EventTracking_Id.New);
 
@@ -3413,7 +3413,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                Reason,
                                                                TransactionData,
 
-                                                               Request_Id.Random(),
+                                                               Request_Id.NewRandom(),
                                                                requestTimestamp,
                                                                EventTrackingId ?? EventTracking_Id.New);
 
@@ -3511,7 +3511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                             MessageId,
                                                             Data,
 
-                                                            Request_Id.Random(),
+                                                            Request_Id.NewRandom(),
                                                             requestTimestamp,
                                                             EventTrackingId ?? EventTracking_Id.New);
 
@@ -3602,7 +3602,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var request           = new DiagnosticsStatusNotificationRequest(ChargeBoxId,
                                                                              Status,
 
-                                                                             Request_Id.Random(),
+                                                                             Request_Id.NewRandom(),
                                                                              requestTimestamp,
                                                                              EventTrackingId ?? EventTracking_Id.New);
 
@@ -3693,7 +3693,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var request           = new FirmwareStatusNotificationRequest(ChargeBoxId,
                                                                           Status,
 
-                                                                          Request_Id.Random(),
+                                                                          Request_Id.NewRandom(),
                                                                           requestTimestamp,
                                                                           EventTrackingId ?? EventTracking_Id.New);
 

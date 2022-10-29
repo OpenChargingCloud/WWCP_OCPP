@@ -15,141 +15,62 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
+    /// <summary>
+    /// Extentions methods for units of measure.
+    /// </summary>
     public static class UnitsOfMeasureExtentions
     {
 
         #region Parse(Text)
 
         public static UnitsOfMeasure Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Celsius":
-                    return UnitsOfMeasure.Celsius;
-
-                case "Fahrenheit":
-                    return UnitsOfMeasure.Fahrenheit;
-
-                case "kWh":
-                    return UnitsOfMeasure.kWh;
-
-                case "varh":
-                    return UnitsOfMeasure.varh;
-
-                case "kvarh":
-                    return UnitsOfMeasure.kvarh;
-
-                case "W":
-                    return UnitsOfMeasure.Watts;
-
-                case "kW":
-                    return UnitsOfMeasure.kW;
-
-                case "VA":
-                    return UnitsOfMeasure.VoltAmpere;
-
-                case "kVA":
-                    return UnitsOfMeasure.kVA;
-
-                case "var":
-                    return UnitsOfMeasure.var;
-
-                case "kvar":
-                    return UnitsOfMeasure.kvar;
-
-                case "A":
-                    return UnitsOfMeasure.Amperes;
-
-                case "V":
-                    return UnitsOfMeasure.Voltage;
-
-                case "K":
-                    return UnitsOfMeasure.Kelvin;
-
-                case "Percent":
-                    return UnitsOfMeasure.Percent;
-
-
-                default:
-                    return UnitsOfMeasure.Wh;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Celsius"     => UnitsOfMeasure.Celsius,
+                   "Fahrenheit"  => UnitsOfMeasure.Fahrenheit,
+                   "kWh"         => UnitsOfMeasure.kWh,
+                   "varh"        => UnitsOfMeasure.varh,
+                   "kvarh"       => UnitsOfMeasure.kvarh,
+                   "W"           => UnitsOfMeasure.Watts,
+                   "kW"          => UnitsOfMeasure.kW,
+                   "VA"          => UnitsOfMeasure.VoltAmpere,
+                   "kVA"         => UnitsOfMeasure.kVA,
+                   "var"         => UnitsOfMeasure.var,
+                   "kvar"        => UnitsOfMeasure.kvar,
+                   "A"           => UnitsOfMeasure.Amperes,
+                   "V"           => UnitsOfMeasure.Voltage,
+                   "K"           => UnitsOfMeasure.Kelvin,
+                   "Percent"     => UnitsOfMeasure.Percent,
+                   _             => UnitsOfMeasure.Wh
+               };
 
         #endregion
 
         #region AsText(this UnitOfMeasure)
 
         public static String AsText(this UnitsOfMeasure UnitOfMeasure)
-        {
 
-            switch (UnitOfMeasure)
-            {
-
-                case UnitsOfMeasure.Celsius:
-                    return "Celsius";
-
-                case UnitsOfMeasure.Fahrenheit:
-                    return "Fahrenheit";
-
-                case UnitsOfMeasure.kWh:
-                    return "kWh";
-
-                case UnitsOfMeasure.varh:
-                    return "varh";
-
-                case UnitsOfMeasure.kvarh:
-                    return "kvarh";
-
-                case UnitsOfMeasure.Watts:
-                    return "W";
-
-                case UnitsOfMeasure.kW:
-                    return "kW";
-
-                case UnitsOfMeasure.VoltAmpere:
-                    return "VA";
-
-                case UnitsOfMeasure.kVA:
-                    return "kVA";
-
-                case UnitsOfMeasure.var:
-                    return "var";
-
-                case UnitsOfMeasure.kvar:
-                    return "kvar";
-
-                case UnitsOfMeasure.Amperes:
-                    return "A";
-
-                case UnitsOfMeasure.Voltage:
-                    return "V";
-
-                case UnitsOfMeasure.Kelvin:
-                    return "K";
-
-                case UnitsOfMeasure.Percent:
-                    return "Percent";
-
-
-                default:
-                    return "Wh";
-
-            }
-
-        }
+            => UnitOfMeasure switch {
+                   UnitsOfMeasure.Celsius     => "Celsius",
+                   UnitsOfMeasure.Fahrenheit  => "Fahrenheit",
+                   UnitsOfMeasure.kWh         => "kWh",
+                   UnitsOfMeasure.varh        => "varh",
+                   UnitsOfMeasure.kvarh       => "kvarh",
+                   UnitsOfMeasure.Watts       => "W",
+                   UnitsOfMeasure.kW          => "kW",
+                   UnitsOfMeasure.VoltAmpere  => "VA",
+                   UnitsOfMeasure.kVA         => "kVA",
+                   UnitsOfMeasure.var         => "var",
+                   UnitsOfMeasure.kvar        => "kvar",
+                   UnitsOfMeasure.Amperes     => "A",
+                   UnitsOfMeasure.Voltage     => "V",
+                   UnitsOfMeasure.Kelvin      => "K",
+                   UnitsOfMeasure.Percent     => "Percent",
+                   _                          => "Wh"
+               };
 
         #endregion
 

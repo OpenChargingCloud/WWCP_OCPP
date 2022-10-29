@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,78 +27,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static ReadingContexts Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Interruption.Begin":
-                    return ReadingContexts.InterruptionBegin;
-
-                case "Interruption.End":
-                    return ReadingContexts.InterruptionEnd;
-
-                case "Other":
-                    return ReadingContexts.Other;
-
-                case "Sample.Clock":
-                    return ReadingContexts.SampleClock;
-
-                case "Transaction.Begin":
-                    return ReadingContexts.TransactionBegin;
-
-                case "Transaction.End":
-                    return ReadingContexts.TransactionEnd;
-
-                case "Trigger":
-                    return ReadingContexts.Trigger;
-
-
-                default:
-                    return ReadingContexts.SamplePeriodic;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Interruption.Begin"  => ReadingContexts.InterruptionBegin,
+                   "Interruption.End"    => ReadingContexts.InterruptionEnd,
+                   "Other"               => ReadingContexts.Other,
+                   "Sample.Clock"        => ReadingContexts.SampleClock,
+                   "Transaction.Begin"   => ReadingContexts.TransactionBegin,
+                   "Transaction.End"     => ReadingContexts.TransactionEnd,
+                   "Trigger"             => ReadingContexts.Trigger,
+                   _                     => ReadingContexts.SamplePeriodic
+               };
 
         #endregion
 
         #region AsText(this ReadingContexts)
 
         public static String AsText(this ReadingContexts ReadingContexts)
-        {
 
-            switch (ReadingContexts)
-            {
-
-                case ReadingContexts.InterruptionBegin:
-                    return "Interruption.Begin";
-
-                case ReadingContexts.InterruptionEnd:
-                    return "Interruption.End";
-
-                case ReadingContexts.Other:
-                    return "Other";
-
-                case ReadingContexts.SampleClock:
-                    return "Sample.Clock";
-
-                case ReadingContexts.TransactionBegin:
-                    return "Transaction.Begin";
-
-                case ReadingContexts.TransactionEnd:
-                    return "Transaction.End";
-
-                case ReadingContexts.Trigger:
-                    return "Trigger";
-
-
-                default:
-                    return "Sample.Periodic";
-
-            }
-
-        }
+            => ReadingContexts switch {
+                   ReadingContexts.InterruptionBegin  => "Interruption.Begin",
+                   ReadingContexts.InterruptionEnd    => "Interruption.End",
+                   ReadingContexts.Other              => "Other",
+                   ReadingContexts.SampleClock        => "Sample.Clock",
+                   ReadingContexts.TransactionBegin   => "Transaction.Begin",
+                   ReadingContexts.TransactionEnd     => "Transaction.End",
+                   ReadingContexts.Trigger            => "Trigger",
+                   _                                  => "Sample.Periodic"
+               };
 
         #endregion
 
@@ -156,7 +106,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Value taken in response to a TriggerMessage request.
         /// </summary>
         Trigger
-
 
     }
 

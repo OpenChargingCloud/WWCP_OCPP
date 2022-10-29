@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,60 +27,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static ConfigurationStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Accepted":
-                    return ConfigurationStatus.Accepted;
-
-                case "Rejected":
-                    return ConfigurationStatus.Rejected;
-
-                case "RebootRequired":
-                    return ConfigurationStatus.RebootRequired;
-
-                case "NotSupported":
-                    return ConfigurationStatus.NotSupported;
-
-
-                default:
-                    return ConfigurationStatus.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Accepted"        => ConfigurationStatus.Accepted,
+                   "Rejected"        => ConfigurationStatus.Rejected,
+                   "RebootRequired"  => ConfigurationStatus.RebootRequired,
+                   "NotSupported"    => ConfigurationStatus.NotSupported,
+                   _                 => ConfigurationStatus.Unknown
+               };
 
         #endregion
 
         #region AsText(this ConfigurationStatus)
 
         public static String AsText(this ConfigurationStatus ConfigurationStatus)
-        {
 
-            switch (ConfigurationStatus)
-            {
-
-                case ConfigurationStatus.Accepted:
-                    return "Accepted";
-
-                case ConfigurationStatus.Rejected:
-                    return "Rejected";
-
-                case ConfigurationStatus.RebootRequired:
-                    return "RebootRequired";
-
-                case ConfigurationStatus.NotSupported:
-                    return "NotSupported";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => ConfigurationStatus switch {
+                   ConfigurationStatus.Accepted        => "Accepted",
+                   ConfigurationStatus.Rejected        => "Rejected",
+                   ConfigurationStatus.RebootRequired  => "RebootRequired",
+                   ConfigurationStatus.NotSupported    => "NotSupported",
+                   _                                   => "unknown"
+               };
 
         #endregion
 

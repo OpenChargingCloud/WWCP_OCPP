@@ -15,15 +15,8 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
-
 
     /// <summary>
     /// Extention methods for stop transaction reasons.
@@ -34,102 +27,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static Reasons AsReasons(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "EmergencyStop":
-                    return Reasons.EmergencyStop;
-
-                case "EVDisconnected":
-                    return Reasons.EVDisconnected;
-
-                case "HardReset":
-                    return Reasons.HardReset;
-
-                case "Local":
-                    return Reasons.Local;
-
-                case "Other":
-                    return Reasons.Other;
-
-                case "PowerLoss":
-                    return Reasons.PowerLoss;
-
-                case "Reboot":
-                    return Reasons.Reboot;
-
-                case "Remote":
-                    return Reasons.Remote;
-
-                case "SoftReset":
-                    return Reasons.SoftReset;
-
-                case "UnlockCommand":
-                    return Reasons.UnlockCommand;
-
-                case "DeAuthorized":
-                    return Reasons.DeAuthorized;
-
-
-                default:
-                    return Reasons.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "EmergencyStop"   => Reasons.EmergencyStop,
+                   "EVDisconnected"  => Reasons.EVDisconnected,
+                   "HardReset"       => Reasons.HardReset,
+                   "Local"           => Reasons.Local,
+                   "Other"           => Reasons.Other,
+                   "PowerLoss"       => Reasons.PowerLoss,
+                   "Reboot"          => Reasons.Reboot,
+                   "Remote"          => Reasons.Remote,
+                   "SoftReset"       => Reasons.SoftReset,
+                   "UnlockCommand"   => Reasons.UnlockCommand,
+                   "DeAuthorized"    => Reasons.DeAuthorized,
+                   _                 => Reasons.Unknown
+               };
 
         #endregion
 
         #region AsText(this Reasons)
 
         public static String AsText(this Reasons Reasons)
-        {
 
-            switch (Reasons)
-            {
-
-                case Reasons.EmergencyStop:
-                    return "EmergencyStop";
-
-                case Reasons.EVDisconnected:
-                    return "EVDisconnected";
-
-                case Reasons.HardReset:
-                    return "HardReset";
-
-                case Reasons.Local:
-                    return "Local";
-
-                case Reasons.Other:
-                    return "Other";
-
-                case Reasons.PowerLoss:
-                    return "PowerLoss";
-
-                case Reasons.Reboot:
-                    return "Reboot";
-
-                case Reasons.Remote:
-                    return "Remote";
-
-                case Reasons.SoftReset:
-                    return "SoftReset";
-
-                case Reasons.UnlockCommand:
-                    return "UnlockCommand";
-
-                case Reasons.DeAuthorized:
-                    return "DeAuthorized";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => Reasons switch {
+                   Reasons.EmergencyStop   => "EmergencyStop",
+                   Reasons.EVDisconnected  => "EVDisconnected",
+                   Reasons.HardReset       => "HardReset",
+                   Reasons.Local           => "Local",
+                   Reasons.Other           => "Other",
+                   Reasons.PowerLoss       => "PowerLoss",
+                   Reasons.Reboot          => "Reboot",
+                   Reasons.Remote          => "Remote",
+                   Reasons.SoftReset       => "SoftReset",
+                   Reasons.UnlockCommand   => "UnlockCommand",
+                   Reasons.DeAuthorized    => "DeAuthorized",
+                   _                       => "unknown"
+               };
 
         #endregion
 

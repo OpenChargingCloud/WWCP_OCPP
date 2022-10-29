@@ -100,13 +100,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region (static) Random  (Length = 30)
+        #region (static) NewRandom(Length = 30)
 
         /// <summary>
         /// Create a new random central system identification.
         /// </summary>
         /// <param name="Length">The expected length of the central system identification.</param>
-        public static CentralSystem_Id Random(Byte Length = 30)
+        public static CentralSystem_Id NewRandom(Byte Length = 30)
 
             => new (RandomExtensions.RandomString(Length));
 
@@ -121,13 +121,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static CentralSystem_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out CentralSystem_Id chargeBoxId))
-                return chargeBoxId;
+            if (TryParse(Text, out var centralSystemId))
+                return centralSystemId;
 
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a central system identification must not be null or empty!");
-
-            throw new ArgumentException("The given text representation of a central system identification is invalid!", nameof(Text));
+            throw new ArgumentException("Invalid text representation of a central system identification: '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
@@ -142,8 +140,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static CentralSystem_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out CentralSystem_Id chargeBoxId))
-                return chargeBoxId;
+            if (TryParse(Text, out var centralSystemId))
+                return centralSystemId;
 
             return null;
 
@@ -161,15 +159,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean TryParse(String Text, out CentralSystem_Id CentralSystemId)
         {
 
+            Text = Text.Trim();
+
             if (Text.IsNotNullOrEmpty())
             {
-                try
-                {
-                    CentralSystemId = new CentralSystem_Id(Text.Trim());
-                    return true;
-                }
-                catch (Exception)
-                { }
+                CentralSystemId = new CentralSystem_Id(Text.Trim());
+                return true;
             }
 
             CentralSystemId = default;
@@ -186,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public CentralSystem_Id Clone
 
-            => new CentralSystem_Id(
+            => new (
                    new String(InternalId?.ToCharArray())
                );
 
@@ -292,13 +287,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two central system identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        /// <param name="Object">A central system identification to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
-            => Object is CentralSystem_Id chargeBoxId
-                   ? CompareTo(chargeBoxId)
+            => Object is CentralSystem_Id centralSystemId
+                   ? CompareTo(centralSystemId)
                    : throw new ArgumentException("The given object is not a central system identification!",
                                                  nameof(Object));
 
@@ -307,9 +302,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region CompareTo(CentralSystemId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two central system identifications.
         /// </summary>
-        /// <param name="CentralSystemId">An object to compare with.</param>
+        /// <param name="CentralSystemId">A central system identification to compare with.</param>
         public Int32 CompareTo(CentralSystem_Id CentralSystemId)
 
             => String.Compare(InternalId,
@@ -325,14 +320,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two central system identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        /// <param name="Object">A central system identification to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            => Object is CentralSystem_Id chargeBoxId &&
-                   Equals(chargeBoxId);
+            => Object is CentralSystem_Id centralSystemId &&
+                   Equals(centralSystemId);
 
         #endregion
 
@@ -342,7 +336,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compares two central system identifications for equality.
         /// </summary>
         /// <param name="CentralSystemId">A central system identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(CentralSystem_Id CentralSystemId)
 
             => String.Equals(InternalId,

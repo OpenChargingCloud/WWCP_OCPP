@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,72 +27,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static MessageTriggers Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "BootNotification":
-                    return MessageTriggers.BootNotification;
-
-                case "DiagnosticsStatusNotification":
-                    return MessageTriggers.DiagnosticsStatusNotification;
-
-                case "FirmwareStatusNotification":
-                    return MessageTriggers.FirmwareStatusNotification;
-
-                case "Heartbeat":
-                    return MessageTriggers.Heartbeat;
-
-                case "MeterValues":
-                    return MessageTriggers.MeterValues;
-
-                case "StatusNotification":
-                    return MessageTriggers.StatusNotification;
-
-
-                default:
-                    return MessageTriggers.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "BootNotification"               => MessageTriggers.BootNotification,
+                   "DiagnosticsStatusNotification"  => MessageTriggers.DiagnosticsStatusNotification,
+                   "FirmwareStatusNotification"     => MessageTriggers.FirmwareStatusNotification,
+                   "Heartbeat"                      => MessageTriggers.Heartbeat,
+                   "MeterValues"                    => MessageTriggers.MeterValues,
+                   "StatusNotification"             => MessageTriggers.StatusNotification,
+                   _                                => MessageTriggers.Unknown
+               };
 
         #endregion
 
         #region AsText(this MessageTrigger)
 
         public static String AsText(this MessageTriggers MessageTrigger)
-        {
 
-            switch (MessageTrigger)
-            {
-
-                case MessageTriggers.BootNotification:
-                    return "BootNotification";
-
-                case MessageTriggers.DiagnosticsStatusNotification:
-                    return "DiagnosticsStatusNotification";
-
-                case MessageTriggers.FirmwareStatusNotification:
-                    return "FirmwareStatusNotification";
-
-                case MessageTriggers.Heartbeat:
-                    return "Heartbeat";
-
-                case MessageTriggers.MeterValues:
-                    return "MeterValues";
-
-                case MessageTriggers.StatusNotification:
-                    return "StatusNotification";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => MessageTrigger switch {
+                   MessageTriggers.BootNotification               => "BootNotification",
+                   MessageTriggers.DiagnosticsStatusNotification  => "DiagnosticsStatusNotification",
+                   MessageTriggers.FirmwareStatusNotification     => "FirmwareStatusNotification",
+                   MessageTriggers.Heartbeat                      => "Heartbeat",
+                   MessageTriggers.MeterValues                    => "MeterValues",
+                   MessageTriggers.StatusNotification             => "StatusNotification",
+                   _                                              => "unknown"
+               };
 
         #endregion
 

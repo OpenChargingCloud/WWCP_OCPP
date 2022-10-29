@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,48 +27,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static ResetTypes Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Hard":
-                    return ResetTypes.Hard;
-
-                case "Soft":
-                    return ResetTypes.Soft;
-
-
-                default:
-                    return ResetTypes.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Hard"  => ResetTypes.Hard,
+                   "Soft"  => ResetTypes.Soft,
+                   _       => ResetTypes.Unknown
+               };
 
         #endregion
 
         #region AsText(this ResetType)
 
         public static String AsText(this ResetTypes ResetType)
-        {
 
-            switch (ResetType)
-            {
-
-                case ResetTypes.Hard:
-                    return "Hard";
-
-                case ResetTypes.Soft:
-                    return "Soft";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => ResetType switch {
+                   ResetTypes.Hard  => "Hard",
+                   ResetTypes.Soft  => "Soft",
+                   _                => "unknown"
+               };
 
         #endregion
 

@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,54 +27,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static ChargingProfileStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Accepted":
-                    return ChargingProfileStatus.Accepted;
-
-                case "Rejected":
-                    return ChargingProfileStatus.Rejected;
-
-                case "NotSupported":
-                    return ChargingProfileStatus.NotSupported;
-
-
-                default:
-                    return ChargingProfileStatus.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Accepted"      => ChargingProfileStatus.Accepted,
+                   "Rejected"      => ChargingProfileStatus.Rejected,
+                   "NotSupported"  => ChargingProfileStatus.NotSupported,
+                   _               => ChargingProfileStatus.Unknown
+               };
 
         #endregion
 
         #region AsText(this ChargingProfileStatus)
 
         public static String AsText(this ChargingProfileStatus ChargingProfileStatus)
-        {
 
-            switch (ChargingProfileStatus)
-            {
-
-                case ChargingProfileStatus.Accepted:
-                    return "Accepted";
-
-                case ChargingProfileStatus.Rejected:
-                    return "Rejected";
-
-                case ChargingProfileStatus.NotSupported:
-                    return "NotSupported";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => ChargingProfileStatus switch {
+                   ChargingProfileStatus.Accepted      => "Accepted",
+                   ChargingProfileStatus.Rejected      => "Rejected",
+                   ChargingProfileStatus.NotSupported  => "NotSupported",
+                   _                                   => "unknown"
+               };
 
         #endregion
 

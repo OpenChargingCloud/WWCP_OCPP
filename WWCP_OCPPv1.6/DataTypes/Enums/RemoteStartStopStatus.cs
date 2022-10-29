@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,48 +27,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static RemoteStartStopStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Accepted":
-                    return RemoteStartStopStatus.Accepted;
-
-                case "Rejected":
-                    return RemoteStartStopStatus.Rejected;
-
-
-                default:
-                    return RemoteStartStopStatus.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Accepted"  => RemoteStartStopStatus.Accepted,
+                   "Rejected"  => RemoteStartStopStatus.Rejected,
+                   _           => RemoteStartStopStatus.Unknown
+               };
 
         #endregion
 
         #region AsText(this RemoteStartStopStatus)
 
         public static String AsText(this RemoteStartStopStatus RemoteStartStopStatus)
-        {
 
-            switch (RemoteStartStopStatus)
-            {
-
-                case RemoteStartStopStatus.Accepted:
-                    return "Accepted";
-
-                case RemoteStartStopStatus.Rejected:
-                    return "Rejected";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => RemoteStartStopStatus switch {
+                   RemoteStartStopStatus.Accepted  => "Accepted",
+                   RemoteStartStopStatus.Rejected  => "Rejected",
+                   _                               => "unknown"
+               };
 
         #endregion
 

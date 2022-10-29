@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,54 +27,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static ChargingProfileKinds Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Absolute":
-                    return ChargingProfileKinds.Absolute;
-
-                case "Recurring":
-                    return ChargingProfileKinds.Recurring;
-
-                case "Relative":
-                    return ChargingProfileKinds.Relative;
-
-
-                default:
-                    return ChargingProfileKinds.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Absolute"   => ChargingProfileKinds.Absolute,
+                   "Recurring"  => ChargingProfileKinds.Recurring,
+                   "Relative"   => ChargingProfileKinds.Relative,
+                   _            => ChargingProfileKinds.Unknown
+               };
 
         #endregion
 
         #region AsText(this ChargingProfileKindType)
 
         public static String AsText(this ChargingProfileKinds ChargingProfileKindType)
-        {
 
-            switch (ChargingProfileKindType)
-            {
-
-                case ChargingProfileKinds.Absolute:
-                    return "Absolute";
-
-                case ChargingProfileKinds.Recurring:
-                    return "Recurring";
-
-                case ChargingProfileKinds.Relative:
-                    return "Relative";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => ChargingProfileKindType switch {
+                   ChargingProfileKinds.Absolute   => "Absolute",
+                   ChargingProfileKinds.Recurring  => "Recurring",
+                   ChargingProfileKinds.Relative   => "Relative",
+                   _                               => "unknown"
+               };
 
         #endregion
 

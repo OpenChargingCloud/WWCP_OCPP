@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -84,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The length of the tag identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId?.Length;
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
@@ -102,13 +100,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region (static) Random(Length)
+        #region (static) NewRandom(Length)
 
         /// <summary>
         /// Create a new random identification token.
         /// </summary>
         /// <param name="Length">The expected length of the random identification token.</param>
-        public static IdToken Random(Byte Length = 8)
+        public static IdToken NewRandom(Byte Length = 8)
 
             => new (RandomExtensions.RandomString(Length).ToUpper());
 
@@ -123,10 +121,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static IdToken Parse(String Text)
         {
 
-            if (TryParse(Text, out IdToken idToken))
+            if (TryParse(Text, out var idToken))
                 return idToken;
 
-            throw new ArgumentException("Invalid text-representation of an identification token: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of an identification token: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -142,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static IdToken? TryParse(String Text)
         {
 
-            if (TryParse(Text, out IdToken idToken))
+            if (TryParse(Text, out var idToken))
                 return idToken;
 
             return null;
@@ -161,17 +159,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean TryParse(String Text, out IdToken IdToken)
         {
 
-            Text = Text?.Trim();
+            Text = Text.Trim();
 
             if (Text.IsNotNullOrEmpty())
             {
-                try
-                {
-                    IdToken = new IdToken(Text);
-                    return true;
-                }
-                catch
-                { }
+                IdToken = new IdToken(Text);
+                return true;
             }
 
             IdToken = default;
@@ -187,7 +180,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Clone this identification token.
         /// </summary>
         public IdToken Clone
-            => new IdToken(new String(InternalId.ToCharArray()));
+
+            => new (
+                   new String(InternalId.ToCharArray())
+               );
 
         #endregion
 
@@ -291,10 +287,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two identification tokens.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        /// <param name="Object">A identification token to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
             => Object is IdToken idToken
                    ? CompareTo(idToken)
@@ -306,9 +302,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region CompareTo(IdToken)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two identification tokens.
         /// </summary>
-        /// <param name="IdToken">An object to compare with.</param>
+        /// <param name="IdToken">A identification token to compare with.</param>
         public Int32 CompareTo(IdToken IdToken)
 
             => String.Compare(InternalId,
@@ -324,11 +320,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two identification tokens for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        /// <param name="Object">A identification token to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
             => Object is IdToken idToken &&
                    Equals(idToken);
@@ -341,7 +336,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compares two identification tokens for equality.
         /// </summary>
         /// <param name="IdToken">A identification token to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(IdToken IdToken)
 
             => String.Equals(InternalId,

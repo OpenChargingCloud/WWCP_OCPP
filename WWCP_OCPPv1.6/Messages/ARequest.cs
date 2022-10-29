@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             this.ChargeBoxId       = ChargeBoxId;
             this.WebSocketAction   = WebSocketAction;
-            this.RequestId         = RequestId        ?? Request_Id.Random();
+            this.RequestId         = RequestId        ?? Request_Id.NewRandom();
             this.EventTrackingId   = EventTrackingId  ?? EventTracking_Id.New;
             this.RequestTimestamp  = RequestTimestamp ?? Timestamp.Now;
             this.RequestTimeout    = RequestTimeout;

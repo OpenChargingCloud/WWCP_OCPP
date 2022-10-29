@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,48 +27,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static RecurrencyKinds Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Daily":
-                    return RecurrencyKinds.Daily;
-
-                case "Weekly":
-                    return RecurrencyKinds.Weekly;
-
-
-                default:
-                    return RecurrencyKinds.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Daily"   => RecurrencyKinds.Daily,
+                   "Weekly"  => RecurrencyKinds.Weekly,
+                   _         => RecurrencyKinds.Unknown
+               };
 
         #endregion
 
         #region AsText(this RecurrencyKindType)
 
         public static String AsText(this RecurrencyKinds RecurrencyKindType)
-        {
 
-            switch (RecurrencyKindType)
-            {
-
-                case RecurrencyKinds.Daily:
-                    return "Daily";
-
-                case RecurrencyKinds.Weekly:
-                    return "Weekly";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => RecurrencyKindType switch {
+                   RecurrencyKinds.Daily   => "Daily",
+                   RecurrencyKinds.Weekly  => "Weekly",
+                   _                       => "unknown"
+               };
 
         #endregion
 

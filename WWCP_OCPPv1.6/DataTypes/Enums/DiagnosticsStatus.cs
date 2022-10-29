@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -37,30 +31,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="Text">A string representation of a diagnostics status.</param>
         public static DiagnosticsStatus Parse(String Text)
-        {
 
-            switch (Text?.ToLower())
-            {
-
-                case "idle":
-                    return DiagnosticsStatus.Idle;
-
-                case "uploaded":
-                    return DiagnosticsStatus.Uploaded;
-
-                case "uploadfailed":
-                    return DiagnosticsStatus.UploadFailed;
-
-                case "uploading":
-                    return DiagnosticsStatus.Uploading;
-
-
-                default:
-                    return DiagnosticsStatus.Unknown;
-
-            }
-
-        }
+            => Text.ToLower() switch {
+                   "idle"          => DiagnosticsStatus.Idle,
+                   "uploaded"      => DiagnosticsStatus.Uploaded,
+                   "uploadfailed"  => DiagnosticsStatus.UploadFailed,
+                   "uploading"     => DiagnosticsStatus.Uploading,
+                   _               => DiagnosticsStatus.Unknown
+               };
 
         #endregion
 
@@ -71,30 +49,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="DiagnosticsStatus">A diagnostics status.</param>
         public static String AsText(this DiagnosticsStatus DiagnosticsStatus)
-        {
 
-            switch (DiagnosticsStatus)
-            {
-
-                case DiagnosticsStatus.Idle:
-                    return "Idle";
-
-                case DiagnosticsStatus.Uploaded:
-                    return "Uploaded";
-
-                case DiagnosticsStatus.UploadFailed:
-                    return "UploadFailed";
-
-                case DiagnosticsStatus.Uploading:
-                    return "Uploading";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => DiagnosticsStatus switch {
+                   DiagnosticsStatus.Idle          => "Idle",
+                   DiagnosticsStatus.Uploaded      => "Uploaded",
+                   DiagnosticsStatus.UploadFailed  => "UploadFailed",
+                   DiagnosticsStatus.Uploading     => "Uploading",
+                   _                               => "unknown"
+               };
 
         #endregion
 

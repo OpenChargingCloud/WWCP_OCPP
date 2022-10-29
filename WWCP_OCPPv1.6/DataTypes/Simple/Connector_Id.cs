@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -111,23 +109,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Connector_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out Connector_Id connectorId))
+            if (TryParse(Text, out var connectorId))
                 return connectorId;
 
-            throw new ArgumentException("Invalid text-representation of a connector identification: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of a connector identification: '" + Text + "'!",
                                         nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Integer)
+        #region (static) Parse   (Number)
 
         /// <summary>
         /// Parse the given number as a connector identification.
         /// </summary>
-        public static Connector_Id Parse(UInt64 Integer)
-            => new Connector_Id(Integer);
+        /// <param name="Number">A numeric representation of a connector identification.</param>
+        public static Connector_Id Parse(UInt64 Number)
+
+            => new (Number);
 
         #endregion
 
@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Connector_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Connector_Id connectorId))
+            if (TryParse(Text, out var connectorId))
                 return connectorId;
 
             return null;
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Connector_Id? TryParse(UInt64 Number)
         {
 
-            if (TryParse(Number, out Connector_Id connectorId))
+            if (TryParse(Number, out var connectorId))
                 return connectorId;
 
             return null;
@@ -177,18 +177,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean TryParse(String Text, out Connector_Id ConnectorId)
         {
 
-            Text = Text?.Trim();
+            Text = Text.Trim();
 
             if (Text.IsNotNullOrEmpty() &&
-                UInt64.TryParse(Text, out UInt64 number))
+                UInt64.TryParse(Text, out var number))
             {
-                try
-                {
-                    ConnectorId = new Connector_Id(number);
-                    return true;
-                }
-                catch
-                { }
+                ConnectorId = new Connector_Id(number);
+                return true;
             }
 
             ConnectorId = default;
@@ -222,7 +217,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Clone this connector identification.
         /// </summary>
         public Connector_Id Clone
-            => new Connector_Id(Value);
+
+            => new (Value);
 
         #endregion
 
@@ -326,10 +322,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two connector identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        /// <param name="Object">A connector identification to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
             => Object is Connector_Id connectorId
                    ? CompareTo(connectorId)
@@ -341,9 +337,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region CompareTo(ConnectorId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two connector identifications.
         /// </summary>
-        /// <param name="ConnectorId">An object to compare with.</param>
+        /// <param name="ConnectorId">A connector identification to compare with.</param>
         public Int32 CompareTo(Connector_Id ConnectorId)
 
             => Value.CompareTo(ConnectorId.Value);
@@ -357,11 +353,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two connector identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        /// <param name="Object">A connector identification to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
             => Object is Connector_Id connectorId &&
                    Equals(connectorId);
@@ -374,7 +369,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compares two connector identifications for equality.
         /// </summary>
         /// <param name="ConnectorId">A connector identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Connector_Id ConnectorId)
 
             => Value.Equals(ConnectorId.Value);

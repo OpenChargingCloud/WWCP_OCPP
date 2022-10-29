@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,42 +27,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static ValueFormats Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "SignedData":
-                    return ValueFormats.SignedData;
-
-
-                default:
-                    return ValueFormats.Raw;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "SignedData"  => ValueFormats.SignedData,
+                   _             => ValueFormats.Raw
+               };
 
         #endregion
 
         #region AsText(this ValueFormat)
 
         public static String AsText(this ValueFormats ValueFormat)
-        {
 
-            switch (ValueFormat)
-            {
-
-                case ValueFormats.SignedData:
-                    return "SignedData";
-
-
-                default:
-                    return "Raw";
-
-            }
-
-        }
+            => ValueFormat switch {
+                   ValueFormats.SignedData  => "SignedData",
+                   _                        => "Raw"
+               };
 
         #endregion
 

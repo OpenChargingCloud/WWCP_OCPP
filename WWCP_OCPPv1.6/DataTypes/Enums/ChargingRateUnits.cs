@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,48 +27,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static ChargingRateUnits Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "A":
-                    return ChargingRateUnits.Amperes;
-
-                case "W":
-                    return ChargingRateUnits.Watts;
-
-
-                default:
-                    return ChargingRateUnits.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "A"  => ChargingRateUnits.Amperes,
+                   "W"  => ChargingRateUnits.Watts,
+                   _    => ChargingRateUnits.Unknown
+               };
 
         #endregion
 
         #region AsText(this ChargingRateUnitType)
 
         public static String AsText(this ChargingRateUnits ChargingRateUnitType)
-        {
 
-            switch (ChargingRateUnitType)
-            {
-
-                case ChargingRateUnits.Amperes:
-                    return "A";
-
-                case ChargingRateUnits.Watts:
-                    return "W";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => ChargingRateUnitType switch {
+                   ChargingRateUnits.Amperes  => "A",
+                   ChargingRateUnits.Watts    => "W",
+                   _                          => "unknown"
+               };
 
         #endregion
 

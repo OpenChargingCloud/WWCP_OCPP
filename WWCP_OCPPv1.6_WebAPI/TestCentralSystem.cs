@@ -1198,7 +1198,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(100);
 
                 var response = new StartTransactionResponse(Request:        Request,
-                                                            TransactionId:  Transaction_Id.Random,
+                                                            TransactionId:  Transaction_Id.NewRandom,
                                                             IdTagInfo:      new IdTagInfo(Status:      AuthorizationStatus.Accepted,
                                                                                           ExpiryDate:  Timestamp.Now.AddDays(3)));
 
@@ -3580,7 +3580,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var request = new ResetRequest(ChargeBoxId,
                                            ResetType,
-                                           Request_Id.Random(),
+                                           Request_Id.NewRandom(),
                                            null,
                                            EventTrackingId);
 
@@ -3661,7 +3661,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var request = new ChangeAvailabilityRequest(ChargeBoxId,
                                                         ConnectorId,
                                                         Availability,
-                                                        Request_Id.Random(),
+                                                        Request_Id.NewRandom(),
                                                         null,
                                                         EventTrackingId);
 
@@ -3739,7 +3739,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var request = new GetConfigurationRequest(ChargeBoxId,
                                                       Keys,
-                                                      Request_Id.Random(),
+                                                      Request_Id.NewRandom(),
                                                       null,
                                                       EventTrackingId);
 
@@ -3822,7 +3822,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var request = new ChangeConfigurationRequest(ChargeBoxId,
                                                          Key,
                                                          Value,
-                                                         Request_Id.Random(),
+                                                         Request_Id.NewRandom(),
                                                          null,
                                                          EventTrackingId);
 
@@ -3906,7 +3906,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                   VendorId,
                                                   MessageId,
                                                   Data,
-                                                  Request_Id.Random(),
+                                                  Request_Id.NewRandom(),
                                                   null,
                                                   EventTrackingId);
 
@@ -3996,7 +3996,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                     StopTime,
                                                     Retries,
                                                     RetryInterval,
-                                                    Request_Id.Random(),
+                                                    Request_Id.NewRandom(),
                                                     null,
                                                     EventTrackingId);
 
@@ -4077,7 +4077,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var request = new TriggerMessageRequest(ChargeBoxId,
                                                     RequestedMessage,
                                                     ConnectorId,
-                                                    Request_Id.Random(),
+                                                    Request_Id.NewRandom(),
                                                     null,
                                                     EventTrackingId);
 
@@ -4164,7 +4164,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                     RetrieveDate,
                                                     Retries,
                                                     RetryInterval,
-                                                    Request_Id.Random(),
+                                                    Request_Id.NewRandom(),
                                                     null,
                                                     EventTrackingId);
 
@@ -4255,7 +4255,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                 ExpiryDate,
                                                 IdTag,
                                                 ParentIdTag,
-                                                Request_Id.Random(),
+                                                Request_Id.NewRandom(),
                                                 null,
                                                 EventTrackingId);
 
@@ -4333,7 +4333,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var request = new CancelReservationRequest(ChargeBoxId,
                                                        ReservationId,
-                                                       Request_Id.Random(),
+                                                       Request_Id.NewRandom(),
                                                        null,
                                                        EventTrackingId);
 
@@ -4417,7 +4417,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                             IdTag,
                                                             ConnectorId,
                                                             ChargingProfile,
-                                                            Request_Id.Random(),
+                                                            Request_Id.NewRandom(),
                                                             null,
                                                             EventTrackingId);
 
@@ -4495,7 +4495,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var request = new RemoteStopTransactionRequest(ChargeBoxId,
                                                            TransactionId,
-                                                           Request_Id.Random(),
+                                                           Request_Id.NewRandom(),
                                                            null,
                                                            EventTrackingId);
 
@@ -4576,7 +4576,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var request = new SetChargingProfileRequest(ChargeBoxId,
                                                         ConnectorId,
                                                         ChargingProfile,
-                                                        Request_Id.Random(),
+                                                        Request_Id.NewRandom(),
                                                         null,
                                                         EventTrackingId);
 
@@ -4663,7 +4663,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                           ConnectorId,
                                                           ChargingProfilePurpose,
                                                           StackLevel,
-                                                          Request_Id.Random(),
+                                                          Request_Id.NewRandom(),
                                                           null,
                                                           EventTrackingId);
 
@@ -4747,7 +4747,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                           ConnectorId,
                                                           Duration,
                                                           ChargingRateUnit,
-                                                          Request_Id.Random(),
+                                                          Request_Id.NewRandom(),
                                                           null,
                                                           EventTrackingId);
 
@@ -4827,7 +4827,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var request = new UnlockConnectorRequest(ChargeBoxId,
                                                      ConnectorId,
-                                                     Request_Id.Random(),
+                                                     Request_Id.NewRandom(),
                                                      null,
                                                      EventTrackingId);
 
@@ -4903,7 +4903,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         {
 
             var request = new GetLocalListVersionRequest(ChargeBoxId,
-                                                         Request_Id.Random(),
+                                                         Request_Id.NewRandom(),
                                                          null,
                                                          EventTrackingId);
 
@@ -4987,7 +4987,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                    ListVersion,
                                                    UpdateType,
                                                    LocalAuthorizationList,
-                                                   Request_Id.Random(),
+                                                   Request_Id.NewRandom(),
                                                    null,
                                                    EventTrackingId);
 
@@ -5062,7 +5062,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         {
 
             var request = new ClearCacheRequest(ChargeBoxId,
-                                                Request_Id.Random(),
+                                                Request_Id.NewRandom(),
                                                 null,
                                                 EventTrackingId);
 

@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -64,8 +62,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public readonly UInt64 Value;
 
-        private static readonly Random random = new Random();
-
         #endregion
 
         #region Properties
@@ -95,23 +91,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Create a new transaction identification.
         /// </summary>
-        /// <param name="Integer">An integer.</param>
-        private Transaction_Id(UInt64 Integer)
+        /// <param name="Number">A number.</param>
+        private Transaction_Id(UInt64 Number)
         {
-            this.Value = Integer;
+            this.Value = Number;
         }
 
         #endregion
 
 
-        #region (static) Random
+        #region (static) NewRandom
 
         /// <summary>
         /// Create a new random transaction identification.
         /// </summary>
-        public static Transaction_Id Random
+        public static Transaction_Id NewRandom
 
-            => new Transaction_Id((UInt64) random.Next());
+#pragma warning disable SCS0005 // Weak random number generator.
+            => new ((UInt64) Random.Shared.Next(Int32.MaxValue));
+#pragma warning restore SCS0005 // Weak random number generator.
 
         #endregion
 
@@ -124,20 +122,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Transaction_Id Parse(String Text)
         {
 
-            #region Initial checks
-
-            if (Text != null)
-                Text = Text.Trim();
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a transaction identification must not be null or empty!");
-
-            #endregion
-
-            if (TryParse(Text, out Transaction_Id transactionId))
+            if (TryParse(Text, out var transactionId))
                 return transactionId;
 
-            throw new ArgumentNullException(nameof(Text), "The given text representation of a transaction identification is invalid!");
+            throw new ArgumentException("Invalid text representation of a transaction identification: '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
@@ -149,7 +138,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Parse the given number as a transaction identification.
         /// </summary>
         public static Transaction_Id Parse(UInt64 Integer)
-            => new Transaction_Id(Integer);
+
+            => new (Integer);
 
         #endregion
 
@@ -162,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Transaction_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Transaction_Id transactionId))
+            if (TryParse(Text, out var transactionId))
                 return transactionId;
 
             return null;
@@ -180,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Transaction_Id? TryParse(UInt64 Number)
         {
 
-            if (TryParse(Number, out Transaction_Id transactionId))
+            if (TryParse(Number, out var transactionId))
                 return transactionId;
 
             return null;
@@ -199,19 +189,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean TryParse(String Text, out Transaction_Id TransactionId)
         {
 
-            #region Initial checks
+            Text = Text.Trim();
 
-            Text = Text?.Trim();
-
-            if (Text.IsNullOrEmpty())
-            {
-                TransactionId = default;
-                return false;
-            }
-
-            #endregion
-
-            if (UInt64.TryParse(Text, out UInt64 number))
+            if (Text.IsNotNullOrEmpty() &&
+                UInt64.TryParse(Text, out var number))
             {
                 TransactionId = new Transaction_Id(number);
                 return true;
@@ -248,7 +229,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Clone this transaction identification.
         /// </summary>
         public Transaction_Id Clone
-            => new Transaction_Id(Value);
+
+            => new (Value);
 
         #endregion
 
@@ -352,10 +334,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two transaction identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        /// <param name="Object">A transaction identification to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
             => Object is Transaction_Id transactionId
                    ? CompareTo(transactionId)
@@ -367,9 +349,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region CompareTo(TransactionId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two transaction identifications.
         /// </summary>
-        /// <param name="TransactionId">An object to compare with.</param>
+        /// <param name="TransactionId">A transaction identification to compare with.</param>
         public Int32 CompareTo(Transaction_Id TransactionId)
 
             => Value.CompareTo(TransactionId.Value);
@@ -383,11 +365,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two transaction identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        /// <param name="Object">A transaction identification to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
             => Object is Transaction_Id transactionId &&
                    Equals(transactionId);
@@ -400,7 +381,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compares two transaction identifications for equality.
         /// </summary>
         /// <param name="TransactionId">A transaction identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Transaction_Id TransactionId)
 
             => Value.Equals(TransactionId.Value);

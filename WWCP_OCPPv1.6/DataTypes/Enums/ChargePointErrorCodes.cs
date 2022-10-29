@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,132 +27,52 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static ChargePointErrorCodes Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "ConnectorLockFailure":
-                    return ChargePointErrorCodes.ConnectorLockFailure;
-
-                case "EVCommunicationError":
-                    return ChargePointErrorCodes.EVCommunicationError;
-
-                case "GroundFailure":
-                    return ChargePointErrorCodes.GroundFailure;
-
-                case "HighTemperature":
-                    return ChargePointErrorCodes.HighTemperature;
-
-                case "InternalError":
-                    return ChargePointErrorCodes.InternalError;
-
-                case "LocalListConflict":
-                    return ChargePointErrorCodes.LocalListConflict;
-
-                case "NoError":
-                    return ChargePointErrorCodes.NoError;
-
-                case "OtherError":
-                    return ChargePointErrorCodes.OtherError;
-
-                case "OverCurrentFailure":
-                    return ChargePointErrorCodes.OverCurrentFailure;
-
-                case "OverVoltage":
-                    return ChargePointErrorCodes.OverVoltage;
-
-                case "PowerMeterFailure":
-                    return ChargePointErrorCodes.PowerMeterFailure;
-
-                case "PowerSwitchFailure":
-                    return ChargePointErrorCodes.PowerSwitchFailure;
-
-                case "ReaderFailure":
-                    return ChargePointErrorCodes.ReaderFailure;
-
-                case "ResetFailure":
-                    return ChargePointErrorCodes.ResetFailure;
-
-                case "UnderVoltage":
-                    return ChargePointErrorCodes.UnderVoltage;
-
-                case "WeakSignal":
-                    return ChargePointErrorCodes.WeakSignal;
-
-
-                default:
-                    return ChargePointErrorCodes.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "ConnectorLockFailure"  => ChargePointErrorCodes.ConnectorLockFailure,
+                   "EVCommunicationError"  => ChargePointErrorCodes.EVCommunicationError,
+                   "GroundFailure"         => ChargePointErrorCodes.GroundFailure,
+                   "HighTemperature"       => ChargePointErrorCodes.HighTemperature,
+                   "InternalError"         => ChargePointErrorCodes.InternalError,
+                   "LocalListConflict"     => ChargePointErrorCodes.LocalListConflict,
+                   "NoError"               => ChargePointErrorCodes.NoError,
+                   "OtherError"            => ChargePointErrorCodes.OtherError,
+                   "OverCurrentFailure"    => ChargePointErrorCodes.OverCurrentFailure,
+                   "OverVoltage"           => ChargePointErrorCodes.OverVoltage,
+                   "PowerMeterFailure"     => ChargePointErrorCodes.PowerMeterFailure,
+                   "PowerSwitchFailure"    => ChargePointErrorCodes.PowerSwitchFailure,
+                   "ReaderFailure"         => ChargePointErrorCodes.ReaderFailure,
+                   "ResetFailure"          => ChargePointErrorCodes.ResetFailure,
+                   "UnderVoltage"          => ChargePointErrorCodes.UnderVoltage,
+                   "WeakSignal"            => ChargePointErrorCodes.WeakSignal,
+                   _                       => ChargePointErrorCodes.Unknown
+               };
 
         #endregion
 
         #region AsText(this ChargePointErrorCode)
 
         public static String AsText(this ChargePointErrorCodes ChargePointErrorCode)
-        {
 
-            switch (ChargePointErrorCode)
-            {
-
-                case ChargePointErrorCodes.ConnectorLockFailure:
-                    return "ConnectorLockFailure";
-
-                case ChargePointErrorCodes.EVCommunicationError:
-                    return "EVCommunicationError";
-
-                case ChargePointErrorCodes.GroundFailure:
-                    return "GroundFailure";
-
-                case ChargePointErrorCodes.HighTemperature:
-                    return "HighTemperature";
-
-                case ChargePointErrorCodes.InternalError:
-                    return "InternalError";
-
-                case ChargePointErrorCodes.LocalListConflict:
-                    return "LocalListConflict";
-
-                case ChargePointErrorCodes.NoError:
-                    return "NoError";
-
-                case ChargePointErrorCodes.OtherError:
-                    return "OtherError";
-
-                case ChargePointErrorCodes.OverCurrentFailure:
-                    return "OverCurrentFailure";
-
-                case ChargePointErrorCodes.OverVoltage:
-                    return "OverVoltage";
-
-                case ChargePointErrorCodes.PowerMeterFailure:
-                    return "PowerMeterFailure";
-
-                case ChargePointErrorCodes.PowerSwitchFailure:
-                    return "PowerSwitchFailure";
-
-                case ChargePointErrorCodes.ReaderFailure:
-                    return "ReaderFailure";
-
-                case ChargePointErrorCodes.ResetFailure:
-                    return "ResetFailure";
-
-                case ChargePointErrorCodes.UnderVoltage:
-                    return "UnderVoltage";
-
-                case ChargePointErrorCodes.WeakSignal:
-                    return "WeakSignal";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => ChargePointErrorCode switch {
+                   ChargePointErrorCodes.ConnectorLockFailure  => "ConnectorLockFailure",
+                   ChargePointErrorCodes.EVCommunicationError  => "EVCommunicationError",
+                   ChargePointErrorCodes.GroundFailure         => "GroundFailure",
+                   ChargePointErrorCodes.HighTemperature       => "HighTemperature",
+                   ChargePointErrorCodes.InternalError         => "InternalError",
+                   ChargePointErrorCodes.LocalListConflict     => "LocalListConflict",
+                   ChargePointErrorCodes.NoError               => "NoError",
+                   ChargePointErrorCodes.OtherError            => "OtherError",
+                   ChargePointErrorCodes.OverCurrentFailure    => "OverCurrentFailure",
+                   ChargePointErrorCodes.OverVoltage           => "OverVoltage",
+                   ChargePointErrorCodes.PowerMeterFailure     => "PowerMeterFailure",
+                   ChargePointErrorCodes.PowerSwitchFailure    => "PowerSwitchFailure",
+                   ChargePointErrorCodes.ReaderFailure         => "ReaderFailure",
+                   ChargePointErrorCodes.ResetFailure          => "ResetFailure",
+                   ChargePointErrorCodes.UnderVoltage          => "UnderVoltage",
+                   ChargePointErrorCodes.WeakSignal            => "WeakSignal",
+                   _                                           => "unknown"
+               };
 
         #endregion
 

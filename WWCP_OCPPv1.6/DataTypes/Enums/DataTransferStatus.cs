@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -37,30 +31,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="Text">A string representation of a data transfer status.</param>
         public static DataTransferStatus Parse(String Text)
-        {
 
-            switch (Text?.ToLower())
-            {
-
-                case "accepted":
-                    return DataTransferStatus.Accepted;
-
-                case "rejected":
-                    return DataTransferStatus.Rejected;
-
-                case "unknownmessageid":
-                    return DataTransferStatus.UnknownMessageId;
-
-                case "unknownvendorid":
-                    return DataTransferStatus.UnknownVendorId;
-
-
-                default:
-                    return DataTransferStatus.Unknown;
-
-            }
-
-        }
+            => Text.ToLower() switch {
+                   "accepted"          => DataTransferStatus.Accepted,
+                   "rejected"          => DataTransferStatus.Rejected,
+                   "unknownmessageid"  => DataTransferStatus.UnknownMessageId,
+                   "unknownvendorid"   => DataTransferStatus.UnknownVendorId,
+                   _                   => DataTransferStatus.Unknown
+               };
 
         #endregion
 
@@ -71,30 +49,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="DataTransferStatus">A data transfer status.</param>
         public static String AsText(this DataTransferStatus DataTransferStatus)
-        {
 
-            switch (DataTransferStatus)
-            {
-
-                case DataTransferStatus.Accepted:
-                    return "Accepted";
-
-                case DataTransferStatus.Rejected:
-                    return "Rejected";
-
-                case DataTransferStatus.UnknownMessageId:
-                    return "UnknownMessageId";
-
-                case DataTransferStatus.UnknownVendorId:
-                    return "UnknownVendorId";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => DataTransferStatus switch {
+                   DataTransferStatus.Accepted          => "Accepted",
+                   DataTransferStatus.Rejected          => "Rejected",
+                   DataTransferStatus.UnknownMessageId  => "UnknownMessageId",
+                   DataTransferStatus.UnknownVendorId   => "UnknownVendorId",
+                   _                                    => "unknown"
+               };
 
         #endregion
 

@@ -17,14 +17,35 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
+
+    /// <summary>
+    /// Extention methods for reservation identifications.
+    /// </summary>
+    public static class ReservationIdExtentions
+    {
+
+        /// <summary>
+        /// Indicates whether this reservation identification is null or empty.
+        /// </summary>
+        /// <param name="ReservationId">A reservation identification.</param>
+        public static Boolean IsNullOrEmpty(this Reservation_Id? ReservationId)
+            => !ReservationId.HasValue || ReservationId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this reservation identification is null or empty.
+        /// </summary>
+        /// <param name="ReservationId">A reservation identification.</param>
+        public static Boolean IsNotNullOrEmpty(this Reservation_Id? ReservationId)
+            => ReservationId.HasValue && ReservationId.Value.IsNotNullOrEmpty;
+
+    }
+
 
     /// <summary>
     /// A reservation identification.
@@ -41,8 +62,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public readonly UInt64 Value;
 
-        private static readonly Random random = new Random();
-
         #endregion
 
         #region Properties
@@ -51,6 +70,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Indicates whether this identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
+            => false;
+
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
             => false;
 
         /// <summary>
@@ -66,23 +91,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Create a new reservation identification.
         /// </summary>
-        /// <param name="Token">An integer.</param>
-        private Reservation_Id(UInt64 Token)
+        /// <param name="Number">A number.</param>
+        private Reservation_Id(UInt64 Number)
         {
-            this.Value = Token;
+            this.Value = Number;
         }
 
         #endregion
 
 
-        #region (static) Random
+        #region (static) NewRandom
 
         /// <summary>
         /// Create a new random reservation identification.
         /// </summary>
-        public static Reservation_Id Random
+        public static Reservation_Id NewRandom
 
-            => new Reservation_Id((UInt64) random.Next());
+#pragma warning disable SCS0005 // Weak random number generator.
+            => new ((UInt64) Random.Shared.Next(Int32.MaxValue));
+#pragma warning restore SCS0005 // Weak random number generator.
 
         #endregion
 
@@ -95,32 +122,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Reservation_Id Parse(String Text)
         {
 
-            #region Initial checks
-
-            if (Text != null)
-                Text = Text.Trim();
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a reservation identification must not be null or empty!");
-
-            #endregion
-
-            if (TryParse(Text, out Reservation_Id reservationId))
+            if (TryParse(Text, out var reservationId))
                 return reservationId;
 
-            throw new ArgumentNullException(nameof(Text), "The given text representation of a reservation identification is invalid!");
+            throw new ArgumentException("Invalid text representation of a reservation identification: '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Integer)
+        #region (static) Parse   (Number)
 
         /// <summary>
         /// Parse the given number as a reservation identification.
         /// </summary>
-        public static Reservation_Id Parse(UInt64 Integer)
-            => new Reservation_Id(Integer);
+        /// <param name="Number">A numeric representation of a reservation identification.</param>
+        public static Reservation_Id Parse(UInt64 Number)
+
+            => new (Number);
 
         #endregion
 
@@ -133,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Reservation_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Reservation_Id reservationId))
+            if (TryParse(Text, out var reservationId))
                 return reservationId;
 
             return null;
@@ -151,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Reservation_Id? TryParse(UInt64 Number)
         {
 
-            if (TryParse(Number, out Reservation_Id reservationId))
+            if (TryParse(Number, out var reservationId))
                 return reservationId;
 
             return null;
@@ -170,19 +190,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean TryParse(String Text, out Reservation_Id ReservationId)
         {
 
-            #region Initial checks
+            Text = Text.Trim();
 
-            Text = Text?.Trim();
-
-            if (Text.IsNullOrEmpty())
-            {
-                ReservationId = default;
-                return false;
-            }
-
-            #endregion
-
-            if (UInt64.TryParse(Text, out UInt64 number))
+            if (Text.IsNotNullOrEmpty() &&
+                UInt64.TryParse(Text, out var number))
             {
                 ReservationId = new Reservation_Id(number);
                 return true;
@@ -219,7 +230,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Clone this reservation identification.
         /// </summary>
         public Reservation_Id Clone
-            => new Reservation_Id(Value);
+
+            => new (Value);
 
         #endregion
 
@@ -252,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator != (Reservation_Id ReservationId1,
                                            Reservation_Id ReservationId2)
 
-            => !(ReservationId1 == ReservationId2);
+            => !ReservationId1.Equals(ReservationId2);
 
         #endregion
 
@@ -282,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator <= (Reservation_Id ReservationId1,
                                            Reservation_Id ReservationId2)
 
-            => !(ReservationId1 > ReservationId2);
+            => ReservationId1.CompareTo(ReservationId2) <= 0;
 
         #endregion
 
@@ -312,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator >= (Reservation_Id ReservationId1,
                                            Reservation_Id ReservationId2)
 
-            => !(ReservationId1 < ReservationId2);
+            => ReservationId1.CompareTo(ReservationId2) >= 0;
 
         #endregion
 
@@ -323,10 +335,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two reservation identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        /// <param name="Object">A reservation identification to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
             => Object is Reservation_Id reservationId
                    ? CompareTo(reservationId)
@@ -338,9 +350,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region CompareTo(ReservationId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two reservation identifications.
         /// </summary>
-        /// <param name="ReservationId">An object to compare with.</param>
+        /// <param name="ReservationId">A reservation identification to compare with.</param>
         public Int32 CompareTo(Reservation_Id ReservationId)
 
             => Value.CompareTo(ReservationId.Value);
@@ -354,11 +366,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two reservation identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        /// <param name="Object">A reservation identification to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
             => Object is Reservation_Id reservationId &&
                    Equals(reservationId);
@@ -371,7 +382,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compares two reservation identifications for equality.
         /// </summary>
         /// <param name="ReservationId">A reservation identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Reservation_Id ReservationId)
 
             => Value.Equals(ReservationId.Value);

@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -37,24 +31,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="Text">A string representation of a cancel reservation status.</param>
         public static CancelReservationStatus Parse(String Text)
-        {
 
-            switch (Text?.ToLower())
-            {
-
-                case "accepted":
-                    return CancelReservationStatus.Accepted;
-
-                case "rejected":
-                    return CancelReservationStatus.Rejected;
-
-
-                default:
-                    return CancelReservationStatus.Unknown;
-
-            }
-
-        }
+            => Text.ToLower() switch {
+                   "accepted"  => CancelReservationStatus.Accepted,
+                   "rejected"  => CancelReservationStatus.Rejected,
+                   _           => CancelReservationStatus.Unknown
+               };
 
         #endregion
 
@@ -65,24 +47,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="CancelReservationStatus">A cancel reservation status.</param>
         public static String AsText(this CancelReservationStatus CancelReservationStatus)
-        {
 
-            switch (CancelReservationStatus)
-            {
-
-                case CancelReservationStatus.Accepted:
-                    return "Accepted";
-
-                case CancelReservationStatus.Rejected:
-                    return "Rejected";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => CancelReservationStatus switch {
+                   CancelReservationStatus.Accepted  => "Accepted",
+                   CancelReservationStatus.Rejected  => "Rejected",
+                   _                                 => "unknown"
+               };
 
         #endregion
 

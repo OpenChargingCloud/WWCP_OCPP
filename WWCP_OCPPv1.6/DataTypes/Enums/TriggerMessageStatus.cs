@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,48 +27,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static TriggerMessageStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Accepted":
-                    return TriggerMessageStatus.Accepted;
-
-                case "Rejected":
-                    return TriggerMessageStatus.Rejected;
-
-
-                default:
-                    return TriggerMessageStatus.NotImplemented;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Accepted"  => TriggerMessageStatus.Accepted,
+                   "Rejected"  => TriggerMessageStatus.Rejected,
+                   _           => TriggerMessageStatus.NotImplemented
+               };
 
         #endregion
 
         #region AsText(this TriggerMessageStatus)
 
         public static String AsText(this TriggerMessageStatus TriggerMessageStatus)
-        {
 
-            switch (TriggerMessageStatus)
-            {
-
-                case TriggerMessageStatus.Accepted:
-                    return "Accepted";
-
-                case TriggerMessageStatus.Rejected:
-                    return "Rejected";
-
-
-                default:
-                    return "NotImplemented";
-
-            }
-
-        }
+            => TriggerMessageStatus switch {
+                   TriggerMessageStatus.Accepted  => "Accepted",
+                   TriggerMessageStatus.Rejected  => "Rejected",
+                   _                              => "NotImplemented"
+               };
 
         #endregion
 

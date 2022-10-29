@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,42 +27,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static ClearChargingProfileStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Accepted":
-                    return ClearChargingProfileStatus.Accepted;
-
-
-                default:
-                    return ClearChargingProfileStatus.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Accepted"  => ClearChargingProfileStatus.Accepted,
+                   _           => ClearChargingProfileStatus.Unknown
+               };
 
         #endregion
 
         #region AsText(this ClearChargingProfileStatus)
 
         public static String AsText(this ClearChargingProfileStatus ClearChargingProfileStatus)
-        {
 
-            switch (ClearChargingProfileStatus)
-            {
-
-                case ClearChargingProfileStatus.Accepted:
-                    return "Accepted";
-
-
-                default:
-                    return "Unknown";
-
-            }
-
-        }
+            => ClearChargingProfileStatus switch {
+                   ClearChargingProfileStatus.Accepted  => "Accepted",
+                   _                                    => "Unknown"
+               };
 
         #endregion
 

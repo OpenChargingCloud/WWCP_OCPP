@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,48 +27,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static ChargingProfilePurposes Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "ChargePointMaxProfile":
-                    return ChargingProfilePurposes.ChargePointMaxProfile;
-
-                case "TxProfile":
-                    return ChargingProfilePurposes.TxProfile;
-
-
-                default:
-                    return ChargingProfilePurposes.TxDefaultProfile;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "ChargePointMaxProfile"  => ChargingProfilePurposes.ChargePointMaxProfile,
+                   "TxProfile"              => ChargingProfilePurposes.TxProfile,
+                   _                        => ChargingProfilePurposes.TxDefaultProfile
+               };
 
         #endregion
 
         #region AsText(this ChargingProfilePurpose)
 
         public static String AsText(this ChargingProfilePurposes ChargingProfilePurpose)
-        {
 
-            switch (ChargingProfilePurpose)
-            {
-
-                case ChargingProfilePurposes.ChargePointMaxProfile:
-                    return "ChargePointMaxProfile";
-
-                case ChargingProfilePurposes.TxProfile:
-                    return "TxProfile";
-
-
-                default:
-                    return "TxDefaultProfile";
-
-            }
-
-        }
+            => ChargingProfilePurpose switch {
+                   ChargingProfilePurposes.ChargePointMaxProfile  => "ChargePointMaxProfile",
+                   ChargingProfilePurposes.TxProfile              => "TxProfile",
+                   _                                              => "TxDefaultProfile"
+               };
 
         #endregion
 

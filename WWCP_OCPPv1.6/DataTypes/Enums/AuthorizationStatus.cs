@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,66 +27,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static AuthorizationStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Accepted":
-                    return AuthorizationStatus.Accepted;
-
-                case "Blocked":
-                    return AuthorizationStatus.Blocked;
-
-                case "Expired":
-                    return AuthorizationStatus.Expired;
-
-                case "Invalid":
-                    return AuthorizationStatus.Invalid;
-
-                case "ConcurrentTx":
-                    return AuthorizationStatus.ConcurrentTx;
-
-
-                default:
-                    return AuthorizationStatus.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Accepted"      => AuthorizationStatus.Accepted,
+                   "Blocked"       => AuthorizationStatus.Blocked,
+                   "Expired"       => AuthorizationStatus.Expired,
+                   "Invalid"       => AuthorizationStatus.Invalid,
+                   "ConcurrentTx"  => AuthorizationStatus.ConcurrentTx,
+                   _               => AuthorizationStatus.Unknown
+               };
 
         #endregion
 
         #region AsText(this AuthorizationStatus)
 
         public static String AsText(this AuthorizationStatus AuthorizationStatus)
-        {
 
-            switch (AuthorizationStatus)
-            {
-
-                case AuthorizationStatus.Accepted:
-                    return "Accepted";
-
-                case AuthorizationStatus.Blocked:
-                    return "Blocked";
-
-                case AuthorizationStatus.Expired:
-                    return "Expired";
-
-                case AuthorizationStatus.Invalid:
-                    return "Invalid";
-
-                case AuthorizationStatus.ConcurrentTx:
-                    return "ConcurrentTx";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => AuthorizationStatus switch {
+                   AuthorizationStatus.Accepted      => "Accepted",
+                   AuthorizationStatus.Blocked       => "Blocked",
+                   AuthorizationStatus.Expired       => "Expired",
+                   AuthorizationStatus.Invalid       => "Invalid",
+                   AuthorizationStatus.ConcurrentTx  => "ConcurrentTx",
+                   _                                 => "unknown"
+               };
 
         #endregion
 

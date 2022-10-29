@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
@@ -30,11 +29,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// A configuration key.
+    /// A configuration key value pair.
     /// </summary>
-    public struct ConfigurationKey : IEquatable<ConfigurationKey>,
-                                     IComparable<ConfigurationKey>,
-                                     IComparable
+    public readonly struct ConfigurationKey : IEquatable<ConfigurationKey>,
+                                              IComparable<ConfigurationKey>,
+                                              IComparable
     {
 
         #region Data
@@ -67,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The configuration value or 'null' when the key exists but
         /// the value is not (yet) defined.
         /// </summary>
-        public String   Value         { get; }
+        public String?  Value         { get; }
 
         #endregion
 
@@ -81,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Value">The configuration value or 'null' when the key exists but the value is not (yet) defined.</param>
         public ConfigurationKey(String   Key,
                                 Boolean  IsReadonly,
-                                String   Value  = null)
+                                String?  Value   = null)
         {
 
             this.Key         = Key;
@@ -142,12 +141,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="ConfigurationKeyXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ConfigurationKey Parse(XElement             ConfigurationKeyXML,
-                                             OnExceptionDelegate  OnException = null)
+        public static ConfigurationKey Parse(XElement              ConfigurationKeyXML,
+                                             OnExceptionDelegate?  OnException   = null)
         {
 
             if (TryParse(ConfigurationKeyXML,
-                         out ConfigurationKey configurationKey,
+                         out var configurationKey,
                          OnException))
             {
                 return configurationKey;
@@ -159,45 +158,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (ConfigurationKeyJSON)
+        #region (static) Parse   (JSON)
 
         /// <summary>
         /// Parse the given JSON representation of a configuration key value pair.
         /// </summary>
-        /// <param name="ConfigurationKeyJSON">The JSON to be parsed.</param>
-        public static ConfigurationKey Parse(JObject ConfigurationKeyJSON)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        public static ConfigurationKey Parse(JObject JSON)
         {
 
-            if (TryParse2(ConfigurationKeyJSON,
-                         out ConfigurationKey  configurationKey,
-                         out String            ErrorResponse))
+            if (TryParse2(JSON,
+                          out var configurationKey,
+                          out var errorResponse))
             {
                 return configurationKey;
             }
 
-            return default;
+            throw new ArgumentException("The given JSON representation of a configuration key value pair is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (ConfigurationKeyText)
+        #region (static) Parse   (Text)
 
         /// <summary>
         /// Parse the given text representation of a configuration key value pair.
         /// </summary>
-        /// <param name="ConfigurationKeyText">The text to be parsed.</param>
-        public static ConfigurationKey Parse(String ConfigurationKeyText)
+        /// <param name="Text">The text to be parsed.</param>
+        public static ConfigurationKey Parse(String Text)
         {
 
-            if (TryParse(ConfigurationKeyText,
-                         out ConfigurationKey  configurationKey,
-                         out String            ErrorResponse))
+            if (TryParse(Text,
+                         out var configurationKey,
+                         out var errorResponse))
             {
                 return configurationKey;
             }
 
-            return default;
+            throw new ArgumentException("The given text representation of a configuration key value pair is invalid: " + errorResponse,
+                                        nameof(Text));
 
         }
 
@@ -213,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement              ConfigurationKeyXML,
                                        out ConfigurationKey  ConfigurationKey,
-                                       OnExceptionDelegate   OnException  = null)
+                                       OnExceptionDelegate?  OnException   = null)
         {
 
             try
@@ -233,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, ConfigurationKeyXML, e);
+                OnException?.Invoke(Timestamp.Now, ConfigurationKeyXML, e);
 
                 ConfigurationKey = default;
                 return false;
@@ -252,8 +253,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ConfigurationKeyJSON">The JSON to be parsed.</param>
         /// <param name="ConfigurationKey">The parsed connector type.</param>
         public static Boolean TryParse2(JObject               ConfigurationKeyJSON,
-                                       out ConfigurationKey  ConfigurationKey,
-                                       out String            ErrorResponse)
+                                        out ConfigurationKey  ConfigurationKey,
+                                        out String?           ErrorResponse)
         {
 
             try
@@ -328,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ConfigurationKey">The parsed connector type.</param>
         public static Boolean TryParse(String                ConfigurationKeyText,
                                        out ConfigurationKey  ConfigurationKey,
-                                       out String            ErrorResponse)
+                                       out String?           ErrorResponse)
         {
 
             ErrorResponse = null;
@@ -336,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             try
             {
 
-                ConfigurationKeyText = ConfigurationKeyText?.Trim();
+                ConfigurationKeyText = ConfigurationKeyText.Trim();
 
                 if (ConfigurationKeyText.IsNotNullOrEmpty())
                 {
@@ -376,14 +377,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a XML representation of this object.
         /// </summary>
         /// <param name="XName">An alternative XML element name [default: "OCPPv1_6_CP:configurationKey"]</param>
-        public XElement ToXML(XName XName = null)
+        public XElement ToXML(XName? XName = null)
 
             => new XElement(XName ?? OCPPNS.OCPPv1_6_CP + "configurationKey",
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "key",       Key.SubstringMax(MaxConfigurationKeyLength)),
                    new XElement(OCPPNS.OCPPv1_6_CP + "readonly",  IsReadonly),
 
-                   Value != null
+                   Value is not null
                        ? new XElement(OCPPNS.OCPPv1_6_CP + "value",  Value.SubstringMax(MaxConfigurationValueLength))
                        : null
 
@@ -397,10 +398,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomConfigurationKeySerializer">A delegate to serialize custom configuration keys.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ConfigurationKey>  CustomConfigurationKeySerializer  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ConfigurationKey>?  CustomConfigurationKeySerializer  = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            new JProperty("key",          Key.SubstringMax(MaxConfigurationKeyLength)),
                            new JProperty("readonly",     IsReadonly),
@@ -412,8 +413,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                        );
 
             return CustomConfigurationKeySerializer is not null
-                       ? CustomConfigurationKeySerializer(this, JSON)
-                       : JSON;
+                       ? CustomConfigurationKeySerializer(this, json)
+                       : json;
 
         }
 
@@ -430,23 +431,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ConfigurationKey1">An configuration key value pair.</param>
         /// <param name="ConfigurationKey2">Another configuration key value pair.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ConfigurationKey ConfigurationKey1, ConfigurationKey ConfigurationKey2)
-        {
+        public static Boolean operator == (ConfigurationKey ConfigurationKey1,
+                                           ConfigurationKey ConfigurationKey2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ConfigurationKey1, ConfigurationKey2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ConfigurationKey1 == null) || ((Object) ConfigurationKey2 == null))
-                return false;
-
-            if ((Object) ConfigurationKey1 == null)
-                throw new ArgumentNullException(nameof(ConfigurationKey1),  "The given configuration key value pair must not be null!");
-
-            return ConfigurationKey1.Equals(ConfigurationKey2);
-
-        }
+            => ConfigurationKey1.Equals(ConfigurationKey2);
 
         #endregion
 
@@ -458,8 +446,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ConfigurationKey1">An configuration key value pair.</param>
         /// <param name="ConfigurationKey2">Another configuration key value pair.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ConfigurationKey ConfigurationKey1, ConfigurationKey ConfigurationKey2)
-            => !(ConfigurationKey1 == ConfigurationKey2);
+        public static Boolean operator != (ConfigurationKey ConfigurationKey1,
+                                           ConfigurationKey ConfigurationKey2)
+
+            => !ConfigurationKey1.Equals(ConfigurationKey2);
 
         #endregion
 
@@ -471,15 +461,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ConfigurationKey1">An configuration key.</param>
         /// <param name="ConfigurationKey2">Another configuration key.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <(ConfigurationKey ConfigurationKey1, ConfigurationKey ConfigurationKey2)
-        {
+        public static Boolean operator < (ConfigurationKey ConfigurationKey1,
+                                          ConfigurationKey ConfigurationKey2)
 
-            if ((Object) ConfigurationKey1 == null)
-                throw new ArgumentNullException(nameof(ConfigurationKey1), "The given configuration key must not be null!");
-
-            return ConfigurationKey1.CompareTo(ConfigurationKey2) < 0;
-
-        }
+            => ConfigurationKey1.CompareTo(ConfigurationKey2) < 0;
 
         #endregion
 
@@ -491,8 +476,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ConfigurationKey1">An configuration key.</param>
         /// <param name="ConfigurationKey2">Another configuration key.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <=(ConfigurationKey ConfigurationKey1, ConfigurationKey ConfigurationKey2)
-            => !(ConfigurationKey1 > ConfigurationKey2);
+        public static Boolean operator <= (ConfigurationKey ConfigurationKey1,
+                                           ConfigurationKey ConfigurationKey2)
+
+            => ConfigurationKey1.CompareTo(ConfigurationKey2) <= 0;
 
         #endregion
 
@@ -504,15 +491,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ConfigurationKey1">An configuration key.</param>
         /// <param name="ConfigurationKey2">Another configuration key.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >(ConfigurationKey ConfigurationKey1, ConfigurationKey ConfigurationKey2)
-        {
+        public static Boolean operator > (ConfigurationKey ConfigurationKey1,
+                                          ConfigurationKey ConfigurationKey2)
 
-            if ((Object) ConfigurationKey1 == null)
-                throw new ArgumentNullException(nameof(ConfigurationKey1), "The given configuration key must not be null!");
-
-            return ConfigurationKey1.CompareTo(ConfigurationKey2) > 0;
-
-        }
+            => ConfigurationKey1.CompareTo(ConfigurationKey2) > 0;
 
         #endregion
 
@@ -524,8 +506,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ConfigurationKey1">An configuration key.</param>
         /// <param name="ConfigurationKey2">Another configuration key.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >=(ConfigurationKey ConfigurationKey1, ConfigurationKey ConfigurationKey2)
-            => !(ConfigurationKey1 < ConfigurationKey2);
+        public static Boolean operator >= (ConfigurationKey ConfigurationKey1,
+                                           ConfigurationKey ConfigurationKey2)
+
+            => ConfigurationKey1.CompareTo(ConfigurationKey2) >= 0;
 
         #endregion
 
@@ -536,37 +520,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two configuration key value pairs.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">A configuration key value pair to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
-            if (Object is null)
-                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
-
-            if (!(Object is ConfigurationKey ConfigurationKey))
-                throw new ArgumentException("The given object is not a configuration key!", nameof(Object));
-
-            return CompareTo(ConfigurationKey);
-
-        }
+            => Object is ConfigurationKey configurationKey
+                   ? CompareTo(configurationKey)
+                   : throw new ArgumentException("The given object is not a configuration key value pair!",
+                                                 nameof(Object));
 
         #endregion
 
         #region CompareTo(ConfigurationKey)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two configuration key value pairs.
         /// </summary>
-        /// <param name="ConfigurationKey">An object to compare with.</param>
+        /// <param name="ConfigurationKey">A configuration key value pair to compare with.</param>
         public Int32 CompareTo(ConfigurationKey ConfigurationKey)
         {
 
-            if ((Object) ConfigurationKey == null)
-                throw new ArgumentNullException(nameof(ConfigurationKey),  "The given configuration key must not be null!");
+            var c = Key.CompareTo(ConfigurationKey.Key);
 
-            return Key.CompareTo(ConfigurationKey.Key);
+            if (c == 0)
+                c = IsReadonly.CompareTo(ConfigurationKey.IsReadonly);
+
+            if (c == 0 && Value is not null && ConfigurationKey.Value is not null)
+                c = Value.CompareTo(ConfigurationKey.Value);
+
+            return c;
 
         }
 
@@ -579,22 +562,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two configuration key value pairs for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A configuration key value pair to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is ConfigurationKey ConfigurationKey))
-                return false;
-
-            return Equals(ConfigurationKey);
-
-        }
+            => Object is ConfigurationKey configurationKey &&
+                   Equals(configurationKey);
 
         #endregion
 
@@ -603,21 +577,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two configuration key value pairs for equality.
         /// </summary>
-        /// <param name="ConfigurationKey">An configuration key value pair to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="ConfigurationKey">A configuration key value pair to compare with.</param>
         public Boolean Equals(ConfigurationKey ConfigurationKey)
-        {
 
-            if ((Object) ConfigurationKey == null)
-                return false;
+            => Key.       Equals(ConfigurationKey.Key)        &&
+               IsReadonly.Equals(ConfigurationKey.IsReadonly) &&
 
-            return Key.       Equals(ConfigurationKey.Key)        &&
-                   IsReadonly.Equals(ConfigurationKey.IsReadonly) &&
-
-                   ((Value == null && ConfigurationKey.Value == null) ||
-                    (Value != null && ConfigurationKey.Value != null && Value.Equals(ConfigurationKey.Value)));
-
-        }
+             ((Value is     null && ConfigurationKey.Value is     null) ||
+              (Value is not null && ConfigurationKey.Value is not null && Value.Equals(ConfigurationKey.Value)));
 
         #endregion
 
@@ -634,12 +601,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             unchecked
             {
 
-                return Key.     GetHashCode() * 7 ^
-                       IsReadonly.GetHashCode() * 5 ^
+                return Key.       GetHashCode() * 5 ^
+                       IsReadonly.GetHashCode() * 3 ^
 
-                       (Value != null
-                            ? Value.GetHashCode()
-                            : 0);
+                      (Value?.    GetHashCode() ?? 0);
 
             }
         }
@@ -655,7 +620,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             => String.Concat(Key,
 
-                             Value != null
+                             Value is not null
                                  ? " = " + Value
                                  : "",
 

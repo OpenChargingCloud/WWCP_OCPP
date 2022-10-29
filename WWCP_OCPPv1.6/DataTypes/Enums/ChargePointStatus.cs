@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,90 +27,38 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Parse(Text)
 
         public static ChargePointStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Available":
-                    return ChargePointStatus.Available;
-
-                case "Preparing":
-                    return ChargePointStatus.Preparing;
-
-                case "Charging":
-                    return ChargePointStatus.Charging;
-
-                case "SuspendedEV":
-                    return ChargePointStatus.SuspendedEV;
-
-                case "SuspendedEVSE":
-                    return ChargePointStatus.SuspendedEVSE;
-
-                case "Finishing":
-                    return ChargePointStatus.Finishing;
-
-                case "Reserved":
-                    return ChargePointStatus.Reserved;
-
-                case "Faulted":
-                    return ChargePointStatus.Faulted;
-
-                case "Unavailable":
-                    return ChargePointStatus.Unavailable;
-
-
-                default:
-                    return ChargePointStatus.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Available"      => ChargePointStatus.Available,
+                   "Preparing"      => ChargePointStatus.Preparing,
+                   "Charging"       => ChargePointStatus.Charging,
+                   "SuspendedEV"    => ChargePointStatus.SuspendedEV,
+                   "SuspendedEVSE"  => ChargePointStatus.SuspendedEVSE,
+                   "Finishing"      => ChargePointStatus.Finishing,
+                   "Reserved"       => ChargePointStatus.Reserved,
+                   "Faulted"        => ChargePointStatus.Faulted,
+                   "Unavailable"    => ChargePointStatus.Unavailable,
+                   _                => ChargePointStatus.Unknown
+               };
 
         #endregion
 
         #region AsText(this ChargePointStatus)
 
         public static String AsText(this ChargePointStatus ChargePointStatus)
-        {
 
-            switch (ChargePointStatus)
-            {
-
-                case ChargePointStatus.Available:
-                    return "Available";
-
-                case ChargePointStatus.Preparing:
-                    return "Preparing";
-
-                case ChargePointStatus.Charging:
-                    return "Charging";
-
-                case ChargePointStatus.SuspendedEV:
-                    return "SuspendedEV";
-
-                case ChargePointStatus.SuspendedEVSE:
-                    return "SuspendedEVSE";
-
-                case ChargePointStatus.Finishing:
-                    return "Finishing";
-
-                case ChargePointStatus.Reserved:
-                    return "Reserved";
-
-                case ChargePointStatus.Faulted:
-                    return "Faulted";
-
-                case ChargePointStatus.Unavailable:
-                    return "Unavailable";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => ChargePointStatus switch {
+                   ChargePointStatus.Available      => "Available",
+                   ChargePointStatus.Preparing      => "Preparing",
+                   ChargePointStatus.Charging       => "Charging",
+                   ChargePointStatus.SuspendedEV    => "SuspendedEV",
+                   ChargePointStatus.SuspendedEVSE  => "SuspendedEVSE",
+                   ChargePointStatus.Finishing      => "Finishing",
+                   ChargePointStatus.Reserved       => "Reserved",
+                   ChargePointStatus.Faulted        => "Faulted",
+                   ChargePointStatus.Unavailable    => "Unavailable",
+                   _                                => "unknown"
+               };
 
         #endregion
 

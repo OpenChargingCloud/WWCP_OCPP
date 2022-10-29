@@ -19,6 +19,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
+    /// Extentions methods for result and error codes.
+    /// </summary>
+    public static class ResultCodesExtentions
+    {
+
+        #region Parse(Text)
+
+        public static ResultCodes Parse(String Text)
+
+            => Text.Trim() switch {
+                   "OK"             => ResultCodes.OK,
+                   "Partly"         => ResultCodes.Partly,
+                   "NotAuthorized"  => ResultCodes.NotAuthorized,
+                   "InvalidId"      => ResultCodes.InvalidId,
+                   "Server"         => ResultCodes.Server,
+                   "Format"         => ResultCodes.Format,
+                   _                => ResultCodes.Unknown
+               };
+
+        #endregion
+
+        #region AsText(this ResultCodes)
+
+        public static String AsText(this ResultCodes ResultCodes)
+
+            => ResultCodes switch {
+                   ResultCodes.OK             => "OK",
+                   ResultCodes.Partly         => "Partly",
+                   ResultCodes.NotAuthorized  => "NotAuthorized",
+                   ResultCodes.InvalidId      => "InvalidId",
+                   ResultCodes.Server         => "Server",
+                   ResultCodes.Format         => "Format",
+                   _                          => "Unknown"
+               };
+
+        #endregion
+
+    }
+
+
+    /// <summary>
     /// Result and error codes for the class Result as return value for method calls.
     /// </summary>
     public enum ResultCodes
