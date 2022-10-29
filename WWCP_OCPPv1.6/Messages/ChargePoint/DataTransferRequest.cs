@@ -367,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DataTransferRequest  = default;
+                DataTransferRequest  = null;
                 ErrorResponse        = "The given JSON representation of a DataTransfer request is invalid: " + e.Message;
                 return false;
             }
@@ -500,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest> CustomDataTransferRequestSerializer)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            new JProperty("vendorId",         VendorId),
 
@@ -515,8 +515,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                        );
 
             return CustomDataTransferRequestSerializer is not null
-                       ? CustomDataTransferRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomDataTransferRequestSerializer(this, json)
+                       : json;
 
         }
 

@@ -383,13 +383,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public JObject ToJSON(CustomJObjectSerializerDelegate<UnlockConnectorResponse>  CustomUnlockConnectorResponseSerializer  = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
                            new JProperty("status",  Status.AsText())
                        );
 
             return CustomUnlockConnectorResponseSerializer is not null
-                       ? CustomUnlockConnectorResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomUnlockConnectorResponseSerializer(this, json)
+                       : json;
 
         }
 

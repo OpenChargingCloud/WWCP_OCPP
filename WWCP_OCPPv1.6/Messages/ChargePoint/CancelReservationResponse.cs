@@ -382,13 +382,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationResponse> CustomCancelReservationResponseSerializer   = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
                            new JProperty("status",  Status.AsText())
                        );
 
             return CustomCancelReservationResponseSerializer is not null
-                       ? CustomCancelReservationResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomCancelReservationResponseSerializer(this, json)
+                       : json;
 
         }
 

@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
@@ -54,12 +53,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public FirmwareStatusNotificationRequest(ChargeBox_Id      ChargeBoxId,
-                                                 FirmwareStatus    Status,
+        public FirmwareStatusNotificationRequest(ChargeBox_Id       ChargeBoxId,
+                                                 FirmwareStatus     Status,
 
-                                                 Request_Id?       RequestId          = null,
-                                                 DateTime?         RequestTimestamp   = null,
-                                                 EventTracking_Id  EventTrackingId    = null)
+                                                 Request_Id?        RequestId          = null,
+                                                 DateTime?          RequestTimestamp   = null,
+                                                 EventTracking_Id?  EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "FirmwareStatusNotification",
@@ -125,31 +124,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
 
         /// <summary>
-        /// Parse the given XML representation of a FirmwareStatusNotification request.
+        /// Parse the given XML representation of a firmware status notification request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static FirmwareStatusNotificationRequest Parse(XElement             XML,
-                                                              Request_Id           RequestId,
-                                                              ChargeBox_Id         ChargeBoxId,
-                                                              OnExceptionDelegate  OnException = null)
+        public static FirmwareStatusNotificationRequest Parse(XElement      XML,
+                                                              Request_Id    RequestId,
+                                                              ChargeBox_Id  ChargeBoxId)
         {
 
             if (TryParse(XML,
                          RequestId,
                          ChargeBoxId,
-                         out FirmwareStatusNotificationRequest diagnosticsStatusNotificationRequest,
-                         OnException))
+                         out var diagnosticsStatusNotificationRequest,
+                         out var errorResponse))
             {
-                return diagnosticsStatusNotificationRequest;
+                return diagnosticsStatusNotificationRequest!;
             }
 
-            throw new ArgumentException("The given XML representation of a FirmwareStatusNotification request is invalid!", nameof(XML));
+            throw new ArgumentException("The given XML representation of a firmware status notification request is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
@@ -158,79 +156,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomFirmwareStatusNotificationRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a FirmwareStatusNotification request.
+        /// Parse the given JSON representation of a firmware status notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CustomFirmwareStatusNotificationRequestParser">A delegate to parse custom FirmwareStatusNotification requests.</param>
-        public static FirmwareStatusNotificationRequest Parse(JObject                                                         JSON,
-                                                              Request_Id                                                      RequestId,
-                                                              ChargeBox_Id                                                    ChargeBoxId,
-                                                              CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>  CustomFirmwareStatusNotificationRequestParser   = null)
+        public static FirmwareStatusNotificationRequest Parse(JObject                                                          JSON,
+                                                              Request_Id                                                       RequestId,
+                                                              ChargeBox_Id                                                     ChargeBoxId,
+                                                              CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>?  CustomFirmwareStatusNotificationRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
                          ChargeBoxId,
-                         out FirmwareStatusNotificationRequest  diagnosticsStatusNotificationRequest,
-                         out String                             ErrorResponse,
+                         out var diagnosticsStatusNotificationRequest,
+                         out var errorResponse,
                          CustomFirmwareStatusNotificationRequestParser))
             {
-                return diagnosticsStatusNotificationRequest;
+                return diagnosticsStatusNotificationRequest!;
             }
 
-            throw new ArgumentException("The given JSON representation of a FirmwareStatusNotification request is invalid: " + ErrorResponse, nameof(JSON));
+            throw new ArgumentException("The given JSON representation of a firmware status notification request is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out FirmwareStatusNotificationRequest, out ErrorResponse)
 
         /// <summary>
-        /// Parse the given text representation of a FirmwareStatusNotification request.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static FirmwareStatusNotificationRequest Parse(String               Text,
-                                                              Request_Id           RequestId,
-                                                              ChargeBox_Id         ChargeBoxId,
-                                                              OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(Text,
-                         RequestId,
-                         ChargeBoxId,
-                         out FirmwareStatusNotificationRequest diagnosticsStatusNotificationRequest,
-                         OnException))
-            {
-                return diagnosticsStatusNotificationRequest;
-            }
-
-            throw new ArgumentException("The given text representation of an AuthorizeRequest request is invalid!", nameof(Text));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out FirmwareStatusNotificationRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a FirmwareStatusNotification request.
+        /// Try to parse the given XML representation of a firmware status notification request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="FirmwareStatusNotificationRequest">The parsed FirmwareStatusNotification request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                               XML,
-                                       Request_Id                             RequestId,
-                                       ChargeBox_Id                           ChargeBoxId,
-                                       out FirmwareStatusNotificationRequest  FirmwareStatusNotificationRequest,
-                                       OnExceptionDelegate                    OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(XElement                                XML,
+                                       Request_Id                              RequestId,
+                                       ChargeBox_Id                            ChargeBoxId,
+                                       out FirmwareStatusNotificationRequest?  FirmwareStatusNotificationRequest,
+                                       out String?                             ErrorResponse)
         {
 
             try
@@ -243,40 +212,38 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                         RequestId
                                                     );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, XML, e);
-
-                FirmwareStatusNotificationRequest = null;
+                FirmwareStatusNotificationRequest  = null;
+                ErrorResponse                      = "The given XML representation of a firmware status notification request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out FirmwareStatusNotificationRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out FirmwareStatusNotificationRequest, out ErrorResponse)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a FirmwareStatusNotification request.
+        /// Try to parse the given JSON representation of a firmware status notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="FirmwareStatusNotificationRequest">The parsed FirmwareStatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                                JSON,
-                                       Request_Id                             RequestId,
-                                       ChargeBox_Id                           ChargeBoxId,
-                                       out FirmwareStatusNotificationRequest  FirmwareStatusNotificationRequest,
-                                       out String                             ErrorResponse)
+        public static Boolean TryParse(JObject                                 JSON,
+                                       Request_Id                              RequestId,
+                                       ChargeBox_Id                            ChargeBoxId,
+                                       out FirmwareStatusNotificationRequest?  FirmwareStatusNotificationRequest,
+                                       out String?                             ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
@@ -287,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a FirmwareStatusNotification request.
+        /// Try to parse the given JSON representation of a firmware status notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -295,12 +262,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="FirmwareStatusNotificationRequest">The parsed FirmwareStatusNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomFirmwareStatusNotificationRequestParser">A delegate to parse custom FirmwareStatusNotification requests.</param>
-        public static Boolean TryParse(JObject                                                         JSON,
-                                       Request_Id                                                      RequestId,
-                                       ChargeBox_Id                                                    ChargeBoxId,
-                                       out FirmwareStatusNotificationRequest                           FirmwareStatusNotificationRequest,
-                                       out String                                                      ErrorResponse,
-                                       CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>  CustomFirmwareStatusNotificationRequestParser)
+        public static Boolean TryParse(JObject                                                          JSON,
+                                       Request_Id                                                       RequestId,
+                                       ChargeBox_Id                                                     ChargeBoxId,
+                                       out FirmwareStatusNotificationRequest?                           FirmwareStatusNotificationRequest,
+                                       out String?                                                      ErrorResponse,
+                                       CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>?  CustomFirmwareStatusNotificationRequestParser)
         {
 
             try
@@ -330,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -354,8 +321,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                FirmwareStatusNotificationRequest  = default;
-                ErrorResponse                      = "The given JSON representation of a FirmwareStatusNotification request is invalid: " + e.Message;
+                FirmwareStatusNotificationRequest  = null;
+                ErrorResponse                      = "The given JSON representation of a firmware status notification request is invalid: " + e.Message;
                 return false;
             }
 
@@ -363,73 +330,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Text, RequestId, ChargeBoxId, out FirmwareStatusNotificationRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a FirmwareStatusNotification request.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="FirmwareStatusNotificationRequest">The parsed FirmwareStatusNotification request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                                 Text,
-                                       Request_Id                             RequestId,
-                                       ChargeBox_Id                           ChargeBoxId,
-                                       out FirmwareStatusNotificationRequest  FirmwareStatusNotificationRequest,
-                                       OnExceptionDelegate                    OnException  = null)
-        {
-
-            try
-            {
-
-                Text = Text?.Trim();
-
-                if (Text.IsNotNullOrEmpty())
-                {
-
-                    if (Text.StartsWith("{") &&
-                        TryParse(JObject.Parse(Text),
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out FirmwareStatusNotificationRequest,
-                                 out String ErrorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(Text).Root,//.Element(SOAPNS.v1_2.NS.SOAPEnvelope + "Body"),
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out FirmwareStatusNotificationRequest,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, Text, e);
-            }
-
-            FirmwareStatusNotificationRequest = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CS + "diagnosticsStatusNotificationRequest",
+            => new (OCPPNS.OCPPv1_6_CS + "diagnosticsStatusNotificationRequest",
                    new XElement(OCPPNS.OCPPv1_6_CS + "status",  Status.AsText())
                );
 
@@ -448,16 +356,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomFirmwareStatusNotificationRequestSerializer">A delegate to serialize custom FirmwareStatusNotification requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<FirmwareStatusNotificationRequest> CustomFirmwareStatusNotificationRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<FirmwareStatusNotificationRequest>? CustomFirmwareStatusNotificationRequestSerializer)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
                            new JProperty("status",  Status.AsText())
                        );
 
             return CustomFirmwareStatusNotificationRequestSerializer is not null
-                       ? CustomFirmwareStatusNotificationRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomFirmwareStatusNotificationRequestSerializer(this, json)
+                       : json;
 
         }
 
@@ -474,7 +382,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="FirmwareStatusNotificationRequest1">A FirmwareStatusNotification request.</param>
         /// <param name="FirmwareStatusNotificationRequest2">Another FirmwareStatusNotification request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest1, FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest2)
+        public static Boolean operator == (FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest1,
+                                           FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -482,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((FirmwareStatusNotificationRequest1 is null) || (FirmwareStatusNotificationRequest2 is null))
+            if (FirmwareStatusNotificationRequest1 is null || FirmwareStatusNotificationRequest2 is null)
                 return false;
 
             return FirmwareStatusNotificationRequest1.Equals(FirmwareStatusNotificationRequest2);
@@ -499,7 +408,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="FirmwareStatusNotificationRequest1">A FirmwareStatusNotification request.</param>
         /// <param name="FirmwareStatusNotificationRequest2">Another FirmwareStatusNotification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest1, FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest2)
+        public static Boolean operator != (FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest1,
+                                           FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest2)
 
             => !(FirmwareStatusNotificationRequest1 == FirmwareStatusNotificationRequest2);
 
@@ -512,41 +422,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two firmware status notification requests for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A firmware status notification request to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
+            => Object is FirmwareStatusNotificationRequest firmwareStatusNotificationRequest &&
+                   Equals(firmwareStatusNotificationRequest);
 
-            if (!(Object is FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest))
-                return false;
-
-            return Equals(FirmwareStatusNotificationRequest);
-
-        }
 
         #endregion
 
         #region Equals(FirmwareStatusNotificationRequest)
 
         /// <summary>
-        /// Compares two FirmwareStatusNotification requests for equality.
+        /// Compares two firmware status notification requests for equality.
         /// </summary>
-        /// <param name="FirmwareStatusNotificationRequest">A FirmwareStatusNotification request to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest)
-        {
+        /// <param name="FirmwareStatusNotificationRequest">A firmware status notification request to compare with.</param>
+        public override Boolean Equals(FirmwareStatusNotificationRequest? FirmwareStatusNotificationRequest)
 
-            if (FirmwareStatusNotificationRequest is null)
-                return false;
-
-            return Status.Equals(FirmwareStatusNotificationRequest.Status);
-
-        }
+            => FirmwareStatusNotificationRequest is not null &&
+                   Status.Equals(FirmwareStatusNotificationRequest.Status);
 
         #endregion
 

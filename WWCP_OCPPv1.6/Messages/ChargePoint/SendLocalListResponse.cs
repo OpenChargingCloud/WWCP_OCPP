@@ -385,13 +385,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public JObject ToJSON(CustomJObjectSerializerDelegate<SendLocalListResponse>  CustomSendLocalListResponseSerializer   = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
                            new JProperty("status",  Status.ToString())
                        );
 
             return CustomSendLocalListResponseSerializer is not null
-                       ? CustomSendLocalListResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomSendLocalListResponseSerializer(this, json)
+                       : json;
 
         }
 

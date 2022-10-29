@@ -384,13 +384,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeConfigurationResponse>  CustomChangeConfigurationResponseSerializer  = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
                            new JProperty("status",  Status.AsText())
                        );
 
             return CustomChangeConfigurationResponseSerializer is not null
-                       ? CustomChangeConfigurationResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomChangeConfigurationResponseSerializer(this, json)
+                       : json;
 
         }
 

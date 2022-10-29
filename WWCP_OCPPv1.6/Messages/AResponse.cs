@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -87,12 +81,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The machine-readable result code.
         /// </summary>
-        public Result    Result              { get; }
+        public Result    Result               { get; }
 
         /// <summary>
         /// The timestamp of the response message creation.
         /// </summary>
-        public DateTime  ResponseTimestamp   { get; }
+        public DateTime  ResponseTimestamp    { get; }
 
         #endregion
 
@@ -123,7 +117,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="AResponse1">A response.</param>
         /// <param name="AResponse2">Another response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (AResponse<TResponse> AResponse1, AResponse<TResponse> AResponse2)
+        public static Boolean operator == (AResponse<TResponse> AResponse1,
+                                           AResponse<TResponse> AResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -131,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 return true;
 
             // If one is null, but not both, return false.
-            if ((AResponse1 is null) || (AResponse2 is null))
+            if (AResponse1 is null || AResponse2 is null)
                 return false;
 
             return AResponse1.Equals(AResponse2);
@@ -148,7 +143,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="AResponse1">A response.</param>
         /// <param name="AResponse2">Another response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (AResponse<TResponse> AResponse1, AResponse<TResponse> AResponse2)
+        public static Boolean operator != (AResponse<TResponse> AResponse1,
+                                           AResponse<TResponse> AResponse2)
 
             => !(AResponse1 == AResponse2);
 
@@ -161,51 +157,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two abstract generic responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">An abstract generic response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is AResponse<TResponse> AResponse))
-                return false;
-
-            return Equals(AResponse);
-
-        }
+            => Object is AResponse<TResponse> aResponse &&
+                   Equals(aResponse);
 
         #endregion
 
         #region Equals(AResponse)
 
         /// <summary>
-        /// Compares two responses for equality.
+        /// Compares two abstract generic responses for equality.
         /// </summary>
-        /// <param name="AResponse">A response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="AResponse">An abstract generic response to compare with.</param>
         public Boolean Equals(AResponse<TResponse> AResponse)
-        {
 
-            if (AResponse is null)
-                return false;
-
-            return Result.Equals(AResponse.Result);
-
-        }
+            => AResponse is not null &&
+               Result.Equals(AResponse.Result);
 
         #endregion
 
         #region IEquatable<AResponse> Members
 
         /// <summary>
-        /// Compare two responses for equality.
+        /// Compares two abstract generic responses for equality.
         /// </summary>
-        /// <param name="AResponse">Another abstract generic response.</param>
-        public abstract Boolean Equals(TResponse AResponse);
+        /// <param name="AResponse">An abstract generic response to compare with.</param>
+        public abstract Boolean Equals(TResponse? AResponse);
 
         #endregion
 

@@ -200,28 +200,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, GetConfigurationResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomGetConfigurationResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a get configuration response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetConfigurationResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetConfigurationResponse Parse(CS.GetConfigurationRequest  Request,
-                                                     JObject                     GetConfigurationResponseJSON,
-                                                     OnExceptionDelegate         OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomGetConfigurationResponseParser">A delegate to parse custom get configuration responses.</param>
+        public static GetConfigurationResponse Parse(CS.GetConfigurationRequest                              Request,
+                                                     JObject                                                 JSON,
+                                                     CustomJObjectParserDelegate<GetConfigurationResponse>?  CustomGetConfigurationResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         GetConfigurationResponseJSON,
-                         out GetConfigurationResponse getConfigurationResponse,
-                         OnException))
+                         JSON,
+                         out var getConfigurationResponse,
+                         out var errorResponse,
+                         CustomGetConfigurationResponseParser))
             {
-                return getConfigurationResponse;
+                return getConfigurationResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a get configuration response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
@@ -306,13 +308,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Try to parse the given JSON representation of a get configuration response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetConfigurationResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetConfigurationResponse">The parsed get configuration response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.GetConfigurationRequest    Request,
-                                       JObject                       GetConfigurationResponseJSON,
-                                       out GetConfigurationResponse  GetConfigurationResponse,
-                                       OnExceptionDelegate           OnException  = null)
+        public static Boolean TryParse(CS.GetConfigurationRequest                              Request,
+                                       JObject                                                 JSON,
+                                       out GetConfigurationResponse?                           GetConfigurationResponse,
+                                       out String?                                             ErrorResponse,
+                                       CustomJObjectParserDelegate<GetConfigurationResponse>?  CustomGetConfigurationResponseParser   = null)
         {
 
             try
@@ -322,13 +325,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ConfigurationKey    [optional]
 
-                if (GetConfigurationResponseJSON.ParseOptionalJSON("configurationKey",
-                                                                   "configuration keys",
-                                                                   ConfigurationKey.TryParse2,
-                                                                   out IEnumerable<ConfigurationKey>  ConfigurationKeys,
-                                                                   out String                         ErrorResponse))
+                if (JSON.ParseOptionalJSON("configurationKey",
+                                           "configuration keys",
+                                           ConfigurationKey.TryParse2,
+                                           out IEnumerable<ConfigurationKey> ConfigurationKeys,
+                                           out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -336,12 +339,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region UnknownKeys         [optional]
 
-                if (GetConfigurationResponseJSON.GetOptional("unknownKey",
-                                                             "unknown keys",
-                                                             out IEnumerable<String>  UnknownKeys,
-                                                             out                      ErrorResponse))
+                if (JSON.GetOptional("unknownKey",
+                                     "unknown keys",
+                                     out IEnumerable<String> UnknownKeys,
+                                     out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -352,17 +355,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                         ConfigurationKeys,
                                                                         UnknownKeys);
 
+                if (CustomGetConfigurationResponseParser is not null)
+                    GetConfigurationResponse = CustomGetConfigurationResponseParser(JSON,
+                                                                                    GetConfigurationResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, GetConfigurationResponseJSON, e);
-
-                GetConfigurationResponse = null;
+                GetConfigurationResponse  = null;
+                ErrorResponse             = "The given JSON representation of a get configuration response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -378,10 +382,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="GetConfigurationResponseText">The text to be parsed.</param>
         /// <param name="GetConfigurationResponse">The parsed get configuration response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.GetConfigurationRequest    Request,
-                                       String                        GetConfigurationResponseText,
-                                       out GetConfigurationResponse  GetConfigurationResponse,
-                                       OnExceptionDelegate           OnException  = null)
+        public static Boolean TryParse(CS.GetConfigurationRequest     Request,
+                                       String                         GetConfigurationResponseText,
+                                       out GetConfigurationResponse?  GetConfigurationResponse,
+                                       OnExceptionDelegate?           OnException   = null)
         {
 
             try
@@ -396,7 +400,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                         TryParse(Request,
                                  JObject.Parse(GetConfigurationResponseText),
                                  out GetConfigurationResponse,
-                                 OnException))
+                                 out var errorResponse))
                     {
                         return true;
                     }
@@ -451,7 +455,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                               CustomJObjectSerializerDelegate<ConfigurationKey>          CustomConfigurationKeySerializer           = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            ConfigurationKeys.SafeAny()
                                ? new JProperty("configurationKey",  new JArray(ConfigurationKeys.Select(key => key.ToJSON(CustomConfigurationKeySerializer))))
@@ -464,8 +468,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                        );
 
             return CustomGetConfigurationResponseSerializer is not null
-                       ? CustomGetConfigurationResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomGetConfigurationResponseSerializer(this, json)
+                       : json;
 
         }
 

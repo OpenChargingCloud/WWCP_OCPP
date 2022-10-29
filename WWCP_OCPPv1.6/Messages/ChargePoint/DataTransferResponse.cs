@@ -417,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferResponse>  CustomDataTransferResponseSerializer  = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            new JProperty("status",  Status.AsText()),
 
@@ -428,8 +428,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                        );
 
             return CustomDataTransferResponseSerializer is not null
-                       ? CustomDataTransferResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomDataTransferResponseSerializer(this, json)
+                       : json;
 
         }
 

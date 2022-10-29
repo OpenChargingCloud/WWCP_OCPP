@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -95,100 +93,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (Request, MeterValuesResponseXML,  OnException = null)
+        #region (static) Parse   (Request, MeterValuesResponseXML)
 
         /// <summary>
         /// Parse the given XML representation of a meter values response.
         /// </summary>
         /// <param name="Request">The MeterValues request leading to this response.</param>
-        /// <param name="MeterValuesResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static MeterValuesResponse Parse(CP.MeterValuesRequest  Request,
-                                                XElement               MeterValuesResponseXML,
-                                                OnExceptionDelegate    OnException = null)
+                                                XElement               XML)
         {
 
             if (TryParse(Request,
-                         MeterValuesResponseXML,
-                         out MeterValuesResponse meterValuesResponse,
-                         OnException))
+                         XML,
+                         out var meterValuesResponse,
+                         out var errorResponse))
             {
-                return meterValuesResponse;
+                return meterValuesResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a boot notification response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, MeterValuesResponseJSON, OnException = null)
+        #region (static) Parse   (Request, MeterValuesResponseJSON, CustomMeterValuesResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a meter values response.
         /// </summary>
         /// <param name="Request">The MeterValues request leading to this response.</param>
-        /// <param name="MeterValuesResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MeterValuesResponse Parse(CP.MeterValuesRequest  Request,
-                                                JObject                MeterValuesResponseJSON,
-                                                OnExceptionDelegate    OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomMeterValuesResponseParser">A delegate to parse custom meter values responses.</param>
+        public static MeterValuesResponse Parse(CP.MeterValuesRequest                              Request,
+                                                JObject                                            JSON,
+                                                CustomJObjectParserDelegate<MeterValuesResponse>?  CustomMeterValuesResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         MeterValuesResponseJSON,
-                         out MeterValuesResponse  meterValuesResponse,
-                         out String               ErrorResponse))
+                         JSON,
+                         out var meterValuesResponse,
+                         out var errorResponse,
+                         CustomMeterValuesResponseParser))
             {
-                return meterValuesResponse;
+                return meterValuesResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a boot notification response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, MeterValuesResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a meter values response.
-        /// </summary>
-        /// <param name="Request">The MeterValues request leading to this response.</param>
-        /// <param name="MeterValuesResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MeterValuesResponse Parse(CP.MeterValuesRequest  Request,
-                                                String                 MeterValuesResponseText,
-                                                OnExceptionDelegate    OnException = null)
-        {
-
-            if (TryParse(Request,
-                         MeterValuesResponseText,
-                         out MeterValuesResponse  meterValuesResponse,
-                         out String               ErrorResponse))
-            {
-                return meterValuesResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, MeterValuesResponseXML,  out MeterValuesResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out MeterValuesResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a meter values response.
         /// </summary>
         /// <param name="Request">The MeterValues request leading to this response.</param>
-        /// <param name="MeterValuesResponseXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="MeterValuesResponse">The parsed meter values response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CP.MeterValuesRequest    Request,
-                                       XElement                 MeterValuesResponseXML,
-                                       out MeterValuesResponse  MeterValuesResponse,
-                                       OnExceptionDelegate      OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CP.MeterValuesRequest     Request,
+                                       XElement                  XML,
+                                       out MeterValuesResponse?  MeterValuesResponse,
+                                       out String?               ErrorResponse)
         {
 
             try
@@ -196,35 +168,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 MeterValuesResponse = new MeterValuesResponse(Request);
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, MeterValuesResponseXML, e);
-
-                MeterValuesResponse = null;
+                MeterValuesResponse  = null;
+                ErrorResponse        = "The given XML representation of a meter values response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, MeterValuesResponseJSON, out MeterValuesResponse, out ErrorResponse)
+        #region (static) TryParse(Request, JSON, out MeterValuesResponse, out ErrorResponse, CustomMeterValuesResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a meter values response.
         /// </summary>
         /// <param name="Request">The MeterValues request leading to this response.</param>
-        /// <param name="MeterValuesResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="MeterValuesResponse">The parsed meter values response.</param>
-        public static Boolean TryParse(CP.MeterValuesRequest    Request,
-                                       JObject                  MeterValuesResponseJSON,
-                                       out MeterValuesResponse  MeterValuesResponse,
-                                       out String               ErrorResponse)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomMeterValuesResponseParser">A delegate to parse custom meter values responses.</param>
+        public static Boolean TryParse(CP.MeterValuesRequest                              Request,
+                                       JObject                                            JSON,
+                                       out MeterValuesResponse?                           MeterValuesResponse,
+                                       out String?                                        ErrorResponse,
+                                       CustomJObjectParserDelegate<MeterValuesResponse>?  CustomMeterValuesResponseParser   = null)
         {
 
             ErrorResponse = null;
@@ -233,6 +206,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 MeterValuesResponse = new MeterValuesResponse(Request);
+
+                if (CustomMeterValuesResponseParser is not null)
+                    MeterValuesResponse = CustomMeterValuesResponseParser(JSON,
+                                                                          MeterValuesResponse);
 
                 return true;
 
@@ -240,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 MeterValuesResponse  = null;
-                ErrorResponse        = e.Message;
+                ErrorResponse        = "The given JSON representation of a meter values response is invalid: " + e.Message;
                 return false;
             }
 
@@ -248,69 +225,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, MeterValuesResponseText, out MeterValuesResponse, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given text representation of a meter values response.
-        /// </summary>
-        /// <param name="Request">The MeterValues request leading to this response.</param>
-        /// <param name="MeterValuesResponseText">The text to be parsed.</param>
-        /// <param name="MeterValuesResponse">The parsed meter values response.</param>
-        public static Boolean TryParse(CP.MeterValuesRequest    Request,
-                                       String                   MeterValuesResponseText,
-                                       out MeterValuesResponse  MeterValuesResponse,
-                                       out String               ErrorResponse)
-        {
-
-            ErrorResponse = null;
-
-            try
-            {
-
-                MeterValuesResponseText = MeterValuesResponseText?.Trim();
-
-                if (MeterValuesResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (MeterValuesResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(MeterValuesResponseText),
-                                 out MeterValuesResponse,
-                                 out ErrorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(MeterValuesResponseText).Root,
-                                 out MeterValuesResponse))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                ErrorResponse = e.Message;
-            }
-
-            MeterValuesResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CS + "meterValuesResponse");
+            => new (OCPPNS.OCPPv1_6_CS + "meterValuesResponse");
 
         #endregion
 
@@ -320,14 +242,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomMeterValuesResponseSerializer">A delegate to serialize custom meter values responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesResponse> CustomMeterValuesResponseSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesResponse>? CustomMeterValuesResponseSerializer = null)
         {
 
-            var JSON = JSONObject.Create();
+            var json = JSONObject.Create();
 
             return CustomMeterValuesResponseSerializer is not null
-                       ? CustomMeterValuesResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomMeterValuesResponseSerializer(this, json)
+                       : json;
 
         }
 
@@ -341,8 +263,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public static MeterValuesResponse Failed(CP.MeterValuesRequest Request)
 
-            => new MeterValuesResponse(Request,
-                                       Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -357,7 +279,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="MeterValuesResponse1">A meter values response.</param>
         /// <param name="MeterValuesResponse2">Another meter values response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (MeterValuesResponse MeterValuesResponse1, MeterValuesResponse MeterValuesResponse2)
+        public static Boolean operator == (MeterValuesResponse MeterValuesResponse1,
+                                           MeterValuesResponse MeterValuesResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -365,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if ((MeterValuesResponse1 is null) || (MeterValuesResponse2 is null))
+            if (MeterValuesResponse1 is null || MeterValuesResponse2 is null)
                 return false;
 
             return MeterValuesResponse1.Equals(MeterValuesResponse2);
@@ -382,7 +305,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="MeterValuesResponse1">A meter values response.</param>
         /// <param name="MeterValuesResponse2">Another meter values response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (MeterValuesResponse MeterValuesResponse1, MeterValuesResponse MeterValuesResponse2)
+        public static Boolean operator != (MeterValuesResponse MeterValuesResponse1,
+                                           MeterValuesResponse MeterValuesResponse2)
 
             => !(MeterValuesResponse1 == MeterValuesResponse2);
 
@@ -395,22 +319,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two meter values responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A meter values response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is MeterValuesResponse MeterValuesResponse))
-                return false;
-
-            return Equals(MeterValuesResponse);
-
-        }
+            => Object is MeterValuesResponse meterValuesResponse &&
+                   Equals(meterValuesResponse);
 
         #endregion
 
@@ -420,16 +335,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Compares two meter values responses for equality.
         /// </summary>
         /// <param name="MeterValuesResponse">A meter values response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(MeterValuesResponse MeterValuesResponse)
-        {
+        public override Boolean Equals(MeterValuesResponse? MeterValuesResponse)
 
-            if (MeterValuesResponse is null)
-                return false;
-
-            return Object.ReferenceEquals(this, MeterValuesResponse);
-
-        }
+            => MeterValuesResponse is not null;
 
         #endregion
 

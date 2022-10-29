@@ -362,13 +362,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public JObject ToJSON(CustomJObjectSerializerDelegate<ClearCacheResponse>  CustomClearCacheResponseSerializer  = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
                            new JProperty("status",  Status.AsText())
                        );
 
             return CustomClearCacheResponseSerializer is not null
-                       ? CustomClearCacheResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomClearCacheResponseSerializer(this, json)
+                       : json;
 
         }
 

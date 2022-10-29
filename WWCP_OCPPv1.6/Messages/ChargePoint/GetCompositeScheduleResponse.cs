@@ -419,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                          out Connector_Id?  ConnectorId,
                                                                          out                ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                    out DateTime?  ScheduleStart,
                                                                    out            ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -446,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                        out ChargingSchedule ChargingSchedule,
                                                                        out                  ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -565,7 +565,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleResponse>  CustomGetCompositeScheduleResponseSerializer  = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            new JProperty("status",                  Status.             AsText()),
 
@@ -577,15 +577,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                ? new JProperty("scheduleStart",     ScheduleStart.Value.ToIso8601())
                                : null,
 
-                           ChargingSchedule != null
+                           ChargingSchedule is not null
                                ? new JProperty("chargingSchedule",  ChargingSchedule.   ToJSON())
                                : null
 
                        );
 
             return CustomGetCompositeScheduleResponseSerializer is not null
-                       ? CustomGetCompositeScheduleResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomGetCompositeScheduleResponseSerializer(this, json)
+                       : json;
 
         }
 

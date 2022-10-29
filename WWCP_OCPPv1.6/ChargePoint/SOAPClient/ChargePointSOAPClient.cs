@@ -622,7 +622,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request, BootNotificationResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                                                      BootNotificationResponse.Parse),
 
                                                  #endregion
 
@@ -688,7 +689,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             }
 
-            if (result == null)
+            if (result is null)
                 result = HTTPResponse<BootNotificationResponse>.OK(new BootNotificationResponse(Request, Result.OK("Nothing to upload!")));
 
 
@@ -1206,7 +1207,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                  #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request, StartTransactionResponse.Parse),
+                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                                                      StartTransactionResponse.Parse),
 
                                                  #endregion
 

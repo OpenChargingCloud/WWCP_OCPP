@@ -17,14 +17,8 @@
 
 #region Usings
 
-using System;
-using System.Xml.Linq;
-
 using NUnit.Framework;
 using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -71,7 +65,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.UnitTests
         public static void SampledValue_Random()
         {
 
-            var value         = new Random().Next(10000);
+#pragma warning disable SCS0005 // Weak random number generator.
+            var value         = Random.Shared.Next(10000);
+#pragma warning restore SCS0005 // Weak random number generator.
 
             var sampledValue  = new SampledValue(value.ToString());
 

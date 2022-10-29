@@ -117,87 +117,91 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (ChargingSchedulePeriodXML,  OnException = null)
+        #region (static) Parse   (XML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a charging schedule period.
         /// </summary>
-        /// <param name="ChargingSchedulePeriodXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingSchedulePeriod Parse(XElement              ChargingSchedulePeriodXML,
+        public static ChargingSchedulePeriod Parse(XElement              XML,
                                                    OnExceptionDelegate?  OnException   = null)
         {
 
-            if (TryParse(ChargingSchedulePeriodXML,
+            if (TryParse(XML,
                          out var chargingSchedulePeriod,
                          OnException))
             {
                 return chargingSchedulePeriod;
             }
 
-            return default;
+            throw new ArgumentException("The given XML representation of a charging schedule period is invalid: ", // + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (ChargingSchedulePeriodJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomChargingSchedulePeriodParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a charging schedule period.
         /// </summary>
-        /// <param name="ChargingSchedulePeriodJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingSchedulePeriod Parse(JObject               ChargingSchedulePeriodJSON,
-                                                   OnExceptionDelegate?  OnException   = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomChargingSchedulePeriodParser">A delegate to parse custom CustomChargingSchedulePeriod JSON objects.</param>
+        public static ChargingSchedulePeriod Parse(JObject                                               JSON,
+                                                   CustomJObjectParserDelegate<ChargingSchedulePeriod>?  CustomChargingSchedulePeriodParser   = null)
         {
 
-            if (TryParse(ChargingSchedulePeriodJSON,
+            if (TryParse(JSON,
                          out var chargingSchedulePeriod,
-                         OnException))
+                         out var errorResponse,
+                         CustomChargingSchedulePeriodParser))
             {
                 return chargingSchedulePeriod;
             }
 
-            return default;
+            throw new ArgumentException("The given JSON representation of a charging schedule period is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (ChargingSchedulePeriodText, OnException = null)
+        #region (static) Parse   (Text, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a charging schedule period.
         /// </summary>
-        /// <param name="ChargingSchedulePeriodText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingSchedulePeriod Parse(String                ChargingSchedulePeriodText,
+        public static ChargingSchedulePeriod Parse(String                Text,
                                                    OnExceptionDelegate?  OnException   = null)
         {
 
-            if (TryParse(ChargingSchedulePeriodText,
+            if (TryParse(Text,
                          out var chargingSchedulePeriod,
                          OnException))
             {
                 return chargingSchedulePeriod;
             }
 
-            return default;
+            throw new ArgumentException("The given text representation of a charging schedule period is invalid: ", // + errorResponse,
+                                        nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParse(ChargingSchedulePeriodXML,  out ChargingSchedulePeriod, OnException = null)
+        #region (static) TryParse(XML,  out ChargingSchedulePeriod, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a charging schedule period.
         /// </summary>
-        /// <param name="ChargingSchedulePeriodXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ChargingSchedulePeriod">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                    ChargingSchedulePeriodXML,
+        public static Boolean TryParse(XElement                    XML,
                                        out ChargingSchedulePeriod  ChargingSchedulePeriod,
                                        OnExceptionDelegate?        OnException   = null)
         {
@@ -207,14 +211,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 ChargingSchedulePeriod = new ChargingSchedulePeriod(
 
-                                             ChargingSchedulePeriodXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "startPeriod",
-                                                                                          UInt32.Parse),
+                                             XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "startPeriod",
+                                                                    UInt32.Parse),
 
-                                             ChargingSchedulePeriodXML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "limit",
-                                                                                          Decimal.Parse),
+                                             XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "limit",
+                                                                    Decimal.Parse),
 
-                                             ChargingSchedulePeriodXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "numberPhases",
-                                                                                          Byte.Parse)
+                                             XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "numberPhases",
+                                                                    Byte.Parse)
 
                                          );
 
@@ -224,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(Timestamp.Now, ChargingSchedulePeriodXML, e);
+                OnException?.Invoke(Timestamp.Now, XML, e);
 
                 ChargingSchedulePeriod = default;
                 return false;
@@ -235,17 +239,38 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(ChargingSchedulePeriodJSON, out ChargingSchedulePeriod, OnException = null)
+        #region (static) TryParse(JSON, out ChargingSchedulePeriod, OnException = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a charging schedule period.
         /// </summary>
-        /// <param name="ChargingSchedulePeriodJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingSchedulePeriod">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                     ChargingSchedulePeriodJSON,
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                     JSON,
                                        out ChargingSchedulePeriod  ChargingSchedulePeriod,
-                                       OnExceptionDelegate?        OnException   = null)
+                                       out String?                 ErrorResponse)
+
+            => TryParse(JSON,
+                        out ChargingSchedulePeriod,
+                        out ErrorResponse,
+                        null);
+
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a charging schedule period.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="ChargingSchedulePeriod">The parsed connector type.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomChargingSchedulePeriodParser">A delegate to parse custom CustomChargingSchedulePeriod JSON objects.</param>
+        public static Boolean TryParse(JObject                                               JSON,
+                                       out ChargingSchedulePeriod                            ChargingSchedulePeriod,
+                                       out String?                                           ErrorResponse,
+                                       CustomJObjectParserDelegate<ChargingSchedulePeriod>?  CustomChargingSchedulePeriodParser)
         {
 
             try
@@ -255,10 +280,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region StartPeriod
 
-                if (!ChargingSchedulePeriodJSON.ParseMandatory("startPeriod",
-                                                               "start period",
-                                                               out UInt32  StartPeriod,
-                                                               out String  ErrorResponse))
+                if (!JSON.ParseMandatory("startPeriod",
+                                         "start period",
+                                         out UInt32 StartPeriod,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -267,10 +292,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region Limit
 
-                if (!ChargingSchedulePeriodJSON.ParseMandatory("limit",
-                                                               "power limit",
-                                                               out Decimal  Limit,
-                                                               out          ErrorResponse))
+                if (!JSON.ParseMandatory("limit",
+                                         "power limit",
+                                         out Decimal Limit,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -279,13 +304,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region NumberPhases
 
-                if (ChargingSchedulePeriodJSON.ParseOptional("numberPhases",
-                                                             "number of phases",
-                                                             out Byte?  NumberPhases,
-                                                             out        ErrorResponse))
+                if (JSON.ParseOptional("numberPhases",
+                                       "number of phases",
+                                       out Byte? NumberPhases,
+                                       out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                        return false;
 
                 }
@@ -302,10 +327,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, ChargingSchedulePeriodJSON, e);
-
-                ChargingSchedulePeriod = default;
+                ChargingSchedulePeriod  = default;
+                ErrorResponse           = "The given JSON representation of a charging schedule period is invalid: " + e.Message;
                 return false;
 
             }
@@ -338,7 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     if (ChargingSchedulePeriodText.StartsWith("{") &&
                         TryParse(JObject.Parse(ChargingSchedulePeriodText),
                                  out ChargingSchedulePeriod,
-                                 OnException))
+                                 out var errorResponse))
                     {
                         return true;
                     }
@@ -358,14 +381,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 OnException?.Invoke(Timestamp.Now, ChargingSchedulePeriodText, e);
             }
 
-            ChargingSchedulePeriod = default(ChargingSchedulePeriod);
+            ChargingSchedulePeriod = default;
             return false;
 
         }
 
         #endregion
 
-        #region ToXML(XName = null)
+        #region ToXML (XName = null)
 
         /// <summary>
         /// Return a XML representation of this object.

@@ -241,25 +241,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (MeterValueXML,  OnException = null)
+        #region (static) Parse   (XML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a meter value.
         /// </summary>
-        /// <param name="MeterValueXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MeterValue? Parse(XElement              MeterValueXML,
-                                        OnExceptionDelegate?  OnException   = null)
+        public static MeterValue Parse(XElement              XML,
+                                       OnExceptionDelegate?  OnException   = null)
         {
 
-            if (TryParse(MeterValueXML,
+            if (TryParse(XML,
                          out var meterValue,
                          OnException))
             {
-                return meterValue;
+                return meterValue!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a MeterValue is invalid: ", // + errorResponse,
+                                        nameof(XML));
 
         }
 
@@ -272,8 +273,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomMeterValueParser">A delegate to parse custom MeterValues.</param>
-        public static MeterValue? Parse(JObject                                   JSON,
-                                        CustomJObjectParserDelegate<MeterValue>?  CustomMeterValueParser   = null)
+        public static MeterValue Parse(JObject                                   JSON,
+                                       CustomJObjectParserDelegate<MeterValue>?  CustomMeterValueParser   = null)
         {
 
             if (TryParse(JSON,
@@ -281,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomMeterValueParser))
             {
-                return meterValue;
+                return meterValue!;
             }
 
             throw new ArgumentException("The given JSON representation of a MeterValue is invalid: " + errorResponse,
@@ -291,39 +292,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (MeterValueText, OnException = null)
+        #region (static) Parse   (Text, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a meter value.
         /// </summary>
-        /// <param name="MeterValueText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MeterValue? Parse(String                MeterValueText,
-                                        OnExceptionDelegate?  OnException   = null)
+        public static MeterValue Parse(String                Text,
+                                       OnExceptionDelegate?  OnException   = null)
         {
 
-            if (TryParse(MeterValueText,
+            if (TryParse(Text,
                          out var meterValue,
                          OnException))
             {
-                return meterValue;
+                return meterValue!;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a MeterValue is invalid: ", // + errorResponse,
+                                        nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParse(MeterValueXML,  out MeterValue, OnException = null)
+        #region (static) TryParse(XML,  out MeterValue, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a meter value.
         /// </summary>
-        /// <param name="MeterValueXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="MeterValue">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement              MeterValueXML,
+        public static Boolean TryParse(XElement              XML,
                                        out MeterValue?       MeterValue,
                                        OnExceptionDelegate?  OnException   = null)
         {
@@ -333,13 +335,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 MeterValue = new MeterValue(
 
-                                    MeterValueXML.MapValueOrFail   (OCPPNS.OCPPv1_6_CS + "timestamp",
-                                                                    DateTime.Parse),
+                                 XML.MapValueOrFail   (OCPPNS.OCPPv1_6_CS + "timestamp",
+                                                       DateTime.Parse),
 
-                                    MeterValueXML.MapElementsOrFail(OCPPNS.OCPPv1_6_CS + "sampledValue",
-                                                                    SampledValue.Parse)
+                                 XML.MapElementsOrFail(OCPPNS.OCPPv1_6_CS + "sampledValue",
+                                                       SampledValue.Parse)
 
-                                );
+                             );
 
                 return true;
 
@@ -347,7 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, MeterValueXML, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, XML, e);
 
                 MeterValue = null;
                 return false;
@@ -358,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(JSON,           out MeterValue, out ErrorResponse, CustomMeterValueParser = null)
+        #region (static) TryParse(JSON, out MeterValue, out ErrorResponse, CustomMeterValueParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -416,7 +418,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                            out IEnumerable<SampledValue> SampledValues,
                                            out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -444,15 +446,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(MeterValueText, out MeterValue, OnException = null)
+        #region (static) TryParse(Text, out MeterValue, OnException = null)
 
         /// <summary>
         /// Try to parse the given text representation of a meter value.
         /// </summary>
-        /// <param name="MeterValueText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
         /// <param name="MeterValue">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                MeterValueText,
+        public static Boolean TryParse(String                Text,
                                        out MeterValue?       MeterValue,
                                        OnExceptionDelegate?  OnException   = null)
         {
@@ -460,20 +462,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             try
             {
 
-                MeterValueText = MeterValueText.Trim();
+                Text = Text.Trim();
 
-                if (MeterValueText.IsNotNullOrEmpty())
+                if (Text.IsNotNullOrEmpty())
                 {
 
-                    if (MeterValueText.StartsWith("{") &&
-                        TryParse(JObject.Parse(MeterValueText),
+                    if (Text.StartsWith("{") &&
+                        TryParse(JObject.Parse(Text),
                                  out MeterValue,
                                  out var errorResponse))
                     {
                         return true;
                     }
 
-                    if (TryParse(XDocument.Parse(MeterValueText).Root,
+                    if (TryParse(XDocument.Parse(Text).Root,
                                  out MeterValue,
                                  OnException))
                     {
@@ -485,7 +487,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, MeterValueText, e);
+                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, Text, e);
             }
 
             MeterValue = null;
@@ -495,7 +497,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ToXML(XName = null)
+        #region ToXML (XName = null)
 
         /// <summary>
         /// Return a XML representation of this object.

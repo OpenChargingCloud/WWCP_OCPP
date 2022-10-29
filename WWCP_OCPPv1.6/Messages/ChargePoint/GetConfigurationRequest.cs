@@ -315,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                      out IEnumerable<String> Keys,
                                      out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -354,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                GetConfigurationRequest  = default;
+                GetConfigurationRequest  = null;
                 ErrorResponse            = "The given JSON representation of a GetConfiguration request is invalid: " + e.Message;
                 return false;
             }
@@ -455,7 +455,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetConfigurationRequest> CustomGetConfigurationRequestSerializer)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            Keys.Any()
                                ? new JProperty("key",  new JArray(Keys))
@@ -464,8 +464,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                        );
 
             return CustomGetConfigurationRequestSerializer is not null
-                       ? CustomGetConfigurationRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomGetConfigurationRequestSerializer(this, json)
+                       : json;
 
         }
 

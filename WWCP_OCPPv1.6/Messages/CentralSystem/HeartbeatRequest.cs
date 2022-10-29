@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
@@ -88,31 +87,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
 
         /// <summary>
-        /// Parse the given XML representation of a Heartbeat request.
+        /// Parse the given XML representation of a heartbeat request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static HeartbeatRequest Parse(XElement             XML,
-                                             Request_Id           RequestId,
-                                             ChargeBox_Id         ChargeBoxId,
-                                             OnExceptionDelegate  OnException = null)
+        public static HeartbeatRequest Parse(XElement      XML,
+                                             Request_Id    RequestId,
+                                             ChargeBox_Id  ChargeBoxId)
         {
 
             if (TryParse(XML,
                          RequestId,
                          ChargeBoxId,
-                         out HeartbeatRequest heartbeatRequest,
-                         OnException))
+                         out var heartbeatRequest,
+                         out var errorResponse))
             {
-                return heartbeatRequest;
+                return heartbeatRequest!;
             }
 
-            throw new ArgumentException("The given XML representation of a Heartbeat request is invalid!", nameof(XML));
+            throw new ArgumentException("The given XML representation of a heartbeat request is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
@@ -121,79 +119,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomHeartbeatRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a Heartbeat request.
+        /// Parse the given JSON representation of a heartbeat request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CustomHeartbeatRequestParser">A delegate to parse custom Heartbeat requests.</param>
-        public static HeartbeatRequest Parse(JObject                                        JSON,
-                                             Request_Id                                     RequestId,
-                                             ChargeBox_Id                                   ChargeBoxId,
-                                             CustomJObjectParserDelegate<HeartbeatRequest>  CustomHeartbeatRequestParser   = null)
+        public static HeartbeatRequest Parse(JObject                                         JSON,
+                                             Request_Id                                      RequestId,
+                                             ChargeBox_Id                                    ChargeBoxId,
+                                             CustomJObjectParserDelegate<HeartbeatRequest>?  CustomHeartbeatRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
                          ChargeBoxId,
-                         out HeartbeatRequest  heartbeatRequest,
-                         out String            ErrorResponse,
+                         out var heartbeatRequest,
+                         out var errorResponse,
                          CustomHeartbeatRequestParser))
             {
-                return heartbeatRequest;
+                return heartbeatRequest!;
             }
 
-            throw new ArgumentException("The given JSON representation of a Heartbeat request is invalid: " + ErrorResponse, nameof(JSON));
+            throw new ArgumentException("The given JSON representation of a heartbeat request is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out HeartbeatRequest, out ErrorResponse)
 
         /// <summary>
-        /// Parse the given text representation of a Heartbeat request.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static HeartbeatRequest Parse(String               Text,
-                                             Request_Id           RequestId,
-                                             ChargeBox_Id         ChargeBoxId,
-                                             OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(Text,
-                         RequestId,
-                         ChargeBoxId,
-                         out HeartbeatRequest heartbeatRequest,
-                         OnException))
-            {
-                return heartbeatRequest;
-            }
-
-            throw new ArgumentException("The given text representation of a Heartbeat request is invalid!", nameof(Text));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out HeartbeatRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a Heartbeat request.
+        /// Try to parse the given XML representation of a heartbeat request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement              XML,
-                                       Request_Id            RequestId,
-                                       ChargeBox_Id          ChargeBoxId,
-                                       out HeartbeatRequest  HeartbeatRequest,
-                                       OnExceptionDelegate   OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(XElement               XML,
+                                       Request_Id             RequestId,
+                                       ChargeBox_Id           ChargeBoxId,
+                                       out HeartbeatRequest?  HeartbeatRequest,
+                                       out String?            ErrorResponse)
         {
 
             try
@@ -202,17 +171,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 HeartbeatRequest = new HeartbeatRequest(ChargeBoxId,
                                                         RequestId);
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, XML, e);
-
-                HeartbeatRequest = null;
+                HeartbeatRequest  = null;
+                ErrorResponse     = "The given XML representation of a heartbeat request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -224,18 +191,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a Heartbeat request.
+        /// Try to parse the given JSON representation of a heartbeat request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject               JSON,
-                                       Request_Id            RequestId,
-                                       ChargeBox_Id          ChargeBoxId,
-                                       out HeartbeatRequest  HeartbeatRequest,
-                                       out String            ErrorResponse)
+        public static Boolean TryParse(JObject                JSON,
+                                       Request_Id             RequestId,
+                                       ChargeBox_Id           ChargeBoxId,
+                                       out HeartbeatRequest?  HeartbeatRequest,
+                                       out String?            ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
@@ -246,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a Heartbeat request.
+        /// Try to parse the given JSON representation of a heartbeat request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -254,18 +221,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomHeartbeatRequestParser">A delegate to parse custom BootNotification requests.</param>
-        public static Boolean TryParse(JObject                                        JSON,
-                                       Request_Id                                     RequestId,
-                                       ChargeBox_Id                                   ChargeBoxId,
-                                       out HeartbeatRequest                           HeartbeatRequest,
-                                       out String                                     ErrorResponse,
-                                       CustomJObjectParserDelegate<HeartbeatRequest>  CustomHeartbeatRequestParser)
+        public static Boolean TryParse(JObject                                         JSON,
+                                       Request_Id                                      RequestId,
+                                       ChargeBox_Id                                    ChargeBoxId,
+                                       out HeartbeatRequest?                           HeartbeatRequest,
+                                       out String?                                     ErrorResponse,
+                                       CustomJObjectParserDelegate<HeartbeatRequest>?  CustomHeartbeatRequestParser)
         {
 
             try
             {
 
-                HeartbeatRequest  = default;
+                HeartbeatRequest  = null;
 
                 #region ChargeBoxId    [optional, OCPP_CSE]
 
@@ -276,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -299,8 +266,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                HeartbeatRequest  = default;
-                ErrorResponse     = "The given JSON representation of a Heartbeat request is invalid: " + e.Message;
+                HeartbeatRequest  = null;
+                ErrorResponse     = "The given JSON representation of a heartbeat request is invalid: " + e.Message;
                 return false;
             }
 
@@ -308,73 +275,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Text, RequestId, ChargeBoxId, out HeartbeatRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a Heartbeat request.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                Text,
-                                       Request_Id            RequestId,
-                                       ChargeBox_Id          ChargeBoxId,
-                                       out HeartbeatRequest  HeartbeatRequest,
-                                       OnExceptionDelegate   OnException  = null)
-        {
-
-            try
-            {
-
-                Text = Text?.Trim();
-
-                if (Text.IsNotNullOrEmpty())
-                {
-
-                    if (Text.StartsWith("{") &&
-                        TryParse(JObject.Parse(Text),
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out HeartbeatRequest,
-                                 out String ErrorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(Text).Root,
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out HeartbeatRequest,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, Text, e);
-            }
-
-            HeartbeatRequest = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CS + "heartbeatRequest");
+            => new (OCPPNS.OCPPv1_6_CS + "heartbeatRequest");
 
         #endregion
 
@@ -391,14 +299,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomHeartbeatRequestSerializer">A delegate to serialize custom heartbeat requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatRequest> CustomHeartbeatRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatRequest>? CustomHeartbeatRequestSerializer)
         {
 
-            var JSON = JSONObject.Create();
+            var json = JSONObject.Create();
 
             return CustomHeartbeatRequestSerializer is not null
-                       ? CustomHeartbeatRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomHeartbeatRequestSerializer(this, json)
+                       : json;
 
         }
 
@@ -415,7 +323,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="HeartbeatRequest1">A heartbeat request.</param>
         /// <param name="HeartbeatRequest2">Another heartbeat request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (HeartbeatRequest HeartbeatRequest1, HeartbeatRequest HeartbeatRequest2)
+        public static Boolean operator == (HeartbeatRequest HeartbeatRequest1,
+                                           HeartbeatRequest HeartbeatRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -423,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((HeartbeatRequest1 is null) || (HeartbeatRequest2 is null))
+            if (HeartbeatRequest1 is null || HeartbeatRequest2 is null)
                 return false;
 
             return HeartbeatRequest1.Equals(HeartbeatRequest2);
@@ -440,7 +349,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="HeartbeatRequest1">A heartbeat request.</param>
         /// <param name="HeartbeatRequest2">Another heartbeat request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (HeartbeatRequest HeartbeatRequest1, HeartbeatRequest HeartbeatRequest2)
+        public static Boolean operator != (HeartbeatRequest HeartbeatRequest1,
+                                           HeartbeatRequest HeartbeatRequest2)
 
             => !(HeartbeatRequest1 == HeartbeatRequest2);
 
@@ -453,22 +363,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two heartbeat requests for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A heartbeat request to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is HeartbeatRequest HeartbeatRequest))
-                return false;
-
-            return Equals(HeartbeatRequest);
-
-        }
+            => Object is HeartbeatRequest heartbeatRequest &&
+                   Equals(heartbeatRequest);
 
         #endregion
 
@@ -478,16 +379,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Compares two heartbeat requests for equality.
         /// </summary>
         /// <param name="HeartbeatRequest">A heartbeat request to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(HeartbeatRequest HeartbeatRequest)
-        {
+        public override Boolean Equals(HeartbeatRequest? HeartbeatRequest)
 
-            if (HeartbeatRequest is null)
-                return false;
-
-            return Object.ReferenceEquals(this, HeartbeatRequest);
-
-        }
+            => HeartbeatRequest is not null;
 
         #endregion
 

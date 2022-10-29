@@ -506,7 +506,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -531,7 +531,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                SetChargingProfileRequest  = default;
+                SetChargingProfileRequest  = null;
                 ErrorResponse              = "The given JSON representation of a SetChargingProfile request is invalid: " + e.Message;
                 return false;
             }
@@ -637,7 +637,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                               CustomJObjectSerializerDelegate<ChargingSchedulePeriod>    CustomChargingSchedulePeriodSerializer      = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
                            new JProperty("connectorId",         ConnectorId.    Value),
                            new JProperty("csChargingProfiles",  ChargingProfile.ToJSON(CustomChargingProfileSerializer,
                                                                                        CustomChargingScheduleSerializer,
@@ -645,8 +645,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                        );
 
             return CustomSetChargingProfileRequestSerializer is not null
-                       ? CustomSetChargingProfileRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomSetChargingProfileRequestSerializer(this, json)
+                       : json;
 
         }
 

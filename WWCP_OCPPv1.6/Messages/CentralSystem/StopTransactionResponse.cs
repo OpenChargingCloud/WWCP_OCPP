@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -160,100 +158,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (Request, StopTransactionResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a stop transaction response.
         /// </summary>
         /// <param name="Request">The stop transaction request leading to this response.</param>
-        /// <param name="StopTransactionResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static StopTransactionResponse Parse(CP.StopTransactionRequest  Request,
-                                                    XElement                   StopTransactionResponseXML,
-                                                    OnExceptionDelegate        OnException = null)
+                                                    XElement                   XML)
         {
 
             if (TryParse(Request,
-                         StopTransactionResponseXML,
-                         out StopTransactionResponse stopTransactionResponse,
-                         OnException))
+                         XML,
+                         out var stopTransactionResponse,
+                         out var errorResponse))
             {
-                return stopTransactionResponse;
+                return stopTransactionResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a stop transaction response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, StopTransactionResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomStopTransactionResponseParser = null)
 
         /// <summary>
         /// Parse the given text representation of a stop transaction response.
         /// </summary>
         /// <param name="Request">The stop transaction request leading to this response.</param>
-        /// <param name="StopTransactionResponseJSON">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StopTransactionResponse Parse(CP.StopTransactionRequest  Request,
-                                                    JObject                    StopTransactionResponseJSON,
-                                                    OnExceptionDelegate        OnException = null)
+        /// <param name="JSON">The text to be parsed.</param>
+        /// <param name="CustomStopTransactionResponseParser">A delegate to parse custom stop transaction responses.</param>
+        public static StopTransactionResponse Parse(CP.StopTransactionRequest                              Request,
+                                                    JObject                                                JSON,
+                                                    CustomJObjectParserDelegate<StopTransactionResponse>?  CustomStopTransactionResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         StopTransactionResponseJSON,
-                         out StopTransactionResponse  stopTransactionResponse,
-                         out String                   ErrorResponse))
+                         JSON,
+                         out var stopTransactionResponse,
+                         out var errorResponse,
+                         CustomStopTransactionResponseParser))
             {
-                return stopTransactionResponse;
+                return stopTransactionResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a stop transaction response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, StopTransactionResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a stop transaction response.
-        /// </summary>
-        /// <param name="Request">The stop transaction request leading to this response.</param>
-        /// <param name="StopTransactionResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StopTransactionResponse Parse(CP.StopTransactionRequest  Request,
-                                                    String                     StopTransactionResponseText,
-                                                    OnExceptionDelegate        OnException = null)
-        {
-
-            if (TryParse(Request,
-                         StopTransactionResponseText,
-                         out StopTransactionResponse  stopTransactionResponse,
-                         out String                   ErrorResponse))
-            {
-                return stopTransactionResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, StopTransactionResponseXML,  out StopTransactionResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out StopTransactionResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a stop transaction response.
         /// </summary>
         /// <param name="Request">The stop transaction request leading to this response.</param>
-        /// <param name="StopTransactionResponseXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="StopTransactionResponse">The parsed stop transaction response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CP.StopTransactionRequest    Request,
-                                       XElement                     StopTransactionResponseXML,
-                                       out StopTransactionResponse  StopTransactionResponse,
-                                       OnExceptionDelegate          OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CP.StopTransactionRequest     Request,
+                                       XElement                      XML,
+                                       out StopTransactionResponse?  StopTransactionResponse,
+                                       out String?                   ErrorResponse)
         {
 
             try
@@ -263,29 +235,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                               Request,
 
-                                              StopTransactionResponseXML.MapElementOrNullable(OCPPNS.OCPPv1_6_CS + "idTagInfo",
-                                                                                              OCPPv1_6.IdTagInfo.Parse)
+                                              XML.MapElementOrNullable(OCPPNS.OCPPv1_6_CS + "idTagInfo",
+                                                                       OCPPv1_6.IdTagInfo.Parse)
 
                                           );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, StopTransactionResponseXML, e);
-
-                StopTransactionResponse = null;
+                StopTransactionResponse  = null;
+                ErrorResponse            = "The given XML representation of a stop transaction response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, StopTransactionResponseJSON, out StopTransactionResponse, out ErrorResponse)
+        #region (static) TryParse(Request, JSON, out StopTransactionResponse, out ErrorResponse, CustomStopTransactionResponseParser = null)
 
         /// <summary>
         /// Try to parse the given text representation of a stop transaction response.
@@ -293,10 +263,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The stop transaction request leading to this response.</param>
         /// <param name="JSON">The text to be parsed.</param>
         /// <param name="StopTransactionResponse">The parsed stop transaction response.</param>
-        public static Boolean TryParse(CP.StopTransactionRequest    Request,
-                                       JObject                      JSON,
-                                       out StopTransactionResponse  StopTransactionResponse,
-                                       out String                   ErrorResponse)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomStopTransactionResponseParser">A delegate to parse custom stop transaction responses.</param>
+        public static Boolean TryParse(CP.StopTransactionRequest                              Request,
+                                       JObject                                                JSON,
+                                       out StopTransactionResponse?                           StopTransactionResponse,
+                                       out String?                                            ErrorResponse,
+                                       CustomJObjectParserDelegate<StopTransactionResponse>?  CustomStopTransactionResponseParser   = null)
         {
 
             ErrorResponse = null;
@@ -311,8 +284,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (!JSON.ParseMandatoryJSON("idTagInfo",
                                              "identification tag information",
                                              OCPPv1_6.IdTagInfo.TryParse,
-                                             out IdTagInfo  IdTagInfo,
-                                             out            ErrorResponse))
+                                             out IdTagInfo IdTagInfo,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -323,84 +296,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 StopTransactionResponse = new StopTransactionResponse(Request,
                                                                       IdTagInfo);
 
+                if (CustomStopTransactionResponseParser is not null)
+                    StopTransactionResponse = CustomStopTransactionResponseParser(JSON,
+                                                                                  StopTransactionResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-                ErrorResponse = e.Message;
+                StopTransactionResponse  = null;
+                ErrorResponse            = "The given JSON representation of a stop transaction response is invalid: " + e.Message;
+                return false;
             }
-
-            StopTransactionResponse = null;
-            return false;
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, StopTransactionResponseText, out StopTransactionResponse, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given text representation of a stop transaction response.
-        /// </summary>
-        /// <param name="Request">The stop transaction request leading to this response.</param>
-        /// <param name="StopTransactionResponseText">The text to be parsed.</param>
-        /// <param name="StopTransactionResponse">The parsed stop transaction response.</param>
-        public static Boolean TryParse(CP.StopTransactionRequest    Request,
-                                       String                       StopTransactionResponseText,
-                                       out StopTransactionResponse  StopTransactionResponse,
-                                       out String                   ErrorResponse)
-        {
-
-            ErrorResponse = null;
-
-            try
-            {
-
-                StopTransactionResponseText = StopTransactionResponseText?.Trim();
-
-                if (StopTransactionResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (StopTransactionResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(StopTransactionResponseText),
-                                 out StopTransactionResponse,
-                                 out ErrorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(StopTransactionResponseText).Root,
-                                 out StopTransactionResponse))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                ErrorResponse = e.Message;
-            }
-
-            StopTransactionResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CS + "stopTransactionResponse",
+            => new (OCPPNS.OCPPv1_6_CS + "stopTransactionResponse",
 
                    IdTagInfo.HasValue
                        ? IdTagInfo.Value.ToXML()
@@ -417,11 +338,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="CustomStopTransactionResponseSerializer">A delegate to serialize custom start transaction responses.</param>
         /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<StopTransactionResponse>  CustomStopTransactionResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<IdTagInfo>                CustomIdTagInfoResponseSerializer         = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StopTransactionResponse>?  CustomStopTransactionResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<IdTagInfo>?                CustomIdTagInfoResponseSerializer         = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            IdTagInfo.HasValue
                                ? new JProperty("idTagInfo",  IdTagInfo.Value.ToJSON(CustomIdTagInfoResponseSerializer))
@@ -430,8 +351,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                        );
 
             return CustomStopTransactionResponseSerializer is not null
-                       ? CustomStopTransactionResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomStopTransactionResponseSerializer(this, json)
+                       : json;
 
         }
 
@@ -446,8 +367,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The stop transaction request leading to this response.</param>
         public static StopTransactionResponse Failed(CP.StopTransactionRequest Request)
 
-            => new StopTransactionResponse(Request,
-                                           Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -462,7 +383,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="StopTransactionResponse1">A stop transaction response.</param>
         /// <param name="StopTransactionResponse2">Another stop transaction response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (StopTransactionResponse StopTransactionResponse1, StopTransactionResponse StopTransactionResponse2)
+        public static Boolean operator == (StopTransactionResponse StopTransactionResponse1,
+                                           StopTransactionResponse StopTransactionResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -470,7 +392,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if ((StopTransactionResponse1 is null) || (StopTransactionResponse2 is null))
+            if (StopTransactionResponse1 is null || StopTransactionResponse2 is null)
                 return false;
 
             return StopTransactionResponse1.Equals(StopTransactionResponse2);
@@ -487,7 +409,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="StopTransactionResponse1">A stop transaction response.</param>
         /// <param name="StopTransactionResponse2">Another stop transaction response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (StopTransactionResponse StopTransactionResponse1, StopTransactionResponse StopTransactionResponse2)
+        public static Boolean operator != (StopTransactionResponse StopTransactionResponse1,
+                                           StopTransactionResponse StopTransactionResponse2)
 
             => !(StopTransactionResponse1 == StopTransactionResponse2);
 
@@ -500,22 +423,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two stop transaction responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A stop transaction response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is StopTransactionResponse StopTransactionResponse))
-                return false;
-
-            return Equals(StopTransactionResponse);
-
-        }
+            => Object is StopTransactionResponse stopTransactionResponse &&
+                   Equals(stopTransactionResponse);
 
         #endregion
 
@@ -525,18 +439,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Compares two stop transaction responses for equality.
         /// </summary>
         /// <param name="StopTransactionResponse">A stop transaction response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(StopTransactionResponse StopTransactionResponse)
-        {
+        public override Boolean Equals(StopTransactionResponse? StopTransactionResponse)
 
-            if (StopTransactionResponse is null)
-                return false;
+            => StopTransactionResponse is not null &&
 
-            return IdTagInfo != null
-                       ? IdTagInfo.Equals(StopTransactionResponse.IdTagInfo)
-                       : Object.ReferenceEquals(this, StopTransactionResponse);
-
-        }
+               IdTagInfo is not null
+                   ? IdTagInfo.Equals(StopTransactionResponse.IdTagInfo)
+                   : true;
 
         #endregion
 
@@ -553,9 +462,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return IdTagInfo != null
-                           ? IdTagInfo.GetHashCode()
-                           : base.GetHashCode();
+                return IdTagInfo?.GetHashCode() ?? 0;
 
             }
         }
@@ -569,9 +476,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => IdTagInfo != null
-                   ? IdTagInfo.ToString()
-                   : "StopTransactionResponse";
+            => String.Concat("StopTransactionResponse",
+
+                             IdTagInfo.HasValue
+                                 ? ", " + IdTagInfo.ToString()
+                                 : "");
 
         #endregion
 

@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
@@ -94,100 +93,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (StatusNotificationResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a status notification response.
         /// </summary>
         /// <param name="Request">The status notification request leading to this response.</param>
-        /// <param name="StatusNotificationResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static StatusNotificationResponse Parse(CP.StatusNotificationRequest  Request,
-                                                       XElement                      StatusNotificationResponseXML,
-                                                       OnExceptionDelegate           OnException = null)
+                                                       XElement                      XML)
         {
 
             if (TryParse(Request,
-                         StatusNotificationResponseXML,
-                         out StatusNotificationResponse statusNotificationResponse,
-                         OnException))
+                         XML,
+                         out var statusNotificationResponse,
+                         out var errorResponse))
             {
-                return statusNotificationResponse;
+                return statusNotificationResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a status notification response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (StatusNotificationResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, OnException = null)
 
         /// <summary>
         /// Parse the given JSON representation of a status notification response.
         /// </summary>
         /// <param name="Request">The status notification request leading to this response.</param>
-        /// <param name="StatusNotificationResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StatusNotificationResponse Parse(CP.StatusNotificationRequest  Request,
-                                                       JObject                       StatusNotificationResponseJSON,
-                                                       OnExceptionDelegate           OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomStatusNotificationResponseParser">A delegate to parse custom status notification responses.</param>
+        public static StatusNotificationResponse Parse(CP.StatusNotificationRequest                              Request,
+                                                       JObject                                                   JSON,
+                                                       CustomJObjectParserDelegate<StatusNotificationResponse>?  CustomStatusNotificationResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         StatusNotificationResponseJSON,
-                         out StatusNotificationResponse  statusNotificationResponse,
-                         out String                      ErrorResponse))
+                         JSON,
+                         out var statusNotificationResponse,
+                         out var errorResponse,
+                         CustomStatusNotificationResponseParser))
             {
-                return statusNotificationResponse;
+                return statusNotificationResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a status notification response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (StatusNotificationResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a status notification response.
-        /// </summary>
-        /// <param name="Request">The status notification request leading to this response.</param>
-        /// <param name="StatusNotificationResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StatusNotificationResponse Parse(CP.StatusNotificationRequest  Request,
-                                                       String                        StatusNotificationResponseText,
-                                                       OnExceptionDelegate           OnException = null)
-        {
-
-            if (TryParse(Request,
-                         StatusNotificationResponseText,
-                         out StatusNotificationResponse  statusNotificationResponse,
-                         out String                      ErrorResponse))
-            {
-                return statusNotificationResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(StatusNotificationResponseXML,  out StatusNotificationResponse, OnException = null)
+        #region (static) TryParse(XML,  out StatusNotificationResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a status notification response.
         /// </summary>
         /// <param name="Request">The status notification request leading to this response.</param>
-        /// <param name="StatusNotificationResponseXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="StatusNotificationResponse">The parsed status notification response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CP.StatusNotificationRequest    Request,
-                                       XElement                        StatusNotificationResponseXML,
-                                       out StatusNotificationResponse  StatusNotificationResponse,
-                                       OnExceptionDelegate             OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CP.StatusNotificationRequest     Request,
+                                       XElement                         XML,
+                                       out StatusNotificationResponse?  StatusNotificationResponse,
+                                       out String?                      ErrorResponse)
         {
 
             try
@@ -195,35 +168,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 StatusNotificationResponse = new StatusNotificationResponse(Request);
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, StatusNotificationResponseXML, e);
-
-                StatusNotificationResponse = null;
+                StatusNotificationResponse  = null;
+                ErrorResponse               = "The given XML representation of a status notification response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(StatusNotificationResponseJSON, out StatusNotificationResponse, out ErrorResponse)
+        #region (static) TryParse(JSON, out StatusNotificationResponse, out ErrorResponse, CustomStatusNotificationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a status notification response.
         /// </summary>
         /// <param name="Request">The status notification request leading to this response.</param>
-        /// <param name="StatusNotificationResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="StatusNotificationResponse">The parsed status notification response.</param>
-        public static Boolean TryParse(CP.StatusNotificationRequest    Request,
-                                       JObject                         StatusNotificationResponseJSON,
-                                       out StatusNotificationResponse  StatusNotificationResponse,
-                                       out String                      ErrorResponse)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomStatusNotificationResponseParser">A delegate to parse custom status notification responses.</param>
+        public static Boolean TryParse(CP.StatusNotificationRequest                              Request,
+                                       JObject                                                   JSON,
+                                       out StatusNotificationResponse?                           StatusNotificationResponse,
+                                       out String?                                               ErrorResponse,
+                                       CustomJObjectParserDelegate<StatusNotificationResponse>?  CustomStatusNotificationResponseParser   = null)
         {
 
             ErrorResponse = null;
@@ -232,6 +206,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 StatusNotificationResponse = new StatusNotificationResponse(Request);
+
+                if (CustomStatusNotificationResponseParser is not null)
+                    StatusNotificationResponse = CustomStatusNotificationResponseParser(JSON,
+                                                                                        StatusNotificationResponse);
 
                 return true;
 
@@ -239,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 StatusNotificationResponse  = null;
-                ErrorResponse               = e.Message;
+                ErrorResponse               = "The given JSON representation of a status notification response is invalid: " + e.Message;
                 return false;
             }
 
@@ -247,69 +225,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(StatusNotificationResponseText, out StatusNotificationResponse, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given text representation of a status notification response.
-        /// </summary>
-        /// <param name="Request">The status notification request leading to this response.</param>
-        /// <param name="StatusNotificationResponseText">The text to be parsed.</param>
-        /// <param name="StatusNotificationResponse">The parsed status notification response.</param>
-        public static Boolean TryParse(CP.StatusNotificationRequest    Request,
-                                       String                          StatusNotificationResponseText,
-                                       out StatusNotificationResponse  StatusNotificationResponse,
-                                       out String                      ErrorResponse)
-        {
-
-            ErrorResponse = null;
-
-            try
-            {
-
-                StatusNotificationResponseText = StatusNotificationResponseText?.Trim();
-
-                if (StatusNotificationResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (StatusNotificationResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(StatusNotificationResponseText),
-                                 out StatusNotificationResponse,
-                                 out ErrorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(StatusNotificationResponseText).Root,
-                                 out StatusNotificationResponse))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                ErrorResponse = e.Message;
-            }
-
-            StatusNotificationResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CS + "statusNotificationResponse");
+            => new (OCPPNS.OCPPv1_6_CS + "statusNotificationResponse");
 
         #endregion
 
@@ -319,14 +242,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomStatusNotificationResponseSerializer">A delegate to serialize custom status notification responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<StatusNotificationResponse> CustomStatusNotificationResponseSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StatusNotificationResponse>? CustomStatusNotificationResponseSerializer = null)
         {
 
-            var JSON = JSONObject.Create();
+            var json = JSONObject.Create();
 
             return CustomStatusNotificationResponseSerializer is not null
-                       ? CustomStatusNotificationResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomStatusNotificationResponseSerializer(this, json)
+                       : json;
 
         }
 
@@ -340,8 +263,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public static StatusNotificationResponse Failed(CP.StatusNotificationRequest Request)
 
-            => new StatusNotificationResponse(Request,
-                                              Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -356,7 +279,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="StatusNotificationResponse1">A status notification response.</param>
         /// <param name="StatusNotificationResponse2">Another status notification response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (StatusNotificationResponse StatusNotificationResponse1, StatusNotificationResponse StatusNotificationResponse2)
+        public static Boolean operator == (StatusNotificationResponse StatusNotificationResponse1,
+                                           StatusNotificationResponse StatusNotificationResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -364,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if ((StatusNotificationResponse1 is null) || (StatusNotificationResponse2 is null))
+            if (StatusNotificationResponse1 is null || StatusNotificationResponse2 is null)
                 return false;
 
             return StatusNotificationResponse1.Equals(StatusNotificationResponse2);
@@ -381,7 +305,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="StatusNotificationResponse1">A status notification response.</param>
         /// <param name="StatusNotificationResponse2">Another status notification response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (StatusNotificationResponse StatusNotificationResponse1, StatusNotificationResponse StatusNotificationResponse2)
+        public static Boolean operator != (StatusNotificationResponse StatusNotificationResponse1,
+                                           StatusNotificationResponse StatusNotificationResponse2)
 
             => !(StatusNotificationResponse1 == StatusNotificationResponse2);
 
@@ -394,22 +319,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two status notification responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A status notification response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is StatusNotificationResponse StatusNotificationResponse))
-                return false;
-
-            return Equals(StatusNotificationResponse);
-
-        }
+            => Object is StatusNotificationResponse statusNotificationResponse &&
+                   Equals(statusNotificationResponse);
 
         #endregion
 
@@ -419,16 +335,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Compares two status notification responses for equality.
         /// </summary>
         /// <param name="StatusNotificationResponse">A status notification response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(StatusNotificationResponse StatusNotificationResponse)
-        {
+        public override Boolean Equals(StatusNotificationResponse? StatusNotificationResponse)
 
-            if (StatusNotificationResponse is null)
-                return false;
-
-            return Object.ReferenceEquals(this, StatusNotificationResponse);
-
-        }
+            => StatusNotificationResponse is not null;
 
         #endregion
 

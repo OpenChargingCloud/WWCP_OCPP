@@ -17,10 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Linq;
 using System.Xml.Linq;
-using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
@@ -32,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The StopTransaction request.
+    /// The stop transaction request.
     /// </summary>
     public class StopTransactionRequest : ARequest<StopTransactionRequest>
     {
@@ -40,8 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Properties
 
         /// <summary>
-        /// The transaction identification copied from the start transaction
-        /// response.
+        /// The transaction identification copied from the start transaction response.
         /// </summary>
         public Transaction_Id           TransactionId      { get; }
 
@@ -79,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new StartTransaction request.
+        /// Create a new stop transaction request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="TransactionId">The transaction identification copied from the start transaction response.</param>
@@ -91,17 +87,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public StopTransactionRequest(ChargeBox_Id             ChargeBoxId,
-                                      Transaction_Id           TransactionId,
-                                      DateTime                 Timestamp,
-                                      UInt64                   MeterStop,
-                                      IdToken?                 IdTag              = null,
-                                      Reasons?                 Reason             = null,
-                                      IEnumerable<MeterValue>  TransactionData    = null,
+        public StopTransactionRequest(ChargeBox_Id              ChargeBoxId,
+                                      Transaction_Id            TransactionId,
+                                      DateTime                  Timestamp,
+                                      UInt64                    MeterStop,
+                                      IdToken?                  IdTag              = null,
+                                      Reasons?                  Reason             = null,
+                                      IEnumerable<MeterValue>?  TransactionData    = null,
 
-                                      Request_Id?              RequestId          = null,
-                                      DateTime?                RequestTimestamp   = null,
-                                      EventTracking_Id         EventTrackingId    = null)
+                                      Request_Id?               RequestId          = null,
+                                      DateTime?                 RequestTimestamp   = null,
+                                      EventTracking_Id?         EventTrackingId    = null)
 
             : base(ChargeBoxId,
                    "StopTransaction",
@@ -116,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.MeterStop        = MeterStop;
             this.IdTag            = IdTag           ?? new IdToken?();
             this.Reason           = Reason          ?? new Reasons?();
-            this.TransactionData  = TransactionData ?? new MeterValue[0];
+            this.TransactionData  = TransactionData ?? Array.Empty<MeterValue>();
 
         }
 
@@ -363,31 +359,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
 
         /// <summary>
-        /// Parse the given XML representation of a StopTransaction request.
+        /// Parse the given XML representation of a stop transaction request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StopTransactionRequest Parse(XElement             XML,
-                                                   Request_Id           RequestId,
-                                                   ChargeBox_Id         ChargeBoxId,
-                                                   OnExceptionDelegate  OnException = null)
+        public static StopTransactionRequest Parse(XElement      XML,
+                                                   Request_Id    RequestId,
+                                                   ChargeBox_Id  ChargeBoxId)
         {
 
             if (TryParse(XML,
                          RequestId,
                          ChargeBoxId,
-                         out StopTransactionRequest stopTransactionRequest,
-                         OnException))
+                         out var stopTransactionRequest,
+                         out var errorResponse))
             {
-                return stopTransactionRequest;
+                return stopTransactionRequest!;
             }
 
-            throw new ArgumentException("The given XML representation of a StopTransaction request is invalid!", nameof(XML));
+            throw new ArgumentException("The given XML representation of a stop transaction request is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
@@ -396,79 +391,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomStopTransactionRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a StopTransaction request.
+        /// Parse the given JSON representation of a stop transaction request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomStopTransactionRequestParser">A delegate to parse custom BootNotification requests.</param>
-        public static StopTransactionRequest Parse(JObject                                              JSON,
-                                                   Request_Id                                           RequestId,
-                                                   ChargeBox_Id                                         ChargeBoxId,
-                                                   CustomJObjectParserDelegate<StopTransactionRequest>  CustomStopTransactionRequestParser   = null)
+        /// <param name="CustomStopTransactionRequestParser">A delegate to parse custom stop transaction requests.</param>
+        public static StopTransactionRequest Parse(JObject                                               JSON,
+                                                   Request_Id                                            RequestId,
+                                                   ChargeBox_Id                                          ChargeBoxId,
+                                                   CustomJObjectParserDelegate<StopTransactionRequest>?  CustomStopTransactionRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
                          ChargeBoxId,
-                         out StopTransactionRequest  stopTransactionRequest,
-                         out String                  ErrorResponse,
+                         out var stopTransactionRequest,
+                         out var errorResponse,
                          CustomStopTransactionRequestParser))
             {
-                return stopTransactionRequest;
+                return stopTransactionRequest!;
             }
 
-            throw new ArgumentException("The given JSON representation of a StopTransaction request is invalid: " + ErrorResponse, nameof(JSON));
+            throw new ArgumentException("The given JSON representation of a stop transaction request is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out StopTransactionRequest, out ErrorResponse)
 
         /// <summary>
-        /// Parse the given text representation of a StopTransaction request.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StopTransactionRequest Parse(String               Text,
-                                                   Request_Id           RequestId,
-                                                   ChargeBox_Id         ChargeBoxId,
-                                                   OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(Text,
-                         RequestId,
-                         ChargeBoxId,
-                         out StopTransactionRequest stopTransactionRequest,
-                         OnException))
-            {
-                return stopTransactionRequest;
-            }
-
-            throw new ArgumentException("The given text representation of a StopTransaction request is invalid!", nameof(Text));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out StopTransactionRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a StopTransaction request.
+        /// Try to parse the given XML representation of a stop transaction request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="StopTransactionRequest">The parsed StopTransaction request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                    XML,
-                                       Request_Id                  RequestId,
-                                       ChargeBox_Id                ChargeBoxId,
-                                       out StopTransactionRequest  StopTransactionRequest,
-                                       OnExceptionDelegate         OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(XElement                     XML,
+                                       Request_Id                   RequestId,
+                                       ChargeBox_Id                 ChargeBoxId,
+                                       out StopTransactionRequest?  StopTransactionRequest,
+                                       out String?                  ErrorResponse)
         {
 
             try
@@ -500,17 +466,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                          );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, XML, e);
-
-                StopTransactionRequest = null;
+                StopTransactionRequest  = null;
+                ErrorResponse           = "The given XML representation of a stop transaction request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -522,18 +486,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a StopTransaction request.
+        /// Try to parse the given JSON representation of a stop transaction request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="StopTransactionRequest">The parsed StopTransaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                     JSON,
-                                       Request_Id                  RequestId,
-                                       ChargeBox_Id                ChargeBoxId,
-                                       out StopTransactionRequest  StopTransactionRequest,
-                                       out String                  ErrorResponse)
+        public static Boolean TryParse(JObject                      JSON,
+                                       Request_Id                   RequestId,
+                                       ChargeBox_Id                 ChargeBoxId,
+                                       out StopTransactionRequest?  StopTransactionRequest,
+                                       out String?                  ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
@@ -544,20 +508,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a StopTransaction request.
+        /// Try to parse the given JSON representation of a stop transaction request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="StopTransactionRequest">The parsed StopTransaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomStopTransactionRequestParser">A delegate to parse custom CustomStopTransaction requests.</param>
-        public static Boolean TryParse(JObject                                              JSON,
-                                       Request_Id                                           RequestId,
-                                       ChargeBox_Id                                         ChargeBoxId,
-                                       out StopTransactionRequest                           StopTransactionRequest,
-                                       out String                                           ErrorResponse,
-                                       CustomJObjectParserDelegate<StopTransactionRequest>  CustomStopTransactionRequestParser)
+        /// <param name="CustomStopTransactionRequestParser">A delegate to parse custom stop transaction requests.</param>
+        public static Boolean TryParse(JObject                                               JSON,
+                                       Request_Id                                            RequestId,
+                                       ChargeBox_Id                                          ChargeBoxId,
+                                       out StopTransactionRequest?                           StopTransactionRequest,
+                                       out String?                                           ErrorResponse,
+                                       CustomJObjectParserDelegate<StopTransactionRequest>?  CustomStopTransactionRequestParser)
         {
 
             try
@@ -610,7 +574,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        out Reasons? Reason,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -624,7 +588,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        out IdToken? IdTag,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -638,7 +602,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                            out IEnumerable<MeterValue> TransactionData,
                                            out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -653,7 +617,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -682,8 +646,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                StopTransactionRequest  = default;
-                ErrorResponse           = "The given JSON representation of a StopTransaction request is invalid: " + e.Message;
+                StopTransactionRequest  = null;
+                ErrorResponse           = "The given JSON representation of a stop transaction request is invalid: " + e.Message;
                 return false;
             }
 
@@ -691,73 +655,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Text, RequestId, ChargeBoxId, out StopTransactionRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a StopTransaction request.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="StopTransactionRequest">The parsed StopTransaction request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                      Text,
-                                       Request_Id                  RequestId,
-                                       ChargeBox_Id                ChargeBoxId,
-                                       out StopTransactionRequest  StopTransactionRequest,
-                                       OnExceptionDelegate         OnException  = null)
-        {
-
-            try
-            {
-
-                Text = Text?.Trim();
-
-                if (Text.IsNotNullOrEmpty())
-                {
-
-                    if (Text.StartsWith("{") &&
-                        TryParse(JObject.Parse(Text),
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out StopTransactionRequest,
-                                 out String ErrorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(Text).Root,
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out StopTransactionRequest,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, Text, e);
-            }
-
-            StopTransactionRequest = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CS + "stopTransactionRequest",
+            => new (OCPPNS.OCPPv1_6_CS + "stopTransactionRequest",
 
                    new XElement(OCPPNS.OCPPv1_6_CS + "transactionId",   TransactionId),
 
@@ -795,12 +700,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CustomStopTransactionRequestRequestSerializer">A delegate to serialize custom StopTransaction requests.</param>
         /// <param name="CustomMeterValueSerializer">A delegate to serialize custom meter values.</param>
         /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<StopTransactionRequest>  CustomStopTransactionRequestRequestSerializer,
-                              CustomJObjectSerializerDelegate<MeterValue>              CustomMeterValueSerializer                      = null,
-                              CustomJObjectSerializerDelegate<SampledValue>            CustomSampledValueSerializer                    = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StopTransactionRequest>?  CustomStopTransactionRequestRequestSerializer,
+                              CustomJObjectSerializerDelegate<MeterValue>?              CustomMeterValueSerializer     = null,
+                              CustomJObjectSerializerDelegate<SampledValue>?            CustomSampledValueSerializer   = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            new JProperty("transactionId",          TransactionId.Value),
                            new JProperty("timestamp",              Timestamp.    ToIso8601()),
@@ -822,8 +727,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                        );
 
             return CustomStopTransactionRequestRequestSerializer is not null
-                       ? CustomStopTransactionRequestRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomStopTransactionRequestRequestSerializer(this, json)
+                       : json;
 
         }
 
@@ -840,7 +745,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="StopTransactionRequest1">A StopTransaction request.</param>
         /// <param name="StopTransactionRequest2">Another StopTransaction request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (StopTransactionRequest StopTransactionRequest1, StopTransactionRequest StopTransactionRequest2)
+        public static Boolean operator == (StopTransactionRequest StopTransactionRequest1,
+                                           StopTransactionRequest StopTransactionRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -848,7 +754,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((StopTransactionRequest1 is null) || (StopTransactionRequest2 is null))
+            if (StopTransactionRequest1 is null || StopTransactionRequest2 is null)
                 return false;
 
             return StopTransactionRequest1.Equals(StopTransactionRequest2);
@@ -865,7 +771,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="StopTransactionRequest1">A StopTransaction request.</param>
         /// <param name="StopTransactionRequest2">Another StopTransaction request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (StopTransactionRequest StopTransactionRequest1, StopTransactionRequest StopTransactionRequest2)
+        public static Boolean operator != (StopTransactionRequest StopTransactionRequest1,
+                                           StopTransactionRequest StopTransactionRequest2)
 
             => !(StopTransactionRequest1 == StopTransactionRequest2);
 
@@ -878,52 +785,38 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two stop transaction requests for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A stop transaction request to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is StopTransactionRequest StopTransactionRequest))
-                return false;
-
-            return Equals(StopTransactionRequest);
-
-        }
+            => Object is StopTransactionRequest stopTransactionRequest &&
+                   Equals(stopTransactionRequest);
 
         #endregion
 
         #region Equals(StopTransactionRequest)
 
         /// <summary>
-        /// Compares two StopTransaction requests for equality.
+        /// Compares two stop transaction requests for equality.
         /// </summary>
-        /// <param name="StopTransactionRequest">A StopTransaction request to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(StopTransactionRequest StopTransactionRequest)
-        {
+        /// <param name="StopTransactionRequest">A stop transaction request to compare with.</param>
+        public override Boolean Equals(StopTransactionRequest? StopTransactionRequest)
 
-            if (StopTransactionRequest is null)
-                return false;
+            => StopTransactionRequest is not null &&
 
-            return TransactionId.Equals(StopTransactionRequest.TransactionId) &&
-                   Timestamp.    Equals(StopTransactionRequest.Timestamp)     &&
-                   MeterStop.    Equals(StopTransactionRequest.MeterStop)     &&
+               TransactionId.Equals(StopTransactionRequest.TransactionId) &&
+               Timestamp.    Equals(StopTransactionRequest.Timestamp)     &&
+               MeterStop.    Equals(StopTransactionRequest.MeterStop)     &&
 
-                   ((!IdTag.HasValue  && !StopTransactionRequest.IdTag. HasValue) ||
-                     (IdTag.HasValue  &&  StopTransactionRequest.IdTag. HasValue && IdTag. Equals(StopTransactionRequest.IdTag))) &&
+            ((!IdTag.HasValue  && !StopTransactionRequest.IdTag. HasValue) ||
+              (IdTag.HasValue  &&  StopTransactionRequest.IdTag. HasValue && IdTag. Equals(StopTransactionRequest.IdTag))) &&
 
-                   ((!Reason.HasValue && !StopTransactionRequest.Reason.HasValue) ||
-                     (Reason.HasValue &&  StopTransactionRequest.Reason.HasValue && Reason.Equals(StopTransactionRequest.Reason))) &&
+            ((!Reason.HasValue && !StopTransactionRequest.Reason.HasValue) ||
+              (Reason.HasValue &&  StopTransactionRequest.Reason.HasValue && Reason.Equals(StopTransactionRequest.Reason))) &&
 
-                   //FixMe!
-                   TransactionData.Count().Equals(StopTransactionRequest.TransactionData.Count());
-
-        }
+               TransactionData.Count().Equals(StopTransactionRequest.TransactionData.Count()) &&
+               TransactionData.All(transactionData => StopTransactionRequest.TransactionData.Contains(transactionData));
 
         #endregion
 
@@ -940,19 +833,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             unchecked
             {
 
-                return TransactionId.GetHashCode() * 29 ^
-                       Timestamp.    GetHashCode() * 23 ^
-                       MeterStop.    GetHashCode() * 19 ^
+                return TransactionId.  GetHashCode()       * 13 ^
+                       Timestamp.      GetHashCode()       * 11 ^
+                       MeterStop.      GetHashCode()       *  7 ^
+                       TransactionData.GetHashCode()       *  5 ^
 
-                       (IdTag.HasValue
-                            ? IdTag. GetHashCode() * 17
-                            : 0) ^
-
-                       (Reason.HasValue
-                            ? Reason.GetHashCode() * 11
-                            : 0) ^
-
-                       TransactionData.GetHashCode();
+                       (IdTag?.        GetHashCode() ?? 0) *  3 ^
+                       (Reason?.       GetHashCode() ?? 0);
 
             }
         }

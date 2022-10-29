@@ -327,11 +327,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateFirmwareResponse>  CustomUpdateFirmwareResponseSerializer  = null)
         {
 
-            var JSON = JSONObject.Create();
+            var json = JSONObject.Create();
 
             return CustomUpdateFirmwareResponseSerializer is not null
-                       ? CustomUpdateFirmwareResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomUpdateFirmwareResponseSerializer(this, json)
+                       : json;
 
         }
 

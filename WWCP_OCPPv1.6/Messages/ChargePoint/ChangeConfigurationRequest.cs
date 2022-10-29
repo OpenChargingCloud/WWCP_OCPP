@@ -351,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                ChangeConfigurationRequest  = default;
+                ChangeConfigurationRequest  = null;
                 ErrorResponse               = "The given JSON representation of a ChangeConfiguration request is invalid: " + e.Message;
                 return false;
             }
@@ -476,14 +476,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeConfigurationRequest> CustomChangeConfigurationRequestSerializer)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
                            new JProperty("key",    Key),
                            new JProperty("value",  Value)
                        );
 
             return CustomChangeConfigurationRequestSerializer is not null
-                       ? CustomChangeConfigurationRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomChangeConfigurationRequestSerializer(this, json)
+                       : json;
 
         }
 

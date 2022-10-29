@@ -359,7 +359,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                ChangeAvailabilityRequest  = default;
+                ChangeAvailabilityRequest  = null;
                 ErrorResponse              = "The given JSON representation of a ChangeAvailability request is invalid: " + e.Message;
                 return false;
             }
@@ -484,14 +484,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeAvailabilityRequest> CustomChangeAvailabilityRequestSerializer)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
                            new JProperty("connectorId",  ConnectorId. Value),
                            new JProperty("type",         Availability.AsText())
                        );
 
             return CustomChangeAvailabilityRequestSerializer is not null
-                       ? CustomChangeAvailabilityRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomChangeAvailabilityRequestSerializer(this, json)
+                       : json;
 
         }
 

@@ -382,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetDiagnosticsResponse>  CustomGetDiagnosticsResponseSerializer  = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            FileName.IsNotNullOrEmpty()
                                ? new JProperty("fileName",  FileName.SubstringMax(MaxFileNameLength))
@@ -391,8 +391,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                        );
 
             return CustomGetDiagnosticsResponseSerializer is not null
-                       ? CustomGetDiagnosticsResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomGetDiagnosticsResponseSerializer(this, json)
+                       : json;
 
         }
 

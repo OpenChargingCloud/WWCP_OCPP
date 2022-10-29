@@ -324,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -348,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                CancelReservationRequest  = default;
+                CancelReservationRequest  = null;
                 ErrorResponse             = "The given JSON representation of a CancelReservation request is invalid: " + e.Message;
                 return false;
             }
@@ -447,13 +447,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationRequest> CustomCancelReservationRequestSerializer)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
                            new JProperty("reservationId",  ReservationId.Value)
                        );
 
             return CustomCancelReservationRequestSerializer is not null
-                       ? CustomCancelReservationRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomCancelReservationRequestSerializer(this, json)
+                       : json;
 
         }
 

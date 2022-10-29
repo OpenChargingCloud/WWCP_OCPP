@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                              out ChargingProfile_Id? ChargingProfileId,
                                              out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                              out Connector_Id? ConnectorId,
                                              out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -398,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ChargingProfilePurposes? ChargingProfilePurpose,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out UInt32? StackLevel,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                ClearChargingProfileRequest  = default;
+                ClearChargingProfileRequest  = null;
                 ErrorResponse                = "The given JSON representation of a ClearChargingProfile request is invalid: " + e.Message;
                 return false;
             }
@@ -566,7 +566,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileRequest> CustomClearChargingProfileRequestSerializer)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            ChargingProfileId.HasValue
                                ? new JProperty("chargingProfileId",       ChargingProfileId.     Value.ToString())
@@ -587,8 +587,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                        );
 
             return CustomClearChargingProfileRequestSerializer is not null
-                       ? CustomClearChargingProfileRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomClearChargingProfileRequestSerializer(this, json)
+                       : json;
 
         }
 

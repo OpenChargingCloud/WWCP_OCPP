@@ -17,14 +17,9 @@
 
 #region Usings
 
-using System;
-using System.IO;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using social.OpenData.UsersAPI;
@@ -45,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public new const           String                           DefaultHTTPServerName       = "GraphDefined OCPP v1.6 WebAPI";
+        public new const           String                           DefaultHTTPServerName       = "GraphDefined OCPP v1.6 Upload API";
 
         /// <summary>
         /// The default HTTP URI prefix.
@@ -55,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The default HTTP realm, if HTTP Basic Authentication is used.
         /// </summary>
-        public const String DefaultHTTPRealm = "Open Charging Cloud OCPPPlus WebAPI";
+        public const String DefaultHTTPRealm = "Open Charging Cloud Upload API";
 
         /// <summary>
         /// The HTTP root for embedded ressources.
@@ -68,12 +63,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The HTTP content type for serving OCPP+ XML data.
         /// </summary>
-        public static readonly HTTPContentType                      OCPPPlusJSONContentType     = new HTTPContentType("application", "vnd.OCPPPlus+json", "utf-8", null, null);
+        public static readonly HTTPContentType                      OCPPPlusJSONContentType     = new ("application", "vnd.OCPPPlus+json", "utf-8", null, null);
 
         /// <summary>
         /// The HTTP content type for serving OCPP+ HTML data.
         /// </summary>
-        public static readonly HTTPContentType                      OCPPPlusHTMLContentType     = new HTTPContentType("application", "vnd.OCPPPlus+html", "utf-8", null, null);
+        public static readonly HTTPContentType                      OCPPPlusHTMLContentType     = new ("application", "vnd.OCPPPlus+html", "utf-8", null, null);
 
         /// <summary>
         /// The unique identification of the OCPP HTTP SSE event log.
@@ -83,11 +78,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// The HTTP URI prefix.
-        /// </summary>
-        //public HTTPPath?                                    URLPathPrefix1      { get; }
 
         /// <summary>
         /// The HTTP realm, if HTTP Basic Authentication is used.
@@ -103,15 +93,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Send debug information via HTTP Server Sent Events.
         /// </summary>
-        public HTTPEventSource<JObject>                     EventLog            { get; }
+        public HTTPEventSource<JObject>?                    EventLog            { get; }
 
 
-        public TestCentralSystem CentralSystem { get; }
-
-        /// <summary>
-        /// The DNS client to use.
-        /// </summary>
-        public DNSClient                                    DNSClient           { get; }
+        public TestCentralSystem                            CentralSystem       { get; }
 
         #endregion
 
@@ -124,13 +109,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URIs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public UploadAPI(TestCentralSystem                          TestCentralSystem,
-                         HTTPServer                                 HTTPServer,
-                         HTTPPath?                                  URLPathPrefix    = null,
-                         HTTPPath?                                  BasePath         = null,
-                         String                                     HTTPRealm        = DefaultHTTPRealm,
-                         IEnumerable<KeyValuePair<String, String>>  HTTPLogins       = null,
-                         String                                     HTMLTemplate     = null)
+        public UploadAPI(TestCentralSystem                           TestCentralSystem,
+                         HTTPServer                                  HTTPServer,
+                         HTTPPath?                                   URLPathPrefix    = null,
+                         HTTPPath?                                   BasePath         = null,
+                         String                                      HTTPRealm        = DefaultHTTPRealm,
+                         IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
+                         String?                                     HTMLTemplate     = null)
 
             : base(HTTPServer,
                    null,
@@ -163,8 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             this.CentralSystem  = TestCentralSystem;
 
             this.HTTPRealm      = HTTPRealm.IsNotNullOrEmpty() ? HTTPRealm : DefaultHTTPRealm;
-            this.HTTPLogins     = HTTPLogins ?? new KeyValuePair<String, String>[0];
-            this.DNSClient      = HTTPServer.DNSClient;
+            this.HTTPLogins     = HTTPLogins ?? Array.Empty<KeyValuePair<string, string>>();
 
             RegisterURITemplates();
 

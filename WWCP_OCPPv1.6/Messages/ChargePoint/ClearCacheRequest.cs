@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                ClearCacheRequest  = default;
+                ClearCacheRequest  = null;
                 ErrorResponse      = "The given JSON representation of a ClearCache request is invalid: " + e.Message;
                 return false;
             }
@@ -394,11 +394,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public JObject ToJSON(CustomJObjectSerializerDelegate<ClearCacheRequest> CustomClearCacheRequestSerializer)
         {
 
-            var JSON = JSONObject.Create();
+            var json = JSONObject.Create();
 
             return CustomClearCacheRequestSerializer is not null
-                       ? CustomClearCacheRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomClearCacheRequestSerializer(this, json)
+                       : json;
 
         }
 

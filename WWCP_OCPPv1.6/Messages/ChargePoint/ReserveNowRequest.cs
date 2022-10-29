@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out IdToken ParentIdTag,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -447,7 +447,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -475,7 +475,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                ReserveNowRequest  = default;
+                ReserveNowRequest  = null;
                 ErrorResponse      = "The given JSON representation of a ReserveNow request is invalid: " + e.Message;
                 return false;
             }
@@ -582,7 +582,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowRequest> CustomReserveNowRequestSerializer)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            new JProperty("connectorId",        ConnectorId.Value),
                            new JProperty("expiryDate",         ExpiryDate.       ToIso8601()),
@@ -596,8 +596,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                        );
 
             return CustomReserveNowRequestSerializer is not null
-                       ? CustomReserveNowRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomReserveNowRequestSerializer(this, json)
+                       : json;
 
         }
 

@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -69,16 +67,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    Result.OK())
 
         {
-
-            #region Initial checks
-
-            if (TransactionId == null)
-                throw new ArgumentNullException(nameof(TransactionId),  "The given transaction identification must not be null!");
-
-            if (IdTagInfo == null)
-                throw new ArgumentNullException(nameof(IdTagInfo),      "The given identification tag info must not be null!");
-
-            #endregion
 
             this.TransactionId  = TransactionId;
             this.IdTagInfo      = IdTagInfo;
@@ -184,114 +172,98 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (Request, StartTransactionResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a start transaction response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="StartTransactionResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static StartTransactionResponse Parse(CP.StartTransactionRequest  Request,
-                                                     XElement                    StartTransactionResponseXML,
-                                                     OnExceptionDelegate         OnException = null)
+                                                     XElement                    XML)
         {
 
             if (TryParse(Request,
-                         StartTransactionResponseXML,
-                         out StartTransactionResponse startTransactionResponse,
-                         OnException))
+                         XML,
+                         out var startTransactionResponse,
+                         out var errorResponse))
             {
-                return startTransactionResponse;
+                return startTransactionResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a start transaction response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, StartTransactionResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomStartTransactionResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an start transaction response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="StartTransactionResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StartTransactionResponse Parse(CP.StartTransactionRequest  Request,
-                                                     JObject                     StartTransactionResponseJSON,
-                                                     OnExceptionDelegate         OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomStartTransactionResponseParser">A delegate to parse custom start transaction responses.</param>
+        public static StartTransactionResponse Parse(CP.StartTransactionRequest                              Request,
+                                                     JObject                                                 JSON,
+                                                     CustomJObjectParserDelegate<StartTransactionResponse>?  CustomStartTransactionResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         StartTransactionResponseJSON,
-                         out StartTransactionResponse  startTransactionResponse,
-                         out String                    ErrorResponse))
+                         JSON,
+                         out var startTransactionResponse,
+                         out var errorResponse,
+                         CustomStartTransactionResponseParser))
             {
-                return startTransactionResponse;
+                return startTransactionResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a start transaction response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, StartTransactionResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a start transaction response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="StartTransactionResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StartTransactionResponse Parse(CP.StartTransactionRequest  Request,
-                                                     String                      StartTransactionResponseText,
-                                                     OnExceptionDelegate         OnException = null)
-        {
-
-            if (TryParse(Request,
-                         StartTransactionResponseText,
-                         out StartTransactionResponse  startTransactionResponse,
-                         out String                    ErrorResponse))
-            {
-                return startTransactionResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, StartTransactionResponseXML,  out StartTransactionResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out StartTransactionResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a start transaction response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="StartTransactionResponseXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="StartTransactionResponse">The parsed start transaction response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CP.StartTransactionRequest    Request,
-                                       XElement                      StartTransactionResponseXML,
-                                       out StartTransactionResponse  StartTransactionResponse,
-                                       OnExceptionDelegate           OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CP.StartTransactionRequest     Request,
+                                       XElement                       XML,
+                                       out StartTransactionResponse?  StartTransactionResponse,
+                                       out String?                    ErrorResponse)
         {
 
             try
             {
 
+                StartTransactionResponse = null;
+
+                if (!XML.MapElementOrFail(OCPPNS.OCPPv1_6_CS + "idTagInfo",
+                                                                  IdTagInfo.Parse,
+                                                                  out var idTagInfo,
+                                                                  out ErrorResponse))
+                {
+                    return false;
+                }
+
+
                 StartTransactionResponse = new StartTransactionResponse(
 
                                                Request,
 
-                                               StartTransactionResponseXML.MapValueOrFail  (OCPPNS.OCPPv1_6_CS + "transactionId",
+                                               XML.MapValueOrFail  (OCPPNS.OCPPv1_6_CS + "transactionId",
                                                                                             Transaction_Id.Parse),
 
-                                               StartTransactionResponseXML.MapElementOrFail(OCPPNS.OCPPv1_6_CS + "idTagInfo",
-                                                                                            IdTagInfo.Parse)
+                                               idTagInfo
 
                                            );
 
@@ -300,19 +272,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, StartTransactionResponseXML, e);
-
-                StartTransactionResponse = null;
+                StartTransactionResponse  = null;
+                ErrorResponse             = "The given XML representation of a start transaction response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, StartTransactionResponseJSON, out StartTransactionResponse, out ErrorResponse)
+        #region (static) TryParse(Request, JSON, out StartTransactionResponse, out ErrorResponse, CustomStartTransactionResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a start transaction response.
@@ -320,10 +289,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="StartTransactionResponse">The parsed start transaction response.</param>
-        public static Boolean TryParse(CP.StartTransactionRequest    Request,
-                                       JObject                       JSON,
-                                       out StartTransactionResponse  StartTransactionResponse,
-                                       out String                    ErrorResponse)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomStartTransactionResponseParser">A delegate to parse custom start transaction responses.</param>
+        public static Boolean TryParse(CP.StartTransactionRequest                              Request,
+                                       JObject                                                 JSON,
+                                       out StartTransactionResponse?                           StartTransactionResponse,
+                                       out String?                                             ErrorResponse,
+                                       CustomJObjectParserDelegate<StartTransactionResponse>?  CustomStartTransactionResponseParser   = null)
         {
 
             ErrorResponse = null;
@@ -338,8 +310,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (!JSON.ParseMandatory("transactionId",
                                          "transaction identification",
                                          Transaction_Id.TryParse,
-                                         out Transaction_Id  TransactionId,
-                                         out                 ErrorResponse))
+                                         out Transaction_Id TransactionId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -351,8 +323,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (!JSON.ParseMandatoryJSON("idTagInfo",
                                              "identification tag information",
                                              OCPPv1_6.IdTagInfo.TryParse,
-                                             out IdTagInfo  IdTagInfo,
-                                             out            ErrorResponse))
+                                             out IdTagInfo IdTagInfo,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -364,13 +336,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                         TransactionId,
                                                                         IdTagInfo);
 
+                if (CustomStartTransactionResponseParser is not null)
+                    StartTransactionResponse = CustomStartTransactionResponseParser(JSON,
+                                                                                    StartTransactionResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
                 StartTransactionResponse  = null;
-                ErrorResponse             = null;
+                ErrorResponse             = "The given JSON representation of an identification tag info is invalid: " + e.Message;
                 return false;
             }
 
@@ -378,69 +354,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, StartTransactionResponseText, out StartTransactionResponse, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given text representation of a start transaction response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="StartTransactionResponseText">The text to be parsed.</param>
-        /// <param name="StartTransactionResponse">The parsed start transaction response.</param>
-        public static Boolean TryParse(CP.StartTransactionRequest    Request,
-                                       String                        StartTransactionResponseText,
-                                       out StartTransactionResponse  StartTransactionResponse,
-                                       out String                    ErrorResponse)
-        {
-
-            ErrorResponse = null;
-
-            try
-            {
-
-                StartTransactionResponseText = StartTransactionResponseText?.Trim();
-
-                if (StartTransactionResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (StartTransactionResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(StartTransactionResponseText),
-                                 out StartTransactionResponse,
-                                 out ErrorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(StartTransactionResponseText).Root,
-                                 out StartTransactionResponse))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                ErrorResponse = e.Message;
-            }
-
-            StartTransactionResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CS + "startTransactionResponse",
+            => new (OCPPNS.OCPPv1_6_CS + "startTransactionResponse",
 
                    new XElement(OCPPNS.OCPPv1_6_CS + "transactionId",  TransactionId.ToString()),
 
@@ -457,18 +378,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="CustomStartTransactionResponseSerializer">A delegate to serialize custom start transaction responses.</param>
         /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<StartTransactionResponse>  CustomStartTransactionResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<IdTagInfo>                 CustomIdTagInfoResponseSerializer          = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StartTransactionResponse>?  CustomStartTransactionResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<IdTagInfo>?                 CustomIdTagInfoResponseSerializer          = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
                            new JProperty("transactionId",  TransactionId.Value),
                            new JProperty("idTagInfo",      IdTagInfo.    ToJSON(CustomIdTagInfoResponseSerializer))
                        );
 
             return CustomStartTransactionResponseSerializer is not null
-                       ? CustomStartTransactionResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomStartTransactionResponseSerializer(this, json)
+                       : json;
 
         }
 
@@ -483,8 +404,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The start transaction request leading to this response.</param>
         public static StartTransactionResponse Failed(CP.StartTransactionRequest Request)
 
-            => new StartTransactionResponse(Request,
-                                            Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -499,7 +420,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="StartTransactionResponse1">A start transaction response.</param>
         /// <param name="StartTransactionResponse2">Another start transaction response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (StartTransactionResponse StartTransactionResponse1, StartTransactionResponse StartTransactionResponse2)
+        public static Boolean operator == (StartTransactionResponse StartTransactionResponse1,
+                                           StartTransactionResponse StartTransactionResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -507,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if ((StartTransactionResponse1 is null) || (StartTransactionResponse2 is null))
+            if (StartTransactionResponse1 is null || StartTransactionResponse2 is null)
                 return false;
 
             return StartTransactionResponse1.Equals(StartTransactionResponse2);
@@ -524,7 +446,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="StartTransactionResponse1">A start transaction response.</param>
         /// <param name="StartTransactionResponse2">Another start transaction response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (StartTransactionResponse StartTransactionResponse1, StartTransactionResponse StartTransactionResponse2)
+        public static Boolean operator != (StartTransactionResponse StartTransactionResponse1,
+                                           StartTransactionResponse StartTransactionResponse2)
 
             => !(StartTransactionResponse1 == StartTransactionResponse2);
 
@@ -537,22 +460,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two start transaction responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A start transaction response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is StartTransactionResponse StartTransactionResponse))
-                return false;
-
-            return Equals(StartTransactionResponse);
-
-        }
+            => Object is IdTagInfo idTagInfo &&
+                   Equals(idTagInfo);
 
         #endregion
 
@@ -562,17 +476,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Compares two start transaction responses for equality.
         /// </summary>
         /// <param name="StartTransactionResponse">A start transaction response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(StartTransactionResponse StartTransactionResponse)
-        {
+        public override Boolean Equals(StartTransactionResponse? StartTransactionResponse)
 
-            if (StartTransactionResponse is null)
-                return false;
+            => StartTransactionResponse is not null &&
 
-            return TransactionId.Equals(StartTransactionResponse.TransactionId) &&
-                   IdTagInfo.    Equals(StartTransactionResponse.IdTagInfo);
-
-        }
+               TransactionId.Equals(StartTransactionResponse.TransactionId) &&
+               IdTagInfo.    Equals(StartTransactionResponse.IdTagInfo);
 
         #endregion
 
@@ -589,7 +498,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return TransactionId.GetHashCode() * 11 ^
+                return TransactionId.GetHashCode() * 3 ^
                        IdTagInfo.    GetHashCode();
 
             }

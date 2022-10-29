@@ -134,25 +134,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (ConfigurationKeyXML,  OnException = null)
+        #region (static) Parse   (XML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a configuration key value pair.
         /// </summary>
-        /// <param name="ConfigurationKeyXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ConfigurationKey Parse(XElement              ConfigurationKeyXML,
+        public static ConfigurationKey Parse(XElement              XML,
                                              OnExceptionDelegate?  OnException   = null)
         {
 
-            if (TryParse(ConfigurationKeyXML,
+            if (TryParse(XML,
                          out var configurationKey,
                          OnException))
             {
                 return configurationKey;
             }
 
-            return default;
+            throw new ArgumentException("The given XML representation of a configuration key value pair is invalid: ", // + errorResponse,
+                                        nameof(XML));
 
         }
 
@@ -168,8 +169,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         {
 
             if (TryParse2(JSON,
-                          out var configurationKey,
-                          out var errorResponse))
+                         out var configurationKey,
+                         out var errorResponse))
             {
                 return configurationKey;
             }
@@ -204,15 +205,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(ConfigurationKeyXML,  out ConfigurationKey, OnException = null)
+        #region (static) TryParse(XML,  out ConfigurationKey, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a configuration key value pair.
         /// </summary>
-        /// <param name="ConfigurationKeyXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ConfigurationKey">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement              ConfigurationKeyXML,
+        public static Boolean TryParse(XElement              XML,
                                        out ConfigurationKey  ConfigurationKey,
                                        OnExceptionDelegate?  OnException   = null)
         {
@@ -222,9 +223,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 ConfigurationKey = new ConfigurationKey(
 
-                                       ConfigurationKeyXML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CP + "key"),
-                                       ConfigurationKeyXML.MapBooleanOrFail     (OCPPNS.OCPPv1_6_CP + "readonly"),
-                                       ConfigurationKeyXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "value")
+                                       XML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CP + "key"),
+                                       XML.MapBooleanOrFail     (OCPPNS.OCPPv1_6_CP + "readonly"),
+                                       XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "value")
 
                                    );
 
@@ -234,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(Timestamp.Now, ConfigurationKeyXML, e);
+                OnException?.Invoke(Timestamp.Now, XML, e);
 
                 ConfigurationKey = default;
                 return false;
@@ -245,16 +246,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(ConfigurationKeyJSON, out ConfigurationKey, out ErrorResponse)
+        #region (static) TryParse(JSON, out ConfigurationKey, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given JSON representation of a configuration key value pair.
         /// </summary>
-        /// <param name="ConfigurationKeyJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ConfigurationKey">The parsed connector type.</param>
-        public static Boolean TryParse2(JObject               ConfigurationKeyJSON,
-                                        out ConfigurationKey  ConfigurationKey,
-                                        out String?           ErrorResponse)
+        public static Boolean TryParse2(JObject               JSON,
+                                       out ConfigurationKey  ConfigurationKey,
+                                       out String?           ErrorResponse)
         {
 
             try
@@ -264,10 +265,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region Key
 
-                if (!ConfigurationKeyJSON.ParseMandatoryText("key",
-                                                             "configuration key",
-                                                             out String  Key,
-                                                             out         ErrorResponse))
+                if (!JSON.ParseMandatoryText("key",
+                                             "configuration key",
+                                             out String Key,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -276,10 +277,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region Readonly
 
-                if (!ConfigurationKeyJSON.ParseMandatory("readonly",
-                                                         "readonly",
-                                                         out Boolean  Readonly,
-                                                         out          ErrorResponse))
+                if (!JSON.ParseMandatory("readonly",
+                                         "readonly",
+                                         out Boolean Readonly,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -288,13 +289,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region Value
 
-                if (ConfigurationKeyJSON.ParseOptional("value",
-                                                       "value",
-                                                       out String  Value,
-                                                       out         ErrorResponse))
+                if (JSON.ParseOptional("value",
+                                       "value",
+                                       out String Value,
+                                       out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -320,14 +321,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(ConfigurationKeyText, out ConfigurationKey, out ErrorResponse)
+        #region (static) TryParse(Text, out ConfigurationKey, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given text representation of a configuration key value pair.
         /// </summary>
-        /// <param name="ConfigurationKeyText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
         /// <param name="ConfigurationKey">The parsed connector type.</param>
-        public static Boolean TryParse(String                ConfigurationKeyText,
+        public static Boolean TryParse(String                Text,
                                        out ConfigurationKey  ConfigurationKey,
                                        out String?           ErrorResponse)
         {
@@ -337,20 +338,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             try
             {
 
-                ConfigurationKeyText = ConfigurationKeyText.Trim();
+                Text = Text.Trim();
 
-                if (ConfigurationKeyText.IsNotNullOrEmpty())
+                if (Text.IsNotNullOrEmpty())
                 {
 
-                    if (ConfigurationKeyText.StartsWith("{") &&
-                        TryParse2(JObject.Parse(ConfigurationKeyText),
+                    if (Text.StartsWith("{") &&
+                        TryParse2(JObject.Parse(Text),
                                  out ConfigurationKey,
                                  out ErrorResponse))
                     {
                         return true;
                     }
 
-                    if (TryParse(XDocument.Parse(ConfigurationKeyText).Root,
+                    if (TryParse(XDocument.Parse(Text).Root,
                                  out ConfigurationKey))
                     {
                         return true;
@@ -371,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ToXML(XName = null)
+        #region ToXML (XName = null)
 
         /// <summary>
         /// Return a XML representation of this object.

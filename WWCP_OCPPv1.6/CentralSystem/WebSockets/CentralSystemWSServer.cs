@@ -2798,9 +2798,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (GetConfigurationResponse.TryParse(Request,
                                                       result.Response,
-                                                      out GetConfigurationResponse changeConfigurationResponse))
+                                                      out var changeConfigurationResponse,
+                                                      out var errorResponse))
                 {
-                    return changeConfigurationResponse;
+                    return changeConfigurationResponse!;
                 }
 
                 return new GetConfigurationResponse(Request,

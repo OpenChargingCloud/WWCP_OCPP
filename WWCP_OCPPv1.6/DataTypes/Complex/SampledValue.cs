@@ -269,25 +269,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (SampledValueXML,  OnException = null)
+        #region (static) Parse   (XML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a sampled value.
         /// </summary>
-        /// <param name="SampledValueXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SampledValue? Parse(XElement              SampledValueXML,
-                                          OnExceptionDelegate?  OnException   = null)
+        public static SampledValue Parse(XElement              XML,
+                                         OnExceptionDelegate?  OnException   = null)
         {
 
-            if (TryParse(SampledValueXML,
+            if (TryParse(XML,
                          out var sampledValue,
                          OnException))
             {
-                return sampledValue;
+                return sampledValue!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a SampledValue is invalid: ", // + errorResponse,
+                                        nameof(XML));
 
         }
 
@@ -300,8 +301,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="JSON">The text to be parsed.</param>
         /// <param name="CustomSampledValueParser">A delegate to parse custom DataTransfer requests.</param>
-        public static SampledValue? Parse(JObject                                     JSON,
-                                          CustomJObjectParserDelegate<SampledValue>?  CustomSampledValueParser   = null)
+        public static SampledValue Parse(JObject                                     JSON,
+                                         CustomJObjectParserDelegate<SampledValue>?  CustomSampledValueParser   = null)
         {
 
             if (TryParse(JSON,
@@ -309,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomSampledValueParser))
             {
-                return sampledValue;
+                return sampledValue!;
             }
 
             throw new ArgumentException("The given JSON representation of a SampledValue is invalid: " + errorResponse,
@@ -319,39 +320,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (SampledValueText, OnException = null)
+        #region (static) Parse   (Text, OnException = null)
 
         /// <summary>
         /// Parse the given text representation of a sampled value.
         /// </summary>
-        /// <param name="SampledValueText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SampledValue? Parse(String                SampledValueText,
-                                          OnExceptionDelegate?  OnException   = null)
+        public static SampledValue Parse(String                Text,
+                                         OnExceptionDelegate?  OnException   = null)
         {
 
-            if (TryParse(SampledValueText,
+            if (TryParse(Text,
                          out var sampledValue,
                          OnException))
             {
-                return sampledValue;
+                return sampledValue!;
             }
 
-            return null;
+            throw new ArgumentException("The given text representation of a SampledValue is invalid: ", // + errorResponse,
+                                        nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParse(SampledValueXML,  out SampledValue, OnException = null)
+        #region (static) TryParse(XML,  out SampledValue, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a sampled value.
         /// </summary>
-        /// <param name="SampledValueXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="SampledValue">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement              SampledValueXML,
+        public static Boolean TryParse(XElement              XML,
                                        out SampledValue?     SampledValue,
                                        OnExceptionDelegate?  OnException   = null)
         {
@@ -361,25 +363,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 SampledValue = new SampledValue(
 
-                                   SampledValueXML.ElementValueOrFail(OCPPNS.OCPPv1_6_CS + "value"),
+                                   XML.ElementValueOrFail(OCPPNS.OCPPv1_6_CS + "value"),
 
-                                   SampledValueXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "context",
-                                                                      ReadingContextExtentions.Parse),
+                                   XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "context",
+                                                          ReadingContextExtentions.Parse),
 
-                                   SampledValueXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "format",
-                                                                      ValueFormatExtentions.Parse),
+                                   XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "format",
+                                                          ValueFormatExtentions.Parse),
 
-                                   SampledValueXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "measurand",
-                                                                      MeasurandExtentions.Parse),
+                                   XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "measurand",
+                                                          MeasurandExtentions.Parse),
 
-                                   SampledValueXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "phase",
-                                                                      PhasesExtentions.Parse),
+                                   XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "phase",
+                                                          PhasesExtentions.Parse),
 
-                                   SampledValueXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "location",
-                                                                      LocationExtentions.Parse),
+                                   XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "location",
+                                                          LocationExtentions.Parse),
 
-                                   SampledValueXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "unit",
-                                                                      UnitsOfMeasureExtentions.Parse)
+                                   XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "unit",
+                                                          UnitsOfMeasureExtentions.Parse)
 
                                );
 
@@ -389,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(Timestamp.Now, SampledValueXML, e);
+                OnException?.Invoke(Timestamp.Now, XML, e);
 
                 SampledValue = null;
                 return false;
@@ -458,7 +460,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                        out ReadingContexts Context,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -472,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                        out ValueFormats Format,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -486,7 +488,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                        out Measurands Measurand,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -500,7 +502,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                        out Phases Phase,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -514,7 +516,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                        out Locations Location,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -528,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                        out UnitsOfMeasure Unit,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -561,15 +563,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(SampledValueText, out SampledValue, OnException = null)
+        #region (static) TryParse(Text, out SampledValue, OnException = null)
 
         /// <summary>
         /// Try to parse the given text representation of a sampled value.
         /// </summary>
-        /// <param name="SampledValueText">The text to be parsed.</param>
+        /// <param name="Text">The text to be parsed.</param>
         /// <param name="SampledValue">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                SampledValueText,
+        public static Boolean TryParse(String                Text,
                                        out SampledValue?     SampledValue,
                                        OnExceptionDelegate?  OnException   = null)
         {
@@ -577,20 +579,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             try
             {
 
-                SampledValueText = SampledValueText.Trim();
+                Text = Text.Trim();
 
-                if (SampledValueText.IsNotNullOrEmpty())
+                if (Text.IsNotNullOrEmpty())
                 {
 
-                    if (SampledValueText.StartsWith("{") &&
-                        TryParse(JObject.Parse(SampledValueText),
+                    if (Text.StartsWith("{") &&
+                        TryParse(JObject.Parse(Text),
                                  out SampledValue,
                                  out var errorResponse))
                     {
                         return true;
                     }
 
-                    if (TryParse(XDocument.Parse(SampledValueText).Root,
+                    if (TryParse(XDocument.Parse(Text).Root,
                                  out SampledValue,
                                  OnException))
                     {
@@ -602,7 +604,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                OnException?.Invoke(Timestamp.Now, SampledValueText, e);
+                OnException?.Invoke(Timestamp.Now, Text, e);
             }
 
             SampledValue = null;
@@ -612,7 +614,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ToXML(XName = null)
+        #region ToXML (XName = null)
 
         /// <summary>
         /// Return a XML representation of this object.
@@ -792,7 +794,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                              " measured at " + Location);
 
         #endregion
-
 
     }
 

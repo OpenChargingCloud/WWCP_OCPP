@@ -377,13 +377,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetLocalListVersionResponse>  CustomGetLocalListVersionResponseSerializer  = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
                            new JProperty("listVersion",  ListVersion)
                        );
 
             return CustomGetLocalListVersionResponseSerializer is not null
-                       ? CustomGetLocalListVersionResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomGetLocalListVersionResponseSerializer(this, json)
+                       : json;
 
         }
 

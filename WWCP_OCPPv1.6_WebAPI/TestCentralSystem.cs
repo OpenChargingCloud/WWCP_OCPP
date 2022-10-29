@@ -17,12 +17,6 @@
 
 #region Usings
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
@@ -34,7 +28,6 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using social.OpenData.UsersAPI;
 
 using cloud.charging.open.protocols.OCPPv1_6.CS;
-using System.Threading;
 
 #endregion
 
@@ -591,7 +584,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public TestCentralSystem(CentralSystem_Id  CentralSystemId,
                                  Boolean           RequireAuthentication   = true,
                                  IPPort?           HTTPUploadPort          = null,
-                                 DNSClient         DNSClient               = null)
+                                 DNSClient?        DNSClient               = null)
         {
 
             if (CentralSystemId.IsNullOrEmpty)
@@ -615,14 +608,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                         Autostart:             true);
 
             this.HTTPUploadAPI           = new UploadAPI(this,
-                                                         new HTTPServer(this.HTTPUploadPort,
-                                                                        "Open Charging Cloud OCPP Upload Server",
-                                                                        "Open Charging Cloud OCPP Upload Service"));
+                                                         new HTTPServer(
+                                                             this.HTTPUploadPort,
+                                                             "Open Charging Cloud OCPP Upload Server",
+                                                             "Open Charging Cloud OCPP Upload Service"
+                                                         ));
 
             this.WebAPI                  = new OCPPWebAPI(this,
                                                           TestAPI.HTTPServer);
 
-            this.DNSClient               = DNSClient;
+            this.DNSClient               = DNSClient ?? new DNSClient(SearchForIPv6DNSServers: false);
 
         }
 
@@ -2360,10 +2355,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var OnChargeBoxAddedLocal = OnChargeBoxAdded;
             if (OnChargeBoxAddedLocal is not null)
-                await OnChargeBoxAddedLocal?.Invoke(Timestamp.Now,
-                                                    ChargeBox,
-                                                    eventTrackingId,
-                                                    CurrentUserId);
+                await OnChargeBoxAddedLocal.Invoke(Timestamp.Now,
+                                                   ChargeBox,
+                                                   eventTrackingId,
+                                                   CurrentUserId);
 
             //await SendNotifications(ChargeBox,
             //                        addChargeBox_MessageType,
@@ -2787,7 +2782,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event fired whenever a charge box was updated.
         /// </summary>
-        public event OnChargeBoxUpdatedDelegate OnChargeBoxUpdated;
+        public event OnChargeBoxUpdatedDelegate? OnChargeBoxUpdated;
 
 
         #region (protected internal) _UpdateChargeBox(ChargeBox,                 OnUpdated = null, ...)
@@ -3378,7 +3373,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event fired whenever a charge box was deleted.
         /// </summary>
-        public event OnChargeBoxDeletedDelegate OnChargeBoxDeleted;
+        public event OnChargeBoxDeletedDelegate? OnChargeBoxDeleted;
 
 
         #region (protected internal virtual) _CanDeleteChargeBox(ChargeBox)
@@ -3483,10 +3478,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var OnChargeBoxDeletedLocal = OnChargeBoxDeleted;
             if (OnChargeBoxDeletedLocal is not null)
-                await OnChargeBoxDeletedLocal?.Invoke(Timestamp.Now,
-                                                      ChargeBox,
-                                                      eventTrackingId,
-                                                      CurrentUserId);
+                await OnChargeBoxDeletedLocal.Invoke(Timestamp.Now,
+                                                     ChargeBox,
+                                                     eventTrackingId,
+                                                     CurrentUserId);
 
             //await SendNotifications(ChargeBox,
             //                        parentChargeBoxes,

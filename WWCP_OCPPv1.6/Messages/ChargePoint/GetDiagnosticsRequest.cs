@@ -406,7 +406,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out DateTime? StartTime,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -419,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out DateTime? StopTime,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out Byte? Retries,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -445,7 +445,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out TimeSpan? RetryInterval,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -460,7 +460,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -488,7 +488,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                GetDiagnosticsRequest  = default;
+                GetDiagnosticsRequest  = null;
                 ErrorResponse          = "The given JSON representation of a GetDiagnostics request is invalid: " + e.Message;
                 return false;
             }
@@ -603,7 +603,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetDiagnosticsRequest> CustomGetDiagnosticsRequestSerializer)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            new JProperty("location",             Location),
 
@@ -626,8 +626,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                        );
 
             return CustomGetDiagnosticsRequestSerializer is not null
-                       ? CustomGetDiagnosticsRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomGetDiagnosticsRequestSerializer(this, json)
+                       : json;
 
         }
 

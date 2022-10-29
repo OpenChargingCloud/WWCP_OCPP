@@ -509,7 +509,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                              out Connector_Id? ConnectorId,
                                              out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -523,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            out ChargingProfile ChargingProfile,
                                            out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -538,7 +538,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -564,7 +564,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                RemoteStartTransactionRequest  = default;
+                RemoteStartTransactionRequest  = null;
                 ErrorResponse                  = "The given JSON representation of a RemoteStartTransaction request is invalid: " + e.Message;
                 return false;
             }
@@ -675,7 +675,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                               CustomJObjectSerializerDelegate<ChargingSchedulePeriod>        CustomChargingSchedulePeriodSerializer          = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            ConnectorId.HasValue
                                   ? new JProperty("connectorId",   ConnectorId.Value.Value)
@@ -692,8 +692,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                        );
 
             return CustomRemoteStartTransactionRequestSerializer is not null
-                       ? CustomRemoteStartTransactionRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomRemoteStartTransactionRequestSerializer(this, json)
+                       : json;
 
         }
 

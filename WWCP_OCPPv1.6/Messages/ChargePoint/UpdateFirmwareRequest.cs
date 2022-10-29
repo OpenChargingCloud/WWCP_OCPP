@@ -398,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out Byte? Retries,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out TimeSpan? RetryInterval,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                UpdateFirmwareRequest  = default;
+                UpdateFirmwareRequest  = null;
                 ErrorResponse          = "The given JSON representation of a UpdateFirmware request is invalid: " + e.Message;
                 return false;
             }
@@ -561,7 +561,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateFirmwareRequest> CustomUpdateFirmwareRequestSerializer)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            new JProperty("retrieveDate",         RetrieveDate.ToIso8601()),
                            new JProperty("location",             Location),
@@ -577,8 +577,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                        );
 
             return CustomUpdateFirmwareRequestSerializer is not null
-                       ? CustomUpdateFirmwareRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomUpdateFirmwareRequestSerializer(this, json)
+                       : json;
 
         }
 

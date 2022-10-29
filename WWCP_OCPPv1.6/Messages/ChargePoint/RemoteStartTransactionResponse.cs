@@ -382,13 +382,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public JObject ToJSON(CustomJObjectSerializerDelegate<RemoteStartTransactionResponse>  CustomRemoteStartTransactionResponseSerializer  = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
                            new JProperty("status",  Status.AsText())
                        );
 
             return CustomRemoteStartTransactionResponseSerializer is not null
-                       ? CustomRemoteStartTransactionResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomRemoteStartTransactionResponseSerializer(this, json)
+                       : json;
 
         }
 

@@ -124,25 +124,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (IdTagInfoXML,  OnException = null)
+        #region (static) Parse   (XML)
 
         /// <summary>
         /// Parse the given XML representation of an identification tag info.
         /// </summary>
-        /// <param name="IdTagInfoXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static IdTagInfo Parse(XElement              IdTagInfoXML,
-                                      OnExceptionDelegate?  OnException   = null)
+        /// <param name="XML">The XML to be parsed.</param>
+        public static IdTagInfo Parse(XElement  XML)
         {
 
-            if (TryParse(IdTagInfoXML,
+            if (TryParse(XML,
                          out var idTagInfo,
-                         OnException))
+                         out var errorResponse))
             {
                 return idTagInfo;
             }
 
-            return default;
+            throw new ArgumentException("The given XML representation of an IdTagInfo is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
@@ -174,42 +173,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (IdTagInfoText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of an identification tag info.
-        /// </summary>
-        /// <param name="IdTagInfoText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static IdTagInfo Parse(String                IdTagInfoText,
-                                      OnExceptionDelegate?  OnException   = null)
-        {
-
-
-            if (TryParse(IdTagInfoText,
-                         out var idTagInfo,
-                         OnException))
-            {
-                return idTagInfo;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(IdTagInfoXML,  out IdTagInfo, OnException = null)
+        #region (static) TryParse(XML,  out IdTagInfo, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of an identification tag info.
         /// </summary>
-        /// <param name="IdTagInfoXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="IdTagInfo">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement              IdTagInfoXML,
-                                       out IdTagInfo         IdTagInfo,
-                                       OnExceptionDelegate?  OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(XElement       XML,
+                                       out IdTagInfo  IdTagInfo,
+                                       out String?    ErrorResponse)
         {
 
             try
@@ -217,28 +191,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 IdTagInfo = new IdTagInfo(
 
-                                    IdTagInfoXML.MapEnumValues     (OCPPNS.OCPPv1_6_CS + "status",
-                                                                    AuthorizationStatusExtentions.Parse),
+                                XML.MapEnumValues     (OCPPNS.OCPPv1_6_CS + "status",
+                                                       AuthorizationStatusExtentions.Parse),
 
-                                    IdTagInfoXML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "expiryDate",
-                                                                    DateTime.Parse),
+                                XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "expiryDate",
+                                                       DateTime.Parse),
 
-                                    IdTagInfoXML.MapValueOrNull    (OCPPNS.OCPPv1_6_CS + "parentIdTag",
-                                                                    IdToken.Parse)
+                                XML.MapValueOrNull    (OCPPNS.OCPPv1_6_CS + "parentIdTag",
+                                                       IdToken.Parse)
 
-                                );
+                            );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, IdTagInfoXML, e);
-
-                IdTagInfo = default;
+                IdTagInfo      = default;
+                ErrorResponse  = "The given XML representation of an identification tag info is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -286,8 +258,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (!JSON.MapMandatory("status",
                                        "authorization status",
                                        AuthorizationStatusExtentions.Parse,
-                                       out AuthorizationStatus  Status,
-                                       out                      ErrorResponse))
+                                       out AuthorizationStatus Status,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
@@ -298,11 +270,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (JSON.ParseOptional("expiryDate",
                                        "expiry date",
-                                       out DateTime?  ExpiryDate,
-                                       out            ErrorResponse))
+                                       out DateTime? ExpiryDate,
+                                       out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -314,11 +286,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (JSON.ParseOptional("parentIdTag",
                                        "parent id tag",
                                        IdToken.TryParse,
-                                       out IdToken?  ParentIdTag,
-                                       out           ErrorResponse))
+                                       out IdToken? ParentIdTag,
+                                       out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -348,59 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(IdTagInfoText, out IdTagInfo, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of an identification tag info.
-        /// </summary>
-        /// <param name="IdTagInfoText">The text to be parsed.</param>
-        /// <param name="IdTagInfo">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                IdTagInfoText,
-                                       out IdTagInfo         IdTagInfo,
-                                       OnExceptionDelegate?  OnException   = null)
-        {
-
-            try
-            {
-
-                IdTagInfoText = IdTagInfoText.Trim();
-
-                if (IdTagInfoText.IsNotNullOrEmpty())
-                {
-
-                    if (IdTagInfoText.StartsWith("{") &&
-                        TryParse(JObject.Parse(IdTagInfoText),
-                                 out IdTagInfo,
-                                 out var errorResponse,
-                                 null))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(IdTagInfoText).Root,
-                                 out IdTagInfo,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, IdTagInfoText, e);
-            }
-
-            IdTagInfo = default;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML(XName = null)
+        #region ToXML (XName = null)
 
         /// <summary>
         /// Return a XML representation of this object.

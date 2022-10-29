@@ -374,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ChargingRateUnits? ChargingRateUnit,
                                        out ErrorResponse))
                 {
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
                 }
 
@@ -389,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -415,7 +415,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                GetCompositeScheduleRequest  = default;
+                GetCompositeScheduleRequest  = null;
                 ErrorResponse                = "The given JSON representation of a GetCompositeSchedule request is invalid: " + e.Message;
                 return false;
             }
@@ -519,7 +519,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleRequest> CustomGetCompositeScheduleRequestSerializer)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            new JProperty("connectorId",             ConnectorId.Value),
                            new JProperty("duration",                (UInt64) Duration.TotalSeconds),
@@ -531,8 +531,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                        );
 
             return CustomGetCompositeScheduleRequestSerializer is not null
-                       ? CustomGetCompositeScheduleRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomGetCompositeScheduleRequestSerializer(this, json)
+                       : json;
 
         }
 

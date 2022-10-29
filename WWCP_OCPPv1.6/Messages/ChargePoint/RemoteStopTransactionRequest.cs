@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                     if (chargeBoxId_PayLoad.HasValue)
@@ -349,7 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                RemoteStopTransactionRequest  = default;
+                RemoteStopTransactionRequest  = null;
                 ErrorResponse                 = "The given JSON representation of a RemoteStopTransaction request is invalid: " + e.Message;
                 return false;
             }
@@ -448,13 +448,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public JObject ToJSON(CustomJObjectSerializerDelegate<RemoteStopTransactionRequest> CustomRemoteStopTransactionRequestSerializer)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
                            new JProperty("transactionId",  TransactionId.Value)
                        );
 
             return CustomRemoteStopTransactionRequestSerializer is not null
-                       ? CustomRemoteStopTransactionRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomRemoteStopTransactionRequestSerializer(this, json)
+                       : json;
 
         }
 
