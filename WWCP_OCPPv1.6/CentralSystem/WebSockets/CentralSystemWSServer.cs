@@ -2756,9 +2756,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (ChangeAvailabilityResponse.TryParse(Request,
                                                         result.Response,
-                                                        out ChangeAvailabilityResponse changeAvailabilityResponse))
+                                                        out var changeAvailabilityResponse,
+                                                        out var errorResponse))
                 {
-                    return changeAvailabilityResponse;
+                    return changeAvailabilityResponse!;
                 }
 
                 return new ChangeAvailabilityResponse(Request,
@@ -2841,9 +2842,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (ChangeConfigurationResponse.TryParse(Request,
                                                          result.Response,
-                                                         out ChangeConfigurationResponse changeConfigurationResponse))
+                                                         out var changeConfigurationResponse,
+                                                         out var errorResponse))
                 {
-                    return changeConfigurationResponse;
+                    return changeConfigurationResponse!;
                 }
 
                 return new ChangeConfigurationResponse(Request,
@@ -3089,14 +3091,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomCancelReservationRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (CancelReservationResponse.TryParse(Request,
                                                        result.Response,
-                                                       out CancelReservationResponse cancelReservationResponse))
+                                                       out var cancelReservationResponse,
+                                                       out var errorResponse))
                 {
-                    return cancelReservationResponse;
+                    return cancelReservationResponse!;
                 }
 
                 return new CancelReservationResponse(Request,
@@ -3477,9 +3480,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (ClearCacheResponse.TryParse(Request,
                                                 result.Response,
-                                                out ClearCacheResponse unlockConnectorResponse))
+                                                out var unlockConnectorResponse,
+                                                out var errorResponse))
                 {
-                    return unlockConnectorResponse;
+                    return unlockConnectorResponse!;
                 }
 
                 return new ClearCacheResponse(Request,

@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
@@ -131,31 +130,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
 
         /// <summary>
-        /// Parse the given XML representation of a ChangeConfiguration request.
+        /// Parse the given XML representation of a change configuration request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChangeConfigurationRequest Parse(XElement             XML,
-                                                       Request_Id           RequestId,
-                                                       ChargeBox_Id         ChargeBoxId,
-                                                       OnExceptionDelegate  OnException = null)
+        public static ChangeConfigurationRequest Parse(XElement      XML,
+                                                       Request_Id    RequestId,
+                                                       ChargeBox_Id  ChargeBoxId)
         {
 
             if (TryParse(XML,
                          RequestId,
                          ChargeBoxId,
-                         out ChangeConfigurationRequest changeConfigurationRequest,
-                         OnException))
+                         out var changeConfigurationRequest,
+                         out var errorResponse))
             {
-                return changeConfigurationRequest;
+                return changeConfigurationRequest!;
             }
 
-            throw new ArgumentException("The given XML representation of a ChangeConfiguration request is invalid!", nameof(XML));
+            throw new ArgumentException("The given XML representation of a change configuration request is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
@@ -164,59 +162,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomChangeConfigurationRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a ChangeConfiguration request.
+        /// Parse the given JSON representation of a change configuration request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CustomChangeConfigurationRequestParser">A delegate to parse custom ChangeConfiguration requests.</param>
-        public static ChangeConfigurationRequest Parse(JObject              JSON,
-                                                       Request_Id           RequestId,
-                                                       ChargeBox_Id         ChargeBoxId,
-                                                       CustomJObjectParserDelegate<ChangeConfigurationRequest>  CustomChangeConfigurationRequestParser   = null)
+        public static ChangeConfigurationRequest Parse(JObject                                                   JSON,
+                                                       Request_Id                                                RequestId,
+                                                       ChargeBox_Id                                              ChargeBoxId,
+                                                       CustomJObjectParserDelegate<ChangeConfigurationRequest>?  CustomChangeConfigurationRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
                          ChargeBoxId,
-                         out ChangeConfigurationRequest  changeConfigurationRequest,
-                         out String                      ErrorResponse,
+                         out var changeConfigurationRequest,
+                         out var errorResponse,
                          CustomChangeConfigurationRequestParser))
             {
-                return changeConfigurationRequest;
+                return changeConfigurationRequest!;
             }
 
-            throw new ArgumentException("The given JSON representation of a ChangeConfiguration request is invalid: " + ErrorResponse, nameof(JSON));
-
-        }
-
-        #endregion
-
-        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a ChangeConfiguration request.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChangeConfigurationRequest Parse(String               Text,
-                                                       Request_Id           RequestId,
-                                                       ChargeBox_Id         ChargeBoxId,
-                                                       OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(Text,
-                         RequestId,
-                         ChargeBoxId,
-                         out ChangeConfigurationRequest changeConfigurationRequest,
-                         OnException))
-            {
-                return changeConfigurationRequest;
-            }
-
-            throw new ArgumentException("The given text representation of a ChangeConfiguration request is invalid!", nameof(Text));
+            throw new ArgumentException("The given JSON representation of a change configuration request is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
@@ -225,18 +194,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) TryParse(XML,  RequestId, ChargeBoxId, out ChangeConfigurationRequest, OnException = null)
 
         /// <summary>
-        /// Try to parse the given XML representation of a ChangeConfiguration request.
+        /// Try to parse the given XML representation of a change configuration request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ChangeConfigurationRequest">The parsed ChangeConfiguration request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                        XML,
-                                       Request_Id                      RequestId,
-                                       ChargeBox_Id                    ChargeBoxId,
-                                       out ChangeConfigurationRequest  ChangeConfigurationRequest,
-                                       OnExceptionDelegate             OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(XElement                         XML,
+                                       Request_Id                       RequestId,
+                                       ChargeBox_Id                     ChargeBoxId,
+                                       out ChangeConfigurationRequest?  ChangeConfigurationRequest,
+                                       out String?                      ErrorResponse)
         {
 
             try
@@ -253,17 +222,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                              );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, XML, e);
-
-                ChangeConfigurationRequest = null;
+                ChangeConfigurationRequest  = null;
+                ErrorResponse               = "The given XML representation of a change configuration request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -275,18 +242,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a ChangeConfiguration request.
+        /// Try to parse the given JSON representation of a change configuration request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ChangeConfigurationRequest">The parsed ChangeConfiguration request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                         JSON,
-                                       Request_Id                      RequestId,
-                                       ChargeBox_Id                    ChargeBoxId,
-                                       out ChangeConfigurationRequest  ChangeConfigurationRequest,
-                                       out String                      ErrorResponse)
+        public static Boolean TryParse(JObject                          JSON,
+                                       Request_Id                       RequestId,
+                                       ChargeBox_Id                     ChargeBoxId,
+                                       out ChangeConfigurationRequest?  ChangeConfigurationRequest,
+                                       out String?                      ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
@@ -297,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a ChangeConfiguration request.
+        /// Try to parse the given JSON representation of a change configuration request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -305,12 +272,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ChangeConfigurationRequest">The parsed ChangeConfiguration request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomChangeConfigurationRequestParser">A delegate to parse custom ChangeConfiguration requests.</param>
-        public static Boolean TryParse(JObject                                                  JSON,
-                                       Request_Id                                               RequestId,
-                                       ChargeBox_Id                                             ChargeBoxId,
-                                       out ChangeConfigurationRequest                           ChangeConfigurationRequest,
-                                       out String                                               ErrorResponse,
-                                       CustomJObjectParserDelegate<ChangeConfigurationRequest>  CustomChangeConfigurationRequestParser)
+        public static Boolean TryParse(JObject                                                   JSON,
+                                       Request_Id                                                RequestId,
+                                       ChargeBox_Id                                              ChargeBoxId,
+                                       out ChangeConfigurationRequest?                           ChangeConfigurationRequest,
+                                       out String?                                               ErrorResponse,
+                                       CustomJObjectParserDelegate<ChangeConfigurationRequest>?  CustomChangeConfigurationRequestParser)
         {
 
             try
@@ -377,7 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 ChangeConfigurationRequest  = null;
-                ErrorResponse               = "The given JSON representation of a ChangeConfiguration request is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of a change configuration request is invalid: " + e.Message;
                 return false;
             }
 
@@ -385,73 +352,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(ChangeConfigurationRequestText, RequestId, ChargeBoxId, out ChangeConfigurationRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a ChangeConfiguration request.
-        /// </summary>
-        /// <param name="ChangeConfigurationRequestText">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ChangeConfigurationRequest">The parsed ChangeConfiguration request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                          ChangeConfigurationRequestText,
-                                       Request_Id                      RequestId,
-                                       ChargeBox_Id                    ChargeBoxId,
-                                       out ChangeConfigurationRequest  ChangeConfigurationRequest,
-                                       OnExceptionDelegate             OnException  = null)
-        {
-
-            try
-            {
-
-                ChangeConfigurationRequestText = ChangeConfigurationRequestText?.Trim();
-
-                if (ChangeConfigurationRequestText.IsNotNullOrEmpty())
-                {
-
-                    if (ChangeConfigurationRequestText.StartsWith("{") &&
-                        TryParse(JObject.Parse(ChangeConfigurationRequestText),
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out ChangeConfigurationRequest,
-                                 out String ErrorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(ChangeConfigurationRequestText).Root,
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out ChangeConfigurationRequest,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, ChangeConfigurationRequestText, e);
-            }
-
-            ChangeConfigurationRequest = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "changeConfigurationRequest",
+            => new (OCPPNS.OCPPv1_6_CP + "changeConfigurationRequest",
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "key",   Key),
                    new XElement(OCPPNS.OCPPv1_6_CP + "value", Value)
@@ -473,7 +381,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomChangeConfigurationRequestSerializer">A delegate to serialize custom ChangeConfiguration requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeConfigurationRequest> CustomChangeConfigurationRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeConfigurationRequest>? CustomChangeConfigurationRequestSerializer)
         {
 
             var json = JSONObject.Create(
@@ -500,7 +408,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ChangeConfigurationRequest1">A ChangeConfiguration request.</param>
         /// <param name="ChangeConfigurationRequest2">Another ChangeConfiguration request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ChangeConfigurationRequest ChangeConfigurationRequest1, ChangeConfigurationRequest ChangeConfigurationRequest2)
+        public static Boolean operator == (ChangeConfigurationRequest ChangeConfigurationRequest1,
+                                           ChangeConfigurationRequest ChangeConfigurationRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -508,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if ((ChangeConfigurationRequest1 is null) || (ChangeConfigurationRequest2 is null))
+            if (ChangeConfigurationRequest1 is null || ChangeConfigurationRequest2 is null)
                 return false;
 
             return ChangeConfigurationRequest1.Equals(ChangeConfigurationRequest2);
@@ -525,7 +434,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ChangeConfigurationRequest1">A ChangeConfiguration request.</param>
         /// <param name="ChangeConfigurationRequest2">Another ChangeConfiguration request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ChangeConfigurationRequest ChangeConfigurationRequest1, ChangeConfigurationRequest ChangeConfigurationRequest2)
+        public static Boolean operator != (ChangeConfigurationRequest ChangeConfigurationRequest1,
+                                           ChangeConfigurationRequest ChangeConfigurationRequest2)
 
             => !(ChangeConfigurationRequest1 == ChangeConfigurationRequest2);
 
@@ -538,44 +448,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two change configuration requests for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A change configuration request to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is ChangeConfigurationRequest ChangeConfigurationRequest))
-                return false;
-
-            return Equals(ChangeConfigurationRequest);
-
-        }
+            => Object is ChangeConfigurationRequest changeConfigurationRequest &&
+                   Equals(changeConfigurationRequest);
 
         #endregion
 
         #region Equals(ChangeConfigurationRequest)
 
         /// <summary>
-        /// Compares two ChangeConfiguration requests for equality.
+        /// Compares two change configuration requests for equality.
         /// </summary>
-        /// <param name="ChangeConfigurationRequest">A ChangeConfiguration request to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(ChangeConfigurationRequest ChangeConfigurationRequest)
-        {
+        /// <param name="ChangeConfigurationRequest">A change configuration request to compare with.</param>
+        public override Boolean Equals(ChangeConfigurationRequest? ChangeConfigurationRequest)
 
-            if (ChangeConfigurationRequest is null)
-                return false;
+            => ChangeConfigurationRequest is not null       &&
 
-            return Key.  Equals(ChangeConfigurationRequest.Key) &&
-
-                   ((Value == null && ChangeConfigurationRequest.Value == null) ||
-                    (Value != null && ChangeConfigurationRequest.Value != null && Value.Equals(ChangeConfigurationRequest.Value)));
-
-        }
+               Key.  Equals(ChangeConfigurationRequest.Key) &&
+               Value.Equals(ChangeConfigurationRequest.Value);
 
         #endregion
 
@@ -592,11 +486,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return Key.GetHashCode() * 5 ^
-
-                       (Value != null
-                            ? Value.GetHashCode()
-                            : 0);
+                return Key.  GetHashCode() * 3 ^
+                       Value.GetHashCode();
 
             }
         }

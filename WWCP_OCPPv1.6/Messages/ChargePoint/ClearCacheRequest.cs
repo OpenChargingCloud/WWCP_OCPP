@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
@@ -30,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A ClearCache request.
+    /// A clear cache request.
     /// </summary>
     public class ClearCacheRequest : ARequest<ClearCacheRequest>
     {
@@ -88,31 +87,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
 
         /// <summary>
-        /// Parse the given XML representation of a ClearCache request.
+        /// Parse the given XML representation of a clear cache request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearCacheRequest Parse(XElement             XML,
-                                              Request_Id           RequestId,
-                                              ChargeBox_Id         ChargeBoxId,
-                                              OnExceptionDelegate  OnException = null)
+        public static ClearCacheRequest Parse(XElement      XML,
+                                              Request_Id    RequestId,
+                                              ChargeBox_Id  ChargeBoxId)
         {
 
             if (TryParse(XML,
                          RequestId,
                          ChargeBoxId,
-                         out ClearCacheRequest clearCacheRequest,
-                         OnException))
+                         out var clearCacheRequest,
+                         out var errorResponse))
             {
-                return clearCacheRequest;
+                return clearCacheRequest!;
             }
 
-            throw new ArgumentException("The given XML representation of a ClearCache request is invalid!", nameof(XML));
+            throw new ArgumentException("The given XML representation of a clear cache request is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
@@ -121,79 +119,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomClearCacheRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a ClearCache request.
+        /// Parse the given JSON representation of a clear cache request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CustomClearCacheRequestParser">A delegate to parse custom ClearCache requests.</param>
-        public static ClearCacheRequest Parse(JObject                                         JSON,
-                                              Request_Id                                      RequestId,
-                                              ChargeBox_Id                                    ChargeBoxId,
-                                              CustomJObjectParserDelegate<ClearCacheRequest>  CustomClearCacheRequestParser   = null)
+        public static ClearCacheRequest Parse(JObject                                          JSON,
+                                              Request_Id                                       RequestId,
+                                              ChargeBox_Id                                     ChargeBoxId,
+                                              CustomJObjectParserDelegate<ClearCacheRequest>?  CustomClearCacheRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
                          ChargeBoxId,
-                         out ClearCacheRequest  clearCacheRequest,
-                         out String             ErrorResponse,
+                         out var clearCacheRequest,
+                         out var errorResponse,
                          CustomClearCacheRequestParser))
             {
-                return clearCacheRequest;
+                return clearCacheRequest!;
             }
 
-            throw new ArgumentException("The given JSON representation of a ClearCache request is invalid: " + ErrorResponse, nameof(JSON));
+            throw new ArgumentException("The given JSON representation of a clear cache request is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out ClearCacheRequest, out ErrorResponse)
 
         /// <summary>
-        /// Parse the given text representation of a ClearCache request.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearCacheRequest Parse(String               Text,
-                                              Request_Id           RequestId,
-                                              ChargeBox_Id         ChargeBoxId,
-                                              OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(Text,
-                         RequestId,
-                         ChargeBoxId,
-                         out ClearCacheRequest clearCacheRequest,
-                         OnException))
-            {
-                return clearCacheRequest;
-            }
-
-            throw new ArgumentException("The given text representation of a ClearCache request is invalid!", nameof(Text));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out ClearCacheRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a ClearCache request.
+        /// Try to parse the given XML representation of a clear cache request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ClearCacheRequest">The parsed ClearCache request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement               XML,
-                                       Request_Id             RequestId,
-                                       ChargeBox_Id           ChargeBoxId,
-                                       out ClearCacheRequest  ClearCacheRequest,
-                                       OnExceptionDelegate    OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(XElement                XML,
+                                       Request_Id              RequestId,
+                                       ChargeBox_Id            ChargeBoxId,
+                                       out ClearCacheRequest?  ClearCacheRequest,
+                                       out String?             ErrorResponse)
         {
 
             try
@@ -202,17 +171,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 ClearCacheRequest = new ClearCacheRequest(ChargeBoxId,
                                                           RequestId);
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, XML, e);
-
-                ClearCacheRequest = null;
+                ClearCacheRequest  = null;
+                ErrorResponse      = "The given XML representation of a clear cache request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -224,18 +191,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a ClearCache request.
+        /// Try to parse the given JSON representation of a clear cache request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ClearCacheRequest">The parsed ClearCache request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                                         JSON,
-                                       Request_Id                                      RequestId,
-                                       ChargeBox_Id                                    ChargeBoxId,
-                                       out ClearCacheRequest                           ClearCacheRequest,
-                                       out String                                      ErrorResponse)
+        public static Boolean TryParse(JObject                 JSON,
+                                       Request_Id              RequestId,
+                                       ChargeBox_Id            ChargeBoxId,
+                                       out ClearCacheRequest?  ClearCacheRequest,
+                                       out String?             ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
@@ -246,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a ClearCache request.
+        /// Try to parse the given JSON representation of a clear cache request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -254,12 +221,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ClearCacheRequest">The parsed ClearCache request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomClearCacheRequestParser">A delegate to parse custom ClearCache requests.</param>
-        public static Boolean TryParse(JObject                                         JSON,
-                                       Request_Id                                      RequestId,
-                                       ChargeBox_Id                                    ChargeBoxId,
-                                       out ClearCacheRequest                           ClearCacheRequest,
-                                       out String                                      ErrorResponse,
-                                       CustomJObjectParserDelegate<ClearCacheRequest>  CustomClearCacheRequestParser)
+        public static Boolean TryParse(JObject                                          JSON,
+                                       Request_Id                                       RequestId,
+                                       ChargeBox_Id                                     ChargeBoxId,
+                                       out ClearCacheRequest?                           ClearCacheRequest,
+                                       out String?                                      ErrorResponse,
+                                       CustomJObjectParserDelegate<ClearCacheRequest>?  CustomClearCacheRequestParser)
         {
 
             try
@@ -300,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 ClearCacheRequest  = null;
-                ErrorResponse      = "The given JSON representation of a ClearCache request is invalid: " + e.Message;
+                ErrorResponse      = "The given JSON representation of a clear cache request is invalid: " + e.Message;
                 return false;
             }
 
@@ -308,73 +275,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Text, RequestId, ChargeBoxId, out ClearCacheRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a ClearCache request.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ClearCacheRequest">The parsed ClearCache request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                 Text,
-                                       Request_Id             RequestId,
-                                       ChargeBox_Id           ChargeBoxId,
-                                       out ClearCacheRequest  ClearCacheRequest,
-                                       OnExceptionDelegate    OnException  = null)
-        {
-
-            try
-            {
-
-                Text = Text?.Trim();
-
-                if (Text.IsNotNullOrEmpty())
-                {
-
-                    if (Text.StartsWith("{") &&
-                        TryParse(JObject.Parse(Text),
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out ClearCacheRequest,
-                                 out String ErrorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(Text).Root,
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out ClearCacheRequest,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, Text, e);
-            }
-
-            ClearCacheRequest = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "clearCacheRequest");
+            => new (OCPPNS.OCPPv1_6_CP + "clearCacheRequest");
 
         #endregion
 
@@ -391,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomClearCacheRequestSerializer">A delegate to serialize custom ClearCache requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearCacheRequest> CustomClearCacheRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearCacheRequest>? CustomClearCacheRequestSerializer)
         {
 
             var json = JSONObject.Create();
@@ -415,7 +323,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ClearCacheRequest1">A ClearCache request.</param>
         /// <param name="ClearCacheRequest2">Another ClearCache request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ClearCacheRequest ClearCacheRequest1, ClearCacheRequest ClearCacheRequest2)
+        public static Boolean operator == (ClearCacheRequest ClearCacheRequest1,
+                                           ClearCacheRequest ClearCacheRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -423,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if ((ClearCacheRequest1 is null) || (ClearCacheRequest2 is null))
+            if (ClearCacheRequest1 is null || ClearCacheRequest2 is null)
                 return false;
 
             return ClearCacheRequest1.Equals(ClearCacheRequest2);
@@ -440,7 +349,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ClearCacheRequest1">A ClearCache request.</param>
         /// <param name="ClearCacheRequest2">Another ClearCache request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ClearCacheRequest ClearCacheRequest1, ClearCacheRequest ClearCacheRequest2)
+        public static Boolean operator != (ClearCacheRequest ClearCacheRequest1,
+                                           ClearCacheRequest ClearCacheRequest2)
 
             => !(ClearCacheRequest1 == ClearCacheRequest2);
 
@@ -453,41 +363,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two clear cache requests for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A clear cache request to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is ClearCacheRequest ClearCacheRequest))
-                return false;
-
-            return Equals(ClearCacheRequest);
-
-        }
+            => Object is ClearCacheRequest clearCacheRequest &&
+                   Equals(clearCacheRequest);
 
         #endregion
 
         #region Equals(ClearCacheRequest)
 
         /// <summary>
-        /// Compares two ClearCache requests for equality.
+        /// Compares two clear cache requests for equality.
         /// </summary>
-        /// <param name="ClearCacheRequest">A ClearCache request to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(ClearCacheRequest ClearCacheRequest)
-        {
+        /// <param name="ClearCacheRequest">A clear cache request to compare with.</param>
+        public override Boolean Equals(ClearCacheRequest? ClearCacheRequest)
 
-            if (ClearCacheRequest is null)
-                return false;
-
-            return Object.ReferenceEquals(this, ClearCacheRequest);
-
-        }
+            => ClearCacheRequest is not null;
 
         #endregion
 

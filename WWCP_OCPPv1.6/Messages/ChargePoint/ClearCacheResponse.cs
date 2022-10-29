@@ -17,14 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
-using Org.BouncyCastle.Ocsp;
 
 #endregion
 
@@ -106,100 +103,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, ClearCacheResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a clear cache response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ClearCacheResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static ClearCacheResponse Parse(CS.ClearCacheRequest  Request,
-                                               XElement              ClearCacheResponseXML,
-                                               OnExceptionDelegate   OnException = null)
+                                               XElement              XML)
         {
 
             if (TryParse(Request,
-                         ClearCacheResponseXML,
-                         out ClearCacheResponse clearCacheResponse,
-                         OnException))
+                         XML,
+                         out var clearCacheResponse,
+                         out var errorResponse))
             {
-                return clearCacheResponse;
+                return clearCacheResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a clear cache response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, ClearCacheResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomClearCacheResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a clear cache response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ClearCacheResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearCacheResponse Parse(CS.ClearCacheRequest  Request,
-                                               JObject               ClearCacheResponseJSON,
-                                               OnExceptionDelegate   OnException = null)
+        public static ClearCacheResponse Parse(CS.ClearCacheRequest                              Request,
+                                               JObject                                           JSON,
+                                               CustomJObjectParserDelegate<ClearCacheResponse>?  CustomClearCacheResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         ClearCacheResponseJSON,
-                         out ClearCacheResponse clearCacheResponse,
-                         OnException))
+                         JSON,
+                         out var clearCacheResponse,
+                         out var errorResponse,
+                         CustomClearCacheResponseParser))
             {
-                return clearCacheResponse;
+                return clearCacheResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a clear cache response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, ClearCacheResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a clear cache response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ClearCacheResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearCacheResponse Parse(CS.ClearCacheRequest  Request,
-                                               String                ClearCacheResponseText,
-                                               OnExceptionDelegate   OnException = null)
-        {
-
-            if (TryParse(Request,
-                         ClearCacheResponseText,
-                         out ClearCacheResponse clearCacheResponse,
-                         OnException))
-            {
-                return clearCacheResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, ClearCacheResponseXML,  out ClearCacheResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out ClearCacheResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a clear cache response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ClearCacheResponseXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ClearCacheRequest    Request,
-                                       XElement                ClearCacheResponseXML,
-                                       out ClearCacheResponse  ClearCacheResponse,
-                                       OnExceptionDelegate     OnException  = null)
+        public static Boolean TryParse(CS.ClearCacheRequest     Request,
+                                       XElement                 XML,
+                                       out ClearCacheResponse?  ClearCacheResponse,
+                                       out String?              ErrorResponse)
         {
 
             try
@@ -209,41 +180,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                          Request,
 
-                                         ClearCacheResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                              ClearCacheStatusExtentions.Parse)
+                                         XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
+                                                            ClearCacheStatusExtentions.Parse)
 
                                      );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, ClearCacheResponseXML, e);
-
-                ClearCacheResponse = null;
+                ClearCacheResponse  = null;
+                ErrorResponse       = "The given XML representation of a clear cache response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, ClearCacheResponseJSON, out ClearCacheResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out ClearCacheResponse, out ErrorResponse, CustomClearCacheResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a clear cache response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ClearCacheResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ClearCacheRequest    Request,
-                                       JObject                 ClearCacheResponseJSON,
-                                       out ClearCacheResponse  ClearCacheResponse,
-                                       OnExceptionDelegate     OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomClearCacheResponseParser">A delegate to parse custom clear cache responses.</param>
+        public static Boolean TryParse(CS.ClearCacheRequest                              Request,
+                                       JObject                                           JSON,
+                                       out ClearCacheResponse?                           ClearCacheResponse,
+                                       out String?                                       ErrorResponse,
+                                       CustomJObjectParserDelegate<ClearCacheResponse>?  CustomClearCacheResponseParser   = null)
         {
 
             try
@@ -253,11 +224,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ClearCacheStatus
 
-                if (!ClearCacheResponseJSON.MapMandatory("status",
-                                                         "clear cache status",
-                                                         ClearCacheStatusExtentions.Parse,
-                                                         out ClearCacheStatus  ClearCacheStatus,
-                                                         out String            ErrorResponse))
+                if (!JSON.MapMandatory("status",
+                                       "clear cache status",
+                                       ClearCacheStatusExtentions.Parse,
+                                       out ClearCacheStatus ClearCacheStatus,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
@@ -268,86 +239,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 ClearCacheResponse = new ClearCacheResponse(Request,
                                                             ClearCacheStatus);
 
+                if (CustomClearCacheResponseParser is not null)
+                    ClearCacheResponse = CustomClearCacheResponseParser(JSON,
+                                                                        ClearCacheResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, ClearCacheResponseJSON, e);
-
-                ClearCacheResponse = null;
+                ClearCacheResponse  = null;
+                ErrorResponse       = "The given JSON representation of a clear cache response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, ClearCacheResponseText, out ClearCacheResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a clear cache response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ClearCacheResponseText">The text to be parsed.</param>
-        /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ClearCacheRequest    Request,
-                                       String                  ClearCacheResponseText,
-                                       out ClearCacheResponse  ClearCacheResponse,
-                                       OnExceptionDelegate     OnException  = null)
-        {
-
-            try
-            {
-
-                ClearCacheResponseText = ClearCacheResponseText?.Trim();
-
-                if (ClearCacheResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (ClearCacheResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(ClearCacheResponseText),
-                                 out ClearCacheResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(ClearCacheResponseText).Root,
-                                 out ClearCacheResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, ClearCacheResponseText, e);
-            }
-
-            ClearCacheResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "clearCacheResponse",
+            => new (OCPPNS.OCPPv1_6_CP + "clearCacheResponse",
                    new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
                );
 
@@ -359,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomClearCacheResponseSerializer">A delegate to serialize custom clear cache responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearCacheResponse>  CustomClearCacheResponseSerializer  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearCacheResponse>?  CustomClearCacheResponseSerializer   = null)
         {
 
             var json = JSONObject.Create(
@@ -383,8 +300,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">The start transaction request leading to this response.</param>
         public static ClearCacheResponse Failed(CS.ClearCacheRequest Request)
 
-            => new ClearCacheResponse(Request,
-                                      Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -399,7 +316,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ClearCacheResponse1">A clear cache response.</param>
         /// <param name="ClearCacheResponse2">Another clear cache response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ClearCacheResponse ClearCacheResponse1, ClearCacheResponse ClearCacheResponse2)
+        public static Boolean operator == (ClearCacheResponse ClearCacheResponse1,
+                                           ClearCacheResponse ClearCacheResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -407,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((ClearCacheResponse1 is null) || (ClearCacheResponse2 is null))
+            if (ClearCacheResponse1 is null || ClearCacheResponse2 is null)
                 return false;
 
             return ClearCacheResponse1.Equals(ClearCacheResponse2);
@@ -424,7 +342,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ClearCacheResponse1">A clear cache response.</param>
         /// <param name="ClearCacheResponse2">Another clear cache response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ClearCacheResponse ClearCacheResponse1, ClearCacheResponse ClearCacheResponse2)
+        public static Boolean operator != (ClearCacheResponse ClearCacheResponse1,
+                                           ClearCacheResponse ClearCacheResponse2)
 
             => !(ClearCacheResponse1 == ClearCacheResponse2);
 
@@ -437,22 +356,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two clear cache responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A clear cache response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is ClearCacheResponse ClearCacheResponse))
-                return false;
-
-            return Equals(ClearCacheResponse);
-
-        }
+            => Object is ClearCacheResponse clearCacheResponse &&
+                   Equals(clearCacheResponse);
 
         #endregion
 
@@ -462,16 +372,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Compares two clear cache responses for equality.
         /// </summary>
         /// <param name="ClearCacheResponse">A clear cache response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(ClearCacheResponse ClearCacheResponse)
-        {
+        public override Boolean Equals(ClearCacheResponse? ClearCacheResponse)
 
-            if (ClearCacheResponse is null)
-                return false;
-
-            return Status.Equals(ClearCacheResponse.Status);
-
-        }
+            => ClearCacheResponse is not null &&
+                   Status.Equals(ClearCacheResponse.Status);
 
         #endregion
 

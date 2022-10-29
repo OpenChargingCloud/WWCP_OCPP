@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -127,100 +125,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, ChangeAvailabilityResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a change availability response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ChangeAvailabilityResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static ChangeAvailabilityResponse Parse(CS.ChangeAvailabilityRequest  Request,
-                                                       XElement                      ChangeAvailabilityResponseXML,
-                                                       OnExceptionDelegate           OnException = null)
+                                                       XElement                      XML)
         {
 
             if (TryParse(Request,
-                         ChangeAvailabilityResponseXML,
-                         out ChangeAvailabilityResponse changeAvailabilityResponse,
-                         OnException))
+                         XML,
+                         out var changeAvailabilityResponse,
+                         out var errorResponse))
             {
-                return changeAvailabilityResponse;
+                return changeAvailabilityResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a change availability response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, ChangeAvailabilityResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomChangeAvailabilityResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a change availability response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ChangeAvailabilityResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChangeAvailabilityResponse Parse(CS.ChangeAvailabilityRequest  Request,
-                                                       JObject                       ChangeAvailabilityResponseJSON,
-                                                       OnExceptionDelegate           OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomChangeAvailabilityResponseParser">A delegate to parse custom change availability responses.</param>
+        public static ChangeAvailabilityResponse Parse(CS.ChangeAvailabilityRequest                              Request,
+                                                       JObject                                                   JSON,
+                                                       CustomJObjectParserDelegate<ChangeAvailabilityResponse>?  CustomChangeAvailabilityResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         ChangeAvailabilityResponseJSON,
-                         out ChangeAvailabilityResponse changeAvailabilityResponse,
-                         OnException))
+                         JSON,
+                         out var changeAvailabilityResponse,
+                         out var errorResponse,
+                         CustomChangeAvailabilityResponseParser))
             {
-                return changeAvailabilityResponse;
+                return changeAvailabilityResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a change availability response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, ChangeAvailabilityResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a change availability response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ChangeAvailabilityResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChangeAvailabilityResponse Parse(CS.ChangeAvailabilityRequest  Request,
-                                                       String                        ChangeAvailabilityResponseText,
-                                                       OnExceptionDelegate           OnException = null)
-        {
-
-            if (TryParse(Request,
-                         ChangeAvailabilityResponseText,
-                         out ChangeAvailabilityResponse changeAvailabilityResponse,
-                         OnException))
-            {
-                return changeAvailabilityResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, ChangeAvailabilityResponseXML,  out ChangeAvailabilityResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out ChangeAvailabilityResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a change availability response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ChangeAvailabilityResponseXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ChangeAvailabilityResponse">The parsed change availability response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ChangeAvailabilityRequest    Request,
-                                       XElement                        ChangeAvailabilityResponseXML,
-                                       out ChangeAvailabilityResponse  ChangeAvailabilityResponse,
-                                       OnExceptionDelegate             OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CS.ChangeAvailabilityRequest     Request,
+                                       XElement                         XML,
+                                       out ChangeAvailabilityResponse?  ChangeAvailabilityResponse,
+                                       out String?                      ErrorResponse)
         {
 
             try
@@ -230,41 +202,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                  Request,
 
-                                                 ChangeAvailabilityResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
+                                                 XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
                                                                                               AvailabilityStatusExtentions.Parse)
 
                                              );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, ChangeAvailabilityResponseXML, e);
-
-                ChangeAvailabilityResponse = null;
+                ChangeAvailabilityResponse  = null;
+                ErrorResponse               = "The given XML representation of a change availability response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, ChangeAvailabilityResponseJSON, out ChangeAvailabilityResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out ChangeAvailabilityResponse, out ErrorResponse, CustomChangeAvailabilityResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a change availability response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ChangeAvailabilityResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChangeAvailabilityResponse">The parsed change availability response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ChangeAvailabilityRequest    Request,
-                                       JObject                         ChangeAvailabilityResponseJSON,
-                                       out ChangeAvailabilityResponse  ChangeAvailabilityResponse,
-                                       OnExceptionDelegate             OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomChangeAvailabilityResponseParser">A delegate to parse custom change availability responses.</param>
+        public static Boolean TryParse(CS.ChangeAvailabilityRequest                              Request,
+                                       JObject                                                   JSON,
+                                       out ChangeAvailabilityResponse?                           ChangeAvailabilityResponse,
+                                       out String?                                               ErrorResponse,
+                                       CustomJObjectParserDelegate<ChangeAvailabilityResponse>?  CustomChangeAvailabilityResponseParser   = null)
         {
 
             try
@@ -274,11 +246,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region AvailabilityStatus
 
-                if (!ChangeAvailabilityResponseJSON.MapMandatory("status",
-                                                                 "availability status",
-                                                                 AvailabilityStatusExtentions.Parse,
-                                                                 out AvailabilityStatus  AvailabilityStatus,
-                                                                 out String              ErrorResponse))
+                if (!JSON.MapMandatory("status",
+                                       "availability status",
+                                       AvailabilityStatusExtentions.Parse,
+                                       out AvailabilityStatus AvailabilityStatus,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
@@ -289,86 +261,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 ChangeAvailabilityResponse = new ChangeAvailabilityResponse(Request,
                                                                             AvailabilityStatus);
 
+                if (CustomChangeAvailabilityResponseParser is not null)
+                    ChangeAvailabilityResponse = CustomChangeAvailabilityResponseParser(JSON,
+                                                                                        ChangeAvailabilityResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, ChangeAvailabilityResponseJSON, e);
-
-                ChangeAvailabilityResponse = null;
+                ChangeAvailabilityResponse  = null;
+                ErrorResponse               = "The given JSON representation of a change availability response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, ChangeAvailabilityResponseText, out ChangeAvailabilityResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a change availability response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ChangeAvailabilityResponseText">The text to be parsed.</param>
-        /// <param name="ChangeAvailabilityResponse">The parsed change availability response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ChangeAvailabilityRequest    Request,
-                                       String                          ChangeAvailabilityResponseText,
-                                       out ChangeAvailabilityResponse  ChangeAvailabilityResponse,
-                                       OnExceptionDelegate             OnException  = null)
-        {
-
-            try
-            {
-
-                ChangeAvailabilityResponseText = ChangeAvailabilityResponseText?.Trim();
-
-                if (ChangeAvailabilityResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (ChangeAvailabilityResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(ChangeAvailabilityResponseText),
-                                 out ChangeAvailabilityResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(ChangeAvailabilityResponseText).Root,
-                                 out ChangeAvailabilityResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, ChangeAvailabilityResponseText, e);
-            }
-
-            ChangeAvailabilityResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "changeAvailabilityResponse",
+            => new (OCPPNS.OCPPv1_6_CP + "changeAvailabilityResponse",
                    new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
                );
 
@@ -380,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomChangeAvailabilityResponseSerializer">A delegate to serialize custom change availability responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeAvailabilityResponse>  CustomChangeAvailabilityResponseSerializer  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeAvailabilityResponse>?  CustomChangeAvailabilityResponseSerializer  = null)
         {
 
             var json = JSONObject.Create(
@@ -404,8 +322,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">The start transaction request leading to this response.</param>
         public static ChangeAvailabilityResponse Failed(CS.ChangeAvailabilityRequest Request)
 
-            => new ChangeAvailabilityResponse(Request,
-                                              Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -420,7 +338,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ChangeAvailabilityResponse1">A change availability response.</param>
         /// <param name="ChangeAvailabilityResponse2">Another change availability response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ChangeAvailabilityResponse ChangeAvailabilityResponse1, ChangeAvailabilityResponse ChangeAvailabilityResponse2)
+        public static Boolean operator == (ChangeAvailabilityResponse ChangeAvailabilityResponse1,
+                                           ChangeAvailabilityResponse ChangeAvailabilityResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -428,7 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((ChangeAvailabilityResponse1 is null) || (ChangeAvailabilityResponse2 is null))
+            if (ChangeAvailabilityResponse1 is null || ChangeAvailabilityResponse2 is null)
                 return false;
 
             return ChangeAvailabilityResponse1.Equals(ChangeAvailabilityResponse2);
@@ -445,7 +364,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ChangeAvailabilityResponse1">A change availability response.</param>
         /// <param name="ChangeAvailabilityResponse2">Another change availability response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ChangeAvailabilityResponse ChangeAvailabilityResponse1, ChangeAvailabilityResponse ChangeAvailabilityResponse2)
+        public static Boolean operator != (ChangeAvailabilityResponse ChangeAvailabilityResponse1,
+                                           ChangeAvailabilityResponse ChangeAvailabilityResponse2)
 
             => !(ChangeAvailabilityResponse1 == ChangeAvailabilityResponse2);
 
@@ -458,22 +378,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two change availability responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A change availability response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is ChangeAvailabilityResponse ChangeAvailabilityResponse))
-                return false;
-
-            return Equals(ChangeAvailabilityResponse);
-
-        }
+            => Object is ChangeAvailabilityResponse changeAvailabilityResponse &&
+                   Equals(changeAvailabilityResponse);
 
         #endregion
 
@@ -483,16 +394,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Compares two change availability responses for equality.
         /// </summary>
         /// <param name="ChangeAvailabilityResponse">A change availability response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(ChangeAvailabilityResponse ChangeAvailabilityResponse)
-        {
+        public override Boolean Equals(ChangeAvailabilityResponse? ChangeAvailabilityResponse)
 
-            if (ChangeAvailabilityResponse is null)
-                return false;
-
-            return Status.Equals(ChangeAvailabilityResponse.Status);
-
-        }
+            => ChangeAvailabilityResponse is not null &&
+                   Status.Equals(ChangeAvailabilityResponse.Status);
 
         #endregion
 

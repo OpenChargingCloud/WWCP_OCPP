@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -128,100 +126,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, ChangeConfigurationResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a change configuration response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ChangeConfigurationResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static ChangeConfigurationResponse Parse(CS.ChangeConfigurationRequest  Request,
-                                                        XElement                       ChangeConfigurationResponseXML,
-                                                        OnExceptionDelegate            OnException = null)
+                                                        XElement                       XML)
         {
 
             if (TryParse(Request,
-                         ChangeConfigurationResponseXML,
-                         out ChangeConfigurationResponse changeConfigurationResponse,
-                         OnException))
+                         XML,
+                         out var changeConfigurationResponse,
+                         out var errorResponse))
             {
-                return changeConfigurationResponse;
+                return changeConfigurationResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a change configuration response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, ChangeConfigurationResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomChangeConfigurationResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a change configuration response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ChangeConfigurationResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChangeConfigurationResponse Parse(CS.ChangeConfigurationRequest  Request,
-                                                        JObject                        ChangeConfigurationResponseJSON,
-                                                        OnExceptionDelegate            OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomChangeConfigurationResponseParser">A delegate to parse custom change configuration responses.</param>
+        public static ChangeConfigurationResponse Parse(CS.ChangeConfigurationRequest                              Request,
+                                                        JObject                                                    JSON,
+                                                        CustomJObjectParserDelegate<ChangeConfigurationResponse>?  CustomChangeConfigurationResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         ChangeConfigurationResponseJSON,
-                         out ChangeConfigurationResponse changeConfigurationResponse,
-                         OnException))
+                         JSON,
+                         out var changeConfigurationResponse,
+                         out var errorResponse,
+                         CustomChangeConfigurationResponseParser))
             {
-                return changeConfigurationResponse;
+                return changeConfigurationResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a change configuration response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, ChangeConfigurationResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a change configuration response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ChangeConfigurationResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChangeConfigurationResponse Parse(CS.ChangeConfigurationRequest  Request,
-                                                        String                         ChangeConfigurationResponseText,
-                                                        OnExceptionDelegate            OnException = null)
-        {
-
-            if (TryParse(Request,
-                         ChangeConfigurationResponseText,
-                         out ChangeConfigurationResponse changeConfigurationResponse,
-                         OnException))
-            {
-                return changeConfigurationResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, ChangeConfigurationResponseXML,  out ChangeConfigurationResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out ChangeConfigurationResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a change configuration response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ChangeConfigurationResponseXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ChangeConfigurationResponse">The parsed change configuration response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ChangeConfigurationRequest    Request,
-                                       XElement                         ChangeConfigurationResponseXML,
-                                       out ChangeConfigurationResponse  ChangeConfigurationResponse,
-                                       OnExceptionDelegate              OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CS.ChangeConfigurationRequest     Request,
+                                       XElement                          XML,
+                                       out ChangeConfigurationResponse?  ChangeConfigurationResponse,
+                                       out String?                       ErrorResponse)
         {
 
             try
@@ -231,41 +203,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                   Request,
 
-                                                  ChangeConfigurationResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
+                                                  XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
                                                                                                 ConfigurationStatusExtentions.Parse)
 
                                               );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, ChangeConfigurationResponseXML, e);
-
-                ChangeConfigurationResponse = null;
+                ChangeConfigurationResponse  = null;
+                ErrorResponse                = "The given XML representation of a change configuration response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, ChangeConfigurationResponseJSON, out ChangeConfigurationResponse, OnException = null)
+        #region (static) TryParse(Request, ChangeConfigurationResponseJSON, out ChangeConfigurationResponse, out ErrorResponse, CustomChangeConfigurationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a change configuration response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ChangeConfigurationResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChangeConfigurationResponse">The parsed change configuration response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ChangeConfigurationRequest    Request,
-                                       JObject                          ChangeConfigurationResponseJSON,
-                                       out ChangeConfigurationResponse  ChangeConfigurationResponse,
-                                       OnExceptionDelegate              OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomChangeConfigurationResponseParser">A delegate to parse custom change configuration responses.</param>
+        public static Boolean TryParse(CS.ChangeConfigurationRequest                              Request,
+                                       JObject                                                    JSON,
+                                       out ChangeConfigurationResponse?                           ChangeConfigurationResponse,
+                                       out String?                                                ErrorResponse,
+                                       CustomJObjectParserDelegate<ChangeConfigurationResponse>?  CustomChangeConfigurationResponseParser   = null)
         {
 
             try
@@ -275,11 +247,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ConfigurationStatus
 
-                if (!ChangeConfigurationResponseJSON.MapMandatory("status",
-                                                                  "configuration status",
-                                                                  ConfigurationStatusExtentions.Parse,
-                                                                  out ConfigurationStatus  ConfigurationStatus,
-                                                                  out String               ErrorResponse))
+                if (!JSON.MapMandatory("status",
+                                       "configuration status",
+                                       ConfigurationStatusExtentions.Parse,
+                                       out ConfigurationStatus ConfigurationStatus,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
@@ -290,86 +262,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 ChangeConfigurationResponse = new ChangeConfigurationResponse(Request,
                                                                               ConfigurationStatus);
 
+                if (CustomChangeConfigurationResponseParser is not null)
+                    ChangeConfigurationResponse = CustomChangeConfigurationResponseParser(JSON,
+                                                                                          ChangeConfigurationResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, ChangeConfigurationResponseJSON, e);
-
-                ChangeConfigurationResponse = null;
+                ChangeConfigurationResponse  = null;
+                ErrorResponse                = "The given JSON representation of a change configuration response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, ChangeConfigurationResponseText, out ChangeConfigurationResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a change configuration response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ChangeConfigurationResponseText">The text to be parsed.</param>
-        /// <param name="ChangeConfigurationResponse">The parsed change configuration response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ChangeConfigurationRequest    Request,
-                                       String                           ChangeConfigurationResponseText,
-                                       out ChangeConfigurationResponse  ChangeConfigurationResponse,
-                                       OnExceptionDelegate              OnException  = null)
-        {
-
-            try
-            {
-
-                ChangeConfigurationResponseText = ChangeConfigurationResponseText?.Trim();
-
-                if (ChangeConfigurationResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (ChangeConfigurationResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(ChangeConfigurationResponseText),
-                                 out ChangeConfigurationResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(ChangeConfigurationResponseText).Root,
-                                 out ChangeConfigurationResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, ChangeConfigurationResponseText, e);
-            }
-
-            ChangeConfigurationResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "changeConfigurationResponse",
+            => new (OCPPNS.OCPPv1_6_CP + "changeConfigurationResponse",
                    new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
                );
 
@@ -381,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomChangeConfigurationResponseSerializer">A delegate to serialize custom change configuration responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeConfigurationResponse>  CustomChangeConfigurationResponseSerializer  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeConfigurationResponse>?  CustomChangeConfigurationResponseSerializer  = null)
         {
 
             var json = JSONObject.Create(
@@ -405,8 +323,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">The start transaction request leading to this response.</param>
         public static ChangeConfigurationResponse Failed(CS.ChangeConfigurationRequest Request)
 
-            => new ChangeConfigurationResponse(Request,
-                                               Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -421,7 +339,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ChangeConfigurationResponse1">A change configuration response.</param>
         /// <param name="ChangeConfigurationResponse2">Another change configuration response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ChangeConfigurationResponse ChangeConfigurationResponse1, ChangeConfigurationResponse ChangeConfigurationResponse2)
+        public static Boolean operator == (ChangeConfigurationResponse ChangeConfigurationResponse1,
+                                           ChangeConfigurationResponse ChangeConfigurationResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -429,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((ChangeConfigurationResponse1 is null) || (ChangeConfigurationResponse2 is null))
+            if (ChangeConfigurationResponse1 is null || ChangeConfigurationResponse2 is null)
                 return false;
 
             return ChangeConfigurationResponse1.Equals(ChangeConfigurationResponse2);
@@ -446,7 +365,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ChangeConfigurationResponse1">A change configuration response.</param>
         /// <param name="ChangeConfigurationResponse2">Another change configuration response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ChangeConfigurationResponse ChangeConfigurationResponse1, ChangeConfigurationResponse ChangeConfigurationResponse2)
+        public static Boolean operator != (ChangeConfigurationResponse ChangeConfigurationResponse1,
+                                           ChangeConfigurationResponse ChangeConfigurationResponse2)
 
             => !(ChangeConfigurationResponse1 == ChangeConfigurationResponse2);
 
@@ -459,22 +379,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two change configuration responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A change configuration response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is ChangeConfigurationResponse ChangeConfigurationResponse))
-                return false;
-
-            return Equals(ChangeConfigurationResponse);
-
-        }
+            => Object is ChangeConfigurationResponse changeConfigurationResponse &&
+                   Equals(changeConfigurationResponse);
 
         #endregion
 
@@ -484,16 +395,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Compares two change configuration responses for equality.
         /// </summary>
         /// <param name="ChangeConfigurationResponse">A change configuration response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(ChangeConfigurationResponse ChangeConfigurationResponse)
-        {
+        public override Boolean Equals(ChangeConfigurationResponse? ChangeConfigurationResponse)
 
-            if (ChangeConfigurationResponse is null)
-                return false;
-
-            return Status.Equals(ChangeConfigurationResponse.Status);
-
-        }
+            => ChangeConfigurationResponse is not null &&
+                   Status.Equals(ChangeConfigurationResponse.Status);
 
         #endregion
 

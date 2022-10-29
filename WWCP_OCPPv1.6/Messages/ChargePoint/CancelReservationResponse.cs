@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -42,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The success or failure of the reservation cancellation.
         /// </summary>
-        public CancelReservationStatus  Status   { get; }
+        public CancelReservationStatus  Status    { get; }
 
         #endregion
 
@@ -126,100 +124,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, CancelReservationResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a cancel reservation response.
         /// </summary>
         /// <param name="Request">The cancel reservation request leading to this response.</param>
-        /// <param name="CancelReservationResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static CancelReservationResponse Parse(CS.CancelReservationRequest  Request,
-                                                      XElement                     CancelReservationResponseXML,
-                                                      OnExceptionDelegate          OnException = null)
+                                                      XElement                     XML)
         {
 
             if (TryParse(Request,
-                         CancelReservationResponseXML,
-                         out CancelReservationResponse cancelReservationResponse,
-                         OnException))
+                         XML,
+                         out var cancelReservationResponse,
+                         out var errorResponse))
             {
-                return cancelReservationResponse;
+                return cancelReservationResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a cancel reservation response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, CancelReservationResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomCancelReservationResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a cancel reservation response.
         /// </summary>
         /// <param name="Request">The cancel reservation request leading to this response.</param>
-        /// <param name="CancelReservationResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static CancelReservationResponse Parse(CS.CancelReservationRequest  Request,
-                                                      JObject                      CancelReservationResponseJSON,
-                                                      OnExceptionDelegate          OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomCancelReservationResponseParser">A delegate to parse custom cancel reservation responses.</param>
+        public static CancelReservationResponse Parse(CS.CancelReservationRequest                              Request,
+                                                      JObject                                                  JSON,
+                                                      CustomJObjectParserDelegate<CancelReservationResponse>?  CustomCancelReservationResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         CancelReservationResponseJSON,
-                         out CancelReservationResponse cancelReservationResponse,
-                         OnException))
+                         JSON,
+                         out var cancelReservationResponse,
+                         out var errorResponse,
+                         CustomCancelReservationResponseParser))
             {
-                return cancelReservationResponse;
+                return cancelReservationResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a cancel reservation response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, CancelReservationResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a cancel reservation response.
-        /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
-        /// <param name="CancelReservationResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static CancelReservationResponse Parse(CS.CancelReservationRequest  Request,
-                                                      String                       CancelReservationResponseText,
-                                                      OnExceptionDelegate          OnException = null)
-        {
-
-            if (TryParse(Request,
-                         CancelReservationResponseText,
-                         out CancelReservationResponse cancelReservationResponse,
-                         OnException))
-            {
-                return cancelReservationResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, CancelReservationResponseXML,  out CancelReservationResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out CancelReservationResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a cancel reservation response.
         /// </summary>
         /// <param name="Request">The cancel reservation request leading to this response.</param>
-        /// <param name="CancelReservationResponseXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="CancelReservationResponse">The parsed cancel reservation response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.CancelReservationRequest    Request,
-                                       XElement                       CancelReservationResponseXML,
-                                       out CancelReservationResponse  CancelReservationResponse,
-                                       OnExceptionDelegate            OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CS.CancelReservationRequest     Request,
+                                       XElement                        XML,
+                                       out CancelReservationResponse?  CancelReservationResponse,
+                                       out String?                     ErrorResponse)
         {
 
             try
@@ -229,41 +201,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                 Request,
 
-                                                CancelReservationResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                                            CancelReservationStatusExtentions.Parse)
+                                                XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
+                                                                   CancelReservationStatusExtentions.Parse)
 
                                             );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, CancelReservationResponseXML, e);
-
-                CancelReservationResponse = null;
+                CancelReservationResponse  = null;
+                ErrorResponse              = "The given XML representation of a cancel reservation response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, CancelReservationResponseJSON, out CancelReservationResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out CancelReservationResponse, out ErrorResponse, CustomCancelReservationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a cancel reservation response.
         /// </summary>
         /// <param name="Request">The cancel reservation request leading to this response.</param>
-        /// <param name="CancelReservationResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CancelReservationResponse">The parsed cancel reservation response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.CancelReservationRequest    Request,
-                                       JObject                        CancelReservationResponseJSON,
-                                       out CancelReservationResponse  CancelReservationResponse,
-                                       OnExceptionDelegate            OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomCancelReservationResponseParser">A delegate to parse custom cancel reservation responses.</param>
+        public static Boolean TryParse(CS.CancelReservationRequest                              Request,
+                                       JObject                                                  JSON,
+                                       out CancelReservationResponse?                           CancelReservationResponse,
+                                       out String?                                              ErrorResponse,
+                                       CustomJObjectParserDelegate<CancelReservationResponse>?  CustomCancelReservationResponseParser   = null)
         {
 
             try
@@ -273,11 +245,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region IdTagInfo
 
-                if (!CancelReservationResponseJSON.MapMandatory("status",
-                                                                "cancel reservation status",
-                                                                CancelReservationStatusExtentions.Parse,
-                                                                out CancelReservationStatus Status,
-                                                                out String ErrorResponse))
+                if (!JSON.MapMandatory("status",
+                                       "cancel reservation status",
+                                       CancelReservationStatusExtentions.Parse,
+                                       out CancelReservationStatus Status,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
@@ -288,86 +260,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 CancelReservationResponse = new CancelReservationResponse(Request,
                                                                           Status);
 
+                if (CustomCancelReservationResponseParser is not null)
+                    CancelReservationResponse = CustomCancelReservationResponseParser(JSON,
+                                                                                      CancelReservationResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, CancelReservationResponseJSON, e);
-
-                CancelReservationResponse = null;
+                CancelReservationResponse  = null;
+                ErrorResponse              = "The given JSON representation of a cancel reservation response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, CancelReservationResponseText, out CancelReservationResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a cancel reservation response.
-        /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
-        /// <param name="CancelReservationResponseText">The text to be parsed.</param>
-        /// <param name="CancelReservationResponse">The parsed cancel reservation response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.CancelReservationRequest    Request,
-                                       String                         CancelReservationResponseText,
-                                       out CancelReservationResponse  CancelReservationResponse,
-                                       OnExceptionDelegate            OnException  = null)
-        {
-
-            try
-            {
-
-                CancelReservationResponseText = CancelReservationResponseText?.Trim();
-
-                if (CancelReservationResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (CancelReservationResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(CancelReservationResponseText),
-                                 out CancelReservationResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(CancelReservationResponseText).Root,
-                                 out CancelReservationResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, CancelReservationResponseText, e);
-            }
-
-            CancelReservationResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "cancelReservationResponse",
+            => new (OCPPNS.OCPPv1_6_CP + "cancelReservationResponse",
                    new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
                );
 
@@ -379,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomCancelReservationResponseSerializer">A delegate to serialize custom cancel reservation responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationResponse> CustomCancelReservationResponseSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationResponse>? CustomCancelReservationResponseSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -403,8 +321,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">The cancel reservation request leading to this response.</param>
         public static CancelReservationResponse Failed(CS.CancelReservationRequest Request)
 
-            => new CancelReservationResponse(Request,
-                                             Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -419,7 +337,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancelReservationResponse1">A cancel reservation response.</param>
         /// <param name="CancelReservationResponse2">Another cancel reservation response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (CancelReservationResponse CancelReservationResponse1, CancelReservationResponse CancelReservationResponse2)
+        public static Boolean operator == (CancelReservationResponse CancelReservationResponse1,
+                                           CancelReservationResponse CancelReservationResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -427,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((CancelReservationResponse1 is null) || (CancelReservationResponse2 is null))
+            if (CancelReservationResponse1 is null || CancelReservationResponse2 is null)
                 return false;
 
             return CancelReservationResponse1.Equals(CancelReservationResponse2);
@@ -444,7 +363,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancelReservationResponse1">A cancel reservation response.</param>
         /// <param name="CancelReservationResponse2">Another cancel reservation response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (CancelReservationResponse CancelReservationResponse1, CancelReservationResponse CancelReservationResponse2)
+        public static Boolean operator != (CancelReservationResponse CancelReservationResponse1,
+                                           CancelReservationResponse CancelReservationResponse2)
 
             => !(CancelReservationResponse1 == CancelReservationResponse2);
 
@@ -457,22 +377,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two cancel reservation responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A cancel reservation response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is CancelReservationResponse CancelReservationResponse))
-                return false;
-
-            return Equals(CancelReservationResponse);
-
-        }
+            => Object is CancelReservationResponse cancelReservationResponse &&
+                   Equals(cancelReservationResponse);
 
         #endregion
 
@@ -482,16 +393,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Compares two cancel reservation responses for equality.
         /// </summary>
         /// <param name="CancelReservationResponse">A cancel reservation response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(CancelReservationResponse CancelReservationResponse)
-        {
+        public override Boolean Equals(CancelReservationResponse? CancelReservationResponse)
 
-            if (CancelReservationResponse is null)
-                return false;
-
-            return Status.Equals(CancelReservationResponse.Status);
-
-        }
+            => CancelReservationResponse is not null &&
+                   Status.Equals(CancelReservationResponse.Status);
 
         #endregion
 
