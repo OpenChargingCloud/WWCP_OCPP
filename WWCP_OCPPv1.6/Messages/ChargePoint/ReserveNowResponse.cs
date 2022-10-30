@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new reserve now response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The reserve now request leading to this response.</param>
         /// <param name="Status">The success or failure of the reservation.</param>
         public ReserveNowResponse(CS.ReserveNowRequest  Request,
                                   ReservationStatus     Status)
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new reserve now response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The reserve now request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ReserveNowResponse(CS.ReserveNowRequest  Request,
                                   Result                Result)
@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of a reserve now response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The reserve now request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         public static ReserveNowResponse Parse(CS.ReserveNowRequest  Request,
                                                XElement              XML)
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Parse the given JSON representation of a reserve now response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The reserve now request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomReserveNowResponseParser">A delegate to parse custom reserve now responses.</param>
         public static ReserveNowResponse Parse(CS.ReserveNowRequest                              Request,
@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of a reserve now response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The reserve now request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ReserveNowResponse">The parsed reserve now response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given JSON representation of a reserve now response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The reserve now request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ReserveNowResponse">The parsed reserve now response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToXML ()
+        #region ToXML()
 
         /// <summary>
         /// Return a XML representation of this object.
@@ -321,7 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The reserve now failed.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The reserve now request leading to this response.</param>
         public static ReserveNowResponse Failed(CS.ReserveNowRequest Request)
 
             => new (Request,

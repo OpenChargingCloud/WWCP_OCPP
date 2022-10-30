@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
@@ -52,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new send local list response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The send local list request leading to this response.</param>
         /// <param name="Status">The success or failure of the send local list command.</param>
         public SendLocalListResponse(CS.SendLocalListRequest  Request,
                                      UpdateStatus             Status)
@@ -73,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new send local list response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The send local list request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SendLocalListResponse(CS.SendLocalListRequest  Request,
                                      Result                   Result)
@@ -127,100 +126,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, SendLocalListResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a send local list response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="SendLocalListResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="Request">The send local list request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static SendLocalListResponse Parse(CS.SendLocalListRequest  Request,
-                                                  XElement                 SendLocalListResponseXML,
-                                                  OnExceptionDelegate      OnException = null)
+                                                  XElement                 XML)
         {
 
             if (TryParse(Request,
-                         SendLocalListResponseXML,
-                         out SendLocalListResponse sendLocalListResponse,
-                         OnException))
+                         XML,
+                         out var sendLocalListResponse,
+                         out var errorResponse))
             {
-                return sendLocalListResponse;
+                return sendLocalListResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a send local list response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, SendLocalListResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomSendLocalListResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a send local list response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="SendLocalListResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SendLocalListResponse Parse(CS.SendLocalListRequest  Request,
-                                                  JObject                  SendLocalListResponseJSON,
-                                                  OnExceptionDelegate      OnException = null)
+        /// <param name="Request">The send local list request leading to this response.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomSendLocalListResponseParser">A delegate to parse custom send local list responses.</param>
+        public static SendLocalListResponse Parse(CS.SendLocalListRequest                              Request,
+                                                  JObject                                              JSON,
+                                                  CustomJObjectParserDelegate<SendLocalListResponse>?  CustomSendLocalListResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         SendLocalListResponseJSON,
-                         out SendLocalListResponse sendLocalListResponse,
-                         OnException))
+                         JSON,
+                         out var sendLocalListResponse,
+                         out var errorResponse,
+                         CustomSendLocalListResponseParser))
             {
-                return sendLocalListResponse;
+                return sendLocalListResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a send local list response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, SendLocalListResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a send local list response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="SendLocalListResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SendLocalListResponse Parse(CS.SendLocalListRequest  Request,
-                                                  String                   SendLocalListResponseText,
-                                                  OnExceptionDelegate      OnException = null)
-        {
-
-            if (TryParse(Request,
-                         SendLocalListResponseText,
-                         out SendLocalListResponse sendLocalListResponse,
-                         OnException))
-            {
-                return sendLocalListResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, SendLocalListResponseXML,  out SendLocalListResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out SendLocalListResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a send local list response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="SendLocalListResponseXML">The XML to be parsed.</param>
+        /// <param name="Request">The send local list request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="SendLocalListResponse">The parsed send local list response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.SendLocalListRequest    Request,
-                                       XElement                   SendLocalListResponseXML,
-                                       out SendLocalListResponse  SendLocalListResponse,
-                                       OnExceptionDelegate        OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CS.SendLocalListRequest     Request,
+                                       XElement                    XML,
+                                       out SendLocalListResponse?  SendLocalListResponse,
+                                       out String?                 ErrorResponse)
         {
 
             try
@@ -230,41 +203,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                             Request,
 
-                                            SendLocalListResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                                    UpdateStatusExtentions.Parse)
+                                            XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
+                                                               UpdateStatusExtentions.Parse)
 
                                         );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, SendLocalListResponseXML, e);
-
-                SendLocalListResponse = null;
+                SendLocalListResponse  = null;
+                ErrorResponse          = "The given XML representation of a send local list response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, SendLocalListResponseJSON, out SendLocalListResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out SendLocalListResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a send local list response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="SendLocalListResponseJSON">The JSON to be parsed.</param>
+        /// <param name="Request">The send local list request leading to this response.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SendLocalListResponse">The parsed send local list response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.SendLocalListRequest    Request,
-                                       JObject                    SendLocalListResponseJSON,
-                                       out SendLocalListResponse  SendLocalListResponse,
-                                       OnExceptionDelegate        OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSendLocalListResponseParser">A delegate to parse custom send local list responses.</param>
+        public static Boolean TryParse(CS.SendLocalListRequest                              Request,
+                                       JObject                                              JSON,
+                                       out SendLocalListResponse?                           SendLocalListResponse,
+                                       out String?                                          ErrorResponse,
+                                       CustomJObjectParserDelegate<SendLocalListResponse>?  CustomSendLocalListResponseParser   = null)
         {
 
             try
@@ -274,11 +247,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region UpdateStatus
 
-                if (!SendLocalListResponseJSON.MapMandatory("status",
-                                                            "update status",
-                                                            UpdateStatusExtentions.Parse,
-                                                            out UpdateStatus  UpdateStatus,
-                                                            out String        ErrorResponse))
+                if (!JSON.MapMandatory("status",
+                                       "update status",
+                                       UpdateStatusExtentions.Parse,
+                                       out UpdateStatus UpdateStatus,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
@@ -289,73 +262,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 SendLocalListResponse = new SendLocalListResponse(Request,
                                                                   UpdateStatus);
 
+                if (CustomSendLocalListResponseParser is not null)
+                    SendLocalListResponse = CustomSendLocalListResponseParser(JSON,
+                                                                              SendLocalListResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, SendLocalListResponseJSON, e);
-
-                SendLocalListResponse = null;
+                SendLocalListResponse  = null;
+                ErrorResponse          = "The given JSON representation of a send local list response is invalid: " + e.Message;
                 return false;
-
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, SendLocalListResponseText, out SendLocalListResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a send local list response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="SendLocalListResponseText">The text to be parsed.</param>
-        /// <param name="SendLocalListResponse">The parsed send local list response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.SendLocalListRequest    Request,
-                                       String                     SendLocalListResponseText,
-                                       out SendLocalListResponse  SendLocalListResponse,
-                                       OnExceptionDelegate        OnException  = null)
-        {
-
-            try
-            {
-
-                SendLocalListResponseText = SendLocalListResponseText?.Trim();
-
-                if (SendLocalListResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (SendLocalListResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(SendLocalListResponseText),
-                                 out SendLocalListResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(SendLocalListResponseText).Root,
-                                 out SendLocalListResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, SendLocalListResponseText, e);
-            }
-
-            SendLocalListResponse = null;
-            return false;
 
         }
 
@@ -368,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "sendLocalListResponse",
+            => new (OCPPNS.OCPPv1_6_CP + "sendLocalListResponse",
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
 
@@ -382,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomSendLocalListResponseSerializer">A delegate to serialize custom send local list responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SendLocalListResponse>  CustomSendLocalListResponseSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SendLocalListResponse>? CustomSendLocalListResponseSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -403,11 +322,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The send local list command failed.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The send local list request leading to this response.</param>
         public static SendLocalListResponse Failed(CS.SendLocalListRequest  Request)
 
-            => new SendLocalListResponse(Request,
-                                         Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -422,7 +341,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="SendLocalListResponse1">A send local list response.</param>
         /// <param name="SendLocalListResponse2">Another send local list response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (SendLocalListResponse SendLocalListResponse1, SendLocalListResponse SendLocalListResponse2)
+        public static Boolean operator == (SendLocalListResponse SendLocalListResponse1,
+                                           SendLocalListResponse SendLocalListResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -430,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((SendLocalListResponse1 is null) || (SendLocalListResponse2 is null))
+            if (SendLocalListResponse1 is null || SendLocalListResponse2 is null)
                 return false;
 
             return SendLocalListResponse1.Equals(SendLocalListResponse2);
@@ -447,7 +367,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="SendLocalListResponse1">A send local list response.</param>
         /// <param name="SendLocalListResponse2">Another send local list response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (SendLocalListResponse SendLocalListResponse1, SendLocalListResponse SendLocalListResponse2)
+        public static Boolean operator != (SendLocalListResponse SendLocalListResponse1,
+                                           SendLocalListResponse SendLocalListResponse2)
 
             => !(SendLocalListResponse1 == SendLocalListResponse2);
 
@@ -460,22 +381,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two send local list responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A send local list response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is SendLocalListResponse SendLocalListResponse))
-                return false;
-
-            return Equals(SendLocalListResponse);
-
-        }
+            => Object is SendLocalListResponse sendLocalListResponse &&
+                   Equals(sendLocalListResponse);
 
         #endregion
 
@@ -485,16 +397,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Compares two send local list responses for equality.
         /// </summary>
         /// <param name="SendLocalListResponse">A send local list response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(SendLocalListResponse SendLocalListResponse)
-        {
+        public override Boolean Equals(SendLocalListResponse? SendLocalListResponse)
 
-            if (SendLocalListResponse is null)
-                return false;
-
-            return Status.Equals(SendLocalListResponse.Status);
-
-        }
+            => SendLocalListResponse is not null &&
+                   Status.Equals(SendLocalListResponse.Status);
 
         #endregion
 

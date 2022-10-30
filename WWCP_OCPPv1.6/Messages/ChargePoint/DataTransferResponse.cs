@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new data transfer response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="Status">The success or failure status of the data transfer.</param>
         /// <param name="Data">Optional response data.</param>
         public DataTransferResponse(CS.DataTransferRequest  Request,
@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new data transfer response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public DataTransferResponse(CS.DataTransferRequest  Request,
                                     Result                  Result)
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of a data transfer response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         public static DataTransferResponse Parse(CS.DataTransferRequest  Request,
                                                  XElement                XML)
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Parse the given JSON representation of a data transfer response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
         public static DataTransferResponse Parse(CS.DataTransferRequest                              Request,
@@ -199,12 +199,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out DataTransferResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out DataTransferResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a data transfer response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given JSON representation of a data transfer response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -307,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToXML ()
+        #region ToXML()
 
         /// <summary>
         /// Return a XML representation of this object.
@@ -359,7 +359,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The data transfer failed.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         public static DataTransferResponse Failed(CS.DataTransferRequest  Request)
 
             => new (Request,

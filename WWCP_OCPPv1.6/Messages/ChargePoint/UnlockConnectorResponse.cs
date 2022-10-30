@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -53,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new unlock connector response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The unlock connector request leading to this response.</param>
         /// <param name="Status">The success or failure of the unlock connector command.</param>
         public UnlockConnectorResponse(CS.UnlockConnectorRequest  Request,
                                        UnlockStatus               Status)
@@ -74,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new unlock connector response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The unlock connector request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public UnlockConnectorResponse(CS.UnlockConnectorRequest  Request,
                                        Result                     Result)
@@ -127,100 +125,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, UnlockConnectorResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
-        /// Parse the given XML representation of a unlock connector response.
+        /// Parse the given XML representation of an unlock connector response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="UnlockConnectorResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="Request">The unlock connector request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static UnlockConnectorResponse Parse(CS.UnlockConnectorRequest  Request,
-                                                    XElement                   UnlockConnectorResponseXML,
-                                                    OnExceptionDelegate        OnException = null)
+                                                    XElement                   XML)
         {
 
             if (TryParse(Request,
-                         UnlockConnectorResponseXML,
-                         out UnlockConnectorResponse unlockConnectorResponse,
-                         OnException))
+                         XML,
+                         out var unlockConnectorResponse,
+                         out var errorResponse))
             {
-                return unlockConnectorResponse;
+                return unlockConnectorResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of an unlock connector response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, UnlockConnectorResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomUnlockConnectorResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a unlock connector response.
+        /// Parse the given JSON representation of an unlock connector response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="UnlockConnectorResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static UnlockConnectorResponse Parse(CS.UnlockConnectorRequest  Request,
-                                                    JObject                    UnlockConnectorResponseJSON,
-                                                    OnExceptionDelegate        OnException = null)
+        /// <param name="Request">The unlock connector request leading to this response.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomUnlockConnectorResponseParser">A delegate to parse custom unlock connector responses.</param>
+        public static UnlockConnectorResponse Parse(CS.UnlockConnectorRequest                              Request,
+                                                    JObject                                                JSON,
+                                                    CustomJObjectParserDelegate<UnlockConnectorResponse>?  CustomUnlockConnectorResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         UnlockConnectorResponseJSON,
-                         out UnlockConnectorResponse unlockConnectorResponse,
-                         OnException))
+                         JSON,
+                         out var unlockConnectorResponse,
+                         out var errorResponse,
+                         CustomUnlockConnectorResponseParser))
             {
-                return unlockConnectorResponse;
+                return unlockConnectorResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of an unlock connector response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, UnlockConnectorResponseText, OnException = null)
+        #region (static) TryParse(Request, XML,  out UnlockConnectorResponse, out ErrorResponse)
 
         /// <summary>
-        /// Parse the given text representation of a unlock connector response.
+        /// Try to parse the given XML representation of an unlock connector response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="UnlockConnectorResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static UnlockConnectorResponse Parse(CS.UnlockConnectorRequest  Request,
-                                                    String                     UnlockConnectorResponseText,
-                                                    OnExceptionDelegate        OnException = null)
-        {
-
-            if (TryParse(Request,
-                         UnlockConnectorResponseText,
-                         out UnlockConnectorResponse unlockConnectorResponse,
-                         OnException))
-            {
-                return unlockConnectorResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, UnlockConnectorResponseXML,  out UnlockConnectorResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a unlock connector response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="UnlockConnectorResponseXML">The XML to be parsed.</param>
+        /// <param name="Request">The unlock connector request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="UnlockConnectorResponse">The parsed unlock connector response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.UnlockConnectorRequest    Request,
-                                       XElement                     UnlockConnectorResponseXML,
-                                       out UnlockConnectorResponse  UnlockConnectorResponse,
-                                       OnExceptionDelegate          OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CS.UnlockConnectorRequest     Request,
+                                       XElement                      XML,
+                                       out UnlockConnectorResponse?  UnlockConnectorResponse,
+                                       out String?                   ErrorResponse)
         {
 
             try
@@ -230,41 +202,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                               Request,
 
-                                              UnlockConnectorResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
+                                              XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
                                                                                         UnlockStatusExtentions.Parse)
 
                                           );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, UnlockConnectorResponseXML, e);
-
-                UnlockConnectorResponse = null;
+                UnlockConnectorResponse  = null;
+                ErrorResponse            = "The given XML representation of an unlock connector response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, UnlockConnectorResponseJSON, out UnlockConnectorResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out UnlockConnectorResponse, out ErrorResponse, CustomUnlockConnectorResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a unlock connector response.
+        /// Try to parse the given JSON representation of an unlock connector response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="UnlockConnectorResponseJSON">The JSON to be parsed.</param>
+        /// <param name="Request">The unlock connector request leading to this response.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="UnlockConnectorResponse">The parsed unlock connector response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.UnlockConnectorRequest    Request,
-                                       JObject                      UnlockConnectorResponseJSON,
-                                       out UnlockConnectorResponse  UnlockConnectorResponse,
-                                       OnExceptionDelegate          OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomUnlockConnectorResponseParser">A delegate to parse custom unlock connector responses.</param>
+        public static Boolean TryParse(CS.UnlockConnectorRequest                              Request,
+                                       JObject                                                JSON,
+                                       out UnlockConnectorResponse?                           UnlockConnectorResponse,
+                                       out String?                                            ErrorResponse,
+                                       CustomJObjectParserDelegate<UnlockConnectorResponse>?  CustomUnlockConnectorResponseParser   = null)
         {
 
             try
@@ -274,11 +246,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region UnlockStatus
 
-                if (!UnlockConnectorResponseJSON.MapMandatory("status",
-                                                              "unlock status",
-                                                              UnlockStatusExtentions.Parse,
-                                                              out UnlockStatus  UnlockStatus,
-                                                              out String        ErrorResponse))
+                if (!JSON.MapMandatory("status",
+                                       "unlock status",
+                                       UnlockStatusExtentions.Parse,
+                                       out UnlockStatus UnlockStatus,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
@@ -289,73 +261,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 UnlockConnectorResponse = new UnlockConnectorResponse(Request,
                                                                       UnlockStatus);
 
+                if (CustomUnlockConnectorResponseParser is not null)
+                    UnlockConnectorResponse = CustomUnlockConnectorResponseParser(JSON,
+                                                                                  UnlockConnectorResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, UnlockConnectorResponseJSON, e);
-
-                UnlockConnectorResponse = null;
+                UnlockConnectorResponse  = null;
+                ErrorResponse            = "The given JSON representation of an unlock connector response is invalid: " + e.Message;
                 return false;
-
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, UnlockConnectorResponseText, out UnlockConnectorResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a unlock connector response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="UnlockConnectorResponseText">The text to be parsed.</param>
-        /// <param name="UnlockConnectorResponse">The parsed unlock connector response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.UnlockConnectorRequest    Request,
-                                       String                       UnlockConnectorResponseText,
-                                       out UnlockConnectorResponse  UnlockConnectorResponse,
-                                       OnExceptionDelegate          OnException  = null)
-        {
-
-            try
-            {
-
-                UnlockConnectorResponseText = UnlockConnectorResponseText?.Trim();
-
-                if (UnlockConnectorResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (UnlockConnectorResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(UnlockConnectorResponseText),
-                                 out UnlockConnectorResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(UnlockConnectorResponseText).Root,
-                                 out UnlockConnectorResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, UnlockConnectorResponseText, e);
-            }
-
-            UnlockConnectorResponse = null;
-            return false;
 
         }
 
@@ -368,7 +286,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "unlockConnectorResponse",
+            => new (OCPPNS.OCPPv1_6_CP + "unlockConnectorResponse",
                    new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
                );
 
@@ -380,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomUnlockConnectorResponseSerializer">A delegate to serialize custom unlock connector responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<UnlockConnectorResponse>  CustomUnlockConnectorResponseSerializer  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<UnlockConnectorResponse>? CustomUnlockConnectorResponseSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -401,11 +319,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The unlock connector command failed.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The unlock connector request leading to this response.</param>
         public static UnlockConnectorResponse Failed(CS.UnlockConnectorRequest Request)
 
-            => new UnlockConnectorResponse(Request,
-                                           Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -420,7 +338,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="UnlockConnectorResponse1">A unlock connector response.</param>
         /// <param name="UnlockConnectorResponse2">Another unlock connector response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (UnlockConnectorResponse UnlockConnectorResponse1, UnlockConnectorResponse UnlockConnectorResponse2)
+        public static Boolean operator == (UnlockConnectorResponse UnlockConnectorResponse1,
+                                           UnlockConnectorResponse UnlockConnectorResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -428,7 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((UnlockConnectorResponse1 is null) || (UnlockConnectorResponse2 is null))
+            if (UnlockConnectorResponse1 is null || UnlockConnectorResponse2 is null)
                 return false;
 
             return UnlockConnectorResponse1.Equals(UnlockConnectorResponse2);
@@ -445,7 +364,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="UnlockConnectorResponse1">A unlock connector response.</param>
         /// <param name="UnlockConnectorResponse2">Another unlock connector response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (UnlockConnectorResponse UnlockConnectorResponse1, UnlockConnectorResponse UnlockConnectorResponse2)
+        public static Boolean operator != (UnlockConnectorResponse UnlockConnectorResponse1,
+                                           UnlockConnectorResponse UnlockConnectorResponse2)
 
             => !(UnlockConnectorResponse1 == UnlockConnectorResponse2);
 
@@ -458,22 +378,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two unlock connector responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="UnlockConnectorResponse">A unlock connector response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is UnlockConnectorResponse UnlockConnectorResponse))
-                return false;
-
-            return Equals(UnlockConnectorResponse);
-
-        }
+            => Object is UnlockConnectorResponse unlockConnectorResponse &&
+                   Equals(unlockConnectorResponse);
 
         #endregion
 
@@ -483,16 +394,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Compares two unlock connector responses for equality.
         /// </summary>
         /// <param name="UnlockConnectorResponse">A unlock connector response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(UnlockConnectorResponse UnlockConnectorResponse)
-        {
+        public override Boolean Equals(UnlockConnectorResponse? UnlockConnectorResponse)
 
-            if (UnlockConnectorResponse is null)
-                return false;
-
-            return Status.Equals(UnlockConnectorResponse.Status);
-
-        }
+            => UnlockConnectorResponse is not null &&
+                   Status.Equals(UnlockConnectorResponse.Status);
 
         #endregion
 

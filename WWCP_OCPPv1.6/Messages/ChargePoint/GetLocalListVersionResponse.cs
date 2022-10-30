@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(GetLocalListVersionResponseXML,  out GetLocalListVersionResponse, out ErrorResponse)
+        #region (static) TryParse(XML,  out GetLocalListVersionResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a get local list version response.
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToXML ()
+        #region ToXML()
 
         /// <summary>
         /// Return a XML representation of this object.

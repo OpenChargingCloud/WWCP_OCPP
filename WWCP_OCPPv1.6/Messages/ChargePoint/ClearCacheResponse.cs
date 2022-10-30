@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new clear cache response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The clear cache request leading to this response.</param>
         /// <param name="Status">The success or failure of the clear cache command.</param>
         public ClearCacheResponse(CS.ClearCacheRequest  Request,
                                   ClearCacheStatus      Status)
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new clear cache response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The clear cache request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ClearCacheResponse(CS.ClearCacheRequest  Request,
                                   Result                Result)
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of a clear cache response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The clear cache request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         public static ClearCacheResponse Parse(CS.ClearCacheRequest  Request,
                                                XElement              XML)
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Parse the given JSON representation of a clear cache response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The clear cache request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static ClearCacheResponse Parse(CS.ClearCacheRequest                              Request,
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of a clear cache response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The clear cache request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given JSON representation of a clear cache response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The clear cache request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToXML ()
+        #region ToXML()
 
         /// <summary>
         /// Return a XML representation of this object.
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The clear cache command failed.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The clear cache request leading to this response.</param>
         public static ClearCacheResponse Failed(CS.ClearCacheRequest Request)
 
             => new (Request,

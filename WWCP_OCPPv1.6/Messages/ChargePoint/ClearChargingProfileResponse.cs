@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new clear charging profile response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The clear charging profile request leading to this response.</param>
         /// <param name="Status">The success or failure of the reset command.</param>
         public ClearChargingProfileResponse(CS.ClearChargingProfileRequest  Request,
                                             ClearChargingProfileStatus      Status)
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new clear charging profile response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The clear charging profile request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ClearChargingProfileResponse(CS.ClearChargingProfileRequest  Request,
                                             Result                          Result)
@@ -103,12 +103,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, XML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a clear charging profile response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The clear charging profile request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         public static ClearChargingProfileResponse Parse(CS.ClearChargingProfileRequest  Request,
                                                          XElement                        XML)
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Parse the given JSON representation of a clear charging profile response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The clear charging profile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomClearChargingProfileResponseParser">A delegate to parse custom clear charging profile responses.</param>
         public static ClearChargingProfileResponse Parse(CS.ClearChargingProfileRequest                              Request,
@@ -158,12 +158,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out ClearChargingProfileResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out ClearChargingProfileResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a clear charging profile response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The clear charging profile request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ClearChargingProfileResponse">The parsed clear charging profile response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -200,12 +200,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out ClearChargingProfileResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out ClearChargingProfileResponse, out ErrorResponse, CustomClearChargingProfileResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a clear charging profile response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The clear charging profile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ClearChargingProfileResponse">The parsed clear charging profile response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToXML ()
+        #region ToXML()
 
         /// <summary>
         /// Return a XML representation of this object.
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The clear charging profile command failed.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The clear charging profile request leading to this response.</param>
         public static ClearChargingProfileResponse Failed(CS.ClearChargingProfileRequest Request)
 
             => new (Request,

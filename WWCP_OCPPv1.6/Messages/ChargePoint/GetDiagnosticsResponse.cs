@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, GetDiagnosticsResponseJSON, out GetDiagnosticsResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(Request, JSON, out GetDiagnosticsResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a get diagnostics response.
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToXML ()
+        #region ToXML()
 
         /// <summary>
         /// Return a XML representation of this object.

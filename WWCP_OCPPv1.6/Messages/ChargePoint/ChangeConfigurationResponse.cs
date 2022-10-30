@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new change configuration response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The change configuration request leading to this response.</param>
         /// <param name="Status">The success or failure of the change configuration command.</param>
         public ChangeConfigurationResponse(CS.ChangeConfigurationRequest  Request,
                                            ConfigurationStatus            Status)
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new change configuration response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The change configuration request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ChangeConfigurationResponse(CS.ChangeConfigurationRequest  Request,
                                            Result                         Result)
@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of a change configuration response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The change configuration request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         public static ChangeConfigurationResponse Parse(CS.ChangeConfigurationRequest  Request,
                                                         XElement                       XML)
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Parse the given JSON representation of a change configuration response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The change configuration request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomChangeConfigurationResponseParser">A delegate to parse custom change configuration responses.</param>
         public static ChangeConfigurationResponse Parse(CS.ChangeConfigurationRequest                              Request,
@@ -186,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of a change configuration response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The change configuration request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ChangeConfigurationResponse">The parsed change configuration response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -223,12 +223,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, ChangeConfigurationResponseJSON, out ChangeConfigurationResponse, out ErrorResponse, CustomChangeConfigurationResponseParser = null)
+        #region (static) TryParse(Request, JSON, out ChangeConfigurationResponse, out ErrorResponse, CustomChangeConfigurationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a change configuration response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The change configuration request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChangeConfigurationResponse">The parsed change configuration response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToXML ()
+        #region ToXML()
 
         /// <summary>
         /// Return a XML representation of this object.
@@ -320,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The change availability command failed.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The change configuration request leading to this response.</param>
         public static ChangeConfigurationResponse Failed(CS.ChangeConfigurationRequest Request)
 
             => new (Request,

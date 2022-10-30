@@ -170,21 +170,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (Request, DataTransferResponseJSON)
+        #region (static) Parse   (Request, DataTransferResponseJSON, CustomDataTransferResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a data transfer response.
         /// </summary>
         /// <param name="Request">The incoming data transfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        public static DataTransferResponse Parse(CP.DataTransferRequest  Request,
-                                                 JObject                 JSON)
+        /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
+        public static DataTransferResponse Parse(CP.DataTransferRequest                              Request,
+                                                 JObject                                             JSON,
+                                                 CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser   = null)
         {
 
             if (TryParse(Request,
                          JSON,
                          out var dataTransferResponse,
-                         out var errorResponse))
+                         out var errorResponse,
+                         CustomDataTransferResponseParser))
             {
                 return dataTransferResponse!;
             }
@@ -196,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out DataTransferResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out DataTransferResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a data transfer response.
@@ -204,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The incoming data transfer request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(CP.DataTransferRequest     Request,
                                        XElement                   XML,
                                        out DataTransferResponse?  DataTransferResponse,
@@ -219,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request,
 
                                            XML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CS + "status",
-                                                                                         DataTransferStatusExtentions.Parse),
+                                                                     DataTransferStatusExtentions.Parse),
 
                                            XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "data")
 
@@ -248,10 +251,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The incoming data transfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
-        public static Boolean TryParse(CP.DataTransferRequest     Request,
-                                       JObject                    JSON,
-                                       out DataTransferResponse?  DataTransferResponse,
-                                       out String?                ErrorResponse)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
+        public static Boolean TryParse(CP.DataTransferRequest                              Request,
+                                       JObject                                             JSON,
+                                       out DataTransferResponse?                           DataTransferResponse,
+                                       out String?                                         ErrorResponse,
+                                       CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser   = null)
         {
 
             try
@@ -280,10 +286,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
                 DataTransferResponse = new DataTransferResponse(Request,
-                                                                        DataTransferStatus,
-                                                                        Data);
+                                                                DataTransferStatus,
+                                                                Data);
 
-                ErrorResponse = null;
+                if (CustomDataTransferResponseParser is not null)
+                    DataTransferResponse = CustomDataTransferResponseParser(JSON,
+                                                                            DataTransferResponse);
+
                 return true;
 
             }
@@ -298,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToXML ()
+        #region ToXML()
 
         /// <summary>
         /// Return a XML representation of this object.

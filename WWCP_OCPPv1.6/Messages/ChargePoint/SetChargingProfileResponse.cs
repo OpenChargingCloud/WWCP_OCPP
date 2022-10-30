@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -53,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new set charging profile response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The set charging profile request leading to this response.</param>
         /// <param name="Status">The success or failure of the set charging profile command.</param>
         public SetChargingProfileResponse(CS.SetChargingProfileRequest  Request,
                                           ChargingProfileStatus         Status)
@@ -74,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new set charging profile response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The set charging profile request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SetChargingProfileResponse(CS.SetChargingProfileRequest  Request,
                                           Result                        Result)
@@ -127,100 +125,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, SetChargingProfileResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a set charging profile response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="SetChargingProfileResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="Request">The set charging profile request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static SetChargingProfileResponse Parse(CS.SetChargingProfileRequest  Request,
-                                                       XElement                      SetChargingProfileResponseXML,
-                                                       OnExceptionDelegate           OnException = null)
+                                                       XElement                      XML)
         {
 
             if (TryParse(Request,
-                         SetChargingProfileResponseXML,
-                         out SetChargingProfileResponse setChargingProfileResponse,
-                         OnException))
+                         XML,
+                         out var setChargingProfileResponse,
+                         out var errorResponse))
             {
-                return setChargingProfileResponse;
+                return setChargingProfileResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a set charging profile response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, SetChargingProfileResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomSetChargingProfileResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a set charging profile response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="SetChargingProfileResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SetChargingProfileResponse Parse(CS.SetChargingProfileRequest  Request,
-                                                       JObject                       SetChargingProfileResponseJSON,
-                                                       OnExceptionDelegate           OnException = null)
+        /// <param name="Request">The set charging profile request leading to this response.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomSetChargingProfileResponseParser">A delegate to parse custom set charging profile responses.</param>
+        public static SetChargingProfileResponse Parse(CS.SetChargingProfileRequest                              Request,
+                                                       JObject                                                   JSON,
+                                                       CustomJObjectParserDelegate<SetChargingProfileResponse>?  CustomSetChargingProfileResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         SetChargingProfileResponseJSON,
-                         out SetChargingProfileResponse setChargingProfileResponse,
-                         OnException))
+                         JSON,
+                         out var setChargingProfileResponse,
+                         out var errorResponse,
+                         CustomSetChargingProfileResponseParser))
             {
-                return setChargingProfileResponse;
+                return setChargingProfileResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a set charging profile response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, SetChargingProfileResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a set charging profile response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="SetChargingProfileResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SetChargingProfileResponse Parse(CS.SetChargingProfileRequest  Request,
-                                                       String                        SetChargingProfileResponseText,
-                                                       OnExceptionDelegate           OnException = null)
-        {
-
-            if (TryParse(Request,
-                         SetChargingProfileResponseText,
-                         out SetChargingProfileResponse setChargingProfileResponse,
-                         OnException))
-            {
-                return setChargingProfileResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, SetChargingProfileResponseXML,  out SetChargingProfileResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out SetChargingProfileResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a set charging profile response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="SetChargingProfileResponseXML">The XML to be parsed.</param>
+        /// <param name="Request">The set charging profile request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="SetChargingProfileResponse">The parsed set charging profile response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.SetChargingProfileRequest    Request,
-                                       XElement                        SetChargingProfileResponseXML,
-                                       out SetChargingProfileResponse  SetChargingProfileResponse,
-                                       OnExceptionDelegate             OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CS.SetChargingProfileRequest     Request,
+                                       XElement                         XML,
+                                       out SetChargingProfileResponse?  SetChargingProfileResponse,
+                                       out String?                      ErrorResponse)
         {
 
             try
@@ -230,41 +202,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                  Request,
 
-                                                 SetChargingProfileResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                                              ChargingProfileStatusExtentions.Parse)
+                                                 XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
+                                                                    ChargingProfileStatusExtentions.Parse)
 
                                              );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, SetChargingProfileResponseXML, e);
-
-                SetChargingProfileResponse = null;
+                SetChargingProfileResponse  = null;
+                ErrorResponse               = "The given XML representation of a set charging profile response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, SetChargingProfileResponseJSON,  out SetChargingProfileResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out SetChargingProfileResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a set charging profile response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="SetChargingProfileResponseJSON">The JSON to be parsed.</param>
+        /// <param name="Request">The set charging profile request leading to this response.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SetChargingProfileResponse">The parsed set charging profile response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.SetChargingProfileRequest    Request,
-                                       JObject                         SetChargingProfileResponseJSON,
-                                       out SetChargingProfileResponse  SetChargingProfileResponse,
-                                       OnExceptionDelegate             OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSetChargingProfileResponseParser">A delegate to parse custom set charging profile responses.</param>
+        public static Boolean TryParse(CS.SetChargingProfileRequest                              Request,
+                                       JObject                                                   JSON,
+                                       out SetChargingProfileResponse?                           SetChargingProfileResponse,
+                                       out String?                                               ErrorResponse,
+                                       CustomJObjectParserDelegate<SetChargingProfileResponse>?  CustomSetChargingProfileResponseParser   = null)
         {
 
             try
@@ -274,11 +246,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ChargingProfileStatus
 
-                if (!SetChargingProfileResponseJSON.MapMandatory("status",
-                                                                 "charging profile status",
-                                                                 ChargingProfileStatusExtentions.Parse,
-                                                                 out ChargingProfileStatus  ChargingProfileStatus,
-                                                                 out String                 ErrorResponse))
+                if (!JSON.MapMandatory("status",
+                                       "charging profile status",
+                                       ChargingProfileStatusExtentions.Parse,
+                                       out ChargingProfileStatus ChargingProfileStatus,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
@@ -289,73 +261,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 SetChargingProfileResponse = new SetChargingProfileResponse(Request,
                                                                             ChargingProfileStatus);
 
+                if (CustomSetChargingProfileResponseParser is not null)
+                    SetChargingProfileResponse = CustomSetChargingProfileResponseParser(JSON,
+                                                                                        SetChargingProfileResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, SetChargingProfileResponseJSON, e);
-
-                SetChargingProfileResponse = null;
+                SetChargingProfileResponse  = null;
+                ErrorResponse               = "The given JSON representation of a set charging profile response is invalid: " + e.Message;
                 return false;
-
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, SetChargingProfileResponseText, out SetChargingProfileResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a set charging profile response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="SetChargingProfileResponseText">The text to be parsed.</param>
-        /// <param name="SetChargingProfileResponse">The parsed set charging profile response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.SetChargingProfileRequest    Request,
-                                       String                          SetChargingProfileResponseText,
-                                       out SetChargingProfileResponse  SetChargingProfileResponse,
-                                       OnExceptionDelegate             OnException  = null)
-        {
-
-            try
-            {
-
-                SetChargingProfileResponseText = SetChargingProfileResponseText?.Trim();
-
-                if (SetChargingProfileResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (SetChargingProfileResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(SetChargingProfileResponseText),
-                                 out SetChargingProfileResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(SetChargingProfileResponseText).Root,
-                                 out SetChargingProfileResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, SetChargingProfileResponseText, e);
-            }
-
-            SetChargingProfileResponse = null;
-            return false;
 
         }
 
@@ -368,7 +286,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "setChargingProfileResponse",
+            => new (OCPPNS.OCPPv1_6_CP + "setChargingProfileResponse",
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
 
@@ -382,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomSetChargingProfileResponseSerializer">A delegate to serialize custom charging profile responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SetChargingProfileResponse>  CustomSetChargingProfileResponseSerializer  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SetChargingProfileResponse>? CustomSetChargingProfileResponseSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -403,7 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The set charging profile command failed.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The set charging profile request leading to this response.</param>
         public static SetChargingProfileResponse Failed(CS.SetChargingProfileRequest Request)
 
             => new SetChargingProfileResponse(Request,

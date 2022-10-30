@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomStatusNotificationResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a status notification response.
@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToXML ()
+        #region ToXML()
 
         /// <summary>
         /// Return a XML representation of this object.

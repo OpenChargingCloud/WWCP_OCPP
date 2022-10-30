@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
@@ -30,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The TriggerMessage request.
+    /// The trigger message request.
     /// </summary>
     public class TriggerMessageRequest : ARequest<TriggerMessageRequest>
     {
@@ -53,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new TriggerMessage request.
+        /// Create a new trigger message request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
@@ -138,31 +137,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
 
         /// <summary>
-        /// Parse the given XML representation of a TriggerMessage request.
+        /// Parse the given XML representation of a trigger message request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static TriggerMessageRequest Parse(XElement             XML,
-                                                  Request_Id           RequestId,
-                                                  ChargeBox_Id         ChargeBoxId,
-                                                  OnExceptionDelegate  OnException = null)
+        public static TriggerMessageRequest Parse(XElement      XML,
+                                                  Request_Id    RequestId,
+                                                  ChargeBox_Id  ChargeBoxId)
         {
 
             if (TryParse(XML,
                          RequestId,
                          ChargeBoxId,
-                         out TriggerMessageRequest triggerMessageRequest,
-                         OnException))
+                         out var triggerMessageRequest,
+                         out var errorResponse))
             {
-                return triggerMessageRequest;
+                return triggerMessageRequest!;
             }
 
-            throw new ArgumentException("The given XML representation of a TriggerMessage request is invalid!", nameof(XML));
+            throw new ArgumentException("The given XML representation of a trigger message request is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
@@ -171,79 +169,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomTriggerMessageRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a TriggerMessage request.
+        /// Parse the given JSON representation of a trigger message request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom TriggerMessage requests.</param>
-        public static TriggerMessageRequest Parse(JObject                                             JSON,
-                                                  Request_Id                                          RequestId,
-                                                  ChargeBox_Id                                        ChargeBoxId,
-                                                  CustomJObjectParserDelegate<TriggerMessageRequest>  CustomTriggerMessageRequestParser   = null)
+        /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom trigger message requests.</param>
+        public static TriggerMessageRequest Parse(JObject                                              JSON,
+                                                  Request_Id                                           RequestId,
+                                                  ChargeBox_Id                                         ChargeBoxId,
+                                                  CustomJObjectParserDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
                          ChargeBoxId,
-                         out TriggerMessageRequest  triggerMessageRequest,
-                         out String                 ErrorResponse,
+                         out var triggerMessageRequest,
+                         out var errorResponse,
                          CustomTriggerMessageRequestParser))
             {
-                return triggerMessageRequest;
+                return triggerMessageRequest!;
             }
 
-            throw new ArgumentException("The given JSON representation of a TriggerMessage request is invalid: " + ErrorResponse, nameof(JSON));
+            throw new ArgumentException("The given JSON representation of a trigger message request is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out TriggerMessageRequest, out ErrorResponse)
 
         /// <summary>
-        /// Parse the given text representation of a TriggerMessage request.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static TriggerMessageRequest Parse(String               Text,
-                                                  Request_Id           RequestId,
-                                                  ChargeBox_Id         ChargeBoxId,
-                                                  OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(Text,
-                         RequestId,
-                         ChargeBoxId,
-                         out TriggerMessageRequest triggerMessageRequest,
-                         OnException))
-            {
-                return triggerMessageRequest;
-            }
-
-            throw new ArgumentException("The given text representation of a TriggerMessage request is invalid!", nameof(Text));
-
-        }
-
-        #endregion 
-
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out TriggerMessageRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a TriggerMessage request.
+        /// Try to parse the given XML representation of a trigger message request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="TriggerMessageRequest">The parsed TriggerMessage request.</param>
+        /// <param name="TriggerMessageRequest">The parsed trigger message request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                   XML,
-                                       Request_Id                 RequestId,
-                                       ChargeBox_Id               ChargeBoxId,
-                                       out TriggerMessageRequest  TriggerMessageRequest,
-                                       OnExceptionDelegate        OnException  = null)
+        public static Boolean TryParse(XElement                    XML,
+                                       Request_Id                  RequestId,
+                                       ChargeBox_Id                ChargeBoxId,
+                                       out TriggerMessageRequest?  TriggerMessageRequest,
+                                       out String?                 ErrorResponse)
         {
 
             try
@@ -263,17 +232,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, XML, e);
-
-                TriggerMessageRequest = null;
+                TriggerMessageRequest  = null;
+                ErrorResponse          = "The given XML representation of a trigger message request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -285,18 +252,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a TriggerMessage request.
+        /// Try to parse the given JSON representation of a trigger message request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="TriggerMessageRequest">The parsed TriggerMessage request.</param>
+        /// <param name="TriggerMessageRequest">The parsed trigger message request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                    JSON,
-                                       Request_Id                 RequestId,
-                                       ChargeBox_Id               ChargeBoxId,
-                                       out TriggerMessageRequest  TriggerMessageRequest,
-                                       out String                 ErrorResponse)
+        public static Boolean TryParse(JObject                     JSON,
+                                       Request_Id                  RequestId,
+                                       ChargeBox_Id                ChargeBoxId,
+                                       out TriggerMessageRequest?  TriggerMessageRequest,
+                                       out String?                 ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
@@ -307,20 +274,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a TriggerMessage request.
+        /// Try to parse the given JSON representation of a trigger message request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="TriggerMessageRequest">The parsed TriggerMessage request.</param>
+        /// <param name="TriggerMessageRequest">The parsed trigger message request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom TriggerMessage requests.</param>
-        public static Boolean TryParse(JObject                                             JSON,
-                                       Request_Id                                          RequestId,
-                                       ChargeBox_Id                                        ChargeBoxId,
-                                       out TriggerMessageRequest                           TriggerMessageRequest,
-                                       out String                                          ErrorResponse,
-                                       CustomJObjectParserDelegate<TriggerMessageRequest>  CustomTriggerMessageRequestParser)
+        /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom trigger message requests.</param>
+        public static Boolean TryParse(JObject                                              JSON,
+                                       Request_Id                                           RequestId,
+                                       ChargeBox_Id                                         ChargeBoxId,
+                                       out TriggerMessageRequest?                           TriggerMessageRequest,
+                                       out String?                                          ErrorResponse,
+                                       CustomJObjectParserDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestParser)
         {
 
             try
@@ -390,68 +357,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 TriggerMessageRequest  = null;
-                ErrorResponse          = "The given JSON representation of a TriggerMessage request is invalid: " + e.Message;
+                ErrorResponse          = "The given JSON representation of a trigger message request is invalid: " + e.Message;
                 return false;
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Text, RequestId, ChargeBoxId, out TriggerMessageRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a TriggerMessage request.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="TriggerMessageRequest">The parsed TriggerMessage request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                     Text,
-                                       Request_Id                 RequestId,
-                                       ChargeBox_Id               ChargeBoxId,
-                                       out TriggerMessageRequest  TriggerMessageRequest,
-                                       OnExceptionDelegate        OnException  = null)
-        {
-
-            try
-            {
-
-                Text = Text?.Trim();
-
-                if (Text.IsNotNullOrEmpty())
-                {
-
-                    if (Text.StartsWith("{") &&
-                        TryParse(JObject.Parse(Text),
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out TriggerMessageRequest,
-                                 out String ErrorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(Text).Root,
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out TriggerMessageRequest,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, Text, e);
-            }
-
-            TriggerMessageRequest = null;
-            return false;
 
         }
 
@@ -464,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "triggerMessageRequest",
+            => new (OCPPNS.OCPPv1_6_CP + "triggerMessageRequest",
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "requestedMessage",   RequestedMessage.AsText()),
 
@@ -488,8 +396,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomTriggerMessageRequestSerializer">A delegate to serialize custom TriggerMessage requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<TriggerMessageRequest> CustomTriggerMessageRequestSerializer)
+        /// <param name="CustomTriggerMessageRequestSerializer">A delegate to serialize custom trigger message requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<TriggerMessageRequest>? CustomTriggerMessageRequestSerializer)
         {
 
             var json = JSONObject.Create(
@@ -516,12 +424,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (TriggerMessageRequest1, TriggerMessageRequest2)
 
         /// <summary>
-        /// Compares two TriggerMessage requests for equality.
+        /// Compares two trigger message requests for equality.
         /// </summary>
-        /// <param name="TriggerMessageRequest1">A TriggerMessage request.</param>
-        /// <param name="TriggerMessageRequest2">Another TriggerMessage request.</param>
+        /// <param name="TriggerMessageRequest1">A trigger message request.</param>
+        /// <param name="TriggerMessageRequest2">Another trigger message request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (TriggerMessageRequest TriggerMessageRequest1, TriggerMessageRequest TriggerMessageRequest2)
+        public static Boolean operator == (TriggerMessageRequest TriggerMessageRequest1,
+                                           TriggerMessageRequest TriggerMessageRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -529,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if ((TriggerMessageRequest1 is null) || (TriggerMessageRequest2 is null))
+            if (TriggerMessageRequest1 is null || TriggerMessageRequest2 is null)
                 return false;
 
             return TriggerMessageRequest1.Equals(TriggerMessageRequest2);
@@ -541,12 +450,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (TriggerMessageRequest1, TriggerMessageRequest2)
 
         /// <summary>
-        /// Compares two TriggerMessage requests for inequality.
+        /// Compares two trigger message requests for inequality.
         /// </summary>
-        /// <param name="TriggerMessageRequest1">A TriggerMessage request.</param>
-        /// <param name="TriggerMessageRequest2">Another TriggerMessage request.</param>
+        /// <param name="TriggerMessageRequest1">A trigger message request.</param>
+        /// <param name="TriggerMessageRequest2">Another trigger message request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (TriggerMessageRequest TriggerMessageRequest1, TriggerMessageRequest TriggerMessageRequest2)
+        public static Boolean operator != (TriggerMessageRequest TriggerMessageRequest1,
+                                           TriggerMessageRequest TriggerMessageRequest2)
 
             => !(TriggerMessageRequest1 == TriggerMessageRequest2);
 
@@ -559,44 +469,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two trigger message requests for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A trigger message request to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is TriggerMessageRequest TriggerMessageRequest))
-                return false;
-
-            return Equals(TriggerMessageRequest);
-
-        }
+            => Object is TriggerMessageRequest triggerMessageRequest &&
+                   Equals(triggerMessageRequest);
 
         #endregion
 
         #region Equals(TriggerMessageRequest)
 
         /// <summary>
-        /// Compares two TriggerMessage requests for equality.
+        /// Compares two trigger message requests for equality.
         /// </summary>
-        /// <param name="TriggerMessageRequest">A TriggerMessage request to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(TriggerMessageRequest TriggerMessageRequest)
-        {
+        /// <param name="TriggerMessageRequest">A trigger message request to compare with.</param>
+        public override Boolean Equals(TriggerMessageRequest? TriggerMessageRequest)
 
-            if (TriggerMessageRequest is null)
-                return false;
+            => TriggerMessageRequest is not null &&
 
-            return RequestedMessage.Equals(TriggerMessageRequest.RequestedMessage) &&
+               RequestedMessage.Equals(TriggerMessageRequest.RequestedMessage) &&
 
-                   (!ConnectorId.HasValue && !TriggerMessageRequest.ConnectorId.HasValue) ||
-                    (ConnectorId.HasValue &&  TriggerMessageRequest.ConnectorId.HasValue && ConnectorId.Equals(TriggerMessageRequest.ConnectorId));
-
-        }
+            ((!ConnectorId.HasValue && !TriggerMessageRequest.ConnectorId.HasValue) ||
+              (ConnectorId.HasValue &&  TriggerMessageRequest.ConnectorId.HasValue && ConnectorId.Equals(TriggerMessageRequest.ConnectorId)));
 
         #endregion
 
@@ -614,10 +510,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 return RequestedMessage.GetHashCode() * 5 ^
-
-                       (ConnectorId.HasValue
-                            ? ConnectorId.GetHashCode()
-                            : 0);
+                       ConnectorId?.    GetHashCode() ?? 0;
 
             }
         }

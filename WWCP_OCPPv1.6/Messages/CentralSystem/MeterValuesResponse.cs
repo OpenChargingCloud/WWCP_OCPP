@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (Request, MeterValuesResponseXML)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a meter values response.
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (Request, MeterValuesResponseJSON, CustomMeterValuesResponseParser = null)
+        #region (static) Parse   (Request, JSON, CustomMeterValuesResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a meter values response.
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given XML representation of a meter values response.
         /// </summary>
-        /// <param name="Request">The MeterValues request leading to this response.</param>
+        /// <param name="Request">The meter values request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="MeterValuesResponse">The parsed meter values response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Try to parse the given JSON representation of a meter values response.
         /// </summary>
-        /// <param name="Request">The MeterValues request leading to this response.</param>
+        /// <param name="Request">The meter values request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="MeterValuesResponse">The parsed meter values response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToXML ()
+        #region ToXML()
 
         /// <summary>
         /// Return a XML representation of this object.

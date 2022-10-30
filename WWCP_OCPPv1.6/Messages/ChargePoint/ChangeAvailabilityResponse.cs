@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new change availability response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The change availability request leading to this response.</param>
         /// <param name="Status">The success or failure of the change availability command.</param>
         public ChangeAvailabilityResponse(CS.ChangeAvailabilityRequest  Request,
                                           AvailabilityStatus            Status)
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new change availability response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The change availability request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ChangeAvailabilityResponse(CS.ChangeAvailabilityRequest  Request,
                                           Result                        Result)
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Parse the given XML representation of a change availability response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The change availability request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         public static ChangeAvailabilityResponse Parse(CS.ChangeAvailabilityRequest  Request,
                                                        XElement                      XML)
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Parse the given JSON representation of a change availability response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The change availability request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomChangeAvailabilityResponseParser">A delegate to parse custom change availability responses.</param>
         public static ChangeAvailabilityResponse Parse(CS.ChangeAvailabilityRequest                              Request,
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given XML representation of a change availability response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The change availability request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ChangeAvailabilityResponse">The parsed change availability response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Try to parse the given JSON representation of a change availability response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The change availability request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChangeAvailabilityResponse">The parsed change availability response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToXML ()
+        #region ToXML()
 
         /// <summary>
         /// Return a XML representation of this object.
@@ -319,7 +319,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The change availability command failed.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The change availability request leading to this response.</param>
         public static ChangeAvailabilityResponse Failed(CS.ChangeAvailabilityRequest Request)
 
             => new (Request,

@@ -2972,9 +2972,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (TriggerMessageResponse.TryParse(Request,
                                                     result.Response,
-                                                    out TriggerMessageResponse triggerMessageResponse))
+                                                    out var triggerMessageResponse,
+                                                    out var errorResponse))
                 {
-                    return triggerMessageResponse;
+                    return triggerMessageResponse!;
                 }
 
                 return new TriggerMessageResponse(Request,
@@ -3014,9 +3015,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (UpdateFirmwareResponse.TryParse(Request,
                                                     result.Response,
-                                                    out UpdateFirmwareResponse updateFirmwareResponse))
+                                                    out var updateFirmwareResponse,
+                                                    out var errorResponse))
                 {
-                    return updateFirmwareResponse;
+                    return updateFirmwareResponse!;
                 }
 
                 return new UpdateFirmwareResponse(Request,
@@ -3232,9 +3234,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (SetChargingProfileResponse.TryParse(Request,
                                                         result.Response,
-                                                        out SetChargingProfileResponse setChargingProfileResponse))
+                                                        out var setChargingProfileResponse,
+                                                        out var errorResponse))
                 {
-                    return setChargingProfileResponse;
+                    return setChargingProfileResponse!;
                 }
 
                 return new SetChargingProfileResponse(Request,
@@ -3361,9 +3364,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (UnlockConnectorResponse.TryParse(Request,
                                                      result.Response,
-                                                     out UnlockConnectorResponse unlockConnectorResponse))
+                                                     out var unlockConnectorResponse,
+                                                     out var errorResponse))
                 {
-                    return unlockConnectorResponse;
+                    return unlockConnectorResponse!;
                 }
 
                 return new UnlockConnectorResponse(Request,
@@ -3447,9 +3451,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (SendLocalListResponse.TryParse(Request,
                                                    result.Response,
-                                                   out SendLocalListResponse unlockConnectorResponse))
+                                                   out var unlockConnectorResponse,
+                                                   out var errorResponse))
                 {
-                    return unlockConnectorResponse;
+                    return unlockConnectorResponse!;
                 }
 
                 return new SendLocalListResponse(Request,
