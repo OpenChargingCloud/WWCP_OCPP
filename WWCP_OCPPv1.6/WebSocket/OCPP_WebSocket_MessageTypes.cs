@@ -15,21 +15,47 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
 {
 
+    /// <summary>
+    /// Extension methods for the OCPP web socket message types.
+    /// </summary>
+    public static class OCPP_WebSocket_MessageTypesExtensions
+    {
+
+        public static Byte AsByte(this OCPP_WebSocket_MessageTypes MessageType)
+
+            => MessageType switch {
+                   OCPP_WebSocket_MessageTypes.CALL        => 2,
+                   OCPP_WebSocket_MessageTypes.CALLRESULT  => 3,
+                   OCPP_WebSocket_MessageTypes.CALLERROR   => 4,
+                   _                                       => 0
+               };
+
+        public static OCPP_WebSocket_MessageTypes ParseMessageType(Byte MessageType)
+
+            => MessageType switch {
+                   2  => OCPP_WebSocket_MessageTypes.CALL,
+                   3  => OCPP_WebSocket_MessageTypes.CALLRESULT,
+                   4  => OCPP_WebSocket_MessageTypes.CALLERROR,
+                   _  => OCPP_WebSocket_MessageTypes.Undefined
+               };
+
+    }
+
+
+    /// <summary>
+    /// The OCPP web socket message types.
+    /// </summary>
     public enum OCPP_WebSocket_MessageTypes : Byte
     {
 
-        CALL         = 2,
+        Undefined    = 0,
 
-        CALLRESULT   = 3,
+        CALL         = 2,  // Client-to-Server
+
+        CALLRESULT   = 3,  // Server-to-Client
 
         CALLERROR    = 4
 
