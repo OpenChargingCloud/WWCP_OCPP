@@ -17,20 +17,16 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPPv1_6.CP;
-using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
 using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Illias;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+
+using cloud.charging.open.protocols.OCPPv1_6.CP;
+using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
 
 #endregion
 
@@ -63,30 +59,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (class) SendRequestResult
+        #region (class) SendRequestState
 
-        public class SendRequestResult
+        public class SendRequestState
         {
 
-            public DateTime          Timestamp           { get; }
-            public ChargeBox_Id      ClientId            { get; }
+            public DateTime                       Timestamp           { get; }
+            public ChargeBox_Id                   ChargeBoxId         { get; }
             public OCPP_WebSocket_RequestMessage  WSRequestMessage    { get; }
-            public DateTime          Timeout             { get; }
-            public JObject           Response            { get; set; }
-            public OCPP_WebSocket_ErrorCodes?     ErrorCode           { get; set; }
-            public String            ErrorDescription    { get; set; }
-            public JObject           ErrorDetails        { get; set; }
+            public DateTime                       Timeout             { get; }
 
-            public SendRequestResult(DateTime          Timestamp,
-                                     ChargeBox_Id      ClientId,
-                                     OCPP_WebSocket_RequestMessage  WSRequestMessage,
-                                     DateTime          Timeout)
+            public JObject?                       Response            { get; set; }
+            public OCPP_WebSocket_ErrorCodes?     ErrorCode           { get; set; }
+            public String?                        ErrorDescription    { get; set; }
+            public JObject?                       ErrorDetails        { get; set; }
+
+            public SendRequestState(DateTime                       Timestamp,
+                                    ChargeBox_Id                   ChargeBoxId,
+                                    OCPP_WebSocket_RequestMessage  WSRequestMessage,
+                                    DateTime                       Timeout,
+
+                                    JObject?                       Response           = null,
+                                    OCPP_WebSocket_ErrorCodes?     ErrorCode          = null,
+                                    String?                        ErrorDescription   = null,
+                                    JObject?                       ErrorDetails       = null)
             {
 
                 this.Timestamp         = Timestamp;
-                this.ClientId          = ClientId;
+                this.ChargeBoxId       = ChargeBoxId;
                 this.WSRequestMessage  = WSRequestMessage;
                 this.Timeout           = Timeout;
+
+                this.Response          = Response;
+                this.ErrorCode         = ErrorCode;
+                this.ErrorDescription  = ErrorDescription;
+                this.ErrorDetails      = ErrorDetails;
 
             }
 
@@ -139,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         String IEventSender.Id { get; }
 
 
-        public List<SendRequestResult> requests;
+        public readonly Dictionary<Request_Id, SendRequestState> requests;
 
 
         public IEnumerable<ChargeBox_Id> ChargeBoxIds
@@ -585,7 +592,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         {
 
-            this.requests                        = new List<SendRequestResult>();
+            this.requests                        = new Dictionary<Request_Id, SendRequestState>();
             this.RequireAuthentication           = RequireAuthentication;
             this.ChargingBoxLogins               = new Dictionary<String, String?>();
             this.connectedChargingBoxes          = new Dictionary<ChargeBox_Id, Tuple<WebSocketConnection, DateTime>>();
@@ -693,15 +700,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
-        protected async Task ProcessNewWebSocketConnection(DateTime             LogTimestamp,
-                                                           WebSocketServer      Server,
-                                                           WebSocketConnection  Connection,
-                                                           EventTracking_Id     EventTrackingId,
-                                                           CancellationToken    CancellationToken)
+        protected Task ProcessNewWebSocketConnection(DateTime             LogTimestamp,
+                                                     WebSocketServer      Server,
+                                                     WebSocketConnection  Connection,
+                                                     EventTracking_Id     EventTrackingId,
+                                                     CancellationToken    CancellationToken)
         {
 
             if (!Connection.HasCustomData("chargeBoxId") &&
-                ChargeBox_Id.TryParse(Connection.Request.Path.ToString().Substring(Connection.Request.Path.ToString().LastIndexOf("/") + 1), out ChargeBox_Id chargeBoxId))
+                ChargeBox_Id.TryParse(Connection.Request.Path.ToString().Substring(Connection.Request.Path.ToString().LastIndexOf("/") + 1), out var chargeBoxId))
             {
                 Connection.AddCustomData("chargeBoxId", chargeBoxId);
                 connectedChargingBoxes.Add(chargeBoxId, new Tuple<WebSocketConnection, DateTime>(Connection, Timestamp.Now));
@@ -719,36 +726,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
+            return Task.CompletedTask;
+
         }
 
         #endregion
 
-
-        public virtual Task<WebSocketTextMessageResponse> OnTextMessageProc(DateTime             Timestamp,
-                                                                            WebSocketServer      WebSocketServer,
-                                                                            WebSocketConnection  Sender,
-                                                                            String               TextMessage,
-                                                                            EventTracking_Id     EventTrackingId,
-                                                                            CancellationToken    CancellationToken)
-        {
-            return null;
-        }
 
         #region (protected) ProcessTextMessages          (Connection, EventTrackingId, OCPPTextMessage, CancellationToken)
 
         /// <summary>
         /// Process all text messages of this web socket API.
         /// </summary>
-        /// <param name="Server">The web socket server.</param>
+        /// <param name="RequestTimestamp">The timestamp of the request.</param>
+        /// <param name="EventTrackingId">The event tracking identification.</param>
         /// <param name="Connection">The web socket connection.</param>
         /// <param name="OCPPMessage">The received OCPP message.</param>
-        /// <param name="EventTrackingId">The event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public override async Task<WebSocketTextMessageResponse> ProcessTextMessage(DateTime             RequestTimestamp,
-                                                                                    EventTracking_Id     EventTrackingId,
-                                                                                    WebSocketConnection  Connection,
-                                                                                    String               OCPPMessage,
-                                                                                    CancellationToken    CancellationToken)
+        public override async Task<WebSocketTextMessageResponse?> ProcessTextMessage(DateTime             RequestTimestamp,
+                                                                                     EventTracking_Id     EventTrackingId,
+                                                                                     WebSocketConnection  Connection,
+                                                                                     String               OCPPMessage,
+                                                                                     CancellationToken    CancellationToken)
         {
 
             if (OCPPMessage?.Trim() is null)
@@ -761,8 +760,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            OCPP_WebSocket_ResponseMessage OCPPResponse       = null;
-            OCPP_WebSocket_ErrorMessage    OCPPErrorResponse  = null;
+            OCPP_WebSocket_ResponseMessage? OCPPResponse        = null;
+            OCPP_WebSocket_ErrorMessage?    OCPPErrorResponse   = null;
 
             try
             {
@@ -798,13 +797,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     #region Initial checks
 
                     var chargeBoxId  = Connection.TryGetCustomData<ChargeBox_Id>("chargeBoxId");
-                    var requestId    = Request_Id.TryParse(JSON[1]?.Value<String>());
+                    var requestId    = Request_Id.TryParse(JSON[1]?.Value<String>() ?? "");
                     var action       = JSON[2].Value<String>()?.Trim();
                     var requestData  = JSON[3].Value<JObject>();
 
                     if (!chargeBoxId.HasValue)
                         OCPPErrorResponse  = new OCPP_WebSocket_ErrorMessage(
-                                                 requestId.Value,
+                                                 requestId ?? Request_Id.Parse("0"),
                                                  OCPP_WebSocket_ErrorCodes.ProtocolError,
                                                  "The given 'charge box identity' must not be null or empty!",
                                                  new JObject(
@@ -834,8 +833,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     else
                     {
 
-                        JObject OCPPResponseJSON  = null;
-                        String  ErrorResponse     = null;
+                        JObject? OCPPResponseJSON   = null;
+                        String?  ErrorResponse      = null;
 
                         switch (action)
                         {
@@ -868,7 +867,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         if (BootNotificationRequest.TryParse(requestData,
                                                                              requestId.Value,
                                                                              chargeBoxId.Value,
-                                                                             out BootNotificationRequest bootNotificationRequest,
+                                                                             out var bootNotificationRequest,
                                                                              out ErrorResponse,
                                                                              CustomBootNotificationRequestParser))
                                         {
@@ -1017,7 +1016,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         if (HeartbeatRequest.TryParse(requestData,
                                                                       requestId.Value,
                                                                       chargeBoxId.Value,
-                                                                      out HeartbeatRequest request,
+                                                                      out var request,
                                                                       out ErrorResponse,
                                                                       CustomHeartbeatRequestParser))
                                         {
@@ -1171,7 +1170,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         if (AuthorizeRequest.TryParse(requestData,
                                                                       requestId.Value,
                                                                       chargeBoxId.Value,
-                                                                      out AuthorizeRequest request,
+                                                                      out var request,
                                                                       out ErrorResponse,
                                                                       CustomAuthorizeRequestParser))
                                         {
@@ -1324,7 +1323,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         if (StartTransactionRequest.TryParse(requestData,
                                                                              requestId.Value,
                                                                              chargeBoxId.Value,
-                                                                             out StartTransactionRequest request,
+                                                                             out var request,
                                                                              out ErrorResponse,
                                                                              CustomStartTransactionRequestParser))
                                         {
@@ -1477,7 +1476,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         if (StatusNotificationRequest.TryParse(requestData,
                                                                                requestId.Value,
                                                                                chargeBoxId.Value,
-                                                                               out StatusNotificationRequest request,
+                                                                               out var request,
                                                                                out ErrorResponse,
                                                                                CustomStatusNotificationRequestParser))
                                         {
@@ -1628,7 +1627,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         if (MeterValuesRequest.TryParse(requestData,
                                                                         requestId.Value,
                                                                         chargeBoxId.Value,
-                                                                        out MeterValuesRequest meterValuesRequest,
+                                                                        out var meterValuesRequest,
                                                                         out ErrorResponse,
                                                                         CustomMeterValuesRequestParser))
                                         {
@@ -1777,7 +1776,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         if (StopTransactionRequest.TryParse(requestData,
                                                                              requestId.Value,
                                                                              chargeBoxId.Value,
-                                                                             out StopTransactionRequest request,
+                                                                             out var request,
                                                                              out ErrorResponse,
                                                                              CustomStopTransactionRequestParser))
                                         {
@@ -1931,7 +1930,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         if (CP.DataTransferRequest.TryParse(requestData,
                                                                             requestId.Value,
                                                                             chargeBoxId.Value,
-                                                                            out CP.DataTransferRequest request,
+                                                                            out var request,
                                                                             out ErrorResponse,
                                                                             CustomDataTransferRequestParser))
                                         {
@@ -2084,7 +2083,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         if (DiagnosticsStatusNotificationRequest.TryParse(requestData,
                                                                                           requestId.Value,
                                                                                           chargeBoxId.Value,
-                                                                                          out DiagnosticsStatusNotificationRequest request,
+                                                                                          out var request,
                                                                                           out ErrorResponse,
                                                                                           CustomDiagnosticsStatusNotificationRequestParser))
                                         {
@@ -2237,7 +2236,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         if (FirmwareStatusNotificationRequest.TryParse(requestData,
                                                                                        requestId.Value,
                                                                                        chargeBoxId.Value,
-                                                                                       out FirmwareStatusNotificationRequest request,
+                                                                                       out var request,
                                                                                        out ErrorResponse,
                                                                                        CustomFirmwareStatusNotificationRequestParser))
                                         {
@@ -2401,15 +2400,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     lock (requests)
                     {
-
-                        var requestId  = Request_Id.Parse(JSON[1]?.Value<String>());
-                        var request    = requests.FirstOrDefault(rr => requestId == rr.WSRequestMessage.RequestId);
-
-                        if (request != null)
+                        if (Request_Id.TryParse(JSON[1]?.Value<String>() ?? "", out var requestId) &&
+                            requests.TryGetValue(requestId, out var request))
                         {
                             request.Response = JSON[2] as JObject;
                         }
-
                     }
 
                     //// No response to the charge point!
@@ -2455,11 +2450,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     lock (requests)
                     {
-
-                        var requestId  = Request_Id.Parse(JSON[1]?.Value<String>());
-                        var request    = requests.FirstOrDefault(rr => requestId == rr.WSRequestMessage.RequestId);
-
-                        if (request != null)
+                        if (Request_Id.TryParse(JSON[1]?.Value<String>() ?? "", out var requestId) &&
+                            requests.TryGetValue(requestId, out var request))
                         {
 
                             if (Enum.TryParse(JSON[2]?.Value<String>(), out OCPP_WebSocket_ErrorCodes errorCode))
@@ -2472,7 +2464,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                             request.ErrorDetails      = JSON[4] as JObject;
 
                         }
-
                     }
 
                     //// No response to the charge point!
@@ -2540,25 +2531,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region SendRequest(RequestId, ClientId, Action, Request, Timeout = null)
 
-        public async Task<SendRequestResult> SendRequest(Request_Id    RequestId,
-                                                         ChargeBox_Id  ClientId,
-                                                         String        Action,
-                                                         JObject       Request,
-                                                         TimeSpan?     Timeout   = null)
+        #region SendRequest(RequestId, ChargeBoxId, OCPPAction, JSONPayload, Timeout = null)
+
+        public async Task<SendRequestState> SendRequest(Request_Id    RequestId,
+                                                        ChargeBox_Id  ChargeBoxId,
+                                                        String        OCPPAction,
+                                                        JObject       JSONPayload,
+                                                        TimeSpan?     Timeout   = null)
         {
 
-            var endTime = Timestamp.Now + (Timeout ?? TimeSpan.FromSeconds(10));
+            var endTime         = Timestamp.Now + (Timeout ?? TimeSpan.FromSeconds(10));
 
-            var result = await SendJSON(RequestId,
-                                        ClientId,
-                                        Action,
-                                        Request,
-                                        endTime);
+            var sendJSONResult  = await SendJSON(RequestId,
+                                                 ChargeBoxId,
+                                                 OCPPAction,
+                                                 JSONPayload,
+                                                 endTime);
 
-            if (result == SendJSONResults.ok)
+            if (sendJSONResult == SendJSONResults.ok)
             {
+
+                #region Wait for a response... till timeout
 
                 do
                 {
@@ -2568,42 +2562,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         await Task.Delay(25);
 
-                        var sendRequestResult = requests.FirstOrDefault(rr => rr.WSRequestMessage.RequestId == RequestId);
-
-                        if (sendRequestResult?.Response           != null ||
-                            sendRequestResult?.ErrorCode.HasValue == true)
+                        if (requests.TryGetValue(RequestId, out var sendRequestState) &&
+                            sendRequestState?.Response is not null ||
+                            sendRequestState?.ErrorCode.HasValue == true)
                         {
 
                             lock (requests)
                             {
-                                requests.Remove(sendRequestResult);
+                                requests.Remove(RequestId);
                             }
 
-                            return sendRequestResult;
+                            return sendRequestState;
 
                         }
 
                     }
                     catch (Exception e)
-                    { }
+                    {
+                        DebugX.Log(String.Concat(nameof(CentralSystemWSServer), ".", nameof(SendRequest), " exception occured: ", e.Message));
+                    }
 
                 }
                 while (Timestamp.Now < endTime);
 
+                #endregion
+
+                #region When timeout...
+
                 lock (requests)
                 {
-
-                    var sendRequestResult = requests.FirstOrDefault(rr => rr.WSRequestMessage.RequestId == RequestId);
-
-                    if (sendRequestResult != null)
+                    if (requests.TryGetValue(RequestId, out var sendRequestState) && sendRequestState is not null)
                     {
-                        sendRequestResult.ErrorCode = OCPP_WebSocket_ErrorCodes.Timeout;
-                        requests.Remove(sendRequestResult);
+                        sendRequestState.ErrorCode = OCPP_WebSocket_ErrorCodes.Timeout;
+                        requests.Remove(RequestId);
+                        return sendRequestState;
                     }
-
-                    return sendRequestResult;
-
                 }
+
+                #endregion
 
             }
 
@@ -2613,79 +2609,104 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
                 lock (requests)
                 {
-
-                    var sendRequestResult = requests.FirstOrDefault(rr => rr.WSRequestMessage.RequestId == RequestId);
-
-                    requests.Remove(sendRequestResult);
-
-                    return sendRequestResult;
-
+                    if (requests.TryGetValue(RequestId, out var sendRequestState) && sendRequestState is not null)
+                    {
+                        sendRequestState.ErrorCode = OCPP_WebSocket_ErrorCodes.Timeout;
+                        requests.Remove(RequestId);
+                        return sendRequestState;
+                    }
                 }
             }
 
             #endregion
 
+
+            // Just in case...
+            var now = Timestamp.Now;
+
+            return new SendRequestState(now,
+                                        ChargeBoxId,
+                                        new OCPP_WebSocket_RequestMessage(
+                                            RequestId,
+                                            OCPPAction,
+                                            JSONPayload
+                                        ),
+                                        now,
+
+                                        new JObject(),
+                                        OCPP_WebSocket_ErrorCodes.InternalError);
+
         }
 
         #endregion
 
-        #region SendJSON   (RequestId, ChargeBoxId, Action, Data,    Timeout)
+        #region SendJSON   (RequestId, ChargeBoxId, Action, JSON, RequestTimeout)
 
+        /// <summary>
+        /// Send (and forget) the given JSON.
+        /// </summary>
+        /// <param name="RequestId">A unique request identification.</param>
+        /// <param name="ChargeBoxId">A charge box identification.</param>
+        /// <param name="Action">An OCPP action.</param>
+        /// <param name="JSON">The JSON payload.</param>
+        /// <param name="RequestTimeout">A request timeout.</param>
         public async Task<SendJSONResults> SendJSON(Request_Id    RequestId,
                                                     ChargeBox_Id  ChargeBoxId,
                                                     String        Action,
-                                                    JObject       Data,
-                                                    DateTime      Timeout)
+                                                    JObject       JSON,
+                                                    DateTime      RequestTimeout)
         {
 
-            OCPP_WebSocket_RequestMessage  wsRequestMessage  = default;
-            SendRequestResult result            = default;
+            OCPP_WebSocket_RequestMessage?  wsRequestMessage   = null;
+            SendRequestState?               result             = null;
 
             try
             {
 
                 wsRequestMessage  = new OCPP_WebSocket_RequestMessage(RequestId,
-                                                         Action,
-                                                         Data);
+                                                                      Action,
+                                                                      JSON);
 
-                result            = new SendRequestResult(Timestamp.Now,
-                                                          ChargeBoxId,
-                                                          wsRequestMessage,
-                                                          Timeout);
+                result            = new SendRequestState(Timestamp.Now,
+                                                         ChargeBoxId,
+                                                         wsRequestMessage,
+                                                         RequestTimeout);
 
-                requests.Add(result);
+                requests.Add(result.WSRequestMessage.RequestId,
+                             result);
 
 
                 var webSocketConnection  = WebSocketConnections.LastOrDefault(ws => ws.GetCustomData<ChargeBox_Id>("chargeBoxId") == ChargeBoxId);
-
-                if (webSocketConnection == default)
+                if (webSocketConnection is null)
                 {
                     result.ErrorCode = OCPP_WebSocket_ErrorCodes.UnknownClient;
                     return SendJSONResults.unknownClient;
                 }
 
                 var networkStream        = webSocketConnection.TcpClient.GetStream();
-                var WSFrame              = new WebSocketFrame(WebSocketFrame.Fin.Final,
-                                                              WebSocketFrame.MaskStatus.Off,
-                                                              new Byte[4],
-                                                              WebSocketFrame.Opcodes.Text,
-                                                              wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.None).ToUTF8Bytes(),
-                                                              WebSocketFrame.Rsv.Off,
-                                                              WebSocketFrame.Rsv.Off,
-                                                              WebSocketFrame.Rsv.Off);
+                var WSFrame              = new WebSocketFrame(
+                                               WebSocketFrame.Fin.Final,
+                                               WebSocketFrame.MaskStatus.Off,
+                                               new Byte[4],
+                                               WebSocketFrame.Opcodes.Text,
+                                               wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.None).ToUTF8Bytes(),
+                                               WebSocketFrame.Rsv.Off,
+                                               WebSocketFrame.Rsv.Off,
+                                               WebSocketFrame.Rsv.Off
+                                           );
 
                 await networkStream.WriteAsync(WSFrame.ToByteArray());
 
                 File.AppendAllText(LogfileName,
-                                   String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                               Environment.NewLine,
-                                                 "ChargeBoxId: ",  ChargeBoxId.ToString(),                                                  Environment.NewLine,
-                                                 "Message sent: ", wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
+                                   String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                                    Environment.NewLine,
+                                                 "ChargeBoxId: ",  ChargeBoxId.ToString(),                                                       Environment.NewLine,
+                                                 "Message sent: ", wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented),      Environment.NewLine,
                                                  "--------------------------------------------------------------------------------------------", Environment.NewLine));
 
                 return SendJSONResults.ok;
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 result.ErrorCode = OCPP_WebSocket_ErrorCodes.NetworkError;
                 return SendJSONResults.failed;
@@ -2694,7 +2715,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         }
 
         #endregion
-
 
 
         #region Reset                 (Request, RequestTimeout = null)
@@ -3519,6 +3539,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         }
 
         #endregion
+
 
     }
 
