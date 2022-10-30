@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                Request,
 
                                                XML.MapValueOrFail      (OCPPNS.OCPPv1_6_CS + "status",
-                                                                                                RegistrationStatusExtentions.Parse),
+                                                                        RegistrationStatusExtentions.Parse),
 
                                                XML.ParseTimestampOrFail(OCPPNS.OCPPv1_6_CS + "currentTime"),
 

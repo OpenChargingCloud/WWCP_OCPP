@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -105,100 +103,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, ClearChargingProfileResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML,  OnException = null)
 
         /// <summary>
         /// Parse the given XML representation of a clear charging profile response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ClearChargingProfileResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static ClearChargingProfileResponse Parse(CS.ClearChargingProfileRequest  Request,
-                                                         XElement                        ClearChargingProfileResponseXML,
-                                                         OnExceptionDelegate             OnException = null)
+                                                         XElement                        XML)
         {
 
             if (TryParse(Request,
-                         ClearChargingProfileResponseXML,
-                         out ClearChargingProfileResponse clearChargingProfileResponse,
-                         OnException))
+                         XML,
+                         out var clearChargingProfileResponse,
+                         out var errorResponse))
             {
-                return clearChargingProfileResponse;
+                return clearChargingProfileResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a clear charging profile response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, ClearChargingProfileResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomClearChargingProfileResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a clear charging profile response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ClearChargingProfileResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearChargingProfileResponse Parse(CS.ClearChargingProfileRequest  Request,
-                                                         JObject                         ClearChargingProfileResponseJSON,
-                                                         OnExceptionDelegate             OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomClearChargingProfileResponseParser">A delegate to parse custom clear charging profile responses.</param>
+        public static ClearChargingProfileResponse Parse(CS.ClearChargingProfileRequest                              Request,
+                                                         JObject                                                     JSON,
+                                                         CustomJObjectParserDelegate<ClearChargingProfileResponse>?  CustomClearChargingProfileResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         ClearChargingProfileResponseJSON,
-                         out ClearChargingProfileResponse clearChargingProfileResponse,
-                         OnException))
+                         JSON,
+                         out var clearChargingProfileResponse,
+                         out var errorResponse,
+                         CustomClearChargingProfileResponseParser))
             {
-                return clearChargingProfileResponse;
+                return clearChargingProfileResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a clear charging profile response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, ClearChargingProfileResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a clear charging profile response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ClearChargingProfileResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearChargingProfileResponse Parse(CS.ClearChargingProfileRequest  Request,
-                                                         String                          ClearChargingProfileResponseText,
-                                                         OnExceptionDelegate             OnException = null)
-        {
-
-            if (TryParse(Request,
-                         ClearChargingProfileResponseText,
-                         out ClearChargingProfileResponse clearChargingProfileResponse,
-                         OnException))
-            {
-                return clearChargingProfileResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, ClearChargingProfileResponseXML,  out ClearChargingProfileResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out ClearChargingProfileResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a clear charging profile response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ClearChargingProfileResponseXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ClearChargingProfileResponse">The parsed clear charging profile response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ClearChargingProfileRequest    Request,
-                                       XElement                          ClearChargingProfileResponseXML,
-                                       out ClearChargingProfileResponse  ClearChargingProfileResponse,
-                                       OnExceptionDelegate               OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CS.ClearChargingProfileRequest     Request,
+                                       XElement                           XML,
+                                       out ClearChargingProfileResponse?  ClearChargingProfileResponse,
+                                       out String?                        ErrorResponse)
         {
 
             try
@@ -208,41 +180,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                    Request,
 
-                                                   ClearChargingProfileResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                                                  ClearChargingProfileStatusExtentions.Parse)
+                                                   XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
+                                                                      ClearChargingProfileStatusExtentions.Parse)
 
                                                );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, ClearChargingProfileResponseXML, e);
-
-                ClearChargingProfileResponse = null;
+                ClearChargingProfileResponse  = null;
+                ErrorResponse                 = "The given JSON representation of a clear charging profile response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, ClearChargingProfileResponseJSON, out ClearChargingProfileResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out ClearChargingProfileResponse, OnException = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a clear charging profile response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ClearChargingProfileResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ClearChargingProfileResponse">The parsed clear charging profile response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ClearChargingProfileRequest    Request,
-                                       JObject                           ClearChargingProfileResponseJSON,
-                                       out ClearChargingProfileResponse  ClearChargingProfileResponse,
-                                       OnExceptionDelegate               OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomClearChargingProfileResponseParser">A delegate to parse custom clear charging profile responses.</param>
+        public static Boolean TryParse(CS.ClearChargingProfileRequest                              Request,
+                                       JObject                                                     JSON,
+                                       out ClearChargingProfileResponse?                           ClearChargingProfileResponse,
+                                       out String?                                                 ErrorResponse,
+                                       CustomJObjectParserDelegate<ClearChargingProfileResponse>?  CustomClearChargingProfileResponseParser   = null)
         {
 
             try
@@ -252,11 +224,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ClearChargingProfileStatus
 
-                if (!ClearChargingProfileResponseJSON.MapMandatory("status",
-                                                                   "clear charging profile status",
-                                                                   ClearChargingProfileStatusExtentions.Parse,
-                                                                   out ClearChargingProfileStatus  ClearChargingProfileStatus,
-                                                                   out String                      ErrorResponse))
+                if (!JSON.MapMandatory("status",
+                                       "clear charging profile status",
+                                       ClearChargingProfileStatusExtentions.Parse,
+                                       out ClearChargingProfileStatus ClearChargingProfileStatus,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
@@ -267,86 +239,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 ClearChargingProfileResponse = new ClearChargingProfileResponse(Request,
                                                                                 ClearChargingProfileStatus);
 
+                if (CustomClearChargingProfileResponseParser is not null)
+                    ClearChargingProfileResponse = CustomClearChargingProfileResponseParser(JSON,
+                                                                                            ClearChargingProfileResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, ClearChargingProfileResponseJSON, e);
-
-                ClearChargingProfileResponse = null;
+                ClearChargingProfileResponse  = null;
+                ErrorResponse                 = "The given JSON representation of a clear charging profile response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, ClearChargingProfileResponseText, out ClearChargingProfileResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a clear charging profile response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ClearChargingProfileResponseText">The text to be parsed.</param>
-        /// <param name="ClearChargingProfileResponse">The parsed clear charging profile response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ClearChargingProfileRequest    Request,
-                                       String                            ClearChargingProfileResponseText,
-                                       out ClearChargingProfileResponse  ClearChargingProfileResponse,
-                                       OnExceptionDelegate               OnException  = null)
-        {
-
-            try
-            {
-
-                ClearChargingProfileResponseText = ClearChargingProfileResponseText?.Trim();
-
-                if (ClearChargingProfileResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (ClearChargingProfileResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(ClearChargingProfileResponseText),
-                                 out ClearChargingProfileResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(ClearChargingProfileResponseText).Root,
-                                 out ClearChargingProfileResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, ClearChargingProfileResponseText, e);
-            }
-
-            ClearChargingProfileResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "clearChargingProfileResponse",
+            => new (OCPPNS.OCPPv1_6_CP + "clearChargingProfileResponse",
                    new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
                );
 
@@ -358,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomClearChargingProfileResponseSerializer">A delegate to serialize custom clear charging profile responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileResponse>  CustomClearChargingProfileResponseSerializer  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileResponse>?  CustomClearChargingProfileResponseSerializer   = null)
         {
 
             var json = JSONObject.Create(
@@ -382,8 +300,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">The start transaction request leading to this response.</param>
         public static ClearChargingProfileResponse Failed(CS.ClearChargingProfileRequest Request)
 
-            => new ClearChargingProfileResponse(Request,
-                                                Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -398,7 +316,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ClearChargingProfileResponse1">A clear charging profile response.</param>
         /// <param name="ClearChargingProfileResponse2">Another clear charging profile response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ClearChargingProfileResponse ClearChargingProfileResponse1, ClearChargingProfileResponse ClearChargingProfileResponse2)
+        public static Boolean operator == (ClearChargingProfileResponse ClearChargingProfileResponse1,
+                                           ClearChargingProfileResponse ClearChargingProfileResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -406,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((ClearChargingProfileResponse1 is null) || (ClearChargingProfileResponse2 is null))
+            if (ClearChargingProfileResponse1 is null || ClearChargingProfileResponse2 is null)
                 return false;
 
             return ClearChargingProfileResponse1.Equals(ClearChargingProfileResponse2);
@@ -423,7 +342,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ClearChargingProfileResponse1">A clear charging profile response.</param>
         /// <param name="ClearChargingProfileResponse2">Another clear charging profile response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ClearChargingProfileResponse ClearChargingProfileResponse1, ClearChargingProfileResponse ClearChargingProfileResponse2)
+        public static Boolean operator != (ClearChargingProfileResponse ClearChargingProfileResponse1,
+                                           ClearChargingProfileResponse ClearChargingProfileResponse2)
 
             => !(ClearChargingProfileResponse1 == ClearChargingProfileResponse2);
 
@@ -436,22 +356,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two clear charging profile responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A clear charging profile response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is ClearChargingProfileResponse ClearChargingProfileResponse))
-                return false;
-
-            return Equals(ClearChargingProfileResponse);
-
-        }
+            => Object is ClearChargingProfileResponse clearChargingProfileResponse &&
+                   Equals(clearChargingProfileResponse);
 
         #endregion
 
@@ -461,16 +372,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Compares two clear charging profile responses for equality.
         /// </summary>
         /// <param name="ClearChargingProfileResponse">A clear charging profile response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(ClearChargingProfileResponse ClearChargingProfileResponse)
-        {
+        public override Boolean Equals(ClearChargingProfileResponse? ClearChargingProfileResponse)
 
-            if (ClearChargingProfileResponse is null)
-                return false;
-
-            return Status.Equals(ClearChargingProfileResponse.Status);
-
-        }
+            => ClearChargingProfileResponse is not null &&
+                   Status.Equals(ClearChargingProfileResponse.Status);
 
         #endregion
 

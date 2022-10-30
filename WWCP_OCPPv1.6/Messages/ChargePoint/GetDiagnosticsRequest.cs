@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
@@ -189,31 +188,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
 
         /// <summary>
-        /// Parse the given XML representation of a GetDiagnostics request.
+        /// Parse the given XML representation of a get diagnostics request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetDiagnosticsRequest Parse(XElement             XML,
-                                                  Request_Id           RequestId,
-                                                  ChargeBox_Id         ChargeBoxId,
-                                                  OnExceptionDelegate  OnException = null)
+        public static GetDiagnosticsRequest Parse(XElement      XML,
+                                                  Request_Id    RequestId,
+                                                  ChargeBox_Id  ChargeBoxId)
         {
 
             if (TryParse(XML,
                          RequestId,
                          ChargeBoxId,
-                         out GetDiagnosticsRequest getDiagnosticsRequest,
-                         OnException))
+                         out var getDiagnosticsRequest,
+                         out var errorResponse))
             {
-                return getDiagnosticsRequest;
+                return getDiagnosticsRequest!;
             }
 
-            throw new ArgumentException("The given XML representation of a GetDiagnostics request is invalid!", nameof(XML));
+            throw new ArgumentException("The given XML representation of a get diagnostics request is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
@@ -222,79 +220,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomGetDiagnosticsRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a GetDiagnostics request.
+        /// Parse the given JSON representation of a get diagnostics request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CustomGetDiagnosticsRequestParser">A delegate to parse custom GetDiagnostics requests.</param>
-        public static GetDiagnosticsRequest Parse(JObject                                             JSON,
-                                                  Request_Id                                          RequestId,
-                                                  ChargeBox_Id                                        ChargeBoxId,
-                                                  CustomJObjectParserDelegate<GetDiagnosticsRequest>  CustomGetDiagnosticsRequestParser   = null)
+        public static GetDiagnosticsRequest Parse(JObject                                              JSON,
+                                                  Request_Id                                           RequestId,
+                                                  ChargeBox_Id                                         ChargeBoxId,
+                                                  CustomJObjectParserDelegate<GetDiagnosticsRequest>?  CustomGetDiagnosticsRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
                          ChargeBoxId,
-                         out GetDiagnosticsRequest  getDiagnosticsRequest,
-                         out String                 ErrorResponse,
+                         out var getDiagnosticsRequest,
+                         out var errorResponse,
                          CustomGetDiagnosticsRequestParser))
             {
-                return getDiagnosticsRequest;
+                return getDiagnosticsRequest!;
             }
 
-            throw new ArgumentException("The given JSON representation of a GetDiagnostics request is invalid: " + ErrorResponse, nameof(JSON));
+            throw new ArgumentException("The given JSON representation of a get diagnostics request is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out GetDiagnosticsRequest, out ErrorResponse)
 
         /// <summary>
-        /// Parse the given text representation of a GetDiagnostics request.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetDiagnosticsRequest Parse(String               Text,
-                                                  Request_Id           RequestId,
-                                                  ChargeBox_Id         ChargeBoxId,
-                                                  OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(Text,
-                         RequestId,
-                         ChargeBoxId,
-                         out GetDiagnosticsRequest getDiagnosticsRequest,
-                         OnException))
-            {
-                return getDiagnosticsRequest;
-            }
-
-            throw new ArgumentException("The given text representation of a GetDiagnostics request is invalid!", nameof(Text));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out GetDiagnosticsRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a GetDiagnostics request.
+        /// Try to parse the given XML representation of a get diagnostics request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="GetDiagnosticsRequest">The parsed GetDiagnostics request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                   XML,
-                                       Request_Id                 RequestId,
-                                       ChargeBox_Id               ChargeBoxId,
-                                       out GetDiagnosticsRequest  GetDiagnosticsRequest,
-                                       OnExceptionDelegate        OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(XElement                    XML,
+                                       Request_Id                  RequestId,
+                                       ChargeBox_Id                ChargeBoxId,
+                                       out GetDiagnosticsRequest?  GetDiagnosticsRequest,
+                                       out String?                 ErrorResponse)
         {
 
             try
@@ -322,17 +291,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, XML, e);
-
-                GetDiagnosticsRequest = null;
+                GetDiagnosticsRequest  = null;
+                ErrorResponse          = "The given XML representation of a get diagnostics request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -344,18 +311,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a GetDiagnostics request.
+        /// Try to parse the given JSON representation of a get diagnostics request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="GetDiagnosticsRequest">The parsed GetDiagnostics request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                    JSON,
-                                       Request_Id                 RequestId,
-                                       ChargeBox_Id               ChargeBoxId,
-                                       out GetDiagnosticsRequest  GetDiagnosticsRequest,
-                                       out String                 ErrorResponse)
+        public static Boolean TryParse(JObject                     JSON,
+                                       Request_Id                  RequestId,
+                                       ChargeBox_Id                ChargeBoxId,
+                                       out GetDiagnosticsRequest?  GetDiagnosticsRequest,
+                                       out String?                 ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
@@ -366,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a GetDiagnostics request.
+        /// Try to parse the given JSON representation of a get diagnostics request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -374,12 +341,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="GetDiagnosticsRequest">The parsed GetDiagnostics request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetDiagnosticsRequestParser">A delegate to parse custom GetDiagnostics requests.</param>
-        public static Boolean TryParse(JObject                                             JSON,
-                                       Request_Id                                          RequestId,
-                                       ChargeBox_Id                                        ChargeBoxId,
-                                       out GetDiagnosticsRequest                           GetDiagnosticsRequest,
-                                       out String                                          ErrorResponse,
-                                       CustomJObjectParserDelegate<GetDiagnosticsRequest>  CustomGetDiagnosticsRequestParser)
+        public static Boolean TryParse(JObject                                              JSON,
+                                       Request_Id                                           RequestId,
+                                       ChargeBox_Id                                         ChargeBoxId,
+                                       out GetDiagnosticsRequest?                           GetDiagnosticsRequest,
+                                       out String?                                          ErrorResponse,
+                                       CustomJObjectParserDelegate<GetDiagnosticsRequest>?  CustomGetDiagnosticsRequestParser)
         {
 
             try
@@ -489,7 +456,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 GetDiagnosticsRequest  = null;
-                ErrorResponse          = "The given JSON representation of a GetDiagnostics request is invalid: " + e.Message;
+                ErrorResponse          = "The given JSON representation of a get diagnostics request is invalid: " + e.Message;
                 return false;
             }
 
@@ -497,73 +464,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Text, RequestId, ChargeBoxId, out GetDiagnosticsRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a GetDiagnostics request.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="GetDiagnosticsRequest">The parsed GetDiagnostics request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                     Text,
-                                       Request_Id                 RequestId,
-                                       ChargeBox_Id               ChargeBoxId,
-                                       out GetDiagnosticsRequest  GetDiagnosticsRequest,
-                                       OnExceptionDelegate        OnException  = null)
-        {
-
-            try
-            {
-
-                Text = Text?.Trim();
-
-                if (Text.IsNotNullOrEmpty())
-                {
-
-                    if (Text.StartsWith("{") &&
-                        TryParse(JObject.Parse(Text),
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out GetDiagnosticsRequest,
-                                 out String ErrorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(Text).Root,
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out GetDiagnosticsRequest,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, Text, e);
-            }
-
-            GetDiagnosticsRequest = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "getDiagnosticsRequest",
+            => new (OCPPNS.OCPPv1_6_CP + "getDiagnosticsRequest",
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "location",             Location),
 
@@ -600,7 +508,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetDiagnosticsRequestSerializer">A delegate to serialize custom start transaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetDiagnosticsRequest> CustomGetDiagnosticsRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetDiagnosticsRequest>? CustomGetDiagnosticsRequestSerializer)
         {
 
             var json = JSONObject.Create(
@@ -644,7 +552,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="GetDiagnosticsRequest1">A GetDiagnostics request.</param>
         /// <param name="GetDiagnosticsRequest2">Another GetDiagnostics request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetDiagnosticsRequest GetDiagnosticsRequest1, GetDiagnosticsRequest GetDiagnosticsRequest2)
+        public static Boolean operator == (GetDiagnosticsRequest GetDiagnosticsRequest1,
+                                           GetDiagnosticsRequest GetDiagnosticsRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -652,7 +561,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if ((GetDiagnosticsRequest1 is null) || (GetDiagnosticsRequest2 is null))
+            if (GetDiagnosticsRequest1 is null || GetDiagnosticsRequest2 is null)
                 return false;
 
             return GetDiagnosticsRequest1.Equals(GetDiagnosticsRequest2);
@@ -669,7 +578,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="GetDiagnosticsRequest1">A GetDiagnostics request.</param>
         /// <param name="GetDiagnosticsRequest2">Another GetDiagnostics request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetDiagnosticsRequest GetDiagnosticsRequest1, GetDiagnosticsRequest GetDiagnosticsRequest2)
+        public static Boolean operator != (GetDiagnosticsRequest GetDiagnosticsRequest1,
+                                           GetDiagnosticsRequest GetDiagnosticsRequest2)
 
             => !(GetDiagnosticsRequest1 == GetDiagnosticsRequest2);
 
@@ -682,53 +592,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two get diagnostics requests for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A get diagnostics request to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is GetDiagnosticsRequest GetDiagnosticsRequest))
-                return false;
-
-            return Equals(GetDiagnosticsRequest);
-
-        }
+            => Object is GetDiagnosticsRequest getDiagnosticsRequest &&
+                   Equals(getDiagnosticsRequest);
 
         #endregion
 
         #region Equals(GetDiagnosticsRequest)
 
         /// <summary>
-        /// Compares two GetDiagnostics requests for equality.
+        /// Compares two get diagnostics requests for equality.
         /// </summary>
-        /// <param name="GetDiagnosticsRequest">A GetDiagnostics request to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(GetDiagnosticsRequest GetDiagnosticsRequest)
-        {
+        /// <param name="GetDiagnosticsRequest">A get diagnostics request to compare with.</param>
+        public override Boolean Equals(GetDiagnosticsRequest? GetDiagnosticsRequest)
 
-            if (GetDiagnosticsRequest is null)
-                return false;
+            => GetDiagnosticsRequest is not null &&
 
-            return Location.Equals(GetDiagnosticsRequest.Location) &&
+               Location.Equals(GetDiagnosticsRequest.Location) &&
 
-                   ((!StartTime.    HasValue && !GetDiagnosticsRequest.StartTime.    HasValue) ||
-                     (StartTime.    HasValue &&  GetDiagnosticsRequest.StartTime.    HasValue && StartTime.    Value.Equals(GetDiagnosticsRequest.StartTime.    Value))) &&
+            ((!StartTime.    HasValue && !GetDiagnosticsRequest.StartTime.    HasValue) ||
+              (StartTime.    HasValue &&  GetDiagnosticsRequest.StartTime.    HasValue && StartTime.    Value.Equals(GetDiagnosticsRequest.StartTime.    Value))) &&
 
-                   ((!StopTime.     HasValue && !GetDiagnosticsRequest.StopTime.     HasValue) ||
-                     (StopTime.     HasValue &&  GetDiagnosticsRequest.StopTime.     HasValue && StopTime.     Value.Equals(GetDiagnosticsRequest.StopTime.     Value))) &&
+            ((!StopTime.     HasValue && !GetDiagnosticsRequest.StopTime.     HasValue) ||
+              (StopTime.     HasValue &&  GetDiagnosticsRequest.StopTime.     HasValue && StopTime.     Value.Equals(GetDiagnosticsRequest.StopTime.     Value))) &&
 
-                   ((!Retries.      HasValue && !GetDiagnosticsRequest.Retries.      HasValue) ||
-                     (Retries.      HasValue &&  GetDiagnosticsRequest.Retries.      HasValue && Retries.      Value.Equals(GetDiagnosticsRequest.Retries.      Value))) &&
+            ((!Retries.      HasValue && !GetDiagnosticsRequest.Retries.      HasValue) ||
+              (Retries.      HasValue &&  GetDiagnosticsRequest.Retries.      HasValue && Retries.      Value.Equals(GetDiagnosticsRequest.Retries.      Value))) &&
 
-                   ((!RetryInterval.HasValue && !GetDiagnosticsRequest.RetryInterval.HasValue) ||
-                     (RetryInterval.HasValue &&  GetDiagnosticsRequest.RetryInterval.HasValue && RetryInterval.Value.Equals(GetDiagnosticsRequest.RetryInterval.Value)));
-
-        }
+            ((!RetryInterval.HasValue && !GetDiagnosticsRequest.RetryInterval.HasValue) ||
+              (RetryInterval.HasValue &&  GetDiagnosticsRequest.RetryInterval.HasValue && RetryInterval.Value.Equals(GetDiagnosticsRequest.RetryInterval.Value)));
 
         #endregion
 
@@ -745,23 +641,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return Location.GetHashCode() * 11 ^
+                return Location.       GetHashCode()       * 11 ^
 
-                       (StartTime.HasValue
-                            ? StartTime.    GetHashCode() * 7
-                            : 0) ^
-
-                       (StopTime.HasValue
-                            ? StopTime.     GetHashCode() * 5
-                            : 0) ^
-
-                       (Retries.HasValue
-                            ? Retries.      GetHashCode() * 3
-                            : 0) ^
-
-                       (RetryInterval.HasValue
-                            ? RetryInterval.GetHashCode()
-                            : 0);
+                       (StartTime?.    GetHashCode() ?? 0) *  7 ^
+                       (StopTime?.     GetHashCode() ?? 0) *  5 ^
+                       (Retries?.      GetHashCode() ?? 0) *  3 ^
+                       (RetryInterval?.GetHashCode() ?? 0);
 
             }
         }

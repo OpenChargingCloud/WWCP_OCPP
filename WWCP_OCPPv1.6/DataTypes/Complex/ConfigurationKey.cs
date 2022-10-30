@@ -182,29 +182,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (Text)
-
-        /// <summary>
-        /// Parse the given text representation of a configuration key value pair.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        public static ConfigurationKey Parse(String Text)
-        {
-
-            if (TryParse(Text,
-                         out var configurationKey,
-                         out var errorResponse))
-            {
-                return configurationKey;
-            }
-
-            throw new ArgumentException("The given text representation of a configuration key value pair is invalid: " + errorResponse,
-                                        nameof(Text));
-
-        }
-
-        #endregion
-
         #region (static) TryParse(XML,  out ConfigurationKey, OnException = null)
 
         /// <summary>
@@ -316,57 +293,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 ConfigurationKey = default;
                 return false;
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Text, out ConfigurationKey, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given text representation of a configuration key value pair.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="ConfigurationKey">The parsed connector type.</param>
-        public static Boolean TryParse(String                Text,
-                                       out ConfigurationKey  ConfigurationKey,
-                                       out String?           ErrorResponse)
-        {
-
-            ErrorResponse = null;
-
-            try
-            {
-
-                Text = Text.Trim();
-
-                if (Text.IsNotNullOrEmpty())
-                {
-
-                    if (Text.StartsWith("{") &&
-                        TryParse2(JObject.Parse(Text),
-                                 out ConfigurationKey,
-                                 out ErrorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(Text).Root,
-                                 out ConfigurationKey))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                ErrorResponse = e.Message;
-            }
-
-            ConfigurationKey = default;
-            return false;
 
         }
 

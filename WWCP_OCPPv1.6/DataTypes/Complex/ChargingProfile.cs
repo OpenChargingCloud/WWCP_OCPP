@@ -346,31 +346,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (Text, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a charging profile.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingProfile Parse(String                Text,
-                                            OnExceptionDelegate?  OnException   = null)
-        {
-
-            if (TryParse(Text,
-                         out var chargingProfile,
-                         OnException))
-            {
-                return chargingProfile!;
-            }
-
-            throw new ArgumentException("The given text representation of a charging profile is invalid: ", // + errorResponse,
-                                        nameof(Text));
-
-        }
-
-        #endregion
-
         #region (static) TryParse(XML,  out ChargingProfile, OnException = null)
 
         /// <summary>
@@ -618,57 +593,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 ErrorResponse    = "The given JSON representation of a charging profile is invalid: " + e.Message;
                 return false;
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Text, out ChargingProfile, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a charging profile.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="ChargingProfile">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                Text,
-                                       out ChargingProfile?  ChargingProfile,
-                                       OnExceptionDelegate?  OnException   = null)
-        {
-
-            try
-            {
-
-                Text = Text.Trim();
-
-                if (Text.IsNotNullOrEmpty())
-                {
-
-                    if (Text.StartsWith("{") &&
-                        TryParse(JObject.Parse(Text),
-                                 out ChargingProfile,
-                                 out var errorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(Text).Root,
-                                 out ChargingProfile,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, Text, e);
-            }
-
-            ChargingProfile = null;
-            return false;
 
         }
 

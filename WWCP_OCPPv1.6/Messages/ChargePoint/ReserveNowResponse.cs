@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -129,100 +127,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, ReserveNowResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a reserve now response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ReserveNowResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static ReserveNowResponse Parse(CS.ReserveNowRequest  Request,
-                                               XElement              ReserveNowResponseXML,
-                                               OnExceptionDelegate   OnException = null)
+                                               XElement              XML)
         {
 
             if (TryParse(Request,
-                         ReserveNowResponseXML,
-                         out ReserveNowResponse reserveNowResponse,
-                         OnException))
+                         XML,
+                         out var reserveNowResponse,
+                         out var errorResponse))
             {
-                return reserveNowResponse;
+                return reserveNowResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a reserve now response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, ReserveNowResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomReserveNowResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a reserve now response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ReserveNowResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ReserveNowResponse Parse(CS.ReserveNowRequest  Request,
-                                               JObject               ReserveNowResponseJSON,
-                                               OnExceptionDelegate   OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomReserveNowResponseParser">A delegate to parse custom reserve now responses.</param>
+        public static ReserveNowResponse Parse(CS.ReserveNowRequest                              Request,
+                                               JObject                                           JSON,
+                                               CustomJObjectParserDelegate<ReserveNowResponse>?  CustomReserveNowResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         ReserveNowResponseJSON,
-                         out ReserveNowResponse reserveNowResponse,
-                         OnException))
+                         JSON,
+                         out var reserveNowResponse,
+                         out var errorResponse,
+                         CustomReserveNowResponseParser))
             {
-                return reserveNowResponse;
+                return reserveNowResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a reserve now response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, ReserveNowResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a reserve now response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ReserveNowResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ReserveNowResponse Parse(CS.ReserveNowRequest  Request,
-                                               String                ReserveNowResponseText,
-                                               OnExceptionDelegate   OnException = null)
-        {
-
-            if (TryParse(Request,
-                         ReserveNowResponseText,
-                         out ReserveNowResponse reserveNowResponse,
-                         OnException))
-            {
-                return reserveNowResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, ReserveNowResponseXML,  out ReserveNowResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out ReserveNowResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a reserve now response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ReserveNowResponseXML">The XML to be parsed.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ReserveNowResponse">The parsed reserve now response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ReserveNowRequest    Request,
-                                       XElement                ReserveNowResponseXML,
-                                       out ReserveNowResponse  ReserveNowResponse,
-                                       OnExceptionDelegate     OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CS.ReserveNowRequest     Request,
+                                       XElement                 XML,
+                                       out ReserveNowResponse?  ReserveNowResponse,
+                                       out String?              ErrorResponse)
         {
 
             try
@@ -232,41 +204,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                          Request,
 
-                                         ReserveNowResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                              ReservationStatusExtentions.Parse)
+                                         XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
+                                                            ReservationStatusExtentions.Parse)
 
                                      );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, ReserveNowResponseXML, e);
-
-                ReserveNowResponse = null;
+                ReserveNowResponse  = null;
+                ErrorResponse       = "The given XML representation of a reserve now response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, ReserveNowResponseJSON, out ReserveNowResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out ReserveNowResponse, out ErrorResponse, CustomReserveNowResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a reserve now response.
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ReserveNowResponseJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ReserveNowResponse">The parsed reserve now response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ReserveNowRequest    Request,
-                                       JObject                 ReserveNowResponseJSON,
-                                       out ReserveNowResponse  ReserveNowResponse,
-                                       OnExceptionDelegate     OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomReserveNowResponseParser">A delegate to parse custom reserve now responses.</param>
+        public static Boolean TryParse(CS.ReserveNowRequest                              Request,
+                                       JObject                                           JSON,
+                                       out ReserveNowResponse?                           ReserveNowResponse,
+                                       out String?                                       ErrorResponse,
+                                       CustomJObjectParserDelegate<ReserveNowResponse>?  CustomReserveNowResponseParser   = null)
         {
 
             try
@@ -276,11 +248,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ReservationStatus
 
-                if (!ReserveNowResponseJSON.MapMandatory("status",
+                if (!JSON.MapMandatory("status",
                                                          "reservation status",
                                                          ReservationStatusExtentions.Parse,
-                                                         out ReservationStatus  ReservationStatus,
-                                                         out String             ErrorResponse))
+                                                         out ReservationStatus ReservationStatus,
+                                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -291,86 +263,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 ReserveNowResponse = new ReserveNowResponse(Request,
                                                             ReservationStatus);
 
+                if (CustomReserveNowResponseParser is not null)
+                    ReserveNowResponse = CustomReserveNowResponseParser(JSON,
+                                                                        ReserveNowResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, ReserveNowResponseJSON, e);
-
-                ReserveNowResponse = null;
+                ReserveNowResponse  = null;
+                ErrorResponse       = "The given JSON representation of a reserve now response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, ReserveNowResponseText, out ReserveNowResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a reserve now response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ReserveNowResponseText">The text to be parsed.</param>
-        /// <param name="ReserveNowResponse">The parsed reserve now response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ReserveNowRequest    Request,
-                                       String                  ReserveNowResponseText,
-                                       out ReserveNowResponse  ReserveNowResponse,
-                                       OnExceptionDelegate     OnException  = null)
-        {
-
-            try
-            {
-
-                ReserveNowResponseText = ReserveNowResponseText?.Trim();
-
-                if (ReserveNowResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (ReserveNowResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(ReserveNowResponseText),
-                                 out ReserveNowResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(ReserveNowResponseText).Root,
-                                 out ReserveNowResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, ReserveNowResponseText, e);
-            }
-
-            ReserveNowResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "reserveNowResponse",
+            => new (OCPPNS.OCPPv1_6_CP + "reserveNowResponse",
                    new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
                );
 
@@ -382,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomReserveNowResponseSerializer">A delegate to serialize custom reserve now responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowResponse>  CustomReserveNowResponseSerializer  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowResponse>?  CustomReserveNowResponseSerializer   = null)
         {
 
             var json = JSONObject.Create(
@@ -406,8 +324,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">The start transaction request leading to this response.</param>
         public static ReserveNowResponse Failed(CS.ReserveNowRequest Request)
 
-            => new ReserveNowResponse(Request,
-                                      Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -422,7 +340,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ReserveNowResponse1">A reserve now response.</param>
         /// <param name="ReserveNowResponse2">Another reserve now response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ReserveNowResponse ReserveNowResponse1, ReserveNowResponse ReserveNowResponse2)
+        public static Boolean operator == (ReserveNowResponse ReserveNowResponse1,
+                                           ReserveNowResponse ReserveNowResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -430,7 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((ReserveNowResponse1 is null) || (ReserveNowResponse2 is null))
+            if (ReserveNowResponse1 is null || ReserveNowResponse2 is null)
                 return false;
 
             return ReserveNowResponse1.Equals(ReserveNowResponse2);
@@ -447,7 +366,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ReserveNowResponse1">A reserve now response.</param>
         /// <param name="ReserveNowResponse2">Another reserve now response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ReserveNowResponse ReserveNowResponse1, ReserveNowResponse ReserveNowResponse2)
+        public static Boolean operator != (ReserveNowResponse ReserveNowResponse1,
+                                           ReserveNowResponse ReserveNowResponse2)
 
             => !(ReserveNowResponse1 == ReserveNowResponse2);
 
@@ -460,22 +380,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two reserve now responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A reserve now response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is ReserveNowResponse ReserveNowResponse))
-                return false;
-
-            return Equals(ReserveNowResponse);
-
-        }
+            => Object is ReserveNowResponse reserveNowResponse &&
+                   Equals(reserveNowResponse);
 
         #endregion
 
@@ -485,16 +396,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Compares two reserve now responses for equality.
         /// </summary>
         /// <param name="ReserveNowResponse">A reserve now response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(ReserveNowResponse ReserveNowResponse)
-        {
+        public override Boolean Equals(ReserveNowResponse? ReserveNowResponse)
 
-            if (ReserveNowResponse is null)
-                return false;
-
-            return Status.Equals(ReserveNowResponse.Status);
-
-        }
+            => ReserveNowResponse is not null &&
+                   Status.Equals(ReserveNowResponse.Status);
 
         #endregion
 

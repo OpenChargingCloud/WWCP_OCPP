@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -53,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new remote stop transaction response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The remote stop transaction request leading to this response.</param>
         /// <param name="Status">The status indicating whether the charge point accepts the request to stop the charging transaction.</param>
         public RemoteStopTransactionResponse(CS.RemoteStopTransactionRequest  Request,
                                              RemoteStartStopStatus            Status)
@@ -74,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new remote stop transaction response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The remote stop transaction request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public RemoteStopTransactionResponse(CS.RemoteStopTransactionRequest  Request,
                                              Result                           Result)
@@ -126,100 +124,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, RemoteStopTransactionResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a remote stop transaction response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="RemoteStopTransactionResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="Request">The remote stop transaction request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static RemoteStopTransactionResponse Parse(CS.RemoteStopTransactionRequest  Request,
-                                                          XElement                         RemoteStopTransactionResponseXML,
-                                                          OnExceptionDelegate              OnException = null)
+                                                          XElement                         XML)
         {
 
             if (TryParse(Request,
-                         RemoteStopTransactionResponseXML,
-                         out RemoteStopTransactionResponse remoteStopTransactionResponse,
-                         OnException))
+                         XML,
+                         out var bootNotificationResponse,
+                         out var errorResponse))
             {
-                return remoteStopTransactionResponse;
+                return bootNotificationResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a remote stop transaction response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, RemoteStopTransactionResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomRemoteStopTransactionResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a remote stop transaction response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="RemoteStopTransactionResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static RemoteStopTransactionResponse Parse(CS.RemoteStopTransactionRequest  Request,
-                                                          JObject                          RemoteStopTransactionResponseJSON,
-                                                          OnExceptionDelegate              OnException = null)
+        /// <param name="Request">The remote stop transaction request leading to this response.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomRemoteStopTransactionResponseParser">A delegate to parse custom remote stop transaction responses.</param>
+        public static RemoteStopTransactionResponse Parse(CS.RemoteStopTransactionRequest                              Request,
+                                                          JObject                                                      JSON,
+                                                          CustomJObjectParserDelegate<RemoteStopTransactionResponse>?  CustomRemoteStopTransactionResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         RemoteStopTransactionResponseJSON,
-                         out RemoteStopTransactionResponse remoteStopTransactionResponse,
-                         OnException))
+                         JSON,
+                         out var bootNotificationResponse,
+                         out var errorResponse,
+                         CustomRemoteStopTransactionResponseParser))
             {
-                return remoteStopTransactionResponse;
+                return bootNotificationResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a remote stop transaction response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, RemoteStopTransactionResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a remote stop transaction response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="RemoteStopTransactionResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static RemoteStopTransactionResponse Parse(CS.RemoteStopTransactionRequest  Request,
-                                                          String                           RemoteStopTransactionResponseText,
-                                                          OnExceptionDelegate              OnException = null)
-        {
-
-            if (TryParse(Request,
-                         RemoteStopTransactionResponseText,
-                         out RemoteStopTransactionResponse remoteStopTransactionResponse,
-                         OnException))
-            {
-                return remoteStopTransactionResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, RemoteStopTransactionResponseXML,  out RemoteStopTransactionResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out RemoteStopTransactionResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a remote stop transaction response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="RemoteStopTransactionResponseXML">The XML to be parsed.</param>
+        /// <param name="Request">The remote stop transaction request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RemoteStopTransactionResponse">The parsed remote stop transaction response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.RemoteStopTransactionRequest    Request,
-                                       XElement                           RemoteStopTransactionResponseXML,
-                                       out RemoteStopTransactionResponse  RemoteStopTransactionResponse,
-                                       OnExceptionDelegate                OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CS.RemoteStopTransactionRequest     Request,
+                                       XElement                            XML,
+                                       out RemoteStopTransactionResponse?  RemoteStopTransactionResponse,
+                                       out String?                         ErrorResponse)
         {
 
             try
@@ -229,41 +201,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     Request,
 
-                                                    RemoteStopTransactionResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                                                    RemoteStartStopStatusExtentions.Parse)
+                                                    XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
+                                                                       RemoteStartStopStatusExtentions.Parse)
 
                                                 );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, RemoteStopTransactionResponseXML, e);
-
-                RemoteStopTransactionResponse = null;
+                RemoteStopTransactionResponse  = null;
+                ErrorResponse                  = "The given XML representation of a remote stop transaction response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, RemoteStopTransactionResponseJSON, out RemoteStopTransactionResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out RemoteStopTransactionResponse, out ErrorResponse, CustomRemoteStopTransactionResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a remote stop transaction response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="RemoteStopTransactionResponseJSON">The JSON to be parsed.</param>
+        /// <param name="Request">The remote stop transaction request leading to this response.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RemoteStopTransactionResponse">The parsed remote stop transaction response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.RemoteStopTransactionRequest    Request,
-                                       JObject                            RemoteStopTransactionResponseJSON,
-                                       out RemoteStopTransactionResponse  RemoteStopTransactionResponse,
-                                       OnExceptionDelegate                OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomRemoteStopTransactionResponseParser">A delegate to parse custom remote stop transaction responses.</param>
+        public static Boolean TryParse(CS.RemoteStopTransactionRequest                              Request,
+                                       JObject                                                      JSON,
+                                       out RemoteStopTransactionResponse?                           RemoteStopTransactionResponse,
+                                       out String?                                                  ErrorResponse,
+                                       CustomJObjectParserDelegate<RemoteStopTransactionResponse>?  CustomRemoteStopTransactionResponseParser   = null)
         {
 
             try
@@ -273,11 +245,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region RemoteStartStopStatus
 
-                if (!RemoteStopTransactionResponseJSON.MapMandatory("status",
-                                                                    "remote start stop status",
-                                                                    RemoteStartStopStatusExtentions.Parse,
-                                                                    out RemoteStartStopStatus  RemoteStartStopStatus,
-                                                                    out String                 ErrorResponse))
+                if (!JSON.MapMandatory("status",
+                                       "remote start stop status",
+                                       RemoteStartStopStatusExtentions.Parse,
+                                       out RemoteStartStopStatus RemoteStartStopStatus,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
@@ -288,84 +260,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 RemoteStopTransactionResponse = new RemoteStopTransactionResponse(Request,
                                                                                   RemoteStartStopStatus);
 
+                if (CustomRemoteStopTransactionResponseParser is not null)
+                    RemoteStopTransactionResponse = CustomRemoteStopTransactionResponseParser(JSON,
+                                                                                              RemoteStopTransactionResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-                OnException?.Invoke(Timestamp.Now, RemoteStopTransactionResponseJSON, e);
+                RemoteStopTransactionResponse  = null;
+                ErrorResponse                  = "The given JSON representation of a remote stop transaction response is invalid: " + e.Message;
+                return false;
             }
-
-            RemoteStopTransactionResponse = null;
-            return false;
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, RemoteStopTransactionResponseText, out RemoteStopTransactionResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a remote stop transaction response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="RemoteStopTransactionResponseText">The text to be parsed.</param>
-        /// <param name="RemoteStopTransactionResponse">The parsed remote stop transaction response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.RemoteStopTransactionRequest    Request,
-                                       String                             RemoteStopTransactionResponseText,
-                                       out RemoteStopTransactionResponse  RemoteStopTransactionResponse,
-                                       OnExceptionDelegate                OnException  = null)
-        {
-
-            try
-            {
-
-                RemoteStopTransactionResponseText = RemoteStopTransactionResponseText?.Trim();
-
-                if (RemoteStopTransactionResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (RemoteStopTransactionResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(RemoteStopTransactionResponseText),
-                                 out RemoteStopTransactionResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(RemoteStopTransactionResponseText).Root,
-                                 out RemoteStopTransactionResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, RemoteStopTransactionResponseText, e);
-            }
-
-            RemoteStopTransactionResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "remoteStopTransactionResponse",
+            => new (OCPPNS.OCPPv1_6_CP + "remoteStopTransactionResponse",
                    new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
                );
 
@@ -377,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomRemoteStopTransactionResponseSerializer">A delegate to serialize custom remote stop transaction responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<RemoteStopTransactionResponse>  CustomRemoteStopTransactionResponseSerializer  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<RemoteStopTransactionResponse>? CustomRemoteStopTransactionResponseSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -398,11 +318,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The stop transaction failed.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The remote stop transaction request leading to this response.</param>
         public static RemoteStopTransactionResponse Failed(CS.RemoteStopTransactionRequest  Request)
 
-            => new RemoteStopTransactionResponse(Request,
-                                                 Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -417,7 +337,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RemoteStopTransactionResponse1">A remote stop transaction response.</param>
         /// <param name="RemoteStopTransactionResponse2">Another remote stop transaction response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (RemoteStopTransactionResponse RemoteStopTransactionResponse1, RemoteStopTransactionResponse RemoteStopTransactionResponse2)
+        public static Boolean operator == (RemoteStopTransactionResponse RemoteStopTransactionResponse1,
+                                           RemoteStopTransactionResponse RemoteStopTransactionResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -425,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((RemoteStopTransactionResponse1 is null) || (RemoteStopTransactionResponse2 is null))
+            if (RemoteStopTransactionResponse1 is null || RemoteStopTransactionResponse2 is null)
                 return false;
 
             return RemoteStopTransactionResponse1.Equals(RemoteStopTransactionResponse2);
@@ -442,7 +363,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RemoteStopTransactionResponse1">A remote stop transaction response.</param>
         /// <param name="RemoteStopTransactionResponse2">Another remote stop transaction response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (RemoteStopTransactionResponse RemoteStopTransactionResponse1, RemoteStopTransactionResponse RemoteStopTransactionResponse2)
+        public static Boolean operator != (RemoteStopTransactionResponse RemoteStopTransactionResponse1,
+                                           RemoteStopTransactionResponse RemoteStopTransactionResponse2)
 
             => !(RemoteStopTransactionResponse1 == RemoteStopTransactionResponse2);
 
@@ -455,22 +377,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two remote stop transaction responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A remote stop transaction response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is RemoteStopTransactionResponse RemoteStopTransactionResponse))
-                return false;
-
-            return Equals(RemoteStopTransactionResponse);
-
-        }
+            => Object is RemoteStopTransactionResponse remoteStopTransactionResponse &&
+                   Equals(remoteStopTransactionResponse);
 
         #endregion
 
@@ -480,16 +393,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Compares two remote stop transaction responses for equality.
         /// </summary>
         /// <param name="RemoteStopTransactionResponse">A remote stop transaction response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(RemoteStopTransactionResponse RemoteStopTransactionResponse)
-        {
+        public override Boolean Equals(RemoteStopTransactionResponse? RemoteStopTransactionResponse)
 
-            if (RemoteStopTransactionResponse is null)
-                return false;
-
-            return Status.Equals(RemoteStopTransactionResponse.Status);
-
-        }
+            => RemoteStopTransactionResponse is not null &&
+                   Status.Equals(RemoteStopTransactionResponse.Status);
 
         #endregion
 

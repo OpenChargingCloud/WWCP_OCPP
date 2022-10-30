@@ -168,31 +168,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (Text, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a charging schedule period.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingSchedulePeriod Parse(String                Text,
-                                                   OnExceptionDelegate?  OnException   = null)
-        {
-
-            if (TryParse(Text,
-                         out var chargingSchedulePeriod,
-                         OnException))
-            {
-                return chargingSchedulePeriod;
-            }
-
-            throw new ArgumentException("The given text representation of a charging schedule period is invalid: ", // + errorResponse,
-                                        nameof(Text));
-
-        }
-
-        #endregion
-
         #region (static) TryParse(XML,  out ChargingSchedulePeriod, OnException = null)
 
         /// <summary>
@@ -332,57 +307,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 return false;
 
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(ChargingSchedulePeriodText, out ChargingSchedulePeriod, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a charging schedule period.
-        /// </summary>
-        /// <param name="ChargingSchedulePeriodText">The text to be parsed.</param>
-        /// <param name="ChargingSchedulePeriod">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                      ChargingSchedulePeriodText,
-                                       out ChargingSchedulePeriod  ChargingSchedulePeriod,
-                                       OnExceptionDelegate?        OnException   = null)
-        {
-
-            try
-            {
-
-                ChargingSchedulePeriodText = ChargingSchedulePeriodText.Trim();
-
-                if (ChargingSchedulePeriodText.IsNotNullOrEmpty())
-                {
-
-                    if (ChargingSchedulePeriodText.StartsWith("{") &&
-                        TryParse(JObject.Parse(ChargingSchedulePeriodText),
-                                 out ChargingSchedulePeriod,
-                                 out var errorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(ChargingSchedulePeriodText).Root,
-                                 out ChargingSchedulePeriod,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, ChargingSchedulePeriodText, e);
-            }
-
-            ChargingSchedulePeriod = default;
-            return false;
 
         }
 

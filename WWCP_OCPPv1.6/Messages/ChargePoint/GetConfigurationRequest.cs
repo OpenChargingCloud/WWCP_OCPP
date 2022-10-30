@@ -17,15 +17,11 @@
 
 #region Usings
 
-using System;
-using System.Linq;
 using System.Xml.Linq;
-using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -33,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// A GetConfigurationn request.
+    /// A get configuration request.
     /// </summary>
     public class GetConfigurationRequest : ARequest<GetConfigurationRequest>
     {
@@ -51,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a GetConfigurationn request.
+        /// Create a get configuration request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Keys">An optional enumeration of keys for which the configuration is requested. Return all keys if empty.</param>
@@ -73,9 +69,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         {
 
-            this.Keys = (Keys ?? new String[0]).
-                            SafeSelect(key => key?.Trim()?.SubstringMax(50)).
-                            SafeWhere (key => key.IsNotNullOrEmpty());
+            this.Keys = Keys is not null
+                            ? Keys.Where (key => key is not null).
+                                   Select(key => key.Trim().SubstringMax(50)).
+                                   Where (key => key.IsNotNullOrEmpty()).
+                                   ToArray()
+                            : Array.Empty<String>();
 
         }
 
@@ -122,112 +121,82 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId, OnException = null)
+        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
 
         /// <summary>
-        /// Parse the given XML representation of a GetConfigurationn request.
+        /// Parse the given XML representation of a get configuration request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetConfigurationRequest Parse(XElement             XML,
-                                                    Request_Id           RequestId,
-                                                    ChargeBox_Id         ChargeBoxId,
-                                                    OnExceptionDelegate  OnException = null)
+        public static GetConfigurationRequest Parse(XElement      XML,
+                                                    Request_Id    RequestId,
+                                                    ChargeBox_Id  ChargeBoxId)
         {
 
             if (TryParse(XML,
                          RequestId,
                          ChargeBoxId,
-                         out GetConfigurationRequest getConfigurationRequest,
-                         OnException))
+                         out var getConfigurationRequest,
+                         out var errorResponse))
             {
-                return getConfigurationRequest;
+                return getConfigurationRequest!;
             }
 
-            throw new ArgumentException("The given XML representation of a GetConfiguration request is invalid!", nameof(XML));
+            throw new ArgumentException("The given XML representation of a get configuration request is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomGetConfigurationRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a GetConfigurationn request.
+        /// Parse the given JSON representation of a get configuration request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CustomGetConfigurationRequestParser">A delegate to parse custom GetConfiguration requests.</param>
-        public static GetConfigurationRequest Parse(JObject                                               JSON,
-                                                    Request_Id                                            RequestId,
-                                                    ChargeBox_Id                                          ChargeBoxId,
-                                                    CustomJObjectParserDelegate<GetConfigurationRequest>  CustomGetConfigurationRequestParser   = null)
+        public static GetConfigurationRequest Parse(JObject                                                JSON,
+                                                    Request_Id                                             RequestId,
+                                                    ChargeBox_Id                                           ChargeBoxId,
+                                                    CustomJObjectParserDelegate<GetConfigurationRequest>?  CustomGetConfigurationRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
                          ChargeBoxId,
-                         out GetConfigurationRequest  getConfigurationRequest,
-                         out String                   ErrorResponse,
+                         out var getConfigurationRequest,
+                         out var errorResponse,
                          CustomGetConfigurationRequestParser))
             {
-                return getConfigurationRequest;
+                return getConfigurationRequest!;
             }
 
-            throw new ArgumentException("The given JSON representation of a GetConfiguration request is invalid: " + ErrorResponse, nameof(JSON));
+            throw new ArgumentException("The given JSON representation of a get configuration request is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Text, RequestId, ChargeBoxId, OnException = null)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out GetConfigurationRequest, out ErrorResponse)
 
         /// <summary>
-        /// Parse the given text representation of a GetConfigurationn request.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetConfigurationRequest Parse(String               Text,
-                                                    Request_Id           RequestId,
-                                                    ChargeBox_Id         ChargeBoxId,
-                                                    OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(Text,
-                         RequestId,
-                         ChargeBoxId,
-                         out GetConfigurationRequest getConfigurationRequest,
-                         OnException))
-            {
-                return getConfigurationRequest;
-            }
-
-            throw new ArgumentException("The given text representation of a GetConfiguration request is invalid!", nameof(Text));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out GetConfigurationRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a GetConfigurationn request.
+        /// Try to parse the given XML representation of a get configuration request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="GetConfigurationRequest">The parsed GetConfigurationn request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                     XML,
-                                       Request_Id                   RequestId,
-                                       ChargeBox_Id                 ChargeBoxId,
-                                       out GetConfigurationRequest  GetConfigurationRequest,
-                                       OnExceptionDelegate          OnException  = null)
+        /// <param name="GetConfigurationRequest">The parsed get configuration request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(XElement                      XML,
+                                       Request_Id                    RequestId,
+                                       ChargeBox_Id                  ChargeBoxId,
+                                       out GetConfigurationRequest?  GetConfigurationRequest,
+                                       out String?                   ErrorResponse)
         {
 
             try
@@ -243,40 +212,38 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                           );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, XML, e);
-
-                GetConfigurationRequest = null;
+                GetConfigurationRequest  = null;
+                ErrorResponse            = "The given JSON representation of a get configuration request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out GetConfigurationRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out GetConfigurationRequest, out ErrorResponse, CustomGetConfigurationRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a GetConfigurationn request.
+        /// Try to parse the given JSON representation of a get configuration request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="GetConfigurationRequest">The parsed GetConfigurationn request.</param>
+        /// <param name="GetConfigurationRequest">The parsed get configuration request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                      JSON,
-                                       Request_Id                   RequestId,
-                                       ChargeBox_Id                 ChargeBoxId,
-                                       out GetConfigurationRequest  GetConfigurationRequest,
-                                       out String                   ErrorResponse)
+        public static Boolean TryParse(JObject                       JSON,
+                                       Request_Id                    RequestId,
+                                       ChargeBox_Id                  ChargeBoxId,
+                                       out GetConfigurationRequest?  GetConfigurationRequest,
+                                       out String?                   ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
@@ -287,20 +254,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a GetConfigurationn request.
+        /// Try to parse the given JSON representation of a get configuration request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="GetConfigurationRequest">The parsed GetConfigurationn request.</param>
+        /// <param name="GetConfigurationRequest">The parsed get configuration request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetConfigurationRequestParser">A delegate to parse custom GetConfiguration requests.</param>
-        public static Boolean TryParse(JObject                                               JSON,
-                                       Request_Id                                            RequestId,
-                                       ChargeBox_Id                                          ChargeBoxId,
-                                       out GetConfigurationRequest                           GetConfigurationRequest,
-                                       out String                                            ErrorResponse,
-                                       CustomJObjectParserDelegate<GetConfigurationRequest>  CustomGetConfigurationRequestParser)
+        public static Boolean TryParse(JObject                                                JSON,
+                                       Request_Id                                             RequestId,
+                                       ChargeBox_Id                                           ChargeBoxId,
+                                       out GetConfigurationRequest?                           GetConfigurationRequest,
+                                       out String?                                            ErrorResponse,
+                                       CustomJObjectParserDelegate<GetConfigurationRequest>?  CustomGetConfigurationRequestParser)
         {
 
             try
@@ -355,68 +322,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
                 GetConfigurationRequest  = null;
-                ErrorResponse            = "The given JSON representation of a GetConfiguration request is invalid: " + e.Message;
+                ErrorResponse            = "The given JSON representation of a get configuration request is invalid: " + e.Message;
                 return false;
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(GetConfigurationRequestText, RequestId, ChargeBoxId, out GetConfigurationRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a GetConfigurationn request.
-        /// </summary>
-        /// <param name="GetConfigurationRequestText">The text to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="GetConfigurationRequest">The parsed GetConfigurationn request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                       GetConfigurationRequestText,
-                                       Request_Id                   RequestId,
-                                       ChargeBox_Id                 ChargeBoxId,
-                                       out GetConfigurationRequest  GetConfigurationRequest,
-                                       OnExceptionDelegate          OnException  = null)
-        {
-
-            try
-            {
-
-                GetConfigurationRequestText = GetConfigurationRequestText?.Trim();
-
-                if (GetConfigurationRequestText.IsNotNullOrEmpty())
-                {
-
-                    if (GetConfigurationRequestText.StartsWith("{") &&
-                        TryParse(JObject.Parse(GetConfigurationRequestText),
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out GetConfigurationRequest,
-                                 out String ErrorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(GetConfigurationRequestText).Root,
-                                 RequestId,
-                                 ChargeBoxId,
-                                 out GetConfigurationRequest,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, GetConfigurationRequestText, e);
-            }
-
-            GetConfigurationRequest = null;
-            return false;
 
         }
 
@@ -452,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetConfigurationRequestSerializer">A delegate to serialize custom start transaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetConfigurationRequest> CustomGetConfigurationRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetConfigurationRequest>? CustomGetConfigurationRequestSerializer)
         {
 
             var json = JSONObject.Create(
@@ -477,12 +385,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (GetConfigurationRequest1, GetConfigurationRequest2)
 
         /// <summary>
-        /// Compares two GetConfigurationn requests for equality.
+        /// Compares two get configuration requests for equality.
         /// </summary>
-        /// <param name="GetConfigurationRequest1">A GetConfigurationn request.</param>
-        /// <param name="GetConfigurationRequest2">Another GetConfigurationn request.</param>
+        /// <param name="GetConfigurationRequest1">A get configuration request.</param>
+        /// <param name="GetConfigurationRequest2">Another get configuration request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetConfigurationRequest GetConfigurationRequest1, GetConfigurationRequest GetConfigurationRequest2)
+        public static Boolean operator == (GetConfigurationRequest GetConfigurationRequest1,
+                                           GetConfigurationRequest GetConfigurationRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -490,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if ((GetConfigurationRequest1 is null) || (GetConfigurationRequest2 is null))
+            if (GetConfigurationRequest1 is null || GetConfigurationRequest2 is null)
                 return false;
 
             return GetConfigurationRequest1.Equals(GetConfigurationRequest2);
@@ -502,12 +411,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (GetConfigurationRequest1, GetConfigurationRequest2)
 
         /// <summary>
-        /// Compares two GetConfigurationn requests for inequality.
+        /// Compares two get configuration requests for inequality.
         /// </summary>
-        /// <param name="GetConfigurationRequest1">A GetConfigurationn request.</param>
-        /// <param name="GetConfigurationRequest2">Another GetConfigurationn request.</param>
+        /// <param name="GetConfigurationRequest1">A get configuration request.</param>
+        /// <param name="GetConfigurationRequest2">Another get configuration request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetConfigurationRequest GetConfigurationRequest1, GetConfigurationRequest GetConfigurationRequest2)
+        public static Boolean operator != (GetConfigurationRequest GetConfigurationRequest1,
+                                           GetConfigurationRequest GetConfigurationRequest2)
 
             => !(GetConfigurationRequest1 == GetConfigurationRequest2);
 
@@ -520,42 +430,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two get configuration requests for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A get configuration request to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is GetConfigurationRequest GetConfigurationRequest))
-                return false;
-
-            return Equals(GetConfigurationRequest);
-
-        }
+            => Object is GetConfigurationRequest getConfigurationRequest &&
+                   Equals(getConfigurationRequest);
 
         #endregion
 
         #region Equals(GetConfigurationRequest)
 
         /// <summary>
-        /// Compares two GetConfigurationn requests for equality.
+        /// Compares two get configuration requests for equality.
         /// </summary>
-        /// <param name="GetConfigurationRequest">A GetConfigurationn request to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(GetConfigurationRequest GetConfigurationRequest)
-        {
+        /// <param name="GetConfigurationRequest">A get configuration request to compare with.</param>
+        public override Boolean Equals(GetConfigurationRequest? GetConfigurationRequest)
 
-            if (GetConfigurationRequest is null)
-                return false;
+            => GetConfigurationRequest is not null &&
 
-            return (Keys == null && GetConfigurationRequest.Keys == null) ||
-                   (Keys != null && GetConfigurationRequest.Keys != null && Keys.Count().Equals(GetConfigurationRequest.Keys.Count()));
-
-        }
+               Keys.Count().Equals(GetConfigurationRequest.Keys.Count()) &&
+               Keys.All(key => GetConfigurationRequest.Keys.Contains(key));
 
         #endregion
 
@@ -580,7 +476,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => Keys.Count() + " configuration key(s)";
+            => Keys.Any()
+                   ? Keys.Count() + " configuration key(s)"
+                   : "all configuration keys";
 
         #endregion
 

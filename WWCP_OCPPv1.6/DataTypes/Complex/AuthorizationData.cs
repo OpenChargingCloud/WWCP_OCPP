@@ -191,31 +191,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (Text, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of authorization data.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AuthorizationData Parse(String                Text,
-                                              OnExceptionDelegate?  OnException   = null)
-        {
-
-            if (TryParse(Text,
-                         out var authorizationData,
-                         OnException))
-            {
-                return authorizationData;
-            }
-
-            throw new ArgumentException("The given text representation of authorization data is invalid: ", // + errorResponse,
-                                        nameof(Text));
-
-        }
-
-        #endregion
-
         #region (static) TryParse(XML,  out AuthorizationData, OnException = null)
 
         /// <summary>
@@ -343,57 +318,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 ErrorResponse      = "The given JSON representation of authorization data is invalid: " + e.Message;
                 return false;
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Text, out AuthorizationData, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of authorization data.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="AuthorizationData">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                 Text,
-                                       out AuthorizationData  AuthorizationData,
-                                       OnExceptionDelegate?   OnException   = null)
-        {
-
-            try
-            {
-
-                Text = Text.Trim();
-
-                if (Text.IsNotNullOrEmpty())
-                {
-
-                    if (Text.StartsWith("{") &&
-                        TryParse(JObject.Parse(Text),
-                                 out AuthorizationData,
-                                 out var errorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(Text).Root,
-                                 out AuthorizationData,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, Text, e);
-            }
-
-            AuthorizationData = default;
-            return false;
 
         }
 

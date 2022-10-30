@@ -320,31 +320,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (Text, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a sampled value.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SampledValue Parse(String                Text,
-                                         OnExceptionDelegate?  OnException   = null)
-        {
-
-            if (TryParse(Text,
-                         out var sampledValue,
-                         OnException))
-            {
-                return sampledValue!;
-            }
-
-            throw new ArgumentException("The given text representation of a SampledValue is invalid: ", // + errorResponse,
-                                        nameof(Text));
-
-        }
-
-        #endregion
-
         #region (static) TryParse(XML,  out SampledValue, OnException = null)
 
         /// <summary>
@@ -558,57 +533,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 ErrorResponse  = "The given JSON representation of a SampledValue is invalid: " + e.Message;
                 return false;
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Text, out SampledValue, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a sampled value.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="SampledValue">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                Text,
-                                       out SampledValue?     SampledValue,
-                                       OnExceptionDelegate?  OnException   = null)
-        {
-
-            try
-            {
-
-                Text = Text.Trim();
-
-                if (Text.IsNotNullOrEmpty())
-                {
-
-                    if (Text.StartsWith("{") &&
-                        TryParse(JObject.Parse(Text),
-                                 out SampledValue,
-                                 out var errorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(Text).Root,
-                                 out SampledValue,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, Text, e);
-            }
-
-            SampledValue = null;
-            return false;
 
         }
 

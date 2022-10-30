@@ -2709,14 +2709,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomResetRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (ResetResponse.TryParse(Request,
                                            result.Response,
-                                           out ResetResponse resetResponse))
+                                           out var resetResponse,
+                                           out var errorResponse))
                 {
-                    return resetResponse;
+                    return resetResponse!;
                 }
 
                 return new ResetResponse(Request,
@@ -2751,7 +2752,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomChangeAvailabilityRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (ChangeAvailabilityResponse.TryParse(Request,
@@ -2794,7 +2795,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomGetConfigurationRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (GetConfigurationResponse.TryParse(Request,
@@ -2837,7 +2838,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomChangeConfigurationRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (ChangeConfigurationResponse.TryParse(Request,
@@ -2880,14 +2881,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomDataTransferRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (CP.DataTransferResponse.TryParse(Request,
                                                      result.Response,
-                                                     out CP.DataTransferResponse dataTransferResponse))
+                                                     out var dataTransferResponse,
+                                                     out var errorResponse))
                 {
-                    return dataTransferResponse;
+                    return dataTransferResponse!;
                 }
 
                 return new CP.DataTransferResponse(Request,
@@ -2922,14 +2924,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomGetDiagnosticsRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (GetDiagnosticsResponse.TryParse(Request,
                                                     result.Response,
-                                                    out GetDiagnosticsResponse getDiagnosticsResponse))
+                                                    out var getDiagnosticsResponse,
+                                                    out var errorResponse))
                 {
-                    return getDiagnosticsResponse;
+                    return getDiagnosticsResponse!;
                 }
 
                 return new GetDiagnosticsResponse(Request,
@@ -2964,7 +2967,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomTriggerMessageRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (TriggerMessageResponse.TryParse(Request,
@@ -3006,7 +3009,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomUpdateFirmwareRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (UpdateFirmwareResponse.TryParse(Request,
@@ -3049,14 +3052,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomReserveNowRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (ReserveNowResponse.TryParse(Request,
                                                 result.Response,
-                                                out ReserveNowResponse reserveNowResponse))
+                                                out var reserveNowResponse,
+                                                out var errorReponse))
                 {
-                    return reserveNowResponse;
+                    return reserveNowResponse!;
                 }
 
                 return new ReserveNowResponse(Request,
@@ -3137,14 +3141,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                           CustomChargingSchedulePeriodSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (RemoteStartTransactionResponse.TryParse(Request,
                                                             result.Response,
-                                                            out RemoteStartTransactionResponse remoteStartTransactionResponse))
+                                                            out var remoteStartTransactionResponse,
+                                                            out var errorResponse))
                 {
-                    return remoteStartTransactionResponse;
+                    return remoteStartTransactionResponse!;
                 }
 
                 return new RemoteStartTransactionResponse(Request,
@@ -3179,14 +3184,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomRemoteStopTransactionRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (RemoteStopTransactionResponse.TryParse(Request,
                                                            result.Response,
-                                                           out RemoteStopTransactionResponse remoteStopTransactionResponse))
+                                                           out var remoteStopTransactionResponse,
+                                                           out var errorResponse))
                 {
-                    return remoteStopTransactionResponse;
+                    return remoteStopTransactionResponse!;
                 }
 
                 return new RemoteStopTransactionResponse(Request,
@@ -3221,7 +3227,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomSetChargingProfileRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (SetChargingProfileResponse.TryParse(Request,
@@ -3263,14 +3269,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomClearChargingProfileRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (ClearChargingProfileResponse.TryParse(Request,
                                                           result.Response,
-                                                          out ClearChargingProfileResponse clearChargingProfileResponse))
+                                                          out var clearChargingProfileResponse,
+                                                          out var errorResponse))
                 {
-                    return clearChargingProfileResponse;
+                    return clearChargingProfileResponse!;
                 }
 
                 return new ClearChargingProfileResponse(Request,
@@ -3306,14 +3313,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomGetCompositeScheduleRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (GetCompositeScheduleResponse.TryParse(Request,
                                                           result.Response,
-                                                          out GetCompositeScheduleResponse clearChargingProfileResponse))
+                                                          out var clearChargingProfileResponse,
+                                                          out var errorResponse))
                 {
-                    return clearChargingProfileResponse;
+                    return clearChargingProfileResponse!;
                 }
 
                 return new GetCompositeScheduleResponse(Request,
@@ -3348,7 +3356,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomUnlockConnectorRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (UnlockConnectorResponse.TryParse(Request,
@@ -3391,14 +3399,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomGetLocalListVersionRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (GetLocalListVersionResponse.TryParse(Request,
                                                          result.Response,
-                                                         out GetLocalListVersionResponse unlockConnectorResponse))
+                                                         out var unlockConnectorResponse,
+                                                         out var errorResponse))
                 {
-                    return unlockConnectorResponse;
+                    return unlockConnectorResponse!;
                 }
 
                 return new GetLocalListVersionResponse(Request,
@@ -3433,7 +3442,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomSendLocalListRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (SendLocalListResponse.TryParse(Request,
@@ -3475,7 +3484,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request.ToJSON(CustomClearCacheRequestSerializer),
                                            RequestTimeout ?? Request.RequestTimeout);
 
-            if (result?.Response != null)
+            if (result?.Response is not null)
             {
 
                 if (ClearCacheResponse.TryParse(Request,

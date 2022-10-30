@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
@@ -59,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// The planned composite charging schedule, the energy consumption
         /// over time. Always relative to ScheduleStart.
         /// </summary>
-        public ChargingSchedule            ChargingSchedule    { get;  }
+        public ChargingSchedule?           ChargingSchedule    { get;  }
 
         #endregion
 
@@ -70,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new get composite schedule response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The get composite schedule request leading to this response.</param>
         /// <param name="Status">The result of the request.</param>
         /// <param name="ConnectorId">The charging schedule contained in this notification applies to a specific connector.</param>
         /// <param name="ScheduleStart">The periods contained in the charging profile are relative to this timestamp.</param>
@@ -79,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             GetCompositeScheduleStatus      Status,
                                             Connector_Id?                   ConnectorId        = null,
                                             DateTime?                       ScheduleStart      = null,
-                                            ChargingSchedule                ChargingSchedule   = null)
+                                            ChargingSchedule?               ChargingSchedule   = null)
 
             : base(Request,
                    Result.OK())
@@ -100,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new get composite schedule response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The get composite schedule request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetCompositeScheduleResponse(CS.GetCompositeScheduleRequest  Request,
                                             Result                          Result)
@@ -244,100 +243,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, GetCompositeScheduleResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a get composite schedule response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetCompositeScheduleResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="Request">The get composite schedule request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static GetCompositeScheduleResponse Parse(CS.GetCompositeScheduleRequest  Request,
-                                                         XElement                        GetCompositeScheduleResponseXML,
-                                                         OnExceptionDelegate             OnException = null)
+                                                         XElement                        XML)
         {
 
             if (TryParse(Request,
-                         GetCompositeScheduleResponseXML,
-                         out GetCompositeScheduleResponse getCompositeScheduleResponse,
-                         OnException))
+                         XML,
+                         out var getCompositeScheduleResponse,
+                         out var errorResponse))
             {
-                return getCompositeScheduleResponse;
+                return getCompositeScheduleResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a get composite schedule response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, GetCompositeScheduleResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomGetCompositeScheduleResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a get composite schedule response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetCompositeScheduleResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetCompositeScheduleResponse Parse(CS.GetCompositeScheduleRequest  Request,
-                                                         JObject                         GetCompositeScheduleResponseJSON,
-                                                         OnExceptionDelegate             OnException = null)
+        /// <param name="Request">The get composite schedule request leading to this response.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomGetCompositeScheduleResponseParser">A delegate to parse custom get composite schedule responses.</param>
+        public static GetCompositeScheduleResponse Parse(CS.GetCompositeScheduleRequest                              Request,
+                                                         JObject                                                     JSON,
+                                                         CustomJObjectParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         GetCompositeScheduleResponseJSON,
-                         out GetCompositeScheduleResponse getCompositeScheduleResponse,
-                         OnException))
+                         JSON,
+                         out var getCompositeScheduleResponse,
+                         out var errorResponse,
+                         CustomGetCompositeScheduleResponseParser))
             {
-                return getCompositeScheduleResponse;
+                return getCompositeScheduleResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a get composite schedule response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, GetCompositeScheduleResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a get composite schedule response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetCompositeScheduleResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetCompositeScheduleResponse Parse(CS.GetCompositeScheduleRequest  Request,
-                                                         String                          GetCompositeScheduleResponseText,
-                                                         OnExceptionDelegate             OnException = null)
-        {
-
-            if (TryParse(Request,
-                         GetCompositeScheduleResponseText,
-                         out GetCompositeScheduleResponse getCompositeScheduleResponse,
-                         OnException))
-            {
-                return getCompositeScheduleResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, GetCompositeScheduleResponseXML,  out GetCompositeScheduleResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out GetCompositeScheduleResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a get composite schedule response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetCompositeScheduleResponseXML">The XML to be parsed.</param>
+        /// <param name="Request">The get composite schedule request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="GetCompositeScheduleResponse">The parsed get composite schedule response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.GetCompositeScheduleRequest    Request,
-                                       XElement                          GetCompositeScheduleResponseXML,
-                                       out GetCompositeScheduleResponse  GetCompositeScheduleResponse,
-                                       OnExceptionDelegate               OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CS.GetCompositeScheduleRequest     Request,
+                                       XElement                           XML,
+                                       out GetCompositeScheduleResponse?  GetCompositeScheduleResponse,
+                                       out String?                        ErrorResponse)
         {
 
             try
@@ -347,50 +320,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                    Request,
 
-                                                   GetCompositeScheduleResponseXML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                                                       GetCompositeScheduleStatusExtentions.Parse),
+                                                   XML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "status",
+                                                                           GetCompositeScheduleStatusExtentions.Parse),
 
-                                                   GetCompositeScheduleResponseXML.MapValueOrNull     (OCPPNS.OCPPv1_6_CP + "connectorId",
-                                                                                                       Connector_Id.Parse),
+                                                   XML.MapValueOrNull     (OCPPNS.OCPPv1_6_CP + "connectorId",
+                                                                           Connector_Id.Parse),
 
-                                                   GetCompositeScheduleResponseXML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "scheduleStart",
-                                                                                                       DateTime.Parse),
+                                                   XML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "scheduleStart",
+                                                                           DateTime.Parse),
 
-                                                   GetCompositeScheduleResponseXML.MapElement         (OCPPNS.OCPPv1_6_CP + "chargingSchedule",
-                                                                                                       ChargingSchedule.Parse)
+                                                   XML.MapElement         (OCPPNS.OCPPv1_6_CP + "chargingSchedule",
+                                                                           ChargingSchedule.Parse)
 
                                                );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, GetCompositeScheduleResponseXML, e);
-
-                GetCompositeScheduleResponse = null;
+                GetCompositeScheduleResponse  = null;
+                ErrorResponse                 = "The given JSON representation of a get composite schedule response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, GetCompositeScheduleResponseJSON, out GetCompositeScheduleResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out GetCompositeScheduleResponse, out ErrorResponse, CustomGetCompositeScheduleResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a get composite schedule response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetCompositeScheduleResponseJSON">The JSON to be parsed.</param>
+        /// <param name="Request">The get composite schedule request leading to this response.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetCompositeScheduleResponse">The parsed get composite schedule response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.GetCompositeScheduleRequest    Request,
-                                       JObject                           GetCompositeScheduleResponseJSON,
-                                       out GetCompositeScheduleResponse  GetCompositeScheduleResponse,
-                                       OnExceptionDelegate               OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomGetCompositeScheduleResponseParser">A delegate to parse custom get composite schedule responses.</param>
+        public static Boolean TryParse(CS.GetCompositeScheduleRequest                              Request,
+                                       JObject                                                     JSON,
+                                       out GetCompositeScheduleResponse?                           GetCompositeScheduleResponse,
+                                       out String?                                                 ErrorResponse,
+                                       CustomJObjectParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null)
         {
 
             try
@@ -400,11 +373,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region GetCompositeScheduleStatus
 
-                if (!GetCompositeScheduleResponseJSON.MapMandatory("status",
-                                                                   "get composite schedule status",
-                                                                   GetCompositeScheduleStatusExtentions.Parse,
-                                                                   out GetCompositeScheduleStatus  GetCompositeScheduleStatus,
-                                                                   out String                      ErrorResponse))
+                if (!JSON.MapMandatory("status",
+                                       "get composite schedule status",
+                                       GetCompositeScheduleStatusExtentions.Parse,
+                                       out GetCompositeScheduleStatus GetCompositeScheduleStatus,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
@@ -413,11 +386,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ConnectorId
 
-                if (GetCompositeScheduleResponseJSON.ParseOptionalStruct("connectorId",
-                                                                         "connector identification",
-                                                                         Connector_Id.TryParse,
-                                                                         out Connector_Id?  ConnectorId,
-                                                                         out                ErrorResponse))
+                if (JSON.ParseOptionalStruct("connectorId",
+                                             "connector identification",
+                                             Connector_Id.TryParse,
+                                             out Connector_Id? ConnectorId,
+                                             out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -427,10 +400,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ScheduleStart
 
-                if (GetCompositeScheduleResponseJSON.ParseOptional("scheduleStart",
-                                                                   "schedule start",
-                                                                   out DateTime?  ScheduleStart,
-                                                                   out            ErrorResponse))
+                if (JSON.ParseOptional("scheduleStart",
+                                       "schedule start",
+                                       out DateTime? ScheduleStart,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -440,11 +413,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ChargingSchedule
 
-                if (GetCompositeScheduleResponseJSON.ParseOptionalJSON("chargingSchedule",
-                                                                       "availability status",
-                                                                       OCPPv1_6.ChargingSchedule.TryParse,
-                                                                       out ChargingSchedule ChargingSchedule,
-                                                                       out                  ErrorResponse))
+                if (JSON.ParseOptionalJSON("chargingSchedule",
+                                           "availability status",
+                                           OCPPv1_6.ChargingSchedule.TryParse,
+                                           out ChargingSchedule ChargingSchedule,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -459,86 +432,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                                 ScheduleStart,
                                                                                 ChargingSchedule);
 
+                if (CustomGetCompositeScheduleResponseParser is not null)
+                    GetCompositeScheduleResponse = CustomGetCompositeScheduleResponseParser(JSON,
+                                                                                            GetCompositeScheduleResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, GetCompositeScheduleResponseJSON, e);
-
-                GetCompositeScheduleResponse = null;
+                GetCompositeScheduleResponse  = null;
+                ErrorResponse                 = "The given JSON representation of a get composite schedule response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, GetCompositeScheduleResponseText, out GetCompositeScheduleResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a get composite schedule response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetCompositeScheduleResponseText">The text to be parsed.</param>
-        /// <param name="GetCompositeScheduleResponse">The parsed get composite schedule response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.GetCompositeScheduleRequest    Request,
-                                       String                            GetCompositeScheduleResponseText,
-                                       out GetCompositeScheduleResponse  GetCompositeScheduleResponse,
-                                       OnExceptionDelegate               OnException  = null)
-        {
-
-            try
-            {
-
-                GetCompositeScheduleResponseText = GetCompositeScheduleResponseText?.Trim();
-
-                if (GetCompositeScheduleResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (GetCompositeScheduleResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(GetCompositeScheduleResponseText),
-                                 out GetCompositeScheduleResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(GetCompositeScheduleResponseText).Root,
-                                 out GetCompositeScheduleResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, GetCompositeScheduleResponseText, e);
-            }
-
-            GetCompositeScheduleResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "getCompositeScheduleResponse",
+            => new (OCPPNS.OCPPv1_6_CP + "getCompositeScheduleResponse",
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "status",               Status.AsText()),
 
@@ -562,7 +481,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetCompositeScheduleResponseSerializer">A delegate to serialize custom get composite schedule responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleResponse>  CustomGetCompositeScheduleResponseSerializer  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseSerializer  = null)
         {
 
             var json = JSONObject.Create(
@@ -597,11 +516,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The get composite schedule request failed.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The get composite schedule request leading to this response.</param>
         public static GetCompositeScheduleResponse Failed(CS.GetCompositeScheduleRequest Request)
 
-            => new GetCompositeScheduleResponse(Request,
-                                                Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -616,7 +535,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="GetCompositeScheduleResponse1">A get composite schedule response.</param>
         /// <param name="GetCompositeScheduleResponse2">Another get composite schedule response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetCompositeScheduleResponse GetCompositeScheduleResponse1, GetCompositeScheduleResponse GetCompositeScheduleResponse2)
+        public static Boolean operator == (GetCompositeScheduleResponse GetCompositeScheduleResponse1,
+                                           GetCompositeScheduleResponse GetCompositeScheduleResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -624,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((GetCompositeScheduleResponse1 is null) || (GetCompositeScheduleResponse2 is null))
+            if (GetCompositeScheduleResponse1 is null || GetCompositeScheduleResponse2 is null)
                 return false;
 
             return GetCompositeScheduleResponse1.Equals(GetCompositeScheduleResponse2);
@@ -641,7 +561,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="GetCompositeScheduleResponse1">A get composite schedule response.</param>
         /// <param name="GetCompositeScheduleResponse2">Another get composite schedule response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetCompositeScheduleResponse GetCompositeScheduleResponse1, GetCompositeScheduleResponse GetCompositeScheduleResponse2)
+        public static Boolean operator != (GetCompositeScheduleResponse GetCompositeScheduleResponse1,
+                                           GetCompositeScheduleResponse GetCompositeScheduleResponse2)
 
             => !(GetCompositeScheduleResponse1 == GetCompositeScheduleResponse2);
 
@@ -654,22 +575,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two get composite schedule responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A get composite schedule response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is GetCompositeScheduleResponse GetCompositeScheduleResponse))
-                return false;
-
-            return Equals(GetCompositeScheduleResponse);
-
-        }
+            => Object is GetCompositeScheduleResponse getCompositeScheduleResponse &&
+                   Equals(getCompositeScheduleResponse);
 
         #endregion
 
@@ -679,25 +591,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Compares two get composite schedule responses for equality.
         /// </summary>
         /// <param name="GetCompositeScheduleResponse">A get composite schedule response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(GetCompositeScheduleResponse GetCompositeScheduleResponse)
-        {
+        public override Boolean Equals(GetCompositeScheduleResponse? GetCompositeScheduleResponse)
 
-            if (GetCompositeScheduleResponse is null)
-                return false;
+            => GetCompositeScheduleResponse is not null &&
 
-            return Status.Equals(GetCompositeScheduleResponse.Status) &&
+               Status.Equals(GetCompositeScheduleResponse.Status) &&
 
-                   ((ConnectorId      == null && GetCompositeScheduleResponse.ConnectorId      == null) ||
-                    (ConnectorId      != null && GetCompositeScheduleResponse.ConnectorId      != null && ConnectorId.        Equals(GetCompositeScheduleResponse.ConnectorId))) &&
+            ((!ConnectorId.  HasValue       && !GetCompositeScheduleResponse.ConnectorId.  HasValue)       ||
+              (ConnectorId.  HasValue       &&  GetCompositeScheduleResponse.ConnectorId.  HasValue       && ConnectorId.        Equals(GetCompositeScheduleResponse.ConnectorId)))         &&
 
-                   ((!ScheduleStart.HasValue && !GetCompositeScheduleResponse.ScheduleStart.HasValue) ||
-                     (ScheduleStart.HasValue &&  GetCompositeScheduleResponse.ScheduleStart.HasValue   && ScheduleStart.Value.Equals(GetCompositeScheduleResponse.ScheduleStart.Value))) &&
+            ((!ScheduleStart.HasValue       && !GetCompositeScheduleResponse.ScheduleStart.HasValue)       ||
+              (ScheduleStart.HasValue       &&  GetCompositeScheduleResponse.ScheduleStart.HasValue       && ScheduleStart.Value.Equals(GetCompositeScheduleResponse.ScheduleStart.Value))) &&
 
-                   ((ChargingSchedule == null && GetCompositeScheduleResponse.ChargingSchedule == null) ||
-                    (ChargingSchedule != null && GetCompositeScheduleResponse.ChargingSchedule != null && ChargingSchedule.   Equals(GetCompositeScheduleResponse.ChargingSchedule)));
-
-        }
+             ((ChargingSchedule is     null && GetCompositeScheduleResponse. ChargingSchedule is     null) ||
+              (ChargingSchedule is not null && GetCompositeScheduleResponse. ChargingSchedule is not null && ChargingSchedule.   Equals(GetCompositeScheduleResponse.ChargingSchedule)));
 
         #endregion
 
@@ -714,19 +621,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             unchecked
             {
 
-                return Status.GetHashCode() * 11 ^
+                return  Status.           GetHashCode()       * 7 ^
 
-                       (ConnectorId != null
-                           ? ConnectorId.GetHashCode() * 7
-                           : 0) ^
-
-                       (ScheduleStart.HasValue
-                           ? ScheduleStart.GetHashCode() * 5
-                           : 0) ^
-
-                       (ChargingSchedule != null
-                           ? ChargingSchedule.GetHashCode()
-                           : 0);
+                       (ConnectorId?.     GetHashCode() ?? 0) * 5 ^
+                       (ScheduleStart?.   GetHashCode() ?? 0) * 3 ^
+                       (ChargingSchedule?.GetHashCode() ?? 0);
 
             }
         }
@@ -742,15 +641,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             => String.Concat(Status,
 
-                             ConnectorId != null
+                             ConnectorId.HasValue
                                  ? " / " + ConnectorId
                                  : "",
 
-                             ScheduleStart != null
+                             ScheduleStart.HasValue
                                  ? " / " + ScheduleStart.Value.ToIso8601()
                                  : "",
 
-                             ChargingSchedule != null
+                             ChargingSchedule is not null
                                  ? " / has schedule"
                                  : "");
 

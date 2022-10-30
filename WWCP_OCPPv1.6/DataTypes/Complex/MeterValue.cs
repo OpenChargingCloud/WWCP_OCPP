@@ -292,31 +292,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (Text, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a meter value.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MeterValue Parse(String                Text,
-                                       OnExceptionDelegate?  OnException   = null)
-        {
-
-            if (TryParse(Text,
-                         out var meterValue,
-                         OnException))
-            {
-                return meterValue!;
-            }
-
-            throw new ArgumentException("The given text representation of a MeterValue is invalid: ", // + errorResponse,
-                                        nameof(Text));
-
-        }
-
-        #endregion
-
         #region (static) TryParse(XML,  out MeterValue, OnException = null)
 
         /// <summary>
@@ -441,57 +416,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 ErrorResponse  = "The given JSON representation of a MeterValue is invalid: " + e.Message;
                 return false;
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Text, out MeterValue, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a meter value.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="MeterValue">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                Text,
-                                       out MeterValue?       MeterValue,
-                                       OnExceptionDelegate?  OnException   = null)
-        {
-
-            try
-            {
-
-                Text = Text.Trim();
-
-                if (Text.IsNotNullOrEmpty())
-                {
-
-                    if (Text.StartsWith("{") &&
-                        TryParse(JObject.Parse(Text),
-                                 out MeterValue,
-                                 out var errorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(Text).Root,
-                                 out MeterValue,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, Text, e);
-            }
-
-            MeterValue = null;
-            return false;
 
         }
 

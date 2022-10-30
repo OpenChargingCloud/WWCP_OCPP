@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -64,17 +62,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new get diagnostics response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The get diagnostics request leading to this response.</param>
         /// <param name="FileName">The name of the file with diagnostic information that will be uploaded. This field is not present when no diagnostic information is available.</param>
         public GetDiagnosticsResponse(CS.GetDiagnosticsRequest  Request,
-                                      String                    FileName   = null)
+                                      String?                   FileName   = null)
 
             : base(Request,
                    Result.OK())
 
         {
 
-            this.FileName = FileName;
+            this.FileName = FileName ?? "";
 
         }
 
@@ -85,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new get diagnostics response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The get diagnostics request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetDiagnosticsResponse(CS.GetDiagnosticsRequest  Request,
                                       Result                    Result)
@@ -93,7 +91,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             : base(Request,
                    Result)
 
-        { }
+        {
+
+            this.FileName = "";
+
+        }
 
         #endregion
 
@@ -130,100 +132,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, GetDiagnosticsResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a get diagnostics response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetDiagnosticsResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="Request">The get diagnostics request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static GetDiagnosticsResponse Parse(CS.GetDiagnosticsRequest  Request,
-                                                   XElement                  GetDiagnosticsResponseXML,
-                                                   OnExceptionDelegate       OnException = null)
+                                                   XElement                  XML)
         {
 
             if (TryParse(Request,
-                         GetDiagnosticsResponseXML,
-                         out GetDiagnosticsResponse getDiagnosticsResponse,
-                         OnException))
+                         XML,
+                         out var getDiagnosticsResponse,
+                         out var errorResponse))
             {
-                return getDiagnosticsResponse;
+                return getDiagnosticsResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a get diagnostics response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, GetDiagnosticsResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomGetDiagnosticsResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a get diagnostics response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetDiagnosticsResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetDiagnosticsResponse Parse(CS.GetDiagnosticsRequest  Request,
-                                                   JObject                   GetDiagnosticsResponseJSON,
-                                                   OnExceptionDelegate       OnException = null)
+        /// <param name="Request">The get diagnostics request leading to this response.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomGetDiagnosticsResponseParser">A delegate to parse custom get diagnostics responses.</param>
+        public static GetDiagnosticsResponse Parse(CS.GetDiagnosticsRequest                              Request,
+                                                   JObject                                               JSON,
+                                                   CustomJObjectParserDelegate<GetDiagnosticsResponse>?  CustomGetDiagnosticsResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         GetDiagnosticsResponseJSON,
-                         out GetDiagnosticsResponse getDiagnosticsResponse,
-                         OnException))
+                         JSON,
+                         out var getDiagnosticsResponse,
+                         out var errorResponse,
+                         CustomGetDiagnosticsResponseParser))
             {
-                return getDiagnosticsResponse;
+                return getDiagnosticsResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a get diagnostics response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, GetDiagnosticsResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a get diagnostics response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetDiagnosticsResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetDiagnosticsResponse Parse(CS.GetDiagnosticsRequest  Request,
-                                                   String                    GetDiagnosticsResponseText,
-                                                   OnExceptionDelegate       OnException = null)
-        {
-
-            if (TryParse(Request,
-                         GetDiagnosticsResponseText,
-                         out GetDiagnosticsResponse getDiagnosticsResponse,
-                         OnException))
-            {
-                return getDiagnosticsResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, GetDiagnosticsResponseXML,  out GetDiagnosticsResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out GetDiagnosticsResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a get diagnostics response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetDiagnosticsResponseXML">The XML to be parsed.</param>
+        /// <param name="Request">The get diagnostics request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="GetDiagnosticsResponse">The parsed get diagnostics response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.GetDiagnosticsRequest    Request,
-                                       XElement                    GetDiagnosticsResponseXML,
-                                       out GetDiagnosticsResponse  GetDiagnosticsResponse,
-                                       OnExceptionDelegate         OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CS.GetDiagnosticsRequest     Request,
+                                       XElement                     XML,
+                                       out GetDiagnosticsResponse?  GetDiagnosticsResponse,
+                                       out String?                  ErrorResponse)
         {
 
             try
@@ -233,137 +209,75 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                              Request,
 
-                                             GetDiagnosticsResponseXML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "fileName")
+                                             XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "fileName")
 
                                          );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, GetDiagnosticsResponseXML, e);
-
-                GetDiagnosticsResponse = null;
+                GetDiagnosticsResponse  = null;
+                ErrorResponse           = "The given JSON representation of a get diagnostics response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, GetDiagnosticsResponseJSON, out GetDiagnosticsResponse, OnException = null)
+        #region (static) TryParse(Request, GetDiagnosticsResponseJSON, out GetDiagnosticsResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a get diagnostics response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetDiagnosticsResponseJSON">The JSON to be parsed.</param>
+        /// <param name="Request">The get diagnostics request leading to this response.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetDiagnosticsResponse">The parsed get diagnostics response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.GetDiagnosticsRequest    Request,
-                                       JObject                     GetDiagnosticsResponseJSON,
-                                       out GetDiagnosticsResponse  GetDiagnosticsResponse,
-                                       OnExceptionDelegate         OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomGetDiagnosticsResponseParser">A delegate to parse custom get diagnostics responses.</param>
+        public static Boolean TryParse(CS.GetDiagnosticsRequest                              Request,
+                                       JObject                                               JSON,
+                                       out GetDiagnosticsResponse?                           GetDiagnosticsResponse,
+                                       out String?                                           ErrorResponse,
+                                       CustomJObjectParserDelegate<GetDiagnosticsResponse>?  CustomGetDiagnosticsResponseParser   = null)
         {
 
             try
             {
 
-                GetDiagnosticsResponse = null;
-
-                #region FileName
-
-                var FileName = GetDiagnosticsResponseJSON.GetString("fileName");
-
-                #endregion
-
-
                 GetDiagnosticsResponse = new GetDiagnosticsResponse(Request,
-                                                                    FileName);
+                                                                    JSON.GetString("fileName"));
 
+                if (CustomGetDiagnosticsResponseParser is not null)
+                    GetDiagnosticsResponse = CustomGetDiagnosticsResponseParser(JSON,
+                                                                                GetDiagnosticsResponse);
+
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, GetDiagnosticsResponseJSON, e);
-
-                GetDiagnosticsResponse = null;
+                GetDiagnosticsResponse  = null;
+                ErrorResponse           = "The given JSON representation of a get diagnostics response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, GetDiagnosticsResponseText, out GetDiagnosticsResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a get diagnostics response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetDiagnosticsResponseText">The text to be parsed.</param>
-        /// <param name="GetDiagnosticsResponse">The parsed get diagnostics response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.GetDiagnosticsRequest    Request,
-                                       String                      GetDiagnosticsResponseText,
-                                       out GetDiagnosticsResponse  GetDiagnosticsResponse,
-                                       OnExceptionDelegate         OnException  = null)
-        {
-
-            try
-            {
-
-                GetDiagnosticsResponseText = GetDiagnosticsResponseText?.Trim();
-
-                if (GetDiagnosticsResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (GetDiagnosticsResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(GetDiagnosticsResponseText),
-                                 out GetDiagnosticsResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(GetDiagnosticsResponseText).Root,
-                                 out GetDiagnosticsResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, GetDiagnosticsResponseText, e);
-            }
-
-            GetDiagnosticsResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "getDiagnosticsResponse",
+            => new (OCPPNS.OCPPv1_6_CP + "getDiagnosticsResponse",
 
                    FileName != null
                        ? new XElement(OCPPNS.OCPPv1_6_CP + "fileName",  FileName.SubstringMax(MaxFileNameLength))
@@ -379,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetDiagnosticsResponseSerializer">A delegate to serialize custom get diagnostics responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetDiagnosticsResponse>  CustomGetDiagnosticsResponseSerializer  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetDiagnosticsResponse>?  CustomGetDiagnosticsResponseSerializer   = null)
         {
 
             var json = JSONObject.Create(
@@ -404,11 +318,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The get diagnostics command failed.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The get diagnostics request leading to this response.</param>
         public static GetDiagnosticsResponse Failed(CS.GetDiagnosticsRequest  Request)
 
-            => new GetDiagnosticsResponse(Request,
-                                          Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -423,7 +337,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="GetDiagnosticsResponse1">A get diagnostics response.</param>
         /// <param name="GetDiagnosticsResponse2">Another get diagnostics response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetDiagnosticsResponse GetDiagnosticsResponse1, GetDiagnosticsResponse GetDiagnosticsResponse2)
+        public static Boolean operator == (GetDiagnosticsResponse GetDiagnosticsResponse1,
+                                           GetDiagnosticsResponse GetDiagnosticsResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -431,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((GetDiagnosticsResponse1 is null) || (GetDiagnosticsResponse2 is null))
+            if (GetDiagnosticsResponse1 is null || GetDiagnosticsResponse2 is null)
                 return false;
 
             return GetDiagnosticsResponse1.Equals(GetDiagnosticsResponse2);
@@ -448,7 +363,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="GetDiagnosticsResponse1">A get diagnostics response.</param>
         /// <param name="GetDiagnosticsResponse2">Another get diagnostics response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetDiagnosticsResponse GetDiagnosticsResponse1, GetDiagnosticsResponse GetDiagnosticsResponse2)
+        public static Boolean operator != (GetDiagnosticsResponse GetDiagnosticsResponse1,
+                                           GetDiagnosticsResponse GetDiagnosticsResponse2)
 
             => !(GetDiagnosticsResponse1 == GetDiagnosticsResponse2);
 
@@ -461,22 +377,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two get diagnostics responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A get diagnostics response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is GetDiagnosticsResponse GetDiagnosticsResponse))
-                return false;
-
-            return Equals(GetDiagnosticsResponse);
-
-        }
+            => Object is GetDiagnosticsResponse getDiagnosticsResponse &&
+                   Equals(getDiagnosticsResponse);
 
         #endregion
 
@@ -486,17 +393,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Compares two get diagnostics responses for equality.
         /// </summary>
         /// <param name="GetDiagnosticsResponse">A get diagnostics response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(GetDiagnosticsResponse GetDiagnosticsResponse)
-        {
+        public override Boolean Equals(GetDiagnosticsResponse? GetDiagnosticsResponse)
 
-            if (GetDiagnosticsResponse is null)
-                return false;
-
-            return (FileName == null && GetDiagnosticsResponse.FileName == null) ||
-                   (FileName != null && GetDiagnosticsResponse.FileName != null && FileName.Equals(GetDiagnosticsResponse.FileName));
-
-        }
+            => GetDiagnosticsResponse is not null &&
+                   FileName.Equals(GetDiagnosticsResponse.FileName);
 
         #endregion
 
@@ -510,9 +410,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => FileName != null
-                   ? FileName.GetHashCode()
-                   : base.GetHashCode();
+            => FileName.GetHashCode();
 
         #endregion
 
@@ -523,7 +421,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public override String ToString()
 
-            => FileName ?? "GetDiagnosticsResponse";
+            => FileName.IsNotNullOrEmpty()
+                   ? FileName
+                   : "<no filename>";
 
         #endregion
 

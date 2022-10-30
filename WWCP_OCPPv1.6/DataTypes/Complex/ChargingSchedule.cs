@@ -241,31 +241,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (Text, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a charging schedule.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingSchedule Parse(String                Text,
-                                             OnExceptionDelegate?  OnException   = null)
-        {
-
-            if (TryParse(Text,
-                         out var chargingSchedule,
-                         OnException))
-            {
-                return chargingSchedule!;
-            }
-
-            throw new ArgumentException("The given text representation of an authorize request is invalid: ", // + errorResponse,
-                                        nameof(Text));
-
-        }
-
-        #endregion
-
         #region (static) TryParse(XML,  out ChargingSchedule, OnException = null)
 
         /// <summary>
@@ -441,57 +416,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 ErrorResponse     = "The given JSON representation of a charging schedule is invalid: " + e.Message;
                 return false;
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Text, out ChargingSchedule, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a charging schedule.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="ChargingSchedule">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                 Text,
-                                       out ChargingSchedule?  ChargingSchedule,
-                                       OnExceptionDelegate?   OnException   = null)
-        {
-
-            try
-            {
-
-                Text = Text.Trim();
-
-                if (Text.IsNotNullOrEmpty())
-                {
-
-                    if (Text.StartsWith("{") &&
-                        TryParse(JObject.Parse(Text),
-                                 out ChargingSchedule,
-                                 out var errorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(XDocument.Parse(Text).Root,
-                                 out ChargingSchedule,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, Text, e);
-            }
-
-            ChargingSchedule = null;
-            return false;
 
         }
 

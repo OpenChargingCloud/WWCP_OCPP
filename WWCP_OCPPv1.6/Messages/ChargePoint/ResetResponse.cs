@@ -17,13 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -53,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new reset response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="Status">The success or failure of the reset command.</param>
         public ResetResponse(CS.ResetRequest  Request,
                              ResetStatus      Status)
@@ -74,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new reset response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ResetResponse(CS.ResetRequest  Request,
                              Result           Result)
@@ -126,100 +124,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, ResetResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a reset response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ResetResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ResetResponse Parse(CS.ResetRequest      Request,
-                                          XElement             ResetResponseXML,
-                                          OnExceptionDelegate  OnException = null)
+        /// <param name="Request">The reset request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        public static ResetResponse Parse(CS.ResetRequest  Request,
+                                          XElement         XML)
         {
 
             if (TryParse(Request,
-                         ResetResponseXML,
-                         out ResetResponse resetResponse,
-                         OnException))
+                         XML,
+                         out var resetResponse,
+                         out var errorResponse))
             {
-                return resetResponse;
+                return resetResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a reset response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, ResetResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomResetResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a reset response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ResetResponseJSON">The JSON to be parsed.</param>
+        /// <param name="Request">The reset request leading to this response.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ResetResponse Parse(CS.ResetRequest      Request,
-                                          JObject              ResetResponseJSON,
-                                          OnExceptionDelegate  OnException = null)
+        public static ResetResponse Parse(CS.ResetRequest                              Request,
+                                          JObject                                      JSON,
+                                          CustomJObjectParserDelegate<ResetResponse>?  CustomResetResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         ResetResponseJSON,
-                         out ResetResponse resetResponse,
-                         OnException))
+                         JSON,
+                         out var resetResponse,
+                         out var errorResponse,
+                         CustomResetResponseParser))
             {
-                return resetResponse;
+                return resetResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a reset response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, ResetResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a reset response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ResetResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ResetResponse Parse(CS.ResetRequest      Request,
-                                          String               ResetResponseText,
-                                          OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(Request,
-                         ResetResponseText,
-                         out ResetResponse resetResponse,
-                         OnException))
-            {
-                return resetResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, ResetResponseXML,  out ResetResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out ResetResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a reset response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ResetResponseXML">The XML to be parsed.</param>
+        /// <param name="Request">The reset request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="ResetResponse">The parsed reset response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ResetRequest      Request,
-                                       XElement             ResetResponseXML,
-                                       out ResetResponse    ResetResponse,
-                                       OnExceptionDelegate  OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CS.ResetRequest     Request,
+                                       XElement            XML,
+                                       out ResetResponse?  ResetResponse,
+                                       out String?         ErrorResponse)
         {
 
             try
@@ -229,41 +201,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     Request,
 
-                                    ResetResponseXML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                    ResetStatusExtentions.Parse)
+                                    XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
+                                                       ResetStatusExtentions.Parse)
 
                                 );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, ResetResponseXML, e);
-
-                ResetResponse = null;
+                ResetResponse  = null;
+                ErrorResponse  = "The given JSON representation of a reset response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, ResetResponseJSON, out ResetResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out ResetResponse, out ErrorResponse, CustomResetResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a reset response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ResetResponseJSON">The JSON to be parsed.</param>
+        /// <param name="Request">The reset request leading to this response.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ResetResponse">The parsed reset response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ResetRequest      Request,
-                                       JObject              ResetResponseJSON,
-                                       out ResetResponse    ResetResponse,
-                                       OnExceptionDelegate  OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomResetResponseParser">A delegate to parse custom reset responses.</param>
+        public static Boolean TryParse(CS.ResetRequest                              Request,
+                                       JObject                                      JSON,
+                                       out ResetResponse?                           ResetResponse,
+                                       out String?                                  ErrorResponse,
+                                       CustomJObjectParserDelegate<ResetResponse>?  CustomResetResponseParser   = null)
         {
 
             try
@@ -273,11 +245,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ResetStatus
 
-                if (!ResetResponseJSON.MapMandatory("status",
-                                                    "reset status",
-                                                    ResetStatusExtentions.Parse,
-                                                    out ResetStatus  ResetStatus,
-                                                    out String       ErrorResponse))
+                if (!JSON.MapMandatory("status",
+                                       "reset status",
+                                       ResetStatusExtentions.Parse,
+                                       out ResetStatus ResetStatus,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
@@ -288,86 +260,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 ResetResponse = new ResetResponse(Request,
                                                   ResetStatus);
 
+                if (CustomResetResponseParser is not null)
+                    ResetResponse = CustomResetResponseParser(JSON,
+                                                              ResetResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, ResetResponseJSON, e);
-
-                ResetResponse = null;
+                ResetResponse  = null;
+                ErrorResponse  = "The given JSON representation of a reset response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, ResetResponseText, out ResetResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a reset response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="ResetResponseText">The text to be parsed.</param>
-        /// <param name="ResetResponse">The parsed reset response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.ResetRequest      Request,
-                                       String               ResetResponseText,
-                                       out ResetResponse    ResetResponse,
-                                       OnExceptionDelegate  OnException  = null)
-        {
-
-            try
-            {
-
-                ResetResponseText = ResetResponseText?.Trim();
-
-                if (ResetResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (ResetResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(ResetResponseText),
-                                 out ResetResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(ResetResponseText).Root,
-                                 out ResetResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, ResetResponseText, e);
-            }
-
-            ResetResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "resetResponse",
+            => new (OCPPNS.OCPPv1_6_CP + "resetResponse",
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
 
@@ -381,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomResetResponseSerializer">A delegate to serialize custom reset responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ResetResponse>  CustomResetResponseSerializer  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ResetResponse>? CustomResetResponseSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -402,11 +320,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The reset command failed.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The reset request leading to this response.</param>
         public static ResetResponse Failed(CS.ResetRequest Request)
 
-            => new ResetResponse(Request,
-                                 Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -421,7 +339,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ResetResponse1">A reset response.</param>
         /// <param name="ResetResponse2">Another reset response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ResetResponse ResetResponse1, ResetResponse ResetResponse2)
+        public static Boolean operator == (ResetResponse ResetResponse1,
+                                           ResetResponse ResetResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -429,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((ResetResponse1 is null) || (ResetResponse2 is null))
+            if (ResetResponse1 is null || ResetResponse2 is null)
                 return false;
 
             return ResetResponse1.Equals(ResetResponse2);
@@ -446,7 +365,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ResetResponse1">A reset response.</param>
         /// <param name="ResetResponse2">Another reset response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ResetResponse ResetResponse1, ResetResponse ResetResponse2)
+        public static Boolean operator != (ResetResponse ResetResponse1,
+                                           ResetResponse ResetResponse2)
 
             => !(ResetResponse1 == ResetResponse2);
 
@@ -459,22 +379,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two reset responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A reset response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is ResetResponse ResetResponse))
-                return false;
-
-            return Equals(ResetResponse);
-
-        }
+            => Object is ResetResponse resetResponse &&
+                   Equals(resetResponse);
 
         #endregion
 
@@ -484,16 +395,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Compares two reset responses for equality.
         /// </summary>
         /// <param name="ResetResponse">A reset response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(ResetResponse ResetResponse)
-        {
+        public override Boolean Equals(ResetResponse? ResetResponse)
 
-            if (ResetResponse is null)
-                return false;
-
-            return Status.Equals(ResetResponse.Status);
-
-        }
+            => ResetResponse is not null &&
+                   Status.Equals(ResetResponse.Status);
 
         #endregion
 

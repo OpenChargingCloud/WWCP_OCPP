@@ -17,15 +17,11 @@
 
 #region Usings
 
-using System;
-using System.Linq;
 using System.Xml.Linq;
-using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -60,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new get configuration response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The get configuration request leading to this response.</param>
         /// <param name="ConfigurationKeys">An enumeration of (requested and) known configuration keys.</param>
         /// <param name="UnknownKeys">An enumeration of (requested but) unknown configuration keys.</param>
         public GetConfigurationResponse(CS.GetConfigurationRequest     Request,
@@ -72,8 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         {
 
-            this.ConfigurationKeys  = ConfigurationKeys ?? new ConfigurationKey[0];
-            this.UnknownKeys        = UnknownKeys       ?? new String[0];
+            this.ConfigurationKeys  = ConfigurationKeys ?? Array.Empty<ConfigurationKey>();
+            this.UnknownKeys        = UnknownKeys       ?? Array.Empty<String>();
 
         }
 
@@ -84,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new get configuration response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The get configuration request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetConfigurationResponse(CS.GetConfigurationRequest  Request,
                                         Result                      Result)
@@ -94,8 +90,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         {
 
-            this.ConfigurationKeys  = new ConfigurationKey[0];
-            this.UnknownKeys        = new String[0];
+            this.ConfigurationKeys  = Array.Empty<ConfigurationKey>();
+            this.UnknownKeys        = Array.Empty<String>();
 
         }
 
@@ -173,28 +169,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, GetConfigurationResponseXML,  OnException = null)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a get configuration response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetConfigurationResponseXML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="Request">The get configuration request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         public static GetConfigurationResponse Parse(CS.GetConfigurationRequest  Request,
-                                                     XElement                    GetConfigurationResponseXML,
-                                                     OnExceptionDelegate         OnException = null)
+                                                     XElement                    XML)
         {
 
             if (TryParse(Request,
-                         GetConfigurationResponseXML,
-                         out GetConfigurationResponse getConfigurationResponse,
-                         OnException))
+                         XML,
+                         out var getConfigurationResponse,
+                         out var errorResponse))
             {
-                return getConfigurationResponse;
+                return getConfigurationResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given XML representation of a get configuration response is invalid: " + errorResponse,
+                                        nameof(XML));
 
         }
 
@@ -205,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Parse the given JSON representation of a get configuration response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The get configuration request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomGetConfigurationResponseParser">A delegate to parse custom get configuration responses.</param>
         public static GetConfigurationResponse Parse(CS.GetConfigurationRequest                              Request,
@@ -229,46 +224,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, GetConfigurationResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a get configuration response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetConfigurationResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetConfigurationResponse Parse(CS.GetConfigurationRequest  Request,
-                                                     String                      GetConfigurationResponseText,
-                                                     OnExceptionDelegate         OnException = null)
-        {
-
-            if (TryParse(Request,
-                         GetConfigurationResponseText,
-                         out GetConfigurationResponse getConfigurationResponse,
-                         OnException))
-            {
-                return getConfigurationResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, GetConfigurationResponseXML,  out GetConfigurationResponse, OnException = null)
+        #region (static) TryParse(Request, XML,  out GetConfigurationResponse, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a get configuration response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetConfigurationResponseXML">The XML to be parsed.</param>
+        /// <param name="Request">The get configuration request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
         /// <param name="GetConfigurationResponse">The parsed get configuration response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.GetConfigurationRequest    Request,
-                                       XElement                      GetConfigurationResponseXML,
-                                       out GetConfigurationResponse  GetConfigurationResponse,
-                                       OnExceptionDelegate           OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CS.GetConfigurationRequest     Request,
+                                       XElement                       XML,
+                                       out GetConfigurationResponse?  GetConfigurationResponse,
+                                       out String?                    ErrorResponse)
         {
 
             try
@@ -278,39 +246,38 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                Request,
 
-                                               GetConfigurationResponseXML.MapElements  (OCPPNS.OCPPv1_6_CP + "configurationKey",
-                                                                                         ConfigurationKey.Parse),
+                                               XML.MapElements  (OCPPNS.OCPPv1_6_CP + "configurationKey",
+                                                                 ConfigurationKey.Parse),
 
-                                               GetConfigurationResponseXML.ElementValues(OCPPNS.OCPPv1_6_CP + "unknownKey")
+                                               XML.ElementValues(OCPPNS.OCPPv1_6_CP + "unknownKey")
 
                                            );
 
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(Timestamp.Now, GetConfigurationResponseXML, e);
-
-                GetConfigurationResponse = null;
+                GetConfigurationResponse  = null;
+                ErrorResponse             = "The given XML representation of a get configuration response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, GetConfigurationResponseJSON, out GetConfigurationResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out GetConfigurationResponse, out ErrorResponse, CustomGetConfigurationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a get configuration response.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The get configuration request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetConfigurationResponse">The parsed get configuration response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomGetConfigurationResponseParser">A delegate to parse custom get configuration responses.</param>
         public static Boolean TryParse(CS.GetConfigurationRequest                              Request,
                                        JObject                                                 JSON,
                                        out GetConfigurationResponse?                           GetConfigurationResponse,
@@ -373,69 +340,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, GetConfigurationResponseText, out GetConfigurationResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a get configuration response.
-        /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
-        /// <param name="GetConfigurationResponseText">The text to be parsed.</param>
-        /// <param name="GetConfigurationResponse">The parsed get configuration response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CS.GetConfigurationRequest     Request,
-                                       String                         GetConfigurationResponseText,
-                                       out GetConfigurationResponse?  GetConfigurationResponse,
-                                       OnExceptionDelegate?           OnException   = null)
-        {
-
-            try
-            {
-
-                GetConfigurationResponseText = GetConfigurationResponseText?.Trim();
-
-                if (GetConfigurationResponseText.IsNotNullOrEmpty())
-                {
-
-                    if (GetConfigurationResponseText.StartsWith("{") &&
-                        TryParse(Request,
-                                 JObject.Parse(GetConfigurationResponseText),
-                                 out GetConfigurationResponse,
-                                 out var errorResponse))
-                    {
-                        return true;
-                    }
-
-                    if (TryParse(Request,
-                                 XDocument.Parse(GetConfigurationResponseText).Root,
-                                 out GetConfigurationResponse,
-                                 OnException))
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(Timestamp.Now, GetConfigurationResponseText, e);
-            }
-
-            GetConfigurationResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToXML()
+        #region ToXML ()
 
         /// <summary>
         /// Return a XML representation of this object.
         /// </summary>
         public XElement ToXML()
 
-            => new XElement(OCPPNS.OCPPv1_6_CP + "getConfigurationResponse",
+            => new (OCPPNS.OCPPv1_6_CP + "getConfigurationResponse",
 
                    ConfigurationKeys.SafeSelect(key => key.ToXML()),
                    UnknownKeys.      SafeSelect(key => new XElement(OCPPNS.OCPPv1_6_CP + "unknownKey",  key.SubstringMax(ConfigurationKey.MaxConfigurationKeyLength)))
@@ -451,18 +363,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="CustomGetConfigurationResponseSerializer">A delegate to serialize custom get configuration responses.</param>
         /// <param name="CustomConfigurationKeySerializer">A delegate to serialize custom configuration keys.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetConfigurationResponse>  CustomGetConfigurationResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<ConfigurationKey>          CustomConfigurationKeySerializer           = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetConfigurationResponse>?  CustomGetConfigurationResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<ConfigurationKey>?          CustomConfigurationKeySerializer           = null)
         {
 
             var json = JSONObject.Create(
 
-                           ConfigurationKeys.SafeAny()
+                           ConfigurationKeys.Any()
                                ? new JProperty("configurationKey",  new JArray(ConfigurationKeys.Select(key => key.ToJSON(CustomConfigurationKeySerializer))))
                                : null,
 
-                           UnknownKeys.SafeAny()
-                               ? new JProperty("unknownKey",        new JArray(UnknownKeys.Select(key => key.SubstringMax(ConfigurationKey.MaxConfigurationKeyLength))))
+                           UnknownKeys.Any()
+                               ? new JProperty("unknownKey",        new JArray(UnknownKeys.      Select(key => key.SubstringMax(ConfigurationKey.MaxConfigurationKeyLength))))
                                : null
 
                        );
@@ -481,11 +393,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The get configuration request failed.
         /// </summary>
-        /// <param name="Request">The start transaction request leading to this response.</param>
+        /// <param name="Request">The get configuration request leading to this response.</param>
         public static GetConfigurationResponse Failed(CS.GetConfigurationRequest Request)
 
-            => new GetConfigurationResponse(Request,
-                                            Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -500,7 +412,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="GetConfigurationResponse1">A get configuration response.</param>
         /// <param name="GetConfigurationResponse2">Another get configuration response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetConfigurationResponse GetConfigurationResponse1, GetConfigurationResponse GetConfigurationResponse2)
+        public static Boolean operator == (GetConfigurationResponse GetConfigurationResponse1,
+                                           GetConfigurationResponse GetConfigurationResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -508,7 +421,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((GetConfigurationResponse1 is null) || (GetConfigurationResponse2 is null))
+            if (GetConfigurationResponse1 is null || GetConfigurationResponse2 is null)
                 return false;
 
             return GetConfigurationResponse1.Equals(GetConfigurationResponse2);
@@ -525,7 +438,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="GetConfigurationResponse1">A get configuration response.</param>
         /// <param name="GetConfigurationResponse2">Another get configuration response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetConfigurationResponse GetConfigurationResponse1, GetConfigurationResponse GetConfigurationResponse2)
+        public static Boolean operator != (GetConfigurationResponse GetConfigurationResponse1,
+                                           GetConfigurationResponse GetConfigurationResponse2)
 
             => !(GetConfigurationResponse1 == GetConfigurationResponse2);
 
@@ -538,22 +452,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two get configuration responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A get configuration response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is GetConfigurationResponse GetConfigurationResponse))
-                return false;
-
-            return Equals(GetConfigurationResponse);
-
-        }
+            => Object is BootNotificationRequest bootNotificationRequest &&
+                   Equals(bootNotificationRequest);
 
         #endregion
 
@@ -563,17 +468,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Compares two get configuration responses for equality.
         /// </summary>
         /// <param name="GetConfigurationResponse">A get configuration response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(GetConfigurationResponse GetConfigurationResponse)
-        {
+        public override Boolean Equals(GetConfigurationResponse? GetConfigurationResponse)
 
-            if (GetConfigurationResponse is null)
-                return false;
+            => GetConfigurationResponse is not null &&
 
-            return ConfigurationKeys.Count().Equals(GetConfigurationResponse.ConfigurationKeys.Count()) &&
-                   UnknownKeys.      Count().Equals(GetConfigurationResponse.UnknownKeys.Count());
-
-        }
+               ConfigurationKeys.Count().Equals(GetConfigurationResponse.ConfigurationKeys.Count()) &&
+               UnknownKeys.      Count().Equals(GetConfigurationResponse.UnknownKeys.      Count());
 
         #endregion
 
@@ -590,8 +490,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             unchecked
             {
 
-                return ConfigurationKeys.GetHashCode() * 7 ^
-                       UnknownKeys.      GetHashCode() * 5;
+                return ConfigurationKeys.GetHashCode() * 5 ^
+                       UnknownKeys.      GetHashCode() * 3;
 
             }
         }
@@ -607,7 +507,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             => String.Concat(ConfigurationKeys.Count(), " configuration key(s)",
                              " / ",
-                             UnknownKeys.Count(), " unknown key(s)");
+                             UnknownKeys.      Count(), " unknown key(s)");
 
         #endregion
 
