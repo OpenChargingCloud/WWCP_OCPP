@@ -215,7 +215,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
                 if (!Request_Id.TryParse(JSON[1]?.Value<String>() ?? "", out var requestId))
                     return false;
 
-                var error = Enum.TryParse(JSON[2].Value<String>(), out OCPP_WebSocket_ErrorCodes wsErrorCodes);
+                if (!OCPP_WebSocket_ErrorCodes.TryParse(JSON[2]?.Value<String>() ?? "", out var wsErrorCode))
+                    return false;
 
                 var description = JSON[3]?.Value<String>();
                 if (description is null)
@@ -225,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
                     return false;
 
                 ErrorMessage = new OCPP_WebSocket_ErrorMessage(requestId,
-                                                               error ? wsErrorCodes : OCPP_WebSocket_ErrorCodes.GenericError,
+                                                               wsErrorCode,
                                                                description,
                                                                details);
 

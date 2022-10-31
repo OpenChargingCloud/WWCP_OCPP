@@ -2755,7 +2755,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public async Task<CS.BootNotificationResponse>
 
             SendBootNotification(CancellationToken?  CancellationToken   = null,
-                                 EventTracking_Id    EventTrackingId     = null,
+                                 EventTracking_Id?   EventTrackingId     = null,
                                  TimeSpan?           RequestTimeout      = null)
 
         {
@@ -2800,17 +2800,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CS.BootNotificationResponse response = null;
+            CS.BootNotificationResponse? response = null;
 
-            if (CPClient != null)
+            if (CPClient is not null)
                 response = await CPClient.SendBootNotification(request,
-
                                                                requestTimestamp,
                                                                CancellationToken,
                                                                EventTrackingId,
                                                                RequestTimeout ?? DefaultRequestTimeout);
 
-            if (response != null)
+            if (response is not null)
             {
                 switch (response.Status)
                 {
@@ -2873,7 +2872,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public async Task<CS.HeartbeatResponse>
 
             SendHeartbeat(CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
+                          EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null)
 
         {
@@ -2908,17 +2907,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CS.HeartbeatResponse response = null;
+            CS.HeartbeatResponse? response = null;
 
-            if (CPClient != null)
+            if (CPClient is not null)
                 response = await CPClient.SendHeartbeat(request,
-
                                                         requestTimestamp,
                                                         CancellationToken,
                                                         EventTrackingId,
                                                         RequestTimeout ?? DefaultRequestTimeout);
 
-            if (response != null)
+            if (response is not null)
             {
                 this.CentralSystemTime = response.CurrentTime;
             }

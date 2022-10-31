@@ -1367,8 +1367,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region Data
 
-                var HTTPHeaderBytes   = new Byte[0];
-                var HTTPBodyBytes     = new Byte[0];
+                var HTTPHeaderBytes   = Array.Empty<Byte>();
+                var HTTPBodyBytes     = Array.Empty<Byte>();
                 var sw                = new Stopwatch();
 
                 #endregion
@@ -1406,7 +1406,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                             #region DNS lookup...
 
-                            if (RemoteIPAddress == null)
+                            if (RemoteIPAddress is null)
                             {
 
                                 var IPv4AddressLookupTask  = DNSClient.

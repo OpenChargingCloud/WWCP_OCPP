@@ -1107,9 +1107,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 await Task.Delay(100);
 
-                var response = new AuthorizeResponse(Request:    Request,
-                                                     IdTagInfo:  new IdTagInfo(Status:      AuthorizationStatus.Accepted,
-                                                                               ExpiryDate:  Timestamp.Now.AddDays(3)));
+                var response = new AuthorizeResponse(
+                                   Request:    Request,
+                                   IdTagInfo:  new IdTagInfo(
+                                                   Status:      AuthorizationStatus.Accepted,
+                                                   ExpiryDate:  Timestamp.Now.AddDays(3)
+                                               )
+                               );
 
 
                 #region Send OnAuthorizeResponse event
