@@ -1551,17 +1551,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 // Sec-WebSocket-Version:   13
 
                 request = new HTTPRequest.Builder {
-                    Path                  = RemoteURL.Path,
-                    Host                  = HTTPHostname.Parse(String.Concat(RemoteURL.Hostname, ":", RemoteURL.Port)),
-                    Connection            = "Upgrade",
-                    Upgrade               = "websocket",
-                    SecWebSocketKey       = "x3JJHMbDL1EzLkh9GBhXDw==",
-                    SecWebSocketProtocol  = "ocpp1.6",
-                    SecWebSocketVersion   = "13",
-                    Authorization         = HTTPBasicAuth?.Item1.IsNotNullOrEmpty() == true && HTTPBasicAuth?.Item2.IsNotNullOrEmpty() == true
-                                                ? new HTTPBasicAuthentication(HTTPBasicAuth.Item1, HTTPBasicAuth.Item2)
-                                                : null
-                }.AsImmutable;
+                              Path                  = RemoteURL.Path,
+                              Host                  = HTTPHostname.Parse(String.Concat(RemoteURL.Hostname, ":", RemoteURL.Port)),
+                              Connection            = "Upgrade",
+                              Upgrade               = "websocket",
+                              SecWebSocketKey       = "x3JJHMbDL1EzLkh9GBhXDw==",
+                              SecWebSocketProtocol  = "ocpp1.6",
+                              SecWebSocketVersion   = "13",
+                              Authorization         = HTTPBasicAuth?.Item1.IsNotNullOrEmpty() == true && HTTPBasicAuth?.Item2.IsNotNullOrEmpty() == true
+                                                          ? new HTTPBasicAuthentication(HTTPBasicAuth.Item1, HTTPBasicAuth.Item2)
+                                                          : null
+                          }.AsImmutable;
 
                 #region Call the optional HTTP request log delegate
 
@@ -1585,6 +1585,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
                 HTTPStream.Write((request.EntirePDU + "\r\n\r\n").ToUTF8Bytes());
+
+                HTTPStream.Flush();
 
                 File.AppendAllText(LogfileName,
                                    String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
@@ -1777,6 +1779,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (Timer) DoWebSocketPing(State)
 
+        private UInt64 pingCounter;
+
         private void DoWebSocketPingSync(Object State)
         {
             if (!DisableWebSocketPingTasks)
@@ -1794,18 +1798,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     if (HTTPStream is not null)
                     {
 
-                        HTTPStream.Write(new WebSocketFrame(
-                                             WebSocketFrame.Fin.Final,
-                                             WebSocketFrame.MaskStatus.On,
-                                             new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
-                                             WebSocketFrame.Opcodes.Ping,
-                                             Guid.NewGuid().ToByteArray(),
-                                             WebSocketFrame.Rsv.Off,
-                                             WebSocketFrame.Rsv.Off,
-                                             WebSocketFrame.Rsv.Off
-                                        ).ToByteArray());
+                        lock (HTTPStream)
+                        {
 
-                        HTTPStream.Flush();
+                            pingCounter++;
+
+                            var payload = pingCounter + ":" + Guid.NewGuid().ToString();
+
+                            HTTPStream.Write(new WebSocketFrame(
+                                                 WebSocketFrame.Fin.Final,
+                                                 WebSocketFrame.MaskStatus.On,
+                                                 new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
+                                                 WebSocketFrame.Opcodes.Ping,
+                                                 payload.ToUTF8Bytes(),
+                                                 WebSocketFrame.Rsv.Off,
+                                                 WebSocketFrame.Rsv.Off,
+                                                 WebSocketFrame.Rsv.Off
+                                             ).ToByteArray());
+
+                            HTTPStream.Flush();
+
+                            DebugX.Log(nameof(ChargePointWSClient) + ": Ping sent:     '" + payload + "'!");
+
+                        }
 
                         File.AppendAllText(LogfileName,
                                            String.Concat("Timestamp: ",   Timestamp.Now.ToIso8601(),    Environment.NewLine,
@@ -4581,22 +4596,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             var wsResponseMessage = new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
                                                                                                        OCPPResponseJSON);
 
-                                            HTTPStream.Write(new WebSocketFrame(WebSocketFrame.Fin.Final,
-                                                                                WebSocketFrame.MaskStatus.On,
-                                                                                new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
-                                                                                WebSocketFrame.Opcodes.Text,
-                                                                                wsResponseMessage.ToByteArray(),
-                                                                                WebSocketFrame.Rsv.Off,
-                                                                                WebSocketFrame.Rsv.Off,
-                                                                                WebSocketFrame.Rsv.Off).ToByteArray());
+                                            lock (HTTPStream)
+                                            {
 
-                                            File.AppendAllText(LogfileName,
-                                                               String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
-                                                                             "ChargeBoxId: ",  ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
-                                                                             "Message sent: ", wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
-                                                                             "--------------------------------------------------------------------------------------------",  Environment.NewLine));
+                                                HTTPStream.Write(new WebSocketFrame(
+                                                                     WebSocketFrame.Fin.Final,
+                                                                     WebSocketFrame.MaskStatus.On,
+                                                                     new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
+                                                                     WebSocketFrame.Opcodes.Text,
+                                                                     wsResponseMessage.ToByteArray(),
+                                                                     WebSocketFrame.Rsv.Off,
+                                                                     WebSocketFrame.Rsv.Off,
+                                                                     WebSocketFrame.Rsv.Off
+                                                                 ).ToByteArray());
 
-                                            HTTPStream.Flush();
+                                                File.AppendAllText(LogfileName,
+                                                                   String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
+                                                                                 "ChargeBoxId: ",  ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
+                                                                                 "Message sent: ", wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
+                                                                                 "--------------------------------------------------------------------------------------------",  Environment.NewLine));
+
+                                                HTTPStream.Flush();
+
+                                            }
 
                                         }
 
@@ -4620,30 +4642,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                 case WebSocketFrame.Opcodes.Ping: {
 
-                                    DebugX.Log(nameof(ChargePointWSClient) + ": Ping received!");
+                                    DebugX.Log(nameof(ChargePointWSClient) + ": Ping received: " + frame.Payload.ToUTF8String());
 
-                                    HTTPStream.Write(new WebSocketFrame(WebSocketFrame.Fin.Final,
-                                                                        WebSocketFrame.MaskStatus.On,
-                                                                        new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
-                                                                        WebSocketFrame.Opcodes.Pong,
-                                                                        frame.Payload,
-                                                                        WebSocketFrame.Rsv.Off,
-                                                                        WebSocketFrame.Rsv.Off,
-                                                                        WebSocketFrame.Rsv.Off).ToByteArray());
+                                    lock (HTTPStream)
+                                    {
 
-                                    HTTPStream.Flush();
+                                        HTTPStream.Write(new WebSocketFrame(
+                                                             WebSocketFrame.Fin.Final,
+                                                             WebSocketFrame.MaskStatus.On,
+                                                             new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
+                                                             WebSocketFrame.Opcodes.Pong,
+                                                             frame.Payload,
+                                                             WebSocketFrame.Rsv.Off,
+                                                             WebSocketFrame.Rsv.Off,
+                                                             WebSocketFrame.Rsv.Off
+                                                         ).ToByteArray());
+
+                                        HTTPStream.Flush();
+
+                                    }
 
                                 }
                                 break;
 
                                 case WebSocketFrame.Opcodes.Pong: {
-                                    DebugX.Log(nameof(ChargePointWSClient) + ": Pong received!");
+                                    DebugX.Log(nameof(ChargePointWSClient) + ": Pong received: " + frame.Payload.ToUTF8String());
                                 }
                                 break;
 
                                 default:
                                     DebugX.Log(nameof(ChargePointWSClient), " Received unknown " + frame.Opcode + " frame!");
-                                    //DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP request/response message: " + textPayload);
                                     break;
 
                             }
@@ -4731,18 +4759,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    Message
                                                );
 
-                        HTTPStream.Write(new WebSocketFrame(
-                                             WebSocketFrame.Fin.Final,
-                                             WebSocketFrame.MaskStatus.On,
-                                             new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
-                                             WebSocketFrame.Opcodes.Text,
-                                             wsRequestMessage.ToByteArray(),
-                                             WebSocketFrame.Rsv.Off,
-                                             WebSocketFrame.Rsv.Off,
-                                             WebSocketFrame.Rsv.Off
-                                        ).ToByteArray());
+                        lock (HTTPStream)
+                        {
 
-                        HTTPStream.Flush();
+                            HTTPStream.Write(new WebSocketFrame(
+                                                 WebSocketFrame.Fin.Final,
+                                                 WebSocketFrame.MaskStatus.On,
+                                                 new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
+                                                 WebSocketFrame.Opcodes.Text,
+                                                 wsRequestMessage.ToByteArray(),
+                                                 WebSocketFrame.Rsv.Off,
+                                                 WebSocketFrame.Rsv.Off,
+                                                 WebSocketFrame.Rsv.Off
+                                            ).ToByteArray());
+
+                            HTTPStream.Flush();
+
+                        }
 
                         File.AppendAllText(LogfileName,
                                            String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                               Environment.NewLine,

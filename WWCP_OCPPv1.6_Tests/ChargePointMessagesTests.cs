@@ -23,7 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-[assembly: LevelOfParallelism(1)]
+/////[assembly: LevelOfParallelism(1)]
 namespace cloud.charging.open.protocols.OCPPv1_6.tests
 {
 
