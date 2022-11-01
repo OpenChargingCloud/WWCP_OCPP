@@ -92,8 +92,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
         [TearDown]
         public virtual void ShutdownEachTest()
         {
+
+            testBackendWebSockets01?.Shutdown();
+
             testCentralSystem01      = null;
             testBackendWebSockets01  = null;
+
         }
 
         #endregion

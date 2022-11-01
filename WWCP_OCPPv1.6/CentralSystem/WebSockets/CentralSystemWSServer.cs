@@ -34,11 +34,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
 
-    public delegate Task  OnNewCentralSystemWSConnectionDelegate(DateTime             Timestamp,
-                                                                 ICentralSystem       CentralSystem,
-                                                                 WebSocketConnection  NewWebSocketConnection,
-                                                                 EventTracking_Id     EventTrackingId,
-                                                                 CancellationToken    CancellationToken);
+    public delegate Task OnNewCentralSystemWSConnectionDelegate(DateTime             Timestamp,
+                                                                ICentralSystem       CentralSystem,
+                                                                WebSocketConnection  NewWebSocketConnection,
+                                                                EventTracking_Id     EventTrackingId,
+                                                                CancellationToken    CancellationToken);
 
 
     /// <summary>
@@ -172,9 +172,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnBootNotification
 
         /// <summary>
-        /// An event sent whenever a boot notification WebSocket request was received.
+        /// An event sent whenever a boot notification web socket request was received.
         /// </summary>
-        public event WSRequestLogHandler?                 OnBootNotificationWSRequest;
+        public event WebSocketRequestLogHandler?          OnBootNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a boot notification request was received.
@@ -192,18 +192,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event BootNotificationResponseDelegate?    OnBootNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket response to a boot notification was sent.
+        /// An event sent whenever a web socket response to a boot notification was sent.
         /// </summary>
-        public event WSResponseLogHandler?                OnBootNotificationWSResponse;
+        public event WebSocketResponseLogHandler?         OnBootNotificationWSResponse;
 
         #endregion
 
         #region OnHeartbeat
 
         /// <summary>
-        /// An event sent whenever a heartbeat WebSocket request was received.
+        /// An event sent whenever a heartbeat web socket request was received.
         /// </summary>
-        public event WSRequestLogHandler?          OnHeartbeatWSRequest;
+        public event WebSocketRequestLogHandler?   OnHeartbeatWSRequest;
 
         /// <summary>
         /// An event sent whenever a heartbeat request was received.
@@ -221,9 +221,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event HeartbeatResponseDelegate?    OnHeartbeatResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket response to a heartbeat was sent.
+        /// An event sent whenever a web socket response to a heartbeat was sent.
         /// </summary>
-        public event WSResponseLogHandler?         OnHeartbeatWSResponse;
+        public event WebSocketResponseLogHandler?  OnHeartbeatWSResponse;
 
         #endregion
 
@@ -231,9 +231,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnAuthorize
 
         /// <summary>
-        /// An event sent whenever an authorize WebSocket request was received.
+        /// An event sent whenever an authorize web socket request was received.
         /// </summary>
-        public event WSRequestLogHandler?          OnAuthorizeWSRequest;
+        public event WebSocketRequestLogHandler?   OnAuthorizeWSRequest;
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
@@ -251,125 +251,125 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event AuthorizeResponseDelegate?    OnAuthorizeResponse;
 
         /// <summary>
-        /// An event sent whenever an authorize WebSocket response was sent.
+        /// An event sent whenever an authorize web socket response was sent.
         /// </summary>
-        public event WSResponseLogHandler?         OnAuthorizeWSResponse;
+        public event WebSocketResponseLogHandler?  OnAuthorizeWSResponse;
 
         #endregion
 
         #region OnStartTransaction
 
         /// <summary>
-        /// An event sent whenever a start transaction WebSocket request was received.
+        /// An event sent whenever a start transaction web socket request was received.
         /// </summary>
-        public event WSRequestLogHandler?                 OnStartTransactionWSRequest;
+        public event WebSocketRequestLogHandler?        OnStartTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        public event StartTransactionRequestDelegate?     OnStartTransactionRequest;
+        public event StartTransactionRequestDelegate?   OnStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        public event OnStartTransactionDelegate?          OnStartTransaction;
+        public event OnStartTransactionDelegate?        OnStartTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a start transaction request was sent.
         /// </summary>
-        public event StartTransactionResponseDelegate?    OnStartTransactionResponse;
+        public event StartTransactionResponseDelegate?  OnStartTransactionResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket response to a start transaction request was sent.
+        /// An event sent whenever a web socket response to a start transaction request was sent.
         /// </summary>
-        public event WSResponseLogHandler?                OnStartTransactionWSResponse;
+        public event WebSocketResponseLogHandler?       OnStartTransactionWSResponse;
 
         #endregion
 
         #region OnStatusNotification
 
         /// <summary>
-        /// An event sent whenever a status notification WebSocket request was received.
+        /// An event sent whenever a status notification web socket request was received.
         /// </summary>
-        public event WSRequestLogHandler?                   OnStatusNotificationWSRequest;
+        public event WebSocketRequestLogHandler?          OnStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
         /// </summary>
-        public event StatusNotificationRequestDelegate?     OnStatusNotificationRequest;
+        public event StatusNotificationRequestDelegate?   OnStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
         /// </summary>
-        public event OnStatusNotificationDelegate?          OnStatusNotification;
+        public event OnStatusNotificationDelegate?        OnStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a status notification request was sent.
         /// </summary>
-        public event StatusNotificationResponseDelegate?    OnStatusNotificationResponse;
+        public event StatusNotificationResponseDelegate?  OnStatusNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket response to a status notification request was sent.
+        /// An event sent whenever a web socket response to a status notification request was sent.
         /// </summary>
-        public event WSResponseLogHandler?                  OnStatusNotificationWSResponse;
+        public event WebSocketResponseLogHandler?         OnStatusNotificationWSResponse;
 
         #endregion
 
         #region OnMeterValues
 
         /// <summary>
-        /// An event sent whenever a meter values WebSocket request was received.
+        /// An event sent whenever a meter values web socket request was received.
         /// </summary>
-        public event WSRequestLogHandler?            OnMeterValuesWSRequest;
+        public event WebSocketRequestLogHandler?   OnMeterValuesWSRequest;
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
         /// </summary>
-        public event MeterValuesRequestDelegate?     OnMeterValuesRequest;
+        public event MeterValuesRequestDelegate?   OnMeterValuesRequest;
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
         /// </summary>
-        public event OnMeterValuesDelegate?          OnMeterValues;
+        public event OnMeterValuesDelegate?        OnMeterValues;
 
         /// <summary>
         /// An event sent whenever a response to a meter values request was sent.
         /// </summary>
-        public event MeterValuesResponseDelegate?    OnMeterValuesResponse;
+        public event MeterValuesResponseDelegate?  OnMeterValuesResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket response to a meter values request was sent.
+        /// An event sent whenever a web socket response to a meter values request was sent.
         /// </summary>
-        public event WSResponseLogHandler?           OnMeterValuesWSResponse;
+        public event WebSocketResponseLogHandler?  OnMeterValuesWSResponse;
 
         #endregion
 
         #region OnStopTransaction
 
         /// <summary>
-        /// An event sent whenever a stop transaction WebSocket request was received.
+        /// An event sent whenever a stop transaction web socket request was received.
         /// </summary>
-        public event WSRequestLogHandler?                OnStopTransactionWSRequest;
+        public event WebSocketRequestLogHandler?       OnStopTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
         /// </summary>
-        public event StopTransactionRequestDelegate?     OnStopTransactionRequest;
+        public event StopTransactionRequestDelegate?   OnStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
         /// </summary>
-        public event OnStopTransactionDelegate?          OnStopTransaction;
+        public event OnStopTransactionDelegate?        OnStopTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a stop transaction request was sent.
         /// </summary>
-        public event StopTransactionResponseDelegate?    OnStopTransactionResponse;
+        public event StopTransactionResponseDelegate?  OnStopTransactionResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket response to a stop transaction request was sent.
+        /// An event sent whenever a web socket response to a stop transaction request was sent.
         /// </summary>
-        public event WSResponseLogHandler?               OnStopTransactionWSResponse;
+        public event WebSocketResponseLogHandler?      OnStopTransactionWSResponse;
 
         #endregion
 
@@ -377,87 +377,87 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnDataTransfer
 
         /// <summary>
-        /// An event sent whenever a data transfer WebSocket request was received.
+        /// An event sent whenever a data transfer web socket request was received.
         /// </summary>
-        public event WSRequestLogHandler?                     OnIncomingDataTransferWSRequest;
+        public event WebSocketRequestLogHandler?            OnIncomingDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event IncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
+        public event IncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferDelegate?          OnIncomingDataTransfer;
+        public event OnIncomingDataTransferDelegate?        OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event IncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
+        public event IncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket response to a data transfer request was sent.
+        /// An event sent whenever a web socket response to a data transfer request was sent.
         /// </summary>
-        public event WSResponseLogHandler?                    OnIncomingDataTransferWSResponse;
+        public event WebSocketResponseLogHandler?           OnIncomingDataTransferWSResponse;
 
         #endregion
 
         #region OnDiagnosticsStatusNotification
 
         /// <summary>
-        /// An event sent whenever a diagnostics status notification WebSocket request was received.
+        /// An event sent whenever a diagnostics status notification web socket request was received.
         /// </summary>
-        public event WSRequestLogHandler?                              OnDiagnosticsStatusNotificationWSRequest;
+        public event WebSocketRequestLogHandler?                     OnDiagnosticsStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
         /// </summary>
-        public event DiagnosticsStatusNotificationRequestDelegate?     OnDiagnosticsStatusNotificationRequest;
+        public event DiagnosticsStatusNotificationRequestDelegate?   OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationDelegate?          OnDiagnosticsStatusNotification;
+        public event OnDiagnosticsStatusNotificationDelegate?        OnDiagnosticsStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a diagnostics status notification request was sent.
         /// </summary>
-        public event DiagnosticsStatusNotificationResponseDelegate?    OnDiagnosticsStatusNotificationResponse;
+        public event DiagnosticsStatusNotificationResponseDelegate?  OnDiagnosticsStatusNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket response to a diagnostics status notification request was sent.
+        /// An event sent whenever a web socket response to a diagnostics status notification request was sent.
         /// </summary>
-        public event WSResponseLogHandler?                             OnDiagnosticsStatusNotificationWSResponse;
+        public event WebSocketResponseLogHandler?                    OnDiagnosticsStatusNotificationWSResponse;
 
         #endregion
 
         #region OnFirmwareStatusNotification
 
         /// <summary>
-        /// An event sent whenever a firmware status notification WebSocket request was received.
+        /// An event sent whenever a firmware status notification web socket request was received.
         /// </summary>
-        public event WSRequestLogHandler?                           OnFirmwareStatusNotificationWSRequest;
+        public event WebSocketRequestLogHandler?                  OnFirmwareStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
         /// </summary>
-        public event FirmwareStatusNotificationRequestDelegate?     OnFirmwareStatusNotificationRequest;
+        public event FirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationDelegate?          OnFirmwareStatusNotification;
+        public event OnFirmwareStatusNotificationDelegate?        OnFirmwareStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a firmware status notification request was sent.
         /// </summary>
-        public event FirmwareStatusNotificationResponseDelegate?    OnFirmwareStatusNotificationResponse;
+        public event FirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket response to a firmware status notification request was sent.
+        /// An event sent whenever a web socket response to a firmware status notification request was sent.
         /// </summary>
-        public event WSResponseLogHandler?                          OnFirmwareStatusNotificationWSResponse;
+        public event WebSocketResponseLogHandler?                 OnFirmwareStatusNotificationWSResponse;
 
         #endregion
 
@@ -775,10 +775,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 var JSON = JArray.Parse(OCPPMessage);
 
                 File.AppendAllText(LogfileName,
-                                   String.Concat("Timestamp: ",        Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
-                                                 "ChargeBoxId: ",      Connection.GetCustomData<ChargeBox_Id>("chargeBoxId").ToString(),         Environment.NewLine,
-                                                 "Message received: ", JSON.ToString(Newtonsoft.Json.Formatting.Indented),                       Environment.NewLine,
-                                                 "--------------------------------------------------------------------------------------------", Environment.NewLine));
+                                   String.Concat("Timestamp: ",        Timestamp.Now.ToIso8601(),                                                    Environment.NewLine,
+                                                 "ChargeBoxId: ",      Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId")?.ToString() ?? "-",  Environment.NewLine,
+                                                 "Message received: ", JSON.ToString(Newtonsoft.Json.Formatting.Indented),                           Environment.NewLine,
+                                                 "--------------------------------------------------------------------------------------------",     Environment.NewLine));
 
                 #region MessageType 2: CALL        (A request from a charge point)
 
@@ -802,7 +802,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     #region Initial checks
 
-                    var chargeBoxId  = Connection.TryGetCustomData<ChargeBox_Id>("chargeBoxId");
+                    var chargeBoxId  = Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId");
                     var requestId    = Request_Id.TryParse(JSON[1]?.Value<String>() ?? "");
                     var action       = JSON[2]?.Value<String>()?.Trim();
                     var requestData  = JSON[3]?.Value<JObject>();
@@ -1058,7 +1058,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             HeartbeatResponse? response = null;
 
-                                            var responseTasks = OnBootNotification?.
+                                            var responseTasks = OnHeartbeat?.
                                                                     GetInvocationList()?.
                                                                     SafeSelect(subscriber => (subscriber as OnHeartbeatDelegate)
                                                                         (Timestamp.Now,
@@ -2666,7 +2666,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                              result);
 
 
-                var webSocketConnection  = WebSocketConnections.LastOrDefault(ws => ws.GetCustomData<ChargeBox_Id>("chargeBoxId") == ChargeBoxId);
+                var webSocketConnection  = WebSocketConnections.LastOrDefault(ws => ws.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId") == ChargeBoxId);
                 if (webSocketConnection is null)
                 {
                     result.ErrorCode = OCPP_WebSocket_ErrorCodes.UnknownClient;

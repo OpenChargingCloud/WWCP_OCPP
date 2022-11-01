@@ -558,10 +558,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             => new (OCPPNS.OCPPv1_6_CS + "meterValuesRequest",
 
-                   new XElement(OCPPNS.OCPPv1_6_CS + "connectorId",          ConnectorId),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "connectorId",          ConnectorId.ToString()),
 
                    TransactionId.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "transactionId",  TransactionId.Value)
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "transactionId",  TransactionId.Value.ToString())
                        : null,
 
                    MeterValues.SafeAny()
@@ -597,10 +597,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             var json = JSONObject.Create(
 
-                           new JProperty("connectorId",          ConnectorId.  Value),
+                           new JProperty("connectorId",          ConnectorId.  Value.ToString()),
 
                            TransactionId.HasValue
-                               ? new JProperty("transactionId",  TransactionId.Value)
+                               ? new JProperty("transactionId",  TransactionId.Value.ToString())
                                : null,
 
                            MeterValues.SafeAny()

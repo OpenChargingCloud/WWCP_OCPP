@@ -2764,21 +2764,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var requestTimestamp  = Timestamp.Now;
 
-            var request           = new BootNotificationRequest(ChargeBoxId,
-                                                                ChargePointVendor,
-                                                                ChargePointModel,
+            var request           = new BootNotificationRequest(
+                                        ChargeBoxId,
+                                        ChargePointVendor,
+                                        ChargePointModel,
 
-                                                                ChargePointSerialNumber,
-                                                                ChargeBoxSerialNumber,
-                                                                FirmwareVersion,
-                                                                Iccid,
-                                                                IMSI,
-                                                                MeterType,
-                                                                MeterSerialNumber,
+                                        ChargePointSerialNumber,
+                                        ChargeBoxSerialNumber,
+                                        FirmwareVersion,
+                                        Iccid,
+                                        IMSI,
+                                        MeterType,
+                                        MeterSerialNumber,
 
-                                                                Request_Id.NewRandom(),
-                                                                requestTimestamp,
-                                                                EventTrackingId ?? EventTracking_Id.New);
+                                        Request_Id.NewRandom(),
+                                        requestTimestamp,
+                                        EventTrackingId ?? EventTracking_Id.New
+                                    );
 
             #endregion
 
@@ -2831,9 +2833,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 }
             }
-            else
-                response = new CS.BootNotificationResponse(request,
-                                                           Result.Server("Response is null!"));
+
+            response ??= new CS.BootNotificationResponse(request,
+                                                         Result.Server("Response is null!"));
 
 
             #region Send OnBootNotificationResponse event
@@ -2881,11 +2883,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var requestTimestamp  = Timestamp.Now;
 
-            var request           = new HeartbeatRequest(ChargeBoxId,
+            var request           = new HeartbeatRequest(
+                                        ChargeBoxId,
 
-                                                         Request_Id.NewRandom(),
-                                                         requestTimestamp,
-                                                         EventTrackingId ?? EventTracking_Id.New);
+                                        Request_Id.NewRandom(),
+                                        requestTimestamp,
+                                        EventTrackingId ?? EventTracking_Id.New
+                                    );
 
             #endregion
 
@@ -2920,9 +2924,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
                 this.CentralSystemTime = response.CurrentTime;
             }
-            else
-                response = new CS.HeartbeatResponse(request,
-                                                    Result.Server("Response is null!"));
+
+            response ??= new CS.HeartbeatResponse(request,
+                                                  Result.Server("Response is null!"));
 
 
             #region Send OnHeartbeatResponse event
@@ -2966,7 +2970,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             Authorize(IdToken             IdTag,
 
                       CancellationToken?  CancellationToken   = null,
-                      EventTracking_Id    EventTrackingId     = null,
+                      EventTracking_Id?   EventTrackingId     = null,
                       TimeSpan?           RequestTimeout      = null)
 
         {
@@ -2975,12 +2979,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var requestTimestamp  = Timestamp.Now;
 
-            var request           = new AuthorizeRequest(ChargeBoxId,
-                                                         IdTag,
+            var request           = new AuthorizeRequest(
+                                        ChargeBoxId,
+                                        IdTag,
 
-                                                         Request_Id.NewRandom(),
-                                                         requestTimestamp,
-                                                         EventTrackingId ?? EventTracking_Id.New);
+                                        Request_Id.NewRandom(),
+                                        requestTimestamp,
+                                        EventTrackingId ?? EventTracking_Id.New
+                                    );
 
             #endregion
 
@@ -3002,9 +3008,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CS.AuthorizeResponse response = null;
+            CS.AuthorizeResponse? response = null;
 
-            if (CPClient != null)
+            if (CPClient is not null)
                 response = await CPClient.Authorize(request,
 
                                                     requestTimestamp,
@@ -3012,9 +3018,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                     EventTrackingId,
                                                     RequestTimeout ?? DefaultRequestTimeout);
 
-            if (response is null)
-                response = new CS.AuthorizeResponse(request,
-                                                    Result.Server("Response is null!"));
+            response ??= new CS.AuthorizeResponse(request,
+                                                  Result.Server("Response is null!"));
 
 
             #region Send OnAuthorizeResponse event
@@ -3042,14 +3047,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region StartTransaction                 (ConnectorId, IdTag, TransactionTimestamp, MeterStart, ReservationId = null, ...)
+        #region StartTransaction                 (ConnectorId, IdTag, StartTimestamp, MeterStart, ReservationId = null, ...)
 
         /// <summary>
         /// Start a charging process at the given connector.
         /// </summary>
         /// <param name="ConnectorId">The connector identification at the charge point.</param>
         /// <param name="IdTag">The identifier for which a transaction has to be started.</param>
-        /// <param name="TransactionTimestamp">The timestamp of the transaction start.</param>
+        /// <param name="StartTimestamp">The timestamp of the transaction start.</param>
         /// <param name="MeterStart">The meter value in Wh for the connector at start of the transaction.</param>
         /// <param name="ReservationId">An optional identification of the reservation that will terminate as a result of this transaction.</param>
         /// 
@@ -3060,12 +3065,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             StartTransaction(Connector_Id        ConnectorId,
                              IdToken             IdTag,
-                             DateTime            TransactionTimestamp,
+                             DateTime            StartTimestamp,
                              UInt64              MeterStart,
                              Reservation_Id?     ReservationId       = null,
 
                              CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
+                             EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null)
 
             {
@@ -3074,16 +3079,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var requestTimestamp  = Timestamp.Now;
 
-            var request           = new StartTransactionRequest(ChargeBoxId,
-                                                                ConnectorId,
-                                                                IdTag,
-                                                                TransactionTimestamp,
-                                                                MeterStart,
-                                                                ReservationId,
+            var request           = new StartTransactionRequest(
+                                        ChargeBoxId,
+                                        ConnectorId,
+                                        IdTag,
+                                        StartTimestamp,
+                                        MeterStart,
+                                        ReservationId,
 
-                                                                Request_Id.NewRandom(),
-                                                                requestTimestamp,
-                                                                EventTrackingId ?? EventTracking_Id.New);
+                                        Request_Id.NewRandom(),
+                                        requestTimestamp,
+                                        EventTrackingId ?? EventTracking_Id.New
+                                    );
 
             #endregion
 
@@ -3105,9 +3112,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CS.StartTransactionResponse response = null;
+            CS.StartTransactionResponse? response = null;
 
-            if (CPClient != null)
+            if (CPClient is not null)
                 response = await CPClient.StartTransaction(request,
 
                                                            requestTimestamp,
@@ -3115,22 +3122,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                            EventTrackingId,
                                                            RequestTimeout ?? DefaultRequestTimeout);
 
-            if (response != null)
+            if (response is not null)
             {
 
-                var connector = connectors.Values.Where(conn => conn.Id == ConnectorId).FirstOrDefault();
+                if (connectors.TryGetValue(ConnectorId, out var connector))
+                {
 
-                connector.IsCharging     = true;
-                connector.IdToken        = IdTag;
-                connector.IdTagInfo      = response.IdTagInfo;
-                connector.TransactionId  = response.TransactionId;
-                DebugX.Log(nameof(TestChargePoint), "Connector " + ConnectorId + " started (local) charging with transaction identification " + response.TransactionId + "...");
+                    connector.IsCharging     = true;
+                    connector.IdToken        = IdTag;
+                    connector.IdTagInfo      = response.IdTagInfo;
+                    connector.TransactionId  = response.TransactionId;
+
+                    DebugX.Log(nameof(TestChargePoint), "Connector " + ConnectorId + " started (local) charging with transaction identification " + response.TransactionId + "...");
+
+                }
+                else
+                    DebugX.Log(nameof(TestChargePoint), "Unkown connector " + ConnectorId + "!");
 
             }
 
-            else
-                response = new CS.StartTransactionResponse(request,
-                                                           Result.Server("Response is null!"));
+            response ??= new CS.StartTransactionResponse(request,
+                                                         Result.Server("Response is null!"));
 
 
             #region Send OnStartTransactionResponse event
@@ -3179,13 +3191,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             SendStatusNotification(Connector_Id           ConnectorId,
                                    ChargePointStatus      Status,
                                    ChargePointErrorCodes  ErrorCode,
-                                   String                 Info                = null,
+                                   String?                Info                = null,
                                    DateTime?              StatusTimestamp     = null,
-                                   String                 VendorId            = null,
-                                   String                 VendorErrorCode     = null,
+                                   String?                VendorId            = null,
+                                   String?                VendorErrorCode     = null,
 
                                    CancellationToken?     CancellationToken   = null,
-                                   EventTracking_Id       EventTrackingId     = null,
+                                   EventTracking_Id?      EventTrackingId     = null,
                                    TimeSpan?              RequestTimeout      = null)
 
         {
@@ -3194,18 +3206,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var requestTimestamp  = Timestamp.Now;
 
-            var request           = new StatusNotificationRequest(ChargeBoxId,
-                                                                  ConnectorId,
-                                                                  Status,
-                                                                  ErrorCode,
-                                                                  Info,
-                                                                  StatusTimestamp,
-                                                                  VendorId,
-                                                                  VendorErrorCode,
+            var request           = new StatusNotificationRequest(
+                                        ChargeBoxId,
+                                        ConnectorId,
+                                        Status,
+                                        ErrorCode,
+                                        Info,
+                                        StatusTimestamp,
+                                        VendorId,
+                                        VendorErrorCode,
 
-                                                                  Request_Id.NewRandom(),
-                                                                  requestTimestamp,
-                                                                  EventTrackingId ?? EventTracking_Id.New);
+                                        Request_Id.NewRandom(),
+                                        requestTimestamp,
+                                        EventTrackingId ?? EventTracking_Id.New
+                                    );
 
             #endregion
 
@@ -3227,9 +3241,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CS.StatusNotificationResponse response = null;
+            CS.StatusNotificationResponse? response = null;
 
-            if (CPClient != null)
+            if (CPClient is not null)
                 response = await CPClient.SendStatusNotification(request,
 
                                                                  requestTimestamp,
@@ -3237,9 +3251,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                  EventTrackingId,
                                                                  RequestTimeout ?? DefaultRequestTimeout);
 
-            if (response is null)
-                response = new CS.StatusNotificationResponse(request,
-                                                             Result.Server("Response is null!"));
+            response ??= new CS.StatusNotificationResponse(request,
+                                                           Result.Server("Response is null!"));
 
 
             #region Send OnStatusNotificationResponse event
@@ -3286,7 +3299,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                             Transaction_Id?          TransactionId       = null,
 
                             CancellationToken?       CancellationToken   = null,
-                            EventTracking_Id         EventTrackingId     = null,
+                            EventTracking_Id?        EventTrackingId     = null,
                             TimeSpan?                RequestTimeout      = null)
 
         {
@@ -3295,14 +3308,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var requestTimestamp  = Timestamp.Now;
 
-            var request           = new MeterValuesRequest(ChargeBoxId,
-                                                           ConnectorId,
-                                                           MeterValues,
-                                                           TransactionId,
+            var request           = new MeterValuesRequest(
+                                        ChargeBoxId,
+                                        ConnectorId,
+                                        MeterValues,
+                                        TransactionId,
 
-                                                           Request_Id.NewRandom(),
-                                                           requestTimestamp,
-                                                           EventTrackingId ?? EventTracking_Id.New);
+                                        Request_Id.NewRandom(),
+                                        requestTimestamp,
+                                        EventTrackingId ?? EventTracking_Id.New
+                                    );
 
             #endregion
 
@@ -3324,9 +3339,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CS.MeterValuesResponse response = null;
+            CS.MeterValuesResponse? response = null;
 
-            if (CPClient != null)
+            if (CPClient is not null)
                 response = await CPClient.SendMeterValues(request,
 
                                                           requestTimestamp,
@@ -3334,9 +3349,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                           EventTrackingId,
                                                           RequestTimeout ?? DefaultRequestTimeout);
 
-            if (response is null)
-                response = new CS.MeterValuesResponse(request,
-                                                      Result.Server("Response is null!"));
+            response ??= new CS.MeterValuesResponse(request,
+                                                    Result.Server("Response is null!"));
 
 
             #region Send OnMeterValuesResponse event
@@ -3364,13 +3378,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region StopTransaction                  (TransactionId, TransactionTimestamp, MeterStop, ...)
+        #region StopTransaction                  (TransactionId, StopTimestamp, MeterStop, ...)
 
         /// <summary>
         /// Stop a charging process at the given connector.
         /// </summary>
         /// <param name="TransactionId">The transaction identification copied from the start transaction response.</param>
-        /// <param name="TransactionTimestamp">The timestamp of the end of the charging transaction.</param>
+        /// <param name="StopTimestamp">The timestamp of the end of the charging transaction.</param>
         /// <param name="MeterStop">The energy meter value in Wh for the connector at end of the charging transaction.</param>
         /// <param name="IdTag">An optional identifier which requested to stop the charging.</param>
         /// <param name="Reason">An optional reason why the transaction had been stopped.</param>
@@ -3381,16 +3395,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<CS.StopTransactionResponse>
 
-            StopTransaction(Transaction_Id           TransactionId,
-                            DateTime                 TransactionTimestamp,
-                            UInt64                   MeterStop,
-                            IdToken?                 IdTag               = null,
-                            Reasons?                 Reason              = null,
-                            IEnumerable<MeterValue>  TransactionData     = null,
+            StopTransaction(Transaction_Id            TransactionId,
+                            DateTime                  StopTimestamp,
+                            UInt64                    MeterStop,
+                            IdToken?                  IdTag               = null,
+                            Reasons?                  Reason              = null,
+                            IEnumerable<MeterValue>?  TransactionData     = null,
 
-                            CancellationToken?       CancellationToken   = null,
-                            EventTracking_Id         EventTrackingId     = null,
-                            TimeSpan?                RequestTimeout      = null)
+                            CancellationToken?        CancellationToken   = null,
+                            EventTracking_Id?         EventTrackingId     = null,
+                            TimeSpan?                 RequestTimeout      = null)
 
         {
 
@@ -3398,17 +3412,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var requestTimestamp  = Timestamp.Now;
 
-            var request           = new StopTransactionRequest(ChargeBoxId,
-                                                               TransactionId,
-                                                               TransactionTimestamp,
-                                                               MeterStop,
-                                                               IdTag,
-                                                               Reason,
-                                                               TransactionData,
+            var request           = new StopTransactionRequest(
+                                        ChargeBoxId,
+                                        TransactionId,
+                                        StopTimestamp,
+                                        MeterStop,
+                                        IdTag,
+                                        Reason,
+                                        TransactionData,
 
-                                                               Request_Id.NewRandom(),
-                                                               requestTimestamp,
-                                                               EventTrackingId ?? EventTracking_Id.New);
+                                        Request_Id.NewRandom(),
+                                        requestTimestamp,
+                                        EventTrackingId ?? EventTracking_Id.New
+                                    );
 
             #endregion
 
@@ -3430,9 +3446,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CS.StopTransactionResponse response = null;
+            CS.StopTransactionResponse? response = null;
 
-            if (CPClient != null)
+            if (CPClient is not null)
                 response = await CPClient.StopTransaction(request,
 
                                                           requestTimestamp,
@@ -3440,9 +3456,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                           EventTrackingId,
                                                           RequestTimeout ?? DefaultRequestTimeout);
 
-            if (response is null)
-                response = new CS.StopTransactionResponse(request,
-                                                          Result.Server("Response is null!"));
+            response ??= new CS.StopTransactionResponse(request,
+                                                        Result.Server("Response is null!"));
 
 
             #region Send OnStopTransactionResponse event
@@ -3486,11 +3501,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public async Task<CS.DataTransferResponse>
 
             TransferData(String              VendorId,
-                         String              MessageId           = null,
-                         String              Data                = null,
+                         String?             MessageId           = null,
+                         String?             Data                = null,
 
                          CancellationToken?  CancellationToken   = null,
-                         EventTracking_Id    EventTrackingId     = null,
+                         EventTracking_Id?   EventTrackingId     = null,
                          TimeSpan?           RequestTimeout      = null)
 
         {
@@ -3499,14 +3514,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var requestTimestamp  = Timestamp.Now;
 
-            var request           = new DataTransferRequest(ChargeBoxId,
-                                                            VendorId,
-                                                            MessageId,
-                                                            Data,
+            var request           = new DataTransferRequest(
+                                        ChargeBoxId,
+                                        VendorId,
+                                        MessageId,
+                                        Data,
 
-                                                            Request_Id.NewRandom(),
-                                                            requestTimestamp,
-                                                            EventTrackingId ?? EventTracking_Id.New);
+                                        Request_Id.NewRandom(),
+                                        requestTimestamp,
+                                        EventTrackingId ?? EventTracking_Id.New);
 
             #endregion
 
@@ -3528,9 +3544,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CS.DataTransferResponse response = null;
+            CS.DataTransferResponse? response = null;
 
-            if (CPClient != null)
+            if (CPClient is not null)
                 response = await CPClient.TransferData(request,
 
                                                        requestTimestamp,
@@ -3538,9 +3554,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                        EventTrackingId,
                                                        RequestTimeout ?? DefaultRequestTimeout);
 
-            if (response is null)
-                response = new CS.DataTransferResponse(request,
-                                                       Result.Server("Response is null!"));
+            response ??= new CS.DataTransferResponse(request,
+                                                     Result.Server("Response is null!"));
 
 
             #region Send OnDataTransferResponse event
@@ -3583,7 +3598,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             SendDiagnosticsStatusNotification(DiagnosticsStatus   Status,
 
                                               CancellationToken?  CancellationToken  = null,
-                                              EventTracking_Id    EventTrackingId    = null,
+                                              EventTracking_Id?   EventTrackingId    = null,
                                               TimeSpan?           RequestTimeout     = null)
 
         {
@@ -3592,12 +3607,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var requestTimestamp  = Timestamp.Now;
 
-            var request           = new DiagnosticsStatusNotificationRequest(ChargeBoxId,
-                                                                             Status,
+            var request           = new DiagnosticsStatusNotificationRequest(
+                                        ChargeBoxId,
+                                        Status,
 
-                                                                             Request_Id.NewRandom(),
-                                                                             requestTimestamp,
-                                                                             EventTrackingId ?? EventTracking_Id.New);
+                                        Request_Id.NewRandom(),
+                                        requestTimestamp,
+                                        EventTrackingId ?? EventTracking_Id.New
+                                    );
 
             #endregion
 
@@ -3619,9 +3636,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CS.DiagnosticsStatusNotificationResponse response = null;
+            CS.DiagnosticsStatusNotificationResponse? response = null;
 
-            if (CPClient != null)
+            if (CPClient is not null)
                 response = await CPClient.SendDiagnosticsStatusNotification(request,
 
                                                                             requestTimestamp,
@@ -3629,9 +3646,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                             EventTrackingId,
                                                                             RequestTimeout ?? DefaultRequestTimeout);
 
-            if (response is null)
-                response = new CS.DiagnosticsStatusNotificationResponse(request,
-                                                                        Result.Server("Response is null!"));
+            response ??= new CS.DiagnosticsStatusNotificationResponse(request,
+                                                                      Result.Server("Response is null!"));
 
 
             #region Send OnDiagnosticsStatusNotificationResponse event
@@ -3674,7 +3690,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             SendFirmwareStatusNotification(FirmwareStatus      Status,
 
                                            CancellationToken?  CancellationToken  = null,
-                                           EventTracking_Id    EventTrackingId    = null,
+                                           EventTracking_Id?   EventTrackingId    = null,
                                            TimeSpan?           RequestTimeout     = null)
 
         {
@@ -3683,12 +3699,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var requestTimestamp  = Timestamp.Now;
 
-            var request           = new FirmwareStatusNotificationRequest(ChargeBoxId,
-                                                                          Status,
+            var request           = new FirmwareStatusNotificationRequest(
+                                        ChargeBoxId,
+                                        Status,
 
-                                                                          Request_Id.NewRandom(),
-                                                                          requestTimestamp,
-                                                                          EventTrackingId ?? EventTracking_Id.New);
+                                        Request_Id.NewRandom(),
+                                        requestTimestamp,
+                                        EventTrackingId ?? EventTracking_Id.New
+                                    );
 
             #endregion
 
@@ -3710,9 +3728,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CS.FirmwareStatusNotificationResponse response = null;
+            CS.FirmwareStatusNotificationResponse? response = null;
 
-            if (CPClient != null)
+            if (CPClient is not null)
                 response = await CPClient.SendFirmwareStatusNotification(request,
 
                                                                          requestTimestamp,
@@ -3720,9 +3738,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                          EventTrackingId,
                                                                          RequestTimeout ?? DefaultRequestTimeout);
 
-            if (response is null)
-                response = new CS.FirmwareStatusNotificationResponse(request,
-                                                                     Result.Server("Response is null!"));
+            response ??= new CS.FirmwareStatusNotificationResponse(request,
+                                                                   Result.Server("Response is null!"));
 
 
             #region Send OnFirmwareStatusNotificationResponse event
@@ -3749,6 +3766,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         }
 
         #endregion
+
 
     }
 

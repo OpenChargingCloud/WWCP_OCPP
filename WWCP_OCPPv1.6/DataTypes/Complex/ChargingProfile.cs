@@ -736,9 +736,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two charging profiles for equality.
         /// </summary>
-        /// <param name="Object">An id tag info to compare with.</param>
+        /// <param name="Object">A charging profile to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ChargingProfile chargingProfile &&
@@ -749,9 +749,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(ChargingProfile)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two charging profiles for equality.
         /// </summary>
-        /// <param name="ChargingProfile">An id tag info to compare with.</param>
+        /// <param name="ChargingProfile">A charging profile to compare with.</param>
         public Boolean Equals(ChargingProfile? ChargingProfile)
 
             => ChargingProfile is not null                                           &&

@@ -540,10 +540,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two id tag infos for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">An id tag info to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ChargingSchedule chargingSchedule &&
@@ -557,7 +556,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compares two id tag infos for equality.
         /// </summary>
         /// <param name="ChargingSchedule">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingSchedule? ChargingSchedule)
 
             => ChargingSchedule is not null                                                             &&

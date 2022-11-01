@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The timestamp of the end of the charging transaction.
         /// </summary>
-        public DateTime                 Timestamp          { get; }
+        public DateTime                 StopTimestamp      { get; }
 
         /// <summary>
         /// The energy meter value in Wh for the connector at end of the
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="TransactionId">The transaction identification copied from the start transaction response.</param>
-        /// <param name="Timestamp">The timestamp of the end of the charging transaction.</param>
+        /// <param name="StopTimestamp">The timestamp of the end of the charging transaction.</param>
         /// <param name="MeterStop">The energy meter value in Wh for the connector at end of the charging transaction.</param>
         /// <param name="IdTag">An optional identifier which requested to stop the charging.</param>
         /// <param name="Reason">An optional reason why the transaction had been stopped.</param>
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         public StopTransactionRequest(ChargeBox_Id              ChargeBoxId,
                                       Transaction_Id            TransactionId,
-                                      DateTime                  Timestamp,
+                                      DateTime                  StopTimestamp,
                                       UInt64                    MeterStop,
                                       IdToken?                  IdTag              = null,
                                       Reasons?                  Reason             = null,
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         {
 
             this.TransactionId    = TransactionId;
-            this.Timestamp        = Timestamp;
+            this.StopTimestamp    = StopTimestamp;
             this.MeterStop        = MeterStop;
             this.IdTag            = IdTag           ?? new IdToken?();
             this.Reason           = Reason          ?? new Reasons?();
@@ -670,7 +670,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                        ? new XElement(OCPPNS.OCPPv1_6_CS + "idTag",     IdTag.Value)
                        : null,
 
-                   new XElement(OCPPNS.OCPPv1_6_CS + "timestamp",       Timestamp.ToIso8601()),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "timestamp",       StopTimestamp.ToIso8601()),
                    new XElement(OCPPNS.OCPPv1_6_CS + "meterStop",       MeterStop),
 
                    Reason.HasValue
@@ -708,7 +708,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             var json = JSONObject.Create(
 
                            new JProperty("transactionId",          TransactionId.Value),
-                           new JProperty("timestamp",              Timestamp.    ToIso8601()),
+                           new JProperty("timestamp",              StopTimestamp.    ToIso8601()),
                            new JProperty("meterStop",              MeterStop),
 
                            IdTag.HasValue
@@ -806,7 +806,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             => StopTransactionRequest is not null &&
 
                TransactionId.Equals(StopTransactionRequest.TransactionId) &&
-               Timestamp.    Equals(StopTransactionRequest.Timestamp)     &&
+               StopTimestamp.    Equals(StopTransactionRequest.StopTimestamp)     &&
                MeterStop.    Equals(StopTransactionRequest.MeterStop)     &&
 
             ((!IdTag.HasValue  && !StopTransactionRequest.IdTag. HasValue) ||
@@ -834,7 +834,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 return TransactionId.  GetHashCode()       * 13 ^
-                       Timestamp.      GetHashCode()       * 11 ^
+                       StopTimestamp.      GetHashCode()       * 11 ^
                        MeterStop.      GetHashCode()       *  7 ^
                        TransactionData.GetHashCode()       *  5 ^
 

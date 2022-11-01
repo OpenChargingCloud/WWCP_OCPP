@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region (static) Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as request identification.
+        /// Parse the given string as a request identification.
         /// </summary>
         /// <param name="Text">A text representation of a request identification.</param>
         public static Request_Id Parse(String Text)
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given text as request identification.
+        /// Try to parse the given text as a request identification.
         /// </summary>
         /// <param name="Text">A text representation of a request identification.</param>
         public static Request_Id? TryParse(String Text)
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region (static) TryParse(Text, out RequestId)
 
         /// <summary>
-        /// Try to parse the given text as request identification.
+        /// Try to parse the given text as a request identification.
         /// </summary>
         /// <param name="Text">A text representation of a request identification.</param>
         /// <param name="RequestId">The parsed request identification.</param>

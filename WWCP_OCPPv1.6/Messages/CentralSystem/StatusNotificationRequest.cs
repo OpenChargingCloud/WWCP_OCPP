@@ -469,11 +469,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
-                #region VerndorId          [optional]
+                #region VendorId           [optional]
 
-                if (!JSON.ParseOptional("verndorId",
-                                        "verndor identification",
-                                        out String VerndorId,
+                if (!JSON.ParseOptional("vendorId",
+                                        "vendor identification",
+                                        out String VendorId,
                                         out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -522,7 +522,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                                           Info,
                                                                           Timestamp,
-                                                                          VerndorId,
+                                                                          VendorId,
                                                                           VendorErrorCode,
                                                                           RequestId);
 

@@ -857,7 +857,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                                CancellationToken) =>
                 {
 
-                    if (Connection.TryGetCustomData("chargeBoxId", out ChargeBox_Id chargeBoxId))
+                    if (Connection.TryGetCustomDataAs("chargeBoxId", out ChargeBox_Id chargeBoxId))
                     {
                         //ToDo: lock(...)
                         if (!reachableChargingBoxes.ContainsKey(chargeBoxId))
@@ -1413,7 +1413,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 Console.WriteLine("OnStopTransaction: " + Request.TransactionId + ", " +
                                                           Request.IdTag + ", " +
-                                                          Request.Timestamp.ToIso8601() + ", " +
+                                                          Request.StopTimestamp.ToIso8601() + ", " +
                                                           Request.MeterStop + ", " +
                                                           Request.Reason);
 
