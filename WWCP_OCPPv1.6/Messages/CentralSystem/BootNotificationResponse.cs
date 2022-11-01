@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (RegistrationStatus == RegistrationStatus.Unknown)
                 {
-                    ErrorResponse = "Unknown registration status '" + JSON["status"].Value<String>() + "' received!";
+                    ErrorResponse = "Unknown registration status '" + JSON["status"]?.Value<String>() + "' received!";
                     return false;
                 }
 

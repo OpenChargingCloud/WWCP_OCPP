@@ -52,9 +52,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         public enum SendJSONResults
         {
-            ok,
-            unknownClient,
-            failed
+            Success,
+            UnknownClient,
+            TransmissionFailed
         }
 
         #endregion
@@ -708,10 +708,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             if (!Connection.HasCustomData("chargeBoxId") &&
+                Connection.Request is not null &&
                 ChargeBox_Id.TryParse(Connection.Request.Path.ToString().Substring(Connection.Request.Path.ToString().LastIndexOf("/") + 1), out var chargeBoxId))
             {
+
                 Connection.AddCustomData("chargeBoxId", chargeBoxId);
-                connectedChargingBoxes.Add(chargeBoxId, new Tuple<WebSocketConnection, DateTime>(Connection, Timestamp.Now));
+
+                lock (connectedChargingBoxes)
+                {
+
+                    if (!connectedChargingBoxes.ContainsKey(chargeBoxId))
+                        connectedChargingBoxes.Add(chargeBoxId, new Tuple<WebSocketConnection, DateTime>(Connection, Timestamp.Now));
+
+                    else
+                        DebugX.Log(nameof(CentralSystemWSServer) + " Duplicate charge box '" + chargeBoxId + "' detected");
+
+                }
+
             }
 
             var OnNewCentralSystemWSConnectionLocal = OnNewCentralSystemWSConnection;
@@ -2539,8 +2552,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                  JSONPayload,
                                                  endTime);
 
-            if (sendJSONResult == SendJSONResults.ok)
-            {
+            if (sendJSONResult == SendJSONResults.Success) {
 
                 #region Wait for a response... till timeout
 
@@ -2614,17 +2626,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             // Just in case...
             var now = Timestamp.Now;
 
-            return new SendRequestState(now,
-                                        ChargeBoxId,
-                                        new OCPP_WebSocket_RequestMessage(
-                                            RequestId,
-                                            OCPPAction,
-                                            JSONPayload
-                                        ),
-                                        now,
-
-                                        new JObject(),
-                                        OCPP_WebSocket_ErrorCodes.InternalError);
+            return new SendRequestState(
+                       now,
+                       ChargeBoxId,
+                       new OCPP_WebSocket_RequestMessage(
+                           RequestId,
+                           OCPPAction,
+                           JSONPayload
+                       ),
+                       now,
+                       new JObject(),
+                       OCPP_WebSocket_ErrorCodes.InternalError
+                   );
 
         }
 
@@ -2647,59 +2660,57 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                     DateTime      RequestTimeout)
         {
 
-            OCPP_WebSocket_RequestMessage?  wsRequestMessage   = null;
-            SendRequestState?               result             = null;
+            var wsRequestMessage = new OCPP_WebSocket_RequestMessage(
+                                       RequestId,
+                                       Action,
+                                       JSON
+                                   );
 
             try
             {
 
-                wsRequestMessage  = new OCPP_WebSocket_RequestMessage(RequestId,
-                                                                      Action,
-                                                                      JSON);
-
-                result            = new SendRequestState(Timestamp.Now,
-                                                         ChargeBoxId,
-                                                         wsRequestMessage,
-                                                         RequestTimeout);
-
-                requests.Add(result.WSRequestMessage.RequestId,
-                             result);
-
-
                 var webSocketConnection  = WebSocketConnections.LastOrDefault(ws => ws.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId") == ChargeBoxId);
-                if (webSocketConnection is null)
+
+                if (webSocketConnection is not null)
                 {
-                    result.ErrorCode = OCPP_WebSocket_ErrorCodes.UnknownClient;
-                    return SendJSONResults.unknownClient;
+
+                    requests.Add(RequestId,
+                                 new SendRequestState(
+                                     Timestamp.Now,
+                                     ChargeBoxId,
+                                     wsRequestMessage,
+                                     RequestTimeout
+                                 ));
+
+                    webSocketConnection.SendWebSocketFrame(
+                                            new WebSocketFrame(
+                                                WebSocketFrame.Fin.Final,
+                                                WebSocketFrame.MaskStatus.Off,
+                                                new Byte[4],
+                                                WebSocketFrame.Opcodes.Text,
+                                                wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.None).ToUTF8Bytes(),
+                                                WebSocketFrame.Rsv.Off,
+                                                WebSocketFrame.Rsv.Off,
+                                                WebSocketFrame.Rsv.Off
+                                            )
+                                        );
+
+                    await File.AppendAllTextAsync(LogfileName,
+                                                  String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                                    Environment.NewLine,
+                                                                "ChargeBoxId: ",  ChargeBoxId.ToString(),                                                       Environment.NewLine,
+                                                                "Message sent: ", wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented),      Environment.NewLine,
+                                                                "--------------------------------------------------------------------------------------------", Environment.NewLine));
+
+                    return SendJSONResults.Success;
+
                 }
-
-                var networkStream        = webSocketConnection.TcpClient.GetStream();
-                var WSFrame              = new WebSocketFrame(
-                                               WebSocketFrame.Fin.Final,
-                                               WebSocketFrame.MaskStatus.Off,
-                                               new Byte[4],
-                                               WebSocketFrame.Opcodes.Text,
-                                               wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.None).ToUTF8Bytes(),
-                                               WebSocketFrame.Rsv.Off,
-                                               WebSocketFrame.Rsv.Off,
-                                               WebSocketFrame.Rsv.Off
-                                           );
-
-                await networkStream.WriteAsync(WSFrame.ToByteArray());
-
-                File.AppendAllText(LogfileName,
-                                   String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                                    Environment.NewLine,
-                                                 "ChargeBoxId: ",  ChargeBoxId.ToString(),                                                       Environment.NewLine,
-                                                 "Message sent: ", wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented),      Environment.NewLine,
-                                                 "--------------------------------------------------------------------------------------------", Environment.NewLine));
-
-                return SendJSONResults.ok;
+                else
+                    return SendJSONResults.UnknownClient;
 
             }
             catch (Exception)
             {
-                result.ErrorCode = OCPP_WebSocket_ErrorCodes.NetworkError;
-                return SendJSONResults.failed;
+                return SendJSONResults.TransmissionFailed;
             }
 
         }

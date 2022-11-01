@@ -3611,9 +3611,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.ResetResponse(request, ResetStatus.Rejected);
 
 
-            if (response is null)
-                response = new CP.ResetResponse(request,
-                                                Result.Server("Response is null!"));
+            response ??= new CP.ResetResponse(request,
+                                              Result.Server("Response is null!"));
 
 
             #region Send OnResetResponse event
@@ -3692,9 +3691,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.ChangeAvailabilityResponse(request, AvailabilityStatus.Rejected);
 
 
-            if (response is null)
-                response = new CP.ChangeAvailabilityResponse(request,
-                                                             Result.Server("Response is null!"));
+            response ??= new CP.ChangeAvailabilityResponse(request,
+                                                           Result.Server("Response is null!"));
 
 
             #region Send OnChangeAvailabilityResponse event
@@ -3768,13 +3766,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             else
                 response = new CP.GetConfigurationResponse(request,
-                                                           new ConfigurationKey[0],
-                                                           Keys);
+                                                           Array.Empty<ConfigurationKey>(),
+                                                           Keys ?? Array.Empty<String>());
 
 
-            if (response is null)
-                response = new CP.GetConfigurationResponse(request,
-                                                           Result.Server("Response is null!"));
+            response ??= new CP.GetConfigurationResponse(request,
+                                                         Result.Server("Response is null!"));
 
 
             #region Send OnGetConfigurationResponse event
@@ -3853,9 +3850,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.ChangeConfigurationResponse(request, ConfigurationStatus.Rejected);
 
 
-            if (response is null)
-                response = new CP.ChangeConfigurationResponse(request,
-                                                              Result.Server("Response is null!"));
+            response ??= new CP.ChangeConfigurationResponse(request,
+                                                            Result.Server("Response is null!"));
 
 
             #region Send OnChangeConfigurationResponse event
@@ -3937,9 +3933,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.DataTransferResponse(request, DataTransferStatus.Rejected);
 
 
-            if (response is null)
-                response = new CP.DataTransferResponse(request,
-                                                       Result.Server("Response is null!"));
+            response ??= new CP.DataTransferResponse(request,
+                                                     Result.Server("Response is null!"));
 
 
             #region Send OnDataTransferResponse event
@@ -4027,9 +4022,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.GetDiagnosticsResponse(request);
 
 
-            if (response is null)
-                response = new CP.GetDiagnosticsResponse(request,
-                                                         Result.Server("Response is null!"));
+            response ??= new CP.GetDiagnosticsResponse(request,
+                                                       Result.Server("Response is null!"));
 
 
             #region Send OnGetDiagnosticsResponse event
@@ -4108,9 +4102,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.TriggerMessageResponse(request, TriggerMessageStatus.Rejected);
 
 
-            if (response is null)
-                response = new CP.TriggerMessageResponse(request,
-                                                         Result.Server("Response is null!"));
+            response ??= new CP.TriggerMessageResponse(request,
+                                                       Result.Server("Response is null!"));
 
 
             #region Send OnTriggerMessageResponse event
@@ -4195,9 +4188,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.UpdateFirmwareResponse(request);
 
 
-            if (response is null)
-                response = new CP.UpdateFirmwareResponse(request,
-                                                         Result.Server("Response is null!"));
+            response ??= new CP.UpdateFirmwareResponse(request,
+                                                       Result.Server("Response is null!"));
 
 
             #region Send OnUpdateFirmwareResponse event
@@ -4286,9 +4278,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.ReserveNowResponse(request, ReservationStatus.Rejected);
 
 
-            if (response is null)
-                response = new CP.ReserveNowResponse(request,
-                                                     Result.Server("Response is null!"));
+            response ??= new CP.ReserveNowResponse(request,
+                                                   Result.Server("Response is null!"));
 
 
             #region Send OnReserveNowResponse event
@@ -4364,9 +4355,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.CancelReservationResponse(request, CancelReservationStatus.Rejected);
 
 
-            if (response is null)
-                response = new CP.CancelReservationResponse(request,
-                                                            Result.Server("Response is null!"));
+            response ??= new CP.CancelReservationResponse(request,
+                                                          Result.Server("Response is null!"));
 
 
             #region Send OnCancelReservationResponse event
@@ -4448,9 +4438,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.RemoteStartTransactionResponse(request, RemoteStartStopStatus.Rejected);
 
 
-            if (response is null)
-                response = new CP.RemoteStartTransactionResponse(request,
-                                                                 Result.Server("Response is null!"));
+            response ??= new CP.RemoteStartTransactionResponse(request,
+                                                               Result.Server("Response is null!"));
 
 
             #region Send OnRemoteStartTransactionResponse event
@@ -4526,9 +4515,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.RemoteStopTransactionResponse(request, RemoteStartStopStatus.Rejected);
 
 
-            if (response is null)
-                response = new CP.RemoteStopTransactionResponse(request,
-                                                                Result.Server("Response is null!"));
+            response ??= new CP.RemoteStopTransactionResponse(request,
+                                                              Result.Server("Response is null!"));
 
 
             #region Send OnRemoteStopTransactionResponse event
@@ -4607,9 +4595,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.SetChargingProfileResponse(request, ChargingProfileStatus.NotSupported);
 
 
-            if (response is null)
-                response = new CP.SetChargingProfileResponse(request,
-                                                             Result.Server("Response is null!"));
+            response ??= new CP.SetChargingProfileResponse(request,
+                                                           Result.Server("Response is null!"));
 
 
             #region Send OnSetChargingProfileResponse event
@@ -4694,9 +4681,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.ClearChargingProfileResponse(request, ClearChargingProfileStatus.Unknown);
 
 
-            if (response is null)
-                response = new CP.ClearChargingProfileResponse(request,
-                                                               Result.Server("Response is null!"));
+            response ??= new CP.ClearChargingProfileResponse(request,
+                                                             Result.Server("Response is null!"));
 
 
             #region Send OnClearChargingProfileResponse event
@@ -4780,9 +4766,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                ConnectorId);
 
 
-            if (response is null)
-                response = new CP.GetCompositeScheduleResponse(request,
-                                                               Result.Server("Response is null!"));
+            response ??= new CP.GetCompositeScheduleResponse(request,
+                                                             Result.Server("Response is null!"));
 
 
             #region Send OnGetCompositeScheduleResponse event
@@ -4858,9 +4843,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.UnlockConnectorResponse(request, UnlockStatus.NotSupported);
 
 
-            if (response is null)
-                response = new CP.UnlockConnectorResponse(request,
-                                                          Result.Server("Response is null!"));
+            response ??= new CP.UnlockConnectorResponse(request,
+                                                        Result.Server("Response is null!"));
 
 
             #region Send OnUnlockConnectorResponse event
@@ -4934,9 +4918,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.GetLocalListVersionResponse(request, 0);
 
 
-            if (response is null)
-                response = new CP.GetLocalListVersionResponse(request,
-                                                              Result.Server("Response is null!"));
+            response ??= new CP.GetLocalListVersionResponse(request,
+                                                            Result.Server("Response is null!"));
 
 
             #region Send OnGetLocalListVersionResponse event
@@ -5018,9 +5001,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.SendLocalListResponse(request, UpdateStatus.NotSupported);
 
 
-            if (response is null)
-                response = new CP.SendLocalListResponse(request,
-                                                        Result.Server("Response is null!"));
+            response ??= new CP.SendLocalListResponse(request,
+                                                      Result.Server("Response is null!"));
 
 
             #region Send OnSendLocalListResponse event
@@ -5093,9 +5075,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 response = new CP.ClearCacheResponse(request, ClearCacheStatus.Rejected);
 
 
-            if (response is null)
-                response = new CP.ClearCacheResponse(request,
-                                                     Result.Server("Response is null!"));
+            response ??= new CP.ClearCacheResponse(request,
+                                                   Result.Server("Response is null!"));
 
 
             #region Send OnClearCacheResponse event

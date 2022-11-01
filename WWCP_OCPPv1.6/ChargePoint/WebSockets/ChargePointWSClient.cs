@@ -34,6 +34,9 @@ using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
+using static cloud.charging.open.protocols.OCPPv1_6.CS.CentralSystemWSServer;
+using Org.BouncyCastle.Asn1.Ocsp;
+using org.GraphDefined.Vanaheimr.Styx;
 
 #endregion
 
@@ -72,6 +75,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                IChargePointServerEvents
     {
 
+
+        #region (class) SendRequestState
+
+        public class SendRequestState2
+        {
+
+            public DateTime                       Timestamp           { get; }
+            public OCPP_WebSocket_RequestMessage  WSRequestMessage    { get; }
+            public DateTime                       Timeout             { get; }
+
+            public JObject?                       Response            { get; set; }
+            public OCPP_WebSocket_ErrorCodes?     ErrorCode           { get; set; }
+            public String?                        ErrorDescription    { get; set; }
+            public JObject?                       ErrorDetails        { get; set; }
+
+            public SendRequestState2(DateTime                       Timestamp,
+                                     OCPP_WebSocket_RequestMessage  WSRequestMessage,
+                                     DateTime                       Timeout,
+
+                                     JObject?                       Response           = null,
+                                     OCPP_WebSocket_ErrorCodes?     ErrorCode          = null,
+                                     String?                        ErrorDescription   = null,
+                                     JObject?                       ErrorDetails       = null)
+            {
+
+                this.Timestamp         = Timestamp;
+                this.WSRequestMessage  = WSRequestMessage;
+                this.Timeout           = Timeout;
+
+                this.Response          = Response;
+                this.ErrorCode         = ErrorCode;
+                this.ErrorDescription  = ErrorDescription;
+                this.ErrorDetails      = ErrorDetails;
+
+            }
+
+        }
+
+        #endregion
+
+
         #region Data
 
         /// <summary>
@@ -90,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         private SslStream?        TLSStream;
         private Stream            HTTPStream;
 
-        private Int64             requestId = 100000;
+        private Int64             internalRequestId = 100000;
 
         /// <summary>
         /// The default maintenance interval.
@@ -208,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The CPO client (HTTP client) logger.
         /// </summary>
-        public HTTPClientLogger                      HTTPLogger                      { get; set; }
+        public HTTPClientLogger?                     HTTPLogger                      { get; set; }
 
 
 
@@ -216,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The DNS client defines which DNS servers to use.
         /// </summary>
-        public DNSClient                             DNSClient                       { get; }
+        public DNSClient?                            DNSClient                       { get; }
 
 
 
@@ -1228,11 +1272,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.ClientCert                  = ClientCert;
             this.HTTPUserAgent               = HTTPUserAgent;
             //this.URLPathPrefix               = URLPathPrefix;
-            this.TLSProtocol                 = TLSProtocol        ?? SslProtocols.Tls12 | SslProtocols.Tls13;
-            this.PreferIPv4                  = PreferIPv4         ?? false;
+            this.TLSProtocol                 = TLSProtocol             ?? SslProtocols.Tls12 | SslProtocols.Tls13;
+            this.PreferIPv4                  = PreferIPv4              ?? false;
             this.HTTPBasicAuth               = HTTPBasicAuth;
-            this.RequestTimeout              = RequestTimeout     ?? TimeSpan.FromMinutes(10);
-            this.TransmissionRetryDelay      = TransmissionRetryDelay;
+            this.RequestTimeout              = RequestTimeout          ?? TimeSpan.FromMinutes(10);
+            this.TransmissionRetryDelay      = TransmissionRetryDelay  ?? (retryCount => TimeSpan.FromSeconds(5));
             this.MaxNumberOfRetries          = MaxNumberOfRetries ?? 3;
             this.UseHTTPPipelining           = UseHTTPPipelining;
             this.HTTPLogger                  = HTTPLogger;
@@ -1781,13 +1825,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         private UInt64 pingCounter;
 
-        private void DoWebSocketPingSync(Object State)
+        private void DoWebSocketPingSync(Object? State)
         {
             if (!DisableWebSocketPingTasks)
                 DoWebSocketPing(State).Wait();
         }
 
-        private async Task DoWebSocketPing(Object State)
+        private async Task DoWebSocketPing(Object? State)
         {
 
             if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
@@ -1893,13 +1937,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (Timer) DoMaintenance(State)
 
-        private void DoMaintenanceSync(Object State)
+        private void DoMaintenanceSync(Object? State)
         {
             if (!DisableMaintenanceTasks)
-                DoMaintenance(State).Wait();
+                DoMaintenanceAsync(State).Wait();
         }
 
-        protected internal virtual async Task _DoMaintenance(Object State)
+        private async Task DoMaintenanceAsync(Object? State)
+        {
+
+            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
+                                           ConfigureAwait(false))
+            {
+                try
+                {
+
+                    await DoMaintenanceAsyncStep2(State);
+
+                }
+                catch (ObjectDisposedException)
+                {
+                    MaintenanceTimer.Dispose();
+                    TCPStream   = null;
+                    HTTPStream  = null;
+                }
+                catch (Exception e)
+                {
+
+                    while (e.InnerException is not null)
+                        e = e.InnerException;
+
+                    DebugX.LogException(e);
+
+                }
+                finally
+                {
+                    MaintenanceSemaphore.Release();
+                }
+            }
+            else
+                DebugX.LogT("Could not aquire the maintenance tasks lock!");
+
+        }
+
+        protected internal virtual async Task DoMaintenanceAsyncStep2(Object? State)
         {
 
             if (TCPStream?.DataAvailable == true)
@@ -1984,8 +2065,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    ResetResponse? response = null;
-
                                                     try
                                                     {
 
@@ -2015,31 +2094,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            ResetResponse? response = null;
+
+                                                            var results = OnReset?.
+                                                                              GetInvocationList()?.
+                                                                              SafeSelect(subscriber => (subscriber as OnResetDelegate)
+                                                                                  (Timestamp.Now,
+                                                                                   this,
+                                                                                   request,
+                                                                                   cancellationTokenSource.Token)).
+                                                                              ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnReset?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnResetDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = ResetResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= ResetResponse.Failed(request);
 
                                                             #endregion
 
@@ -2122,8 +2197,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    ChangeAvailabilityResponse? response = null;
-
                                                     try
                                                     {
 
@@ -2153,31 +2226,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            ChangeAvailabilityResponse? response = null;
+
+                                                            var results = OnChangeAvailability?.
+                                                                              GetInvocationList()?.
+                                                                              SafeSelect(subscriber => (subscriber as OnChangeAvailabilityDelegate)
+                                                                                  (Timestamp.Now,
+                                                                                   this,
+                                                                                   request,
+                                                                                   cancellationTokenSource.Token)).
+                                                                              ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnChangeAvailability?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnChangeAvailabilityDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = ChangeAvailabilityResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= ChangeAvailabilityResponse.Failed(request);
 
                                                             #endregion
 
@@ -2260,8 +2329,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    GetConfigurationResponse? response = null;
-
                                                     try
                                                     {
 
@@ -2291,31 +2358,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            GetConfigurationResponse? response = null;
+
+                                                            var results = OnGetConfiguration?.
+                                                                              GetInvocationList()?.
+                                                                              SafeSelect(subscriber => (subscriber as OnGetConfigurationDelegate)
+                                                                                  (Timestamp.Now,
+                                                                                   this,
+                                                                                   request,
+                                                                                   cancellationTokenSource.Token)).
+                                                                              ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnGetConfiguration?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnGetConfigurationDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = GetConfigurationResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= GetConfigurationResponse.Failed(request);
 
                                                             #endregion
 
@@ -2398,8 +2461,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    ChangeConfigurationResponse? response = null;
-
                                                     try
                                                     {
 
@@ -2429,31 +2490,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            ChangeConfigurationResponse? response = null;
+
+                                                            var results = OnChangeConfiguration?.
+                                                                              GetInvocationList()?.
+                                                                              SafeSelect(subscriber => (subscriber as OnChangeConfigurationDelegate)
+                                                                                  (Timestamp.Now,
+                                                                                   this,
+                                                                                   request,
+                                                                                   cancellationTokenSource.Token)).
+                                                                              ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnChangeConfiguration?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnChangeConfigurationDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = ChangeConfigurationResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= ChangeConfigurationResponse.Failed(request);
 
                                                             #endregion
 
@@ -2536,8 +2593,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    CP.DataTransferResponse? response = null;
-
                                                     try
                                                     {
 
@@ -2567,31 +2622,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            DataTransferResponse? response = null;
+
+                                                            var results = OnIncomingDataTransfer?.
+                                                                              GetInvocationList()?.
+                                                                              SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
+                                                                                  (Timestamp.Now,
+                                                                                   this,
+                                                                                   request,
+                                                                                   cancellationTokenSource.Token)).
+                                                                              ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnIncomingDataTransfer?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = DataTransferResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= DataTransferResponse.Failed(request);
 
                                                             #endregion
 
@@ -2674,8 +2725,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    GetDiagnosticsResponse? response = null;
-
                                                     try
                                                     {
 
@@ -2705,31 +2754,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            GetDiagnosticsResponse? response = null;
+
+                                                            var results = OnGetDiagnostics?.
+                                                                              GetInvocationList()?.
+                                                                              SafeSelect(subscriber => (subscriber as OnGetDiagnosticsDelegate)
+                                                                                  (Timestamp.Now,
+                                                                                   this,
+                                                                                   request,
+                                                                                   cancellationTokenSource.Token)).
+                                                                              ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnGetDiagnostics?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnGetDiagnosticsDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = GetDiagnosticsResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= GetDiagnosticsResponse.Failed(request);
 
                                                             #endregion
 
@@ -2812,8 +2857,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    TriggerMessageResponse? response = null;
-
                                                     try
                                                     {
 
@@ -2843,31 +2886,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            TriggerMessageResponse? response = null;
+
+                                                            var results = OnTriggerMessage?.
+                                                                              GetInvocationList()?.
+                                                                              SafeSelect(subscriber => (subscriber as OnTriggerMessageDelegate)
+                                                                                  (Timestamp.Now,
+                                                                                   this,
+                                                                                   request,
+                                                                                   cancellationTokenSource.Token)).
+                                                                              ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnTriggerMessage?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnTriggerMessageDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = TriggerMessageResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= TriggerMessageResponse.Failed(request);
 
                                                             #endregion
 
@@ -2950,8 +2989,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    UpdateFirmwareResponse? response = null;
-
                                                     try
                                                     {
 
@@ -2981,31 +3018,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            UpdateFirmwareResponse? response = null;
+
+                                                            var results = OnUpdateFirmware?.
+                                                                              GetInvocationList()?.
+                                                                              SafeSelect(subscriber => (subscriber as OnUpdateFirmwareDelegate)
+                                                                                  (Timestamp.Now,
+                                                                                  this,
+                                                                                  request,
+                                                                                  cancellationTokenSource.Token)).
+                                                                              ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnUpdateFirmware?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnUpdateFirmwareDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = UpdateFirmwareResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= UpdateFirmwareResponse.Failed(request);
 
                                                             #endregion
 
@@ -3089,8 +3122,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    ReserveNowResponse? response = null;
-
                                                     try
                                                     {
 
@@ -3120,31 +3151,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            ReserveNowResponse? response = null;
+
+                                                            var results = OnReserveNow?.
+                                                                              GetInvocationList()?.
+                                                                              SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)
+                                                                                  (Timestamp.Now,
+                                                                                   this,
+                                                                                   request,
+                                                                                   cancellationTokenSource.Token)).
+                                                                              ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnReserveNow?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = ReserveNowResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= ReserveNowResponse.Failed(request);
 
                                                             #endregion
 
@@ -3227,8 +3254,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    CancelReservationResponse? response = null;
-
                                                     try
                                                     {
 
@@ -3258,31 +3283,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            CancelReservationResponse? response = null;
+
+                                                            var results = OnCancelReservation?.
+                                                                              GetInvocationList()?.
+                                                                              SafeSelect(subscriber => (subscriber as OnCancelReservationDelegate)
+                                                                                  (Timestamp.Now,
+                                                                                   this,
+                                                                                   request,
+                                                                                   cancellationTokenSource.Token)).
+                                                                              ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnCancelReservation?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnCancelReservationDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = CancelReservationResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= CancelReservationResponse.Failed(request);
 
                                                             #endregion
 
@@ -3365,8 +3386,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    RemoteStartTransactionResponse? response = null;
-
                                                     try
                                                     {
 
@@ -3396,31 +3415,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            RemoteStartTransactionResponse? response = null;
+
+                                                            var results = OnRemoteStartTransaction?.
+                                                                                GetInvocationList()?.
+                                                                                SafeSelect(subscriber => (subscriber as OnRemoteStartTransactionDelegate)
+                                                                                    (Timestamp.Now,
+                                                                                        this,
+                                                                                        request,
+                                                                                        cancellationTokenSource.Token)).
+                                                                                ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnRemoteStartTransaction?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnRemoteStartTransactionDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = RemoteStartTransactionResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= RemoteStartTransactionResponse.Failed(request);
 
                                                             #endregion
 
@@ -3503,8 +3518,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    RemoteStopTransactionResponse? response = null;
-
                                                     try
                                                     {
 
@@ -3534,31 +3547,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            RemoteStopTransactionResponse? response = null;
+
+                                                            var results = OnRemoteStopTransaction?.
+                                                                                GetInvocationList()?.
+                                                                                SafeSelect(subscriber => (subscriber as OnRemoteStopTransactionDelegate)
+                                                                                    (Timestamp.Now,
+                                                                                        this,
+                                                                                        request,
+                                                                                        cancellationTokenSource.Token)).
+                                                                                ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnRemoteStopTransaction?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnRemoteStopTransactionDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = RemoteStopTransactionResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= RemoteStopTransactionResponse.Failed(request);
 
                                                             #endregion
 
@@ -3641,8 +3650,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    SetChargingProfileResponse? response = null;
-
                                                     try
                                                     {
 
@@ -3672,31 +3679,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            SetChargingProfileResponse? response = null;
+
+                                                            var results = OnSetChargingProfile?.
+                                                                                GetInvocationList()?.
+                                                                                SafeSelect(subscriber => (subscriber as OnSetChargingProfileDelegate)
+                                                                                    (Timestamp.Now,
+                                                                                        this,
+                                                                                        request,
+                                                                                        cancellationTokenSource.Token)).
+                                                                                ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnSetChargingProfile?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnSetChargingProfileDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = SetChargingProfileResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= SetChargingProfileResponse.Failed(request);
 
                                                             #endregion
 
@@ -3779,8 +3782,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    ClearChargingProfileResponse? response = null;
-
                                                     try
                                                     {
 
@@ -3810,31 +3811,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            ClearChargingProfileResponse? response = null;
+
+                                                            var results = OnClearChargingProfile?.
+                                                                                GetInvocationList()?.
+                                                                                SafeSelect(subscriber => (subscriber as OnClearChargingProfileDelegate)
+                                                                                    (Timestamp.Now,
+                                                                                        this,
+                                                                                        request,
+                                                                                        cancellationTokenSource.Token)).
+                                                                                ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnClearChargingProfile?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnClearChargingProfileDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = ClearChargingProfileResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= ClearChargingProfileResponse.Failed(request);
 
                                                             #endregion
 
@@ -3917,8 +3914,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    GetCompositeScheduleResponse? response = null;
-
                                                     try
                                                     {
 
@@ -3948,31 +3943,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            GetCompositeScheduleResponse? response = null;
+
+                                                            var results = OnGetCompositeSchedule?.
+                                                                                GetInvocationList()?.
+                                                                                SafeSelect(subscriber => (subscriber as OnGetCompositeScheduleDelegate)
+                                                                                    (Timestamp.Now,
+                                                                                        this,
+                                                                                        request,
+                                                                                        cancellationTokenSource.Token)).
+                                                                                ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnGetCompositeSchedule?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnGetCompositeScheduleDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = GetCompositeScheduleResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= GetCompositeScheduleResponse.Failed(request);
 
                                                             #endregion
 
@@ -4055,8 +4046,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    UnlockConnectorResponse? response = null;
-
                                                     try
                                                     {
 
@@ -4086,31 +4075,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            UnlockConnectorResponse? response = null;
+
+                                                            var results = OnUnlockConnector?.
+                                                                                GetInvocationList()?.
+                                                                                SafeSelect(subscriber => (subscriber as OnUnlockConnectorDelegate)
+                                                                                    (Timestamp.Now,
+                                                                                        this,
+                                                                                        request,
+                                                                                        cancellationTokenSource.Token)).
+                                                                                ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnUnlockConnector?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnUnlockConnectorDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = UnlockConnectorResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= UnlockConnectorResponse.Failed(request);
 
                                                             #endregion
 
@@ -4194,8 +4179,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    GetLocalListVersionResponse? response = null;
-
                                                     try
                                                     {
 
@@ -4225,31 +4208,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            GetLocalListVersionResponse? response = null;
+
+                                                            var results = OnGetLocalListVersion?.
+                                                                                GetInvocationList()?.
+                                                                                SafeSelect(subscriber => (subscriber as OnGetLocalListVersionDelegate)
+                                                                                    (Timestamp.Now,
+                                                                                        this,
+                                                                                        request,
+                                                                                        cancellationTokenSource.Token)).
+                                                                                ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnGetLocalListVersion?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnGetLocalListVersionDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = GetLocalListVersionResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= GetLocalListVersionResponse.Failed(request);
 
                                                             #endregion
 
@@ -4332,8 +4311,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    SendLocalListResponse? response = null;
-
                                                     try
                                                     {
 
@@ -4363,31 +4340,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            SendLocalListResponse? response = null;
+
+                                                            var results = OnSendLocalList?.
+                                                                                GetInvocationList()?.
+                                                                                SafeSelect(subscriber => (subscriber as OnSendLocalListDelegate)
+                                                                                    (Timestamp.Now,
+                                                                                        this,
+                                                                                        request,
+                                                                                        cancellationTokenSource.Token)).
+                                                                                ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnSendLocalList?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnSendLocalListDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = SendLocalListResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response = SendLocalListResponse.Failed(request);
 
                                                             #endregion
 
@@ -4470,8 +4443,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     #endregion
 
-                                                    ClearCacheResponse? response = null;
-
                                                     try
                                                     {
 
@@ -4501,31 +4472,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                             #region Call async subscribers
 
-                                                            if (response is null)
+                                                            ClearCacheResponse? response = null;
+
+                                                            var results = OnClearCache?.
+                                                                                GetInvocationList()?.
+                                                                                SafeSelect(subscriber => (subscriber as OnClearCacheDelegate)
+                                                                                    (Timestamp.Now,
+                                                                                        this,
+                                                                                        request,
+                                                                                        cancellationTokenSource.Token)).
+                                                                                ToArray();
+
+                                                            if (results?.Length > 0)
                                                             {
 
-                                                                var results = OnClearCache?.
-                                                                                    GetInvocationList()?.
-                                                                                    SafeSelect(subscriber => (subscriber as OnClearCacheDelegate)
-                                                                                        (Timestamp.Now,
-                                                                                         this,
-                                                                                         request,
-                                                                                         cancellationTokenSource.Token)).
-                                                                                    ToArray();
+                                                                await Task.WhenAll(results);
 
-                                                                if (results?.Length > 0)
-                                                                {
-
-                                                                    await Task.WhenAll(results);
-
-                                                                    response = results.FirstOrDefault()?.Result;
-
-                                                                }
-
-                                                                if (results is null || response is null)
-                                                                    response = ClearCacheResponse.Failed(request);
+                                                                response = results.FirstOrDefault()?.Result;
 
                                                             }
+
+                                                            response ??= ClearCacheResponse.Failed(request);
 
                                                             #endregion
 
@@ -4624,9 +4591,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     }
 
-                                    else if (OCPP_WebSocket_ResponseMessage.TryParse(textPayload, out var wsResponseMessage))
+                                    else if (OCPP_WebSocket_ResponseMessage.TryParse(textPayload, out var wsResponseMessage) && wsResponseMessage is not null)
                                     {
-                                        DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP response message: " + textPayload);
+                                        lock (requests)
+                                        {
+
+                                            if (requests.TryGetValue(wsResponseMessage.RequestId, out var resp))
+                                                resp.Response = wsResponseMessage.Message;
+
+                                            else
+                                                DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP response message: " + textPayload);
+
+                                        }
                                     }
 
                                     else if (OCPP_WebSocket_ErrorMessage.   TryParse(textPayload, out var wsErrorMessage))
@@ -4689,58 +4665,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     else
                         buffer = null;
 
-                } while (buffer != null);
+                } while (buffer is not null);
 
             }
-
-        }
-
-        private async Task DoMaintenance(Object State)
-        {
-
-            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
-                                           ConfigureAwait(false))
-            {
-                try
-                {
-
-                    await _DoMaintenance(State);
-
-                }
-                catch (ObjectDisposedException)
-                {
-                    MaintenanceTimer.Dispose();
-                    TCPStream   = null;
-                    HTTPStream  = null;
-                }
-                catch (Exception e)
-                {
-
-                    while (e.InnerException is not null)
-                        e = e.InnerException;
-
-                    DebugX.LogException(e);
-
-                }
-                finally
-                {
-                    MaintenanceSemaphore.Release();
-                }
-            }
-            else
-                DebugX.LogT("Could not aquire the maintenance tasks lock!");
 
         }
 
         #endregion
 
+        public readonly Dictionary<Request_Id, SendRequestState2> requests = new Dictionary<Request_Id, SendRequestState2>();
 
 
         #region SendRequest(Action, Message)
 
-        public async Task<OCPP_WebSocket_ResponseMessage> SendRequest(String   Action,
-                                                                      JObject  Message)
+        public async Task<Request_Id?> SendRequest(String   Action,
+                                                   JObject  Message)
         {
+
+            Request_Id? requestId = null;
 
             if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
                                            ConfigureAwait(false))
@@ -4751,10 +4693,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     if (HTTPStream is not null)
                     {
 
-                        Interlocked.Increment(ref requestId);
+                        Interlocked.Increment(ref internalRequestId);
+
+                        requestId = Request_Id.Parse(internalRequestId.ToString());
 
                         var wsRequestMessage = new OCPP_WebSocket_RequestMessage(
-                                                   Request_Id.Parse(requestId.ToString()),
+                                                   requestId.Value,
                                                    Action,
                                                    Message
                                                );
@@ -4774,62 +4718,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             ).ToByteArray());
 
                             HTTPStream.Flush();
-
                         }
+
+                        requests.Add(requestId.Value,
+                                     new SendRequestState2(
+                                         Timestamp.Now,
+                                         wsRequestMessage,
+                                         Timestamp.Now + TimeSpan.FromSeconds(10)
+                                     ));
 
                         File.AppendAllText(LogfileName,
                                            String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                               Environment.NewLine,
                                                          "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                            Environment.NewLine,
                                                          "Message sent: ",      wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
                                                          "--------------------------------------------------------------------------------------------", Environment.NewLine));
-
-                        var buffer = new Byte[64 * 1024];
-                        var pos    = 0;
-
-                        do
-                        {
-
-                            pos += HTTPStream.Read(buffer, pos, 2048);
-
-                            //if (sw.ElapsedMilliseconds >= RequestTimeout.Value.TotalMilliseconds)
-                            //    throw new HTTPTimeoutException(sw.Elapsed);
-
-                            Thread.Sleep(1);
-
-                        } while (TCPStream.DataAvailable);
-
-                        Array.Resize(ref buffer, pos);
-
-                        if (WebSocketFrame.TryParse(buffer,
-                                                    out var frame,
-                                                    out var frameLength,
-                                                    out var errorResponse) && frame is not null)
-                        {
-
-                            if (OCPP_WebSocket_ResponseMessage.TryParse(frame.Payload.ToUTF8String(), out var wsResponseMessage) && wsResponseMessage is not null) {
-
-                                File.AppendAllText(LogfileName,
-                                                   String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
-                                                                 "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
-                                                                 "Message received: ",  wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
-                                                                 "--------------------------------------------------------------------------------------------",  Environment.NewLine));
-
-                                return wsResponseMessage;
-
-                            }
-
-                            else if (OCPP_WebSocket_RequestMessage.TryParse(frame.Payload.ToUTF8String(), out var wsRequestMessage2) && wsRequestMessage2 is not null)
-                                DebugX.Log(nameof(ChargePointWSClient), " received a request message when we expected a response message: " + frame.Payload.ToUTF8String());
-
-                            else if (OCPP_WebSocket_ErrorMessage.TryParse(frame.Payload.ToUTF8String(), out var wsErrorMessage) && wsErrorMessage is not null)
-                                DebugX.Log(nameof(ChargePointWSClient), " received an error message when we expected a response message: " + frame.Payload.ToUTF8String());
-
-                            else
-                                DebugX.Log(nameof(ChargePointWSClient), " error: " + frame.Payload.ToUTF8String());
-
-                        }
-                        else
-                            DebugX.Log(nameof(ChargePointWSClient), " could not parse web socker frame!");
 
                     }
                     else
@@ -4860,16 +4762,107 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             else
                 DebugX.LogT("Could not aquire the maintenance tasks lock!");
 
-
-            return new OCPP_WebSocket_ResponseMessage(
-                       Request_Id.Parse("0"),
-                       new JObject(),
-                       OCPP_WebSocket_MessageTypes.CALLERROR
-                   );
+            return requestId;
 
         }
 
         #endregion
+
+
+        private async Task<JObject?> WaitForResponse(Request_Id? RequestId)
+        {
+
+            if (!RequestId.HasValue)
+                return null;
+
+            var endTime = Timestamp.Now + TimeSpan.FromSeconds(10);
+
+            #region Wait for a response... till timeout
+
+            do
+            {
+
+                try
+                {
+
+                    await Task.Delay(25);
+
+                    if (requests.TryGetValue(RequestId.Value, out var sendRequestState) &&
+                        sendRequestState?.Response is not null ||
+                        sendRequestState?.ErrorCode.HasValue == true)
+                    {
+
+                        lock (requests)
+                        {
+                            requests.Remove(RequestId.Value);
+                        }
+
+                        return sendRequestState.Response;
+
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(String.Concat(nameof(ChargePointWSClient), ".", nameof(WaitForResponse), " exception occured: ", e.Message));
+                }
+
+            }
+            while (Timestamp.Now < endTime);
+
+            #endregion
+
+            return null;
+
+        }
+                        //var buffer = new Byte[64 * 1024];
+                        //var pos    = 0;
+
+                        //do
+                        //{
+
+                        //    pos += HTTPStream.Read(buffer, pos, 2048);
+
+                        //    //if (sw.ElapsedMilliseconds >= RequestTimeout.Value.TotalMilliseconds)
+                        //    //    throw new HTTPTimeoutException(sw.Elapsed);
+
+                        //    Thread.Sleep(1);
+
+                        //} while (TCPStream.DataAvailable);
+
+                        //Array.Resize(ref buffer, pos);
+
+                        //if (WebSocketFrame.TryParse(buffer,
+                        //                            out var frame,
+                        //                            out var frameLength,
+                        //                            out var errorResponse) && frame is not null)
+                        //{
+
+                        //    if (OCPP_WebSocket_ResponseMessage.TryParse(frame.Payload.ToUTF8String(), out var wsResponseMessage) && wsResponseMessage is not null) {
+
+                        //        File.AppendAllText(LogfileName,
+                        //                           String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
+                        //                                         "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
+                        //                                         "Message received: ",  wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
+                        //                                         "--------------------------------------------------------------------------------------------",  Environment.NewLine));
+
+                        //        return wsResponseMessage;
+
+                        //    }
+
+                        //    else if (OCPP_WebSocket_RequestMessage.TryParse(frame.Payload.ToUTF8String(), out var wsRequestMessage2) && wsRequestMessage2 is not null)
+                        //        DebugX.Log(nameof(ChargePointWSClient), " received a request message when we expected a response message: " + frame.Payload.ToUTF8String());
+
+                        //    else if (OCPP_WebSocket_ErrorMessage.TryParse(frame.Payload.ToUTF8String(), out var wsErrorMessage) && wsErrorMessage is not null)
+                        //        DebugX.Log(nameof(ChargePointWSClient), " received an error message when we expected a response message: " + frame.Payload.ToUTF8String());
+
+                        //    else
+                        //        DebugX.Log(nameof(ChargePointWSClient), " error: " + frame.Payload.ToUTF8String());
+
+                        //}
+                        //else
+                        //    DebugX.Log(nameof(ChargePointWSClient), " could not parse web socker frame!");
+
 
 
         #region SendBootNotification             (Request, ...)
@@ -4931,26 +4924,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var responseFrame = await SendRequest("BootNotification",
-                                                  Request.ToJSON());
-
+            var requestId  = await SendRequest("BootNotification",
+                                               Request.ToJSON());
 
             if (!BootNotificationResponse.TryParse(Request,
-                                                   responseFrame?.Message ?? new JObject(),
+                                                  (await WaitForResponse(requestId)) ?? new JObject(),
                                                    out var response,
                                                    out var errorResponse))
             {
-
                 response = new BootNotificationResponse(Request,
                                                         Result.Format(errorResponse));
-
             }
-
-            //RequestLogDelegate:   OnBootNotificationwebsocketRequest,
-            //ResponseLogDelegate:  OnBootNotificationwebsocketResponse,
-            //CancellationToken:    CancellationToken,
-            //EventTrackingId:      EventTrackingId,
-            //RequestTimeout:       RequestTimeout,
 
             response ??= new BootNotificationResponse(Request,
                                                       Result.Unknown());
@@ -5040,19 +5024,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var responseFrame = await SendRequest("Heartbeat",
-                                                  Request.ToJSON());
-
+            var requestId  = await SendRequest("Heartbeat",
+                                               Request.ToJSON());
 
             if (!HeartbeatResponse.TryParse(Request,
-                                           responseFrame?.Message ?? new JObject(),
-                                           out var response,
-                                           out var errorResponse))
+                                           (await WaitForResponse(requestId)) ?? new JObject(),
+                                            out var response,
+                                            out var errorResponse))
             {
-
                 response = new HeartbeatResponse(Request,
                                                  Result.Format(errorResponse));
-
             }
 
             response ??= new HeartbeatResponse(Request,
@@ -5144,19 +5125,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var responseFrame = await SendRequest("Authorize",
-                                                  Request.ToJSON());
-
+            var requestId  = await SendRequest("Authorize",
+                                               Request.ToJSON());
 
             if (!AuthorizeResponse.TryParse(Request,
-                                            responseFrame?.Message ?? new JObject(),
+                                           (await WaitForResponse(requestId)) ?? new JObject(),
                                             out var response,
                                             out var errorResponse))
             {
-
                 response = new AuthorizeResponse(Request,
                                                  Result.Format(errorResponse));
-
             }
 
             response ??= new AuthorizeResponse(Request,
@@ -5247,19 +5225,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var responseFrame = await SendRequest("StartTransaction",
-                                                  Request.ToJSON());
-
+            var requestId  = await SendRequest("StartTransaction",
+                                               Request.ToJSON());
 
             if (!StartTransactionResponse.TryParse(Request,
-                                                   responseFrame?.Message ?? new JObject(),
+                                                  (await WaitForResponse(requestId)) ?? new JObject(),
                                                    out var response,
                                                    out var errorResponse))
             {
-
                 response = new StartTransactionResponse(Request,
                                                         Result.Format(errorResponse));
-
             }
 
             response ??= new StartTransactionResponse(Request,
@@ -5350,19 +5325,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var responseFrame = await SendRequest("StatusNotification",
-                                                  Request.ToJSON());
-
+            var requestId  = await SendRequest("StatusNotification",
+                                               Request.ToJSON());
 
             if (!StatusNotificationResponse.TryParse(Request,
-                                                     responseFrame?.Message ?? new JObject(),
+                                                    (await WaitForResponse(requestId)) ?? new JObject(),
                                                      out var response,
                                                      out var errorResponse))
             {
-
                 response = new StatusNotificationResponse(Request,
                                                           Result.Format(errorResponse));
-
             }
 
             response ??= new StatusNotificationResponse(Request,
@@ -5453,19 +5425,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var responseFrame = await SendRequest("MeterValues",
-                                                  Request.ToJSON());
-
+            var requestId = await SendRequest("MeterValues",
+                                              Request.ToJSON());
 
             if (!MeterValuesResponse.TryParse(Request,
-                                              responseFrame?.Message ?? new JObject(),
+                                             (await WaitForResponse(requestId)) ?? new JObject(),
                                               out var response,
                                               out var errorResponse))
             {
-
                 response = new MeterValuesResponse(Request,
                                                    Result.Format(errorResponse));
-
             }
 
             response ??= new MeterValuesResponse(Request,
@@ -5556,19 +5525,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var responseFrame = await SendRequest("StopTransaction",
-                                                  Request.ToJSON());
-
+            var requestId = await SendRequest("StopTransaction",
+                                              Request.ToJSON());
 
             if (!StopTransactionResponse.TryParse(Request,
-                                                  responseFrame?.Message ?? new JObject(),
+                                                 (await WaitForResponse(requestId)) ?? new JObject(),
                                                   out var response,
                                                   out var errorResponse))
             {
-
                 response = new StopTransactionResponse(Request,
                                                        Result.Format(errorResponse));
-
             }
 
             response ??= new StopTransactionResponse(Request,
@@ -5660,19 +5626,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var responseFrame = await SendRequest("DataTransfer",
-                                                  Request.ToJSON());
-
+            var requestId = await SendRequest("DataTransfer",
+                                              Request.ToJSON());
 
             if (!CS.DataTransferResponse.TryParse(Request,
-                                                  responseFrame?.Message ?? new JObject(),
+                                                 (await WaitForResponse(requestId)) ?? new JObject(),
                                                   out var response,
                                                   out var errorResponse))
             {
-
                 response = new CS.DataTransferResponse(Request,
                                                        Result.Format(errorResponse));
-
             }
 
             response ??= new CS.DataTransferResponse(Request,
@@ -5763,19 +5726,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var responseFrame = await SendRequest("DiagnosticsStatusNotification",
-                                                  Request.ToJSON());
-
+            var requestId = await SendRequest("DiagnosticsStatusNotification",
+                                              Request.ToJSON());
 
             if (!DiagnosticsStatusNotificationResponse.TryParse(Request,
-                                                                responseFrame?.Message ?? new JObject(),
+                                                               (await WaitForResponse(requestId)) ?? new JObject(),
                                                                 out var response,
                                                                 out var errorResponse))
             {
-
                 response = new DiagnosticsStatusNotificationResponse(Request,
                                                                      Result.Format(errorResponse));
-
             }
 
             response ??= new DiagnosticsStatusNotificationResponse(Request,
@@ -5866,19 +5826,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var responseFrame = await SendRequest("FirmwareStatusNotification",
-                                                  Request.ToJSON());
-
+            var requestId = await SendRequest("FirmwareStatusNotification",
+                                              Request.ToJSON());
 
             if (!FirmwareStatusNotificationResponse.TryParse(Request,
-                                                             responseFrame?.Message ?? new JObject(),
+                                                            (await WaitForResponse(requestId)) ?? new JObject(),
                                                              out var response,
                                                              out var errorResponse))
             {
-
                 response = new FirmwareStatusNotificationResponse(Request,
                                                                   Result.Format(errorResponse));
-
             }
 
             response ??= new FirmwareStatusNotificationResponse(Request,
