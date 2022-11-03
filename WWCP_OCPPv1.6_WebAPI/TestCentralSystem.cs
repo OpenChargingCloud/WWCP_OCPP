@@ -42,19 +42,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Data
 
-        private readonly HashSet<ICentralSystemServer> centralSystemServers;
+        private          readonly  HashSet<ICentralSystemServer>                               centralSystemServers;
 
-        private readonly Dictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>> reachableChargingBoxes;
+        private          readonly  Dictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>>   reachableChargingBoxes;
 
-        private readonly UsersAPI    TestAPI;
+        private          readonly  UsersAPI                                                    TestAPI;
 
-        private readonly OCPPWebAPI  WebAPI;
+        private          readonly  OCPPWebAPI                                                  WebAPI;
 
-        protected static readonly SemaphoreSlim ChargeBoxesSemaphore = new SemaphoreSlim(1, 1);
+        protected static readonly  SemaphoreSlim                                               ChargeBoxesSemaphore    = new (1, 1);
 
-        protected static readonly TimeSpan SemaphoreSlimTimeout = TimeSpan.FromSeconds(5);
+        protected static readonly  TimeSpan                                                    SemaphoreSlimTimeout    = TimeSpan.FromSeconds(5);
 
-        public static readonly IPPort DefaultHTTPUploadPort = IPPort.Parse(9901);
+        public    static readonly  IPPort                                                      DefaultHTTPUploadPort   = IPPort.Parse(9901);
 
         #endregion
 
@@ -595,27 +595,49 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             this.HTTPUploadPort          = HTTPUploadPort ?? DefaultHTTPUploadPort;
             this.centralSystemServers    = new HashSet<ICentralSystemServer>();
             this.reachableChargingBoxes  = new Dictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>>();
-            this._ChargeBoxes            = new Dictionary<ChargeBox_Id, ChargeBox>();
+            this.chargeBoxes             = new Dictionary<ChargeBox_Id, ChargeBox>();
 
             Directory.CreateDirectory("HTTPSSEs");
 
-            this.TestAPI                 = new UsersAPI(HTTPServerPort:        IPPort.Parse(3500),
-                                                        HTTPServerName:        "GraphDefined OCPP Test Central System",
-                                                        HTTPServiceName:       "GraphDefined OCPP Test Central System Service",
-                                                        APIRobotEMailAddress:  EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
-                                                        SMTPClient:            new NullMailer(),
-                                                        DNSClient:             DNSClient,
-                                                        Autostart:             true);
+            this.TestAPI                 = new UsersAPI(
+                                               HTTPServerPort:        IPPort.Parse(3500),
+                                               HTTPServerName:        "GraphDefined OCPP Test Central System",
+                                               HTTPServiceName:       "GraphDefined OCPP Test Central System Service",
+                                               APIRobotEMailAddress:  EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
+                                               SMTPClient:            new NullMailer(),
+                                               DNSClient:             DNSClient,
+                                               Autostart:             true
+                                           );
 
-            this.HTTPUploadAPI           = new UploadAPI(this,
-                                                         new HTTPServer(
-                                                             this.HTTPUploadPort,
-                                                             "Open Charging Cloud OCPP Upload Server",
-                                                             "Open Charging Cloud OCPP Upload Service"
-                                                         ));
+            this.TestAPI.HTTPServer.AddAuth(request => {
 
-            this.WebAPI                  = new OCPPWebAPI(this,
-                                                          TestAPI.HTTPServer);
+                #region Allow some URLs for anonymous access...
+
+                if (request.Path.StartsWith(TestAPI.URLPathPrefix + "/webapi"))
+                {
+                    return UsersAPI.Anonymous;
+                }
+
+                #endregion
+
+                return null;
+
+            });
+
+
+            this.HTTPUploadAPI           = new UploadAPI(
+                                               this,
+                                               new HTTPServer(
+                                                   this.HTTPUploadPort,
+                                                   "Open Charging Cloud OCPP Upload Server",
+                                                   "Open Charging Cloud OCPP Upload Service"
+                                               )
+                                           );
+
+            this.WebAPI                  = new OCPPWebAPI(
+                                               this,
+                                               TestAPI.HTTPServer
+                                           );
 
             this.DNSClient               = DNSClient ?? new DNSClient(SearchForIPv6DNSServers: false);
 
@@ -1697,7 +1719,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An enumeration of all charge boxes.
         /// </summary>
-        protected internal readonly Dictionary<ChargeBox_Id, ChargeBox> _ChargeBoxes;
+        protected internal readonly Dictionary<ChargeBox_Id, ChargeBox> chargeBoxes;
 
         /// <summary>
         /// An enumeration of all charge boxes.
@@ -1712,7 +1734,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     try
                     {
 
-                        return _ChargeBoxes.Values.ToArray();
+                        return chargeBoxes.Values.ToArray();
 
                     }
                     finally
@@ -2321,7 +2343,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                         nameof(ChargeBox),
                                                         "The given chargeBox is already attached to another API!");
 
-            if (_ChargeBoxes.ContainsKey(ChargeBox.Id))
+            if (chargeBoxes.ContainsKey(ChargeBox.Id))
                 return AddChargeBoxResult.ArgumentError(ChargeBox,
                                                         eventTrackingId,
                                                         nameof(ChargeBox),
@@ -2352,7 +2374,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            _ChargeBoxes.Add(ChargeBox.Id, ChargeBox);
+            chargeBoxes.Add(ChargeBox.Id, ChargeBox);
 
             OnAdded?.Invoke(ChargeBox,
                             eventTrackingId);
@@ -2468,8 +2490,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                    nameof(ChargeBox),
                                                                    "The given chargeBox is already attached to another API!");
 
-            if (_ChargeBoxes.ContainsKey(ChargeBox.Id))
-                return AddChargeBoxIfNotExistsResult.Success(_ChargeBoxes[ChargeBox.Id],
+            if (chargeBoxes.ContainsKey(ChargeBox.Id))
+                return AddChargeBoxIfNotExistsResult.Success(chargeBoxes[ChargeBox.Id],
                                                              AddedOrIgnored.Ignored,
                                                              eventTrackingId);
 
@@ -2498,7 +2520,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            _ChargeBoxes.Add(ChargeBox.Id, ChargeBox);
+            chargeBoxes.Add(ChargeBox.Id, ChargeBox);
 
             OnAdded?.Invoke(ChargeBox,
                             eventTrackingId);
@@ -2643,13 +2665,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            if (_ChargeBoxes.TryGetValue(ChargeBox.Id, out ChargeBox OldChargeBox))
+            if (chargeBoxes.TryGetValue(ChargeBox.Id, out ChargeBox OldChargeBox))
             {
-                _ChargeBoxes.Remove(OldChargeBox.Id);
+                chargeBoxes.Remove(OldChargeBox.Id);
                 ChargeBox.CopyAllLinkedDataFrom(OldChargeBox);
             }
 
-            _ChargeBoxes.Add(ChargeBox.Id, ChargeBox);
+            chargeBoxes.Add(ChargeBox.Id, ChargeBox);
 
             if (OldChargeBox is null)
             {
@@ -2832,9 +2854,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            _ChargeBoxes.Remove(OldChargeBox.Id);
+            chargeBoxes.Remove(OldChargeBox.Id);
             ChargeBox.CopyAllLinkedDataFrom(OldChargeBox);
-            _ChargeBoxes.Add(ChargeBox.Id, ChargeBox);
+            chargeBoxes.Add(ChargeBox.Id, ChargeBox);
 
             OnUpdated?.Invoke(ChargeBox,
                               eventTrackingId);
@@ -2971,9 +2993,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            _ChargeBoxes.Remove(ChargeBox.Id);
+            chargeBoxes.Remove(ChargeBox.Id);
             updatedChargeBox.CopyAllLinkedDataFrom(ChargeBox);
-            _ChargeBoxes.Add(updatedChargeBox.Id, updatedChargeBox);
+            chargeBoxes.Add(updatedChargeBox.Id, updatedChargeBox);
 
             OnUpdated?.Invoke(updatedChargeBox,
                               eventTrackingId);
@@ -3070,7 +3092,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
         protected internal Boolean _ChargeBoxExists(ChargeBox_Id ChargeBoxId)
 
-            => ChargeBoxId.IsNotNullOrEmpty && _ChargeBoxes.ContainsKey(ChargeBoxId);
+            => ChargeBoxId.IsNotNullOrEmpty && chargeBoxes.ContainsKey(ChargeBoxId);
 
         /// <summary>
         /// Determines whether the given chargeBox identification exists within this API.
@@ -3078,7 +3100,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
         protected internal Boolean _ChargeBoxExists(ChargeBox_Id? ChargeBoxId)
 
-            => ChargeBoxId.IsNotNullOrEmpty() && _ChargeBoxes.ContainsKey(ChargeBoxId.Value);
+            => ChargeBoxId.IsNotNullOrEmpty() && chargeBoxes.ContainsKey(ChargeBoxId.Value);
 
 
         /// <summary>
@@ -3156,7 +3178,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         protected internal ChargeBox? _GetChargeBox(ChargeBox_Id ChargeBoxId)
         {
 
-            if (ChargeBoxId.IsNotNullOrEmpty && _ChargeBoxes.TryGetValue(ChargeBoxId, out ChargeBox? chargeBox))
+            if (ChargeBoxId.IsNotNullOrEmpty && chargeBoxes.TryGetValue(ChargeBoxId, out ChargeBox? chargeBox))
                 return chargeBox;
 
             return default;
@@ -3170,7 +3192,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         protected internal ChargeBox? _GetChargeBox(ChargeBox_Id? ChargeBoxId)
         {
 
-            if (ChargeBoxId is not null && _ChargeBoxes.TryGetValue(ChargeBoxId.Value, out ChargeBox? chargeBox))
+            if (ChargeBoxId is not null && chargeBoxes.TryGetValue(ChargeBoxId.Value, out ChargeBox? chargeBox))
                 return chargeBox;
 
             return default;
@@ -3255,7 +3277,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                     out ChargeBox?  ChargeBox)
         {
 
-            if (ChargeBoxId.IsNotNullOrEmpty && _ChargeBoxes.TryGetValue(ChargeBoxId, out ChargeBox? chargeBox))
+            if (ChargeBoxId.IsNotNullOrEmpty && chargeBoxes.TryGetValue(ChargeBoxId, out ChargeBox? chargeBox))
             {
                 ChargeBox = chargeBox;
                 return true;
@@ -3275,7 +3297,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                     out ChargeBox?  ChargeBox)
         {
 
-            if (ChargeBoxId is not null && _ChargeBoxes.TryGetValue(ChargeBoxId.Value, out ChargeBox? chargeBox))
+            if (ChargeBoxId is not null && chargeBoxes.TryGetValue(ChargeBoxId.Value, out ChargeBox? chargeBox))
             {
                 ChargeBox = chargeBox;
                 return true;
@@ -3430,7 +3452,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                            nameof(ChargeBox),
                                                            "The given chargeBox is not attached to this API!");
 
-            if (!_ChargeBoxes.TryGetValue(ChargeBox.Id, out ChargeBox? ChargeBoxToBeDeleted))
+            if (!chargeBoxes.TryGetValue(ChargeBox.Id, out ChargeBox? ChargeBoxToBeDeleted))
                 return DeleteChargeBoxResult.ArgumentError(ChargeBox,
                                                            eventTrackingId,
                                                            nameof(ChargeBox),
@@ -3475,7 +3497,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            _ChargeBoxes.Remove(ChargeBox.Id);
+            chargeBoxes.Remove(ChargeBox.Id);
 
             OnDeleted?.Invoke(ChargeBox,
                               eventTrackingId);

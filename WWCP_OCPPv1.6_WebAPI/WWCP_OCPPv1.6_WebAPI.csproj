@@ -2,10 +2,49 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>WWCP_OCPPv1._6_WebAPI</RootNamespace>
+    <RootNamespace>cloud.charging.open.protocols.OCPPv1_6.WebAPI</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>cloud.charging.open.protocols.OCPPv1_6.WebAPI</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="HTTPRoot\defaults\defaults.js" />
+    <None Remove="HTTPRoot\defaults\defaults.js.map" />
+    <None Remove="HTTPRoot\defaults\defaults.ts" />
+    <None Remove="HTTPRoot\events\events.css" />
+    <None Remove="HTTPRoot\events\events.js" />
+    <None Remove="HTTPRoot\events\events.js.map" />
+    <None Remove="HTTPRoot\events\events.min.css" />
+    <None Remove="HTTPRoot\events\events.scss" />
+    <None Remove="HTTPRoot\events\events.shtml" />
+    <None Remove="HTTPRoot\events\events.ts" />
+    <None Remove="HTTPRoot\favicon.png" />
+    <None Remove="HTTPRoot\index.html" />
+    <None Remove="HTTPRoot\template.css" />
+    <None Remove="HTTPRoot\template.html" />
+    <None Remove="HTTPRoot\template.min.css" />
+    <None Remove="HTTPRoot\template.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="HTTPRoot\defaults\defaults.js" />
+    <EmbeddedResource Include="HTTPRoot\defaults\defaults.js.map" />
+    <EmbeddedResource Include="HTTPRoot\defaults\defaults.ts" />
+    <EmbeddedResource Include="HTTPRoot\events\events.css" />
+    <EmbeddedResource Include="HTTPRoot\events\events.js" />
+    <EmbeddedResource Include="HTTPRoot\events\events.js.map" />
+    <EmbeddedResource Include="HTTPRoot\events\events.min.css" />
+    <EmbeddedResource Include="HTTPRoot\events\events.scss" />
+    <EmbeddedResource Include="HTTPRoot\events\events.shtml" />
+    <EmbeddedResource Include="HTTPRoot\events\events.ts" />
+    <EmbeddedResource Include="HTTPRoot\favicon.png" />
+    <EmbeddedResource Include="HTTPRoot\index.html" />
+    <EmbeddedResource Include="HTTPRoot\template.css" />
+    <EmbeddedResource Include="HTTPRoot\template.html" />
+    <EmbeddedResource Include="HTTPRoot\template.min.css" />
+    <EmbeddedResource Include="HTTPRoot\template.scss" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

@@ -1333,7 +1333,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (protected override) GetResourceString      (ResourceName)
 
-        protected override String GetResourceString(String ResourceName)
+        protected override String? GetResourceString(String ResourceName)
 
             => GetResourceString(ResourceName,
                                  new Tuple<String, System.Reflection.Assembly>(OCPPWebAPI.HTTPRoot, typeof(OCPPWebAPI).Assembly),
@@ -1355,7 +1355,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (protected override) MixWithHTMLTemplate    (ResourceName)
 
-        protected override String MixWithHTMLTemplate(String ResourceName)
+        protected override String? MixWithHTMLTemplate(String ResourceName)
 
             => MixWithHTMLTemplate(ResourceName,
                                    new Tuple<String, System.Reflection.Assembly>(OCPPWebAPI.HTTPRoot, typeof(OCPPWebAPI).Assembly),
