@@ -17,16 +17,9 @@
 
 #region Usings
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using social.OpenData.UsersAPI;
@@ -54,18 +47,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargeBoxId">The parsed unique charge box identification.</param>
         /// <param name="HTTPResponse">A HTTP error response.</param>
         /// <returns>True, when charge box identification was found; false else.</returns>
-        public static Boolean ParseChargeBoxId(this HTTPRequest          HTTPRequest,
-                                               OCPPWebAPI                OCPPWebAPI,
-                                               out ChargeBox_Id?         ChargeBoxId,
-                                               out HTTPResponse.Builder  HTTPResponse)
+        public static Boolean ParseChargeBoxId(this HTTPRequest           HTTPRequest,
+                                               OCPPWebAPI                 OCPPWebAPI,
+                                               out ChargeBox_Id?          ChargeBoxId,
+                                               out HTTPResponse.Builder?  HTTPResponse)
         {
 
             #region Initial checks
 
-            if (HTTPRequest == null)
+            if (HTTPRequest is null)
                 throw new ArgumentNullException(nameof(HTTPRequest),  "The given HTTP request must not be null!");
 
-            if (OCPPWebAPI  == null)
+            if (OCPPWebAPI  is null)
                 throw new ArgumentNullException(nameof(OCPPWebAPI),   "The given OCPP WebAPI must not be null!");
 
             #endregion
@@ -124,19 +117,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargeBox">The resolved charge box.</param>
         /// <param name="HTTPResponse">A HTTP error response.</param>
         /// <returns>True, when charge box identification was found; false else.</returns>
-        public static Boolean ParseChargeBox(this HTTPRequest          HTTPRequest,
-                                             OCPPWebAPI                OCPPWebAPI,
-                                             out ChargeBox_Id?         ChargeBoxId,
-                                             out ChargeBox             ChargeBox,
-                                             out HTTPResponse.Builder  HTTPResponse)
+        public static Boolean ParseChargeBox(this HTTPRequest           HTTPRequest,
+                                             OCPPWebAPI                 OCPPWebAPI,
+                                             out ChargeBox_Id?          ChargeBoxId,
+                                             out ChargeBox?             ChargeBox,
+                                             out HTTPResponse.Builder?  HTTPResponse)
         {
 
             #region Initial checks
 
-            if (HTTPRequest == null)
+            if (HTTPRequest is null)
                 throw new ArgumentNullException(nameof(HTTPRequest),  "The given HTTP request must not be null!");
 
-            if (OCPPWebAPI  == null)
+            if (OCPPWebAPI  is null)
                 throw new ArgumentNullException(nameof(OCPPWebAPI),   "The given OCPP WebAPI must not be null!");
 
             #endregion
@@ -210,22 +203,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public new const           String                           DefaultHTTPServerName       = "GraphDefined OCPP v1.6 WebAPI";
+        public new const           String          DefaultHTTPServerName       = "GraphDefined OCPP v1.6 WebAPI";
 
         /// <summary>
         /// The default HTTP URI prefix.
         /// </summary>
-        public new static readonly HTTPPath                         DefaultURLPathPrefix        = HTTPPath.Parse("webapi");
+        public new static readonly HTTPPath        DefaultURLPathPrefix        = HTTPPath.Parse("webapi");
 
         /// <summary>
         /// The default HTTP realm, if HTTP Basic Authentication is used.
         /// </summary>
-        public const String DefaultHTTPRealm = "Open Charging Cloud OCPPPlus WebAPI";
+        public const String                        DefaultHTTPRealm            = "Open Charging Cloud OCPP WebAPI";
 
         /// <summary>
         /// The HTTP root for embedded ressources.
         /// </summary>
-        public new const       String                               HTTPRoot                    = "cloud.charging.open.protocols.OCPPv1_6.WebAPI.HTTPRoot.";
+        public new const       String              HTTPRoot                    = "cloud.charging.open.protocols.OCPPv1_6.WebAPI.HTTPRoot.";
 
 
         //ToDo: http://www.iana.org/form/media-types
@@ -233,50 +226,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The HTTP content type for serving OCPP+ XML data.
         /// </summary>
-        public static readonly HTTPContentType                      OCPPPlusJSONContentType     = new HTTPContentType("application", "vnd.OCPPPlus+json", "utf-8", null, null);
+        public static readonly HTTPContentType     OCPPPlusJSONContentType     = new HTTPContentType("application", "vnd.OCPPPlus+json", "utf-8", null, null);
 
         /// <summary>
         /// The HTTP content type for serving OCPP+ HTML data.
         /// </summary>
-        public static readonly HTTPContentType                      OCPPPlusHTMLContentType     = new HTTPContentType("application", "vnd.OCPPPlus+html", "utf-8", null, null);
+        public static readonly HTTPContentType     OCPPPlusHTMLContentType     = new HTTPContentType("application", "vnd.OCPPPlus+html", "utf-8", null, null);
 
         /// <summary>
         /// The unique identification of the OCPP HTTP SSE event log.
         /// </summary>
-        public static readonly HTTPEventSource_Id                   EventLogId                  = HTTPEventSource_Id.Parse("OCPPEvents");
+        public static readonly HTTPEventSource_Id  EventLogId                  = HTTPEventSource_Id.Parse("OCPPEvents");
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// The HTTP URI prefix.
-        /// </summary>
-        //public HTTPPath?                                    URLPathPrefix1      { get; }
-
-        /// <summary>
         /// The HTTP realm, if HTTP Basic Authentication is used.
         /// </summary>
-        public String                                       HTTPRealm           { get; }
+        public String                                     HTTPRealm           { get; }
 
         /// <summary>
         /// An enumeration of logins for an optional HTTP Basic Authentication.
         /// </summary>
-        public IEnumerable<KeyValuePair<String, String>>    HTTPLogins          { get; }
+        public IEnumerable<KeyValuePair<String, String>>  HTTPLogins          { get; }
 
 
         /// <summary>
         /// Send debug information via HTTP Server Sent Events.
         /// </summary>
-        public HTTPEventSource<JObject>                     EventLog            { get; }
+        public HTTPEventSource<JObject>                   EventLog            { get; }
 
 
-        public TestCentralSystem CentralSystem { get; }
-
-        /// <summary>
-        /// The DNS client to use.
-        /// </summary>
-        public DNSClient                                    DNSClient           { get; }
+        public TestCentralSystem                          CentralSystem       { get; }
 
         #endregion
 
@@ -289,13 +272,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URIs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public OCPPWebAPI(TestCentralSystem                          TestCentralSystem,
-                          HTTPServer                                 HTTPServer,
-                          HTTPPath?                                  URLPathPrefix    = null,
-                          HTTPPath?                                  BasePath         = null,
-                          String                                     HTTPRealm        = DefaultHTTPRealm,
-                          IEnumerable<KeyValuePair<String, String>>  HTTPLogins       = null,
-                          String                                     HTMLTemplate     = null)
+        public OCPPWebAPI(TestCentralSystem                           TestCentralSystem,
+                          HTTPServer                                  HTTPServer,
+                          HTTPPath?                                   URLPathPrefix   = null,
+                          HTTPPath?                                   BasePath        = null,
+                          String                                      HTTPRealm       = DefaultHTTPRealm,
+                          IEnumerable<KeyValuePair<String, String>>?  HTTPLogins      = null,
+                          String?                                     HTMLTemplate    = null)
 
             : base(HTTPServer,
                    null,
@@ -328,8 +311,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             this.CentralSystem       = TestCentralSystem;
 
             this.HTTPRealm           = HTTPRealm.IsNotNullOrEmpty() ? HTTPRealm : DefaultHTTPRealm;
-            this.HTTPLogins          = HTTPLogins    ?? new KeyValuePair<String, String>[0];
-            this.DNSClient           = HTTPServer.DNSClient;
+            this.HTTPLogins          = HTTPLogins   ?? Array.Empty<KeyValuePair<string, string>>();
+            this.HTMLTemplate        = HTMLTemplate ?? GetResourceString("template.html");
 
             // Link HTTP events...
             //HTTPServer.RequestLog   += (HTTPProcessor, ServerTimestamp, Request)                                 => RequestLog. WhenAll(HTTPProcessor, ServerTimestamp, Request);
@@ -338,17 +321,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var LogfilePrefix        = "HTTPSSEs" + Path.DirectorySeparatorChar;
 
-            this.EventLog            = HTTPServer.AddJSONEventSource(EventIdentification:      EventLogId,
-                                                                     URLTemplate:              this.URLPathPrefix + "/events",
-                                                                     MaxNumberOfCachedEvents:  10000,
-                                                                     RetryIntervall:           TimeSpan.FromSeconds(5),
-                                                                     EnableLogging:            true,
-                                                                     LogfilePrefix:            LogfilePrefix);
+            this.EventLog            = HTTPServer.AddJSONEventSource(
+                                           EventIdentification:      EventLogId,
+                                           URLTemplate:              this.URLPathPrefix + "/events",
+                                           MaxNumberOfCachedEvents:  10000,
+                                           RetryIntervall:           TimeSpan.FromSeconds(5),
+                                           EnableLogging:            true,
+                                           LogfilePrefix:            LogfilePrefix
+                                       );
 
             RegisterURITemplates();
-
-            this.HTMLTemplate        = HTMLTemplate ?? GetResourceString("template.html");
-
 
             #region HTTP-SSEs: ChargePoint   -> CentralSystem
 
