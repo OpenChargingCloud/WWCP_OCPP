@@ -336,12 +336,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event fired whenever a boot notification request will be send to the central system.
         /// </summary>
-        public event OnBootNotificationRequestDelegate   OnBootNotificationRequest;
+        public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
-        public event OnBootNotificationResponseDelegate  OnBootNotificationResponse;
+        public event OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
 
         #endregion
 
@@ -350,12 +350,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event fired whenever a heartbeat request will be send to the central system.
         /// </summary>
-        public event OnHeartbeatRequestDelegate   OnHeartbeatRequest;
+        public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
 
         /// <summary>
         /// An event fired whenever a response to a heartbeat request was received.
         /// </summary>
-        public event OnHeartbeatResponseDelegate  OnHeartbeatResponse;
+        public event OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
 
         #endregion
 
@@ -365,12 +365,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event fired whenever an authorize request will be send to the central system.
         /// </summary>
-        public event OnAuthorizeRequestDelegate   OnAuthorizeRequest;
+        public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
 
         /// <summary>
         /// An event fired whenever a response to an authorize request was received.
         /// </summary>
-        public event OnAuthorizeResponseDelegate  OnAuthorizeResponse;
+        public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
 
         #endregion
 
@@ -379,12 +379,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event fired whenever a start transaction request will be send to the central system.
         /// </summary>
-        public event OnStartTransactionRequestDelegate   OnStartTransactionRequest;
+        public event OnStartTransactionRequestDelegate?   OnStartTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a response to a start transaction request was received.
         /// </summary>
-        public event OnStartTransactionResponseDelegate  OnStartTransactionResponse;
+        public event OnStartTransactionResponseDelegate?  OnStartTransactionResponse;
 
         #endregion
 
@@ -393,12 +393,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event fired whenever a status notification request will be send to the central system.
         /// </summary>
-        public event OnStatusNotificationRequestDelegate   OnStatusNotificationRequest;
+        public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a status notification request was received.
         /// </summary>
-        public event OnStatusNotificationResponseDelegate  OnStatusNotificationResponse;
+        public event OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
 
         #endregion
 
@@ -407,12 +407,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event fired whenever a meter values request will be send to the central system.
         /// </summary>
-        public event OnMeterValuesRequestDelegate   OnMeterValuesRequest;
+        public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a meter values request was received.
         /// </summary>
-        public event OnMeterValuesResponseDelegate  OnMeterValuesResponse;
+        public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
 
         #endregion
 
@@ -421,12 +421,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event fired whenever a stop transaction request will be send to the central system.
         /// </summary>
-        public event OnStopTransactionRequestDelegate   OnStopTransactionRequest;
+        public event OnStopTransactionRequestDelegate?   OnStopTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a response to a stop transaction request was received.
         /// </summary>
-        public event OnStopTransactionResponseDelegate  OnStopTransactionResponse;
+        public event OnStopTransactionResponseDelegate?  OnStopTransactionResponse;
 
         #endregion
 
@@ -436,12 +436,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event fired whenever a data transfer request will be send to the central system.
         /// </summary>
-        public event OnDataTransferRequestDelegate   OnDataTransferRequest;
+        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
-        public event OnDataTransferResponseDelegate  OnDataTransferResponse;
+        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
         #endregion
 
@@ -450,12 +450,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event fired whenever a diagnostics status notification request will be send to the central system.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationRequestDelegate   OnDiagnosticsStatusNotificationRequest;
+        public event OnDiagnosticsStatusNotificationRequestDelegate?   OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a diagnostics status notification request was received.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
+        public event OnDiagnosticsStatusNotificationResponseDelegate?  OnDiagnosticsStatusNotificationResponse;
 
         #endregion
 
@@ -464,12 +464,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event fired whenever a firmware status notification request will be send to the central system.
         /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
+        public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a firmware status notification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
+        public event OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
 
         #endregion
 
@@ -482,12 +482,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ResetRequestDelegate   OnResetRequest;
+        public event ResetRequestDelegate?   OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ResetResponseDelegate  OnResetResponse;
+        public event ResetResponseDelegate?  OnResetResponse;
 
         #endregion
 
@@ -496,12 +496,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ChangeAvailabilityRequestDelegate   OnChangeAvailabilityRequest;
+        public event ChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ChangeAvailabilityResponseDelegate  OnChangeAvailabilityResponse;
+        public event ChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
 
         #endregion
 
@@ -510,12 +510,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetConfigurationRequestDelegate   OnGetConfigurationRequest;
+        public event GetConfigurationRequestDelegate?   OnGetConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetConfigurationResponseDelegate  OnGetConfigurationResponse;
+        public event GetConfigurationResponseDelegate?  OnGetConfigurationResponse;
 
         #endregion
 
@@ -524,12 +524,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ChangeConfigurationRequestDelegate   OnChangeConfigurationRequest;
+        public event ChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ChangeConfigurationResponseDelegate  OnChangeConfigurationResponse;
+        public event ChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
 
         #endregion
 
@@ -538,12 +538,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event IncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
+        public event IncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event IncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
+        public event IncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
 
         #endregion
 
@@ -552,12 +552,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetDiagnosticsRequestDelegate   OnGetDiagnosticsRequest;
+        public event GetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetDiagnosticsResponseDelegate  OnGetDiagnosticsResponse;
+        public event GetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
 
         #endregion
 
@@ -566,12 +566,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event TriggerMessageRequestDelegate   OnTriggerMessageRequest;
+        public event TriggerMessageRequestDelegate?   OnTriggerMessageRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event TriggerMessageResponseDelegate  OnTriggerMessageResponse;
+        public event TriggerMessageResponseDelegate?  OnTriggerMessageResponse;
 
         #endregion
 
@@ -580,12 +580,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event UpdateFirmwareRequestDelegate   OnUpdateFirmwareRequest;
+        public event UpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event UpdateFirmwareResponseDelegate  OnUpdateFirmwareResponse;
+        public event UpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
 
         #endregion
 
@@ -595,12 +595,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event ReserveNowRequestDelegate   OnReserveNowRequest;
+        public event ReserveNowRequestDelegate?   OnReserveNowRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reserve now request was sent.
         /// </summary>
-        public event ReserveNowResponseDelegate  OnReserveNowResponse;
+        public event ReserveNowResponseDelegate?  OnReserveNowResponse;
 
         #endregion
 
@@ -609,12 +609,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event CancelReservationRequestDelegate   OnCancelReservationRequest;
+        public event CancelReservationRequestDelegate?   OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a cancel reservation request was sent.
         /// </summary>
-        public event CancelReservationResponseDelegate  OnCancelReservationResponse;
+        public event CancelReservationResponseDelegate?  OnCancelReservationResponse;
 
         #endregion
 
@@ -623,12 +623,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a remote start transaction request was received.
         /// </summary>
-        public event RemoteStartTransactionRequestDelegate   OnRemoteStartTransactionRequest;
+        public event RemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a remote start transaction request was sent.
         /// </summary>
-        public event RemoteStartTransactionResponseDelegate  OnRemoteStartTransactionResponse;
+        public event RemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
 
         #endregion
 
@@ -637,12 +637,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a remote stop transaction request was received.
         /// </summary>
-        public event RemoteStopTransactionRequestDelegate   OnRemoteStopTransactionRequest;
+        public event RemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a remote stop transaction request was sent.
         /// </summary>
-        public event RemoteStopTransactionResponseDelegate  OnRemoteStopTransactionResponse;
+        public event RemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
 
         #endregion
 
@@ -651,12 +651,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event SetChargingProfileRequestDelegate   OnSetChargingProfileRequest;
+        public event SetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event SetChargingProfileResponseDelegate  OnSetChargingProfileResponse;
+        public event SetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
 
         #endregion
 
@@ -665,12 +665,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ClearChargingProfileRequestDelegate   OnClearChargingProfileRequest;
+        public event ClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ClearChargingProfileResponseDelegate  OnClearChargingProfileResponse;
+        public event ClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
 
         #endregion
 
@@ -679,12 +679,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetCompositeScheduleRequestDelegate   OnGetCompositeScheduleRequest;
+        public event GetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetCompositeScheduleResponseDelegate  OnGetCompositeScheduleResponse;
+        public event GetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
 
         #endregion
 
@@ -693,12 +693,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event UnlockConnectorRequestDelegate   OnUnlockConnectorRequest;
+        public event UnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event UnlockConnectorResponseDelegate  OnUnlockConnectorResponse;
+        public event UnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
 
         #endregion
 
@@ -708,12 +708,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetLocalListVersionRequestDelegate   OnGetLocalListVersionRequest;
+        public event GetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetLocalListVersionResponseDelegate  OnGetLocalListVersionResponse;
+        public event GetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
 
         #endregion
 
@@ -722,12 +722,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event SendLocalListRequestDelegate   OnSendLocalListRequest;
+        public event SendLocalListRequestDelegate?   OnSendLocalListRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event SendLocalListResponseDelegate  OnSendLocalListResponse;
+        public event SendLocalListResponseDelegate?  OnSendLocalListResponse;
 
         #endregion
 
@@ -736,12 +736,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ClearCacheRequestDelegate   OnClearCacheRequest;
+        public event ClearCacheRequestDelegate?   OnClearCacheRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ClearCacheResponseDelegate  OnClearCacheResponse;
+        public event ClearCacheResponseDelegate?  OnClearCacheResponse;
 
         #endregion
 
@@ -770,30 +770,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SendHeartbeatEvery">The time span between heartbeat requests.</param>
         /// 
         /// <param name="DefaultRequestTimeout">The default request timeout for all requests.</param>
-        public TestChargePoint(ChargeBox_Id           ChargeBoxId,
-                               Byte                   NumberOfConnectors,
-                               String                 ChargePointVendor,
-                               String                 ChargePointModel,
+        public TestChargePoint(ChargeBox_Id            ChargeBoxId,
+                               Byte                    NumberOfConnectors,
+                               String                  ChargePointVendor,
+                               String                  ChargePointModel,
 
-                               I18NString             Description               = null,
-                               String                 ChargePointSerialNumber   = null,
-                               String                 ChargeBoxSerialNumber     = null,
-                               String                 FirmwareVersion           = null,
-                               String                 Iccid                     = null,
-                               String                 IMSI                      = null,
-                               String                 MeterType                 = null,
-                               String                 MeterSerialNumber         = null,
-                               String                 MeterPublicKey            = null,
+                               I18NString?             Description               = null,
+                               String?                 ChargePointSerialNumber   = null,
+                               String?                 ChargeBoxSerialNumber     = null,
+                               String?                 FirmwareVersion           = null,
+                               String?                 Iccid                     = null,
+                               String?                 IMSI                      = null,
+                               String?                 MeterType                 = null,
+                               String?                 MeterSerialNumber         = null,
+                               String?                 MeterPublicKey            = null,
 
-                               Boolean                DisableSendHeartbeats     = false,
-                               TimeSpan?              SendHeartbeatEvery        = null,
+                               Boolean                 DisableSendHeartbeats     = false,
+                               TimeSpan?               SendHeartbeatEvery        = null,
 
-                               Boolean                DisableMaintenanceTasks   = false,
-                               TimeSpan?              MaintenanceEvery          = null,
+                               Boolean                 DisableMaintenanceTasks   = false,
+                               TimeSpan?               MaintenanceEvery          = null,
 
-                               TimeSpan?              DefaultRequestTimeout     = null,
-                               Tuple<String, String>  HTTPBasicAuth             = null,
-                               DNSClient              DNSClient                 = null)
+                               TimeSpan?               DefaultRequestTimeout     = null,
+                               Tuple<String, String>?  HTTPBasicAuth             = null,
+                               DNSClient?              DNSClient                 = null)
 
         {
 
@@ -956,6 +956,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                          TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
                                                          UInt16?                               MaxNumberOfRetries           = null,
                                                          Boolean                               UseHTTPPipelining            = false,
+
+                                                         Boolean                               DisableMaintenanceTasks      = false,
+                                                         TimeSpan?                             MaintenanceEvery             = null,
+                                                         Boolean                               DisableWebSocketPings        = false,
+                                                         TimeSpan?                             WebSocketPingEvery           = null,
+                                                         TimeSpan?                             SlowNetworkSimulationDelay   = null,
+
                                                          String?                               LoggingPath                  = null,
                                                          String?                               LoggingContext               = null,
                                                          LogfileCreatorDelegate?               LogfileCreator               = null,
@@ -964,32 +971,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         {
 
-            var WSClient   = new ChargePointWSClient(ChargeBoxId,
-                                                     From,
-                                                     To,
+            var WSClient   = new ChargePointWSClient(
+                                 ChargeBoxId,
+                                 From,
+                                 To,
 
-                                                     RemoteURL,
-                                                     VirtualHostname,
-                                                     Description,
-                                                     RemoteCertificateValidator,
-                                                     ClientCertificateSelector,
-                                                     ClientCert,
-                                                     HTTPUserAgent,
-                                                     URLPathPrefix,
-                                                     TLSProtocol,
-                                                     PreferIPv4,
-                                                     HTTPBasicAuth ?? this.HTTPBasicAuth,
-                                                     RequestTimeout,
-                                                     TransmissionRetryDelay,
-                                                     MaxNumberOfRetries,
-                                                     UseHTTPPipelining,
-                                                     null,
-                                                     null,
-                                                     LoggingPath,
-                                                     LoggingContext,
-                                                     LogfileCreator,
-                                                     HTTPLogger,
-                                                     DNSClient ?? this.DNSClient);
+                                 RemoteURL,
+                                 VirtualHostname,
+                                 Description,
+                                 RemoteCertificateValidator,
+                                 ClientCertificateSelector,
+                                 ClientCert,
+                                 HTTPUserAgent,
+                                 URLPathPrefix,
+                                 TLSProtocol,
+                                 PreferIPv4,
+                                 HTTPBasicAuth ?? this.HTTPBasicAuth,
+                                 RequestTimeout,
+                                 TransmissionRetryDelay,
+                                 MaxNumberOfRetries,
+                                 UseHTTPPipelining,
+
+                                 DisableMaintenanceTasks,
+                                 MaintenanceEvery,
+                                 DisableWebSocketPings,
+                                 WebSocketPingEvery,
+                                 SlowNetworkSimulationDelay,
+
+                                 LoggingPath,
+                                 LoggingContext,
+                                 LogfileCreator,
+                                 HTTPLogger,
+                                 DNSClient ?? this.DNSClient
+                             );
 
             this.CPClient  = WSClient;
 

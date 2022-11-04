@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Net.Sockets;
 using System.Net.Security;
 using System.Security.Authentication;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography.X509Certificates;
 
 using Newtonsoft.Json.Linq;
@@ -34,9 +35,6 @@ using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
-using static cloud.charging.open.protocols.OCPPv1_6.CS.CentralSystemWSServer;
-using Org.BouncyCastle.Asn1.Ocsp;
-using org.GraphDefined.Vanaheimr.Styx;
 
 #endregion
 
@@ -132,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         private Socket?           TCPSocket;
         private MyNetworkStream?  TCPStream;
         private SslStream?        TLSStream;
-        private Stream            HTTPStream;
+        private Stream?           HTTPStream;
 
         private Int64             internalRequestId = 100000;
 
@@ -144,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         private readonly Timer MaintenanceTimer;
 
         public readonly TimeSpan DefaultWebSocketPingEvery = TimeSpan.FromSeconds(30);
-        //private static readonly SemaphoreSlim WebSocketPingSemaphore = new SemaphoreSlim(1, 1);
+
         private readonly Timer WebSocketPingTimer;
 
         protected static readonly TimeSpan SemaphoreSlimTimeout = TimeSpan.FromSeconds(5);
@@ -272,48 +270,54 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The IP Address to connect to.
         /// </summary>
-        public IIPAddress                            RemoteIPAddress                 { get; protected set; }
+        public IIPAddress?                           RemoteIPAddress                 { get; protected set; }
 
 
-        public Int32 Available
-                    => TCPSocket.Available;
+        public Int32? Available
+                    => TCPSocket?.Available;
 
-        public Boolean Connected
-            => TCPSocket.Connected;
+        public Boolean? Connected
+            => TCPSocket?.Connected;
 
+        [DisallowNull]
         public LingerOption? LingerState
         {
             get
             {
-                return TCPSocket.LingerState;
+                return TCPSocket?.LingerState;
             }
             set
             {
-                TCPSocket.LingerState = value;
+                if (TCPSocket is not null)
+                    TCPSocket.LingerState = value;
             }
         }
 
-        public Boolean NoDelay
+        [DisallowNull]
+        public Boolean? NoDelay
         {
             get
             {
-                return TCPSocket.NoDelay;
+                return TCPSocket?.NoDelay;
             }
             set
             {
-                TCPSocket.NoDelay = value;
+                if (TCPSocket is not null)
+                    TCPSocket.NoDelay = value.Value;
             }
         }
 
+        [DisallowNull]
         public Byte TTL
         {
             get
             {
-                return (Byte) TCPSocket.Ttl;
+                return (Byte) (TCPSocket?.Ttl ?? 0);
             }
             set
             {
-                TCPSocket.Ttl = value;
+                if (TCPSocket is not null)
+                    TCPSocket.Ttl = value;
             }
         }
 
@@ -331,11 +335,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public TimeSpan                             MaintenanceEvery                { get; }
 
-
         /// <summary>
         /// Disable web socket pings.
         /// </summary>
-        public Boolean                              DisableWebSocketPingTasks       { get; set; }
+        public Boolean                              DisableWebSocketPings           { get; set; }
 
         /// <summary>
         /// The web socket ping interval.
@@ -343,31 +346,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public TimeSpan                             WebSocketPingEvery              { get; }
 
 
-        #region CustomRequestParsers
-
-        public CustomJObjectParserDelegate<ResetRequest>                   CustomResetRequestParser                     { get; set; }
-        public CustomJObjectParserDelegate<ChangeAvailabilityRequest>      CustomChangeAvailabilityRequestParser        { get; set; }
-        public CustomJObjectParserDelegate<GetConfigurationRequest>        CustomGetConfigurationRequestParser          { get; set; }
-        public CustomJObjectParserDelegate<ChangeConfigurationRequest>     CustomChangeConfigurationRequestParser       { get; set; }
-        public CustomJObjectParserDelegate<CS.DataTransferRequest>         CustomIncomingDataTransferRequestParser      { get; set; }
-        public CustomJObjectParserDelegate<GetDiagnosticsRequest>          CustomGetDiagnosticsRequestParser            { get; set; }
-        public CustomJObjectParserDelegate<TriggerMessageRequest>          CustomTriggerMessageRequestParser            { get; set; }
-        public CustomJObjectParserDelegate<UpdateFirmwareRequest>          CustomUpdateFirmwareRequestParser            { get; set; }
-
-        public CustomJObjectParserDelegate<ReserveNowRequest>              CustomReserveNowRequestParser                { get; set; }
-        public CustomJObjectParserDelegate<CancelReservationRequest>       CustomCancelReservationRequestParser         { get; set; }
-        public CustomJObjectParserDelegate<RemoteStartTransactionRequest>  CustomRemoteStartTransactionRequestParser    { get; set; }
-        public CustomJObjectParserDelegate<RemoteStopTransactionRequest>   CustomRemoteStopTransactionRequestParser     { get; set; }
-        public CustomJObjectParserDelegate<SetChargingProfileRequest>      CustomSetChargingProfileRequestParser        { get; set; }
-        public CustomJObjectParserDelegate<ClearChargingProfileRequest>    CustomClearChargingProfileRequestParser      { get; set; }
-        public CustomJObjectParserDelegate<GetCompositeScheduleRequest>    CustomGetCompositeScheduleRequestParser      { get; set; }
-        public CustomJObjectParserDelegate<UnlockConnectorRequest>         CustomUnlockConnectorRequestParser           { get; set; }
-
-        public CustomJObjectParserDelegate<GetLocalListVersionRequest>     CustomGetLocalListVersionRequestParser       { get; set; }
-        public CustomJObjectParserDelegate<SendLocalListRequest>           CustomSendLocalListRequestParser             { get; set; }
-        public CustomJObjectParserDelegate<ClearCacheRequest>              CustomClearCacheRequestParser                { get; set; }
+        public TimeSpan?                            SlowNetworkSimulationDelay      { get; set; }
 
         #endregion
+
+        #region CustomRequestParsers
+
+        public CustomJObjectParserDelegate<ResetRequest>?                   CustomResetRequestParser                     { get; set; }
+        public CustomJObjectParserDelegate<ChangeAvailabilityRequest>?      CustomChangeAvailabilityRequestParser        { get; set; }
+        public CustomJObjectParserDelegate<GetConfigurationRequest>?        CustomGetConfigurationRequestParser          { get; set; }
+        public CustomJObjectParserDelegate<ChangeConfigurationRequest>?     CustomChangeConfigurationRequestParser       { get; set; }
+        public CustomJObjectParserDelegate<CS.DataTransferRequest>?         CustomIncomingDataTransferRequestParser      { get; set; }
+        public CustomJObjectParserDelegate<GetDiagnosticsRequest>?          CustomGetDiagnosticsRequestParser            { get; set; }
+        public CustomJObjectParserDelegate<TriggerMessageRequest>?          CustomTriggerMessageRequestParser            { get; set; }
+        public CustomJObjectParserDelegate<UpdateFirmwareRequest>?          CustomUpdateFirmwareRequestParser            { get; set; }
+
+        public CustomJObjectParserDelegate<ReserveNowRequest>?              CustomReserveNowRequestParser                { get; set; }
+        public CustomJObjectParserDelegate<CancelReservationRequest>?       CustomCancelReservationRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<RemoteStartTransactionRequest>?  CustomRemoteStartTransactionRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<RemoteStopTransactionRequest>?   CustomRemoteStopTransactionRequestParser     { get; set; }
+        public CustomJObjectParserDelegate<SetChargingProfileRequest>?      CustomSetChargingProfileRequestParser        { get; set; }
+        public CustomJObjectParserDelegate<ClearChargingProfileRequest>?    CustomClearChargingProfileRequestParser      { get; set; }
+        public CustomJObjectParserDelegate<GetCompositeScheduleRequest>?    CustomGetCompositeScheduleRequestParser      { get; set; }
+        public CustomJObjectParserDelegate<UnlockConnectorRequest>?         CustomUnlockConnectorRequestParser           { get; set; }
+
+        public CustomJObjectParserDelegate<GetLocalListVersionRequest>?     CustomGetLocalListVersionRequestParser       { get; set; }
+        public CustomJObjectParserDelegate<SendLocalListRequest>?           CustomSendLocalListRequestParser             { get; set; }
+        public CustomJObjectParserDelegate<ClearCacheRequest>?              CustomClearCacheRequestParser                { get; set; }
 
         #endregion
 
@@ -1240,11 +1245,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                    UInt16?                               MaxNumberOfRetries           = 3,
                                    Boolean                               UseHTTPPipelining            = false,
 
+                                   Boolean                               DisableMaintenanceTasks      = false,
                                    TimeSpan?                             MaintenanceEvery             = null,
+                                   Boolean                               DisableWebSocketPings        = false,
                                    TimeSpan?                             WebSocketPingEvery           = null,
+                                   TimeSpan?                             SlowNetworkSimulationDelay   = null,
 
                                    String?                               LoggingPath                  = null,
-                                   String                                LoggingContext               = ChargePointWSClient.CPClientLogger.DefaultContext,
+                                   String                                LoggingContext               = CPClientLogger.DefaultContext,
                                    LogfileCreatorDelegate?               LogfileCreator               = null,
                                    HTTPClientLogger?                     HTTPLogger                   = null,
                                    DNSClient?                            DNSClient                    = null)
@@ -1277,7 +1285,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.HTTPBasicAuth               = HTTPBasicAuth;
             this.RequestTimeout              = RequestTimeout          ?? TimeSpan.FromMinutes(10);
             this.TransmissionRetryDelay      = TransmissionRetryDelay  ?? (retryCount => TimeSpan.FromSeconds(5));
-            this.MaxNumberOfRetries          = MaxNumberOfRetries ?? 3;
+            this.MaxNumberOfRetries          = MaxNumberOfRetries      ?? 3;
             this.UseHTTPPipelining           = UseHTTPPipelining;
             this.HTTPLogger                  = HTTPLogger;
             this.DNSClient                   = DNSClient;
@@ -1291,17 +1299,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             //                                                                            LoggingContext,
             //                                                                            LogfileCreator);
 
-            this.MaintenanceEvery            = MaintenanceEvery   ?? DefaultMaintenanceEvery;
+            this.DisableMaintenanceTasks     = DisableMaintenanceTasks;
+            this.MaintenanceEvery            = MaintenanceEvery        ?? DefaultMaintenanceEvery;
             this.MaintenanceTimer            = new Timer(DoMaintenanceSync,
                                                          null,
                                                          this.MaintenanceEvery,
                                                          this.MaintenanceEvery);
 
-            this.WebSocketPingEvery          = WebSocketPingEvery ?? DefaultWebSocketPingEvery;
+            this.DisableWebSocketPings       = DisableWebSocketPings;
+            this.WebSocketPingEvery          = WebSocketPingEvery      ?? DefaultWebSocketPingEvery;
             this.WebSocketPingTimer          = new Timer(DoWebSocketPingSync,
                                                          null,
                                                          this.WebSocketPingEvery,
                                                          this.WebSocketPingEvery);
+
+            this.SlowNetworkSimulationDelay  = SlowNetworkSimulationDelay;
 
         }
 
@@ -1827,7 +1839,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         private void DoWebSocketPingSync(Object? State)
         {
-            if (!DisableWebSocketPingTasks)
+            if (!DisableWebSocketPings)
                 DoWebSocketPing(State).Wait();
         }
 
@@ -1849,18 +1861,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                             var payload = pingCounter + ":" + Guid.NewGuid().ToString();
 
-                            HTTPStream.Write(new WebSocketFrame(
-                                                 WebSocketFrame.Fin.Final,
-                                                 WebSocketFrame.MaskStatus.On,
-                                                 new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
-                                                 WebSocketFrame.Opcodes.Ping,
-                                                 payload.ToUTF8Bytes(),
-                                                 WebSocketFrame.Rsv.Off,
-                                                 WebSocketFrame.Rsv.Off,
-                                                 WebSocketFrame.Rsv.Off
-                                             ).ToByteArray());
-
-                            HTTPStream.Flush();
+                            SendWebSocketFrame(new WebSocketFrame(
+                                                   WebSocketFrame.Fin.Final,
+                                                   WebSocketFrame.MaskStatus.On,
+                                                   new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
+                                                   WebSocketFrame.Opcodes.Ping,
+                                                   payload.ToUTF8Bytes(),
+                                                   WebSocketFrame.Rsv.Off,
+                                                   WebSocketFrame.Rsv.Off,
+                                                   WebSocketFrame.Rsv.Off
+                                               ));
 
                             DebugX.Log(nameof(ChargePointWSClient) + ": Ping sent:     '" + payload + "'!");
 
@@ -4563,29 +4573,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                             var wsResponseMessage = new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
                                                                                                        OCPPResponseJSON);
 
-                                            lock (HTTPStream)
-                                            {
+                                            SendWebSocketFrame(new WebSocketFrame(
+                                                                   WebSocketFrame.Fin.Final,
+                                                                   WebSocketFrame.MaskStatus.On,
+                                                                   new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
+                                                                   WebSocketFrame.Opcodes.Text,
+                                                                   wsResponseMessage.ToByteArray(),
+                                                                   WebSocketFrame.Rsv.Off,
+                                                                   WebSocketFrame.Rsv.Off,
+                                                                   WebSocketFrame.Rsv.Off
+                                                               ));
 
-                                                HTTPStream.Write(new WebSocketFrame(
-                                                                     WebSocketFrame.Fin.Final,
-                                                                     WebSocketFrame.MaskStatus.On,
-                                                                     new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
-                                                                     WebSocketFrame.Opcodes.Text,
-                                                                     wsResponseMessage.ToByteArray(),
-                                                                     WebSocketFrame.Rsv.Off,
-                                                                     WebSocketFrame.Rsv.Off,
-                                                                     WebSocketFrame.Rsv.Off
-                                                                 ).ToByteArray());
-
-                                                File.AppendAllText(LogfileName,
-                                                                   String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
-                                                                                 "ChargeBoxId: ",  ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
-                                                                                 "Message sent: ", wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
-                                                                                 "--------------------------------------------------------------------------------------------",  Environment.NewLine));
-
-                                                HTTPStream.Flush();
-
-                                            }
+                                            File.AppendAllText(LogfileName,
+                                                               String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
+                                                                             "ChargeBoxId: ",  ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
+                                                                             "Message sent: ", wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
+                                                                             "--------------------------------------------------------------------------------------------",  Environment.NewLine));
 
                                         }
 
@@ -4620,23 +4623,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     DebugX.Log(nameof(ChargePointWSClient) + ": Ping received: " + frame.Payload.ToUTF8String());
 
-                                    lock (HTTPStream)
-                                    {
-
-                                        HTTPStream.Write(new WebSocketFrame(
-                                                             WebSocketFrame.Fin.Final,
-                                                             WebSocketFrame.MaskStatus.On,
-                                                             new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
-                                                             WebSocketFrame.Opcodes.Pong,
-                                                             frame.Payload,
-                                                             WebSocketFrame.Rsv.Off,
-                                                             WebSocketFrame.Rsv.Off,
-                                                             WebSocketFrame.Rsv.Off
-                                                         ).ToByteArray());
-
-                                        HTTPStream.Flush();
-
-                                    }
+                                    SendWebSocketFrame(new WebSocketFrame(
+                                                           WebSocketFrame.Fin.Final,
+                                                           WebSocketFrame.MaskStatus.On,
+                                                           new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
+                                                           WebSocketFrame.Opcodes.Pong,
+                                                           frame.Payload,
+                                                           WebSocketFrame.Rsv.Off,
+                                                           WebSocketFrame.Rsv.Off,
+                                                           WebSocketFrame.Rsv.Off
+                                                       ));
 
                                 }
                                 break;
@@ -4673,7 +4669,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        public readonly Dictionary<Request_Id, SendRequestState2> requests = new Dictionary<Request_Id, SendRequestState2>();
+        public readonly Dictionary<Request_Id, SendRequestState2> requests = new ();
 
 
         #region SendRequest(Action, Message)
@@ -4703,22 +4699,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    Message
                                                );
 
-                        lock (HTTPStream)
-                        {
-
-                            HTTPStream.Write(new WebSocketFrame(
-                                                 WebSocketFrame.Fin.Final,
-                                                 WebSocketFrame.MaskStatus.On,
-                                                 new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
-                                                 WebSocketFrame.Opcodes.Text,
-                                                 wsRequestMessage.ToByteArray(),
-                                                 WebSocketFrame.Rsv.Off,
-                                                 WebSocketFrame.Rsv.Off,
-                                                 WebSocketFrame.Rsv.Off
-                                            ).ToByteArray());
-
-                            HTTPStream.Flush();
-                        }
+                        SendWebSocketFrame(new WebSocketFrame(
+                                               WebSocketFrame.Fin.Final,
+                                               WebSocketFrame.MaskStatus.On,
+                                               new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
+                                               WebSocketFrame.Opcodes.Text,
+                                               wsRequestMessage.ToByteArray(),
+                                               WebSocketFrame.Rsv.Off,
+                                               WebSocketFrame.Rsv.Off,
+                                               WebSocketFrame.Rsv.Off
+                                           ));
 
                         requests.Add(requestId.Value,
                                      new SendRequestState2(
@@ -4764,6 +4754,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             return requestId;
 
+        }
+
+        #endregion
+
+        #region SendWebSocketFrame(WebSocketFrame)
+
+        public void SendWebSocketFrame(WebSocketFrame WebSocketFrame)
+        {
+            if (HTTPStream is not null)
+            {
+                lock (HTTPStream)
+                {
+
+                    try
+                    {
+
+                        if (SlowNetworkSimulationDelay.HasValue)
+                        {
+                            foreach (var _byte in WebSocketFrame.ToByteArray())
+                            {
+                                HTTPStream.Write(new Byte[] { _byte });
+                                HTTPStream.Flush();
+                                Thread.Sleep(SlowNetworkSimulationDelay.Value);
+                            }
+                        }
+
+                        else
+                        {
+                            HTTPStream.Write(WebSocketFrame.ToByteArray());
+                            HTTPStream.Flush();
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.LogException(e, "Sending a web socket frame in " + nameof(ChargePointWSClient));
+                    }
+
+                }
+            }
         }
 
         #endregion
@@ -4815,54 +4845,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             return null;
 
         }
-                        //var buffer = new Byte[64 * 1024];
-                        //var pos    = 0;
-
-                        //do
-                        //{
-
-                        //    pos += HTTPStream.Read(buffer, pos, 2048);
-
-                        //    //if (sw.ElapsedMilliseconds >= RequestTimeout.Value.TotalMilliseconds)
-                        //    //    throw new HTTPTimeoutException(sw.Elapsed);
-
-                        //    Thread.Sleep(1);
-
-                        //} while (TCPStream.DataAvailable);
-
-                        //Array.Resize(ref buffer, pos);
-
-                        //if (WebSocketFrame.TryParse(buffer,
-                        //                            out var frame,
-                        //                            out var frameLength,
-                        //                            out var errorResponse) && frame is not null)
-                        //{
-
-                        //    if (OCPP_WebSocket_ResponseMessage.TryParse(frame.Payload.ToUTF8String(), out var wsResponseMessage) && wsResponseMessage is not null) {
-
-                        //        File.AppendAllText(LogfileName,
-                        //                           String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
-                        //                                         "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
-                        //                                         "Message received: ",  wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
-                        //                                         "--------------------------------------------------------------------------------------------",  Environment.NewLine));
-
-                        //        return wsResponseMessage;
-
-                        //    }
-
-                        //    else if (OCPP_WebSocket_RequestMessage.TryParse(frame.Payload.ToUTF8String(), out var wsRequestMessage2) && wsRequestMessage2 is not null)
-                        //        DebugX.Log(nameof(ChargePointWSClient), " received a request message when we expected a response message: " + frame.Payload.ToUTF8String());
-
-                        //    else if (OCPP_WebSocket_ErrorMessage.TryParse(frame.Payload.ToUTF8String(), out var wsErrorMessage) && wsErrorMessage is not null)
-                        //        DebugX.Log(nameof(ChargePointWSClient), " received an error message when we expected a response message: " + frame.Payload.ToUTF8String());
-
-                        //    else
-                        //        DebugX.Log(nameof(ChargePointWSClient), " error: " + frame.Payload.ToUTF8String());
-
-                        //}
-                        //else
-                        //    DebugX.Log(nameof(ChargePointWSClient), " could not parse web socker frame!");
-
 
 
         #region SendBootNotification             (Request, ...)

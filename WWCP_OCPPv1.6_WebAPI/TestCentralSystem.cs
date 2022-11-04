@@ -696,19 +696,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CentralSystemWSServer CreateWebSocketService(String      HTTPServerName   = CentralSystemWSServer.DefaultHTTPServerName,
-                                                            IIPAddress  IPAddress        = null,
-                                                            IPPort?     TCPPort          = null,
-                                                            DNSClient   DNSClient        = null,
-                                                            Boolean     AutoStart        = false)
+        public CentralSystemWSServer CreateWebSocketService(String       HTTPServerName               = CentralSystemWSServer.DefaultHTTPServerName,
+                                                            IIPAddress?  IPAddress                    = null,
+                                                            IPPort?      TCPPort                      = null,
+
+                                                            Boolean      DisableWebSocketPings        = false,
+                                                            TimeSpan?    WebSocketPingEvery           = null,
+                                                            TimeSpan?    SlowNetworkSimulationDelay   = null,
+
+                                                            DNSClient?   DNSClient                    = null,
+                                                            Boolean      AutoStart                    = false)
         {
 
-            var centralSystemServer = new CentralSystemWSServer(HTTPServerName,
-                                                                IPAddress,
-                                                                TCPPort,
-                                                                RequireAuthentication,
-                                                                DNSClient ?? this.DNSClient,
-                                                                AutoStart);
+            var centralSystemServer = new CentralSystemWSServer(
+                                          HTTPServerName,
+                                          IPAddress,
+                                          TCPPort,
+
+                                          RequireAuthentication,
+                                          DisableWebSocketPings,
+                                          WebSocketPingEvery,
+                                          SlowNetworkSimulationDelay,
+
+                                          DNSClient ?? this.DNSClient,
+                                          AutoStart
+                                      );
 
             Attach(centralSystemServer);
 
@@ -962,7 +974,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 }
 
 
-                await Task.Delay(100);
+                await Task.Delay(100, CancellationToken);
 
 
                 var response = new BootNotificationResponse(Request:            Request,
@@ -1045,7 +1057,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 }
 
 
-                await Task.Delay(100);
+                await Task.Delay(100, CancellationToken);
 
 
                 var response = new HeartbeatResponse(Request:      Request,
@@ -1127,7 +1139,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 }
 
-                await Task.Delay(100);
+                await Task.Delay(100, CancellationToken);
 
                 var response = new AuthorizeResponse(
                                    Request:    Request,
@@ -1216,7 +1228,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 }
 
-                await Task.Delay(100);
+                await Task.Delay(100, CancellationToken);
 
                 var response = new StartTransactionResponse(Request:        Request,
                                                             TransactionId:  Transaction_Id.NewRandom,
@@ -1302,7 +1314,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
                 }
 
-                await Task.Delay(100);
+                await Task.Delay(100, CancellationToken);
 
                 var response = new StatusNotificationResponse(Request);
 
@@ -1376,7 +1388,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
                 }
 
-                await Task.Delay(100);
+                await Task.Delay(100, CancellationToken);
 
                 var response = new MeterValuesResponse(Request);
 
@@ -1442,7 +1454,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 Console.WriteLine(Request.TransactionData.SafeSelect(transactionData => transactionData.Timestamp.ToIso8601() +
                                           transactionData.SampledValues.SafeSelect(sampledValue => sampledValue.Context + ", " + sampledValue.Value + ", " + sampledValue.Value).AggregateWith("; ")).AggregateWith(Environment.NewLine));
 
-                await Task.Delay(100);
+                await Task.Delay(100, CancellationToken);
 
                 var response = new StopTransactionResponse(Request:    Request,
                                                            IdTagInfo:  new IdTagInfo(Status:      AuthorizationStatus.Accepted,
@@ -1521,7 +1533,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
                 }
 
-                await Task.Delay(100);
+                await Task.Delay(100, CancellationToken);
 
                 var response = new DataTransferResponse(Request:  Request,
                                                         Status:   DataTransferStatus.Accepted,
@@ -1593,7 +1605,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
                 }
 
-                await Task.Delay(100);
+                await Task.Delay(100, CancellationToken);
 
                 var response = new DiagnosticsStatusNotificationResponse(Request);
 
@@ -1663,7 +1675,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
                 }
 
-                await Task.Delay(100);
+                await Task.Delay(100, CancellationToken);
 
                 var response = new FirmwareStatusNotificationResponse(Request);
 

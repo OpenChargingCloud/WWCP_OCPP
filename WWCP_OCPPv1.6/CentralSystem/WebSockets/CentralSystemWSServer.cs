@@ -19,11 +19,11 @@
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
-using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
@@ -577,16 +577,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CentralSystemWSServer(String       HTTPServerName          = DefaultHTTPServerName,
-                                     IIPAddress?  IPAddress               = null,
-                                     IPPort?      TCPPort                 = null,
-                                     Boolean      RequireAuthentication   = true,
-                                     DNSClient?   DNSClient               = null,
-                                     Boolean      AutoStart               = false)
+        public CentralSystemWSServer(String       HTTPServerName               = DefaultHTTPServerName,
+                                     IIPAddress?  IPAddress                    = null,
+                                     IPPort?      TCPPort                      = null,
+
+                                     Boolean      RequireAuthentication        = true,
+                                     Boolean      DisableWebSocketPings        = false,
+                                     TimeSpan?    WebSocketPingEvery           = null,
+                                     TimeSpan?    SlowNetworkSimulationDelay   = null,
+
+                                     DNSClient?   DNSClient                    = null,
+                                     Boolean      AutoStart                    = false)
 
             : base(IPAddress,
                    TCPPort ?? IPPort.Parse(8000),
                    HTTPServerName,
+
+                   DisableWebSocketPings,
+                   WebSocketPingEvery,
+                   SlowNetworkSimulationDelay,
+
                    DNSClient,
                    false)
 
@@ -599,7 +609,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
             base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
-            //base.OnTextMessage                  += ProcessTextMessages;
 
             if (AutoStart)
                 Start();
@@ -936,8 +945,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
-                                            if (responseTasks is null || response is null)
-                                                response = BootNotificationResponse.Failed(request);
+                                            response ??= BootNotificationResponse.Failed(request);
 
                                             #endregion
 
@@ -1086,8 +1094,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
-                                            if (responseTasks is null || response is null)
-                                                response = HeartbeatResponse.Failed(request);
+                                            response ??= HeartbeatResponse.Failed(request);
 
                                             #endregion
 
@@ -1237,8 +1244,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
-                                            if (responseTasks is null || response is null)
-                                                response = AuthorizeResponse.Failed(request);
+                                            response ??= AuthorizeResponse.Failed(request);
 
                                             #endregion
 
@@ -1387,8 +1393,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
-                                            if (responseTasks is null || response is null)
-                                                response = StartTransactionResponse.Failed(request);
+                                            response ??= StartTransactionResponse.Failed(request);
 
                                             #endregion
 
@@ -1536,8 +1541,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
-                                            if (responseTasks is null || response is null)
-                                                response = StatusNotificationResponse.Failed(request);
+                                            response ??= StatusNotificationResponse.Failed(request);
 
                                             #endregion
 
@@ -1686,8 +1690,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
-                                            if (responseTasks is null || response is null)
-                                                response = MeterValuesResponse.Failed(request);
+                                            response ??= MeterValuesResponse.Failed(request);
 
                                             #endregion
 
@@ -1836,8 +1839,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
-                                            if (responseTasks is null || response is null)
-                                                response = StopTransactionResponse.Failed(request);
+                                            response ??= StopTransactionResponse.Failed(request);
 
                                             #endregion
 
@@ -1987,8 +1989,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
-                                            if (responseTasks is null || response is null)
-                                                response = DataTransferResponse.Failed(request);
+                                            response ??= DataTransferResponse.Failed(request);
 
                                             #endregion
 
@@ -2137,8 +2138,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
-                                            if (responseTasks is null || response is null)
-                                                response = DiagnosticsStatusNotificationResponse.Failed(request);
+                                            response ??= DiagnosticsStatusNotificationResponse.Failed(request);
 
                                             #endregion
 
@@ -2287,8 +2287,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
-                                            if (responseTasks is null || response is null)
-                                                response = FirmwareStatusNotificationResponse.Failed(request);
+                                            response ??= FirmwareStatusNotificationResponse.Failed(request);
 
                                             #endregion
 
@@ -2532,7 +2531,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         }
 
         #endregion
-
 
 
         #region SendRequest(RequestId, ChargeBoxId, OCPPAction, JSONPayload, Timeout = null)
