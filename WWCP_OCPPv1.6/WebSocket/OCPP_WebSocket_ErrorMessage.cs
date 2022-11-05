@@ -83,6 +83,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         #endregion
 
 
+        #region (static) CouldNotParse     (RequestId, Action, JSONPayload, ErrorResponse)
+
+        public static OCPP_WebSocket_ErrorMessage CouldNotParse(Request_Id  RequestId,
+                                                                String      Action,
+                                                                JObject     JSONPayload,
+                                                                String?     ErrorResponse)
+
+            => new (RequestId,
+                    OCPP_WebSocket_ErrorCodes.FormationViolation,
+                    "Processing the given '" + Action + "' request could not be parsed!",
+                    new JObject(
+                        new JProperty("request",  JSONPayload)
+                    ));
+
+        #endregion
+
         #region (static) CouldNotParse     (RequestId, Action, JSONPayload)
 
         public static OCPP_WebSocket_ErrorMessage CouldNotParse(Request_Id  RequestId,

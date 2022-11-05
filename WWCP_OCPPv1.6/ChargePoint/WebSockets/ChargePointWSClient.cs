@@ -17,11 +17,8 @@
 
 #region Usings
 
-using System.Diagnostics;
-using System.Net.Sockets;
 using System.Net.Security;
 using System.Security.Authentication;
-using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography.X509Certificates;
 
 using Newtonsoft.Json.Linq;
@@ -42,37 +39,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The delegate for the WebSocket request log.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the incoming request.</param>
-    /// <param name="WebSocketClient">The sending WebSocket client.</param>
-    /// <param name="Request">The incoming request.</param>
-    public delegate Task WSClientRequestLogHandler(DateTime             Timestamp,
-                                                   ChargePointWSClient  WebSocketClient,
-                                                   JArray               Request);
-
-    /// <summary>
-    /// The delegate for the WebSocket response log.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the incoming request.</param>
-    /// <param name="WebSocketClient">The sending WebSocket client.</param>
-    /// <param name="Request">The incoming WebSocket request.</param>
-    /// <param name="Response">The outgoing WebSocket response.</param>
-    public delegate Task WSClientResponseLogHandler(DateTime             Timestamp,
-                                                    ChargePointWSClient  WebSocketClient,
-                                                    JArray               Request,
-                                                    JArray               Response);
-
-
-    /// <summary>
-    /// The charge point WebSockets client runs on a charge point
+    /// The charge point HTTP web socket client runs on a charge point
     /// and connects to a central system to invoke methods.
     /// </summary>
     public partial class ChargePointWSClient : WebSocketClient,
                                                ICPWSClient,
                                                IChargePointServerEvents
     {
-
 
         #region (class) SendRequestState
 
@@ -1115,15 +1088,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (textPayload == "[]")
                 DebugX.Log(nameof(ChargePointWSClient), " [] received!");
 
-            else if (OCPP_WebSocket_RequestMessage. TryParse(textPayload, out var wsRequestMessage) &&
-                        wsRequestMessage is not null)
+            else if (OCPP_WebSocket_RequestMessage. TryParse(textPayload, out var requestMessage)  && requestMessage  is not null)
             {
 
                 File.AppendAllText(LogfileName,
-                                    String.Concat("timestamp: ",         Timestamp.Now.ToIso8601(),                                               Environment.NewLine,
-                                                  "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                            Environment.NewLine,
-                                                  "Message received: ",  wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
-                                                  "--------------------------------------------------------------------------------------------", Environment.NewLine));
+                                   String.Concat("timestamp: ",         Timestamp.Now.ToIso8601(),                                               Environment.NewLine,
+                                                 "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                            Environment.NewLine,
+                                                 "Message received: ",  requestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented),   Environment.NewLine,
+                                                 "--------------------------------------------------------------------------------------------", Environment.NewLine));
 
 
                 var requestJSON              = JArray.Parse(textPayload);
@@ -1132,7 +1104,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 JObject?                     OCPPResponseJSON   = null;
                 OCPP_WebSocket_ErrorMessage? ErrorMessage       = null;
 
-                switch (wsRequestMessage.Action)
+                switch (requestMessage.Action)
                 {
 
                     case "Reset":
@@ -1144,8 +1116,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnResetWSRequest?.Invoke(Timestamp.Now,
-                                                            this,
-                                                            requestJSON);
+                                                         this,
+                                                         requestJSON);
 
                             }
                             catch (Exception e)
@@ -1158,12 +1130,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (ResetRequest.TryParse(wsRequestMessage.Message,
-                                                            wsRequestMessage.RequestId,
-                                                            ChargeBoxIdentity,
-                                                            out var request,
-                                                            out var ErrorResponse,
-                                                            CustomResetRequestParser) && request is not null) {
+                                if (ResetRequest.TryParse(requestMessage.Message,
+                                                          requestMessage.RequestId,
+                                                          ChargeBoxIdentity,
+                                                          out var request,
+                                                          out var errorResponse,
+                                                          CustomResetRequestParser) && request is not null) {
 
                                     #region Send OnResetRequest event
 
@@ -1171,8 +1143,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnResetRequest?.Invoke(Timestamp.Now,
-                                                                this,
-                                                                request);
+                                                               this,
+                                                               request);
 
                                     }
                                     catch (Exception e)
@@ -1187,13 +1159,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     ResetResponse? response = null;
 
                                     var results = OnReset?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnResetDelegate)
-                                                            (Timestamp.Now,
-                                                            this,
-                                                            request,
-                                                            cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnResetDelegate)
+                                                          (Timestamp.Now,
+                                                          this,
+                                                          request,
+                                                          cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -1232,17 +1204,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnResetWSResponse event
@@ -1251,10 +1224,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnResetWSResponse?.Invoke(Timestamp.Now,
-                                                            this,
-                                                            requestJSON,
-                                                            new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                OCPPResponseJSON).ToJSON());
+                                                          this,
+                                                          requestJSON,
+                                                          new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                             OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -1276,8 +1249,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnChangeAvailabilityWSRequest?.Invoke(Timestamp.Now,
-                                                                        this,
-                                                                        requestJSON);
+                                                                      this,
+                                                                      requestJSON);
 
                             }
                             catch (Exception e)
@@ -1290,12 +1263,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (ChangeAvailabilityRequest.TryParse(wsRequestMessage.Message,
-                                                                        wsRequestMessage.RequestId,
-                                                                        ChargeBoxIdentity,
-                                                                        out var request,
-                                                                        out var ErrorResponse,
-                                                                        CustomChangeAvailabilityRequestParser) && request is not null) {
+                                if (ChangeAvailabilityRequest.TryParse(requestMessage.Message,
+                                                                       requestMessage.RequestId,
+                                                                       ChargeBoxIdentity,
+                                                                       out var request,
+                                                                       out var errorResponse,
+                                                                       CustomChangeAvailabilityRequestParser) && request is not null) {
 
                                     #region Send OnChangeAvailabilityRequest event
 
@@ -1319,13 +1292,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     ChangeAvailabilityResponse? response = null;
 
                                     var results = OnChangeAvailability?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnChangeAvailabilityDelegate)
-                                                            (Timestamp.Now,
-                                                            this,
-                                                            request,
-                                                            cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnChangeAvailabilityDelegate)
+                                                          (Timestamp.Now,
+                                                          this,
+                                                          request,
+                                                          cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -1346,10 +1319,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnChangeAvailabilityResponse?.Invoke(Timestamp.Now,
-                                                                                this,
-                                                                                request,
-                                                                                response,
-                                                                                response.Runtime);
+                                                                             this,
+                                                                             request,
+                                                                             response,
+                                                                             response.Runtime);
 
                                     }
                                     catch (Exception e)
@@ -1364,17 +1337,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnChangeAvailabilityWSResponse event
@@ -1383,10 +1357,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnChangeAvailabilityWSResponse?.Invoke(Timestamp.Now,
-                                                                        this,
-                                                                        requestJSON,
-                                                                        new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                            OCPPResponseJSON).ToJSON());
+                                                                       this,
+                                                                       requestJSON,
+                                                                       new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                          OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -1422,12 +1396,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (GetConfigurationRequest.TryParse(wsRequestMessage.Message,
-                                                                        wsRequestMessage.RequestId,
-                                                                        ChargeBoxIdentity,
-                                                                        out var request,
-                                                                        out var ErrorResponse,
-                                                                        CustomGetConfigurationRequestParser) && request is not null) {
+                                if (GetConfigurationRequest.TryParse(requestMessage.Message,
+                                                                     requestMessage.RequestId,
+                                                                     ChargeBoxIdentity,
+                                                                     out var request,
+                                                                     out var errorResponse,
+                                                                     CustomGetConfigurationRequestParser) && request is not null) {
 
                                     #region Send OnGetConfigurationRequest event
 
@@ -1435,8 +1409,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnGetConfigurationRequest?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            request);
+                                                                          this,
+                                                                          request);
 
                                     }
                                     catch (Exception e)
@@ -1451,13 +1425,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     GetConfigurationResponse? response = null;
 
                                     var results = OnGetConfiguration?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnGetConfigurationDelegate)
-                                                            (Timestamp.Now,
-                                                            this,
-                                                            request,
-                                                            cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnGetConfigurationDelegate)
+                                                          (Timestamp.Now,
+                                                          this,
+                                                          request,
+                                                          cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -1478,10 +1452,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnGetConfigurationResponse?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            request,
-                                                                            response,
-                                                                            response.Runtime);
+                                                                           this,
+                                                                           request,
+                                                                           response,
+                                                                           response.Runtime);
 
                                     }
                                     catch (Exception e)
@@ -1496,17 +1470,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnGetConfigurationWSResponse event
@@ -1515,10 +1490,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnGetConfigurationWSResponse?.Invoke(Timestamp.Now,
-                                                                        this,
-                                                                        requestJSON,
-                                                                        new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                        OCPPResponseJSON).ToJSON());
+                                                                     this,
+                                                                     requestJSON,
+                                                                     new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                        OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -1540,8 +1515,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnChangeConfigurationWSRequest?.Invoke(Timestamp.Now,
-                                                                        this,
-                                                                        requestJSON);
+                                                                       this,
+                                                                       requestJSON);
 
                             }
                             catch (Exception e)
@@ -1554,11 +1529,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (ChangeConfigurationRequest.TryParse(wsRequestMessage.Message,
-                                                                        wsRequestMessage.RequestId,
+                                if (ChangeConfigurationRequest.TryParse(requestMessage.Message,
+                                                                        requestMessage.RequestId,
                                                                         ChargeBoxIdentity,
                                                                         out var request,
-                                                                        out var ErrorResponse,
+                                                                        out var errorResponse,
                                                                         CustomChangeConfigurationRequestParser) && request is not null) {
 
                                     #region Send OnChangeConfigurationRequest event
@@ -1567,8 +1542,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnChangeConfigurationRequest?.Invoke(Timestamp.Now,
-                                                                                this,
-                                                                                request);
+                                                                             this,
+                                                                             request);
 
                                     }
                                     catch (Exception e)
@@ -1583,13 +1558,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     ChangeConfigurationResponse? response = null;
 
                                     var results = OnChangeConfiguration?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnChangeConfigurationDelegate)
-                                                            (Timestamp.Now,
-                                                            this,
-                                                            request,
-                                                            cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnChangeConfigurationDelegate)
+                                                          (Timestamp.Now,
+                                                          this,
+                                                          request,
+                                                          cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -1610,10 +1585,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnChangeConfigurationResponse?.Invoke(Timestamp.Now,
-                                                                                this,
-                                                                                request,
-                                                                                response,
-                                                                                response.Runtime);
+                                                                              this,
+                                                                              request,
+                                                                              response,
+                                                                              response.Runtime);
 
                                     }
                                     catch (Exception e)
@@ -1628,17 +1603,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnChangeConfigurationWSResponse event
@@ -1649,8 +1625,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 OnChangeConfigurationWSResponse?.Invoke(Timestamp.Now,
                                                                         this,
                                                                         requestJSON,
-                                                                        new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                            OCPPResponseJSON).ToJSON());
+                                                                        new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                           OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -1686,11 +1662,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (CS.DataTransferRequest.TryParse(wsRequestMessage.Message,
-                                                                    wsRequestMessage.RequestId,
+                                if (CS.DataTransferRequest.TryParse(requestMessage.Message,
+                                                                    requestMessage.RequestId,
                                                                     ChargeBoxIdentity,
                                                                     out var request,
-                                                                    out var ErrorResponse,
+                                                                    out var errorResponse,
                                                                     CustomIncomingDataTransferRequestParser) && request is not null) {
 
                                     #region Send OnIncomingDataTransferRequest event
@@ -1699,8 +1675,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnIncomingDataTransferRequest?.Invoke(Timestamp.Now,
-                                                                                this,
-                                                                                request);
+                                                                              this,
+                                                                              request);
 
                                     }
                                     catch (Exception e)
@@ -1715,13 +1691,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     DataTransferResponse? response = null;
 
                                     var results = OnIncomingDataTransfer?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
-                                                            (Timestamp.Now,
-                                                            this,
-                                                            request,
-                                                            cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
+                                                          (Timestamp.Now,
+                                                          this,
+                                                          request,
+                                                          cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -1741,11 +1717,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     try
                                     {
 
-                                            OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
-                                                                                    this,
-                                                                                    request,
-                                                                                    response,
-                                                                                    response.Runtime);
+                                        OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
+                                                                               this,
+                                                                               request,
+                                                                               response,
+                                                                               response.Runtime);
 
                                     }
                                     catch (Exception e)
@@ -1760,17 +1736,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnIncomingDataTransferWSResponse event
@@ -1779,10 +1756,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnIncomingDataTransferWSResponse?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            requestJSON,
-                                                                            new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                            OCPPResponseJSON).ToJSON());
+                                                                         this,
+                                                                         requestJSON,
+                                                                         new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                            OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -1804,8 +1781,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnGetDiagnosticsWSRequest?.Invoke(Timestamp.Now,
-                                                                    this,
-                                                                    requestJSON);
+                                                                  this,
+                                                                  requestJSON);
 
                             }
                             catch (Exception e)
@@ -1818,12 +1795,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (GetDiagnosticsRequest.TryParse(wsRequestMessage.Message,
-                                                                    wsRequestMessage.RequestId,
-                                                                    ChargeBoxIdentity,
-                                                                    out var request,
-                                                                    out var ErrorResponse,
-                                                                    CustomGetDiagnosticsRequestParser) && request is not null) {
+                                if (GetDiagnosticsRequest.TryParse(requestMessage.Message,
+                                                                   requestMessage.RequestId,
+                                                                   ChargeBoxIdentity,
+                                                                   out var request,
+                                                                   out var errorResponse,
+                                                                   CustomGetDiagnosticsRequestParser) && request is not null) {
 
                                     #region Send OnGetDiagnosticsRequest event
 
@@ -1847,13 +1824,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     GetDiagnosticsResponse? response = null;
 
                                     var results = OnGetDiagnostics?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnGetDiagnosticsDelegate)
-                                                            (Timestamp.Now,
-                                                            this,
-                                                            request,
-                                                            cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnGetDiagnosticsDelegate)
+                                                          (Timestamp.Now,
+                                                          this,
+                                                          request,
+                                                          cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -1874,10 +1851,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnGetDiagnosticsResponse?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            request,
-                                                                            response,
-                                                                            response.Runtime);
+                                                                         this,
+                                                                         request,
+                                                                         response,
+                                                                         response.Runtime);
 
                                     }
                                     catch (Exception e)
@@ -1892,17 +1869,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnGetDiagnosticsWSResponse event
@@ -1911,10 +1889,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnGetDiagnosticsWSResponse?.Invoke(Timestamp.Now,
-                                                                    this,
-                                                                    requestJSON,
-                                                                    new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                        OCPPResponseJSON).ToJSON());
+                                                                   this,
+                                                                   requestJSON,
+                                                                   new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                      OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -1936,8 +1914,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnTriggerMessageWSRequest?.Invoke(Timestamp.Now,
-                                                                    this,
-                                                                    requestJSON);
+                                                                  this,
+                                                                  requestJSON);
 
                             }
                             catch (Exception e)
@@ -1950,12 +1928,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (TriggerMessageRequest.TryParse(wsRequestMessage.Message,
-                                                                    wsRequestMessage.RequestId,
-                                                                    ChargeBoxIdentity,
-                                                                    out var request,
-                                                                    out var ErrorResponse,
-                                                                    CustomTriggerMessageRequestParser) && request is not null) {
+                                if (TriggerMessageRequest.TryParse(requestMessage.Message,
+                                                                   requestMessage.RequestId,
+                                                                   ChargeBoxIdentity,
+                                                                   out var request,
+                                                                   out var errorResponse,
+                                                                   CustomTriggerMessageRequestParser) && request is not null) {
 
                                     #region Send OnTriggerMessageRequest event
 
@@ -1979,13 +1957,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     TriggerMessageResponse? response = null;
 
                                     var results = OnTriggerMessage?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnTriggerMessageDelegate)
-                                                            (Timestamp.Now,
-                                                            this,
-                                                            request,
-                                                            cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnTriggerMessageDelegate)
+                                                          (Timestamp.Now,
+                                                          this,
+                                                          request,
+                                                          cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -2006,10 +1984,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnTriggerMessageResponse?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            request,
-                                                                            response,
-                                                                            response.Runtime);
+                                                                         this,
+                                                                         request,
+                                                                         response,
+                                                                         response.Runtime);
 
                                     }
                                     catch (Exception e)
@@ -2024,17 +2002,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnTriggerMessageWSResponse event
@@ -2043,10 +2022,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnTriggerMessageWSResponse?.Invoke(Timestamp.Now,
-                                                                    this,
-                                                                    requestJSON,
-                                                                    new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                        OCPPResponseJSON).ToJSON());
+                                                                   this,
+                                                                   requestJSON,
+                                                                   new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                      OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -2068,8 +2047,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnUpdateFirmwareWSRequest?.Invoke(Timestamp.Now,
-                                                                    this,
-                                                                    requestJSON);
+                                                                  this,
+                                                                  requestJSON);
 
                             }
                             catch (Exception e)
@@ -2082,12 +2061,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (UpdateFirmwareRequest.TryParse(wsRequestMessage.Message,
-                                                                    wsRequestMessage.RequestId,
-                                                                    ChargeBoxIdentity,
-                                                                    out var request,
-                                                                    out var ErrorResponse,
-                                                                    CustomUpdateFirmwareRequestParser) && request is not null) {
+                                if (UpdateFirmwareRequest.TryParse(requestMessage.Message,
+                                                                   requestMessage.RequestId,
+                                                                   ChargeBoxIdentity,
+                                                                   out var request,
+                                                                   out var errorResponse,
+                                                                   CustomUpdateFirmwareRequestParser) && request is not null) {
 
                                     #region Send OnUpdateFirmwareRequest event
 
@@ -2111,13 +2090,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     UpdateFirmwareResponse? response = null;
 
                                     var results = OnUpdateFirmware?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnUpdateFirmwareDelegate)
-                                                            (Timestamp.Now,
-                                                            this,
-                                                            request,
-                                                            cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnUpdateFirmwareDelegate)
+                                                          (Timestamp.Now,
+                                                          this,
+                                                          request,
+                                                          cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -2138,10 +2117,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnUpdateFirmwareResponse?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            request,
-                                                                            response,
-                                                                            response.Runtime);
+                                                                         this,
+                                                                         request,
+                                                                         response,
+                                                                         response.Runtime);
 
                                     }
                                     catch (Exception e)
@@ -2156,17 +2135,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnUpdateFirmwareWSResponse event
@@ -2175,10 +2155,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnUpdateFirmwareWSResponse?.Invoke(Timestamp.Now,
-                                                                    this,
-                                                                    requestJSON,
-                                                                    new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                        OCPPResponseJSON).ToJSON());
+                                                                   this,
+                                                                   requestJSON,
+                                                                   new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                      OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -2201,8 +2181,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnReserveNowWSRequest?.Invoke(Timestamp.Now,
-                                                                this,
-                                                                requestJSON);
+                                                              this,
+                                                              requestJSON);
 
                             }
                             catch (Exception e)
@@ -2215,12 +2195,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (ReserveNowRequest.TryParse(wsRequestMessage.Message,
-                                                                wsRequestMessage.RequestId,
-                                                                ChargeBoxIdentity,
-                                                                out var request,
-                                                                out var ErrorResponse,
-                                                                CustomReserveNowRequestParser) && request is not null) {
+                                if (ReserveNowRequest.TryParse(requestMessage.Message,
+                                                               requestMessage.RequestId,
+                                                               ChargeBoxIdentity,
+                                                               out var request,
+                                                               out var errorResponse,
+                                                               CustomReserveNowRequestParser) && request is not null) {
 
                                     #region Send OnReserveNowRequest event
 
@@ -2244,13 +2224,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     ReserveNowResponse? response = null;
 
                                     var results = OnReserveNow?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)
-                                                            (Timestamp.Now,
-                                                            this,
-                                                            request,
-                                                            cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)
+                                                          (Timestamp.Now,
+                                                          this,
+                                                          request,
+                                                          cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -2271,10 +2251,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnReserveNowResponse?.Invoke(Timestamp.Now,
-                                                                        this,
-                                                                        request,
-                                                                        response,
-                                                                        response.Runtime);
+                                                                     this,
+                                                                     request,
+                                                                     response,
+                                                                     response.Runtime);
 
                                     }
                                     catch (Exception e)
@@ -2289,17 +2269,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnReserveNowWSResponse event
@@ -2308,10 +2289,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnReserveNowWSResponse?.Invoke(Timestamp.Now,
-                                                                this,
-                                                                requestJSON,
-                                                                new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                    OCPPResponseJSON).ToJSON());
+                                                               this,
+                                                               requestJSON,
+                                                               new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                  OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -2333,8 +2314,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnCancelReservationWSRequest?.Invoke(Timestamp.Now,
-                                                                        this,
-                                                                        requestJSON);
+                                                                     this,
+                                                                     requestJSON);
 
                             }
                             catch (Exception e)
@@ -2347,12 +2328,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (CancelReservationRequest.TryParse(wsRequestMessage.Message,
-                                                                        wsRequestMessage.RequestId,
-                                                                        ChargeBoxIdentity,
-                                                                        out var request,
-                                                                        out var ErrorResponse,
-                                                                        CustomCancelReservationRequestParser) && request is not null) {
+                                if (CancelReservationRequest.TryParse(requestMessage.Message,
+                                                                      requestMessage.RequestId,
+                                                                      ChargeBoxIdentity,
+                                                                      out var request,
+                                                                      out var errorResponse,
+                                                                      CustomCancelReservationRequestParser) && request is not null) {
 
                                     #region Send OnCancelReservationRequest event
 
@@ -2360,8 +2341,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnCancelReservationRequest?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            request);
+                                                                           this,
+                                                                           request);
 
                                     }
                                     catch (Exception e)
@@ -2376,13 +2357,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     CancelReservationResponse? response = null;
 
                                     var results = OnCancelReservation?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnCancelReservationDelegate)
-                                                            (Timestamp.Now,
-                                                            this,
-                                                            request,
-                                                            cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnCancelReservationDelegate)
+                                                          (Timestamp.Now,
+                                                          this,
+                                                          request,
+                                                          cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -2421,17 +2402,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnCancelReservationWSResponse event
@@ -2440,10 +2422,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnCancelReservationWSResponse?.Invoke(Timestamp.Now,
-                                                                        this,
-                                                                        requestJSON,
-                                                                        new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                            OCPPResponseJSON).ToJSON());
+                                                                      this,
+                                                                      requestJSON,
+                                                                      new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                         OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -2465,8 +2447,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnRemoteStartTransactionWSRequest?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            requestJSON);
+                                                                          this,
+                                                                          requestJSON);
 
                             }
                             catch (Exception e)
@@ -2479,12 +2461,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (RemoteStartTransactionRequest.TryParse(wsRequestMessage.Message,
-                                                                            wsRequestMessage.RequestId,
-                                                                            ChargeBoxIdentity,
-                                                                            out var request,
-                                                                            out var ErrorResponse,
-                                                                            CustomRemoteStartTransactionRequestParser) && request is not null) {
+                                if (RemoteStartTransactionRequest.TryParse(requestMessage.Message,
+                                                                           requestMessage.RequestId,
+                                                                           ChargeBoxIdentity,
+                                                                           out var request,
+                                                                           out var errorResponse,
+                                                                           CustomRemoteStartTransactionRequestParser) && request is not null) {
 
                                     #region Send OnRemoteStartTransactionRequest event
 
@@ -2508,13 +2490,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     RemoteStartTransactionResponse? response = null;
 
                                     var results = OnRemoteStartTransaction?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnRemoteStartTransactionDelegate)
-                                                            (Timestamp.Now,
-                                                                this,
-                                                                request,
-                                                                cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnRemoteStartTransactionDelegate)
+                                                          (Timestamp.Now,
+                                                              this,
+                                                              request,
+                                                              cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -2535,10 +2517,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnRemoteStartTransactionResponse?.Invoke(Timestamp.Now,
-                                                                                    this,
-                                                                                    request,
-                                                                                    response,
-                                                                                    response.Runtime);
+                                                                                 this,
+                                                                                 request,
+                                                                                 response,
+                                                                                 response.Runtime);
 
                                     }
                                     catch (Exception e)
@@ -2553,17 +2535,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnRemoteStartTransactionWSResponse event
@@ -2572,10 +2555,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnRemoteStartTransactionWSResponse?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            requestJSON,
-                                                                            new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                OCPPResponseJSON).ToJSON());
+                                                                           this,
+                                                                           requestJSON,
+                                                                           new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                              OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -2597,8 +2580,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnRemoteStopTransactionWSRequest?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            requestJSON);
+                                                                         this,
+                                                                         requestJSON);
 
                             }
                             catch (Exception e)
@@ -2611,12 +2594,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (RemoteStopTransactionRequest.TryParse(wsRequestMessage.Message,
-                                                                            wsRequestMessage.RequestId,
-                                                                            ChargeBoxIdentity,
-                                                                            out var request,
-                                                                            out var ErrorResponse,
-                                                                            CustomRemoteStopTransactionRequestParser) && request is not null) {
+                                if (RemoteStopTransactionRequest.TryParse(requestMessage.Message,
+                                                                          requestMessage.RequestId,
+                                                                          ChargeBoxIdentity,
+                                                                          out var request,
+                                                                          out var errorResponse,
+                                                                          CustomRemoteStopTransactionRequestParser) && request is not null) {
 
                                     #region Send OnRemoteStopTransactionRequest event
 
@@ -2624,8 +2607,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnRemoteStopTransactionRequest?.Invoke(Timestamp.Now,
-                                                                                this,
-                                                                                request);
+                                                                               this,
+                                                                               request);
 
                                     }
                                     catch (Exception e)
@@ -2640,13 +2623,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     RemoteStopTransactionResponse? response = null;
 
                                     var results = OnRemoteStopTransaction?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnRemoteStopTransactionDelegate)
-                                                            (Timestamp.Now,
-                                                                this,
-                                                                request,
-                                                                cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnRemoteStopTransactionDelegate)
+                                                          (Timestamp.Now,
+                                                              this,
+                                                              request,
+                                                              cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -2685,17 +2668,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnRemoteStopTransactionWSResponse event
@@ -2704,10 +2688,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnRemoteStopTransactionWSResponse?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            requestJSON,
-                                                                            new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                OCPPResponseJSON).ToJSON());
+                                                                          this,
+                                                                          requestJSON,
+                                                                          new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                             OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -2729,8 +2713,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnSetChargingProfileWSRequest?.Invoke(Timestamp.Now,
-                                                                        this,
-                                                                        requestJSON);
+                                                                      this,
+                                                                      requestJSON);
 
                             }
                             catch (Exception e)
@@ -2743,12 +2727,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (SetChargingProfileRequest.TryParse(wsRequestMessage.Message,
-                                                                        wsRequestMessage.RequestId,
-                                                                        ChargeBoxIdentity,
-                                                                        out var request,
-                                                                        out var ErrorResponse,
-                                                                        CustomSetChargingProfileRequestParser) && request is not null) {
+                                if (SetChargingProfileRequest.TryParse(requestMessage.Message,
+                                                                       requestMessage.RequestId,
+                                                                       ChargeBoxIdentity,
+                                                                       out var request,
+                                                                       out var errorResponse,
+                                                                       CustomSetChargingProfileRequestParser) && request is not null) {
 
                                     #region Send OnSetChargingProfileRequest event
 
@@ -2772,13 +2756,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     SetChargingProfileResponse? response = null;
 
                                     var results = OnSetChargingProfile?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnSetChargingProfileDelegate)
-                                                            (Timestamp.Now,
-                                                                this,
-                                                                request,
-                                                                cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnSetChargingProfileDelegate)
+                                                          (Timestamp.Now,
+                                                              this,
+                                                              request,
+                                                              cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -2799,10 +2783,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnSetChargingProfileResponse?.Invoke(Timestamp.Now,
-                                                                                this,
-                                                                                request,
-                                                                                response,
-                                                                                response.Runtime);
+                                                                             this,
+                                                                             request,
+                                                                             response,
+                                                                             response.Runtime);
 
                                     }
                                     catch (Exception e)
@@ -2817,17 +2801,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnSetChargingProfileWSResponse event
@@ -2836,10 +2821,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnSetChargingProfileWSResponse?.Invoke(Timestamp.Now,
-                                                                        this,
-                                                                        requestJSON,
-                                                                        new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                            OCPPResponseJSON).ToJSON());
+                                                                       this,
+                                                                       requestJSON,
+                                                                       new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                          OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -2875,12 +2860,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (ClearChargingProfileRequest.TryParse(wsRequestMessage.Message,
-                                                                            wsRequestMessage.RequestId,
-                                                                            ChargeBoxIdentity,
-                                                                            out var request,
-                                                                            out var ErrorResponse,
-                                                                            CustomClearChargingProfileRequestParser) && request is not null) {
+                                if (ClearChargingProfileRequest.TryParse(requestMessage.Message,
+                                                                         requestMessage.RequestId,
+                                                                         ChargeBoxIdentity,
+                                                                         out var request,
+                                                                         out var errorResponse,
+                                                                         CustomClearChargingProfileRequestParser) && request is not null) {
 
                                     #region Send OnClearChargingProfileRequest event
 
@@ -2888,8 +2873,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnClearChargingProfileRequest?.Invoke(Timestamp.Now,
-                                                                                this,
-                                                                                request);
+                                                                              this,
+                                                                              request);
 
                                     }
                                     catch (Exception e)
@@ -2904,13 +2889,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     ClearChargingProfileResponse? response = null;
 
                                     var results = OnClearChargingProfile?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnClearChargingProfileDelegate)
-                                                            (Timestamp.Now,
-                                                                this,
-                                                                request,
-                                                                cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnClearChargingProfileDelegate)
+                                                          (Timestamp.Now,
+                                                              this,
+                                                              request,
+                                                              cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -2931,10 +2916,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnClearChargingProfileResponse?.Invoke(Timestamp.Now,
-                                                                                this,
-                                                                                request,
-                                                                                response,
-                                                                                response.Runtime);
+                                                                               this,
+                                                                               request,
+                                                                               response,
+                                                                               response.Runtime);
 
                                     }
                                     catch (Exception e)
@@ -2949,17 +2934,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnClearChargingProfileWSResponse event
@@ -2968,10 +2954,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnClearChargingProfileWSResponse?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            requestJSON,
-                                                                            new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                            OCPPResponseJSON).ToJSON());
+                                                                         this,
+                                                                         requestJSON,
+                                                                         new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                            OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -3007,12 +2993,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (GetCompositeScheduleRequest.TryParse(wsRequestMessage.Message,
-                                                                            wsRequestMessage.RequestId,
-                                                                            ChargeBoxIdentity,
-                                                                            out var request,
-                                                                            out var ErrorResponse,
-                                                                            CustomGetCompositeScheduleRequestParser) && request is not null) {
+                                if (GetCompositeScheduleRequest.TryParse(requestMessage.Message,
+                                                                         requestMessage.RequestId,
+                                                                         ChargeBoxIdentity,
+                                                                         out var request,
+                                                                         out var errorResponse,
+                                                                         CustomGetCompositeScheduleRequestParser) && request is not null) {
 
                                     #region Send OnGetCompositeScheduleRequest event
 
@@ -3020,8 +3006,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnGetCompositeScheduleRequest?.Invoke(Timestamp.Now,
-                                                                                this,
-                                                                                request);
+                                                                              this,
+                                                                              request);
 
                                     }
                                     catch (Exception e)
@@ -3036,13 +3022,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     GetCompositeScheduleResponse? response = null;
 
                                     var results = OnGetCompositeSchedule?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnGetCompositeScheduleDelegate)
-                                                            (Timestamp.Now,
-                                                                this,
-                                                                request,
-                                                                cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnGetCompositeScheduleDelegate)
+                                                          (Timestamp.Now,
+                                                              this,
+                                                              request,
+                                                              cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -3063,10 +3049,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnGetCompositeScheduleResponse?.Invoke(Timestamp.Now,
-                                                                                this,
-                                                                                request,
-                                                                                response,
-                                                                                response.Runtime);
+                                                                               this,
+                                                                               request,
+                                                                               response,
+                                                                               response.Runtime);
 
                                     }
                                     catch (Exception e)
@@ -3081,17 +3067,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnGetCompositeScheduleWSResponse event
@@ -3100,10 +3087,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnGetCompositeScheduleWSResponse?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            requestJSON,
-                                                                            new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                            OCPPResponseJSON).ToJSON());
+                                                                         this,
+                                                                         requestJSON,
+                                                                         new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                            OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -3125,8 +3112,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnUnlockConnectorWSRequest?.Invoke(Timestamp.Now,
-                                                                    this,
-                                                                    requestJSON);
+                                                                   this,
+                                                                   requestJSON);
 
                             }
                             catch (Exception e)
@@ -3139,11 +3126,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (UnlockConnectorRequest.TryParse(wsRequestMessage.Message,
-                                                                    wsRequestMessage.RequestId,
+                                if (UnlockConnectorRequest.TryParse(requestMessage.Message,
+                                                                    requestMessage.RequestId,
                                                                     ChargeBoxIdentity,
                                                                     out var request,
-                                                                    out var ErrorResponse,
+                                                                    out var errorResponse,
                                                                     CustomUnlockConnectorRequestParser) && request is not null) {
 
                                     #region Send OnUnlockConnectorRequest event
@@ -3152,8 +3139,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnUnlockConnectorRequest?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            request);
+                                                                         this,
+                                                                         request);
 
                                     }
                                     catch (Exception e)
@@ -3168,13 +3155,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     UnlockConnectorResponse? response = null;
 
                                     var results = OnUnlockConnector?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnUnlockConnectorDelegate)
-                                                            (Timestamp.Now,
-                                                                this,
-                                                                request,
-                                                                cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnUnlockConnectorDelegate)
+                                                          (Timestamp.Now,
+                                                              this,
+                                                              request,
+                                                              cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -3195,10 +3182,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnUnlockConnectorResponse?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            request,
-                                                                            response,
-                                                                            response.Runtime);
+                                                                          this,
+                                                                          request,
+                                                                          response,
+                                                                          response.Runtime);
 
                                     }
                                     catch (Exception e)
@@ -3213,17 +3200,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnUnlockConnectorWSResponse event
@@ -3234,8 +3222,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 OnUnlockConnectorWSResponse?.Invoke(Timestamp.Now,
                                                                     this,
                                                                     requestJSON,
-                                                                    new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                        OCPPResponseJSON).ToJSON());
+                                                                    new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                       OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -3258,8 +3246,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnGetLocalListVersionWSRequest?.Invoke(Timestamp.Now,
-                                                                        this,
-                                                                        requestJSON);
+                                                                       this,
+                                                                       requestJSON);
 
                             }
                             catch (Exception e)
@@ -3272,11 +3260,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (GetLocalListVersionRequest.TryParse(wsRequestMessage.Message,
-                                                                        wsRequestMessage.RequestId,
+                                if (GetLocalListVersionRequest.TryParse(requestMessage.Message,
+                                                                        requestMessage.RequestId,
                                                                         ChargeBoxIdentity,
                                                                         out var request,
-                                                                        out var ErrorResponse,
+                                                                        out var errorResponse,
                                                                         CustomGetLocalListVersionRequestParser) && request is not null) {
 
                                     #region Send OnGetLocalListVersionRequest event
@@ -3285,8 +3273,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnGetLocalListVersionRequest?.Invoke(Timestamp.Now,
-                                                                                this,
-                                                                                request);
+                                                                             this,
+                                                                             request);
 
                                     }
                                     catch (Exception e)
@@ -3301,13 +3289,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     GetLocalListVersionResponse? response = null;
 
                                     var results = OnGetLocalListVersion?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnGetLocalListVersionDelegate)
-                                                            (Timestamp.Now,
-                                                                this,
-                                                                request,
-                                                                cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnGetLocalListVersionDelegate)
+                                                          (Timestamp.Now,
+                                                              this,
+                                                              request,
+                                                              cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -3328,10 +3316,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnGetLocalListVersionResponse?.Invoke(Timestamp.Now,
-                                                                                this,
-                                                                                request,
-                                                                                response,
-                                                                                response.Runtime);
+                                                                              this,
+                                                                              request,
+                                                                              response,
+                                                                              response.Runtime);
 
                                     }
                                     catch (Exception e)
@@ -3346,17 +3334,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnGetLocalListVersionWSResponse event
@@ -3367,8 +3356,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 OnGetLocalListVersionWSResponse?.Invoke(Timestamp.Now,
                                                                         this,
                                                                         requestJSON,
-                                                                        new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                            OCPPResponseJSON).ToJSON());
+                                                                        new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                           OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -3390,8 +3379,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnSendLocalListWSRequest?.Invoke(Timestamp.Now,
-                                                                    this,
-                                                                    requestJSON);
+                                                                 this,
+                                                                 requestJSON);
 
                             }
                             catch (Exception e)
@@ -3404,12 +3393,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (SendLocalListRequest.TryParse(wsRequestMessage.Message,
-                                                                    wsRequestMessage.RequestId,
-                                                                    ChargeBoxIdentity,
-                                                                    out var request,
-                                                                    out var ErrorResponse,
-                                                                    CustomSendLocalListRequestParser) && request is not null) {
+                                if (SendLocalListRequest.TryParse(requestMessage.Message,
+                                                                  requestMessage.RequestId,
+                                                                  ChargeBoxIdentity,
+                                                                  out var request,
+                                                                  out var errorResponse,
+                                                                  CustomSendLocalListRequestParser) && request is not null) {
 
                                     #region Send OnSendLocalListRequest event
 
@@ -3417,8 +3406,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnSendLocalListRequest?.Invoke(Timestamp.Now,
-                                                                        this,
-                                                                        request);
+                                                                       this,
+                                                                       request);
 
                                     }
                                     catch (Exception e)
@@ -3433,13 +3422,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     SendLocalListResponse? response = null;
 
                                     var results = OnSendLocalList?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnSendLocalListDelegate)
-                                                            (Timestamp.Now,
-                                                                this,
-                                                                request,
-                                                                cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnSendLocalListDelegate)
+                                                          (Timestamp.Now,
+                                                              this,
+                                                              request,
+                                                              cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -3478,17 +3467,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnSendLocalListWSResponse event
@@ -3497,10 +3487,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnSendLocalListWSResponse?.Invoke(Timestamp.Now,
-                                                                    this,
-                                                                    requestJSON,
-                                                                    new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                        OCPPResponseJSON).ToJSON());
+                                                                  this,
+                                                                  requestJSON,
+                                                                  new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                     OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -3522,8 +3512,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnClearCacheWSRequest?.Invoke(Timestamp.Now,
-                                                                this,
-                                                                requestJSON);
+                                                              this,
+                                                              requestJSON);
 
                             }
                             catch (Exception e)
@@ -3536,12 +3526,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (ClearCacheRequest.TryParse(wsRequestMessage.Message,
-                                                                wsRequestMessage.RequestId,
-                                                                ChargeBoxIdentity,
-                                                                out var request,
-                                                                out var ErrorResponse,
-                                                                CustomClearCacheRequestParser) && request is not null) {
+                                if (ClearCacheRequest.TryParse(requestMessage.Message,
+                                                               requestMessage.RequestId,
+                                                               ChargeBoxIdentity,
+                                                               out var request,
+                                                               out var errorResponse,
+                                                               CustomClearCacheRequestParser) && request is not null) {
 
                                     #region Send OnClearCacheRequest event
 
@@ -3565,13 +3555,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     ClearCacheResponse? response = null;
 
                                     var results = OnClearCache?.
-                                                        GetInvocationList()?.
-                                                        SafeSelect(subscriber => (subscriber as OnClearCacheDelegate)
-                                                            (Timestamp.Now,
-                                                                this,
-                                                                request,
-                                                                cancellationTokenSource.Token)).
-                                                        ToArray();
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnClearCacheDelegate)
+                                                          (Timestamp.Now,
+                                                              this,
+                                                              request,
+                                                              cancellationTokenSource.Token)).
+                                                      ToArray();
 
                                     if (results?.Length > 0)
                                     {
@@ -3592,10 +3582,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     {
 
                                         OnClearCacheResponse?.Invoke(Timestamp.Now,
-                                                                        this,
-                                                                        request,
-                                                                        response,
-                                                                        response.Runtime);
+                                                                     this,
+                                                                     request,
+                                                                     response,
+                                                                     response.Runtime);
 
                                     }
                                     catch (Exception e)
@@ -3610,17 +3600,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 }
 
                                 else
-                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON);
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
 
                             }
                             catch (Exception e)
                             {
-                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                wsRequestMessage.Action,
-                                                                                                requestJSON,
-                                                                                                e);
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
                             }
 
                             #region Send OnClearCacheWSResponse event
@@ -3629,10 +3620,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             {
 
                                 OnClearCacheWSResponse?.Invoke(Timestamp.Now,
-                                                                this,
-                                                                requestJSON,
-                                                                new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                    OCPPResponseJSON).ToJSON());
+                                                               this,
+                                                               requestJSON,
+                                                               new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                  OCPPResponseJSON ?? new JObject()).ToJSON());
 
                             }
                             catch (Exception e)
@@ -3650,37 +3641,37 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 if (OCPPResponseJSON is not null)
                 {
 
-                    var wsResponseMessage = new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                OCPPResponseJSON);
+                    var wsResponseMessage = new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                               OCPPResponseJSON);
 
                     SendWebSocketFrame(new WebSocketFrame(
-                                            WebSocketFrame.Fin.Final,
-                                            WebSocketFrame.MaskStatus.On,
-                                            new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
-                                            WebSocketFrame.Opcodes.Text,
-                                            wsResponseMessage.ToByteArray(),
-                                            WebSocketFrame.Rsv.Off,
-                                            WebSocketFrame.Rsv.Off,
-                                            WebSocketFrame.Rsv.Off
-                                        ));
+                                           WebSocketFrame.Fin.Final,
+                                           WebSocketFrame.MaskStatus.On,
+                                           new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
+                                           WebSocketFrame.Opcodes.Text,
+                                           wsResponseMessage.ToByteArray(),
+                                           WebSocketFrame.Rsv.Off,
+                                           WebSocketFrame.Rsv.Off,
+                                           WebSocketFrame.Rsv.Off
+                                       ));
 
                     File.AppendAllText(LogfileName,
-                                        String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
-                                                        "ChargeBoxId: ",  ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
-                                                        "Message sent: ", wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
-                                                        "--------------------------------------------------------------------------------------------",  Environment.NewLine));
+                                       String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                                     Environment.NewLine,
+                                                     "ChargeBoxId: ",  ChargeBoxIdentity.ToString(),                                                  Environment.NewLine,
+                                                     "Message sent: ", wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented),      Environment.NewLine,
+                                                     "--------------------------------------------------------------------------------------------",  Environment.NewLine));
 
                 }
 
             }
 
-            else if (OCPP_WebSocket_ResponseMessage.TryParse(textPayload, out var wsResponseMessage) && wsResponseMessage is not null)
+            else if (OCPP_WebSocket_ResponseMessage.TryParse(textPayload, out var responseMessage) && responseMessage is not null)
             {
                 lock (requests)
                 {
 
-                    if (requests.TryGetValue(wsResponseMessage.RequestId, out var resp))
-                        resp.Response = wsResponseMessage.Message;
+                    if (requests.TryGetValue(responseMessage.RequestId, out var resp))
+                        resp.Response = responseMessage.Message;
 
                     else
                         DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP response message: " + textPayload);
