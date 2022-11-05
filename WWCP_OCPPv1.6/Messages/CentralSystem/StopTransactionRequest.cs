@@ -91,19 +91,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                       Transaction_Id            TransactionId,
                                       DateTime                  StopTimestamp,
                                       UInt64                    MeterStop,
-                                      IdToken?                  IdTag              = null,
-                                      Reasons?                  Reason             = null,
-                                      IEnumerable<MeterValue>?  TransactionData    = null,
+                                      IdToken?                  IdTag               = null,
+                                      Reasons?                  Reason              = null,
+                                      IEnumerable<MeterValue>?  TransactionData     = null,
 
-                                      Request_Id?               RequestId          = null,
-                                      DateTime?                 RequestTimestamp   = null,
-                                      EventTracking_Id?         EventTrackingId    = null)
+                                      Request_Id?               RequestId           = null,
+                                      DateTime?                 RequestTimestamp    = null,
+                                      TimeSpan?                 RequestTimeout      = null,
+                                      EventTracking_Id?         EventTrackingId     = null,
+                                      CancellationToken?        CancellationToken   = null)
 
             : base(ChargeBoxId,
                    "StopTransaction",
                    RequestId,
+                   RequestTimestamp,
+                   RequestTimeout,
                    EventTrackingId,
-                   RequestTimestamp)
+                   CancellationToken)
 
         {
 

@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// The ChangeAvailability request.
+    /// The change availability request.
     /// </summary>
     public class ChangeAvailabilityRequest : ARequest<ChangeAvailabilityRequest>
     {
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new ChangeAvailability request.
+        /// Create a new change availability request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The identification of the connector for which its availability should be changed. Id '0' (zero) is used if the availability of the entire charge point and all its connectors should be changed.</param>
@@ -61,19 +61,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public ChangeAvailabilityRequest(ChargeBox_Id       ChargeBoxId,
-                                         Connector_Id       ConnectorId,
-                                         Availabilities     Availability,
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public ChangeAvailabilityRequest(ChargeBox_Id        ChargeBoxId,
+                                         Connector_Id        ConnectorId,
+                                         Availabilities      Availability,
 
-                                         Request_Id?        RequestId          = null,
-                                         DateTime?          RequestTimestamp   = null,
-                                         EventTracking_Id?  EventTrackingId    = null)
+                                         Request_Id?         RequestId           = null,
+                                         DateTime?           RequestTimestamp    = null,
+                                         TimeSpan?           RequestTimeout      = null,
+                                         EventTracking_Id?   EventTrackingId     = null,
+                                         CancellationToken?  CancellationToken   = null)
 
             : base(ChargeBoxId,
                    "ChangeAvailability",
                    RequestId,
+                   RequestTimestamp,
+                   RequestTimeout,
                    EventTrackingId,
-                   RequestTimestamp)
+                   CancellationToken)
 
         {
 

@@ -46,17 +46,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a boot notification request was received.
         /// </summary>
-        event BootNotificationRequestDelegate   OnBootNotificationRequest;
+        event OnBootNotificationRequestDelegate    OnBootNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a boot notification was received.
         /// </summary>
-        event OnBootNotificationDelegate        OnBootNotification;
+        event OnBootNotificationDelegate           OnBootNotification;
 
         /// <summary>
         /// An event sent whenever a response to a boot notification was sent.
         /// </summary>
-        event BootNotificationResponseDelegate  OnBootNotificationResponse;
+        event OnBootNotificationResponseDelegate   OnBootNotificationResponse;
 
         #endregion
 
@@ -65,17 +65,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a heartbeat request was received.
         /// </summary>
-        event HeartbeatRequestDelegate   OnHeartbeatRequest;
+        event OnHeartbeatRequestDelegate    OnHeartbeatRequest;
 
         /// <summary>
         /// An event sent whenever a heartbeat was received.
         /// </summary>
-        event OnHeartbeatDelegate        OnHeartbeat;
+        event OnHeartbeatDelegate           OnHeartbeat;
 
         /// <summary>
         /// An event sent whenever a response to a heartbeat was sent.
         /// </summary>
-        event HeartbeatResponseDelegate  OnHeartbeatResponse;
+        event OnHeartbeatResponseDelegate   OnHeartbeatResponse;
 
         #endregion
 
@@ -85,17 +85,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever an authorize request was received.
         /// </summary>
-        event AuthorizeRequestDelegate   OnAuthorizeRequest;
+        event OnAuthorizeRequestDelegate    OnAuthorizeRequest;
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
         /// </summary>
-        event OnAuthorizeDelegate        OnAuthorize;
+        event OnAuthorizeDelegate           OnAuthorize;
 
         /// <summary>
         /// An event sent whenever an authorize response was sent.
         /// </summary>
-        event AuthorizeResponseDelegate  OnAuthorizeResponse;
+        event OnAuthorizeResponseDelegate   OnAuthorizeResponse;
 
         #endregion
 
@@ -104,17 +104,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        event StartTransactionRequestDelegate   OnStartTransactionRequest;
+        event OnStartTransactionRequestDelegate    OnStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        event OnStartTransactionDelegate        OnStartTransaction;
+        event OnStartTransactionDelegate           OnStartTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a start transaction request was sent.
         /// </summary>
-        event StartTransactionResponseDelegate  OnStartTransactionResponse;
+        event OnStartTransactionResponseDelegate   OnStartTransactionResponse;
 
         #endregion
 
@@ -123,17 +123,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a status notification request was received.
         /// </summary>
-        event StatusNotificationRequestDelegate   OnStatusNotificationRequest;
+        event OnStatusNotificationRequestDelegate    OnStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
         /// </summary>
-        event OnStatusNotificationDelegate        OnStatusNotification;
+        event OnStatusNotificationDelegate           OnStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a status notification request was sent.
         /// </summary>
-        event StatusNotificationResponseDelegate  OnStatusNotificationResponse;
+        event OnStatusNotificationResponseDelegate   OnStatusNotificationResponse;
 
         #endregion
 
@@ -142,17 +142,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a meter values request was received.
         /// </summary>
-        event MeterValuesRequestDelegate   OnMeterValuesRequest;
+        event OnMeterValuesRequestDelegate    OnMeterValuesRequest;
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
         /// </summary>
-        event OnMeterValuesDelegate        OnMeterValues;
+        event OnMeterValuesDelegate           OnMeterValues;
 
         /// <summary>
         /// An event sent whenever a response to a meter values request was sent.
         /// </summary>
-        event MeterValuesResponseDelegate  OnMeterValuesResponse;
+        event OnMeterValuesResponseDelegate   OnMeterValuesResponse;
 
         #endregion
 
@@ -161,17 +161,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
         /// </summary>
-        event StopTransactionRequestDelegate   OnStopTransactionRequest;
+        event OnStopTransactionRequestDelegate    OnStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
         /// </summary>
-        event OnStopTransactionDelegate        OnStopTransaction;
+        event OnStopTransactionDelegate           OnStopTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a stop transaction request was sent.
         /// </summary>
-        event StopTransactionResponseDelegate  OnStopTransactionResponse;
+        event OnStopTransactionResponseDelegate   OnStopTransactionResponse;
 
         #endregion
 
@@ -181,17 +181,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        event IncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
+        event OnIncomingDataTransferRequestDelegate    OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        event OnIncomingDataTransferDelegate        OnIncomingDataTransfer;
+        event OnIncomingDataTransferDelegate           OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        event IncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
+        event OnIncomingDataTransferResponseDelegate   OnIncomingDataTransferResponse;
 
         #endregion
 
@@ -200,17 +200,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
         /// </summary>
-        event DiagnosticsStatusNotificationRequestDelegate   OnDiagnosticsStatusNotificationRequest;
+        event OnDiagnosticsStatusNotificationRequestDelegate    OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
         /// </summary>
-        event OnDiagnosticsStatusNotificationDelegate        OnDiagnosticsStatusNotification;
+        event OnDiagnosticsStatusNotificationDelegate           OnDiagnosticsStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a diagnostics status notification request was sent.
         /// </summary>
-        event DiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
+        event OnDiagnosticsStatusNotificationResponseDelegate   OnDiagnosticsStatusNotificationResponse;
 
         #endregion
 
@@ -219,17 +219,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
         /// </summary>
-        event FirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
+        event OnFirmwareStatusNotificationRequestDelegate    OnFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
         /// </summary>
-        event OnFirmwareStatusNotificationDelegate        OnFirmwareStatusNotification;
+        event OnFirmwareStatusNotificationDelegate           OnFirmwareStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a firmware status notification request was sent.
         /// </summary>
-        event FirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
+        event OnFirmwareStatusNotificationResponseDelegate   OnFirmwareStatusNotificationResponse;
 
         #endregion
 

@@ -17,14 +17,9 @@
 
 #region Usings
 
-using System;
-using System.Threading;
 using System.Net.Security;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-
-using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -32,8 +27,9 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP.v1_2;
-using System.Security.Authentication;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
+
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
@@ -45,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// and connects to a central system to invoke methods.
     /// </summary>
     public partial class ChargePointSOAPClient : ASOAPClient,
-                                                 ICPSOAPClient
+                                                 IChargePointSOAPClient
     {
 
         #region Data
@@ -540,7 +536,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                  DateTime?                Timestamp           = null,
                                  CancellationToken?       CancellationToken   = null,
-                                 EventTracking_Id         EventTrackingId     = null,
+                                 EventTracking_Id?        EventTrackingId     = null,
                                  TimeSpan?                RequestTimeout      = null)
 
         {
@@ -557,14 +553,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
 
-            HTTPResponse<BootNotificationResponse> result = null;
+            HTTPResponse<BootNotificationResponse>? result = null;
 
             #endregion
 
@@ -689,8 +684,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             }
 
-            if (result is null)
-                result = HTTPResponse<BootNotificationResponse>.OK(new BootNotificationResponse(Request, Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<BootNotificationResponse>.OK(new BootNotificationResponse(Request,
+                                                                                              Result.OK("Nothing to upload!")));
 
 
             #region Send OnBootNotificationResponse event
@@ -735,7 +730,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
+                          EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null)
 
         {
@@ -752,14 +747,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
 
-            HTTPResponse<HeartbeatResponse> result = null;
+            HTTPResponse<HeartbeatResponse>? result = null;
 
             #endregion
 
@@ -883,8 +877,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             }
 
-            if (result == null)
-                result = HTTPResponse<HeartbeatResponse>.OK(new HeartbeatResponse(Request, Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<HeartbeatResponse>.OK(new HeartbeatResponse(Request,
+                                                                                Result.OK("Nothing to upload!")));
 
 
             #region Send OnHeartbeatResponse event
@@ -930,7 +924,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                       DateTime?           Timestamp           = null,
                       CancellationToken?  CancellationToken   = null,
-                      EventTracking_Id    EventTrackingId     = null,
+                      EventTracking_Id?   EventTrackingId     = null,
                       TimeSpan?           RequestTimeout      = null)
 
         {
@@ -947,14 +941,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
 
-            HTTPResponse<AuthorizeResponse> result = null;
+            HTTPResponse<AuthorizeResponse>? result = null;
 
             #endregion
 
@@ -1079,8 +1072,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             }
 
-            if (result == null)
-                result = HTTPResponse<AuthorizeResponse>.OK(new AuthorizeResponse(Request, Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<AuthorizeResponse>.OK(new AuthorizeResponse(Request,
+                                                                                Result.OK("Nothing to upload!")));
 
 
             #region Send OnAuthorizeResponse event
@@ -1123,10 +1116,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             StartTransaction(StartTransactionRequest  Request,
 
-                             DateTime?                Timestamp          = null,
-                             CancellationToken?       CancellationToken  = null,
-                             EventTracking_Id         EventTrackingId    = null,
-                             TimeSpan?                RequestTimeout     = null)
+                             DateTime?                Timestamp           = null,
+                             CancellationToken?       CancellationToken   = null,
+                             EventTracking_Id?        EventTrackingId     = null,
+                             TimeSpan?                RequestTimeout      = null)
 
         {
 
@@ -1142,14 +1135,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
 
-            HTTPResponse<StartTransactionResponse> result = null;
+            HTTPResponse<StartTransactionResponse>? result = null;
 
             #endregion
 
@@ -1274,8 +1266,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             }
 
-            if (result == null)
-                result = HTTPResponse<StartTransactionResponse>.OK(new StartTransactionResponse(Request, Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<StartTransactionResponse>.OK(new StartTransactionResponse(Request,
+                                                                                              Result.OK("Nothing to upload!")));
 
 
             #region Send OnStartTransactionResponse event
@@ -1318,10 +1310,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             SendStatusNotification(StatusNotificationRequest  Request,
 
-                                   DateTime?                  Timestamp          = null,
-                                   CancellationToken?         CancellationToken  = null,
-                                   EventTracking_Id           EventTrackingId    = null,
-                                   TimeSpan?                  RequestTimeout     = null)
+                                   DateTime?                  Timestamp           = null,
+                                   CancellationToken?         CancellationToken   = null,
+                                   EventTracking_Id?          EventTrackingId     = null,
+                                   TimeSpan?                  RequestTimeout      = null)
 
         {
 
@@ -1337,14 +1329,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
 
-            HTTPResponse<StatusNotificationResponse> result = null;
+            HTTPResponse<StatusNotificationResponse>? result = null;
 
             #endregion
 
@@ -1469,9 +1460,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             }
 
-            if (result == null)
-                result = HTTPResponse<StatusNotificationResponse>.OK(new StatusNotificationResponse(Request,
-                                                                                                    Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<StatusNotificationResponse>.OK(new StatusNotificationResponse(Request,
+                                                                                                  Result.OK("Nothing to upload!")));
 
 
             #region Send OnStatusNotificationResponse event
@@ -1514,10 +1504,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             SendMeterValues(MeterValuesRequest  Request,
 
-                            DateTime?           Timestamp          = null,
-                            CancellationToken?  CancellationToken  = null,
-                            EventTracking_Id    EventTrackingId    = null,
-                            TimeSpan?           RequestTimeout     = null)
+                            DateTime?           Timestamp           = null,
+                            CancellationToken?  CancellationToken   = null,
+                            EventTracking_Id?   EventTrackingId     = null,
+                            TimeSpan?           RequestTimeout      = null)
 
         {
 
@@ -1533,14 +1523,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
 
-            HTTPResponse<MeterValuesResponse> result = null;
+            HTTPResponse<MeterValuesResponse>? result = null;
 
             #endregion
 
@@ -1665,9 +1654,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             }
 
-            if (result == null)
-                result = HTTPResponse<MeterValuesResponse>.OK(new MeterValuesResponse(Request,
-                                                                                      Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<MeterValuesResponse>.OK(new MeterValuesResponse(Request,
+                                                                                    Result.OK("Nothing to upload!")));
 
 
             #region Send OnMeterValuesResponse event
@@ -1710,10 +1698,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             StopTransaction(StopTransactionRequest  Request,
 
-                            DateTime?               Timestamp          = null,
-                            CancellationToken?      CancellationToken  = null,
-                            EventTracking_Id        EventTrackingId    = null,
-                            TimeSpan?               RequestTimeout     = null)
+                            DateTime?               Timestamp           = null,
+                            CancellationToken?      CancellationToken   = null,
+                            EventTracking_Id?       EventTrackingId     = null,
+                            TimeSpan?               RequestTimeout      = null)
 
         {
 
@@ -1729,14 +1717,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
 
-            HTTPResponse<StopTransactionResponse> result = null;
+            HTTPResponse<StopTransactionResponse>? result = null;
 
             #endregion
 
@@ -1860,9 +1847,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             }
 
-            if (result == null)
-                result = HTTPResponse<StopTransactionResponse>.OK(new StopTransactionResponse(Request,
-                                                                                              Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<StopTransactionResponse>.OK(new StopTransactionResponse(Request,
+                                                                                            Result.OK("Nothing to upload!")));
 
 
             #region Send OnStopTransactionResponse event
@@ -1906,10 +1892,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             TransferData(DataTransferRequest  Request,
 
-                         DateTime?            Timestamp          = null,
-                         CancellationToken?   CancellationToken  = null,
-                         EventTracking_Id     EventTrackingId    = null,
-                         TimeSpan?            RequestTimeout     = null)
+                         DateTime?            Timestamp           = null,
+                         CancellationToken?   CancellationToken   = null,
+                         EventTracking_Id?    EventTrackingId     = null,
+                         TimeSpan?            RequestTimeout      = null)
 
         {
 
@@ -1925,14 +1911,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
 
-            HTTPResponse<CS.DataTransferResponse> result = null;
+            HTTPResponse<CS.DataTransferResponse>? result = null;
 
             #endregion
 
@@ -2057,9 +2042,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             }
 
-            if (result == null)
-                result = HTTPResponse<CS.DataTransferResponse>.OK(new CS.DataTransferResponse(Request,
-                                                                                              Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<CS.DataTransferResponse>.OK(new CS.DataTransferResponse(Request,
+                                                                                            Result.OK("Nothing to upload!")));
 
 
             #region Send OnDataTransferResponse event
@@ -2102,10 +2086,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             SendDiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest  Request,
 
-                                              DateTime?                             Timestamp          = null,
-                                              CancellationToken?                    CancellationToken  = null,
-                                              EventTracking_Id                      EventTrackingId    = null,
-                                              TimeSpan?                             RequestTimeout     = null)
+                                              DateTime?                             Timestamp           = null,
+                                              CancellationToken?                    CancellationToken   = null,
+                                              EventTracking_Id?                     EventTrackingId     = null,
+                                              TimeSpan?                             RequestTimeout      = null)
 
         {
 
@@ -2121,14 +2105,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
 
-            HTTPResponse<DiagnosticsStatusNotificationResponse> result = null;
+            HTTPResponse<DiagnosticsStatusNotificationResponse>? result = null;
 
             #endregion
 
@@ -2253,9 +2236,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             }
 
-            if (result == null)
-                result = HTTPResponse<DiagnosticsStatusNotificationResponse>.OK(new DiagnosticsStatusNotificationResponse(Request,
-                                                                                                                          Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<DiagnosticsStatusNotificationResponse>.OK(new DiagnosticsStatusNotificationResponse(Request,
+                                                                                                                        Result.OK("Nothing to upload!")));
 
 
             #region Send OnDiagnosticsStatusNotificationResponse event
@@ -2298,10 +2280,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             SendFirmwareStatusNotification(FirmwareStatusNotificationRequest  Request,
 
-                                           DateTime?                          Timestamp          = null,
-                                           CancellationToken?                 CancellationToken  = null,
-                                           EventTracking_Id                   EventTrackingId    = null,
-                                           TimeSpan?                          RequestTimeout     = null)
+                                           DateTime?                          Timestamp           = null,
+                                           CancellationToken?                 CancellationToken   = null,
+                                           EventTracking_Id?                  EventTrackingId     = null,
+                                           TimeSpan?                          RequestTimeout      = null)
 
         {
 
@@ -2317,14 +2299,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
 
-            HTTPResponse<FirmwareStatusNotificationResponse> result = null;
+            HTTPResponse<FirmwareStatusNotificationResponse>? result = null;
 
             #endregion
 
@@ -2449,9 +2430,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             }
 
-            if (result == null)
-                result = HTTPResponse<FirmwareStatusNotificationResponse>.OK(new FirmwareStatusNotificationResponse(Request,
-                                                                                                                    Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<FirmwareStatusNotificationResponse>.OK(new FirmwareStatusNotificationResponse(Request,
+                                                                                                                  Result.OK("Nothing to upload!")));
 
 
             #region Send OnFirmwareStatusNotificationResponse event

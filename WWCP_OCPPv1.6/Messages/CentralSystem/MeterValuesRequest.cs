@@ -68,17 +68,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public MeterValuesRequest(ChargeBox_Id             ChargeBoxId,
                                   Connector_Id             ConnectorId,
                                   IEnumerable<MeterValue>  MeterValues,
-                                  Transaction_Id?          TransactionId      = null,
+                                  Transaction_Id?          TransactionId       = null,
 
-                                  Request_Id?              RequestId          = null,
-                                  DateTime?                RequestTimestamp   = null,
-                                  EventTracking_Id?        EventTrackingId    = null)
+                                  Request_Id?              RequestId           = null,
+                                  DateTime?                RequestTimestamp    = null,
+                                  TimeSpan?                RequestTimeout      = null,
+                                  EventTracking_Id?        EventTrackingId     = null,
+                                  CancellationToken?       CancellationToken   = null)
 
             : base(ChargeBoxId,
                    "MeterValues",
                    RequestId,
+                   RequestTimestamp,
+                   RequestTimeout,
                    EventTrackingId,
-                   RequestTimestamp)
+                   CancellationToken)
 
         {
 

@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             /// <summary>
             /// The attached OCPP websocket CP client.
             /// </summary>
-            public ICPClient  CPClient    { get; }
+            public IChargePointClient  CPClient    { get; }
 
             #endregion
 
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             /// <param name="LogHTTPError_toHTTPSSE">A delegate to log HTTP errors to a HTTP client sent events source.</param>
             /// 
             /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
-            public CPClientLogger(ICPClient                    CPClient,
+            public CPClientLogger(IChargePointClient                    CPClient,
                                   String                       LoggingPath,
                                   String                       Context,
 

@@ -77,6 +77,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
         #endregion
 
+        #region CentralSystem_Reset_UnknownChargeBox_Test()
+
+        /// <summary>
+        /// A test for sending a reset message to a charge point.
+        /// </summary>
+        [Test]
+        public async Task CentralSystem_Reset_UnknownChargeBox_Test()
+        {
+
+            Assert.IsNotNull(testCentralSystem01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var resetRequests = new List<ResetRequest>();
+
+                chargingStation2.OnResetRequest += async (timestamp, sender, resetRequest) => {
+                    resetRequests.Add(resetRequest);
+                };
+
+                var resetType  = ResetTypes.Hard;
+                var response1  = await testCentralSystem01.Reset(chargingStation2.ChargeBoxId, resetType);
+
+                Assert.AreEqual  (ResultCodes.Server,    response1.Result.ResultCode);
+                Assert.IsNotEmpty(                       response1.Result.Description);
+                Assert.AreEqual  (ResetStatus.Unknown,   response1.Status);
+
+                Assert.AreEqual  (0,                     resetRequests.Count);
+
+            }
+
+        }
+
+        #endregion
+
+
         #region CentralSystem_ChangeAvailability_Test()
 
         /// <summary>
@@ -118,6 +162,52 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 Assert.AreEqual(chargingStation1.ChargeBoxId,   changeAvailabilityRequests.First().ChargeBoxId);
                 Assert.AreEqual(connectorId,                    changeAvailabilityRequests.First().ConnectorId);
                 Assert.AreEqual(availability,                   changeAvailabilityRequests.First().Availability);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CentralSystem_ChangeAvailability_UnknownChargeBox_Test()
+
+        /// <summary>
+        /// A test for sending a change availability message to a charge point.
+        /// </summary>
+        [Test]
+        public async Task CentralSystem_ChangeAvailability_UnknownChargeBox_Test()
+        {
+
+            Assert.IsNotNull(testCentralSystem01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var changeAvailabilityRequests = new List<ChangeAvailabilityRequest>();
+
+                chargingStation2.OnChangeAvailabilityRequest += async (timestamp, sender, changeAvailabilityRequest) => {
+                    changeAvailabilityRequests.Add(changeAvailabilityRequest);
+                };
+
+                var connectorId   = Connector_Id.Parse(1);
+                var availability  = Availabilities.Operative;
+                var response1     = await testCentralSystem01.ChangeAvailability(chargingStation2.ChargeBoxId,
+                                                                                 connectorId,
+                                                                                 availability);
+
+                Assert.AreEqual  (ResultCodes.Server,           response1.Result.ResultCode);
+                Assert.IsNotEmpty(                              response1.Result.Description);
+                Assert.AreEqual  (AvailabilityStatus.Unknown,   response1.Status);
+
+                Assert.AreEqual  (0,                            changeAvailabilityRequests.Count);
 
             }
 
@@ -435,6 +525,109 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
                 Assert.AreEqual(1,                              getConfigurationRequests.Count);
                 Assert.AreEqual(chargingStation1.ChargeBoxId,   getConfigurationRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region CentralSystem_DataTransfer_OK_Test()
+
+        /// <summary>
+        /// A test for sending data to a charge point.
+        /// </summary>
+        [Test]
+        public async Task CentralSystem_DataTransfer_OK_Test()
+        {
+
+            Assert.IsNotNull(testCentralSystem01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var dataTransferRequests = new List<DataTransferRequest>();
+
+                chargingStation1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
+                    dataTransferRequests.Add(dataTransferRequest);
+                };
+
+                var vendorId   = "graphdefined";
+                var messageId  = "hello";
+                var data       = "world!";
+                var response1  = await testCentralSystem01.DataTransfer(chargingStation1.ChargeBoxId,
+                                                                        vendorId,
+                                                                        messageId,
+                                                                        data);
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(DataTransferStatus.Accepted,    response1.Status);
+
+                Assert.AreEqual(1,                              dataTransferRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
+                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
+                Assert.AreEqual(data,                           dataTransferRequests.First().Data);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CentralSystem_DataTransfer_Rejected_Test()
+
+        /// <summary>
+        /// A test for sending data to a charge point.
+        /// </summary>
+        [Test]
+        public async Task CentralSystem_DataTransfer_Rejected_Test()
+        {
+
+            Assert.IsNotNull(testCentralSystem01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var dataTransferRequests = new List<DataTransferRequest>();
+
+                chargingStation1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
+                    dataTransferRequests.Add(dataTransferRequest);
+                };
+
+                var vendorId   = "ACME Inc.";
+                var messageId  = "hello";
+                var data       = "world!";
+                var response1  = await testCentralSystem01.DataTransfer(chargingStation1.ChargeBoxId,
+                                                                        vendorId,
+                                                                        messageId,
+                                                                        data);
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(DataTransferStatus.Rejected,    response1.Status);
+
+                Assert.AreEqual(1,                              dataTransferRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
+                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
+                Assert.AreEqual(data,                           dataTransferRequests.First().Data);
 
             }
 

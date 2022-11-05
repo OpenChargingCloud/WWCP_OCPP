@@ -169,32 +169,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnNewCentralSystemWSConnectionDelegate? OnNewCentralSystemWSConnection;
 
 
+        // CP -> CS
+
         #region OnBootNotification
 
         /// <summary>
         /// An event sent whenever a boot notification web socket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?          OnBootNotificationWSRequest;
+        public event WebSocketRequestLogHandler?            OnBootNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a boot notification request was received.
         /// </summary>
-        public event BootNotificationRequestDelegate?     OnBootNotificationRequest;
+        public event OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a boot notification was received.
         /// </summary>
-        public event OnBootNotificationDelegate?          OnBootNotification;
+        public event OnBootNotificationDelegate?            OnBootNotification;
 
         /// <summary>
         /// An event sent whenever a response to a boot notification was sent.
         /// </summary>
-        public event BootNotificationResponseDelegate?    OnBootNotificationResponse;
+        public event OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a web socket response to a boot notification was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?         OnBootNotificationWSResponse;
+        public event WebSocketResponseLogHandler?           OnBootNotificationWSResponse;
 
         #endregion
 
@@ -203,27 +205,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a heartbeat web socket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?   OnHeartbeatWSRequest;
+        public event WebSocketRequestLogHandler?     OnHeartbeatWSRequest;
 
         /// <summary>
         /// An event sent whenever a heartbeat request was received.
         /// </summary>
-        public event HeartbeatRequestDelegate?     OnHeartbeatRequest;
+        public event OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
 
         /// <summary>
         /// An event sent whenever a heartbeat was received.
         /// </summary>
-        public event OnHeartbeatDelegate?          OnHeartbeat;
+        public event OnHeartbeatDelegate?            OnHeartbeat;
 
         /// <summary>
         /// An event sent whenever a response to a heartbeat was sent.
         /// </summary>
-        public event HeartbeatResponseDelegate?    OnHeartbeatResponse;
+        public event OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
 
         /// <summary>
         /// An event sent whenever a web socket response to a heartbeat was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?  OnHeartbeatWSResponse;
+        public event WebSocketResponseLogHandler?    OnHeartbeatWSResponse;
 
         #endregion
 
@@ -233,27 +235,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever an authorize web socket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?   OnAuthorizeWSRequest;
+        public event WebSocketRequestLogHandler?     OnAuthorizeWSRequest;
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
         /// </summary>
-        public event AuthorizeRequestDelegate?     OnAuthorizeRequest;
+        public event OnAuthorizeRequestDelegate?     OnAuthorizeRequest;
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
         /// </summary>
-        public event OnAuthorizeDelegate?          OnAuthorize;
+        public event OnAuthorizeDelegate?            OnAuthorize;
 
         /// <summary>
         /// An event sent whenever an authorize response was sent.
         /// </summary>
-        public event AuthorizeResponseDelegate?    OnAuthorizeResponse;
+        public event OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
 
         /// <summary>
         /// An event sent whenever an authorize web socket response was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?  OnAuthorizeWSResponse;
+        public event WebSocketResponseLogHandler?    OnAuthorizeWSResponse;
 
         #endregion
 
@@ -262,27 +264,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a start transaction web socket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?        OnStartTransactionWSRequest;
+        public event WebSocketRequestLogHandler?           OnStartTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        public event StartTransactionRequestDelegate?   OnStartTransactionRequest;
+        public event OnStartTransactionRequestDelegate?    OnStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        public event OnStartTransactionDelegate?        OnStartTransaction;
+        public event OnStartTransactionDelegate?           OnStartTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a start transaction request was sent.
         /// </summary>
-        public event StartTransactionResponseDelegate?  OnStartTransactionResponse;
+        public event OnStartTransactionResponseDelegate?   OnStartTransactionResponse;
 
         /// <summary>
         /// An event sent whenever a web socket response to a start transaction request was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?       OnStartTransactionWSResponse;
+        public event WebSocketResponseLogHandler?          OnStartTransactionWSResponse;
 
         #endregion
 
@@ -291,27 +293,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a status notification web socket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?          OnStatusNotificationWSRequest;
+        public event WebSocketRequestLogHandler?             OnStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
         /// </summary>
-        public event StatusNotificationRequestDelegate?   OnStatusNotificationRequest;
+        public event OnStatusNotificationRequestDelegate?    OnStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
         /// </summary>
-        public event OnStatusNotificationDelegate?        OnStatusNotification;
+        public event OnStatusNotificationDelegate?           OnStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a status notification request was sent.
         /// </summary>
-        public event StatusNotificationResponseDelegate?  OnStatusNotificationResponse;
+        public event OnStatusNotificationResponseDelegate?   OnStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a web socket response to a status notification request was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?         OnStatusNotificationWSResponse;
+        public event WebSocketResponseLogHandler?            OnStatusNotificationWSResponse;
 
         #endregion
 
@@ -320,27 +322,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a meter values web socket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?   OnMeterValuesWSRequest;
+        public event WebSocketRequestLogHandler?      OnMeterValuesWSRequest;
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
         /// </summary>
-        public event MeterValuesRequestDelegate?   OnMeterValuesRequest;
+        public event OnMeterValuesRequestDelegate?    OnMeterValuesRequest;
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
         /// </summary>
-        public event OnMeterValuesDelegate?        OnMeterValues;
+        public event OnMeterValuesDelegate?           OnMeterValues;
 
         /// <summary>
         /// An event sent whenever a response to a meter values request was sent.
         /// </summary>
-        public event MeterValuesResponseDelegate?  OnMeterValuesResponse;
+        public event OnMeterValuesResponseDelegate?   OnMeterValuesResponse;
 
         /// <summary>
         /// An event sent whenever a web socket response to a meter values request was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?  OnMeterValuesWSResponse;
+        public event WebSocketResponseLogHandler?     OnMeterValuesWSResponse;
 
         #endregion
 
@@ -349,27 +351,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a stop transaction web socket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?       OnStopTransactionWSRequest;
+        public event WebSocketRequestLogHandler?          OnStopTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
         /// </summary>
-        public event StopTransactionRequestDelegate?   OnStopTransactionRequest;
+        public event OnStopTransactionRequestDelegate?    OnStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
         /// </summary>
-        public event OnStopTransactionDelegate?        OnStopTransaction;
+        public event OnStopTransactionDelegate?           OnStopTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a stop transaction request was sent.
         /// </summary>
-        public event StopTransactionResponseDelegate?  OnStopTransactionResponse;
+        public event OnStopTransactionResponseDelegate?   OnStopTransactionResponse;
 
         /// <summary>
         /// An event sent whenever a web socket response to a stop transaction request was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?      OnStopTransactionWSResponse;
+        public event WebSocketResponseLogHandler?         OnStopTransactionWSResponse;
 
         #endregion
 
@@ -379,27 +381,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a data transfer web socket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?            OnIncomingDataTransferWSRequest;
+        public event WebSocketRequestLogHandler?               OnIncomingDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event IncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate?    OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferDelegate?        OnIncomingDataTransfer;
+        public event OnIncomingDataTransferDelegate?           OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event IncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+        public event OnIncomingDataTransferResponseDelegate?   OnIncomingDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a web socket response to a data transfer request was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?           OnIncomingDataTransferWSResponse;
+        public event WebSocketResponseLogHandler?              OnIncomingDataTransferWSResponse;
 
         #endregion
 
@@ -408,27 +410,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a diagnostics status notification web socket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?                     OnDiagnosticsStatusNotificationWSRequest;
+        public event WebSocketRequestLogHandler?                        OnDiagnosticsStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
         /// </summary>
-        public event DiagnosticsStatusNotificationRequestDelegate?   OnDiagnosticsStatusNotificationRequest;
+        public event OnDiagnosticsStatusNotificationRequestDelegate?    OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationDelegate?        OnDiagnosticsStatusNotification;
+        public event OnDiagnosticsStatusNotificationDelegate?           OnDiagnosticsStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a diagnostics status notification request was sent.
         /// </summary>
-        public event DiagnosticsStatusNotificationResponseDelegate?  OnDiagnosticsStatusNotificationResponse;
+        public event OnDiagnosticsStatusNotificationResponseDelegate?   OnDiagnosticsStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a web socket response to a diagnostics status notification request was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?                    OnDiagnosticsStatusNotificationWSResponse;
+        public event WebSocketResponseLogHandler?                       OnDiagnosticsStatusNotificationWSResponse;
 
         #endregion
 
@@ -437,27 +439,298 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a firmware status notification web socket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?                  OnFirmwareStatusNotificationWSRequest;
+        public event WebSocketRequestLogHandler?                     OnFirmwareStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
         /// </summary>
-        public event FirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
+        public event OnFirmwareStatusNotificationRequestDelegate?    OnFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationDelegate?        OnFirmwareStatusNotification;
+        public event OnFirmwareStatusNotificationDelegate?           OnFirmwareStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a firmware status notification request was sent.
         /// </summary>
-        public event FirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
+        public event OnFirmwareStatusNotificationResponseDelegate?   OnFirmwareStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a web socket response to a firmware status notification request was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?                 OnFirmwareStatusNotificationWSResponse;
+        public event WebSocketResponseLogHandler?                    OnFirmwareStatusNotificationWSResponse;
+
+        #endregion
+
+
+        // CS -> CP
+
+        #region OnReset
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnResetRequestDelegate?   OnResetRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnResetResponseDelegate?  OnResetResponse;
+
+        #endregion
+
+        #region OnChangeAvailability
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+
+        #endregion
+
+        #region OnGetConfiguration
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
+
+        #endregion
+
+        #region OnChangeConfiguration
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
+
+        #endregion
+
+        #region OnDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnIncomingDataTransferRequestDelegate?   OnDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnIncomingDataTransferResponseDelegate?  OnDataTransferResponse;
+
+        #endregion
+
+        #region OnGetDiagnostics
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
+
+        #endregion
+
+        #region OnTriggerMessage
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+
+        #endregion
+
+        #region OnUpdateFirmware
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+
+        #endregion
+
+
+        #region OnReserveNow
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
+
+        #endregion
+
+        #region OnCancelReservation
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+
+        #endregion
+
+        #region OnRemoteStartTransaction
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
+
+        #endregion
+
+        #region OnRemoteStopTransaction
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
+
+        #endregion
+
+        #region OnSetChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+
+        #endregion
+
+        #region OnClearChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+
+        #endregion
+
+        #region OnGetCompositeSchedule
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+
+        #endregion
+
+        #region OnUnlockConnector
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+
+        #endregion
+
+
+        #region OnGetLocalListVersion
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+
+        #endregion
+
+        #region OnSendLocalList
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+
+        #endregion
+
+        #region OnClearCache
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
 
         #endregion
 
@@ -519,50 +792,63 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
 
-        public CustomJObjectSerializerDelegate<ResetRequest>?                   CustomResetRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<ResetRequest>?                      CustomResetRequestSerializer                        { get; set; }
 
-        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?      CustomChangeAvailabilityRequestSerializer        { get; set; }
+        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?         CustomChangeAvailabilityRequestSerializer           { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetConfigurationRequest>?        CustomGetConfigurationRequestSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<GetConfigurationRequest>?           CustomGetConfigurationRequestSerializer             { get; set; }
 
-        public CustomJObjectSerializerDelegate<ChangeConfigurationRequest>?     CustomChangeConfigurationRequestSerializer       { get; set; }
+        public CustomJObjectSerializerDelegate<ChangeConfigurationRequest>?        CustomChangeConfigurationRequestSerializer          { get; set; }
 
-        public CustomJObjectSerializerDelegate<DataTransferRequest>?            CustomDataTransferRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?               CustomDataTransferRequestSerializer                 { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetDiagnosticsRequest>?          CustomGetDiagnosticsRequestSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<GetDiagnosticsRequest>?             CustomGetDiagnosticsRequestSerializer               { get; set; }
 
-        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?          CustomTriggerMessageRequestSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?             CustomTriggerMessageRequestSerializer               { get; set; }
 
-        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?          CustomUpdateFirmwareRequestSerializer            { get; set; }
-
-
-
-        public CustomJObjectSerializerDelegate<ReserveNowRequest>?              CustomReserveNowRequestSerializer                { get; set; }
-
-        public CustomJObjectSerializerDelegate<CancelReservationRequest>?       CustomCancelReservationRequestSerializer         { get; set; }
-
-        public CustomJObjectSerializerDelegate<RemoteStartTransactionRequest>?  CustomRemoteStartTransactionRequestSerializer    { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingProfile>?                CustomChargingProfileSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedule>?               CustomChargingScheduleSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?         CustomChargingSchedulePeriodSerializer           { get; set; }
-
-        public CustomJObjectSerializerDelegate<RemoteStopTransactionRequest>?   CustomRemoteStopTransactionRequestSerializer     { get; set; }
-
-        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?      CustomSetChargingProfileRequestSerializer        { get; set; }
-
-        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?    CustomClearChargingProfileRequestSerializer      { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?    CustomGetCompositeScheduleRequestSerializer      { get; set; }
-
-        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?         CustomUnlockConnectorRequestSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?             CustomUpdateFirmwareRequestSerializer               { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?     CustomGetLocalListVersionRequestSerializer       { get; set; }
 
-        public CustomJObjectSerializerDelegate<SendLocalListRequest>?           CustomSendLocalListRequestSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<AuthorizationData>?              CustomAuthorizationDataSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<IdTagInfo>?                      CustomIdTagInfoResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<ClearCacheRequest>?              CustomClearCacheRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<ReserveNowRequest>?                 CustomReserveNowRequestSerializer                   { get; set; }
+
+        public CustomJObjectSerializerDelegate<CancelReservationRequest>?          CustomCancelReservationRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<RemoteStartTransactionRequest>?     CustomRemoteStartTransactionRequestSerializer       { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfile>?                   CustomChargingProfileSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedule>?                  CustomChargingScheduleSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?            CustomChargingSchedulePeriodSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<RemoteStopTransactionRequest>?      CustomRemoteStopTransactionRequestSerializer        { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?         CustomSetChargingProfileRequestSerializer           { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?       CustomClearChargingProfileRequestSerializer         { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?       CustomGetCompositeScheduleRequestSerializer         { get; set; }
+
+        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?            CustomUnlockConnectorRequestSerializer              { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?        CustomGetLocalListVersionRequestSerializer          { get; set; }
+
+        public CustomJObjectSerializerDelegate<SendLocalListRequest>?              CustomSendLocalListRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<AuthorizationData>?                 CustomAuthorizationDataSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<IdTagInfo>?                         CustomIdTagInfoResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                 CustomClearCacheRequestSerializer                   { get; set; }
+
+
+        public ChargeBox_Id ChargeBoxIdentity
+            => throw new NotImplementedException();
+
+        public String From
+            => "";
+
+        public CentralSystemSOAPClient.CSClientLogger Logger
+            => throw new NotImplementedException();
+
+        public String To
+            => "";
 
         #endregion
 
@@ -613,6 +899,487 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (AutoStart)
                 Start();
 
+        }
+
+        event OnCancelReservationRequestDelegate? ICentralSystemClient.OnCancelReservationRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnCancelReservationResponseDelegate? ICentralSystemClient.OnCancelReservationResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnChangeAvailabilityRequestDelegate? ICentralSystemClient.OnChangeAvailabilityRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnChangeAvailabilityResponseDelegate? ICentralSystemClient.OnChangeAvailabilityResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnChangeConfigurationRequestDelegate? ICentralSystemClient.OnChangeConfigurationRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnChangeConfigurationResponseDelegate? ICentralSystemClient.OnChangeConfigurationResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnClearCacheRequestDelegate? ICentralSystemClient.OnClearCacheRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnClearCacheResponseDelegate? ICentralSystemClient.OnClearCacheResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnClearChargingProfileRequestDelegate? ICentralSystemClient.OnClearChargingProfileRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnClearChargingProfileResponseDelegate? ICentralSystemClient.OnClearChargingProfileResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnDataTransferRequestDelegate? ICentralSystemClient.OnDataTransferRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnDataTransferResponseDelegate? ICentralSystemClient.OnDataTransferResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnGetCompositeScheduleRequestDelegate? ICentralSystemClient.OnGetCompositeScheduleRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnGetCompositeScheduleResponseDelegate? ICentralSystemClient.OnGetCompositeScheduleResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnGetConfigurationRequestDelegate? ICentralSystemClient.OnGetConfigurationRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnGetConfigurationResponseDelegate? ICentralSystemClient.OnGetConfigurationResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnGetDiagnosticsRequestDelegate? ICentralSystemClient.OnGetDiagnosticsRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnGetDiagnosticsResponseDelegate? ICentralSystemClient.OnGetDiagnosticsResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnGetLocalListVersionRequestDelegate? ICentralSystemClient.OnGetLocalListVersionRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnGetLocalListVersionResponseDelegate? ICentralSystemClient.OnGetLocalListVersionResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnRemoteStartTransactionRequestDelegate? ICentralSystemClient.OnRemoteStartTransactionRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnRemoteStartTransactionResponseDelegate? ICentralSystemClient.OnRemoteStartTransactionResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnRemoteStopTransactionRequestDelegate? ICentralSystemClient.OnRemoteStopTransactionRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnRemoteStopTransactionResponseDelegate? ICentralSystemClient.OnRemoteStopTransactionResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnReserveNowRequestDelegate? ICentralSystemClient.OnReserveNowRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnReserveNowResponseDelegate? ICentralSystemClient.OnReserveNowResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnResetResponseDelegate? ICentralSystemClient.OnResetResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnSendLocalListRequestDelegate? ICentralSystemClient.OnSendLocalListRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnSendLocalListResponseDelegate? ICentralSystemClient.OnSendLocalListResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnSetChargingProfileRequestDelegate? ICentralSystemClient.OnSetChargingProfileRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnSetChargingProfileResponseDelegate? ICentralSystemClient.OnSetChargingProfileResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnTriggerMessageRequestDelegate? ICentralSystemClient.OnTriggerMessageRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnTriggerMessageResponseDelegate? ICentralSystemClient.OnTriggerMessageResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnUnlockConnectorRequestDelegate? ICentralSystemClient.OnUnlockConnectorRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnUnlockConnectorResponseDelegate? ICentralSystemClient.OnUnlockConnectorResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnUpdateFirmwareRequestDelegate? ICentralSystemClient.OnUpdateFirmwareRequest
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnUpdateFirmwareResponseDelegate? ICentralSystemClient.OnUpdateFirmwareResponse
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
         }
 
         #endregion
@@ -2716,17 +3483,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region Reset                 (Request, RequestTimeout = null)
+        #region Reset                 (Request)
 
-        public async Task<ResetResponse> Reset(ResetRequest  Request,
-                                               TimeSpan?     RequestTimeout = null)
+        public async Task<ResetResponse> Reset(ResetRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomResetRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -2759,17 +3525,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ChangeAvailability    (Request, RequestTimeout = null)
+        #region ChangeAvailability    (Request)
 
-        public async Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest  Request,
-                                                                         TimeSpan?                  RequestTimeout = null)
+        public async Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomChangeAvailabilityRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -2802,17 +3567,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region GetConfiguration      (Request, RequestTimeout = null)
+        #region GetConfiguration      (Request)
 
-        public async Task<GetConfigurationResponse> GetConfiguration(GetConfigurationRequest  Request,
-                                                                     TimeSpan?                RequestTimeout = null)
+        public async Task<GetConfigurationResponse> GetConfiguration(GetConfigurationRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomGetConfigurationRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -2845,17 +3609,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ChangeConfiguration   (Request, RequestTimeout = null)
+        #region ChangeConfiguration   (Request)
 
-        public async Task<ChangeConfigurationResponse> ChangeConfiguration(ChangeConfigurationRequest  Request,
-                                                                           TimeSpan?                   RequestTimeout = null)
+        public async Task<ChangeConfigurationResponse> ChangeConfiguration(ChangeConfigurationRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomChangeConfigurationRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -2888,17 +3651,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region DataTransfer          (Request, RequestTimeout = null)
+        #region DataTransfer          (Request)
 
-        public async Task<CP.DataTransferResponse> DataTransfer(DataTransferRequest  Request,
-                                                                TimeSpan?            RequestTimeout = null)
+        public async Task<CP.DataTransferResponse> DataTransfer(DataTransferRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomDataTransferRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -2931,17 +3693,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region GetDiagnostics        (Request, RequestTimeout = null)
+        #region GetDiagnostics        (Request)
 
-        public async Task<GetDiagnosticsResponse> GetDiagnostics(GetDiagnosticsRequest  Request,
-                                                                 TimeSpan?              RequestTimeout = null)
+        public async Task<GetDiagnosticsResponse> GetDiagnostics(GetDiagnosticsRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomGetDiagnosticsRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -2974,17 +3735,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region TriggerMessage        (Request, RequestTimeout = null)
+        #region TriggerMessage        (Request)
 
-        public async Task<TriggerMessageResponse> TriggerMessage(TriggerMessageRequest  Request,
-                                                                 TimeSpan?              RequestTimeout = null)
+        public async Task<TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomTriggerMessageRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -3017,17 +3777,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region UpdateFirmware        (Request, RequestTimeout = null)
+        #region UpdateFirmware        (Request)
 
-        public async Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest  Request,
-                                                                 TimeSpan?              RequestTimeout = null)
+        public async Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomUpdateFirmwareRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -3061,17 +3820,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region ReserveNow            (Request, RequestTimeout = null)
+        #region ReserveNow            (Request)
 
-        public async Task<ReserveNowResponse> ReserveNow(ReserveNowRequest  Request,
-                                                         TimeSpan?          RequestTimeout = null)
+        public async Task<ReserveNowResponse> ReserveNow(ReserveNowRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomReserveNowRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -3104,17 +3862,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region CancelReservation     (Request, RequestTimeout = null)
+        #region CancelReservation     (Request)
 
-        public async Task<CancelReservationResponse> CancelReservation(CancelReservationRequest  Request,
-                                                                       TimeSpan?                 RequestTimeout = null)
+        public async Task<CancelReservationResponse> CancelReservation(CancelReservationRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomCancelReservationRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -3147,20 +3904,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region RemoteStartTransaction(Request, RequestTimeout = null)
+        #region RemoteStartTransaction(Request)
 
-        public async Task<RemoteStartTransactionResponse> RemoteStartTransaction(RemoteStartTransactionRequest  Request,
-                                                                                 TimeSpan?                      RequestTimeout = null)
+        public async Task<RemoteStartTransactionResponse> RemoteStartTransaction(RemoteStartTransactionRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomRemoteStartTransactionRequestSerializer,
                                                           CustomChargingProfileSerializer,
                                                           CustomChargingScheduleSerializer,
                                                           CustomChargingSchedulePeriodSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -3193,17 +3949,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region RemoteStopTransaction (Request, RequestTimeout = null)
+        #region RemoteStopTransaction (Request)
 
-        public async Task<RemoteStopTransactionResponse> RemoteStopTransaction(RemoteStopTransactionRequest  Request,
-                                                                               TimeSpan?                     RequestTimeout = null)
+        public async Task<RemoteStopTransactionResponse> RemoteStopTransaction(RemoteStopTransactionRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomRemoteStopTransactionRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -3236,17 +3991,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region SetChargingProfile    (Request, RequestTimeout = null)
+        #region SetChargingProfile    (Request)
 
-        public async Task<SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest  Request,
-                                                                         TimeSpan?                  RequestTimeout = null)
+        public async Task<SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomSetChargingProfileRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -3279,17 +4033,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ClearChargingProfile  (Request, RequestTimeout = null)
+        #region ClearChargingProfile  (Request)
 
-        public async Task<ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest  Request,
-                                                                             TimeSpan?                    RequestTimeout = null)
+        public async Task<ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomClearChargingProfileRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -3322,18 +4075,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region GetCompositeSchedule  (Request, RequestTimeout = null)
+        #region GetCompositeSchedule  (Request)
 
 
-        public async Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest  Request,
-                                                                             TimeSpan?                    RequestTimeout = null)
+        public async Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomGetCompositeScheduleRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -3366,17 +4118,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region UnlockConnector       (Request, RequestTimeout = null)
+        #region UnlockConnector       (Request)
 
-        public async Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest  Request,
-                                                                   TimeSpan?               RequestTimeout = null)
+        public async Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomUnlockConnectorRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -3410,17 +4161,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region GetLocalListVersion   (Request, RequestTimeout = null)
+        #region GetLocalListVersion   (Request)
 
-        public async Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest  Request,
-                                                                           TimeSpan?                   RequestTimeout = null)
+        public async Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomGetLocalListVersionRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -3453,17 +4203,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region SendLocalList         (Request, RequestTimeout = null)
+        #region SendLocalList         (Request)
 
-        public async Task<SendLocalListResponse> SendLocalList(SendLocalListRequest  Request,
-                                                               TimeSpan?             RequestTimeout = null)
+        public async Task<SendLocalListResponse> SendLocalList(SendLocalListRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomSendLocalListRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {
@@ -3496,17 +4245,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ClearCache            (Request, RequestTimeout = null)
+        #region ClearCache            (Request)
 
-        public async Task<ClearCacheResponse> ClearCache(ClearCacheRequest  Request,
-                                                         TimeSpan?          RequestTimeout = null)
+        public async Task<ClearCacheResponse> ClearCache(ClearCacheRequest Request)
         {
 
             var result = await SendRequest(Request.RequestId,
                                            Request.ChargeBoxId,
-                                           Request.WebSocketAction,
+                                           Request.Action,
                                            Request.ToJSON(CustomClearCacheRequestSerializer),
-                                           RequestTimeout ?? Request.RequestTimeout);
+                                           Request.RequestTimeout);
 
             if (result?.Response is not null)
             {

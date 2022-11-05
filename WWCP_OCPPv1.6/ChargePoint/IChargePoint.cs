@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The common interface of all central systems.
+    /// The common interface of all charge points.
     /// </summary>
-    public interface ICentralSystem : ICentralSystemClient, ICentralSystemServer
+    public interface IChargePoint : IChargePointClient, IChargePointServer
     { }
 
 }

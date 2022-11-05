@@ -51,9 +51,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #region Properties
 
             /// <summary>
-            /// The attached OCPP CS client.
+            /// The attached central system client.
             /// </summary>
-            public ICSClient  CSClient    { get; }
+            public ICentralSystemClient CSClient    { get; }
 
             #endregion
 
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             /// <param name="LogHTTPError_toHTTPSSE">A delegate to log HTTP errors to a HTTP client sent events source.</param>
             /// 
             /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
-            public CSClientLogger(ICSClient                    CSClient,
+            public CSClientLogger(ICentralSystemSOAPClient     CSClient,
                                   String                       LoggingPath,
                                   String                       Context,
 

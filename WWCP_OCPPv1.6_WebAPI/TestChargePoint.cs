@@ -203,10 +203,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The client connected to a central system.
         /// </summary>
-        public ICPClient                CPClient                    { get; private set; }
+        public IChargePointClient                CPClient                    { get; private set; }
 
 
         public ChargePointSOAPServer    CPServer                    { get; private set; }
+
+
+        /// <summary>
+        /// The sender identification.
+        /// </summary>
+        String IEventSender.Id
+            => ChargeBoxId.ToString();
+
 
 
         /// <summary>
@@ -215,66 +223,71 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public ChargeBox_Id             ChargeBoxId                 { get; }
 
         /// <summary>
-        /// The sender identification.
-        /// </summary>
-        String IEventSender.Id
-            => ChargeBoxId.ToString();
-
-        /// <summary>
         /// The charge point vendor identification.
         /// </summary>
+        [Mandatory]
         public String                   ChargePointVendor           { get; }
 
         /// <summary>
         ///  The charge point model identification.
         /// </summary>
+        [Mandatory]
         public String                   ChargePointModel            { get; }
 
 
         /// <summary>
         /// The optional multi-language charge box description.
         /// </summary>
-        public I18NString               Description                 { get; }
+        [Optional]
+        public I18NString?              Description                 { get; }
 
         /// <summary>
         /// The optional serial number of the charge point.
         /// </summary>
-        public String                   ChargePointSerialNumber     { get; }
+        [Optional]
+        public String?                  ChargePointSerialNumber     { get; }
 
         /// <summary>
         /// The optional serial number of the charge point.
         /// </summary>
-        public String                   ChargeBoxSerialNumber       { get; }
+        [Optional]
+        public String?                  ChargeBoxSerialNumber       { get; }
 
         /// <summary>
         /// The optional firmware version of the charge point.
         /// </summary>
-        public String                   FirmwareVersion             { get; }
+        [Optional]
+        public String?                  FirmwareVersion             { get; }
 
         /// <summary>
         /// The optional ICCID of the charge point's SIM card.
         /// </summary>
-        public String                   Iccid                       { get; }
+        [Optional]
+        public String?                  Iccid                       { get; }
 
         /// <summary>
         /// The optional IMSI of the charge point’s SIM card.
         /// </summary>
-        public String                   IMSI                        { get; }
+        [Optional]
+        public String?                  IMSI                        { get; }
 
         /// <summary>
         /// The optional meter type of the main power meter of the charge point.
         /// </summary>
-        public String                   MeterType                   { get; }
+        [Optional]
+        public String?                  MeterType                   { get; }
 
         /// <summary>
         /// The optional serial number of the main power meter of the charge point.
         /// </summary>
-        public String                   MeterSerialNumber           { get; }
+        [Optional]
+        public String?                  MeterSerialNumber           { get; }
 
         /// <summary>
         /// The optional public key of the main power meter of the charge point.
         /// </summary>
-        public String                   MeterPublicKey              { get; }
+        [Optional]
+        public String?                  MeterPublicKey              { get; }
 
 
         /// <summary>
@@ -482,12 +495,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ResetRequestDelegate?   OnResetRequest;
+        public event OnResetRequestDelegate?   OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ResetResponseDelegate?  OnResetResponse;
+        public event OnResetResponseDelegate?  OnResetResponse;
 
         #endregion
 
@@ -496,12 +509,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+        public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+        public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
 
         #endregion
 
@@ -510,12 +523,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetConfigurationRequestDelegate?   OnGetConfigurationRequest;
+        public event OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetConfigurationResponseDelegate?  OnGetConfigurationResponse;
+        public event OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
 
         #endregion
 
@@ -524,12 +537,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
+        public event OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
+        public event OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
 
         #endregion
 
@@ -538,12 +551,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event IncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event IncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+        public event OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
 
         #endregion
 
@@ -552,12 +565,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
+        public event OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
+        public event OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
 
         #endregion
 
@@ -566,12 +579,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event TriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+        public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event TriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+        public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
 
         #endregion
 
@@ -580,12 +593,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event UpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+        public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event UpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+        public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
 
         #endregion
 
@@ -595,12 +608,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event ReserveNowRequestDelegate?   OnReserveNowRequest;
+        public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reserve now request was sent.
         /// </summary>
-        public event ReserveNowResponseDelegate?  OnReserveNowResponse;
+        public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
 
         #endregion
 
@@ -609,12 +622,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event CancelReservationRequestDelegate?   OnCancelReservationRequest;
+        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a cancel reservation request was sent.
         /// </summary>
-        public event CancelReservationResponseDelegate?  OnCancelReservationResponse;
+        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
 
         #endregion
 
@@ -623,12 +636,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a remote start transaction request was received.
         /// </summary>
-        public event RemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
+        public event OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a remote start transaction request was sent.
         /// </summary>
-        public event RemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
+        public event OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
 
         #endregion
 
@@ -637,12 +650,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a remote stop transaction request was received.
         /// </summary>
-        public event RemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
+        public event OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a remote stop transaction request was sent.
         /// </summary>
-        public event RemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
+        public event OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
 
         #endregion
 
@@ -651,12 +664,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event SetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+        public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event SetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+        public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
 
         #endregion
 
@@ -665,12 +678,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+        public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+        public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
 
         #endregion
 
@@ -679,12 +692,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+        public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+        public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
 
         #endregion
 
@@ -693,12 +706,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event UnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+        public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event UnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+        public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
 
         #endregion
 
@@ -708,12 +721,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+        public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+        public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
 
         #endregion
 
@@ -722,12 +735,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event SendLocalListRequestDelegate?   OnSendLocalListRequest;
+        public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event SendLocalListResponseDelegate?  OnSendLocalListResponse;
+        public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
 
         #endregion
 
@@ -736,12 +749,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ClearCacheRequestDelegate?   OnClearCacheRequest;
+        public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ClearCacheResponseDelegate?  OnClearCacheResponse;
+        public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
 
         #endregion
 
@@ -1022,7 +1035,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region WireEvents(CPServer)
 
-        public void WireEvents(IChargePointServerEvents CPServer)
+        public void WireEvents(IChargePointServer CPServer)
         {
 
             #region OnReset
@@ -1058,13 +1071,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid reset request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid reset request for charge box '", Request.ChargeBoxId, "'!"));
                     response = new ResetResponse(Request,
                                                  ResetStatus.Rejected);
                 }
                 else
                 {
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming '" + Request.ResetType + "' reset request accepted.");
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming '", Request.ResetType, "' reset request accepted."));
                     response = new ResetResponse(Request,
                                                  ResetStatus.Accepted);
                 }
@@ -1131,7 +1144,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid ChangeAvailability request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid ChangeAvailability request for charge box '", Request.ChargeBoxId, "'!"));
 
                     response = new ChangeAvailabilityResponse(Request,
                                                               AvailabilityStatus.Rejected);
@@ -1140,7 +1153,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming ChangeAvailability '" + Request.Availability + "' request for connector '" + Request.ConnectorId + "'.");
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming ChangeAvailability '", Request.Availability, "' request for connector '", Request.ConnectorId, "'."));
 
                     if (connectors.ContainsKey(Request.ConnectorId))
                     {
@@ -1218,7 +1231,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid GetConfiguration request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid get configuration request for charge box '", Request.ChargeBoxId, "'!"));
 
                     response = new GetConfigurationResponse(Request,
                                                             Array.Empty<ConfigurationKey>(),
@@ -1228,7 +1241,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming GetConfiguration request.");
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming get configuration request."));
 
                     var configurationKeys  = new List<ConfigurationKey>();
                     var unkownKeys         = new List<String>();
@@ -1274,10 +1287,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     var responseTimestamp = Timestamp.Now;
 
                     OnGetConfigurationResponse?.Invoke(responseTimestamp,
-                                            this,
-                                            Request,
-                                            response,
-                                            responseTimestamp - requestTimestamp);
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       responseTimestamp - requestTimestamp);
 
                 }
                 catch (Exception e)
@@ -1327,7 +1340,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid ChangeConfiguration request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid change configuration request for charge box '", Request.ChargeBoxId, "'!"));
 
                     response = new ChangeConfigurationResponse(Request,
                                                                ConfigurationStatus.Rejected);
@@ -1336,7 +1349,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming ChangeConfiguration for '" + Request.Key + "' with value '" + Request.Value + "'.");
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming change configuration for '", Request.Key, "' with value '", Request.Value, "'."));
 
                     if (Configuration.TryGetValue(Request.Key, out var configurationData))
                     {
@@ -1435,7 +1448,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid DataTransfer request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid data transfer request for charge box '", Request.ChargeBoxId, "'!"));
 
                     response = new DataTransferResponse(Request,
                                                         DataTransferStatus.Rejected);
@@ -1444,11 +1457,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming DataTransfer request: " + Request.VendorId + "." + Request.MessageId + ": " + (Request.Data ?? ""));
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming data transfer request: ", Request.VendorId, ".", Request.MessageId ?? "-", ": ", Request.Data ?? "-"));
 
-                    if (Request.VendorId. ToLower() == "graphdefined" &&
-                        Request.MessageId.ToLower() == "hello" &&
-                        Request.Data.     ToLower() == "world!")
+                    if (Request.VendorId.  ToLower() == "graphdefined" &&
+                        Request.MessageId?.ToLower() == "hello"        &&
+                        Request.Data?.     ToLower() == "world!")
                     {
                         response = new DataTransferResponse(Request,
                                                             DataTransferStatus.Accepted,
@@ -1522,7 +1535,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid GetDiagnostics request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid get diagnostics request for charge box '", Request.ChargeBoxId, "'!"));
 
                     response = new GetDiagnosticsResponse(Request);
 
@@ -1530,7 +1543,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming GetDiagnostics request");
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming get diagnostics request"));
 
                     response = new GetDiagnosticsResponse(Request);
 
@@ -2771,9 +2784,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<CS.BootNotificationResponse>
 
-            SendBootNotification(CancellationToken?  CancellationToken   = null,
+            SendBootNotification(Request_Id?         RequestId           = null,
+                                 DateTime?           RequestTimestamp    = null,
+                                 TimeSpan?           RequestTimeout      = null,
                                  EventTracking_Id?   EventTrackingId     = null,
-                                 TimeSpan?           RequestTimeout      = null)
+                                 CancellationToken?  CancellationToken   = null)
 
         {
 
@@ -2795,8 +2810,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                         MeterSerialNumber,
 
                                         Request_Id.NewRandom(),
-                                        requestTimestamp,
-                                        EventTrackingId ?? EventTracking_Id.New
+                                        RequestTimestamp ?? requestTimestamp,
+                                        null,
+                                        EventTrackingId  ?? EventTracking_Id.New
                                     );
 
             #endregion
@@ -2890,9 +2906,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<CS.HeartbeatResponse>
 
-            SendHeartbeat(CancellationToken?  CancellationToken   = null,
+            SendHeartbeat(Request_Id?         RequestId           = null,
+                          DateTime?           RequestTimestamp    = null,
+                          TimeSpan?           RequestTimeout      = null,
                           EventTracking_Id?   EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null)
+                          CancellationToken?  CancellationToken   = null)
 
         {
 
@@ -2904,8 +2922,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                         ChargeBoxId,
 
                                         Request_Id.NewRandom(),
-                                        requestTimestamp,
-                                        EventTrackingId ?? EventTracking_Id.New
+                                        RequestTimestamp ?? requestTimestamp,
+                                        null,
+                                        EventTrackingId  ?? EventTracking_Id.New
                                     );
 
             #endregion
@@ -2986,9 +3005,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             Authorize(IdToken             IdTag,
 
-                      CancellationToken?  CancellationToken   = null,
+                      Request_Id?         RequestId           = null,
+                      DateTime?           RequestTimestamp    = null,
+                      TimeSpan?           RequestTimeout      = null,
                       EventTracking_Id?   EventTrackingId     = null,
-                      TimeSpan?           RequestTimeout      = null)
+                      CancellationToken?  CancellationToken   = null)
 
         {
 
@@ -3001,8 +3022,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                         IdTag,
 
                                         Request_Id.NewRandom(),
-                                        requestTimestamp,
-                                        EventTrackingId ?? EventTracking_Id.New
+                                        RequestTimestamp ?? requestTimestamp,
+                                        null,
+                                        EventTrackingId  ?? EventTracking_Id.New
                                     );
 
             #endregion
@@ -3086,9 +3108,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                              UInt64              MeterStart,
                              Reservation_Id?     ReservationId       = null,
 
-                             CancellationToken?  CancellationToken   = null,
+                             Request_Id?         RequestId           = null,
+                             DateTime?           RequestTimestamp    = null,
+                             TimeSpan?           RequestTimeout      = null,
                              EventTracking_Id?   EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null)
+                             CancellationToken?  CancellationToken   = null)
 
             {
 
@@ -3105,8 +3129,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                         ReservationId,
 
                                         Request_Id.NewRandom(),
-                                        requestTimestamp,
-                                        EventTrackingId ?? EventTracking_Id.New
+                                        RequestTimestamp ?? requestTimestamp,
+                                        null,
+                                        EventTrackingId  ?? EventTracking_Id.New
                                     );
 
             #endregion
@@ -3213,9 +3238,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                    String?                VendorId            = null,
                                    String?                VendorErrorCode     = null,
 
-                                   CancellationToken?     CancellationToken   = null,
+                                   Request_Id?            RequestId           = null,
+                                   DateTime?              RequestTimestamp    = null,
+                                   TimeSpan?              RequestTimeout      = null,
                                    EventTracking_Id?      EventTrackingId     = null,
-                                   TimeSpan?              RequestTimeout      = null)
+                                   CancellationToken?     CancellationToken   = null)
 
         {
 
@@ -3234,8 +3261,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                         VendorErrorCode,
 
                                         Request_Id.NewRandom(),
-                                        requestTimestamp,
-                                        EventTrackingId ?? EventTracking_Id.New
+                                        RequestTimestamp ?? requestTimestamp,
+                                        null,
+                                        EventTrackingId  ?? EventTracking_Id.New
                                     );
 
             #endregion
@@ -3315,9 +3343,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                             IEnumerable<MeterValue>  MeterValues,
                             Transaction_Id?          TransactionId       = null,
 
-                            CancellationToken?       CancellationToken   = null,
+                            Request_Id?              RequestId           = null,
+                            DateTime?                RequestTimestamp    = null,
+                            TimeSpan?                RequestTimeout      = null,
                             EventTracking_Id?        EventTrackingId     = null,
-                            TimeSpan?                RequestTimeout      = null)
+                            CancellationToken?       CancellationToken   = null)
 
         {
 
@@ -3332,8 +3362,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                         TransactionId,
 
                                         Request_Id.NewRandom(),
-                                        requestTimestamp,
-                                        EventTrackingId ?? EventTracking_Id.New
+                                        RequestTimestamp ?? requestTimestamp,
+                                        null,
+                                        EventTrackingId  ?? EventTracking_Id.New
                                     );
 
             #endregion
@@ -3419,9 +3450,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                             Reasons?                  Reason              = null,
                             IEnumerable<MeterValue>?  TransactionData     = null,
 
-                            CancellationToken?        CancellationToken   = null,
+                            Request_Id?               RequestId           = null,
+                            DateTime?                 RequestTimestamp    = null,
+                            TimeSpan?                 RequestTimeout      = null,
                             EventTracking_Id?         EventTrackingId     = null,
-                            TimeSpan?                 RequestTimeout      = null)
+                            CancellationToken?        CancellationToken   = null)
 
         {
 
@@ -3439,8 +3472,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                         TransactionData,
 
                                         Request_Id.NewRandom(),
-                                        requestTimestamp,
-                                        EventTrackingId ?? EventTracking_Id.New
+                                        RequestTimestamp ?? requestTimestamp,
+                                        null,
+                                        EventTrackingId  ?? EventTracking_Id.New
                                     );
 
             #endregion
@@ -3521,9 +3555,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          String?             MessageId           = null,
                          String?             Data                = null,
 
-                         CancellationToken?  CancellationToken   = null,
+                         Request_Id?         RequestId           = null,
+                         DateTime?           RequestTimestamp    = null,
+                         TimeSpan?           RequestTimeout      = null,
                          EventTracking_Id?   EventTrackingId     = null,
-                         TimeSpan?           RequestTimeout      = null)
+                         CancellationToken?  CancellationToken   = null)
 
         {
 
@@ -3538,8 +3574,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                         Data,
 
                                         Request_Id.NewRandom(),
-                                        requestTimestamp,
-                                        EventTrackingId ?? EventTracking_Id.New);
+                                        RequestTimestamp ?? requestTimestamp,
+                                        null,
+                                        EventTrackingId  ?? EventTracking_Id.New
+                                    );
 
             #endregion
 
@@ -3614,9 +3652,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             SendDiagnosticsStatusNotification(DiagnosticsStatus   Status,
 
-                                              CancellationToken?  CancellationToken  = null,
-                                              EventTracking_Id?   EventTrackingId    = null,
-                                              TimeSpan?           RequestTimeout     = null)
+                                              Request_Id?         RequestId           = null,
+                                              DateTime?           RequestTimestamp    = null,
+                                              TimeSpan?           RequestTimeout      = null,
+                                              EventTracking_Id?   EventTrackingId     = null,
+                                              CancellationToken?  CancellationToken   = null)
 
         {
 
@@ -3629,8 +3669,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                         Status,
 
                                         Request_Id.NewRandom(),
-                                        requestTimestamp,
-                                        EventTrackingId ?? EventTracking_Id.New
+                                        RequestTimestamp ?? requestTimestamp,
+                                        null,
+                                        EventTrackingId  ?? EventTracking_Id.New
                                     );
 
             #endregion
@@ -3706,9 +3747,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             SendFirmwareStatusNotification(FirmwareStatus      Status,
 
-                                           CancellationToken?  CancellationToken  = null,
-                                           EventTracking_Id?   EventTrackingId    = null,
-                                           TimeSpan?           RequestTimeout     = null)
+                                           Request_Id?         RequestId           = null,
+                                           DateTime?           RequestTimestamp    = null,
+                                           TimeSpan?           RequestTimeout      = null,
+                                           EventTracking_Id?   EventTrackingId     = null,
+                                           CancellationToken?  CancellationToken   = null)
 
         {
 
@@ -3721,8 +3764,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                         Status,
 
                                         Request_Id.NewRandom(),
-                                        requestTimestamp,
-                                        EventTrackingId ?? EventTracking_Id.New
+                                        RequestTimestamp ?? requestTimestamp,
+                                        null,
+                                        EventTrackingId  ?? EventTracking_Id.New
                                     );
 
             #endregion

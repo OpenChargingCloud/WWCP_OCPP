@@ -80,22 +80,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public ReserveNowRequest(ChargeBox_Id       ChargeBoxId,
-                                 Connector_Id       ConnectorId,
-                                 Reservation_Id     ReservationId,
-                                 DateTime           ExpiryDate,
-                                 IdToken            IdTag,
-                                 IdToken?           ParentIdTag        = null,
+        public ReserveNowRequest(ChargeBox_Id        ChargeBoxId,
+                                 Connector_Id        ConnectorId,
+                                 Reservation_Id      ReservationId,
+                                 DateTime            ExpiryDate,
+                                 IdToken             IdTag,
+                                 IdToken?            ParentIdTag         = null,
 
-                                 Request_Id?        RequestId          = null,
-                                 DateTime?          RequestTimestamp   = null,
-                                 EventTracking_Id?  EventTrackingId    = null)
+                                 Request_Id?         RequestId           = null,
+                                 DateTime?           RequestTimestamp    = null,
+                                 TimeSpan?           RequestTimeout      = null,
+                                 EventTracking_Id?   EventTrackingId     = null,
+                                 CancellationToken?  CancellationToken   = null)
 
             : base(ChargeBoxId,
                    "ReserveNow",
                    RequestId,
+                   RequestTimestamp,
+                   RequestTimeout,
                    EventTrackingId,
-                   RequestTimestamp)
+                   CancellationToken)
 
         {
 

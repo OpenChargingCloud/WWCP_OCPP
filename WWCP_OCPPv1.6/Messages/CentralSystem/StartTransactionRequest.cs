@@ -79,21 +79,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public StartTransactionRequest(ChargeBox_Id       ChargeBoxId,
-                                       Connector_Id       ConnectorId,
-                                       IdToken            IdTag,
-                                       DateTime           StartTimestamp,
-                                       UInt64             MeterStart,
-                                       Reservation_Id?    ReservationId      = null,
-                                       Request_Id?        RequestId          = null,
-                                       DateTime?          RequestTimestamp   = null,
-                                       EventTracking_Id?  EventTrackingId    = null)
+        public StartTransactionRequest(ChargeBox_Id        ChargeBoxId,
+                                       Connector_Id        ConnectorId,
+                                       IdToken             IdTag,
+                                       DateTime            StartTimestamp,
+                                       UInt64              MeterStart,
+                                       Reservation_Id?     ReservationId       = null,
+
+                                       Request_Id?         RequestId           = null,
+                                       DateTime?           RequestTimestamp    = null,
+                                       TimeSpan?           RequestTimeout      = null,
+                                       EventTracking_Id?   EventTrackingId     = null,
+                                       CancellationToken?  CancellationToken   = null)
 
             : base(ChargeBoxId,
                    "StartTransaction",
                    RequestId,
+                   RequestTimestamp,
+                   RequestTimeout,
                    EventTrackingId,
-                   RequestTimestamp)
+                   CancellationToken)
 
         {
 

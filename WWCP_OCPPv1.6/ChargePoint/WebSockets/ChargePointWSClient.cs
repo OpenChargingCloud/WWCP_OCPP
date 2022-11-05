@@ -43,8 +43,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// and connects to a central system to invoke methods.
     /// </summary>
     public partial class ChargePointWSClient : WebSocketClient,
-                                               ICPWSClient,
-                                               IChargePointServerEvents
+                                               IChargePointWebSocketClient,
+                                               IChargePointServer
     {
 
         #region (class) SendRequestState
@@ -416,7 +416,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ResetRequestDelegate?          OnResetRequest;
+        public event OnResetRequestDelegate?        OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ResetResponseDelegate?         OnResetResponse;
+        public event OnResetResponseDelegate?       OnResetResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
@@ -440,27 +440,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?             OnChangeAvailabilityWSRequest;
+        public event WSClientRequestLogHandler?               OnChangeAvailabilityWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ChangeAvailabilityRequestDelegate?     OnChangeAvailabilityRequest;
+        public event OnChangeAvailabilityRequestDelegate?     OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnChangeAvailabilityDelegate?          OnChangeAvailability;
+        public event OnChangeAvailabilityDelegate?            OnChangeAvailability;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ChangeAvailabilityResponseDelegate?    OnChangeAvailabilityResponse;
+        public event OnChangeAvailabilityResponseDelegate?    OnChangeAvailabilityResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?            OnChangeAvailabilityWSResponse;
+        public event WSClientResponseLogHandler?              OnChangeAvailabilityWSResponse;
 
         #endregion
 
@@ -469,27 +469,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?           OnGetConfigurationWSRequest;
+        public event WSClientRequestLogHandler?             OnGetConfigurationWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetConfigurationRequestDelegate?     OnGetConfigurationRequest;
+        public event OnGetConfigurationRequestDelegate?     OnGetConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetConfigurationDelegate?          OnGetConfiguration;
+        public event OnGetConfigurationDelegate?            OnGetConfiguration;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetConfigurationResponseDelegate?    OnGetConfigurationResponse;
+        public event OnGetConfigurationResponseDelegate?    OnGetConfigurationResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?          OnGetConfigurationWSResponse;
+        public event WSClientResponseLogHandler?            OnGetConfigurationWSResponse;
 
         #endregion
 
@@ -498,27 +498,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?              OnChangeConfigurationWSRequest;
+        public event WSClientRequestLogHandler?                OnChangeConfigurationWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ChangeConfigurationRequestDelegate?     OnChangeConfigurationRequest;
+        public event OnChangeConfigurationRequestDelegate?     OnChangeConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnChangeConfigurationDelegate?          OnChangeConfiguration;
+        public event OnChangeConfigurationDelegate?            OnChangeConfiguration;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ChangeConfigurationResponseDelegate?    OnChangeConfigurationResponse;
+        public event OnChangeConfigurationResponseDelegate?    OnChangeConfigurationResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?             OnChangeConfigurationWSResponse;
+        public event WSClientResponseLogHandler?               OnChangeConfigurationWSResponse;
 
         #endregion
 
@@ -527,27 +527,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a data transfer websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?               OnIncomingDataTransferWSRequest;
+        public event WSClientRequestLogHandler?                 OnIncomingDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event IncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferDelegate?          OnIncomingDataTransfer;
+        public event OnIncomingDataTransferDelegate?            OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event IncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
+        public event OnIncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a data transfer request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?              OnIncomingDataTransferWSResponse;
+        public event WSClientResponseLogHandler?                OnIncomingDataTransferWSResponse;
 
         #endregion
 
@@ -556,27 +556,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?         OnGetDiagnosticsWSRequest;
+        public event WSClientRequestLogHandler?           OnGetDiagnosticsWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetDiagnosticsRequestDelegate?     OnGetDiagnosticsRequest;
+        public event OnGetDiagnosticsRequestDelegate?     OnGetDiagnosticsRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetDiagnosticsDelegate?          OnGetDiagnostics;
+        public event OnGetDiagnosticsDelegate?            OnGetDiagnostics;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetDiagnosticsResponseDelegate?    OnGetDiagnosticsResponse;
+        public event OnGetDiagnosticsResponseDelegate?    OnGetDiagnosticsResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?        OnGetDiagnosticsWSResponse;
+        public event WSClientResponseLogHandler?          OnGetDiagnosticsWSResponse;
 
         #endregion
 
@@ -585,27 +585,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?         OnTriggerMessageWSRequest;
+        public event WSClientRequestLogHandler?           OnTriggerMessageWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event TriggerMessageRequestDelegate?     OnTriggerMessageRequest;
+        public event OnTriggerMessageRequestDelegate?     OnTriggerMessageRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnTriggerMessageDelegate?          OnTriggerMessage;
+        public event OnTriggerMessageDelegate?            OnTriggerMessage;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event TriggerMessageResponseDelegate?    OnTriggerMessageResponse;
+        public event OnTriggerMessageResponseDelegate?    OnTriggerMessageResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?        OnTriggerMessageWSResponse;
+        public event WSClientResponseLogHandler?          OnTriggerMessageWSResponse;
 
         #endregion
 
@@ -614,27 +614,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?         OnUpdateFirmwareWSRequest;
+        public event WSClientRequestLogHandler?           OnUpdateFirmwareWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event UpdateFirmwareRequestDelegate?     OnUpdateFirmwareRequest;
+        public event OnUpdateFirmwareRequestDelegate?     OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnUpdateFirmwareDelegate?          OnUpdateFirmware;
+        public event OnUpdateFirmwareDelegate?            OnUpdateFirmware;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event UpdateFirmwareResponseDelegate?    OnUpdateFirmwareResponse;
+        public event OnUpdateFirmwareResponseDelegate?    OnUpdateFirmwareResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?        OnUpdateFirmwareWSResponse;
+        public event WSClientResponseLogHandler?          OnUpdateFirmwareWSResponse;
 
         #endregion
 
@@ -644,27 +644,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reserve now websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?     OnReserveNowWSRequest;
+        public event WSClientRequestLogHandler?       OnReserveNowWSRequest;
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event ReserveNowRequestDelegate?     OnReserveNowRequest;
+        public event OnReserveNowRequestDelegate?     OnReserveNowRequest;
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event OnReserveNowDelegate?          OnReserveNow;
+        public event OnReserveNowDelegate?            OnReserveNow;
 
         /// <summary>
         /// An event sent whenever a response to a reserve now request was sent.
         /// </summary>
-        public event ReserveNowResponseDelegate?    OnReserveNowResponse;
+        public event OnReserveNowResponseDelegate?    OnReserveNowResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reserve now request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?    OnReserveNowWSResponse;
+        public event WSClientResponseLogHandler?      OnReserveNowWSResponse;
 
         #endregion
 
@@ -673,27 +673,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a cancel reservation websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?            OnCancelReservationWSRequest;
+        public event WSClientRequestLogHandler?              OnCancelReservationWSRequest;
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event CancelReservationRequestDelegate?     OnCancelReservationRequest;
+        public event OnCancelReservationRequestDelegate?     OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event OnCancelReservationDelegate?          OnCancelReservation;
+        public event OnCancelReservationDelegate?            OnCancelReservation;
 
         /// <summary>
         /// An event sent whenever a response to a cancel reservation request was sent.
         /// </summary>
-        public event CancelReservationResponseDelegate?    OnCancelReservationResponse;
+        public event OnCancelReservationResponseDelegate?    OnCancelReservationResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a cancel reservation request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?           OnCancelReservationWSResponse;
+        public event WSClientResponseLogHandler?             OnCancelReservationWSResponse;
 
         #endregion
 
@@ -702,27 +702,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a remote start transaction websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?                 OnRemoteStartTransactionWSRequest;
+        public event WSClientRequestLogHandler?                   OnRemoteStartTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a remote start transaction request was received.
         /// </summary>
-        public event RemoteStartTransactionRequestDelegate?     OnRemoteStartTransactionRequest;
+        public event OnRemoteStartTransactionRequestDelegate?     OnRemoteStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a remote start transaction was received.
         /// </summary>
-        public event OnRemoteStartTransactionDelegate?          OnRemoteStartTransaction;
+        public event OnRemoteStartTransactionDelegate?            OnRemoteStartTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a remote start transaction request was sent.
         /// </summary>
-        public event RemoteStartTransactionResponseDelegate?    OnRemoteStartTransactionResponse;
+        public event OnRemoteStartTransactionResponseDelegate?    OnRemoteStartTransactionResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a remote start transaction request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?                OnRemoteStartTransactionWSResponse;
+        public event WSClientResponseLogHandler?                  OnRemoteStartTransactionWSResponse;
 
         #endregion
 
@@ -731,27 +731,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a remote stop transaction websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?                OnRemoteStopTransactionWSRequest;
+        public event WSClientRequestLogHandler?                  OnRemoteStopTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a remote stop transaction request was received.
         /// </summary>
-        public event RemoteStopTransactionRequestDelegate?     OnRemoteStopTransactionRequest;
+        public event OnRemoteStopTransactionRequestDelegate?     OnRemoteStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a remote stop transaction was received.
         /// </summary>
-        public event OnRemoteStopTransactionDelegate?          OnRemoteStopTransaction;
+        public event OnRemoteStopTransactionDelegate?            OnRemoteStopTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a remote stop transaction request was sent.
         /// </summary>
-        public event RemoteStopTransactionResponseDelegate?    OnRemoteStopTransactionResponse;
+        public event OnRemoteStopTransactionResponseDelegate?    OnRemoteStopTransactionResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a remote stop transaction request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?               OnRemoteStopTransactionWSResponse;
+        public event WSClientResponseLogHandler?                 OnRemoteStopTransactionWSResponse;
 
         #endregion
 
@@ -760,27 +760,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?             OnSetChargingProfileWSRequest;
+        public event WSClientRequestLogHandler?               OnSetChargingProfileWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event SetChargingProfileRequestDelegate?     OnSetChargingProfileRequest;
+        public event OnSetChargingProfileRequestDelegate?     OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnSetChargingProfileDelegate?          OnSetChargingProfile;
+        public event OnSetChargingProfileDelegate?            OnSetChargingProfile;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event SetChargingProfileResponseDelegate?    OnSetChargingProfileResponse;
+        public event OnSetChargingProfileResponseDelegate?    OnSetChargingProfileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?            OnSetChargingProfileWSResponse;
+        public event WSClientResponseLogHandler?              OnSetChargingProfileWSResponse;
 
         #endregion
 
@@ -789,27 +789,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?               OnClearChargingProfileWSRequest;
+        public event WSClientRequestLogHandler?                 OnClearChargingProfileWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ClearChargingProfileRequestDelegate?     OnClearChargingProfileRequest;
+        public event OnClearChargingProfileRequestDelegate?     OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnClearChargingProfileDelegate?          OnClearChargingProfile;
+        public event OnClearChargingProfileDelegate?            OnClearChargingProfile;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ClearChargingProfileResponseDelegate?    OnClearChargingProfileResponse;
+        public event OnClearChargingProfileResponseDelegate?    OnClearChargingProfileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?              OnClearChargingProfileWSResponse;
+        public event WSClientResponseLogHandler?                OnClearChargingProfileWSResponse;
 
         #endregion
 
@@ -818,27 +818,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?               OnGetCompositeScheduleWSRequest;
+        public event WSClientRequestLogHandler?                 OnGetCompositeScheduleWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetCompositeScheduleRequestDelegate?     OnGetCompositeScheduleRequest;
+        public event OnGetCompositeScheduleRequestDelegate?     OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetCompositeScheduleDelegate?          OnGetCompositeSchedule;
+        public event OnGetCompositeScheduleDelegate?            OnGetCompositeSchedule;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetCompositeScheduleResponseDelegate?    OnGetCompositeScheduleResponse;
+        public event OnGetCompositeScheduleResponseDelegate?    OnGetCompositeScheduleResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?              OnGetCompositeScheduleWSResponse;
+        public event WSClientResponseLogHandler?                OnGetCompositeScheduleWSResponse;
 
         #endregion
 
@@ -847,27 +847,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?          OnUnlockConnectorWSRequest;
+        public event WSClientRequestLogHandler?            OnUnlockConnectorWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event UnlockConnectorRequestDelegate?     OnUnlockConnectorRequest;
+        public event OnUnlockConnectorRequestDelegate?     OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnUnlockConnectorDelegate?          OnUnlockConnector;
+        public event OnUnlockConnectorDelegate?            OnUnlockConnector;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event UnlockConnectorResponseDelegate?    OnUnlockConnectorResponse;
+        public event OnUnlockConnectorResponseDelegate?    OnUnlockConnectorResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?         OnUnlockConnectorWSResponse;
+        public event WSClientResponseLogHandler?           OnUnlockConnectorWSResponse;
 
         #endregion
 
@@ -877,27 +877,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?              OnGetLocalListVersionWSRequest;
+        public event WSClientRequestLogHandler?                OnGetLocalListVersionWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetLocalListVersionRequestDelegate?     OnGetLocalListVersionRequest;
+        public event OnGetLocalListVersionRequestDelegate?     OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetLocalListVersionDelegate?          OnGetLocalListVersion;
+        public event OnGetLocalListVersionDelegate?            OnGetLocalListVersion;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetLocalListVersionResponseDelegate?    OnGetLocalListVersionResponse;
+        public event OnGetLocalListVersionResponseDelegate?    OnGetLocalListVersionResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?             OnGetLocalListVersionWSResponse;
+        public event WSClientResponseLogHandler?               OnGetLocalListVersionWSResponse;
 
         #endregion
 
@@ -906,27 +906,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?        OnSendLocalListWSRequest;
+        public event WSClientRequestLogHandler?          OnSendLocalListWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event SendLocalListRequestDelegate?     OnSendLocalListRequest;
+        public event OnSendLocalListRequestDelegate?     OnSendLocalListRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnSendLocalListDelegate?          OnSendLocalList;
+        public event OnSendLocalListDelegate?            OnSendLocalList;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event SendLocalListResponseDelegate?    OnSendLocalListResponse;
+        public event OnSendLocalListResponseDelegate?    OnSendLocalListResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?       OnSendLocalListWSResponse;
+        public event WSClientResponseLogHandler?         OnSendLocalListWSResponse;
 
         #endregion
 
@@ -935,27 +935,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?     OnClearCacheWSRequest;
+        public event WSClientRequestLogHandler?       OnClearCacheWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ClearCacheRequestDelegate?     OnClearCacheRequest;
+        public event OnClearCacheRequestDelegate?     OnClearCacheRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnClearCacheDelegate?          OnClearCache;
+        public event OnClearCacheDelegate?            OnClearCache;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ClearCacheResponseDelegate?    OnClearCacheResponse;
+        public event OnClearCacheResponseDelegate?    OnClearCacheResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?    OnClearCacheWSResponse;
+        public event WSClientResponseLogHandler?      OnClearCacheWSResponse;
 
         #endregion
 

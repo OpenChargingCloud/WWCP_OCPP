@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// An abstract generic request message.
+    /// An abstract generic OCPP request message.
     /// </summary>
     public abstract class ARequest<T> : IRequest,
                                         IEquatable<T>
@@ -39,79 +39,94 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Properties
 
         /// <summary>
+        /// The charge box identification.
+        /// </summary>
+        [Mandatory]
+        public ChargeBox_Id        ChargeBoxId          { get; }
+
+        /// <summary>
         /// The request identification.
         /// </summary>
         [Mandatory]
-        public Request_Id        RequestId           { get; }
+        public Request_Id          RequestId            { get; }
 
         /// <summary>
         /// The timestamp of the request message creation.
         /// </summary>
         [Mandatory]
-        public DateTime          RequestTimestamp    { get; }
-
-
-        public EventTracking_Id  EventTrackingId     { get; }
+        public DateTime            RequestTimestamp     { get; }
 
         /// <summary>
         /// The timeout of this request.
         /// </summary>
         [Optional]
-        public TimeSpan?         RequestTimeout      { get; }
+        public TimeSpan?           RequestTimeout       { get; }
+
+        /// <summary>
+        /// An event tracking identification for correlating this request with other events.
+        /// </summary>
+        public EventTracking_Id    EventTrackingId      { get; }
+
+        /// <summary>
+        /// An optional token to cancel this request.
+        /// </summary>
+        public CancellationToken?  CancellationToken    { get; }
 
 
         /// <summary>
-        /// Charge box identification.
+        /// The OCPP SOAP and HTTP Web Socket action.
         /// </summary>
         [Mandatory]
-        public ChargeBox_Id      ChargeBoxId         { get; }
-
-        /// <summary>
-        /// WebSocket Action.
-        /// </summary>
-        [Mandatory]
-        public String            WebSocketAction     { get; }
+        public String              Action               { get; }
 
         #endregion
 
         #region Constructor(s)
 
+        ///// <summary>
+        ///// Create a new generic request message.
+        ///// </summary>
+        //public ARequest()
+        //{
+
+        //    this.RequestId         = Request_Id.Parse("0");
+        //    this.RequestTimestamp  = Timestamp.Now;
+        //    this.EventTrackingId   = EventTracking_Id.New;
+        //    this.ChargeBoxId       = ChargeBox_Id.Parse("0");
+        //    this.WebSocketAction   = "";
+
+        //}
+
         /// <summary>
-        /// Create a new generic request message.
-        /// </summary>
-        public ARequest()
-        {
-
-            this.RequestId         = Request_Id.Parse("0");
-            this.RequestTimestamp  = Timestamp.Now;
-            this.EventTrackingId   = EventTracking_Id.New;
-            this.ChargeBoxId       = ChargeBox_Id.Parse("0");
-            this.WebSocketAction   = "";
-
-        }
-
-        /// <summary>
-        /// Create a new generic request message.
+        /// Create a new generic OCPP request message.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="WebSocketAction">WebSocket Action.</param>
+        /// <param name="Action">The OCPP SOAP and HTTP Web Socket action.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
-        public ARequest(ChargeBox_Id       ChargeBoxId,
-                        String             WebSocketAction,
-                        Request_Id?        RequestId          = null,
-                        EventTracking_Id?  EventTrackingId    = null,
-                        DateTime?          RequestTimestamp   = null,
-                        TimeSpan?          RequestTimeout     = null)
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public ARequest(ChargeBox_Id        ChargeBoxId,
+                        String              Action,
+
+                        Request_Id?         RequestId           = null,
+                        DateTime?           RequestTimestamp    = null,
+                        TimeSpan?           RequestTimeout      = null,
+                        EventTracking_Id?   EventTrackingId     = null,
+                        CancellationToken?  CancellationToken   = null)
         {
 
-            this.ChargeBoxId       = ChargeBoxId;
-            this.WebSocketAction   = WebSocketAction;
-            this.RequestId         = RequestId        ?? Request_Id.NewRandom();
-            this.EventTrackingId   = EventTrackingId  ?? EventTracking_Id.New;
-            this.RequestTimestamp  = RequestTimestamp ?? Timestamp.Now;
-            this.RequestTimeout    = RequestTimeout;
+            this.ChargeBoxId        = ChargeBoxId;
+            this.Action             = Action;
+
+            this.RequestId          = RequestId        ?? Request_Id.NewRandom();
+            this.RequestTimestamp   = RequestTimestamp ?? Timestamp.Now;
+            this.RequestTimeout     = RequestTimeout;
+
+            this.EventTrackingId    = EventTrackingId  ?? EventTracking_Id.New;
+            this.CancellationToken  = CancellationToken;
 
         }
 

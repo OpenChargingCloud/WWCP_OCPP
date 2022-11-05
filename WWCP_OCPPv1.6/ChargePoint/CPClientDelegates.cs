@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Threading.Tasks;
-
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPPv1_6.CS;

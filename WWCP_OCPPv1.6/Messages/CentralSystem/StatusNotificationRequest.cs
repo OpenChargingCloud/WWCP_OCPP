@@ -96,20 +96,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                          ChargePointStatus      Status,
                                          ChargePointErrorCodes  ErrorCode,
 
-                                         String?                Info               = null,
-                                         DateTime?              StatusTimestamp    = null,
-                                         String?                VendorId           = null,
-                                         String?                VendorErrorCode    = null,
+                                         String?                Info                = null,
+                                         DateTime?              StatusTimestamp     = null,
+                                         String?                VendorId            = null,
+                                         String?                VendorErrorCode     = null,
 
-                                         Request_Id?            RequestId          = null,
-                                         DateTime?              RequestTimestamp   = null,
-                                         EventTracking_Id?      EventTrackingId    = null)
+                                         Request_Id?            RequestId           = null,
+                                         DateTime?              RequestTimestamp    = null,
+                                         TimeSpan?              RequestTimeout      = null,
+                                         EventTracking_Id?      EventTrackingId     = null,
+                                         CancellationToken?     CancellationToken   = null)
 
             : base(ChargeBoxId,
                    "StatusNotification",
                    RequestId,
+                   RequestTimestamp,
+                   RequestTimeout,
                    EventTrackingId,
-                   RequestTimestamp)
+                   CancellationToken)
 
         {
 

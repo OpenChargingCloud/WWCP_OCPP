@@ -17,10 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -39,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     public class ChargePointSOAPServer : ASOAPServer,
                                          IEventSender,
-                                         IChargePointServerEvents
+                                         IChargePointServer
     {
 
         #region Data
@@ -47,32 +43,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The default HTTP/SOAP/XML server name.
         /// </summary>
-        public new const String DefaultHTTPServerName = "GraphDefined OCPP " + Version.Number + " HTTP/SOAP/XML Charge Point API";
+        public new const           String           DefaultHTTPServerName   = "GraphDefined OCPP " + Version.Number + " HTTP/SOAP/XML Charge Point API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server TCP port.
         /// </summary>
-        public new static readonly IPPort DefaultHTTPServerPort = IPPort.Parse(2010);
+        public new static readonly IPPort           DefaultHTTPServerPort   = IPPort.Parse(2010);
 
         /// <summary>
         /// The default TCP service name shown e.g. on service startup.
         /// </summary>
-        public const String DefaultServiceName = "OCPP " + Version.Number + " charge point API";
+        public const               String           DefaultServiceName      = "OCPP " + Version.Number + " charge point API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
         /// </summary>
-        public new static readonly HTTPPath DefaultURLPrefix = HTTPPath.Parse("/" + Version.Number);
+        public new static readonly HTTPPath         DefaultURLPrefix        = HTTPPath.Parse("/" + Version.Number);
 
         /// <summary>
         /// The default HTTP/SOAP/XML content type.
         /// </summary>
-        public new static readonly HTTPContentType DefaultContentType = HTTPContentType.XMLTEXT_UTF8;
+        public new static readonly HTTPContentType  DefaultContentType      = HTTPContentType.XMLTEXT_UTF8;
 
         /// <summary>
         /// The default query timeout.
         /// </summary>
-        public new static readonly TimeSpan DefaultRequestTimeout = TimeSpan.FromMinutes(1);
+        public new static readonly TimeSpan         DefaultRequestTimeout   = TimeSpan.FromMinutes(1);
 
         #endregion
 
@@ -98,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ResetRequestDelegate    OnResetRequest;
+        public event OnResetRequestDelegate    OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -108,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ResetResponseDelegate   OnResetResponse;
+        public event OnResetResponseDelegate   OnResetResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
@@ -122,12 +118,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event RequestLogHandler         OnChangeAvailabilitySOAPRequest;
+        public event RequestLogHandler                      OnChangeAvailabilitySOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ChangeAvailabilityRequestDelegate    OnChangeAvailabilityRequest;
+        public event OnChangeAvailabilityRequestDelegate    OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -137,12 +133,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ChangeAvailabilityResponseDelegate   OnChangeAvailabilityResponse;
+        public event OnChangeAvailabilityResponseDelegate   OnChangeAvailabilityResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler          OnChangeAvailabilitySOAPResponse;
+        public event AccessLogHandler                       OnChangeAvailabilitySOAPResponse;
 
         #endregion
 
@@ -151,12 +147,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event RequestLogHandler         OnGetConfigurationSOAPRequest;
+        public event RequestLogHandler                    OnGetConfigurationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetConfigurationRequestDelegate    OnGetConfigurationRequest;
+        public event OnGetConfigurationRequestDelegate    OnGetConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -166,12 +162,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetConfigurationResponseDelegate   OnGetConfigurationResponse;
+        public event OnGetConfigurationResponseDelegate   OnGetConfigurationResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler          OnGetConfigurationSOAPResponse;
+        public event AccessLogHandler                     OnGetConfigurationSOAPResponse;
 
         #endregion
 
@@ -180,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event RequestLogHandler         OnChangeConfigurationSOAPRequest;
+        public event RequestLogHandler                       OnChangeConfigurationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ChangeConfigurationRequestDelegate    OnChangeConfigurationRequest;
+        public event OnChangeConfigurationRequestDelegate    OnChangeConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -195,12 +191,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ChangeConfigurationResponseDelegate   OnChangeConfigurationResponse;
+        public event OnChangeConfigurationResponseDelegate   OnChangeConfigurationResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler          OnChangeConfigurationSOAPResponse;
+        public event AccessLogHandler                        OnChangeConfigurationSOAPResponse;
 
         #endregion
 
@@ -214,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event IncomingDataTransferRequestDelegate    OnIncomingDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate    OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
@@ -224,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event IncomingDataTransferResponseDelegate   OnIncomingDataTransferResponse;
+        public event OnIncomingDataTransferResponseDelegate   OnIncomingDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a data transfer request was sent.
@@ -238,12 +234,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event RequestLogHandler         OnGetDiagnosticsSOAPRequest;
+        public event RequestLogHandler                  OnGetDiagnosticsSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetDiagnosticsRequestDelegate    OnGetDiagnosticsRequest;
+        public event OnGetDiagnosticsRequestDelegate    OnGetDiagnosticsRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -253,12 +249,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetDiagnosticsResponseDelegate   OnGetDiagnosticsResponse;
+        public event OnGetDiagnosticsResponseDelegate   OnGetDiagnosticsResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler          OnGetDiagnosticsSOAPResponse;
+        public event AccessLogHandler                   OnGetDiagnosticsSOAPResponse;
 
         #endregion
 
@@ -267,12 +263,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event RequestLogHandler         OnTriggerMessageSOAPRequest;
+        public event RequestLogHandler                  OnTriggerMessageSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event TriggerMessageRequestDelegate    OnTriggerMessageRequest;
+        public event OnTriggerMessageRequestDelegate    OnTriggerMessageRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -282,12 +278,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event TriggerMessageResponseDelegate   OnTriggerMessageResponse;
+        public event OnTriggerMessageResponseDelegate   OnTriggerMessageResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler          OnTriggerMessageSOAPResponse;
+        public event AccessLogHandler                   OnTriggerMessageSOAPResponse;
 
         #endregion
 
@@ -296,12 +292,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event RequestLogHandler         OnUpdateFirmwareSOAPRequest;
+        public event RequestLogHandler                  OnUpdateFirmwareSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event UpdateFirmwareRequestDelegate    OnUpdateFirmwareRequest;
+        public event OnUpdateFirmwareRequestDelegate    OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -311,12 +307,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event UpdateFirmwareResponseDelegate   OnUpdateFirmwareResponse;
+        public event OnUpdateFirmwareResponseDelegate   OnUpdateFirmwareResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler          OnUpdateFirmwareSOAPResponse;
+        public event AccessLogHandler                   OnUpdateFirmwareSOAPResponse;
 
         #endregion
 
@@ -331,7 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event ReserveNowRequestDelegate    OnReserveNowRequest;
+        public event OnReserveNowRequestDelegate    OnReserveNowRequest;
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
@@ -341,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reserve now request was sent.
         /// </summary>
-        public event ReserveNowResponseDelegate   OnReserveNowResponse;
+        public event OnReserveNowResponseDelegate   OnReserveNowResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reserve now request was sent.
@@ -355,27 +351,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a cancel reservation SOAP request was received.
         /// </summary>
-        public event RequestLogHandler OnCancelReservationSOAPRequest;
+        public event RequestLogHandler                     OnCancelReservationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event CancelReservationRequestDelegate OnCancelReservationRequest;
+        public event OnCancelReservationRequestDelegate    OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event OnCancelReservationDelegate OnCancelReservation;
+        public event OnCancelReservationDelegate           OnCancelReservation;
 
         /// <summary>
         /// An event sent whenever a response to a cancel reservation request was sent.
         /// </summary>
-        public event CancelReservationResponseDelegate OnCancelReservationResponse;
+        public event OnCancelReservationResponseDelegate   OnCancelReservationResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a cancel reservation request was sent.
         /// </summary>
-        public event AccessLogHandler OnCancelReservationSOAPResponse;
+        public event AccessLogHandler                      OnCancelReservationSOAPResponse;
 
         #endregion
 
@@ -384,27 +380,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a remote start transaction SOAP request was received.
         /// </summary>
-        public event RequestLogHandler OnRemoteStartTransactionSOAPRequest;
+        public event RequestLogHandler                          OnRemoteStartTransactionSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a remote start transaction request was received.
         /// </summary>
-        public event RemoteStartTransactionRequestDelegate OnRemoteStartTransactionRequest;
+        public event OnRemoteStartTransactionRequestDelegate    OnRemoteStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a remote start transaction was received.
         /// </summary>
-        public event OnRemoteStartTransactionDelegate OnRemoteStartTransaction;
+        public event OnRemoteStartTransactionDelegate           OnRemoteStartTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a remote start transaction request was sent.
         /// </summary>
-        public event RemoteStartTransactionResponseDelegate OnRemoteStartTransactionResponse;
+        public event OnRemoteStartTransactionResponseDelegate   OnRemoteStartTransactionResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a remote start transaction request was sent.
         /// </summary>
-        public event AccessLogHandler OnRemoteStartTransactionSOAPResponse;
+        public event AccessLogHandler                           OnRemoteStartTransactionSOAPResponse;
 
         #endregion
 
@@ -413,27 +409,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a remote stop transaction SOAP request was received.
         /// </summary>
-        public event RequestLogHandler OnRemoteStopTransactionSOAPRequest;
+        public event RequestLogHandler                         OnRemoteStopTransactionSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a remote stop transaction request was received.
         /// </summary>
-        public event RemoteStopTransactionRequestDelegate OnRemoteStopTransactionRequest;
+        public event OnRemoteStopTransactionRequestDelegate    OnRemoteStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a remote stop transaction was received.
         /// </summary>
-        public event OnRemoteStopTransactionDelegate OnRemoteStopTransaction;
+        public event OnRemoteStopTransactionDelegate           OnRemoteStopTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a remote stop transaction request was sent.
         /// </summary>
-        public event RemoteStopTransactionResponseDelegate OnRemoteStopTransactionResponse;
+        public event OnRemoteStopTransactionResponseDelegate   OnRemoteStopTransactionResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a remote stop transaction request was sent.
         /// </summary>
-        public event AccessLogHandler OnRemoteStopTransactionSOAPResponse;
+        public event AccessLogHandler                          OnRemoteStopTransactionSOAPResponse;
 
         #endregion
 
@@ -442,12 +438,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event RequestLogHandler         OnSetChargingProfileSOAPRequest;
+        public event RequestLogHandler                      OnSetChargingProfileSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event SetChargingProfileRequestDelegate    OnSetChargingProfileRequest;
+        public event OnSetChargingProfileRequestDelegate    OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -457,12 +453,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event SetChargingProfileResponseDelegate   OnSetChargingProfileResponse;
+        public event OnSetChargingProfileResponseDelegate   OnSetChargingProfileResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler          OnSetChargingProfileSOAPResponse;
+        public event AccessLogHandler                       OnSetChargingProfileSOAPResponse;
 
         #endregion
 
@@ -471,12 +467,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event RequestLogHandler         OnClearChargingProfileSOAPRequest;
+        public event RequestLogHandler                        OnClearChargingProfileSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ClearChargingProfileRequestDelegate    OnClearChargingProfileRequest;
+        public event OnClearChargingProfileRequestDelegate    OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -486,12 +482,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ClearChargingProfileResponseDelegate   OnClearChargingProfileResponse;
+        public event OnClearChargingProfileResponseDelegate   OnClearChargingProfileResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler          OnClearChargingProfileSOAPResponse;
+        public event AccessLogHandler                         OnClearChargingProfileSOAPResponse;
 
         #endregion
 
@@ -500,12 +496,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event RequestLogHandler         OnGetCompositeScheduleSOAPRequest;
+        public event RequestLogHandler                        OnGetCompositeScheduleSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetCompositeScheduleRequestDelegate    OnGetCompositeScheduleRequest;
+        public event OnGetCompositeScheduleRequestDelegate    OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -515,12 +511,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetCompositeScheduleResponseDelegate   OnGetCompositeScheduleResponse;
+        public event OnGetCompositeScheduleResponseDelegate   OnGetCompositeScheduleResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler          OnGetCompositeScheduleSOAPResponse;
+        public event AccessLogHandler                         OnGetCompositeScheduleSOAPResponse;
 
         #endregion
 
@@ -529,12 +525,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event RequestLogHandler         OnUnlockConnectorSOAPRequest;
+        public event RequestLogHandler                   OnUnlockConnectorSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event UnlockConnectorRequestDelegate    OnUnlockConnectorRequest;
+        public event OnUnlockConnectorRequestDelegate    OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -544,12 +540,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event UnlockConnectorResponseDelegate   OnUnlockConnectorResponse;
+        public event OnUnlockConnectorResponseDelegate   OnUnlockConnectorResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler          OnUnlockConnectorSOAPResponse;
+        public event AccessLogHandler                    OnUnlockConnectorSOAPResponse;
 
         #endregion
 
@@ -559,12 +555,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event RequestLogHandler         OnGetLocalListVersionSOAPRequest;
+        public event RequestLogHandler                       OnGetLocalListVersionSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event GetLocalListVersionRequestDelegate    OnGetLocalListVersionRequest;
+        public event OnGetLocalListVersionRequestDelegate    OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -574,12 +570,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event GetLocalListVersionResponseDelegate   OnGetLocalListVersionResponse;
+        public event OnGetLocalListVersionResponseDelegate   OnGetLocalListVersionResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler          OnGetLocalListVersionSOAPResponse;
+        public event AccessLogHandler                        OnGetLocalListVersionSOAPResponse;
 
         #endregion
 
@@ -588,12 +584,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event RequestLogHandler         OnSendLocalListSOAPRequest;
+        public event RequestLogHandler                 OnSendLocalListSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event SendLocalListRequestDelegate    OnSendLocalListRequest;
+        public event OnSendLocalListRequestDelegate    OnSendLocalListRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -603,12 +599,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event SendLocalListResponseDelegate   OnSendLocalListResponse;
+        public event OnSendLocalListResponseDelegate   OnSendLocalListResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler          OnSendLocalListSOAPResponse;
+        public event AccessLogHandler                  OnSendLocalListSOAPResponse;
 
         #endregion
 
@@ -617,12 +613,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a reset SOAP request was received.
         /// </summary>
-        public event RequestLogHandler         OnClearCacheSOAPRequest;
+        public event RequestLogHandler              OnClearCacheSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event ClearCacheRequestDelegate    OnClearCacheRequest;
+        public event OnClearCacheRequestDelegate    OnClearCacheRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -632,12 +628,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event ClearCacheResponseDelegate   OnClearCacheResponse;
+        public event OnClearCacheResponseDelegate   OnClearCacheResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a reset request was sent.
         /// </summary>
-        public event AccessLogHandler          OnClearCacheSOAPResponse;
+        public event AccessLogHandler               OnClearCacheSOAPResponse;
 
         #endregion
 

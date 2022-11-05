@@ -21,8 +21,6 @@ using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
-using cloud.charging.open.protocols.OCPPv1_6.CP;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
@@ -30,6 +28,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP.v1_2;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
+
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// and connects to a charge point to invoke methods.
     /// </summary>
     public partial class CentralSystemSOAPClient : ASOAPClient,
-                                                   ICSClient
+                                                   ICentralSystemSOAPClient
     {
 
         #region Data
@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The default HTTP user agent string.
         /// </summary>
-        public new const           String  DefaultHTTPUserAgent  = "GraphDefined OCPP " + Version.Number + " CP Client";
+        public new const           String  DefaultHTTPUserAgent  = "GraphDefined OCPP " + Version.Number + " Central System SOAP Client";
 
         /// <summary>
         /// The default remote TCP port to connect to.
@@ -66,12 +66,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public ChargeBox_Id    ChargeBoxIdentity    { get; }
 
         /// <summary>
-        /// The sender identification.
-        /// </summary>
-        String IEventSender.Id
-            => nameof(CentralSystemSOAPClient);
-
-        /// <summary>
         /// The source URI of the SOAP message.
         /// </summary>
         public String          From                 { get; }
@@ -80,7 +74,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// The destination URI of the SOAP message.
         /// </summary>
         public String          To                   { get; }
-
 
         /// <summary>
         /// The attached OCPP CS client (HTTP/SOAP client) logger.
@@ -91,27 +84,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Events
 
-        #region OnCancelReservationRequest/-Response
+        #region OnResetRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a cancel reservation request will be send to a charge point.
+        /// An event fired whenever a reset request will be send to a charge point.
         /// </summary>
-        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+        public event OnResetRequestDelegate?     OnResetRequest;
 
         /// <summary>
-        /// An event fired whenever a cancel reservation SOAP request will be send to a charge point.
+        /// An event fired whenever a reset SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler?              OnCancelReservationSOAPRequest;
+        public event ClientRequestLogHandler?    OnResetSOAPRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a cancel reservation SOAP request was received.
+        /// An event fired whenever a response to a reset SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler?             OnCancelReservationSOAPResponse;
+        public event ClientResponseLogHandler?   OnResetSOAPResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a cancel reservation request was received.
+        /// An event fired whenever a response to a reset request was received.
         /// </summary>
-        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+        public event OnResetResponseDelegate?    OnResetResponse;
 
         #endregion
 
@@ -120,142 +113,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a change availability request will be send to a charge point.
         /// </summary>
-        public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+        public event OnChangeAvailabilityRequestDelegate?    OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event fired whenever a change availability SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler?               OnChangeAvailabilitySOAPRequest;
+        public event ClientRequestLogHandler?                OnChangeAvailabilitySOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a change availability SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler?              OnChangeAvailabilitySOAPResponse;
+        public event ClientResponseLogHandler?               OnChangeAvailabilitySOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a change availability request was received.
         /// </summary>
-        public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
-
-        #endregion
-
-        #region OnChangeConfigurationRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a change configuration request will be send to a charge point.
-        /// </summary>
-        public event OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
-
-        /// <summary>
-        /// An event fired whenever a change configuration SOAP request will be send to a charge point.
-        /// </summary>
-        public event ClientRequestLogHandler?                OnChangeConfigurationSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a change configuration SOAP request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?               OnChangeConfigurationSOAPResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a change configuration request was received.
-        /// </summary>
-        public event OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
-
-        #endregion
-
-        #region OnClearCacheRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a clear cache request will be send to a charge point.
-        /// </summary>
-        public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
-
-        /// <summary>
-        /// An event fired whenever a clear cache SOAP request will be send to a charge point.
-        /// </summary>
-        public event ClientRequestLogHandler?       OnClearCacheSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a clear cache SOAP request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?      OnClearCacheSOAPResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a clear cache request was received.
-        /// </summary>
-        public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
-
-        #endregion
-
-        #region OnClearChargingProfileRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a clear charging profile request will be send to a charge point.
-        /// </summary>
-        public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
-
-        /// <summary>
-        /// An event fired whenever a clear charging profile SOAP request will be send to a charge point.
-        /// </summary>
-        public event ClientRequestLogHandler?                 OnClearChargingProfileSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a clear charging profile SOAP request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?                OnClearChargingProfileSOAPResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a clear charging profile request was received.
-        /// </summary>
-        public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
-
-        #endregion
-
-        #region OnDataTransferRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a data transfer request will be send to a charge point.
-        /// </summary>
-        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
-
-        /// <summary>
-        /// An event fired whenever a data transfer SOAP request will be send to a charge point.
-        /// </summary>
-        public event ClientRequestLogHandler?         OnDataTransferSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a data transfer SOAP request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?        OnDataTransferSOAPResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a data transfer request was received.
-        /// </summary>
-        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
-
-        #endregion
-
-        #region OnGetCompositeScheduleRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a get composite schedule request will be send to a charge point.
-        /// </summary>
-        public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
-
-        /// <summary>
-        /// An event fired whenever a get composite schedule SOAP request will be send to a charge point.
-        /// </summary>
-        public event ClientRequestLogHandler?                 OnGetCompositeScheduleSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a get composite schedule SOAP request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?                OnGetCompositeScheduleSOAPResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a get composite schedule request was received.
-        /// </summary>
-        public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+        public event OnChangeAvailabilityResponseDelegate?   OnChangeAvailabilityResponse;
 
         #endregion
 
@@ -264,22 +137,70 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a get configuration request will be send to a charge point.
         /// </summary>
-        public event OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
+        public event OnGetConfigurationRequestDelegate?    OnGetConfigurationRequest;
 
         /// <summary>
         /// An event fired whenever a get configuration SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler?             OnGetConfigurationSOAPRequest;
+        public event ClientRequestLogHandler?              OnGetConfigurationSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a get configuration SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler?            OnGetConfigurationSOAPResponse;
+        public event ClientResponseLogHandler?             OnGetConfigurationSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a get configuration request was received.
         /// </summary>
-        public event OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
+        public event OnGetConfigurationResponseDelegate?   OnGetConfigurationResponse;
+
+        #endregion
+
+        #region OnChangeConfigurationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a change configuration request will be send to a charge point.
+        /// </summary>
+        public event OnChangeConfigurationRequestDelegate?    OnChangeConfigurationRequest;
+
+        /// <summary>
+        /// An event fired whenever a change configuration SOAP request will be send to a charge point.
+        /// </summary>
+        public event ClientRequestLogHandler?                 OnChangeConfigurationSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a change configuration SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                OnChangeConfigurationSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a change configuration request was received.
+        /// </summary>
+        public event OnChangeConfigurationResponseDelegate?   OnChangeConfigurationResponse;
+
+        #endregion
+
+        #region OnDataTransferRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a data transfer request will be send to a charge point.
+        /// </summary>
+        public event OnDataTransferRequestDelegate?    OnDataTransferRequest;
+
+        /// <summary>
+        /// An event fired whenever a data transfer SOAP request will be send to a charge point.
+        /// </summary>
+        public event ClientRequestLogHandler?          OnDataTransferSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a data transfer SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?         OnDataTransferSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a data transfer request was received.
+        /// </summary>
+        public event OnDataTransferResponseDelegate?   OnDataTransferResponse;
 
         #endregion
 
@@ -288,190 +209,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a get diagnostics request will be send to a charge point.
         /// </summary>
-        public event OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
+        public event OnGetDiagnosticsRequestDelegate?    OnGetDiagnosticsRequest;
 
         /// <summary>
         /// An event fired whenever a get diagnostics SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler?           OnGetDiagnosticsSOAPRequest;
+        public event ClientRequestLogHandler?            OnGetDiagnosticsSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a get diagnostics SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler?          OnGetDiagnosticsSOAPResponse;
+        public event ClientResponseLogHandler?           OnGetDiagnosticsSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a get diagnostics request was received.
         /// </summary>
-        public event OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
-
-        #endregion
-
-        #region OnGetLocalListVersionRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a get local list version request will be send to a charge point.
-        /// </summary>
-        public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
-
-        /// <summary>
-        /// An event fired whenever a get local list version SOAP request will be send to a charge point.
-        /// </summary>
-        public event ClientRequestLogHandler?                OnGetLocalListVersionSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a get local list version SOAP request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?               OnGetLocalListVersionSOAPResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a get local list version request was received.
-        /// </summary>
-        public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
-
-        #endregion
-
-        #region OnRemoteStartTransactionRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a remote start transaction request will be send to a charge point.
-        /// </summary>
-        public event OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
-
-        /// <summary>
-        /// An event fired whenever a remote start transaction SOAP request will be send to a charge point.
-        /// </summary>
-        public event ClientRequestLogHandler?                   OnRemoteStartTransactionSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a remote start transaction SOAP request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?                  OnRemoteStartTransactionSOAPResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a remote start transaction request was received.
-        /// </summary>
-        public event OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
-
-        #endregion
-
-        #region OnRemoteStopTransactionRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a remote stop transaction request will be send to a charge point.
-        /// </summary>
-        public event OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
-
-        /// <summary>
-        /// An event fired whenever a remote stop transaction SOAP request will be send to a charge point.
-        /// </summary>
-        public event ClientRequestLogHandler?                  OnRemoteStopTransactionSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a remote stop transaction SOAP request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?                 OnRemoteStopTransactionSOAPResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a remote stop transaction request was received.
-        /// </summary>
-        public event OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
-
-        #endregion
-
-        #region OnReserveNowRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a reserve now request will be send to a charge point.
-        /// </summary>
-        public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
-
-        /// <summary>
-        /// An event fired whenever a reserve now SOAP request will be send to a charge point.
-        /// </summary>
-        public event ClientRequestLogHandler?       OnReserveNowSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a reserve now SOAP request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?      OnReserveNowSOAPResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a reserve now request was received.
-        /// </summary>
-        public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
-
-        #endregion
-
-        #region OnResetRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a reset request will be send to a charge point.
-        /// </summary>
-        public event OnResetRequestDelegate?    OnResetRequest;
-
-        /// <summary>
-        /// An event fired whenever a reset SOAP request will be send to a charge point.
-        /// </summary>
-        public event ClientRequestLogHandler?   OnResetSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a reset SOAP request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?  OnResetSOAPResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a reset request was received.
-        /// </summary>
-        public event OnResetResponseDelegate?   OnResetResponse;
-
-        #endregion
-
-        #region OnSendLocalListRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a send local list request will be send to a charge point.
-        /// </summary>
-        public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
-
-        /// <summary>
-        /// An event fired whenever a send local list SOAP request will be send to a charge point.
-        /// </summary>
-        public event ClientRequestLogHandler?          OnSendLocalListSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a send local list SOAP request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?         OnSendLocalListSOAPResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a send local list request was received.
-        /// </summary>
-        public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
-
-        #endregion
-
-        #region OnSetChargingProfileRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a set charging profile request will be send to a charge point.
-        /// </summary>
-        public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
-
-        /// <summary>
-        /// An event fired whenever a set charging profile SOAP request will be send to a charge point.
-        /// </summary>
-        public event ClientRequestLogHandler?               OnSetChargingProfileSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a set charging profile SOAP request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?              OnSetChargingProfileSOAPResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a set charging profile request was received.
-        /// </summary>
-        public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+        public event OnGetDiagnosticsResponseDelegate?   OnGetDiagnosticsResponse;
 
         #endregion
 
@@ -480,46 +233,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a trigger message request will be send to a charge point.
         /// </summary>
-        public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+        public event OnTriggerMessageRequestDelegate?    OnTriggerMessageRequest;
 
         /// <summary>
         /// An event fired whenever a trigger message SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler?           OnTriggerMessageSOAPRequest;
+        public event ClientRequestLogHandler?            OnTriggerMessageSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a trigger message SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler?          OnTriggerMessageSOAPResponse;
+        public event ClientResponseLogHandler?           OnTriggerMessageSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a trigger message request was received.
         /// </summary>
-        public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
-
-        #endregion
-
-        #region OnUnlockConnectorRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a unlock connector request will be send to a charge point.
-        /// </summary>
-        public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
-
-        /// <summary>
-        /// An event fired whenever a unlock connector SOAP request will be send to a charge point.
-        /// </summary>
-        public event ClientRequestLogHandler?            OnUnlockConnectorSOAPRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a unlock connector SOAP request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?           OnUnlockConnectorSOAPResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a unlock connector request was received.
-        /// </summary>
-        public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+        public event OnTriggerMessageResponseDelegate?   OnTriggerMessageResponse;
 
         #endregion
 
@@ -528,22 +257,288 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a update firmware request will be send to a charge point.
         /// </summary>
-        public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+        public event OnUpdateFirmwareRequestDelegate?    OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event fired whenever a update firmware SOAP request will be send to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler?           OnUpdateFirmwareSOAPRequest;
+        public event ClientRequestLogHandler?            OnUpdateFirmwareSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a update firmware SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler?          OnUpdateFirmwareSOAPResponse;
+        public event ClientResponseLogHandler?           OnUpdateFirmwareSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a update firmware request was received.
         /// </summary>
-        public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+        public event OnUpdateFirmwareResponseDelegate?   OnUpdateFirmwareResponse;
+
+        #endregion
+
+
+        #region OnReserveNowRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a reserve now request will be send to a charge point.
+        /// </summary>
+        public event OnReserveNowRequestDelegate?    OnReserveNowRequest;
+
+        /// <summary>
+        /// An event fired whenever a reserve now SOAP request will be send to a charge point.
+        /// </summary>
+        public event ClientRequestLogHandler?        OnReserveNowSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a reserve now SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?       OnReserveNowSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a reserve now request was received.
+        /// </summary>
+        public event OnReserveNowResponseDelegate?   OnReserveNowResponse;
+
+        #endregion
+
+        #region OnCancelReservationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a cancel reservation request will be send to a charge point.
+        /// </summary>
+        public event OnCancelReservationRequestDelegate?    OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event fired whenever a cancel reservation SOAP request will be send to a charge point.
+        /// </summary>
+        public event ClientRequestLogHandler?               OnCancelReservationSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a cancel reservation SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?              OnCancelReservationSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a cancel reservation request was received.
+        /// </summary>
+        public event OnCancelReservationResponseDelegate?   OnCancelReservationResponse;
+
+        #endregion
+
+        #region OnRemoteStartTransactionRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a remote start transaction request will be send to a charge point.
+        /// </summary>
+        public event OnRemoteStartTransactionRequestDelegate?    OnRemoteStartTransactionRequest;
+
+        /// <summary>
+        /// An event fired whenever a remote start transaction SOAP request will be send to a charge point.
+        /// </summary>
+        public event ClientRequestLogHandler?                    OnRemoteStartTransactionSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a remote start transaction SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                   OnRemoteStartTransactionSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a remote start transaction request was received.
+        /// </summary>
+        public event OnRemoteStartTransactionResponseDelegate?   OnRemoteStartTransactionResponse;
+
+        #endregion
+
+        #region OnRemoteStopTransactionRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a remote stop transaction request will be send to a charge point.
+        /// </summary>
+        public event OnRemoteStopTransactionRequestDelegate?    OnRemoteStopTransactionRequest;
+
+        /// <summary>
+        /// An event fired whenever a remote stop transaction SOAP request will be send to a charge point.
+        /// </summary>
+        public event ClientRequestLogHandler?                   OnRemoteStopTransactionSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a remote stop transaction SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                  OnRemoteStopTransactionSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a remote stop transaction request was received.
+        /// </summary>
+        public event OnRemoteStopTransactionResponseDelegate?   OnRemoteStopTransactionResponse;
+
+        #endregion
+
+        #region OnSetChargingProfileRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a set charging profile request will be send to a charge point.
+        /// </summary>
+        public event OnSetChargingProfileRequestDelegate?    OnSetChargingProfileRequest;
+
+        /// <summary>
+        /// An event fired whenever a set charging profile SOAP request will be send to a charge point.
+        /// </summary>
+        public event ClientRequestLogHandler?                OnSetChargingProfileSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a set charging profile SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?               OnSetChargingProfileSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a set charging profile request was received.
+        /// </summary>
+        public event OnSetChargingProfileResponseDelegate?   OnSetChargingProfileResponse;
+
+        #endregion
+
+        #region OnClearChargingProfileRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a clear charging profile request will be send to a charge point.
+        /// </summary>
+        public event OnClearChargingProfileRequestDelegate?    OnClearChargingProfileRequest;
+
+        /// <summary>
+        /// An event fired whenever a clear charging profile SOAP request will be send to a charge point.
+        /// </summary>
+        public event ClientRequestLogHandler?                  OnClearChargingProfileSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a clear charging profile SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                 OnClearChargingProfileSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a clear charging profile request was received.
+        /// </summary>
+        public event OnClearChargingProfileResponseDelegate?   OnClearChargingProfileResponse;
+
+        #endregion
+
+        #region OnGetCompositeScheduleRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a get composite schedule request will be send to a charge point.
+        /// </summary>
+        public event OnGetCompositeScheduleRequestDelegate?    OnGetCompositeScheduleRequest;
+
+        /// <summary>
+        /// An event fired whenever a get composite schedule SOAP request will be send to a charge point.
+        /// </summary>
+        public event ClientRequestLogHandler?                  OnGetCompositeScheduleSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a get composite schedule SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                 OnGetCompositeScheduleSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a get composite schedule request was received.
+        /// </summary>
+        public event OnGetCompositeScheduleResponseDelegate?   OnGetCompositeScheduleResponse;
+
+        #endregion
+
+        #region OnUnlockConnectorRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a unlock connector request will be send to a charge point.
+        /// </summary>
+        public event OnUnlockConnectorRequestDelegate?    OnUnlockConnectorRequest;
+
+        /// <summary>
+        /// An event fired whenever a unlock connector SOAP request will be send to a charge point.
+        /// </summary>
+        public event ClientRequestLogHandler?             OnUnlockConnectorSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a unlock connector SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?            OnUnlockConnectorSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a unlock connector request was received.
+        /// </summary>
+        public event OnUnlockConnectorResponseDelegate?   OnUnlockConnectorResponse;
+
+        #endregion
+
+
+        #region OnGetLocalListVersionRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a get local list version request will be send to a charge point.
+        /// </summary>
+        public event OnGetLocalListVersionRequestDelegate?    OnGetLocalListVersionRequest;
+
+        /// <summary>
+        /// An event fired whenever a get local list version SOAP request will be send to a charge point.
+        /// </summary>
+        public event ClientRequestLogHandler?                 OnGetLocalListVersionSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a get local list version SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                OnGetLocalListVersionSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a get local list version request was received.
+        /// </summary>
+        public event OnGetLocalListVersionResponseDelegate?   OnGetLocalListVersionResponse;
+
+        #endregion
+
+        #region OnSendLocalListRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a send local list request will be send to a charge point.
+        /// </summary>
+        public event OnSendLocalListRequestDelegate?    OnSendLocalListRequest;
+
+        /// <summary>
+        /// An event fired whenever a send local list SOAP request will be send to a charge point.
+        /// </summary>
+        public event ClientRequestLogHandler?           OnSendLocalListSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a send local list SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?          OnSendLocalListSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a send local list request was received.
+        /// </summary>
+        public event OnSendLocalListResponseDelegate?   OnSendLocalListResponse;
+
+        #endregion
+
+        #region OnClearCacheRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a clear cache request will be send to a charge point.
+        /// </summary>
+        public event OnClearCacheRequestDelegate?    OnClearCacheRequest;
+
+        /// <summary>
+        /// An event fired whenever a clear cache SOAP request will be send to a charge point.
+        /// </summary>
+        public event ClientRequestLogHandler?        OnClearCacheSOAPRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a clear cache SOAP request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?       OnClearCacheSOAPResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a clear cache request was received.
+        /// </summary>
+        public event OnClearCacheResponseDelegate?   OnClearCacheResponse;
 
         #endregion
 
@@ -579,32 +574,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
-        public CentralSystemSOAPClient(ChargeBox_Id                          ChargeBoxIdentity,
-                                       String                                From,
-                                       String                                To,
+        public CentralSystemSOAPClient(ChargeBox_Id ChargeBoxIdentity,
+                                       String From,
+                                       String To,
 
-                                       URL                                   RemoteURL,
-                                       HTTPHostname?                         VirtualHostname              = null,
-                                       String?                               Description                  = null,
-                                       RemoteCertificateValidationCallback?  RemoteCertificateValidator   = null,
-                                       LocalCertificateSelectionCallback?    ClientCertificateSelector    = null,
-                                       X509Certificate?                      ClientCert                   = null,
-                                       SslProtocols?                         TLSProtocol                  = null,
-                                       Boolean?                              PreferIPv4                   = null,
-                                       String                                HTTPUserAgent                = DefaultHTTPUserAgent,
-                                       HTTPPath?                             URLPathPrefix                = null,
-                                       Tuple<String, String>?                WSSLoginPassword             = null,
-                                       HTTPContentType?                      HTTPContentType              = null,
-                                       TimeSpan?                             RequestTimeout               = null,
-                                       TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
-                                       UInt16?                               MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
-                                       Boolean                               UseHTTPPipelining            = false,
+                                       URL RemoteURL,
+                                       HTTPHostname? VirtualHostname = null,
+                                       String? Description = null,
+                                       RemoteCertificateValidationCallback? RemoteCertificateValidator = null,
+                                       LocalCertificateSelectionCallback? ClientCertificateSelector = null,
+                                       X509Certificate? ClientCert = null,
+                                       SslProtocols? TLSProtocol = null,
+                                       Boolean? PreferIPv4 = null,
+                                       String HTTPUserAgent = DefaultHTTPUserAgent,
+                                       HTTPPath? URLPathPrefix = null,
+                                       Tuple<String, String>? WSSLoginPassword = null,
+                                       HTTPContentType? HTTPContentType = null,
+                                       TimeSpan? RequestTimeout = null,
+                                       TransmissionRetryDelayDelegate? TransmissionRetryDelay = null,
+                                       UInt16? MaxNumberOfRetries = DefaultMaxNumberOfRetries,
+                                       Boolean UseHTTPPipelining = false,
 
-                                       String?                               LoggingPath                  = null,
-                                       String                                LoggingContext               = CSClientLogger.DefaultContext,
-                                       LogfileCreatorDelegate?               LogfileCreator               = null,
-                                       HTTPClientLogger?                     HTTPLogger                   = null,
-                                       DNSClient?                            DNSClient                    = null)
+                                       String? LoggingPath = null,
+                                       String LoggingContext = CSClientLogger.DefaultContext,
+                                       LogfileCreatorDelegate? LogfileCreator = null,
+                                       HTTPClientLogger? HTTPLogger = null,
+                                       DNSClient? DNSClient = null)
 
             : base(RemoteURL,
                    VirtualHostname,
@@ -630,21 +625,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #region Initial checks
 
             if (ChargeBoxIdentity.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ChargeBoxIdentity),  "The given charge box identification must not be null or empty!");
+                throw new ArgumentNullException(nameof(ChargeBoxIdentity), "The given charge box identification must not be null or empty!");
 
             if (From.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(From),               "The given SOAP message source must not be null or empty!");
+                throw new ArgumentNullException(nameof(From), "The given SOAP message source must not be null or empty!");
 
             if (To.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(To),                 "The given SOAP message destination must not be null or empty!");
+                throw new ArgumentNullException(nameof(To), "The given SOAP message destination must not be null or empty!");
 
             #endregion
 
-            this.ChargeBoxIdentity  = ChargeBoxIdentity;
-            this.From               = From;
-            this.To                 = To;
+            this.ChargeBoxIdentity = ChargeBoxIdentity;
+            this.From = From;
+            this.To = To;
 
-            this.Logger             = new CSClientLogger(this,
+            this.Logger = new CSClientLogger(this,
                                                          LoggingPath,
                                                          LoggingContext,
                                                          LogfileCreator);
@@ -729,7 +724,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        private String NextMessageId()
+        private static String NextMessageId()
             => Guid.NewGuid().ToString();
 
 
@@ -739,57 +734,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         // this Charge Point, then the Charge Point MUST send a SOAP Fault Response message, indicating that the
         // identity is wrong(e.g.sub-code is “IdentityMismatch”).
 
-        #region Reset                 (Request, ...)
+        #region Reset                 (Request)
 
         /// <summary>
-        /// Reset the charging station.
+        /// Reset the given charge box.
         /// </summary>
         /// <param name="Request">A reset request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<ResetResponse>>
+        public async Task<ResetResponse>
 
-            Reset(ResetRequest        Request,
-
-                  DateTime?           Timestamp           = null,
-                  CancellationToken?  CancellationToken   = null,
-                  EventTracking_Id?   EventTrackingId     = null,
-                  TimeSpan?           RequestTimeout      = null)
+            Reset(ResetRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given boot notification request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<ResetResponse> result = null;
-
-            #endregion
-
             #region Send OnResetRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnResetRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnResetRequest?.Invoke(startTime,
                                        this,
                                        Request);
 
@@ -802,109 +766,112 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
+            HTTPResponse<ResetResponse>? result = null;
+
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
                 {
 
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/Reset",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        Request.ToXML()),
-                                                     "Reset",
-                                                     RequestLogDelegate:   OnResetSOAPRequest,
-                                                     ResponseLogDelegate:  OnResetSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnResetSOAPRequest,
+                                                    ResponseLogDelegate:  OnResetSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
 
-                                                     #region OnSuccess
+                    #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
-                                                                                                          ResetResponse.Parse),
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         ResetResponse.Parse),
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnSOAPFault
+                    #region OnSOAPFault
 
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
+                        SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                         return new HTTPResponse<ResetResponse>(httpresponse,
-                                                                                                     new ResetResponse(
-                                                                                                         Request,
-                                                                                                         Result.Format(
-                                                                                                             "Invalid SOAP => " +
-                                                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<ResetResponse>(httpresponse,
+                                                               new ResetResponse(
+                                                                   Request,
+                                                                   Result.Format(
+                                                                       "Invalid SOAP => " +
+                                                                       httpresponse.HTTPBody.ToUTF8String()
+                                                                   )
+                                                               ),
+                                                               IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnHTTPError
+                    #region OnHTTPError
 
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendHTTPError(timestamp, this, httpresponse);
+                        SendHTTPError(timestamp, this, httpresponse);
 
-                                                         return new HTTPResponse<ResetResponse>(httpresponse,
-                                                                                                     new ResetResponse(
-                                                                                                         Request,
-                                                                                                         Result.Server(
-                                                                                                              httpresponse.HTTPStatusCode.ToString() +
-                                                                                                              " => " +
-                                                                                                              httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<ResetResponse>(httpresponse,
+                                                               new ResetResponse(
+                                                                   Request,
+                                                                   Result.Server(
+                                                                        httpresponse.HTTPStatusCode.ToString() +
+                                                                        " => " +
+                                                                        httpresponse.HTTPBody.ToUTF8String()
+                                                                   )
+                                                               ),
+                                                               IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnException
+                    #region OnException
 
-                                                     OnException: (timestamp, sender, exception) => {
+                    OnException: (timestamp, sender, exception) =>
+                    {
 
-                                                         SendException(timestamp, sender, exception);
+                        SendException(timestamp, sender, exception);
 
-                                                         return HTTPResponse<ResetResponse>.ExceptionThrown(new ResetResponse(
-                                                                                                                     Request,
-                                                                                                                     Result.Format(exception.Message +
-                                                                                                                                   " => " +
-                                                                                                                                   exception.StackTrace)),
-                                                                                                                 exception);
+                        return HTTPResponse<ResetResponse>.ExceptionThrown(new ResetResponse(
+                                                                               Request,
+                                                                               Result.Format(exception.Message +
+                                                                                             " => " +
+                                                                                             exception.StackTrace)),
+                                                                           exception);
 
-                                                     }
+                    }
 
-                                                     #endregion
+                    #endregion
 
-                                                    );
+                   );
 
                 }
 
@@ -914,21 +881,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result is null)
-                result = HTTPResponse<ResetResponse>.OK(new ResetResponse(Request,
-                                                                          Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<ResetResponse>.OK(new ResetResponse(Request,
+                                                                        Result.OK("Nothing to upload!")));
 
 
             #region Send OnResetResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnResetResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnResetResponse?.Invoke(endTime,
                                         this,
                                         Request,
                                         result.Content,
-                                        org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -938,73 +906,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
         #endregion
 
-        #region ChangeAvailability    (ConnectorId, Availability, ...)
+        #region ChangeAvailability    (Request)
 
         /// <summary>
-        /// Change the availability of a connector.
+        /// Change the availability of the given charge box connector.
         /// </summary>
-        /// <param name="ConnectorId">The identification of the connector for which its availability should be changed. Id '0' (zero) is used if the availability of the entire charge point and all its connectors should be changed.</param>
-        /// <param name="Availability">The new availability of the charge point or charge point connector.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<ChangeAvailabilityResponse>>
+        /// <param name="Request">A change availability request.</param>
+        public async Task<ChangeAvailabilityResponse>
 
-            ChangeAvailability(Connector_Id        ConnectorId,
-                               Availabilities      Availability,
-
-                               DateTime?           Timestamp           = null,
-                               CancellationToken?  CancellationToken   = null,
-                               EventTracking_Id?   EventTrackingId     = null,
-                               TimeSpan?           RequestTimeout      = null)
+            ChangeAvailability(ChangeAvailabilityRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (ConnectorId.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ConnectorId),  "The given connector identification must not be null or empty!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<ChangeAvailabilityResponse> result = null;
-
-            #endregion
-
             #region Send OnChangeAvailabilityRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnChangeAvailabilityRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                    Timestamp.Value,
+                OnChangeAvailabilityRequest?.Invoke(startTime,
                                                     this,
-                                                    Description,
-                                                    EventTrackingId,
-                                                    ChargeBoxIdentity,
-                                                    ConnectorId,
-                                                    Availability,
-                                                    RequestTimeout);
+                                                    Request);
 
             }
             catch (Exception e)
@@ -1015,114 +944,111 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new ChangeAvailabilityRequest(ChargeBoxIdentity,
-                                                        ConnectorId,
-                                                        Availability);
-
+            HTTPResponse<ChangeAvailabilityResponse>? result = null;
 
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
                 {
 
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/ChangeAvailability",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "ChangeAvailability",
-                                                     RequestLogDelegate:   OnChangeAvailabilitySOAPRequest,
-                                                     ResponseLogDelegate:  OnChangeAvailabilitySOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnChangeAvailabilitySOAPRequest,
+                                                    ResponseLogDelegate:  OnChangeAvailabilitySOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
 
-                                                     #region OnSuccess
+                    #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          ChangeAvailabilityResponse.Parse),
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         ChangeAvailabilityResponse.Parse),
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnSOAPFault
+                    #region OnSOAPFault
 
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
+                        SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                         return new HTTPResponse<ChangeAvailabilityResponse>(httpresponse,
-                                                                                                     new ChangeAvailabilityResponse(
-                                                                                                         request,
-                                                                                                         Result.Format(
-                                                                                                             "Invalid SOAP => " +
-                                                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<ChangeAvailabilityResponse>(httpresponse,
+                                                                            new ChangeAvailabilityResponse(
+                                                                                Request,
+                                                                                Result.Format(
+                                                                                    "Invalid SOAP => " +
+                                                                                    httpresponse.HTTPBody.ToUTF8String()
+                                                                                )
+                                                                            ),
+                                                                            IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnHTTPError
+                    #region OnHTTPError
 
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendHTTPError(timestamp, this, httpresponse);
+                        SendHTTPError(timestamp, this, httpresponse);
 
-                                                         return new HTTPResponse<ChangeAvailabilityResponse>(httpresponse,
-                                                                                                     new ChangeAvailabilityResponse(
-                                                                                                         request,
-                                                                                                         Result.Server(
-                                                                                                              httpresponse.HTTPStatusCode.ToString() +
-                                                                                                              " => " +
-                                                                                                              httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<ChangeAvailabilityResponse>(httpresponse,
+                                                                            new ChangeAvailabilityResponse(
+                                                                                Request,
+                                                                                Result.Server(
+                                                                                     httpresponse.HTTPStatusCode.ToString() +
+                                                                                     " => " +
+                                                                                     httpresponse.HTTPBody.ToUTF8String()
+                                                                                )
+                                                                            ),
+                                                                            IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnException
+                    #region OnException
 
-                                                     OnException: (timestamp, sender, exception) => {
+                    OnException: (timestamp, sender, exception) => {
 
-                                                         SendException(timestamp, sender, exception);
+                        SendException(timestamp, sender, exception);
 
-                                                         return HTTPResponse<ChangeAvailabilityResponse>.ExceptionThrown(new ChangeAvailabilityResponse(
-                                                                                                                     request,
-                                                                                                                     Result.Format(exception.Message +
-                                                                                                                                   " => " +
-                                                                                                                                   exception.StackTrace)),
-                                                                                                                 exception);
+                        return HTTPResponse<ChangeAvailabilityResponse>.ExceptionThrown(new ChangeAvailabilityResponse(
+                                                                                            Request,
+                                                                                            Result.Format(exception.Message +
+                                                                                                          " => " +
+                                                                                                          exception.StackTrace)),
+                                                                                        exception);
 
-                                                     }
+                    }
 
-                                                     #endregion
+                    #endregion
 
-                                                    );
+                   );
 
                 }
 
@@ -1132,27 +1058,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result is null)
-                result = HTTPResponse<ChangeAvailabilityResponse>.OK(new ChangeAvailabilityResponse(request,
-                                                                                                    Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<ChangeAvailabilityResponse>.OK(new ChangeAvailabilityResponse(Request,
+                                                                                                  Result.OK("Nothing to upload!")));
 
 
             #region Send OnChangeAvailabilityResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnChangeAvailabilityResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                     Timestamp.Value,
+                OnChangeAvailabilityResponse?.Invoke(endTime,
                                                      this,
-                                                     Description,
-                                                     EventTrackingId,
-                                                     ChargeBoxIdentity,
-                                                     ConnectorId,
-                                                     Availability,
-                                                     RequestTimeout,
+                                                     Request,
                                                      result.Content,
-                                                     org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                     endTime - startTime);
 
             }
             catch (Exception e)
@@ -1162,66 +1083,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
         #endregion
 
-        #region GetConfiguration      (Keys = null, ...)
+        #region GetConfiguration      (Request)
 
         /// <summary>
-        /// Get the configuration of the charging station.
+        /// Get the configuration of the given charge box.
         /// </summary>
-        /// <param name="Keys">An enumeration of keys for which the configuration is requested. Return all keys if empty.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<GetConfigurationResponse>>
+        /// <param name="Request">A get configuration request.</param>
+        public async Task<GetConfigurationResponse>
 
-            GetConfiguration(IEnumerable<String>?  Keys                = null,
-
-                             DateTime?             Timestamp           = null,
-                             CancellationToken?    CancellationToken   = null,
-                             EventTracking_Id?     EventTrackingId     = null,
-                             TimeSpan?             RequestTimeout      = null)
+            GetConfiguration(GetConfigurationRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<GetConfigurationResponse> result = null;
-
-            #endregion
-
             #region Send OnGetConfigurationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnGetConfigurationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                  Timestamp.Value,
+                OnGetConfigurationRequest?.Invoke(startTime,
                                                   this,
-                                                  Description,
-                                                  EventTrackingId,
-                                                  ChargeBoxIdentity,
-                                                  Keys,
-                                                  RequestTimeout);
+                                                  Request);
 
             }
             catch (Exception e)
@@ -1232,113 +1121,111 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new GetConfigurationRequest(ChargeBoxIdentity,
-                                                      Keys);
-
+            HTTPResponse<GetConfigurationResponse>? result = null;
 
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
                 {
 
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/GetConfiguration",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "GetConfiguration",
-                                                     RequestLogDelegate:   OnGetConfigurationSOAPRequest,
-                                                     ResponseLogDelegate:  OnGetConfigurationSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnGetConfigurationSOAPRequest,
+                                                    ResponseLogDelegate:  OnGetConfigurationSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
 
-                                                     #region OnSuccess
+                    #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          GetConfigurationResponse.Parse),
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         GetConfigurationResponse.Parse),
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnSOAPFault
+                    #region OnSOAPFault
 
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
+                        SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                         return new HTTPResponse<GetConfigurationResponse>(httpresponse,
-                                                                                                     new GetConfigurationResponse(
-                                                                                                         request,
-                                                                                                         Result.Format(
-                                                                                                             "Invalid SOAP => " +
-                                                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<GetConfigurationResponse>(httpresponse,
+                                                                          new GetConfigurationResponse(
+                                                                              Request,
+                                                                              Result.Format(
+                                                                                  "Invalid SOAP => " +
+                                                                                  httpresponse.HTTPBody.ToUTF8String()
+                                                                              )
+                                                                          ),
+                                                                          IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnHTTPError
+                    #region OnHTTPError
 
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendHTTPError(timestamp, this, httpresponse);
+                        SendHTTPError(timestamp, this, httpresponse);
 
-                                                         return new HTTPResponse<GetConfigurationResponse>(httpresponse,
-                                                                                                     new GetConfigurationResponse(
-                                                                                                         request,
-                                                                                                         Result.Server(
-                                                                                                              httpresponse.HTTPStatusCode.ToString() +
-                                                                                                              " => " +
-                                                                                                              httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<GetConfigurationResponse>(httpresponse,
+                                                                          new GetConfigurationResponse(
+                                                                              Request,
+                                                                              Result.Server(
+                                                                                   httpresponse.HTTPStatusCode.ToString() +
+                                                                                   " => " +
+                                                                                   httpresponse.HTTPBody.ToUTF8String()
+                                                                              )
+                                                                          ),
+                                                                          IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnException
+                    #region OnException
 
-                                                     OnException: (timestamp, sender, exception) => {
+                    OnException: (timestamp, sender, exception) => {
 
-                                                         SendException(timestamp, sender, exception);
+                        SendException(timestamp, sender, exception);
 
-                                                         return HTTPResponse<GetConfigurationResponse>.ExceptionThrown(new GetConfigurationResponse(
-                                                                                                                     request,
-                                                                                                                     Result.Format(exception.Message +
-                                                                                                                                   " => " +
-                                                                                                                                   exception.StackTrace)),
-                                                                                                                 exception);
+                        return HTTPResponse<GetConfigurationResponse>.ExceptionThrown(new GetConfigurationResponse(
+                                                                                          Request,
+                                                                                          Result.Format(exception.Message +
+                                                                                                        " => " +
+                                                                                                        exception.StackTrace)),
+                                                                                      exception);
 
-                                                     }
+                    }
 
-                                                     #endregion
+                    #endregion
 
-                                                    );
+                   );
 
                 }
 
@@ -1348,26 +1235,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result is null)
-                result = HTTPResponse<GetConfigurationResponse>.OK(new GetConfigurationResponse(request,
-                                                                                                Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<GetConfigurationResponse>.OK(new GetConfigurationResponse(Request,
+                                                                                              Result.OK("Nothing to upload!")));
 
 
             #region Send OnGetConfigurationResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnGetConfigurationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                   Timestamp.Value,
+                OnGetConfigurationResponse?.Invoke(endTime,
                                                    this,
-                                                   Description,
-                                                   EventTrackingId,
-                                                   ChargeBoxIdentity,
-                                                   Keys,
-                                                   RequestTimeout,
+                                                   Request,
                                                    result.Content,
-                                                   org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                   endTime - startTime);
 
             }
             catch (Exception e)
@@ -1377,73 +1260,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
         #endregion
 
-        #region ChangeConfiguration   (Key, Value, ...)
+        #region ChangeConfiguration   (Request)
 
         /// <summary>
-        /// Change a configuration key within the charging station.
+        /// Change the configuration of the given charge box.
         /// </summary>
-        /// <param name="Key">The name of the configuration setting to change.</param>
-        /// <param name="Value">The new value as string for the setting.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<ChangeConfigurationResponse>>
+        /// <param name="Request">A change configuration request.</param>
+        public async Task<ChangeConfigurationResponse>
 
-            ChangeConfiguration(String              Key,
-                                String              Value,
-
-                                DateTime?           Timestamp           = null,
-                                CancellationToken?  CancellationToken   = null,
-                                EventTracking_Id?   EventTrackingId     = null,
-                                TimeSpan?           RequestTimeout      = null)
+            ChangeConfiguration(ChangeConfigurationRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (Key?.Trim().IsNullOrEmpty() == true)
-                throw new ArgumentNullException(nameof(Key),  "The given configuration key must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<ChangeConfigurationResponse> result = null;
-
-            #endregion
-
             #region Send OnChangeConfigurationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnChangeConfigurationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                     Timestamp.Value,
+                OnChangeConfigurationRequest?.Invoke(startTime,
                                                      this,
-                                                     Description,
-                                                     EventTrackingId,
-                                                     ChargeBoxIdentity,
-                                                     Key,
-                                                     Value,
-                                                     RequestTimeout);
+                                                     Request);
 
             }
             catch (Exception e)
@@ -1454,114 +1298,111 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new ChangeConfigurationRequest(ChargeBoxIdentity,
-                                                         Key,
-                                                         Value);
-
+            HTTPResponse<ChangeConfigurationResponse>? result = null;
 
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
                 {
 
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/ChangeConfiguration",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "ChangeConfiguration",
-                                                     RequestLogDelegate:   OnChangeConfigurationSOAPRequest,
-                                                     ResponseLogDelegate:  OnChangeConfigurationSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnChangeConfigurationSOAPRequest,
+                                                    ResponseLogDelegate:  OnChangeConfigurationSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
 
-                                                     #region OnSuccess
+                    #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          ChangeConfigurationResponse.Parse),
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         ChangeConfigurationResponse.Parse),
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnSOAPFault
+                    #region OnSOAPFault
 
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
+                        SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                         return new HTTPResponse<ChangeConfigurationResponse>(httpresponse,
-                                                                                                     new ChangeConfigurationResponse(
-                                                                                                         request,
-                                                                                                         Result.Format(
-                                                                                                             "Invalid SOAP => " +
-                                                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<ChangeConfigurationResponse>(httpresponse,
+                                                                             new ChangeConfigurationResponse(
+                                                                                 Request,
+                                                                                 Result.Format(
+                                                                                     "Invalid SOAP => " +
+                                                                                     httpresponse.HTTPBody.ToUTF8String()
+                                                                                 )
+                                                                             ),
+                                                                             IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnHTTPError
+                    #region OnHTTPError
 
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendHTTPError(timestamp, this, httpresponse);
+                        SendHTTPError(timestamp, this, httpresponse);
 
-                                                         return new HTTPResponse<ChangeConfigurationResponse>(httpresponse,
-                                                                                                     new ChangeConfigurationResponse(
-                                                                                                         request,
-                                                                                                         Result.Server(
-                                                                                                              httpresponse.HTTPStatusCode.ToString() +
-                                                                                                              " => " +
-                                                                                                              httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<ChangeConfigurationResponse>(httpresponse,
+                                                                             new ChangeConfigurationResponse(
+                                                                                 Request,
+                                                                                 Result.Server(
+                                                                                      httpresponse.HTTPStatusCode.ToString() +
+                                                                                      " => " +
+                                                                                      httpresponse.HTTPBody.ToUTF8String()
+                                                                                 )
+                                                                             ),
+                                                                             IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnException
+                    #region OnException
 
-                                                     OnException: (timestamp, sender, exception) => {
+                    OnException: (timestamp, sender, exception) => {
 
-                                                         SendException(timestamp, sender, exception);
+                        SendException(timestamp, sender, exception);
 
-                                                         return HTTPResponse<ChangeConfigurationResponse>.ExceptionThrown(new ChangeConfigurationResponse(
-                                                                                                                     request,
-                                                                                                                     Result.Format(exception.Message +
-                                                                                                                                   " => " +
-                                                                                                                                   exception.StackTrace)),
-                                                                                                                 exception);
+                        return HTTPResponse<ChangeConfigurationResponse>.ExceptionThrown(new ChangeConfigurationResponse(
+                                                                                             Request,
+                                                                                             Result.Format(exception.Message +
+                                                                                                           " => " +
+                                                                                                           exception.StackTrace)),
+                                                                                         exception);
 
-                                                     }
+                    }
 
-                                                     #endregion
+                    #endregion
 
-                                                    );
+                   );
 
                 }
 
@@ -1571,27 +1412,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result is null)
-                result = HTTPResponse<ChangeConfigurationResponse>.OK(new ChangeConfigurationResponse(request,
-                                                                                                      Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<ChangeConfigurationResponse>.OK(new ChangeConfigurationResponse(Request,
+                                                                                                    Result.OK("Nothing to upload!")));
 
 
             #region Send OnChangeConfigurationResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnChangeConfigurationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                      Timestamp.Value,
+                OnChangeConfigurationResponse?.Invoke(endTime,
                                                       this,
-                                                      Description,
-                                                      EventTrackingId,
-                                                      ChargeBoxIdentity,
-                                                      Key,
-                                                      Value,
-                                                      RequestTimeout,
+                                                      Request,
                                                       result.Content,
-                                                      org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                      endTime - startTime);
 
             }
             catch (Exception e)
@@ -1601,75 +1437,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
         #endregion
 
-        #region DataTransfer          (VendorId, MessageId = null, Data = null, ...)
+        #region DataTransfer          (Request)
 
         /// <summary>
-        /// Send the given vendor-specific data to the central system.
+        /// Transfer the given data to the given charge box.
         /// </summary>
-        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">The charge point model identification.</param>
-        /// <param name="Data">The serial number of the charge point.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<CP.DataTransferResponse>>
+        /// <param name="Request">A data transfer request.</param>
+        public async Task<CP.DataTransferResponse>
 
-            DataTransfer(String              VendorId,
-                         String?             MessageId           = null,
-                         String?             Data                = null,
-
-                         DateTime?           Timestamp           = null,
-                         CancellationToken?  CancellationToken   = null,
-                         EventTracking_Id?   EventTrackingId     = null,
-                         TimeSpan?           RequestTimeout      = null)
+            DataTransfer(DataTransferRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (VendorId.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(VendorId),  "The given vendor identification must not be null or empty!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<CP.DataTransferResponse> result = null;
-
-            #endregion
-
             #region Send OnDataTransferRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnDataTransferRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                              Timestamp.Value,
+                OnDataTransferRequest?.Invoke(startTime,
                                               this,
-                                              Description,
-                                              EventTrackingId,
-                                              VendorId,
-                                              MessageId,
-                                              Data,
-                                              RequestTimeout);
+                                              Request);
 
             }
             catch (Exception e)
@@ -1680,114 +1475,111 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new DataTransferRequest(ChargeBoxIdentity,
-                                                  VendorId,
-                                                  MessageId,
-                                                  Data);
+            HTTPResponse<CP.DataTransferResponse>? result = null;
 
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
                 {
 
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/DataTransfer",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "DataTransfer",
-                                                     RequestLogDelegate:   OnDataTransferSOAPRequest,
-                                                     ResponseLogDelegate:  OnDataTransferSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    "DataTransfer",
+                                                    RequestLogDelegate:   OnDataTransferSOAPRequest,
+                                                    ResponseLogDelegate:  OnDataTransferSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
 
-                                                     #region OnSuccess
+                    #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          CP.DataTransferResponse.Parse),
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         CP.DataTransferResponse.Parse),
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnSOAPFault
+                    #region OnSOAPFault
 
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
+                        SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                         return new HTTPResponse<CP.DataTransferResponse>(httpresponse,
-                                                                                                          new CP.DataTransferResponse(
-                                                                                                              request,
-                                                                                                              Result.Format(
-                                                                                                                  "Invalid SOAP => " +
-                                                                                                                  httpresponse.HTTPBody.ToUTF8String()
-                                                                                                              )
-                                                                                                          ),
-                                                                                                          IsFault: true);
+                        return new HTTPResponse<CP.DataTransferResponse>(httpresponse,
+                                                                         new CP.DataTransferResponse(
+                                                                             Request,
+                                                                             Result.Format(
+                                                                                 "Invalid SOAP => " +
+                                                                                 httpresponse.HTTPBody.ToUTF8String()
+                                                                             )
+                                                                         ),
+                                                                         IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnHTTPError
+                    #region OnHTTPError
 
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendHTTPError(timestamp, this, httpresponse);
+                        SendHTTPError(timestamp, this, httpresponse);
 
-                                                         return new HTTPResponse<CP.DataTransferResponse>(httpresponse,
-                                                                                                          new CP.DataTransferResponse(
-                                                                                                              request,
-                                                                                                              Result.Server(
-                                                                                                                   httpresponse.HTTPStatusCode.ToString() +
-                                                                                                                   " => " +
-                                                                                                                   httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                              )
-                                                                                                          ),
-                                                                                                          IsFault: true);
+                        return new HTTPResponse<CP.DataTransferResponse>(httpresponse,
+                                                                         new CP.DataTransferResponse(
+                                                                             Request,
+                                                                             Result.Server(
+                                                                                  httpresponse.HTTPStatusCode.ToString() +
+                                                                                  " => " +
+                                                                                  httpresponse.HTTPBody.ToUTF8String()
+                                                                             )
+                                                                         ),
+                                                                         IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnException
+                    #region OnException
 
-                                                     OnException: (timestamp, sender, exception) => {
+                    OnException: (timestamp, sender, exception) => {
 
-                                                         SendException(timestamp, sender, exception);
+                        SendException(timestamp, sender, exception);
 
-                                                         return HTTPResponse<CP.DataTransferResponse>.ExceptionThrown(new CP.DataTransferResponse(
-                                                                                                                          request,
-                                                                                                                          Result.Format(exception.Message +
-                                                                                                                                        " => " +
-                                                                                                                                        exception.StackTrace)),
-                                                                                                                      exception);
+                        return HTTPResponse<CP.DataTransferResponse>.ExceptionThrown(new CP.DataTransferResponse(
+                                                                                         Request,
+                                                                                         Result.Format(exception.Message +
+                                                                                                       " => " +
+                                                                                                       exception.StackTrace)),
+                                                                                     exception);
 
-                                                     }
+                    }
 
-                                                     #endregion
+                    #endregion
 
-                                                    );
+                   );
 
                 }
 
@@ -1797,27 +1589,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result is null)
-                result = HTTPResponse<CP.DataTransferResponse>.OK(new CP.DataTransferResponse(request,
-                                                                                                Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<CP.DataTransferResponse>.OK(new CP.DataTransferResponse(Request,
+                                                                                            Result.OK("Nothing to upload!")));
 
 
             #region Send OnDataTransferResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnDataTransferResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                               Timestamp.Value,
+                OnDataTransferResponse?.Invoke(endTime,
                                                this,
-                                               Description,
-                                               EventTrackingId,
-                                               VendorId,
-                                               MessageId,
-                                               Data,
-                                               RequestTimeout,
+                                               Request,
                                                result.Content,
-                                               org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                               endTime - startTime);
 
             }
             catch (Exception e)
@@ -1827,82 +1614,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
         #endregion
 
-        #region GetDiagnostics        (Location, StartTime = null, StopTime = null, Retries = null, RetryInterval = null, ...)
+        #region GetDiagnostics        (Request)
 
         /// <summary>
-        /// Get diagonstic data from the charging station.
+        /// Upload diagnostics data of the given charge box to the given file location.
         /// </summary>
-        /// <param name="Location">The URI where the diagnostics file shall be uploaded to.</param>
-        /// <param name="StartTime">The timestamp of the oldest logging information to include in the diagnostics.</param>
-        /// <param name="StopTime">The timestamp of the latest logging information to include in the diagnostics.</param>
-        /// <param name="Retries">The optional number of retries of a charge point for trying to upload the diagnostics before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
-        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<GetDiagnosticsResponse>>
+        /// <param name="Request">A get diagnostics request.</param>
+        public async Task<GetDiagnosticsResponse>
 
-            GetDiagnostics(String              Location,
-                           DateTime?           StartTime           = null,
-                           DateTime?           StopTime            = null,
-                           Byte?               Retries             = null,
-                           TimeSpan?           RetryInterval       = null,
-
-                           DateTime?           Timestamp           = null,
-                           CancellationToken?  CancellationToken   = null,
-                           EventTracking_Id?   EventTrackingId     = null,
-                           TimeSpan?           RequestTimeout      = null)
+            GetDiagnostics(GetDiagnosticsRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (Location?.Trim().IsNullOrEmpty() == true)
-                throw new ArgumentNullException(nameof(ChargeBoxIdentity),  "The given charge box identification must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<GetDiagnosticsResponse> result = null;
-
-            #endregion
-
             #region Send OnGetDiagnosticsRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnGetDiagnosticsRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                Timestamp.Value,
+                OnGetDiagnosticsRequest?.Invoke(startTime,
                                                 this,
-                                                Description,
-                                                EventTrackingId,
-                                                ChargeBoxIdentity,
-                                                Location,
-                                                StartTime,
-                                                StopTime,
-                                                Retries,
-                                                RetryInterval,
-                                                RequestTimeout);
+                                                Request);
 
             }
             catch (Exception e)
@@ -1913,117 +1652,111 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new GetDiagnosticsRequest(ChargeBoxIdentity,
-                                                    Location,
-                                                    StartTime,
-                                                    StopTime,
-                                                    Retries,
-                                                    RetryInterval);
-
+            HTTPResponse<GetDiagnosticsResponse>? result = null;
 
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
                 {
 
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/GetDiagnostics",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "GetDiagnostics",
-                                                     RequestLogDelegate:   OnGetDiagnosticsSOAPRequest,
-                                                     ResponseLogDelegate:  OnGetDiagnosticsSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnGetDiagnosticsSOAPRequest,
+                                                    ResponseLogDelegate:  OnGetDiagnosticsSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
 
-                                                     #region OnSuccess
+                    #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          GetDiagnosticsResponse.Parse),
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         GetDiagnosticsResponse.Parse),
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnSOAPFault
+                    #region OnSOAPFault
 
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
+                        SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                         return new HTTPResponse<GetDiagnosticsResponse>(httpresponse,
-                                                                                                     new GetDiagnosticsResponse(
-                                                                                                         request,
-                                                                                                         Result.Format(
-                                                                                                             "Invalid SOAP => " +
-                                                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<GetDiagnosticsResponse>(httpresponse,
+                                                                        new GetDiagnosticsResponse(
+                                                                            Request,
+                                                                            Result.Format(
+                                                                                "Invalid SOAP => " +
+                                                                                httpresponse.HTTPBody.ToUTF8String()
+                                                                            )
+                                                                        ),
+                                                                        IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnHTTPError
+                    #region OnHTTPError
 
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendHTTPError(timestamp, this, httpresponse);
+                        SendHTTPError(timestamp, this, httpresponse);
 
-                                                         return new HTTPResponse<GetDiagnosticsResponse>(httpresponse,
-                                                                                                     new GetDiagnosticsResponse(
-                                                                                                         request,
-                                                                                                         Result.Server(
-                                                                                                              httpresponse.HTTPStatusCode.ToString() +
-                                                                                                              " => " +
-                                                                                                              httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<GetDiagnosticsResponse>(httpresponse,
+                                                                        new GetDiagnosticsResponse(
+                                                                            Request,
+                                                                            Result.Server(
+                                                                                 httpresponse.HTTPStatusCode.ToString() +
+                                                                                 " => " +
+                                                                                 httpresponse.HTTPBody.ToUTF8String()
+                                                                            )
+                                                                        ),
+                                                                        IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnException
+                    #region OnException
 
-                                                     OnException: (timestamp, sender, exception) => {
+                    OnException: (timestamp, sender, exception) => {
 
-                                                         SendException(timestamp, sender, exception);
+                        SendException(timestamp, sender, exception);
 
-                                                         return HTTPResponse<GetDiagnosticsResponse>.ExceptionThrown(new GetDiagnosticsResponse(
-                                                                                                                     request,
-                                                                                                                     Result.Format(exception.Message +
-                                                                                                                                   " => " +
-                                                                                                                                   exception.StackTrace)),
-                                                                                                                 exception);
+                        return HTTPResponse<GetDiagnosticsResponse>.ExceptionThrown(new GetDiagnosticsResponse(
+                                                                                        Request,
+                                                                                        Result.Format(exception.Message +
+                                                                                                      " => " +
+                                                                                                      exception.StackTrace)),
+                                                                                    exception);
 
-                                                     }
+                    }
 
-                                                     #endregion
+                    #endregion
 
-                                                    );
+                   );
 
                 }
 
@@ -2033,30 +1766,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result is null)
-                result = HTTPResponse<GetDiagnosticsResponse>.OK(new GetDiagnosticsResponse(request,
-                                                                                            Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<GetDiagnosticsResponse>.OK(new GetDiagnosticsResponse(Request,
+                                                                                          Result.OK("Nothing to upload!")));
 
 
             #region Send OnGetDiagnosticsResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnGetDiagnosticsResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                 Timestamp.Value,
+                OnGetDiagnosticsResponse?.Invoke(endTime,
                                                  this,
-                                                 Description,
-                                                 EventTrackingId,
-                                                 ChargeBoxIdentity,
-                                                 Location,
-                                                 StartTime,
-                                                 StopTime,
-                                                 Retries,
-                                                 RetryInterval,
-                                                 RequestTimeout,
+                                                 Request,
                                                  result.Content,
-                                                 org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                 endTime - startTime);
 
             }
             catch (Exception e)
@@ -2066,69 +1791,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
         #endregion
 
-        #region TriggerMessage        (RequestedMessage, ConnectorId = null, ...)
+        #region TriggerMessage        (Request)
 
         /// <summary>
-        /// Set a message trigger within the charging station.
+        /// Create a trigger for the given message at the given charge box connector.
         /// </summary>
-        /// <param name="RequestedMessage">The message to trigger.</param>
-        /// <param name="ConnectorId">Optional connector identification whenever the message applies to a specific connector.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<TriggerMessageResponse>>
+        /// <param name="Request">A trigger message request.</param>
+        public async Task<TriggerMessageResponse>
 
-            TriggerMessage(MessageTriggers     RequestedMessage,
-                           Connector_Id?       ConnectorId         = null,
-
-                           DateTime?           Timestamp           = null,
-                           CancellationToken?  CancellationToken   = null,
-                           EventTracking_Id?   EventTrackingId     = null,
-                           TimeSpan?           RequestTimeout      = null)
+            TriggerMessage(TriggerMessageRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<TriggerMessageResponse> result = null;
-
-            #endregion
-
             #region Send OnTriggerMessageRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnTriggerMessageRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                Timestamp.Value,
+                OnTriggerMessageRequest?.Invoke(startTime,
                                                 this,
-                                                Description,
-                                                EventTrackingId,
-                                                ChargeBoxIdentity,
-                                                RequestedMessage,
-                                                ConnectorId,
-                                                RequestTimeout);
+                                                Request);
 
             }
             catch (Exception e)
@@ -2139,114 +1829,111 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new TriggerMessageRequest(ChargeBoxIdentity,
-                                                    RequestedMessage,
-                                                    ConnectorId);
-
+            HTTPResponse<TriggerMessageResponse>? result = null;
 
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
                 {
 
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/TriggerMessage",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "TriggerMessage",
-                                                     RequestLogDelegate:   OnTriggerMessageSOAPRequest,
-                                                     ResponseLogDelegate:  OnTriggerMessageSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnTriggerMessageSOAPRequest,
+                                                    ResponseLogDelegate:  OnTriggerMessageSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
 
-                                                     #region OnSuccess
+                    #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          TriggerMessageResponse.Parse),
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         TriggerMessageResponse.Parse),
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnSOAPFault
+                    #region OnSOAPFault
 
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
+                        SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                         return new HTTPResponse<TriggerMessageResponse>(httpresponse,
-                                                                                                     new TriggerMessageResponse(
-                                                                                                         request,
-                                                                                                         Result.Format(
-                                                                                                             "Invalid SOAP => " +
-                                                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<TriggerMessageResponse>(httpresponse,
+                                                                        new TriggerMessageResponse(
+                                                                            Request,
+                                                                            Result.Format(
+                                                                                "Invalid SOAP => " +
+                                                                                httpresponse.HTTPBody.ToUTF8String()
+                                                                            )
+                                                                        ),
+                                                                        IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnHTTPError
+                    #region OnHTTPError
 
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendHTTPError(timestamp, this, httpresponse);
+                        SendHTTPError(timestamp, this, httpresponse);
 
-                                                         return new HTTPResponse<TriggerMessageResponse>(httpresponse,
-                                                                                                     new TriggerMessageResponse(
-                                                                                                         request,
-                                                                                                         Result.Server(
-                                                                                                              httpresponse.HTTPStatusCode.ToString() +
-                                                                                                              " => " +
-                                                                                                              httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<TriggerMessageResponse>(httpresponse,
+                                                                        new TriggerMessageResponse(
+                                                                            Request,
+                                                                            Result.Server(
+                                                                                 httpresponse.HTTPStatusCode.ToString() +
+                                                                                 " => " +
+                                                                                 httpresponse.HTTPBody.ToUTF8String()
+                                                                            )
+                                                                        ),
+                                                                        IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnException
+                    #region OnException
 
-                                                     OnException: (timestamp, sender, exception) => {
+                    OnException: (timestamp, sender, exception) => {
 
-                                                         SendException(timestamp, sender, exception);
+                        SendException(timestamp, sender, exception);
 
-                                                         return HTTPResponse<TriggerMessageResponse>.ExceptionThrown(new TriggerMessageResponse(
-                                                                                                                     request,
-                                                                                                                     Result.Format(exception.Message +
-                                                                                                                                   " => " +
-                                                                                                                                   exception.StackTrace)),
-                                                                                                                 exception);
+                        return HTTPResponse<TriggerMessageResponse>.ExceptionThrown(new TriggerMessageResponse(
+                                                                                        Request,
+                                                                                        Result.Format(exception.Message +
+                                                                                                      " => " +
+                                                                                                      exception.StackTrace)),
+                                                                                    exception);
 
-                                                     }
+                    }
 
-                                                     #endregion
+                    #endregion
 
-                                                    );
+                   );
 
                 }
 
@@ -2256,27 +1943,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result is null)
-                result = HTTPResponse<TriggerMessageResponse>.OK(new TriggerMessageResponse(request,
-                                                                                            Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<TriggerMessageResponse>.OK(new TriggerMessageResponse(Request,
+                                                                                          Result.OK("Nothing to upload!")));
 
 
             #region Send OnTriggerMessageResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnTriggerMessageResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                 Timestamp.Value,
+                OnTriggerMessageResponse?.Invoke(endTime,
                                                  this,
-                                                 Description,
-                                                 EventTrackingId,
-                                                 ChargeBoxIdentity,
-                                                 RequestedMessage,
-                                                 ConnectorId,
-                                                 RequestTimeout,
+                                                 Request,
                                                  result.Content,
-                                                 org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                 endTime - startTime);
 
             }
             catch (Exception e)
@@ -2286,79 +1968,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
         #endregion
 
-        #region UpdateFirmware        (Location, RetrieveDate, Retries = null, RetryInterval = null, ...)
+        #region UpdateFirmware        (Request)
 
         /// <summary>
-        /// Reserve a connector for the given IdTag and till the given timestamp.
+        /// Initiate a firmware download from the given location at the given charge box.
         /// </summary>
-        /// <param name="Location">The URI where to download the firmware.</param>
-        /// <param name="RetrieveDate">The timestamp after which the charge point must retrieve the firmware.</param>
-        /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
-        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<UpdateFirmwareResponse>>
+        /// <param name="Request">An update firmware request.</param>
+        public async Task<UpdateFirmwareResponse>
 
-            UpdateFirmware(String              Location,
-                           DateTime            RetrieveDate,
-                           Byte?               Retries            = null,
-                           TimeSpan?           RetryInterval      = null,
-
-                           DateTime?           Timestamp          = null,
-                           CancellationToken?  CancellationToken  = null,
-                           EventTracking_Id?   EventTrackingId    = null,
-                           TimeSpan?           RequestTimeout     = null)
+            UpdateFirmware(UpdateFirmwareRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (Location?.Trim().IsNullOrEmpty() == true)
-                throw new ArgumentNullException(nameof(Location), "The given location must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<UpdateFirmwareResponse> result = null;
-
-            #endregion
-
             #region Send OnUpdateFirmwareRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnUpdateFirmwareRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                Timestamp.Value,
+                OnUpdateFirmwareRequest?.Invoke(startTime,
                                                 this,
-                                                Description,
-                                                EventTrackingId,
-                                                ChargeBoxIdentity,
-                                                Location,
-                                                RetrieveDate,
-                                                Retries,
-                                                RetryInterval,
-                                                RequestTimeout);
+                                                Request);
 
             }
             catch (Exception e)
@@ -2369,116 +2006,111 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new UpdateFirmwareRequest(ChargeBoxIdentity,
-                                                    Location,
-                                                    RetrieveDate,
-                                                    Retries,
-                                                    RetryInterval);
-
+            HTTPResponse<UpdateFirmwareResponse>? result = null;
 
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
                 {
 
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/UpdateFirmware",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "UpdateFirmware",
-                                                     RequestLogDelegate:   OnUpdateFirmwareSOAPRequest,
-                                                     ResponseLogDelegate:  OnUpdateFirmwareSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnUpdateFirmwareSOAPRequest,
+                                                    ResponseLogDelegate:  OnUpdateFirmwareSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
 
-                                                     #region OnSuccess
+                    #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          UpdateFirmwareResponse.Parse),
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         UpdateFirmwareResponse.Parse),
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnSOAPFault
+                    #region OnSOAPFault
 
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
+                        SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                         return new HTTPResponse<UpdateFirmwareResponse>(httpresponse,
-                                                                                                     new UpdateFirmwareResponse(
-                                                                                                         request,
-                                                                                                         Result.Format(
-                                                                                                             "Invalid SOAP => " +
-                                                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<UpdateFirmwareResponse>(httpresponse,
+                                                                        new UpdateFirmwareResponse(
+                                                                            Request,
+                                                                            Result.Format(
+                                                                                "Invalid SOAP => " +
+                                                                                httpresponse.HTTPBody.ToUTF8String()
+                                                                            )
+                                                                        ),
+                                                                        IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnHTTPError
+                    #region OnHTTPError
 
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendHTTPError(timestamp, this, httpresponse);
+                        SendHTTPError(timestamp, this, httpresponse);
 
-                                                         return new HTTPResponse<UpdateFirmwareResponse>(httpresponse,
-                                                                                                     new UpdateFirmwareResponse(
-                                                                                                         request,
-                                                                                                         Result.Server(
-                                                                                                              httpresponse.HTTPStatusCode.ToString() +
-                                                                                                              " => " +
-                                                                                                              httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<UpdateFirmwareResponse>(httpresponse,
+                                                                        new UpdateFirmwareResponse(
+                                                                            Request,
+                                                                            Result.Server(
+                                                                                 httpresponse.HTTPStatusCode.ToString() +
+                                                                                 " => " +
+                                                                                 httpresponse.HTTPBody.ToUTF8String()
+                                                                            )
+                                                                        ),
+                                                                        IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnException
+                    #region OnException
 
-                                                     OnException: (timestamp, sender, exception) => {
+                    OnException: (timestamp, sender, exception) => {
 
-                                                         SendException(timestamp, sender, exception);
+                        SendException(timestamp, sender, exception);
 
-                                                         return HTTPResponse<UpdateFirmwareResponse>.ExceptionThrown(new UpdateFirmwareResponse(
-                                                                                                                     request,
-                                                                                                                     Result.Format(exception.Message +
-                                                                                                                                   " => " +
-                                                                                                                                   exception.StackTrace)),
-                                                                                                                 exception);
+                        return HTTPResponse<UpdateFirmwareResponse>.ExceptionThrown(new UpdateFirmwareResponse(
+                                                                                        Request,
+                                                                                        Result.Format(exception.Message +
+                                                                                                      " => " +
+                                                                                                      exception.StackTrace)),
+                                                                                    exception);
 
-                                                     }
+                    }
 
-                                                     #endregion
+                    #endregion
 
-                                                    );
+                   );
 
                 }
 
@@ -2488,29 +2120,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result is null)
-                result = HTTPResponse<UpdateFirmwareResponse>.OK(new UpdateFirmwareResponse(request,
-                                                                                            Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<UpdateFirmwareResponse>.OK(new UpdateFirmwareResponse(Request,
+                                                                                          Result.OK("Nothing to upload!")));
 
 
             #region Send OnUpdateFirmwareResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnUpdateFirmwareResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                 Timestamp.Value,
+                OnUpdateFirmwareResponse?.Invoke(endTime,
                                                  this,
-                                                 Description,
-                                                 EventTrackingId,
-                                                 ChargeBoxIdentity,
-                                                 Location,
-                                                 RetrieveDate,
-                                                 Retries,
-                                                 RetryInterval,
-                                                 RequestTimeout,
+                                                 Request,
                                                  result.Content,
-                                                 org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                 endTime - startTime);
 
             }
             catch (Exception e)
@@ -2520,706 +2145,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
         #endregion
 
 
-        #region GetLocalListVersion   (...)
+        #region ReserveNow            (Request)
 
         /// <summary>
-        /// Get the version of the local list within the charging station.
-        /// </summary>
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<GetLocalListVersionResponse>>
-
-            GetLocalListVersion(DateTime?           Timestamp           = null,
-                                CancellationToken?  CancellationToken   = null,
-                                EventTracking_Id?   EventTrackingId     = null,
-                                TimeSpan?           RequestTimeout      = null)
-
-        {
-
-            #region Initial checks
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<GetLocalListVersionResponse> result = null;
-
-            #endregion
-
-            #region Send OnGetLocalListVersionRequest event
-
-            try
-            {
-
-                OnGetLocalListVersionRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                     Timestamp.Value,
-                                                     this,
-                                                     Description,
-                                                     EventTrackingId,
-                                                     ChargeBoxIdentity,
-                                                     RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnGetLocalListVersionRequest));
-            }
-
-            #endregion
-
-
-            var request = new GetLocalListVersionRequest(ChargeBoxIdentity);
-
-
-            try
-            {
-
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
-                {
-
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/GetLocalListVersion",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "GetLocalListVersion",
-                                                     RequestLogDelegate:   OnGetLocalListVersionSOAPRequest,
-                                                     ResponseLogDelegate:  OnGetLocalListVersionSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
-
-                                                     #region OnSuccess
-
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          GetLocalListVersionResponse.Parse),
-
-                                                     #endregion
-
-                                                     #region OnSOAPFault
-
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
-
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
-
-                                                         return new HTTPResponse<GetLocalListVersionResponse>(httpresponse,
-                                                                                                     new GetLocalListVersionResponse(
-                                                                                                         request,
-                                                                                                         Result.Format(
-                                                                                                             "Invalid SOAP => " +
-                                                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
-
-                                                     },
-
-                                                     #endregion
-
-                                                     #region OnHTTPError
-
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
-
-                                                         SendHTTPError(timestamp, this, httpresponse);
-
-                                                         return new HTTPResponse<GetLocalListVersionResponse>(httpresponse,
-                                                                                                     new GetLocalListVersionResponse(
-                                                                                                         request,
-                                                                                                         Result.Server(
-                                                                                                              httpresponse.HTTPStatusCode.ToString() +
-                                                                                                              " => " +
-                                                                                                              httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
-
-                                                     },
-
-                                                     #endregion
-
-                                                     #region OnException
-
-                                                     OnException: (timestamp, sender, exception) => {
-
-                                                         SendException(timestamp, sender, exception);
-
-                                                         return HTTPResponse<GetLocalListVersionResponse>.ExceptionThrown(new GetLocalListVersionResponse(
-                                                                                                                     request,
-                                                                                                                     Result.Format(exception.Message +
-                                                                                                                                   " => " +
-                                                                                                                                   exception.StackTrace)),
-                                                                                                                 exception);
-
-                                                     }
-
-                                                     #endregion
-
-                                                    );
-
-                }
-
-            }
-            catch (Exception e)
-            {
-
-            }
-
-            if (result is null)
-                result = HTTPResponse<GetLocalListVersionResponse>.OK(new GetLocalListVersionResponse(request,
-                                                                                                      Result.OK("Nothing to upload!")));
-
-
-            #region Send OnGetLocalListVersionResponse event
-
-            try
-            {
-
-                OnGetLocalListVersionResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                      Timestamp.Value,
-                                                      this,
-                                                      Description,
-                                                      EventTrackingId,
-                                                      ChargeBoxIdentity,
-                                                      RequestTimeout,
-                                                      result.Content,
-                                                      org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnGetLocalListVersionResponse));
-            }
-
-            #endregion
-
-            return result;
-
-        }
-
-        #endregion
-
-        #region SendLocalList         (ListVersion, UpdateType, LocalAuthorizationList = null, ...)
-
-        /// <summary>
-        /// Send a local list to the charging station.
-        /// </summary>
-        /// <param name="ListVersion">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
-        /// <param name="UpdateType">The type of update (full or differential).</param>
-        /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charge point. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<SendLocalListResponse>>
-
-            SendLocalList(UInt64                           ListVersion,
-                          UpdateTypes                      UpdateType,
-                          IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
-
-                          DateTime?                        Timestamp                = null,
-                          CancellationToken?               CancellationToken        = null,
-                          EventTracking_Id?                EventTrackingId          = null,
-                          TimeSpan?                        RequestTimeout           = null)
-
-        {
-
-            #region Initial checks
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<SendLocalListResponse> result = null;
-
-            #endregion
-
-            #region Send OnSendLocalListRequest event
-
-            try
-            {
-
-                OnSendLocalListRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                               Timestamp.Value,
-                                               this,
-                                               Description,
-                                               EventTrackingId,
-                                               ChargeBoxIdentity,
-                                               ListVersion,
-                                               UpdateType,
-                                               LocalAuthorizationList,
-                                               RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnSendLocalListRequest));
-            }
-
-            #endregion
-
-
-            var request = new SendLocalListRequest(ChargeBoxIdentity,
-                                                   ListVersion,
-                                                   UpdateType,
-                                                   LocalAuthorizationList);
-
-
-            try
-            {
-
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
-                {
-
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/SendLocalList",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "SendLocalList",
-                                                     RequestLogDelegate:   OnSendLocalListSOAPRequest,
-                                                     ResponseLogDelegate:  OnSendLocalListSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
-
-                                                     #region OnSuccess
-
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          SendLocalListResponse.Parse),
-
-                                                     #endregion
-
-                                                     #region OnSOAPFault
-
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
-
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
-
-                                                         return new HTTPResponse<SendLocalListResponse>(httpresponse,
-                                                                                                     new SendLocalListResponse(
-                                                                                                         request,
-                                                                                                         Result.Format(
-                                                                                                             "Invalid SOAP => " +
-                                                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
-
-                                                     },
-
-                                                     #endregion
-
-                                                     #region OnHTTPError
-
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
-
-                                                         SendHTTPError(timestamp, this, httpresponse);
-
-                                                         return new HTTPResponse<SendLocalListResponse>(httpresponse,
-                                                                                                     new SendLocalListResponse(
-                                                                                                         request,
-                                                                                                         Result.Server(
-                                                                                                              httpresponse.HTTPStatusCode.ToString() +
-                                                                                                              " => " +
-                                                                                                              httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
-
-                                                     },
-
-                                                     #endregion
-
-                                                     #region OnException
-
-                                                     OnException: (timestamp, sender, exception) => {
-
-                                                         SendException(timestamp, sender, exception);
-
-                                                         return HTTPResponse<SendLocalListResponse>.ExceptionThrown(new SendLocalListResponse(
-                                                                                                                     request,
-                                                                                                                     Result.Format(exception.Message +
-                                                                                                                                   " => " +
-                                                                                                                                   exception.StackTrace)),
-                                                                                                                 exception);
-
-                                                     }
-
-                                                     #endregion
-
-                                                    );
-
-                }
-
-            }
-            catch (Exception e)
-            {
-
-            }
-
-            if (result is null)
-                result = HTTPResponse<SendLocalListResponse>.OK(new SendLocalListResponse(request,
-                                                                                          Result.OK("Nothing to upload!")));
-
-
-            #region Send OnSendLocalListResponse event
-
-            try
-            {
-
-                OnSendLocalListResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                               Timestamp.Value,
-                                               this,
-                                               Description,
-                                               EventTrackingId,
-                                               ChargeBoxIdentity,
-                                               ListVersion,
-                                               UpdateType,
-                                               LocalAuthorizationList,
-                                               RequestTimeout,
-                                               result.Content,
-                                               org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnSendLocalListResponse));
-            }
-
-            #endregion
-
-            return result;
-
-        }
-
-        #endregion
-
-        #region ClearCache            (...)
-
-        /// <summary>
-        /// Clear the cache of the charging station.
-        /// </summary>
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<ClearCacheResponse>>
-
-            ClearCache(DateTime?           Timestamp           = null,
-                       CancellationToken?  CancellationToken   = null,
-                       EventTracking_Id?   EventTrackingId     = null,
-                       TimeSpan?           RequestTimeout      = null)
-
-        {
-
-            #region Initial checks
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<ClearCacheResponse> result = null;
-
-            #endregion
-
-            #region Send OnClearCacheRequest event
-
-            try
-            {
-
-                OnClearCacheRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                            Timestamp.Value,
-                                            this,
-                                            Description,
-                                            EventTrackingId,
-                                            ChargeBoxIdentity,
-                                            RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnClearCacheRequest));
-            }
-
-            #endregion
-
-
-            var request = new ClearCacheRequest(ChargeBoxIdentity);
-
-
-            try
-            {
-
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
-                {
-
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/ClearCache",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "ClearCache",
-                                                     RequestLogDelegate:   OnClearCacheSOAPRequest,
-                                                     ResponseLogDelegate:  OnClearCacheSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
-
-                                                     #region OnSuccess
-
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          ClearCacheResponse.Parse),
-
-                                                     #endregion
-
-                                                     #region OnSOAPFault
-
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
-
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
-
-                                                         return new HTTPResponse<ClearCacheResponse>(httpresponse,
-                                                                                                     new ClearCacheResponse(
-                                                                                                         request,
-                                                                                                         Result.Format(
-                                                                                                             "Invalid SOAP => " +
-                                                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
-
-                                                     },
-
-                                                     #endregion
-
-                                                     #region OnHTTPError
-
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
-
-                                                         SendHTTPError(timestamp, this, httpresponse);
-
-                                                         return new HTTPResponse<ClearCacheResponse>(httpresponse,
-                                                                                                     new ClearCacheResponse(
-                                                                                                         request,
-                                                                                                         Result.Server(
-                                                                                                              httpresponse.HTTPStatusCode.ToString() +
-                                                                                                              " => " +
-                                                                                                              httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
-
-                                                     },
-
-                                                     #endregion
-
-                                                     #region OnException
-
-                                                     OnException: (timestamp, sender, exception) => {
-
-                                                         SendException(timestamp, sender, exception);
-
-                                                         return HTTPResponse<ClearCacheResponse>.ExceptionThrown(new ClearCacheResponse(
-                                                                                                                     request,
-                                                                                                                     Result.Format(exception.Message +
-                                                                                                                                   " => " +
-                                                                                                                                   exception.StackTrace)),
-                                                                                                                 exception);
-
-                                                     }
-
-                                                     #endregion
-
-                                                    );
-
-                }
-
-            }
-            catch (Exception e)
-            {
-
-            }
-
-            if (result is null)
-                result = HTTPResponse<ClearCacheResponse>.OK(new ClearCacheResponse(request,
-                                                                                    Result.OK("Nothing to upload!")));
-
-
-            #region Send OnClearCacheResponse event
-
-            try
-            {
-
-                OnClearCacheResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                             Timestamp.Value,
-                                             this,
-                                             Description,
-                                             EventTrackingId,
-                                             ChargeBoxIdentity,
-                                             RequestTimeout,
-                                             result.Content,
-                                             org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnClearCacheResponse));
-            }
-
-            #endregion
-
-            return result;
-
-        }
-
-        #endregion
-
-
-        #region ReserveNow            (Request, ...)
-
-        /// <summary>
-        /// Reserve a connector for the given IdTag and till the given timestamp.
+        /// Create a charging reservation at the given charge box connector.
         /// </summary>
         /// <param name="Request">A reserve now request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<ReserveNowResponse>>
+        public async Task<ReserveNowResponse>
 
-            ReserveNow(ReserveNowRequest   Request,
-
-                       DateTime?           Timestamp           = null,
-                       CancellationToken?  CancellationToken   = null,
-                       EventTracking_Id?   EventTrackingId     = null,
-                       TimeSpan?           RequestTimeout      = null)
+            ReserveNow(ReserveNowRequest Request)
 
         {
-
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given reserve now request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<ReserveNowResponse> result = null;
-
-            #endregion
 
             #region Send OnReserveNowRequest event
 
+            var startTime = Timestamp.Now;
+
             try
             {
 
-                OnReserveNowRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnReserveNowRequest?.Invoke(startTime,
                                             this,
                                             Request);
 
@@ -3232,109 +2184,111 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
+            HTTPResponse<ReserveNowResponse>? result = null;
+
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
                 {
 
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/ReserveNow",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        Request.ToXML()),
-                                                     "ReserveNow",
-                                                     RequestLogDelegate:   OnReserveNowSOAPRequest,
-                                                     ResponseLogDelegate:  OnReserveNowSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnReserveNowSOAPRequest,
+                                                    ResponseLogDelegate:  OnReserveNowSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
 
-                                                     #region OnSuccess
+                    #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
-                                                                                                          ReserveNowResponse.Parse),
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         ReserveNowResponse.Parse),
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnSOAPFault
+                    #region OnSOAPFault
 
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
+                        SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                         return new HTTPResponse<ReserveNowResponse>(httpresponse,
-                                                                                                     new ReserveNowResponse(
-                                                                                                         Request,
-                                                                                                         Result.Format(
-                                                                                                             "Invalid SOAP => " +
-                                                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<ReserveNowResponse>(httpresponse,
+                                                                    new ReserveNowResponse(
+                                                                        Request,
+                                                                        Result.Format(
+                                                                            "Invalid SOAP => " +
+                                                                            httpresponse.HTTPBody.ToUTF8String()
+                                                                        )
+                                                                    ),
+                                                                    IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnHTTPError
+                    #region OnHTTPError
 
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendHTTPError(timestamp, this, httpresponse);
+                        SendHTTPError(timestamp, this, httpresponse);
 
-                                                         return new HTTPResponse<ReserveNowResponse>(httpresponse,
-                                                                                                     new ReserveNowResponse(
-                                                                                                         Request,
-                                                                                                         Result.Server(
-                                                                                                              httpresponse.HTTPStatusCode.ToString() +
-                                                                                                              " => " +
-                                                                                                              httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<ReserveNowResponse>(httpresponse,
+                                                                    new ReserveNowResponse(
+                                                                        Request,
+                                                                        Result.Server(
+                                                                             httpresponse.HTTPStatusCode.ToString() +
+                                                                             " => " +
+                                                                             httpresponse.HTTPBody.ToUTF8String()
+                                                                        )
+                                                                    ),
+                                                                    IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnException
+                    #region OnException
 
-                                                     OnException: (timestamp, sender, exception) => {
+                    OnException: (timestamp, sender, exception) => {
 
-                                                         SendException(timestamp, sender, exception);
+                        SendException(timestamp, sender, exception);
 
-                                                         return HTTPResponse<ReserveNowResponse>.ExceptionThrown(new ReserveNowResponse(
-                                                                                                                     Request,
-                                                                                                                     Result.Format(exception.Message +
-                                                                                                                                   " => " +
-                                                                                                                                   exception.StackTrace)),
-                                                                                                                 exception);
+                        return HTTPResponse<ReserveNowResponse>.ExceptionThrown(new ReserveNowResponse(
+                                                                                    Request,
+                                                                                    Result.Format(exception.Message +
+                                                                                                  " => " +
+                                                                                                  exception.StackTrace)),
+                                                                                exception);
 
-                                                     }
+                    }
 
-                                                     #endregion
+                    #endregion
 
-                                                    );
+                   );
 
                 }
 
@@ -3344,21 +2298,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result is null)
-                result = HTTPResponse<ReserveNowResponse>.OK(new ReserveNowResponse(Request,
-                                                                                    Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<ReserveNowResponse>.OK(new ReserveNowResponse(Request,
+                                                                                  Result.OK("Nothing to upload!")));
 
 
             #region Send OnReserveNowResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnReserveNowResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnReserveNowResponse?.Invoke(endTime,
                                              this,
                                              Request,
                                              result.Content,
-                                             org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                             endTime - startTime);
 
             }
             catch (Exception e)
@@ -3368,70 +2323,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
         #endregion
 
-        #region CancelReservation     (ReservationId, ...)
+        #region CancelReservation     (Request)
 
         /// <summary>
-        /// Cancel the given reservation.
+        /// Cancel the given charging reservation at the given charge box.
         /// </summary>
-        /// <param name="ReservationId">The unique identification of this reservation.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<CancelReservationResponse>>
+        /// <param name="Request">A cancel reservation request.</param>
+        public async Task<CancelReservationResponse>
 
-            CancelReservation(Reservation_Id      ReservationId,
-
-                              DateTime?           Timestamp           = null,
-                              CancellationToken?  CancellationToken   = null,
-                              EventTracking_Id?   EventTrackingId     = null,
-                              TimeSpan?           RequestTimeout      = null)
+            CancelReservation(CancelReservationRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (ReservationId.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ReservationId),  "The given reservation identification must not be null or empty!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<CancelReservationResponse> result = null;
-
-            #endregion
-
             #region Send OnCancelReservationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnCancelReservationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                   Timestamp.Value,
+                OnCancelReservationRequest?.Invoke(startTime,
                                                    this,
-                                                   Description,
-                                                   EventTrackingId,
-                                                   ChargeBoxIdentity,
-                                                   ReservationId,
-                                                   RequestTimeout);
+                                                   Request);
 
             }
             catch (Exception e)
@@ -3442,113 +2361,111 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new CancelReservationRequest(ChargeBoxIdentity,
-                                                       ReservationId);
-
+            HTTPResponse<CancelReservationResponse>? result = null;
 
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
                 {
 
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/CancelReservation",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "CancelReservation",
-                                                     RequestLogDelegate:   OnCancelReservationSOAPRequest,
-                                                     ResponseLogDelegate:  OnCancelReservationSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnCancelReservationSOAPRequest,
+                                                    ResponseLogDelegate:  OnCancelReservationSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
 
-                                                     #region OnSuccess
+                    #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          CancelReservationResponse.Parse),
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         CancelReservationResponse.Parse),
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnSOAPFault
+                    #region OnSOAPFault
 
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
+                        SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                         return new HTTPResponse<CancelReservationResponse>(httpresponse,
-                                                                                                            new CancelReservationResponse(
-                                                                                                                request,
-                                                                                                                Result.Format(
-                                                                                                                    "Invalid SOAP => " +
-                                                                                                                    httpresponse.HTTPBody.ToUTF8String()
-                                                                                                                )
-                                                                                                            ),
-                                                                                                            IsFault: true);
+                        return new HTTPResponse<CancelReservationResponse>(httpresponse,
+                                                                           new CancelReservationResponse(
+                                                                               Request,
+                                                                               Result.Format(
+                                                                                   "Invalid SOAP => " +
+                                                                                   httpresponse.HTTPBody.ToUTF8String()
+                                                                               )
+                                                                           ),
+                                                                           IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnHTTPError
+                    #region OnHTTPError
 
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendHTTPError(timestamp, this, httpresponse);
+                        SendHTTPError(timestamp, this, httpresponse);
 
-                                                         return new HTTPResponse<CancelReservationResponse>(httpresponse,
-                                                                                                            new CancelReservationResponse(
-                                                                                                                request,
-                                                                                                                Result.Server(
-                                                                                                                     httpresponse.HTTPStatusCode.ToString() +
-                                                                                                                     " => " +
-                                                                                                                     httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                                )
-                                                                                                            ),
-                                                                                                            IsFault: true);
+                        return new HTTPResponse<CancelReservationResponse>(httpresponse,
+                                                                           new CancelReservationResponse(
+                                                                               Request,
+                                                                               Result.Server(
+                                                                                    httpresponse.HTTPStatusCode.ToString() +
+                                                                                    " => " +
+                                                                                    httpresponse.HTTPBody.ToUTF8String()
+                                                                               )
+                                                                           ),
+                                                                           IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnException
+                    #region OnException
 
-                                                     OnException: (timestamp, sender, exception) => {
+                    OnException: (timestamp, sender, exception) => {
 
-                                                         SendException(timestamp, sender, exception);
+                        SendException(timestamp, sender, exception);
 
-                                                         return HTTPResponse<CancelReservationResponse>.ExceptionThrown(new CancelReservationResponse(
-                                                                                                                            request,
-                                                                                                                            Result.Format(exception.Message +
-                                                                                                                                          " => " +
-                                                                                                                                          exception.StackTrace)),
-                                                                                                                        exception);
+                        return HTTPResponse<CancelReservationResponse>.ExceptionThrown(new CancelReservationResponse(
+                                                                                           Request,
+                                                                                           Result.Format(exception.Message +
+                                                                                                         " => " +
+                                                                                                         exception.StackTrace)),
+                                                                                       exception);
 
-                                                     }
+                    }
 
-                                                     #endregion
+                    #endregion
 
-                                                    );
+                   );
 
                 }
 
@@ -3558,26 +2475,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result is null)
-                result = HTTPResponse<CancelReservationResponse>.OK(new CancelReservationResponse(request,
-                                                                                                  Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<CancelReservationResponse>.OK(new CancelReservationResponse(Request,
+                                                                                                Result.OK("Nothing to upload!")));
 
 
             #region Send OnCancelReservationResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnCancelReservationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                    Timestamp.Value,
+                OnCancelReservationResponse?.Invoke(endTime,
                                                     this,
-                                                    Description,
-                                                    EventTrackingId,
-                                                    ChargeBoxIdentity,
-                                                    ReservationId,
-                                                    RequestTimeout,
+                                                    Request,
                                                     result.Content,
-                                                    org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                    endTime - startTime);
 
             }
             catch (Exception e)
@@ -3587,76 +2500,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
         #endregion
 
-        #region RemoteStartTransaction(IdTag, ConnectorId = null, ChargingProfile = null, ...)
+        #region RemoteStartTransaction(Request)
 
         /// <summary>
-        /// Starte a charging transaction at the given connector.
+        /// Start a charging session at the given charge box connector using the given charging profile.
         /// </summary>
-        /// <param name="IdTag">The identification tag to start the charging transaction.</param>
-        /// <param name="ConnectorId">An optional connector identification on which the charging transaction should be started (SHALL be > 0).</param>
-        /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<RemoteStartTransactionResponse>>
+        /// <param name="Request">A remote start transaction request.</param>
+        public async Task<RemoteStartTransactionResponse>
 
-            RemoteStartTransaction(IdToken             IdTag,
-                                   Connector_Id?       ConnectorId         = null,
-                                   ChargingProfile?    ChargingProfile     = null,
-
-                                   DateTime?           Timestamp           = null,
-                                   CancellationToken?  CancellationToken   = null,
-                                   EventTracking_Id?   EventTrackingId     = null,
-                                   TimeSpan?           RequestTimeout      = null)
+            RemoteStartTransaction(RemoteStartTransactionRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (IdTag == null)
-                throw new ArgumentNullException(nameof(IdTag),  "The given identification tag must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<RemoteStartTransactionResponse> result = null;
-
-            #endregion
-
             #region Send OnRemoteStartTransactionRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnRemoteStartTransactionRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                        Timestamp.Value,
+                OnRemoteStartTransactionRequest?.Invoke(startTime,
                                                         this,
-                                                        Description,
-                                                        EventTrackingId,
-                                                        ChargeBoxIdentity,
-                                                        IdTag,
-                                                        ConnectorId,
-                                                        ChargingProfile,
-                                                        RequestTimeout);
+                                                        Request);
 
             }
             catch (Exception e)
@@ -3667,116 +2538,111 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new RemoteStartTransactionRequest(ChargeBoxIdentity,
-                                                            IdTag,
-                                                            ConnectorId,
-                                                            ChargingProfile);
-
+            HTTPResponse<RemoteStartTransactionResponse>? result = null;
 
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
                 {
 
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/RemoteStartTransaction",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "RemoteStartTransaction",
-                                                     ContentType:          HTTPContentType.XMLTEXT_UTF8,
-                                                     RequestLogDelegate:   OnRemoteStartTransactionSOAPRequest,
-                                                     ResponseLogDelegate:  OnRemoteStartTransactionSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnRemoteStartTransactionSOAPRequest,
+                                                    ResponseLogDelegate:  OnRemoteStartTransactionSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
 
-                                                     #region OnSuccess
+                    #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          RemoteStartTransactionResponse.Parse),
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         RemoteStartTransactionResponse.Parse),
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnSOAPFault
+                    #region OnSOAPFault
 
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
+                        SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                         return new HTTPResponse<RemoteStartTransactionResponse>(httpresponse,
-                                                                                                                 new RemoteStartTransactionResponse(
-                                                                                                                     request,
-                                                                                                                     Result.Format(
-                                                                                                                         "Invalid SOAP => " +
-                                                                                                                         httpresponse.HTTPBody.ToUTF8String()
-                                                                                                                     )
-                                                                                                                 ),
-                                                                                                                 IsFault: true);
+                        return new HTTPResponse<RemoteStartTransactionResponse>(httpresponse,
+                                                                                new RemoteStartTransactionResponse(
+                                                                                    Request,
+                                                                                    Result.Format(
+                                                                                        "Invalid SOAP => " +
+                                                                                        httpresponse.HTTPBody.ToUTF8String()
+                                                                                    )
+                                                                                ),
+                                                                                IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnHTTPError
+                    #region OnHTTPError
 
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendHTTPError(timestamp, this, httpresponse);
+                        SendHTTPError(timestamp, this, httpresponse);
 
-                                                         return new HTTPResponse<RemoteStartTransactionResponse>(httpresponse,
-                                                                                                                 new RemoteStartTransactionResponse(
-                                                                                                                     request,
-                                                                                                                     Result.Server(
-                                                                                                                          httpresponse.HTTPStatusCode.ToString() +
-                                                                                                                          " => " +
-                                                                                                                          httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                                     )
-                                                                                                                 ),
-                                                                                                                 IsFault: true);
+                        return new HTTPResponse<RemoteStartTransactionResponse>(httpresponse,
+                                                                                new RemoteStartTransactionResponse(
+                                                                                    Request,
+                                                                                    Result.Server(
+                                                                                         httpresponse.HTTPStatusCode.ToString() +
+                                                                                         " => " +
+                                                                                         httpresponse.HTTPBody.ToUTF8String()
+                                                                                    )
+                                                                                ),
+                                                                                IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnException
+                    #region OnException
 
-                                                     OnException: (timestamp, sender, exception) => {
+                    OnException: (timestamp, sender, exception) => {
 
-                                                         SendException(timestamp, sender, exception);
+                        SendException(timestamp, sender, exception);
 
-                                                         return HTTPResponse<RemoteStartTransactionResponse>.ExceptionThrown(new RemoteStartTransactionResponse(
-                                                                                                                                 request,
-                                                                                                                                 Result.Format(exception.Message +
-                                                                                                                                               " => " +
-                                                                                                                                               exception.StackTrace)),
-                                                                                                                             exception);
+                        return HTTPResponse<RemoteStartTransactionResponse>.ExceptionThrown(new RemoteStartTransactionResponse(
+                                                                                                Request,
+                                                                                                Result.Format(exception.Message +
+                                                                                                              " => " +
+                                                                                                              exception.StackTrace)),
+                                                                                            exception);
 
-                                                     }
+                    }
 
-                                                     #endregion
+                    #endregion
 
-                                                    );
+                   );
 
                 }
 
@@ -3786,28 +2652,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result is null)
-                result = HTTPResponse<RemoteStartTransactionResponse>.OK(new RemoteStartTransactionResponse(request,
-                                                                                                            Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<RemoteStartTransactionResponse>.OK(new RemoteStartTransactionResponse(Request,
+                                                                                                          Result.OK("Nothing to upload!")));
 
 
             #region Send OnRemoteStartTransactionResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnRemoteStartTransactionResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                         Timestamp.Value,
+                OnRemoteStartTransactionResponse?.Invoke(endTime,
                                                          this,
-                                                         Description,
-                                                         EventTrackingId,
-                                                         ChargeBoxIdentity,
-                                                         IdTag,
-                                                         ConnectorId,
-                                                         ChargingProfile,
-                                                         RequestTimeout,
+                                                         Request,
                                                          result.Content,
-                                                         org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                         endTime - startTime);
 
             }
             catch (Exception e)
@@ -3817,70 +2677,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
         #endregion
 
-        #region RemoteStopTransaction (TransactionId, ...)
+        #region RemoteStopTransaction (Request)
 
         /// <summary>
-        /// Stop the given charging transaction.
+        /// Stop a charging session at the given charge box.
         /// </summary>
-        /// <param name="TransactionId">The identification of the transaction which the charge point is requested to stop.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<RemoteStopTransactionResponse>>
+        /// <param name="Request">A remote stop transaction request.</param>
+        public async Task<RemoteStopTransactionResponse>
 
-            RemoteStopTransaction(Transaction_Id      TransactionId,
-
-                                  DateTime?           Timestamp           = null,
-                                  CancellationToken?  CancellationToken   = null,
-                                  EventTracking_Id?   EventTrackingId     = null,
-                                  TimeSpan?           RequestTimeout      = null)
+            RemoteStopTransaction(RemoteStopTransactionRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (TransactionId.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(TransactionId),  "The given transaction identification must not be null or empty!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<RemoteStopTransactionResponse> result = null;
-
-            #endregion
-
             #region Send OnRemoteStopTransactionRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnRemoteStopTransactionRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                       Timestamp.Value,
+                OnRemoteStopTransactionRequest?.Invoke(startTime,
                                                        this,
-                                                       Description,
-                                                       EventTrackingId,
-                                                       ChargeBoxIdentity,
-                                                       TransactionId,
-                                                       RequestTimeout);
+                                                       Request);
 
             }
             catch (Exception e)
@@ -3891,113 +2715,111 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new RemoteStopTransactionRequest(ChargeBoxIdentity,
-                                                           TransactionId);
-
+            HTTPResponse<RemoteStopTransactionResponse>? result = null;
 
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
                 {
 
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/RemoteStopTransaction",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "RemoteStopTransaction",
-                                                     RequestLogDelegate:   OnRemoteStopTransactionSOAPRequest,
-                                                     ResponseLogDelegate:  OnRemoteStopTransactionSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnRemoteStopTransactionSOAPRequest,
+                                                    ResponseLogDelegate:  OnRemoteStopTransactionSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
 
-                                                     #region OnSuccess
+                    #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          RemoteStopTransactionResponse.Parse),
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         RemoteStopTransactionResponse.Parse),
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnSOAPFault
+                    #region OnSOAPFault
 
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
+                        SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                         return new HTTPResponse<RemoteStopTransactionResponse>(httpresponse,
-                                                                                                                new RemoteStopTransactionResponse(
-                                                                                                                    request,
-                                                                                                                    Result.Format(
-                                                                                                                        "Invalid SOAP => " +
-                                                                                                                        httpresponse.HTTPBody.ToUTF8String()
-                                                                                                                    )
-                                                                                                                ),
-                                                                                                                IsFault: true);
+                        return new HTTPResponse<RemoteStopTransactionResponse>(httpresponse,
+                                                                               new RemoteStopTransactionResponse(
+                                                                                   Request,
+                                                                                   Result.Format(
+                                                                                       "Invalid SOAP => " +
+                                                                                       httpresponse.HTTPBody.ToUTF8String()
+                                                                                   )
+                                                                               ),
+                                                                               IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnHTTPError
+                    #region OnHTTPError
 
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendHTTPError(timestamp, this, httpresponse);
+                        SendHTTPError(timestamp, this, httpresponse);
 
-                                                         return new HTTPResponse<RemoteStopTransactionResponse>(httpresponse,
-                                                                                                                new RemoteStopTransactionResponse(
-                                                                                                                    request,
-                                                                                                                    Result.Server(
-                                                                                                                         httpresponse.HTTPStatusCode.ToString() +
-                                                                                                                         " => " +
-                                                                                                                         httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                                    )
-                                                                                                                ),
-                                                                                                                IsFault: true);
+                        return new HTTPResponse<RemoteStopTransactionResponse>(httpresponse,
+                                                                               new RemoteStopTransactionResponse(
+                                                                                   Request,
+                                                                                   Result.Server(
+                                                                                        httpresponse.HTTPStatusCode.ToString() +
+                                                                                        " => " +
+                                                                                        httpresponse.HTTPBody.ToUTF8String()
+                                                                                   )
+                                                                               ),
+                                                                               IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnException
+                    #region OnException
 
-                                                     OnException: (timestamp, sender, exception) => {
+                    OnException: (timestamp, sender, exception) => {
 
-                                                         SendException(timestamp, sender, exception);
+                        SendException(timestamp, sender, exception);
 
-                                                         return HTTPResponse<RemoteStopTransactionResponse>.ExceptionThrown(new RemoteStopTransactionResponse(
-                                                                                                                                request,
-                                                                                                                                Result.Format(exception.Message +
-                                                                                                                                              " => " +
-                                                                                                                                              exception.StackTrace)),
-                                                                                                                            exception);
+                        return HTTPResponse<RemoteStopTransactionResponse>.ExceptionThrown(new RemoteStopTransactionResponse(
+                                                                                               Request,
+                                                                                               Result.Format(exception.Message +
+                                                                                                             " => " +
+                                                                                                             exception.StackTrace)),
+                                                                                           exception);
 
-                                                     }
+                    }
 
-                                                     #endregion
+                    #endregion
 
-                                                    );
+                   );
 
                 }
 
@@ -4007,26 +2829,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result is null)
-                result = HTTPResponse<RemoteStopTransactionResponse>.OK(new RemoteStopTransactionResponse(request,
-                                                                                                          Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<RemoteStopTransactionResponse>.OK(new RemoteStopTransactionResponse(Request,
+                                                                                                        Result.OK("Nothing to upload!")));
 
 
             #region Send OnRemoteStopTransactionResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnRemoteStopTransactionResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                        Timestamp.Value,
+                OnRemoteStopTransactionResponse?.Invoke(endTime,
                                                         this,
-                                                        Description,
-                                                        EventTrackingId,
-                                                        ChargeBoxIdentity,
-                                                        TransactionId,
-                                                        RequestTimeout,
+                                                        Request,
                                                         result.Content,
-                                                        org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -4036,295 +2854,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
         #endregion
 
-        #region UnlockConnector       (ConnectorId, ...)
+        #region SetChargingProfile    (Request)
 
         /// <summary>
-        /// Unlock the given connector within the charging station.
+        /// Set the charging profile of the given charge box connector.
         /// </summary>
-        /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<UnlockConnectorResponse>>
+        /// <param name="Request">A set charging profile request.</param>
+        public async Task<SetChargingProfileResponse>
 
-            UnlockConnector(Connector_Id        ConnectorId,
-
-                            DateTime?           Timestamp           = null,
-                            CancellationToken?  CancellationToken   = null,
-                            EventTracking_Id?   EventTrackingId     = null,
-                            TimeSpan?           RequestTimeout      = null)
+            SetChargingProfile(SetChargingProfileRequest Request)
 
         {
-
-            #region Initial checks
-
-            if (ConnectorId.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ConnectorId),  "The given connector identification must not be null or empty!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<UnlockConnectorResponse> result = null;
-
-            #endregion
-
-            #region Send OnUnlockConnectorRequest event
-
-            try
-            {
-
-                OnUnlockConnectorRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                 Timestamp.Value,
-                                                 this,
-                                                 Description,
-                                                 EventTrackingId,
-                                                 ChargeBoxIdentity,
-                                                 ConnectorId,
-                                                 RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnUnlockConnectorRequest));
-            }
-
-            #endregion
-
-
-            var request = new UnlockConnectorRequest(ChargeBoxIdentity,
-                                                     ConnectorId);
-
-
-            try
-            {
-
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
-                {
-
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/UnlockConnector",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "UnlockConnector",
-                                                     RequestLogDelegate:   OnUnlockConnectorSOAPRequest,
-                                                     ResponseLogDelegate:  OnUnlockConnectorSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
-
-                                                     #region OnSuccess
-
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          UnlockConnectorResponse.Parse),
-
-                                                     #endregion
-
-                                                     #region OnSOAPFault
-
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
-
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
-
-                                                         return new HTTPResponse<UnlockConnectorResponse>(httpresponse,
-                                                                                                     new UnlockConnectorResponse(
-                                                                                                         request,
-                                                                                                         Result.Format(
-                                                                                                             "Invalid SOAP => " +
-                                                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
-
-                                                     },
-
-                                                     #endregion
-
-                                                     #region OnHTTPError
-
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
-
-                                                         SendHTTPError(timestamp, this, httpresponse);
-
-                                                         return new HTTPResponse<UnlockConnectorResponse>(httpresponse,
-                                                                                                     new UnlockConnectorResponse(
-                                                                                                         request,
-                                                                                                         Result.Server(
-                                                                                                              httpresponse.HTTPStatusCode.ToString() +
-                                                                                                              " => " +
-                                                                                                              httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
-
-                                                     },
-
-                                                     #endregion
-
-                                                     #region OnException
-
-                                                     OnException: (timestamp, sender, exception) => {
-
-                                                         SendException(timestamp, sender, exception);
-
-                                                         return HTTPResponse<UnlockConnectorResponse>.ExceptionThrown(new UnlockConnectorResponse(
-                                                                                                                     request,
-                                                                                                                     Result.Format(exception.Message +
-                                                                                                                                   " => " +
-                                                                                                                                   exception.StackTrace)),
-                                                                                                                 exception);
-
-                                                     }
-
-                                                     #endregion
-
-                                                    );
-
-                }
-
-            }
-            catch (Exception e)
-            {
-
-            }
-
-            if (result is null)
-                result = HTTPResponse<UnlockConnectorResponse>.OK(new UnlockConnectorResponse(request,
-                                                                                              Result.OK("Nothing to upload!")));
-
-
-            #region Send OnUnlockConnectorResponse event
-
-            try
-            {
-
-                OnUnlockConnectorResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                  Timestamp.Value,
-                                                  this,
-                                                  Description,
-                                                  EventTrackingId,
-                                                  ChargeBoxIdentity,
-                                                  ConnectorId,
-                                                  RequestTimeout,
-                                                  result.Content,
-                                                  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnUnlockConnectorResponse));
-            }
-
-            #endregion
-
-            return result;
-
-        }
-
-        #endregion
-
-        #region SetChargingProfile    (ConnectorId, ChargingProfile, ...)
-
-        /// <summary>
-        /// Set a charging profile within the charging station.
-        /// </summary>
-        /// <param name="ConnectorId">The connector to which the charging profile applies. If connectorId = 0, the message contains an overall limit for the charge point.</param>
-        /// <param name="ChargingProfile">The charging profile to be set.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<SetChargingProfileResponse>>
-
-            SetChargingProfile(Connector_Id        ConnectorId,
-                               ChargingProfile     ChargingProfile,
-
-                               DateTime?           Timestamp           = null,
-                               CancellationToken?  CancellationToken   = null,
-                               EventTracking_Id?   EventTrackingId     = null,
-                               TimeSpan?           RequestTimeout      = null)
-
-        {
-
-            #region Initial checks
-
-            if (ConnectorId.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ConnectorId),      "The given connector identification must not be null or empty!");
-
-            if (ChargingProfile == null)
-                throw new ArgumentNullException(nameof(ChargingProfile),  "The given charging profile identification must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<SetChargingProfileResponse> result = null;
-
-            #endregion
 
             #region Send OnSetChargingProfileRequest event
 
+            var startTime = Timestamp.Now;
+
             try
             {
 
-                OnSetChargingProfileRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                    Timestamp.Value,
+                OnSetChargingProfileRequest?.Invoke(startTime,
                                                     this,
-                                                    Description,
-                                                    EventTrackingId,
-                                                    ChargeBoxIdentity,
-                                                    ConnectorId,
-                                                    ChargingProfile,
-                                                    RequestTimeout);
+                                                    Request);
 
             }
             catch (Exception e)
@@ -4335,114 +2892,111 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new SetChargingProfileRequest(ChargeBoxIdentity,
-                                                        ConnectorId,
-                                                        ChargingProfile);
-
+            HTTPResponse<SetChargingProfileResponse>? result = null;
 
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
                 {
 
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/SetChargingProfile",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "SetChargingProfile",
-                                                     RequestLogDelegate:   OnSetChargingProfileSOAPRequest,
-                                                     ResponseLogDelegate:  OnSetChargingProfileSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnSetChargingProfileSOAPRequest,
+                                                    ResponseLogDelegate:  OnSetChargingProfileSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
 
-                                                     #region OnSuccess
+                    #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          SetChargingProfileResponse.Parse),
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         SetChargingProfileResponse.Parse),
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnSOAPFault
+                    #region OnSOAPFault
 
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
+                        SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                         return new HTTPResponse<SetChargingProfileResponse>(httpresponse,
-                                                                                                     new SetChargingProfileResponse(
-                                                                                                         request,
-                                                                                                         Result.Format(
-                                                                                                             "Invalid SOAP => " +
-                                                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<SetChargingProfileResponse>(httpresponse,
+                                                                            new SetChargingProfileResponse(
+                                                                                Request,
+                                                                                Result.Format(
+                                                                                    "Invalid SOAP => " +
+                                                                                    httpresponse.HTTPBody.ToUTF8String()
+                                                                                )
+                                                                            ),
+                                                                            IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnHTTPError
+                    #region OnHTTPError
 
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendHTTPError(timestamp, this, httpresponse);
+                        SendHTTPError(timestamp, this, httpresponse);
 
-                                                         return new HTTPResponse<SetChargingProfileResponse>(httpresponse,
-                                                                                                     new SetChargingProfileResponse(
-                                                                                                         request,
-                                                                                                         Result.Server(
-                                                                                                              httpresponse.HTTPStatusCode.ToString() +
-                                                                                                              " => " +
-                                                                                                              httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<SetChargingProfileResponse>(httpresponse,
+                                                                            new SetChargingProfileResponse(
+                                                                                Request,
+                                                                                Result.Server(
+                                                                                     httpresponse.HTTPStatusCode.ToString() +
+                                                                                     " => " +
+                                                                                     httpresponse.HTTPBody.ToUTF8String()
+                                                                                )
+                                                                            ),
+                                                                            IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnException
+                    #region OnException
 
-                                                     OnException: (timestamp, sender, exception) => {
+                    OnException: (timestamp, sender, exception) => {
 
-                                                         SendException(timestamp, sender, exception);
+                        SendException(timestamp, sender, exception);
 
-                                                         return HTTPResponse<SetChargingProfileResponse>.ExceptionThrown(new SetChargingProfileResponse(
-                                                                                                                     request,
-                                                                                                                     Result.Format(exception.Message +
-                                                                                                                                   " => " +
-                                                                                                                                   exception.StackTrace)),
-                                                                                                                 exception);
+                        return HTTPResponse<SetChargingProfileResponse>.ExceptionThrown(new SetChargingProfileResponse(
+                                                                                            Request,
+                                                                                            Result.Format(exception.Message +
+                                                                                                          " => " +
+                                                                                                          exception.StackTrace)),
+                                                                                        exception);
 
-                                                     }
+                    }
 
-                                                     #endregion
+                    #endregion
 
-                                                    );
+                   );
 
                 }
 
@@ -4452,27 +3006,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result is null)
-                result = HTTPResponse<SetChargingProfileResponse>.OK(new SetChargingProfileResponse(request,
-                                                                                                    Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<SetChargingProfileResponse>.OK(new SetChargingProfileResponse(Request,
+                                                                                                  Result.OK("Nothing to upload!")));
 
 
             #region Send OnSetChargingProfileResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnSetChargingProfileResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                     Timestamp.Value,
+                OnSetChargingProfileResponse?.Invoke(endTime,
                                                      this,
-                                                     Description,
-                                                     EventTrackingId,
-                                                     ChargeBoxIdentity,
-                                                     ConnectorId,
-                                                     ChargingProfile,
-                                                     RequestTimeout,
+                                                     Request,
                                                      result.Content,
-                                                     org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                     endTime - startTime);
 
             }
             catch (Exception e)
@@ -4482,75 +3031,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
         #endregion
 
-        #region ClearChargingProfile  (ChargingProfileId = null, ConnectorId = null, ChargingProfilePurpose = null, StackLevel = null, ...)
+        #region ClearChargingProfile  (Request)
 
         /// <summary>
-        /// Clear a charging profile within the charging station.
+        /// Remove the charging profile at the given charge box connector.
         /// </summary>
-        /// <param name="ChargingProfileId">The optional identification of the charging profile to clear.</param>
-        /// <param name="ConnectorId">The optional connector for which to clear the charging profiles. Connector identification 0 specifies the charging profile for the overall charge point. Absence of this parameter means the clearing applies to all charging profiles that match the other criteria in the request.</param>
-        /// <param name="ChargingProfilePurpose">The optional purpose of the charging profiles that will be cleared, if they meet the other criteria in the request.</param>
-        /// <param name="StackLevel">The optional stack level for which charging profiles will be cleared, if they meet the other criteria in the request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<ClearChargingProfileResponse>>
+        /// <param name="Request">A clear charging profile request.</param>
+        public async Task<ClearChargingProfileResponse>
 
-            ClearChargingProfile(ChargingProfile_Id?       ChargingProfileId        = null,
-                                 Connector_Id?             ConnectorId              = null,
-                                 ChargingProfilePurposes?  ChargingProfilePurpose   = null,
-                                 UInt32?                   StackLevel               = null,
-
-                                 DateTime?                 Timestamp                = null,
-                                 CancellationToken?        CancellationToken        = null,
-                                 EventTracking_Id?         EventTrackingId          = null,
-                                 TimeSpan?                 RequestTimeout           = null)
+            ClearChargingProfile(ClearChargingProfileRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<ClearChargingProfileResponse> result = null;
-
-            #endregion
-
             #region Send OnClearChargingProfileRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnClearChargingProfileRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                      Timestamp.Value,
+                OnClearChargingProfileRequest?.Invoke(startTime,
                                                       this,
-                                                      Description,
-                                                      EventTrackingId,
-                                                      ChargeBoxIdentity,
-                                                      ChargingProfileId,
-                                                      ConnectorId,
-                                                      ChargingProfilePurpose,
-                                                      StackLevel,
-                                                      RequestTimeout);
+                                                      Request);
 
             }
             catch (Exception e)
@@ -4561,116 +3069,111 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new ClearChargingProfileRequest(ChargeBoxIdentity,
-                                                          ChargingProfileId,
-                                                          ConnectorId,
-                                                          ChargingProfilePurpose,
-                                                          StackLevel);
-
+            HTTPResponse<ClearChargingProfileResponse>? result = null;
 
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
                 {
 
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/ClearChargingProfile",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "ClearChargingProfile",
-                                                     RequestLogDelegate:   OnClearChargingProfileSOAPRequest,
-                                                     ResponseLogDelegate:  OnClearChargingProfileSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnClearChargingProfileSOAPRequest,
+                                                    ResponseLogDelegate:  OnClearChargingProfileSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
 
-                                                     #region OnSuccess
+                    #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          ClearChargingProfileResponse.Parse),
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         ClearChargingProfileResponse.Parse),
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnSOAPFault
+                    #region OnSOAPFault
 
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
+                        SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                         return new HTTPResponse<ClearChargingProfileResponse>(httpresponse,
-                                                                                                     new ClearChargingProfileResponse(
-                                                                                                         request,
-                                                                                                         Result.Format(
-                                                                                                             "Invalid SOAP => " +
-                                                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<ClearChargingProfileResponse>(httpresponse,
+                                                                              new ClearChargingProfileResponse(
+                                                                                  Request,
+                                                                                  Result.Format(
+                                                                                      "Invalid SOAP => " +
+                                                                                      httpresponse.HTTPBody.ToUTF8String()
+                                                                                  )
+                                                                              ),
+                                                                              IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnHTTPError
+                    #region OnHTTPError
 
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendHTTPError(timestamp, this, httpresponse);
+                        SendHTTPError(timestamp, this, httpresponse);
 
-                                                         return new HTTPResponse<ClearChargingProfileResponse>(httpresponse,
-                                                                                                     new ClearChargingProfileResponse(
-                                                                                                         request,
-                                                                                                         Result.Server(
-                                                                                                              httpresponse.HTTPStatusCode.ToString() +
-                                                                                                              " => " +
-                                                                                                              httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<ClearChargingProfileResponse>(httpresponse,
+                                                                              new ClearChargingProfileResponse(
+                                                                                  Request,
+                                                                                  Result.Server(
+                                                                                       httpresponse.HTTPStatusCode.ToString() +
+                                                                                       " => " +
+                                                                                       httpresponse.HTTPBody.ToUTF8String()
+                                                                                  )
+                                                                              ),
+                                                                              IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnException
+                    #region OnException
 
-                                                     OnException: (timestamp, sender, exception) => {
+                    OnException: (timestamp, sender, exception) => {
 
-                                                         SendException(timestamp, sender, exception);
+                        SendException(timestamp, sender, exception);
 
-                                                         return HTTPResponse<ClearChargingProfileResponse>.ExceptionThrown(new ClearChargingProfileResponse(
-                                                                                                                     request,
-                                                                                                                     Result.Format(exception.Message +
-                                                                                                                                   " => " +
-                                                                                                                                   exception.StackTrace)),
-                                                                                                                 exception);
+                        return HTTPResponse<ClearChargingProfileResponse>.ExceptionThrown(new ClearChargingProfileResponse(
+                                                                                              Request,
+                                                                                              Result.Format(exception.Message +
+                                                                                                            " => " +
+                                                                                                            exception.StackTrace)),
+                                                                                          exception);
 
-                                                     }
+                    }
 
-                                                     #endregion
+                    #endregion
 
-                                                    );
+                   );
 
                 }
 
@@ -4680,29 +3183,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result is null)
-                result = HTTPResponse<ClearChargingProfileResponse>.OK(new ClearChargingProfileResponse(request,
-                                                                                                        Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<ClearChargingProfileResponse>.OK(new ClearChargingProfileResponse(Request,
+                                                                                                      Result.OK("Nothing to upload!")));
 
 
             #region Send OnClearChargingProfileResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnClearChargingProfileResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                       Timestamp.Value,
+                OnClearChargingProfileResponse?.Invoke(endTime,
                                                        this,
-                                                       Description,
-                                                       EventTrackingId,
-                                                       ChargeBoxIdentity,
-                                                       ChargingProfileId,
-                                                       ConnectorId,
-                                                       ChargingProfilePurpose,
-                                                       StackLevel,
-                                                       RequestTimeout,
+                                                       Request,
                                                        result.Content,
-                                                       org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                       endTime - startTime);
 
             }
             catch (Exception e)
@@ -4712,76 +3208,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            return result;
+            return result.Content;
 
         }
 
         #endregion
 
-        #region GetCompositeSchedule  (ConnectorId, Duration, ChargingRateUnit = null, ...)
+        #region GetCompositeSchedule  (Request)
 
         /// <summary>
-        /// Get the composite schedule.
+        /// Return the charging schedule of the given charge box connector.
         /// </summary>
-        /// <param name="ConnectorId">The connector identification for which the schedule is requested. Connector identification 0 will calculate the expected consumption for the grid connection.</param>
-        /// <param name="Duration">The length of requested schedule.</param>
-        /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HTTPResponse<GetCompositeScheduleResponse>>
+        /// <param name="Request">A get composite schedule request.</param>
+        public async Task<GetCompositeScheduleResponse>
 
-            GetCompositeSchedule(Connector_Id        ConnectorId,
-                                 TimeSpan            Duration,
-                                 ChargingRateUnits?  ChargingRateUnit    = null,
-
-                                 DateTime?           Timestamp           = null,
-                                 CancellationToken?  CancellationToken   = null,
-                                 EventTracking_Id?   EventTrackingId     = null,
-                                 TimeSpan?           RequestTimeout      = null)
+            GetCompositeSchedule(GetCompositeScheduleRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (ConnectorId.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ConnectorId),  "The given connector identification must not be null or empty!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<GetCompositeScheduleResponse> result = null;
-
-            #endregion
-
             #region Send OnGetCompositeScheduleRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnGetCompositeScheduleRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                      Timestamp.Value,
+                OnGetCompositeScheduleRequest?.Invoke(startTime,
                                                       this,
-                                                      Description,
-                                                      EventTrackingId,
-                                                      ChargeBoxIdentity,
-                                                      ConnectorId,
-                                                      Duration,
-                                                      ChargingRateUnit,
-                                                      RequestTimeout);
+                                                      Request);
 
             }
             catch (Exception e)
@@ -4792,115 +3246,111 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            var request = new GetCompositeScheduleRequest(ChargeBoxIdentity,
-                                                          ConnectorId,
-                                                          Duration,
-                                                          ChargingRateUnit);
-
+            HTTPResponse<GetCompositeScheduleResponse>? result = null;
 
             try
             {
 
-                using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                        VirtualHostname,
-                                                        true,
-                                                        null,
-                                                        RemoteCertificateValidator,
-                                                        ClientCertificateSelector,
-                                                        ClientCert,
-                                                        TLSProtocol,
-                                                        PreferIPv4,
-                                                        HTTPUserAgent,
-                                                        URLPathPrefix,
-                                                        WSSLoginPassword,
-                                                        HTTPContentType,
-                                                        RequestTimeout,
-                                                        TransmissionRetryDelay,
-                                                        MaxNumberOfRetries,
-                                                        UseHTTPPipelining,
-                                                        HTTPLogger,
-                                                        DNSClient))
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
                 {
 
-                    result = await _OCPPClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
-                                                                        "/GetCompositeSchedule",
-                                                                        NextMessageId(),
-                                                                        From,
-                                                                        To,
-                                                                        request.ToXML()),
-                                                     "GetCompositeSchedule",
-                                                     RequestLogDelegate:   OnGetCompositeScheduleSOAPRequest,
-                                                     ResponseLogDelegate:  OnGetCompositeScheduleSOAPResponse,
-                                                     CancellationToken:    CancellationToken,
-                                                     EventTrackingId:      EventTrackingId,
-                                                     RequestTimeout:       RequestTimeout,
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnGetCompositeScheduleSOAPRequest,
+                                                    ResponseLogDelegate:  OnGetCompositeScheduleSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
 
-                                                     #region OnSuccess
+                    #region OnSuccess
 
-                                                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(request,
-                                                                                                          GetCompositeScheduleResponse.Parse),
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         GetCompositeScheduleResponse.Parse),
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnSOAPFault
+                    #region OnSOAPFault
 
-                                                     OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendSOAPError(timestamp, this, httpresponse.Content);
+                        SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                         return new HTTPResponse<GetCompositeScheduleResponse>(httpresponse,
-                                                                                                     new GetCompositeScheduleResponse(
-                                                                                                         request,
-                                                                                                         Result.Format(
-                                                                                                             "Invalid SOAP => " +
-                                                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<GetCompositeScheduleResponse>(httpresponse,
+                                                                              new GetCompositeScheduleResponse(
+                                                                                  Request,
+                                                                                  Result.Format(
+                                                                                      "Invalid SOAP => " +
+                                                                                      httpresponse.HTTPBody.ToUTF8String()
+                                                                                  )
+                                                                              ),
+                                                                              IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnHTTPError
+                    #region OnHTTPError
 
-                                                     OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                         SendHTTPError(timestamp, this, httpresponse);
+                        SendHTTPError(timestamp, this, httpresponse);
 
-                                                         return new HTTPResponse<GetCompositeScheduleResponse>(httpresponse,
-                                                                                                     new GetCompositeScheduleResponse(
-                                                                                                         request,
-                                                                                                         Result.Server(
-                                                                                                              httpresponse.HTTPStatusCode.ToString() +
-                                                                                                              " => " +
-                                                                                                              httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                         )
-                                                                                                     ),
-                                                                                                     IsFault: true);
+                        return new HTTPResponse<GetCompositeScheduleResponse>(httpresponse,
+                                                                              new GetCompositeScheduleResponse(
+                                                                                  Request,
+                                                                                  Result.Server(
+                                                                                       httpresponse.HTTPStatusCode.ToString() +
+                                                                                       " => " +
+                                                                                       httpresponse.HTTPBody.ToUTF8String()
+                                                                                  )
+                                                                              ),
+                                                                              IsFault: true);
 
-                                                     },
+                    },
 
-                                                     #endregion
+                    #endregion
 
-                                                     #region OnException
+                    #region OnException
 
-                                                     OnException: (timestamp, sender, exception) => {
+                    OnException: (timestamp, sender, exception) => {
 
-                                                         SendException(timestamp, sender, exception);
+                        SendException(timestamp, sender, exception);
 
-                                                         return HTTPResponse<GetCompositeScheduleResponse>.ExceptionThrown(new GetCompositeScheduleResponse(
-                                                                                                                     request,
-                                                                                                                     Result.Format(exception.Message +
-                                                                                                                                   " => " +
-                                                                                                                                   exception.StackTrace)),
-                                                                                                                 exception);
+                        return HTTPResponse<GetCompositeScheduleResponse>.ExceptionThrown(new GetCompositeScheduleResponse(
+                                                                                              Request,
+                                                                                              Result.Format(exception.Message +
+                                                                                                            " => " +
+                                                                                                            exception.StackTrace)),
+                                                                                          exception);
 
-                                                     }
+                    }
 
-                                                     #endregion
+                    #endregion
 
-                                                    );
+                   );
 
                 }
 
@@ -4910,28 +3360,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            if (result is null)
-                result = HTTPResponse<GetCompositeScheduleResponse>.OK(new GetCompositeScheduleResponse(request,
-                                                                                                        Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<GetCompositeScheduleResponse>.OK(new GetCompositeScheduleResponse(Request,
+                                                                                                      Result.OK("Nothing to upload!")));
 
 
             #region Send OnGetCompositeScheduleResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnGetCompositeScheduleResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                       Timestamp.Value,
+                OnGetCompositeScheduleResponse?.Invoke(endTime,
                                                        this,
-                                                       Description,
-                                                       EventTrackingId,
-                                                       ChargeBoxIdentity,
-                                                       ConnectorId,
-                                                       Duration,
-                                                       ChargingRateUnit,
-                                                       RequestTimeout,
+                                                       Request,
                                                        result.Content,
-                                                       org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                       endTime - startTime);
 
             }
             catch (Exception e)
@@ -4941,7 +3385,716 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #endregion
 
-            return result;
+            return result.Content;
+
+        }
+
+        #endregion
+
+        #region UnlockConnector       (Request)
+
+        /// <summary>
+        /// Unlock the given charge box connector.
+        /// </summary>
+        /// <param name="Request">An unlock connector request.</param>
+        public async Task<UnlockConnectorResponse>
+
+            UnlockConnector(UnlockConnectorRequest Request)
+
+        {
+
+            #region Send OnUnlockConnectorRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUnlockConnectorRequest?.Invoke(startTime,
+                                                 this,
+                                                 Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnUnlockConnectorRequest));
+            }
+
+            #endregion
+
+
+            HTTPResponse<UnlockConnectorResponse>? result = null;
+
+            try
+            {
+
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
+                {
+
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnUnlockConnectorSOAPRequest,
+                                                    ResponseLogDelegate:  OnUnlockConnectorSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
+
+                    #region OnSuccess
+
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         UnlockConnectorResponse.Parse),
+
+                    #endregion
+
+                    #region OnSOAPFault
+
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+
+                        SendSOAPError(timestamp, this, httpresponse.Content);
+
+                        return new HTTPResponse<UnlockConnectorResponse>(httpresponse,
+                                                                         new UnlockConnectorResponse(
+                                                                             Request,
+                                                                             Result.Format(
+                                                                                 "Invalid SOAP => " +
+                                                                                 httpresponse.HTTPBody.ToUTF8String()
+                                                                             )
+                                                                         ),
+                                                                         IsFault: true);
+
+                    },
+
+                    #endregion
+
+                    #region OnHTTPError
+
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
+
+                        SendHTTPError(timestamp, this, httpresponse);
+
+                        return new HTTPResponse<UnlockConnectorResponse>(httpresponse,
+                                                                         new UnlockConnectorResponse(
+                                                                             Request,
+                                                                             Result.Server(
+                                                                                  httpresponse.HTTPStatusCode.ToString() +
+                                                                                  " => " +
+                                                                                  httpresponse.HTTPBody.ToUTF8String()
+                                                                             )
+                                                                         ),
+                                                                         IsFault: true);
+
+                    },
+
+                    #endregion
+
+                    #region OnException
+
+                    OnException: (timestamp, sender, exception) => {
+
+                        SendException(timestamp, sender, exception);
+
+                        return HTTPResponse<UnlockConnectorResponse>.ExceptionThrown(new UnlockConnectorResponse(
+                                                                                         Request,
+                                                                                         Result.Format(exception.Message +
+                                                                                                       " => " +
+                                                                                                       exception.StackTrace)),
+                                                                                     exception);
+
+                    }
+
+                    #endregion
+
+                   );
+
+                }
+
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            result ??= HTTPResponse<UnlockConnectorResponse>.OK(new UnlockConnectorResponse(Request,
+                                                                                            Result.OK("Nothing to upload!")));
+
+
+            #region Send OnUnlockConnectorResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUnlockConnectorResponse?.Invoke(endTime,
+                                                  this,
+                                                  Request,
+                                                  result.Content,
+                                                  endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnUnlockConnectorResponse));
+            }
+
+            #endregion
+
+            return result.Content;
+
+        }
+
+        #endregion
+
+
+        #region GetLocalListVersion   (Request)
+
+        /// <summary>
+        /// Return the local white list of the given charge box.
+        /// </summary>
+        /// <param name="Request">A get local list version request.</param>
+        public async Task<GetLocalListVersionResponse>
+
+            GetLocalListVersion(GetLocalListVersionRequest Request)
+
+        {
+
+            #region Send OnGetLocalListVersionRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetLocalListVersionRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnGetLocalListVersionRequest));
+            }
+
+            #endregion
+
+
+            HTTPResponse<GetLocalListVersionResponse>? result = null;
+
+            try
+            {
+
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
+                {
+
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnGetLocalListVersionSOAPRequest,
+                                                    ResponseLogDelegate:  OnGetLocalListVersionSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
+
+                    #region OnSuccess
+
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         GetLocalListVersionResponse.Parse),
+
+                    #endregion
+
+                    #region OnSOAPFault
+
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+
+                        SendSOAPError(timestamp, this, httpresponse.Content);
+
+                        return new HTTPResponse<GetLocalListVersionResponse>(httpresponse,
+                                                                             new GetLocalListVersionResponse(
+                                                                                 Request,
+                                                                                 Result.Format(
+                                                                                     "Invalid SOAP => " +
+                                                                                     httpresponse.HTTPBody.ToUTF8String()
+                                                                                 )
+                                                                             ),
+                                                                             IsFault: true);
+
+                    },
+
+                    #endregion
+
+                    #region OnHTTPError
+
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
+
+                        SendHTTPError(timestamp, this, httpresponse);
+
+                        return new HTTPResponse<GetLocalListVersionResponse>(httpresponse,
+                                                                             new GetLocalListVersionResponse(
+                                                                                 Request,
+                                                                                 Result.Server(
+                                                                                      httpresponse.HTTPStatusCode.ToString() +
+                                                                                      " => " +
+                                                                                      httpresponse.HTTPBody.ToUTF8String()
+                                                                                 )
+                                                                             ),
+                                                                             IsFault: true);
+
+                    },
+
+                    #endregion
+
+                    #region OnException
+
+                    OnException: (timestamp, sender, exception) => {
+
+                        SendException(timestamp, sender, exception);
+
+                        return HTTPResponse<GetLocalListVersionResponse>.ExceptionThrown(new GetLocalListVersionResponse(
+                                                                                             Request,
+                                                                                             Result.Format(exception.Message +
+                                                                                                           " => " +
+                                                                                                           exception.StackTrace)),
+                                                                                         exception);
+
+                    }
+
+                    #endregion
+
+                   );
+
+                }
+
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            result ??= HTTPResponse<GetLocalListVersionResponse>.OK(new GetLocalListVersionResponse(Request,
+                                                                                                    Result.OK("Nothing to upload!")));
+
+
+            #region Send OnGetLocalListVersionResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetLocalListVersionResponse?.Invoke(endTime,
+                                                      this,
+                                                      Request,
+                                                      result.Content,
+                                                      endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnGetLocalListVersionResponse));
+            }
+
+            #endregion
+
+            return result.Content;
+
+        }
+
+        #endregion
+
+        #region SendLocalList         (Request)
+
+        /// <summary>
+        /// Set the local white liste at the given charge box.
+        /// </summary>
+        /// <param name="Request">A send local list request.</param>
+        public async Task<SendLocalListResponse>
+
+            SendLocalList(SendLocalListRequest Request)
+
+        {
+
+            #region Send OnSendLocalListRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSendLocalListRequest?.Invoke(startTime,
+                                               this,
+                                               Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnSendLocalListRequest));
+            }
+
+            #endregion
+
+
+            HTTPResponse<SendLocalListResponse>? result = null;
+
+            try
+            {
+
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
+                {
+
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnSendLocalListSOAPRequest,
+                                                    ResponseLogDelegate:  OnSendLocalListSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
+
+                    #region OnSuccess
+
+                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                          SendLocalListResponse.Parse),
+
+                    #endregion
+
+                    #region OnSOAPFault
+
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+
+                        SendSOAPError(timestamp, this, httpresponse.Content);
+
+                        return new HTTPResponse<SendLocalListResponse>(httpresponse,
+                                                                       new SendLocalListResponse(
+                                                                           Request,
+                                                                           Result.Format(
+                                                                               "Invalid SOAP => " +
+                                                                               httpresponse.HTTPBody.ToUTF8String()
+                                                                           )
+                                                                       ),
+                                                                       IsFault: true);
+
+                    },
+
+                    #endregion
+
+                    #region OnHTTPError
+
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
+
+                        SendHTTPError(timestamp, this, httpresponse);
+
+                        return new HTTPResponse<SendLocalListResponse>(httpresponse,
+                                                                       new SendLocalListResponse(
+                                                                           Request,
+                                                                           Result.Server(
+                                                                                httpresponse.HTTPStatusCode.ToString() +
+                                                                                " => " +
+                                                                                httpresponse.HTTPBody.ToUTF8String()
+                                                                           )
+                                                                       ),
+                                                                       IsFault: true);
+
+                    },
+
+                    #endregion
+
+                    #region OnException
+
+                    OnException: (timestamp, sender, exception) => {
+
+                        SendException(timestamp, sender, exception);
+
+                        return HTTPResponse<SendLocalListResponse>.ExceptionThrown(new SendLocalListResponse(
+                                                                                       Request,
+                                                                                       Result.Format(exception.Message +
+                                                                                                     " => " +
+                                                                                                     exception.StackTrace)),
+                                                                                   exception);
+
+                    }
+
+                    #endregion
+
+                   );
+
+                }
+
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            result ??= HTTPResponse<SendLocalListResponse>.OK(new SendLocalListResponse(Request,
+                                                                                        Result.OK("Nothing to upload!")));
+
+
+            #region Send OnSendLocalListResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSendLocalListResponse?.Invoke(endTime,
+                                                this,
+                                                Request,
+                                                result.Content,
+                                                endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnSendLocalListResponse));
+            }
+
+            #endregion
+
+            return result.Content;
+
+        }
+
+        #endregion
+
+        #region ClearCache            (Request)
+
+        /// <summary>
+        /// Clear the local white liste cache of the given charge box.
+        /// </summary>
+        /// <param name="Request">A clear cache request.</param>
+        public async Task<ClearCacheResponse>
+
+            ClearCache(ClearCacheRequest Request)
+
+        {
+
+            #region Send OnClearCacheRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearCacheRequest?.Invoke(startTime,
+                                            this,
+                                            Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnClearCacheRequest));
+            }
+
+            #endregion
+
+
+            HTTPResponse<ClearCacheResponse>? result = null;
+
+            try
+            {
+
+                using (var soapClient = new SOAPClient(RemoteURL,
+                                                       VirtualHostname,
+                                                       true,
+                                                       null,
+                                                       RemoteCertificateValidator,
+                                                       ClientCertificateSelector,
+                                                       ClientCert,
+                                                       TLSProtocol,
+                                                       PreferIPv4,
+                                                       HTTPUserAgent,
+                                                       URLPathPrefix,
+                                                       WSSLoginPassword,
+                                                       HTTPContentType,
+                                                       RequestTimeout,
+                                                       TransmissionRetryDelay,
+                                                       MaxNumberOfRetries,
+                                                       UseHTTPPipelining,
+                                                       HTTPLogger,
+                                                       DNSClient))
+                {
+
+                    result = await soapClient.Query(SOAP.Encapsulation(ChargeBoxIdentity,
+                                                                       "/" + Request.Action,
+                                                                       NextMessageId(),
+                                                                       From,
+                                                                       To,
+                                                                       Request.ToXML()),
+                                                    Request.Action,
+                                                    RequestLogDelegate:   OnClearCacheSOAPRequest,
+                                                    ResponseLogDelegate:  OnClearCacheSOAPResponse,
+                                                    CancellationToken:    Request.CancellationToken,
+                                                    EventTrackingId:      Request.EventTrackingId,
+                                                    RequestTimeout:       Request.RequestTimeout,
+
+                    #region OnSuccess
+
+                    OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                         ClearCacheResponse.Parse),
+
+                    #endregion
+
+                    #region OnSOAPFault
+
+                    OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+
+                        SendSOAPError(timestamp, this, httpresponse.Content);
+
+                        return new HTTPResponse<ClearCacheResponse>(httpresponse,
+                                                                    new ClearCacheResponse(
+                                                                        Request,
+                                                                        Result.Format(
+                                                                            "Invalid SOAP => " +
+                                                                            httpresponse.HTTPBody.ToUTF8String()
+                                                                        )
+                                                                    ),
+                                                                    IsFault: true);
+
+                    },
+
+                    #endregion
+
+                    #region OnHTTPError
+
+                    OnHTTPError: (timestamp, soapclient, httpresponse) => {
+
+                        SendHTTPError(timestamp, this, httpresponse);
+
+                        return new HTTPResponse<ClearCacheResponse>(httpresponse,
+                                                                    new ClearCacheResponse(
+                                                                        Request,
+                                                                        Result.Server(
+                                                                             httpresponse.HTTPStatusCode.ToString() +
+                                                                             " => " +
+                                                                             httpresponse.HTTPBody.ToUTF8String()
+                                                                        )
+                                                                    ),
+                                                                    IsFault: true);
+
+                    },
+
+                    #endregion
+
+                    #region OnException
+
+                    OnException: (timestamp, sender, exception) => {
+
+                        SendException(timestamp, sender, exception);
+
+                        return HTTPResponse<ClearCacheResponse>.ExceptionThrown(new ClearCacheResponse(
+                                                                                    Request,
+                                                                                    Result.Format(exception.Message +
+                                                                                                  " => " +
+                                                                                                  exception.StackTrace)),
+                                                                                exception);
+
+                    }
+
+                    #endregion
+
+                   );
+
+                }
+
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            result ??= HTTPResponse<ClearCacheResponse>.OK(new ClearCacheResponse(Request,
+                                                                                  Result.OK("Nothing to upload!")));
+
+
+            #region Send OnClearCacheResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearCacheResponse?.Invoke(endTime,
+                                             this,
+                                             Request,
+                                             result.Content,
+                                             endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemSOAPClient) + "." + nameof(OnClearCacheResponse));
+            }
+
+            #endregion
+
+            return result.Content;
 
         }
 

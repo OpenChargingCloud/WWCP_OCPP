@@ -17,11 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
@@ -99,27 +94,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a boot notification SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                 OnBootNotificationSOAPRequest;
+        public event RequestLogHandler                    OnBootNotificationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a boot notification request was received.
         /// </summary>
-        public event BootNotificationRequestDelegate   OnBootNotificationRequest;
+        public event OnBootNotificationRequestDelegate    OnBootNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a boot notification was received.
         /// </summary>
-        public event OnBootNotificationDelegate          OnBootNotification;
+        public event OnBootNotificationDelegate           OnBootNotification;
 
         /// <summary>
         /// An event sent whenever a response to a boot notification was sent.
         /// </summary>
-        public event BootNotificationResponseDelegate  OnBootNotificationResponse;
+        public event OnBootNotificationResponseDelegate   OnBootNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a boot notification was sent.
         /// </summary>
-        public event AccessLogHandler                  OnBootNotificationSOAPResponse;
+        public event AccessLogHandler                     OnBootNotificationSOAPResponse;
 
         #endregion
 
@@ -128,27 +123,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a heartbeat SOAP request was received.
         /// </summary>
-        public event RequestLogHandler          OnHeartbeatSOAPRequest;
+        public event RequestLogHandler             OnHeartbeatSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a heartbeat request was received.
         /// </summary>
-        public event HeartbeatRequestDelegate   OnHeartbeatRequest;
+        public event OnHeartbeatRequestDelegate    OnHeartbeatRequest;
 
         /// <summary>
         /// An event sent whenever a heartbeat was received.
         /// </summary>
-        public event OnHeartbeatDelegate          OnHeartbeat;
+        public event OnHeartbeatDelegate           OnHeartbeat;
 
         /// <summary>
         /// An event sent whenever a response to a heartbeat was sent.
         /// </summary>
-        public event HeartbeatResponseDelegate  OnHeartbeatResponse;
+        public event OnHeartbeatResponseDelegate   OnHeartbeatResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a heartbeat was sent.
         /// </summary>
-        public event AccessLogHandler           OnHeartbeatSOAPResponse;
+        public event AccessLogHandler              OnHeartbeatSOAPResponse;
 
         #endregion
 
@@ -158,27 +153,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever an authorize SOAP request was received.
         /// </summary>
-        public event RequestLogHandler            OnAuthorizeSOAPRequest;
+        public event RequestLogHandler             OnAuthorizeSOAPRequest;
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
         /// </summary>
-        public event AuthorizeRequestDelegate   OnAuthorizeRequest;
+        public event OnAuthorizeRequestDelegate    OnAuthorizeRequest;
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
         /// </summary>
-        public event OnAuthorizeDelegate          OnAuthorize;
+        public event OnAuthorizeDelegate           OnAuthorize;
 
         /// <summary>
         /// An event sent whenever an authorize response was sent.
         /// </summary>
-        public event AuthorizeResponseDelegate  OnAuthorizeResponse;
+        public event OnAuthorizeResponseDelegate   OnAuthorizeResponse;
 
         /// <summary>
         /// An event sent whenever an authorize SOAP response was sent.
         /// </summary>
-        public event AccessLogHandler             OnAuthorizeSOAPResponse;
+        public event AccessLogHandler              OnAuthorizeSOAPResponse;
 
         #endregion
 
@@ -187,27 +182,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a start transaction SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                   OnStartTransactionSOAPRequest;
+        public event RequestLogHandler                    OnStartTransactionSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        public event StartTransactionRequestDelegate   OnStartTransactionRequest;
+        public event OnStartTransactionRequestDelegate    OnStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a start transaction request was received.
         /// </summary>
-        public event OnStartTransactionDelegate          OnStartTransaction;
+        public event OnStartTransactionDelegate           OnStartTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a start transaction request was sent.
         /// </summary>
-        public event StartTransactionResponseDelegate  OnStartTransactionResponse;
+        public event OnStartTransactionResponseDelegate   OnStartTransactionResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a start transaction request was sent.
         /// </summary>
-        public event AccessLogHandler                    OnStartTransactionSOAPResponse;
+        public event AccessLogHandler                     OnStartTransactionSOAPResponse;
 
         #endregion
 
@@ -216,27 +211,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a status notification SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                     OnStatusNotificationSOAPRequest;
+        public event RequestLogHandler                      OnStatusNotificationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
         /// </summary>
-        public event StatusNotificationRequestDelegate   OnStatusNotificationRequest;
+        public event OnStatusNotificationRequestDelegate    OnStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
         /// </summary>
-        public event OnStatusNotificationDelegate          OnStatusNotification;
+        public event OnStatusNotificationDelegate           OnStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a status notification request was sent.
         /// </summary>
-        public event StatusNotificationResponseDelegate  OnStatusNotificationResponse;
+        public event OnStatusNotificationResponseDelegate   OnStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a status notification request was sent.
         /// </summary>
-        public event AccessLogHandler                      OnStatusNotificationSOAPResponse;
+        public event AccessLogHandler                       OnStatusNotificationSOAPResponse;
 
         #endregion
 
@@ -245,27 +240,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a meter values SOAP request was received.
         /// </summary>
-        public event RequestLogHandler              OnMeterValuesSOAPRequest;
+        public event RequestLogHandler               OnMeterValuesSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
         /// </summary>
-        public event MeterValuesRequestDelegate   OnMeterValuesRequest;
+        public event OnMeterValuesRequestDelegate    OnMeterValuesRequest;
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
         /// </summary>
-        public event OnMeterValuesDelegate          OnMeterValues;
+        public event OnMeterValuesDelegate           OnMeterValues;
 
         /// <summary>
         /// An event sent whenever a response to a meter values request was sent.
         /// </summary>
-        public event MeterValuesResponseDelegate  OnMeterValuesResponse;
+        public event OnMeterValuesResponseDelegate   OnMeterValuesResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a meter values request was sent.
         /// </summary>
-        public event AccessLogHandler               OnMeterValuesSOAPResponse;
+        public event AccessLogHandler                OnMeterValuesSOAPResponse;
 
         #endregion
 
@@ -274,27 +269,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a stop transaction SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                  OnStopTransactionSOAPRequest;
+        public event RequestLogHandler                   OnStopTransactionSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
         /// </summary>
-        public event StopTransactionRequestDelegate   OnStopTransactionRequest;
+        public event OnStopTransactionRequestDelegate    OnStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a stop transaction request was received.
         /// </summary>
-        public event OnStopTransactionDelegate          OnStopTransaction;
+        public event OnStopTransactionDelegate           OnStopTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a stop transaction request was sent.
         /// </summary>
-        public event StopTransactionResponseDelegate  OnStopTransactionResponse;
+        public event OnStopTransactionResponseDelegate   OnStopTransactionResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a stop transaction request was sent.
         /// </summary>
-        public event AccessLogHandler                   OnStopTransactionSOAPResponse;
+        public event AccessLogHandler                    OnStopTransactionSOAPResponse;
 
         #endregion
 
@@ -304,27 +299,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a data transfer SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                       OnIncomingDataTransferSOAPRequest;
+        public event RequestLogHandler                        OnIncomingDataTransferSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event IncomingDataTransferRequestDelegate   OnIncomingDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate    OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferDelegate          OnIncomingDataTransfer;
+        public event OnIncomingDataTransferDelegate           OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event IncomingDataTransferResponseDelegate  OnIncomingDataTransferResponse;
+        public event OnIncomingDataTransferResponseDelegate   OnIncomingDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a data transfer request was sent.
         /// </summary>
-        public event AccessLogHandler                        OnIncomingDataTransferSOAPResponse;
+        public event AccessLogHandler                         OnIncomingDataTransferSOAPResponse;
 
         #endregion
 
@@ -333,27 +328,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a diagnostics status notification SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                                OnDiagnosticsStatusNotificationSOAPRequest;
+        public event RequestLogHandler                                 OnDiagnosticsStatusNotificationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
         /// </summary>
-        public event DiagnosticsStatusNotificationRequestDelegate   OnDiagnosticsStatusNotificationRequest;
+        public event OnDiagnosticsStatusNotificationRequestDelegate    OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a diagnostics status notification request was received.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationDelegate          OnDiagnosticsStatusNotification;
+        public event OnDiagnosticsStatusNotificationDelegate           OnDiagnosticsStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a diagnostics status notification request was sent.
         /// </summary>
-        public event DiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
+        public event OnDiagnosticsStatusNotificationResponseDelegate   OnDiagnosticsStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a diagnostics status notification request was sent.
         /// </summary>
-        public event AccessLogHandler                                 OnDiagnosticsStatusNotificationSOAPResponse;
+        public event AccessLogHandler                                  OnDiagnosticsStatusNotificationSOAPResponse;
 
         #endregion
 
@@ -362,27 +357,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a firmware status notification SOAP request was received.
         /// </summary>
-        public event RequestLogHandler                             OnFirmwareStatusNotificationSOAPRequest;
+        public event RequestLogHandler                              OnFirmwareStatusNotificationSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
         /// </summary>
-        public event FirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
+        public event OnFirmwareStatusNotificationRequestDelegate    OnFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationDelegate          OnFirmwareStatusNotification;
+        public event OnFirmwareStatusNotificationDelegate           OnFirmwareStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a firmware status notification request was sent.
         /// </summary>
-        public event FirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
+        public event OnFirmwareStatusNotificationResponseDelegate   OnFirmwareStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a firmware status notification request was sent.
         /// </summary>
-        public event AccessLogHandler                              OnFirmwareStatusNotificationSOAPResponse;
+        public event AccessLogHandler                               OnFirmwareStatusNotificationSOAPResponse;
 
         #endregion
 
