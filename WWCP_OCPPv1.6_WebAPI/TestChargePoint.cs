@@ -817,8 +817,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                              Availabilities.Inoperative));
             }
 
-            this.Configuration            = new Dictionary<String, ConfigurationData>();
-            this.Configuration.Add("doNotChangeMe", new ConfigurationData("never", true, false));
+            this.Configuration = new Dictionary<String, ConfigurationData> {
+                { "hello",          new ConfigurationData("world", true,  false) },
+                { "changeMe",       new ConfigurationData("now",   false, false) },
+                { "doNotChangeMe",  new ConfigurationData("never", true,  false) }
+            };
             this.EnquedRequests           = new List<EnquedRequest>();
 
             this.ChargePointVendor        = ChargePointVendor;
@@ -1196,8 +1199,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 {
 
                     OnGetConfigurationRequest?.Invoke(requestTimestamp,
-                                           this,
-                                           Request);
+                                                      this,
+                                                      Request);
                 }
                 catch (Exception e)
                 {
@@ -1218,7 +1221,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid GetConfiguration request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new GetConfigurationResponse(Request,
-                                                            new ConfigurationKey[0],
+                                                            Array.Empty<ConfigurationKey>(),
                                                             Request.Keys);
 
                 }
@@ -1227,21 +1230,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming GetConfiguration request.");
 
-                    var _configurationKeys  = new List<ConfigurationKey>();
-                    var _unkownKeys         = new List<String>();
+                    var configurationKeys  = new List<ConfigurationKey>();
+                    var unkownKeys         = new List<String>();
 
-                    if (Request.Keys.SafeAny())
+                    if (Request.Keys.Any())
                     {
                         foreach (var key in Request.Keys)
                         {
 
-                            if (Configuration.TryGetValue(key, out ConfigurationData Data))
-                                _configurationKeys.Add(new ConfigurationKey(key,
-                                                                            Data.IsReadOnly,
-                                                                            Data.Value));
+                            if (Configuration.TryGetValue(key, out var configurationData))
+                                configurationKeys.Add(new ConfigurationKey(key,
+                                                                           configurationData.IsReadOnly,
+                                                                           configurationData.Value));
 
                             else
-                                _unkownKeys.Add(key);
+                                unkownKeys.Add(key);
 
                         }
                     }
@@ -1249,16 +1252,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     {
                         foreach (var configuration in Configuration)
                         {
-                            _configurationKeys.Add(new ConfigurationKey(configuration.Key,
-                                                                        configuration.Value.IsReadOnly,
-                                                                        configuration.Value.Value));
+                            configurationKeys.Add(new ConfigurationKey(configuration.Key,
+                                                                       configuration.Value.IsReadOnly,
+                                                                       configuration.Value.Value));
                         }
                     }
 
 
                     response = new GetConfigurationResponse(Request,
-                                                            _configurationKeys,
-                                                            _unkownKeys);
+                                                            configurationKeys,
+                                                            unkownKeys);
 
                 }
 
@@ -1335,24 +1338,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming ChangeConfiguration for '" + Request.Key + "' with value '" + Request.Value + "'.");
 
-                    if (Configuration.TryGetValue(Request.Key, out ConfigurationData Data))
+                    if (Configuration.TryGetValue(Request.Key, out var configurationData))
                     {
-                        if (Data.IsReadOnly)
+                        if (configurationData.IsReadOnly)
                         {
 
-                            response = new ChangeConfigurationResponse(Request,
-                                                                       ConfigurationStatus.Rejected);
+                            response                 = new ChangeConfigurationResponse(Request,
+                                                                                       ConfigurationStatus.Rejected);
 
                         }
                         else
                         {
 
-                            Data.Value  = Request.Value;
+                            configurationData.Value  = Request.Value;
 
-                            response    = new ChangeConfigurationResponse(Request,
-                                                                          Data.RebootRequired
-                                                                              ? ConfigurationStatus.RebootRequired
-                                                                              : ConfigurationStatus.Accepted);
+                            response                 = new ChangeConfigurationResponse(Request,
+                                                                                       configurationData.RebootRequired
+                                                                                           ? ConfigurationStatus.RebootRequired
+                                                                                           : ConfigurationStatus.Accepted);
 
                         }
                     }
@@ -1363,8 +1366,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                              false,
                                                                              false));
 
-                        response    = new ChangeConfigurationResponse(Request,
-                                                                      ConfigurationStatus.Accepted);
+                        response  = new ChangeConfigurationResponse(Request,
+                                                                    ConfigurationStatus.Accepted);
 
                     }
 
