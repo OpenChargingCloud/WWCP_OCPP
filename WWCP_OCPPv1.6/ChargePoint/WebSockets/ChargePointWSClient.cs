@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// The charge point WebSockets client runs on a charge point
     /// and connects to a central system to invoke methods.
     /// </summary>
-    public partial class ChargePointWSClient : IHTTPClient,
+    public partial class ChargePointWSClient : WebSocketClient,
                                                ICPWSClient,
                                                IChargePointServerEvents
     {
@@ -119,35 +119,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The default HTTP user agent string.
         /// </summary>
-        public const           String  DefaultHTTPUserAgent  = "GraphDefined OCPP " + Version.Number + " CP WebSocket Client";
+        public  new const  String  DefaultHTTPUserAgent  = "GraphDefined OCPP " + Version.Number + " CP WebSocket Client";
 
-        /// <summary>
-        /// The default remote TCP port to connect to.
-        /// </summary>
-        public static readonly IPPort  DefaultRemotePort     = IPPort.Parse(443);
+        private new const  String  LogfileName           = "ChargePointWSClient.log";
 
-
-        private Socket?           TCPSocket;
-        private MyNetworkStream?  TCPStream;
-        private SslStream?        TLSStream;
-        private Stream?           HTTPStream;
-
-        private Int64             internalRequestId = 100000;
-
-        /// <summary>
-        /// The default maintenance interval.
-        /// </summary>
-        public readonly TimeSpan DefaultMaintenanceEvery = TimeSpan.FromSeconds(1);
-        private static readonly SemaphoreSlim MaintenanceSemaphore = new SemaphoreSlim(1, 1);
-        private readonly Timer MaintenanceTimer;
-
-        public readonly TimeSpan DefaultWebSocketPingEvery = TimeSpan.FromSeconds(30);
-
-        private readonly Timer WebSocketPingTimer;
-
-        protected static readonly TimeSpan SemaphoreSlimTimeout = TimeSpan.FromSeconds(5);
-
-        private const String LogfileName = "ChargePointWSClient.log";
+        private            Int64   internalRequestId     = 100000;
 
         #endregion
 
@@ -180,174 +156,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public ChargePointWSClient.CPClientLogger    Logger                          { get; }
 
-
-
-        /// <summary>
-        /// The remote URL of the HTTP endpoint to connect to.
-        /// </summary>
-        public URL                                   RemoteURL                       { get; }
-
-        /// <summary>
-        /// The virtual HTTP hostname to connect to.
-        /// </summary>
-        public HTTPHostname?                         VirtualHostname                 { get; }
-
-        /// <summary>
-        /// An optional description of this HTTP client.
-        /// </summary>
-        public String?                               Description                     { get; set; }
-
-        /// <summary>
-        /// The remote SSL/TLS certificate validator.
-        /// </summary>
-        public RemoteCertificateValidationCallback?  RemoteCertificateValidator      { get; private set; }
-
-        /// <summary>
-        /// A delegate to select a TLS client certificate.
-        /// </summary>
-        public LocalCertificateSelectionCallback?    ClientCertificateSelector       { get; }
-
-        /// <summary>
-        /// The SSL/TLS client certificate to use of HTTP authentication.
-        /// </summary>
-        public X509Certificate?                      ClientCert                      { get; }
-
-        /// <summary>
-        /// The TLS protocol to use.
-        /// </summary>
-        public SslProtocols                          TLSProtocol                     { get; }
-
-        /// <summary>
-        /// Prefer IPv4 instead of IPv6.
-        /// </summary>
-        public Boolean                               PreferIPv4                      { get; }
-
-        /// <summary>
-        /// The HTTP user agent identification.
-        /// </summary>
-        public String                                HTTPUserAgent                   { get; }
-
-        /// <summary>
-        /// The timeout for upstream requests.
-        /// </summary>
-        public TimeSpan                              RequestTimeout                  { get; set; }
-
-        /// <summary>
-        /// The delay between transmission retries.
-        /// </summary>
-        public TransmissionRetryDelayDelegate        TransmissionRetryDelay          { get; }
-
-        /// <summary>
-        /// The maximum number of retries when communicationg with the remote OICP service.
-        /// </summary>
-        public UInt16                                MaxNumberOfRetries              { get; }
-
-        /// <summary>
-        /// Whether to pipeline multiple HTTP request through a single HTTP/TCP connection.
-        /// </summary>
-        public Boolean                               UseHTTPPipelining               { get; }
-
-        /// <summary>
-        /// The CPO client (HTTP client) logger.
-        /// </summary>
-        public HTTPClientLogger?                     HTTPLogger                      { get; set; }
-
-
-
-
-        /// <summary>
-        /// The DNS client defines which DNS servers to use.
-        /// </summary>
-        public DNSClient?                            DNSClient                       { get; }
-
-
-
-        /// <summary>
-        /// Our local IP port.
-        /// </summary>
-        public IPPort                                LocalPort                       { get; private set; }
-
-        /// <summary>
-        /// The IP Address to connect to.
-        /// </summary>
-        public IIPAddress?                           RemoteIPAddress                 { get; protected set; }
-
-
-        public Int32? Available
-                    => TCPSocket?.Available;
-
-        public Boolean? Connected
-            => TCPSocket?.Connected;
-
-        [DisallowNull]
-        public LingerOption? LingerState
-        {
-            get
-            {
-                return TCPSocket?.LingerState;
-            }
-            set
-            {
-                if (TCPSocket is not null)
-                    TCPSocket.LingerState = value;
-            }
-        }
-
-        [DisallowNull]
-        public Boolean? NoDelay
-        {
-            get
-            {
-                return TCPSocket?.NoDelay;
-            }
-            set
-            {
-                if (TCPSocket is not null)
-                    TCPSocket.NoDelay = value.Value;
-            }
-        }
-
-        [DisallowNull]
-        public Byte TTL
-        {
-            get
-            {
-                return (Byte) (TCPSocket?.Ttl ?? 0);
-            }
-            set
-            {
-                if (TCPSocket is not null)
-                    TCPSocket.Ttl = value;
-            }
-        }
-
-
-        public Tuple<String, String>?               HTTPBasicAuth                   { get; }
-
-
-        /// <summary>
-        /// Disable all maintenance tasks.
-        /// </summary>
-        public Boolean                              DisableMaintenanceTasks         { get; set; }
-
-        /// <summary>
-        /// The maintenance interval.
-        /// </summary>
-        public TimeSpan                             MaintenanceEvery                { get; }
-
-        /// <summary>
-        /// Disable web socket pings.
-        /// </summary>
-        public Boolean                              DisableWebSocketPings           { get; set; }
-
-        /// <summary>
-        /// The web socket ping interval.
-        /// </summary>
-        public TimeSpan                             WebSocketPingEvery              { get; }
-
-
-        public TimeSpan?                            SlowNetworkSimulationDelay      { get; set; }
-
         #endregion
 
         #region CustomRequestParsers
@@ -377,21 +185,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
         #region Events
-
-        #region HTTPRequest-/ResponseLog
-
-        /// <summary>
-        /// A delegate for logging the HTTP request.
-        /// </summary>
-        public event ClientRequestLogHandler?   RequestLogDelegate;
-
-        /// <summary>
-        /// A delegate for logging the HTTP request/response.
-        /// </summary>
-        public event ClientResponseLogHandler?  ResponseLogDelegate;
-
-        #endregion
-
 
         // Outgoing messages (to central system)
 
@@ -1197,8 +990,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region ChargePointWSClient(Request.ChargeBoxId, Hostname, ..., LoggingContext = CPClientLogger.DefaultContext, ...)
-
         /// <summary>
         /// Create a new charge point websocket client running on a charge point
         /// and connecting to a central system to invoke methods.
@@ -1257,6 +1048,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                    HTTPClientLogger?                     HTTPLogger                   = null,
                                    DNSClient?                            DNSClient                    = null)
 
+            : base(RemoteURL,
+                   VirtualHostname,
+                   Description,
+                   RemoteCertificateValidator,
+                   ClientCertificateSelector,
+                   ClientCert,
+                   HTTPUserAgent,
+                   URLPathPrefix,
+                   TLSProtocol,
+                   PreferIPv4,
+                   HTTPBasicAuth,
+                   RequestTimeout,
+                   TransmissionRetryDelay,
+                   MaxNumberOfRetries,
+                   UseHTTPPipelining,
+
+                   DisableMaintenanceTasks,
+                   MaintenanceEvery,
+                   DisableWebSocketPings,
+                   WebSocketPingEvery,
+                   SlowNetworkSimulationDelay,
+
+                   LoggingPath,
+                   LoggingContext,
+                   LogfileCreator,
+                   HTTPLogger,
+                   DNSClient)
+
         {
 
             #region Initial checks
@@ -1272,3402 +1091,2615 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            this.RemoteURL                   = RemoteURL;
-            this.VirtualHostname             = VirtualHostname;
-            this.Description                 = Description;
-            this.RemoteCertificateValidator  = RemoteCertificateValidator;
-            this.ClientCertificateSelector   = ClientCertificateSelector;
-            this.ClientCert                  = ClientCert;
-            this.HTTPUserAgent               = HTTPUserAgent;
-            //this.URLPathPrefix               = URLPathPrefix;
-            this.TLSProtocol                 = TLSProtocol             ?? SslProtocols.Tls12 | SslProtocols.Tls13;
-            this.PreferIPv4                  = PreferIPv4              ?? false;
-            this.HTTPBasicAuth               = HTTPBasicAuth;
-            this.RequestTimeout              = RequestTimeout          ?? TimeSpan.FromMinutes(10);
-            this.TransmissionRetryDelay      = TransmissionRetryDelay  ?? (retryCount => TimeSpan.FromSeconds(5));
-            this.MaxNumberOfRetries          = MaxNumberOfRetries      ?? 3;
-            this.UseHTTPPipelining           = UseHTTPPipelining;
-            this.HTTPLogger                  = HTTPLogger;
-            this.DNSClient                   = DNSClient;
+            this.ChargeBoxIdentity                  = ChargeBoxIdentity;
+            this.From                               = From;
+            this.To                                 = To;
 
-            this.ChargeBoxIdentity           = ChargeBoxIdentity;
-            this.From                        = From;
-            this.To                          = To;
-
-            //this.Logger                      = new ChargePointwebsocketClient.CPClientLogger(this,
-            //                                                                            LoggingPath,
-            //                                                                            LoggingContext,
-            //                                                                            LogfileCreator);
-
-            this.DisableMaintenanceTasks     = DisableMaintenanceTasks;
-            this.MaintenanceEvery            = MaintenanceEvery        ?? DefaultMaintenanceEvery;
-            this.MaintenanceTimer            = new Timer(DoMaintenanceSync,
-                                                         null,
-                                                         this.MaintenanceEvery,
-                                                         this.MaintenanceEvery);
-
-            this.DisableWebSocketPings       = DisableWebSocketPings;
-            this.WebSocketPingEvery          = WebSocketPingEvery      ?? DefaultWebSocketPingEvery;
-            this.WebSocketPingTimer          = new Timer(DoWebSocketPingSync,
-                                                         null,
-                                                         this.WebSocketPingEvery,
-                                                         this.WebSocketPingEvery);
-
-            this.SlowNetworkSimulationDelay  = SlowNetworkSimulationDelay;
+            //this.Logger                             = new ChargePointwebsocketClient.CPClientLogger(this,
+            //                                                                                   LoggingPath,
+            //                                                                                   LoggingContext,
+            //                                                                                   LogfileCreator);
 
         }
 
         #endregion
 
-        #region ChargePointWSClient(Request.ChargeBoxId, Logger, Hostname, ...)
 
-        /// <summary>
-        /// Create a new charge point websocket client.
-        /// </summary>
-        /// <param name="ChargeBoxIdentity">A unqiue identification of this client.</param>
-        /// <param name="From">The source URI of the websocket message.</param>
-        /// <param name="To">The destination URI of the websocket message.</param>
-        /// 
-        /// <param name="Hostname">The OCPP hostname to connect to.</param>
-        /// <param name="RemotePort">An optional OCPP TCP port to connect to.</param>
-        /// <param name="RemoteCertificateValidator">A delegate to verify the remote TLS certificate.</param>
-        /// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
-        /// <param name="HTTPVirtualHost">An optional HTTP virtual host name to use.</param>
-        /// <param name="URLPrefix">An default URI prefix.</param>
-        /// <param name="HTTPUserAgent">An optional HTTP user agent to use.</param>
-        /// <param name="RequestTimeout">An optional timeout for upstream queries.</param>
-        /// <param name="MaxNumberOfRetries">The default number of maximum transmission retries.</param>
-        /// <param name="DNSClient">An optional DNS client.</param>
-        //public ChargePointWSClient(String                               ChargeBoxIdentity,
-        //                             String                               From,
-        //                             String                               To,
+        #region ProcessWebSocketTextFrame(frame)
 
-        //                             CPClientLogger                       Logger,
-        //                             HTTPHostname                         Hostname,
-        //                             IPPort?                              RemotePort                   = null,
-        //                             RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-        //                             LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-        //                             HTTPHostname?                        HTTPVirtualHost              = null,
-        //                             HTTPPath?                            URLPrefix                    = null,
-        //                             String                               HTTPUserAgent                = DefaultHTTPUserAgent,
-        //                             TimeSpan?                            RequestTimeout               = null,
-        //                             Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
-        //                             DNSClient                            DNSClient                    = null)
-
-        //    : base(Request.ChargeBoxId,
-        //           Hostname,
-        //           RemotePort ?? DefaultRemotePort,
-        //           RemoteCertificateValidator,
-        //           ClientCertificateSelector,
-        //           HTTPVirtualHost,
-        //           URLPrefix ?? DefaultURLPrefix,
-        //           null,
-        //           HTTPUserAgent,
-        //           RequestTimeout,
-        //           null,
-        //           MaxNumberOfRetries,
-        //           DNSClient)
-
-        //{
-
-        //    #region Initial checks
-
-        //    if (ChargeBoxIdentity.IsNullOrEmpty())
-        //        throw new ArgumentNullException(nameof(ChargeBoxIdentity),  "The given charge box identification must not be null or empty!");
-
-        //    if (From.IsNullOrEmpty())
-        //        throw new ArgumentNullException(nameof(From),               "The given websocket message source must not be null or empty!");
-
-        //    if (To.IsNullOrEmpty())
-        //        throw new ArgumentNullException(nameof(To),                 "The given websocket message destination must not be null or empty!");
-
-        //    #endregion
-
-        //    this.From    = From;
-        //    this.To      = To;
-
-        //    this.Logger  = Logger ?? throw new ArgumentNullException(nameof(Hostname), "The given hostname must not be null or empty!");
-
-        //}
-
-        #endregion
-
-        #endregion
-
-
-        #region Connect(CancellationToken = null, EventTrackingId = null, RequestTimeout = null, NumberOfRetries = 0)
-
-        /// <summary>
-        /// Execute the given HTTP request and return its result.
-        /// </summary>
-        /// <param name="CancellationToken">A cancellation token.</param>
-        /// <param name="EventTrackingId"></param>
-        /// <param name="RequestTimeout">An optional timeout.</param>
-        /// <param name="NumberOfRetries">The number of retransmissions of this request.</param>
-        public async Task<HTTPResponse> Connect(CancellationToken?  CancellationToken   = null,
-                                                EventTracking_Id?   EventTrackingId     = null,
-                                                TimeSpan?           RequestTimeout      = null,
-                                                Byte                NumberOfRetries     = 0)
+        public override async Task ProcessWebSocketTextFrame(WebSocketFrame frame)
         {
 
-            HTTPRequest?  request   = null;
-            HTTPResponse? response  = null;
+            var textPayload = frame.Payload.ToUTF8String();
 
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = TimeSpan.FromMinutes(10);
+            if (textPayload == "[]")
+                DebugX.Log(nameof(ChargePointWSClient), " [] received!");
 
-            try
+            else if (OCPP_WebSocket_RequestMessage. TryParse(textPayload, out var wsRequestMessage) &&
+                        wsRequestMessage is not null)
             {
 
-                //Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
+                File.AppendAllText(LogfileName,
+                                    String.Concat("timestamp: ",         Timestamp.Now.ToIso8601(),                                               Environment.NewLine,
+                                                  "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                            Environment.NewLine,
+                                                  "Message received: ",  wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
+                                                  "--------------------------------------------------------------------------------------------", Environment.NewLine));
 
-                #region Data
 
-                var HTTPHeaderBytes   = Array.Empty<Byte>();
-                var HTTPBodyBytes     = Array.Empty<Byte>();
-                var sw                = new Stopwatch();
+                var requestJSON              = JArray.Parse(textPayload);
+                var cancellationTokenSource  = new CancellationTokenSource();
 
-                #endregion
+                JObject?                     OCPPResponseJSON   = null;
+                OCPP_WebSocket_ErrorMessage? ErrorMessage       = null;
 
-                #region Create TCP connection (possibly also do DNS lookups)
-
-                Boolean restart;
-
-                do
+                switch (wsRequestMessage.Action)
                 {
 
-                    restart = false;
-
-                    #region Setup TCP socket
-
-                    if (TCPSocket is null)
-                    {
-
-                        System.Net.IPEndPoint? _FinalIPEndPoint = null;
-
-                        if (RemoteIPAddress is null)
+                    case "Reset":
                         {
 
-                            if      (IPAddress.IsIPv4Localhost(RemoteURL.Hostname))
-                                RemoteIPAddress = IPv4Address.Localhost;
+                            #region Send OnResetWSRequest event
 
-                            else if (IPAddress.IsIPv6Localhost(RemoteURL.Hostname))
-                                RemoteIPAddress = IPv6Address.Localhost;
-
-                            else if (IPAddress.IsIPv4(RemoteURL.Hostname.Name))
-                                RemoteIPAddress = IPv4Address.Parse(RemoteURL.Hostname.Name);
-
-                            else if (IPAddress.IsIPv6(RemoteURL.Hostname.Name))
-                                RemoteIPAddress = IPv6Address.Parse(RemoteURL.Hostname.Name);
-
-                            #region DNS lookup...
-
-                            if (RemoteIPAddress is null)
+                            try
                             {
 
-                                var IPv4AddressLookupTask  = DNSClient.
-                                                                 Query<A>(RemoteURL.Hostname.Name).
-                                                                 ContinueWith(query => query.Result.Select(ARecord    => ARecord.IPv4Address));
+                                OnResetWSRequest?.Invoke(Timestamp.Now,
+                                                            this,
+                                                            requestJSON);
 
-                                var IPv6AddressLookupTask  = DNSClient.
-                                                                 Query<AAAA>(RemoteURL.Hostname.Name).
-                                                                 ContinueWith(query => query.Result.Select(AAAARecord => AAAARecord.IPv6Address));
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnResetWSRequest));
+                            }
 
-                                await Task.WhenAll(IPv4AddressLookupTask,
-                                                   IPv6AddressLookupTask).
-                                           ConfigureAwait(false);
+                            #endregion
 
+                            try
+                            {
 
-                                if (IPv4AddressLookupTask.Result.Any())
-                                    RemoteIPAddress = IPv4AddressLookupTask.Result.First();
+                                if (ResetRequest.TryParse(wsRequestMessage.Message,
+                                                            wsRequestMessage.RequestId,
+                                                            ChargeBoxIdentity,
+                                                            out var request,
+                                                            out var ErrorResponse,
+                                                            CustomResetRequestParser) && request is not null) {
 
-                                else if (IPv6AddressLookupTask.Result.Any())
-                                    RemoteIPAddress = IPv6AddressLookupTask.Result.First();
+                                    #region Send OnResetRequest event
 
+                                    try
+                                    {
 
-                                if (RemoteIPAddress == null || RemoteIPAddress.GetBytes() == null)
-                                    throw new Exception("DNS lookup failed!");
+                                        OnResetRequest?.Invoke(Timestamp.Now,
+                                                                this,
+                                                                request);
 
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnResetRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    ResetResponse? response = null;
+
+                                    var results = OnReset?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnResetDelegate)
+                                                            (Timestamp.Now,
+                                                            this,
+                                                            request,
+                                                            cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= ResetResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnResetResponse event
+
+                                    try
+                                    {
+
+                                        OnResetResponse?.Invoke(Timestamp.Now,
+                                                                this,
+                                                                request,
+                                                                response,
+                                                                response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnResetResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnResetWSResponse event
+
+                            try
+                            {
+
+                                OnResetWSResponse?.Invoke(Timestamp.Now,
+                                                            this,
+                                                            requestJSON,
+                                                            new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnResetWSResponse));
                             }
 
                             #endregion
 
                         }
+                        break;
 
-                        _FinalIPEndPoint = new System.Net.IPEndPoint(new System.Net.IPAddress(RemoteIPAddress.GetBytes()),
-                                                                     RemoteURL.Port.Value.ToInt32());
-
-                        sw.Start();
-
-                        //TCPClient = new TcpClient();
-                        //TCPClient.Connect(_FinalIPEndPoint);
-                        //TCPClient.ReceiveTimeout = (Int32) RequestTimeout.Value.TotalMilliseconds;
-
-
-                        if (RemoteIPAddress.IsIPv4)
-                            TCPSocket = new Socket(AddressFamily.InterNetwork,
-                                                   SocketType.Stream,
-                                                   ProtocolType.Tcp);
-
-                        else if (RemoteIPAddress.IsIPv6)
-                            TCPSocket = new Socket(AddressFamily.InterNetworkV6,
-                                                   SocketType.Stream,
-                                                   ProtocolType.Tcp);
-
-                        if (TCPSocket is not null) {
-                            TCPSocket.SendTimeout    = (Int32) RequestTimeout.Value.TotalMilliseconds;
-                            TCPSocket.ReceiveTimeout = (Int32) RequestTimeout.Value.TotalMilliseconds;
-                            TCPSocket.Connect(_FinalIPEndPoint);
-                            TCPSocket.ReceiveTimeout = (Int32) RequestTimeout.Value.TotalMilliseconds;
-                        }
-
-                    }
-
-                    TCPStream = TCPSocket is not null
-                                    ? new MyNetworkStream(TCPSocket, true) {
-                                          ReadTimeout = (Int32) RequestTimeout.Value.TotalMilliseconds
-                                      }
-                                    : null;
-
-                    #endregion
-
-                    #region Create (Crypto-)Stream
-
-                    if (RemoteCertificateValidator is null &&
-                       (RemoteURL.Protocol == URLProtocols.wss || RemoteURL.Protocol == URLProtocols.https))
-                    {
-                        RemoteCertificateValidator = (sender, certificate, chain, sslPolicyErrors) => {
-                            return true;
-                        };
-                    }
-
-                    if (RemoteCertificateValidator is not null)
-                    {
-
-                        if (TLSStream is null)
+                    case "ChangeAvailability":
                         {
 
-                            TLSStream = new SslStream(TCPStream,
-                                                      false,
-                                                      RemoteCertificateValidator,
-                                                      ClientCertificateSelector,
-                                                      EncryptionPolicy.RequireEncryption)
-                            {
-
-                                ReadTimeout = (Int32) RequestTimeout.Value.TotalMilliseconds
-
-                            };
-
-                            HTTPStream = TLSStream;
+                            #region Send OnChangeAvailabilityWSRequest event
 
                             try
                             {
 
-                                await TLSStream.AuthenticateAsClientAsync(RemoteURL.Hostname.Name,
-                                                                          null,
-                                                                          SslProtocols.Tls12,
-                                                                          false);//, new X509CertificateCollection(new X509Certificate[] { ClientCert }), SslProtocols.Default, true);
+                                OnChangeAvailabilityWSRequest?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        requestJSON);
 
                             }
-                            catch (Exception)
+                            catch (Exception e)
                             {
-                                TCPSocket = null;
-                                restart = true;
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeAvailabilityWSRequest));
                             }
 
-                        }
+                            #endregion
 
-                    }
-
-                    else
-                    {
-                        TLSStream   = null;
-                        HTTPStream  = TCPStream;
-                    }
-
-                    HTTPStream.ReadTimeout = (Int32) RequestTimeout.Value.TotalMilliseconds;
-
-                    #endregion
-
-                }
-                while (restart);
-
-                this.LocalPort = IPSocket.FromIPEndPoint(TCPStream.Socket.LocalEndPoint).Port;
-
-                #endregion
-
-                #region Send Request
-
-                // GET /webServices/ocpp/CP3211 HTTP/1.1
-                // Host:                    some.server.com:33033
-                // Connection:              Upgrade
-                // Upgrade:                 websocket
-                // Sec-WebSocket-Key:       x3JJHMbDL1EzLkh9GBhXDw==
-                // Sec-WebSocket-Protocol:  ocpp1.6, ocpp1.5
-                // Sec-WebSocket-Version:   13
-
-                request = new HTTPRequest.Builder {
-                              Path                  = RemoteURL.Path,
-                              Host                  = HTTPHostname.Parse(String.Concat(RemoteURL.Hostname, ":", RemoteURL.Port)),
-                              Connection            = "Upgrade",
-                              Upgrade               = "websocket",
-                              SecWebSocketKey       = "x3JJHMbDL1EzLkh9GBhXDw==",
-                              SecWebSocketProtocol  = "ocpp1.6",
-                              SecWebSocketVersion   = "13",
-                              Authorization         = HTTPBasicAuth?.Item1.IsNotNullOrEmpty() == true && HTTPBasicAuth?.Item2.IsNotNullOrEmpty() == true
-                                                          ? new HTTPBasicAuthentication(HTTPBasicAuth.Item1, HTTPBasicAuth.Item2)
-                                                          : null
-                          }.AsImmutable;
-
-                #region Call the optional HTTP request log delegate
-
-                try
-                {
-
-                    if (RequestLogDelegate is not null)
-                        await Task.WhenAll(RequestLogDelegate.GetInvocationList().
-                                           Cast<ClientRequestLogHandler>().
-                                           Select(e => e(Timestamp.Now,
-                                                         this,
-                                                         request))).
-                                           ConfigureAwait(false);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(HTTPClient) + "." + nameof(RequestLogDelegate));
-                }
-
-                #endregion
-
-                HTTPStream.Write((request.EntirePDU + "\r\n\r\n").ToUTF8Bytes());
-
-                HTTPStream.Flush();
-
-                File.AppendAllText(LogfileName,
-                                   String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
-                                                 "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
-                                                 "HTTP request: ",      Environment.NewLine,                                                      Environment.NewLine,
-                                                 request.EntirePDU,                                                                               Environment.NewLine,
-                                                 "--------------------------------------------------------------------------------------------",  Environment.NewLine));
-
-                #endregion
-
-                #region Wait for HTTP response
-
-                var buffer  = new Byte[16 * 1024];
-                var pos     = 0;
-
-                do
-                {
-
-                    pos += HTTPStream.Read(buffer, pos, 2048);
-
-                    if (sw.ElapsedMilliseconds >= RequestTimeout.Value.TotalMilliseconds)
-                        throw new HTTPTimeoutException(sw.Elapsed);
-
-                    Thread.Sleep(1);
-
-                } while (TCPStream.DataAvailable && pos < buffer.Length - 2048);
-
-                var responseData  = buffer.ToUTF8String(pos);
-                var lines         = responseData.Split('\n').Select(line => line?.Trim()).TakeWhile(line => line.IsNotNullOrEmpty()).ToArray();
-                response          = HTTPResponse.Parse(lines.AggregateWith(Environment.NewLine),
-                                                       new Byte[0],
-                                                       request);
-
-                // HTTP/1.1 101 Switching Protocols
-                // Upgrade:                 websocket
-                // Connection:              Upgrade
-                // Sec-WebSocket-Accept:    s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
-                // Sec-WebSocket-Protocol:  ocpp1.6
-
-                // 1. Obtain the value of the "Sec-WebSocket-Key" request header without any leading or trailing whitespace
-                // 2. Concatenate it with "258EAFA5-E914-47DA-95CA-C5AB0DC85B11" (a special GUID specified by RFC 6455)
-                // 3. Compute SHA-1 and Base64 hash of the new value
-                // 4. Write the hash back as the value of "Sec-WebSocket-Accept" response header in an HTTP response
-                //var swk             = WSConnection.GetHTTPHeader("Sec-WebSocket-Key");
-                //var swka            = swk + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-                //var swkaSha1        = System.Security.Cryptography.SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(swka));
-                //var swkaSha1Base64  = Convert.ToBase64String(swkaSha1);
-
-                File.AppendAllText(LogfileName,
-                                   String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
-                                                 "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
-                                                 "HTTP response: ",     Environment.NewLine,                                                      Environment.NewLine,
-                                                 response.EntirePDU,                                                                              Environment.NewLine,
-                                                 "--------------------------------------------------------------------------------------------",  Environment.NewLine));
-
-                if (response.HTTPStatusCode.Code != 101)
-                    DebugX.Log("response.HTTPStatusCode.Code != 101");
-
-                #endregion
-
-                #region Close connection if requested!
-
-                if (response.Connection          is null    ||
-                    response.Connection          == "close" ||
-                    response.HTTPStatusCode.Code != 101)
-                {
-
-                    if (TLSStream is not null)
-                    {
-                        TLSStream.Close();
-                        TLSStream = null;
-                    }
-
-                    if (TCPSocket is not null)
-                    {
-                        TCPSocket.Close();
-                        //TCPClient.Dispose();
-                        TCPSocket = null;
-                    }
-
-                    HTTPStream = null;
-
-                }
-
-                #endregion
-
-            }
-
-            #region Catch...
-
-            catch (HTTPTimeoutException hte)
-            {
-
-                #region Create a HTTP response for the exception...
-
-                response = new HTTPResponse.Builder(request,
-                                                    HTTPStatusCode.RequestTimeout)
-                {
-
-                    ContentType  = HTTPContentType.JSON_UTF8,
-                    Content      = JSONObject.Create(new JProperty("timeout",     (Int32) hte.Timeout.TotalMilliseconds),
-                                                     new JProperty("message",     hte.Message),
-                                                     new JProperty("stackTrace",  hte.StackTrace)).
-                                              ToUTF8Bytes()
-
-                };
-
-                #endregion
-
-                if (TLSStream is not null)
-                {
-                    TLSStream.Close();
-                    TLSStream = null;
-                }
-
-                if (TCPSocket is not null)
-                {
-                    TCPSocket.Close();
-                    //TCPClient.Dispose();
-                    TCPSocket = null;
-                }
-
-            }
-            catch (Exception e)
-            {
-
-                #region Create a HTTP response for the exception...
-
-                while (e.InnerException is not null)
-                    e = e.InnerException;
-
-                response = new HTTPResponse.Builder(request,
-                                                    HTTPStatusCode.BadRequest)
-                {
-
-                    ContentType  = HTTPContentType.JSON_UTF8,
-                    Content      = JSONObject.Create(new JProperty("message",     e.Message),
-                                                     new JProperty("stackTrace",  e.StackTrace)).
-                                              ToUTF8Bytes()
-
-                };
-
-                #endregion
-
-                if (TLSStream is not null)
-                {
-                    TLSStream.Close();
-                    TLSStream = null;
-                }
-
-                if (TCPSocket is not null)
-                {
-                    TCPSocket.Close();
-                    //TCPClient.Dispose();
-                    TCPSocket = null;
-                }
-
-            }
-
-            #endregion
-
-            #region Call the optional HTTP response log delegate
-
-            try
-            {
-
-                if (ResponseLogDelegate != null)
-                    await Task.WhenAll(ResponseLogDelegate.GetInvocationList().
-                                       Cast<ClientResponseLogHandler>().
-                                       Select(e => e(Timestamp.Now,
-                                                     this,
-                                                     request,
-                                                     response))).
-                                       ConfigureAwait(false);
-
-            }
-            catch (Exception e2)
-            {
-                DebugX.Log(e2, nameof(HTTPClient) + "." + nameof(ResponseLogDelegate));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-
-        #region (Timer) DoWebSocketPing(State)
-
-        private UInt64 pingCounter;
-
-        private void DoWebSocketPingSync(Object? State)
-        {
-            if (!DisableWebSocketPings)
-                DoWebSocketPing(State).Wait();
-        }
-
-        private async Task DoWebSocketPing(Object? State)
-        {
-
-            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
-                                           ConfigureAwait(false))
-            {
-                try
-                {
-                    if (HTTPStream is not null)
-                    {
-
-                        lock (HTTPStream)
-                        {
-
-                            pingCounter++;
-
-                            var payload = pingCounter + ":" + Guid.NewGuid().ToString();
-
-                            SendWebSocketFrame(new WebSocketFrame(
-                                                   WebSocketFrame.Fin.Final,
-                                                   WebSocketFrame.MaskStatus.On,
-                                                   new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
-                                                   WebSocketFrame.Opcodes.Ping,
-                                                   payload.ToUTF8Bytes(),
-                                                   WebSocketFrame.Rsv.Off,
-                                                   WebSocketFrame.Rsv.Off,
-                                                   WebSocketFrame.Rsv.Off
-                                               ));
-
-                            DebugX.Log(nameof(ChargePointWSClient) + ": Ping sent:     '" + payload + "'!");
-
-                        }
-
-                        File.AppendAllText(LogfileName,
-                                           String.Concat("Timestamp: ",   Timestamp.Now.ToIso8601(),    Environment.NewLine,
-                                                         "ChargeBoxId: ", ChargeBoxIdentity.ToString(), Environment.NewLine,
-                                                         "Ping sent: ",   Environment.NewLine,
-                                                         "--------------------------------------------------------------------------------------------", Environment.NewLine));
-
-                        //var buffer   = new Byte[64 * 1024];
-                        //var pos      = 0;
-                        //var sw       = Stopwatch.StartNew();
-                        //var timeout  = (Int64) TimeSpan.FromSeconds(5).TotalMilliseconds;
-
-                        //do
-                        //{
-
-                        //    pos += HTTPStream.Read(buffer, pos, 2048);
-
-                        //    if (sw.ElapsedMilliseconds >= timeout)
-                        //        break;
-
-                        //    Thread.Sleep(5);
-
-                        //} while (TCPStream.DataAvailable);
-
-                        //Array.Resize(ref buffer, pos);
-
-                        //if (WebSocketFrame.TryParse(buffer, out WebSocketFrame frame, out UInt64 frameLength))
-                        //{
-
-
-                        //        File.AppendAllText(LogfileName,
-                        //                           String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
-                        //                                         "ChargeBoxId: ", ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
-                        //                                         "Message received: ",  wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
-                        //                                         "--------------------------------------------------------------------------------------------",  Environment.NewLine));
-
-                        //        return wsResponseMessage;
-
-                        //    }
-                        //    else
-                        //        DebugX.Log(nameof(ChargePointWSClient), " error: " + frame.Payload.ToUTF8String());
-                        //}
-
-                    }
-                }
-                catch (ObjectDisposedException)
-                {
-                    WebSocketPingTimer.Dispose();
-                }
-                catch (Exception e)
-                {
-
-                    while (e.InnerException is not null)
-                        e = e.InnerException;
-
-                    DebugX.LogException(e);
-
-                }
-                finally
-                {
-                    MaintenanceSemaphore.Release();
-                }
-            }
-            else
-                DebugX.LogT("Could not aquire the web socket ping task lock!");
-
-        }
-
-        #endregion
-
-        #region (Timer) DoMaintenance(State)
-
-        private void DoMaintenanceSync(Object? State)
-        {
-            if (!DisableMaintenanceTasks)
-                DoMaintenanceAsync(State).Wait();
-        }
-
-        private async Task DoMaintenanceAsync(Object? State)
-        {
-
-            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
-                                           ConfigureAwait(false))
-            {
-                try
-                {
-
-                    await DoMaintenanceAsyncStep2(State);
-
-                }
-                catch (ObjectDisposedException)
-                {
-                    MaintenanceTimer.Dispose();
-                    TCPStream   = null;
-                    HTTPStream  = null;
-                }
-                catch (Exception e)
-                {
-
-                    while (e.InnerException is not null)
-                        e = e.InnerException;
-
-                    DebugX.LogException(e);
-
-                }
-                finally
-                {
-                    MaintenanceSemaphore.Release();
-                }
-            }
-            else
-                DebugX.LogT("Could not aquire the maintenance tasks lock!");
-
-        }
-
-        protected internal virtual async Task DoMaintenanceAsyncStep2(Object? State)
-        {
-
-            if (TCPStream?.DataAvailable == true)
-            {
-
-                var buffer = new Byte[64 * 1024];
-                var pos    = 0;
-
-                do
-                {
-
-                    pos += HTTPStream.Read(buffer, pos, 2048);
-
-                    //if (sw.ElapsedMilliseconds >= RequestTimeout.Value.TotalMilliseconds)
-                    //    throw new HTTPTimeoutException(sw.Elapsed);
-
-                    Thread.Sleep(1);
-
-                } while (TCPStream.DataAvailable);
-
-                Array.Resize(ref buffer, pos);
-
-                do
-                {
-
-                    if (WebSocketFrame.TryParse(buffer,
-                                                out WebSocketFrame?  frame,
-                                                out UInt64           frameLength,
-                                                out String?          errorResponse))
-                    {
-
-                        if (frame is not null)
-                        {
-
-                            switch (frame.Opcode)
+                            try
                             {
 
-                                case WebSocketFrame.Opcodes.Text: {
+                                if (ChangeAvailabilityRequest.TryParse(wsRequestMessage.Message,
+                                                                        wsRequestMessage.RequestId,
+                                                                        ChargeBoxIdentity,
+                                                                        out var request,
+                                                                        out var ErrorResponse,
+                                                                        CustomChangeAvailabilityRequestParser) && request is not null) {
 
-                                    var textPayload = frame.Payload.ToUTF8String();
+                                    #region Send OnChangeAvailabilityRequest event
 
-                                    if (textPayload == "[]")
-                                        DebugX.Log(nameof(ChargePointWSClient), " [] received!");
-
-                                    else if (OCPP_WebSocket_RequestMessage. TryParse(textPayload, out var wsRequestMessage) &&
-                                             wsRequestMessage is not null)
+                                    try
                                     {
 
-                                        File.AppendAllText(LogfileName,
-                                                           String.Concat("timestamp: ",         Timestamp.Now.ToIso8601(),                                               Environment.NewLine,
-                                                                         "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                            Environment.NewLine,
-                                                                         "Message received: ",  wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
-                                                                         "--------------------------------------------------------------------------------------------", Environment.NewLine));
+                                        OnChangeAvailabilityRequest?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            request);
 
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeAvailabilityRequest));
+                                    }
 
-                                        var requestJSON              = JArray.Parse(textPayload);
-                                        var cancellationTokenSource  = new CancellationTokenSource();
+                                    #endregion
 
-                                        JObject?                     OCPPResponseJSON   = null;
-                                        OCPP_WebSocket_ErrorMessage? ErrorMessage       = null;
+                                    #region Call async subscribers
 
-                                        switch (wsRequestMessage.Action)
-                                        {
+                                    ChangeAvailabilityResponse? response = null;
 
-                                            case "Reset":
-                                                {
+                                    var results = OnChangeAvailability?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnChangeAvailabilityDelegate)
+                                                            (Timestamp.Now,
+                                                            this,
+                                                            request,
+                                                            cancellationTokenSource.Token)).
+                                                        ToArray();
 
-                                                    #region Send OnResetWSRequest event
+                                    if (results?.Length > 0)
+                                    {
 
-                                                    try
-                                                    {
+                                        await Task.WhenAll(results);
 
-                                                        OnResetWSRequest?.Invoke(Timestamp.Now,
-                                                                                 this,
-                                                                                 requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnResetWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (ResetRequest.TryParse(wsRequestMessage.Message,
-                                                                                  wsRequestMessage.RequestId,
-                                                                                  ChargeBoxIdentity,
-                                                                                  out var request,
-                                                                                  out var ErrorResponse,
-                                                                                  CustomResetRequestParser) && request is not null) {
-
-                                                            #region Send OnResetRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnResetRequest?.Invoke(Timestamp.Now,
-                                                                                       this,
-                                                                                       request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnResetRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            ResetResponse? response = null;
-
-                                                            var results = OnReset?.
-                                                                              GetInvocationList()?.
-                                                                              SafeSelect(subscriber => (subscriber as OnResetDelegate)
-                                                                                  (Timestamp.Now,
-                                                                                   this,
-                                                                                   request,
-                                                                                   cancellationTokenSource.Token)).
-                                                                              ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= ResetResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnResetResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnResetResponse?.Invoke(Timestamp.Now,
-                                                                                        this,
-                                                                                        request,
-                                                                                        response,
-                                                                                        response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnResetResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnResetWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnResetWSResponse?.Invoke(Timestamp.Now,
-                                                                                  this,
-                                                                                  requestJSON,
-                                                                                  new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                     OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnResetWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "ChangeAvailability":
-                                                {
-
-                                                    #region Send OnChangeAvailabilityWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnChangeAvailabilityWSRequest?.Invoke(Timestamp.Now,
-                                                                                              this,
-                                                                                              requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeAvailabilityWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (ChangeAvailabilityRequest.TryParse(wsRequestMessage.Message,
-                                                                                               wsRequestMessage.RequestId,
-                                                                                               ChargeBoxIdentity,
-                                                                                               out var request,
-                                                                                               out var ErrorResponse,
-                                                                                               CustomChangeAvailabilityRequestParser) && request is not null) {
-
-                                                            #region Send OnChangeAvailabilityRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnChangeAvailabilityRequest?.Invoke(Timestamp.Now,
-                                                                                                    this,
-                                                                                                    request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeAvailabilityRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            ChangeAvailabilityResponse? response = null;
-
-                                                            var results = OnChangeAvailability?.
-                                                                              GetInvocationList()?.
-                                                                              SafeSelect(subscriber => (subscriber as OnChangeAvailabilityDelegate)
-                                                                                  (Timestamp.Now,
-                                                                                   this,
-                                                                                   request,
-                                                                                   cancellationTokenSource.Token)).
-                                                                              ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= ChangeAvailabilityResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnChangeAvailabilityResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnChangeAvailabilityResponse?.Invoke(Timestamp.Now,
-                                                                                                     this,
-                                                                                                     request,
-                                                                                                     response,
-                                                                                                     response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeAvailabilityResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnChangeAvailabilityWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnChangeAvailabilityWSResponse?.Invoke(Timestamp.Now,
-                                                                                               this,
-                                                                                               requestJSON,
-                                                                                               new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                                  OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeAvailabilityWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "GetConfiguration":
-                                                {
-
-                                                    #region Send OnGetConfigurationWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnGetConfigurationWSRequest?.Invoke(Timestamp.Now,
-                                                                                            this,
-                                                                                            requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetConfigurationWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (GetConfigurationRequest.TryParse(wsRequestMessage.Message,
-                                                                                             wsRequestMessage.RequestId,
-                                                                                             ChargeBoxIdentity,
-                                                                                             out var request,
-                                                                                             out var ErrorResponse,
-                                                                                             CustomGetConfigurationRequestParser) && request is not null) {
-
-                                                            #region Send OnGetConfigurationRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnGetConfigurationRequest?.Invoke(Timestamp.Now,
-                                                                                                  this,
-                                                                                                  request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetConfigurationRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            GetConfigurationResponse? response = null;
-
-                                                            var results = OnGetConfiguration?.
-                                                                              GetInvocationList()?.
-                                                                              SafeSelect(subscriber => (subscriber as OnGetConfigurationDelegate)
-                                                                                  (Timestamp.Now,
-                                                                                   this,
-                                                                                   request,
-                                                                                   cancellationTokenSource.Token)).
-                                                                              ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= GetConfigurationResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnGetConfigurationResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnGetConfigurationResponse?.Invoke(Timestamp.Now,
-                                                                                                   this,
-                                                                                                   request,
-                                                                                                   response,
-                                                                                                   response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetConfigurationResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnGetConfigurationWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnGetConfigurationWSResponse?.Invoke(Timestamp.Now,
-                                                                                             this,
-                                                                                             requestJSON,
-                                                                                             new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                                OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetConfigurationWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "ChangeConfiguration":
-                                                {
-
-                                                    #region Send OnChangeConfigurationWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnChangeConfigurationWSRequest?.Invoke(Timestamp.Now,
-                                                                                               this,
-                                                                                               requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeConfigurationWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (ChangeConfigurationRequest.TryParse(wsRequestMessage.Message,
-                                                                                                wsRequestMessage.RequestId,
-                                                                                                ChargeBoxIdentity,
-                                                                                                out var request,
-                                                                                                out var ErrorResponse,
-                                                                                                CustomChangeConfigurationRequestParser) && request is not null) {
-
-                                                            #region Send OnChangeConfigurationRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnChangeConfigurationRequest?.Invoke(Timestamp.Now,
-                                                                                                     this,
-                                                                                                     request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeConfigurationRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            ChangeConfigurationResponse? response = null;
-
-                                                            var results = OnChangeConfiguration?.
-                                                                              GetInvocationList()?.
-                                                                              SafeSelect(subscriber => (subscriber as OnChangeConfigurationDelegate)
-                                                                                  (Timestamp.Now,
-                                                                                   this,
-                                                                                   request,
-                                                                                   cancellationTokenSource.Token)).
-                                                                              ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= ChangeConfigurationResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnChangeConfigurationResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnChangeConfigurationResponse?.Invoke(Timestamp.Now,
-                                                                                                      this,
-                                                                                                      request,
-                                                                                                      response,
-                                                                                                      response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeConfigurationResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnChangeConfigurationWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnChangeConfigurationWSResponse?.Invoke(Timestamp.Now,
-                                                                                                this,
-                                                                                                requestJSON,
-                                                                                                new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                                   OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeConfigurationWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "DataTransfer":
-                                                {
-
-                                                    #region Send OnIncomingDataTransferWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnIncomingDataTransferWSRequest?.Invoke(Timestamp.Now,
-                                                                                                this,
-                                                                                                requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingDataTransferWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (CS.DataTransferRequest.TryParse(wsRequestMessage.Message,
-                                                                                            wsRequestMessage.RequestId,
-                                                                                            ChargeBoxIdentity,
-                                                                                            out var request,
-                                                                                            out var ErrorResponse,
-                                                                                            CustomIncomingDataTransferRequestParser) && request is not null) {
-
-                                                            #region Send OnIncomingDataTransferRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnIncomingDataTransferRequest?.Invoke(Timestamp.Now,
-                                                                                                      this,
-                                                                                                      request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnDataTransferRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            DataTransferResponse? response = null;
-
-                                                            var results = OnIncomingDataTransfer?.
-                                                                              GetInvocationList()?.
-                                                                              SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
-                                                                                  (Timestamp.Now,
-                                                                                   this,
-                                                                                   request,
-                                                                                   cancellationTokenSource.Token)).
-                                                                              ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= DataTransferResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnIncomingDataTransferResponse event
-
-                                                            try
-                                                            {
-
-                                                                  OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
-                                                                                                         this,
-                                                                                                         request,
-                                                                                                         response,
-                                                                                                         response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingDataTransferResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnIncomingDataTransferWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnIncomingDataTransferWSResponse?.Invoke(Timestamp.Now,
-                                                                                                 this,
-                                                                                                 requestJSON,
-                                                                                                 new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                                    OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingDataTransferWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "GetDiagnostics":
-                                                {
-
-                                                    #region Send OnGetDiagnosticsWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnGetDiagnosticsWSRequest?.Invoke(Timestamp.Now,
-                                                                                          this,
-                                                                                          requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetDiagnosticsWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (GetDiagnosticsRequest.TryParse(wsRequestMessage.Message,
-                                                                                           wsRequestMessage.RequestId,
-                                                                                           ChargeBoxIdentity,
-                                                                                           out var request,
-                                                                                           out var ErrorResponse,
-                                                                                           CustomGetDiagnosticsRequestParser) && request is not null) {
-
-                                                            #region Send OnGetDiagnosticsRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnGetDiagnosticsRequest?.Invoke(Timestamp.Now,
-                                                                                                this,
-                                                                                                request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetDiagnosticsRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            GetDiagnosticsResponse? response = null;
-
-                                                            var results = OnGetDiagnostics?.
-                                                                              GetInvocationList()?.
-                                                                              SafeSelect(subscriber => (subscriber as OnGetDiagnosticsDelegate)
-                                                                                  (Timestamp.Now,
-                                                                                   this,
-                                                                                   request,
-                                                                                   cancellationTokenSource.Token)).
-                                                                              ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= GetDiagnosticsResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnGetDiagnosticsResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnGetDiagnosticsResponse?.Invoke(Timestamp.Now,
-                                                                                                 this,
-                                                                                                 request,
-                                                                                                 response,
-                                                                                                 response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetDiagnosticsResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnGetDiagnosticsWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnGetDiagnosticsWSResponse?.Invoke(Timestamp.Now,
-                                                                                           this,
-                                                                                           requestJSON,
-                                                                                           new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                              OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetDiagnosticsWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "TriggerMessage":
-                                                {
-
-                                                    #region Send OnTriggerMessageWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnTriggerMessageWSRequest?.Invoke(Timestamp.Now,
-                                                                                          this,
-                                                                                          requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnTriggerMessageWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (TriggerMessageRequest.TryParse(wsRequestMessage.Message,
-                                                                                           wsRequestMessage.RequestId,
-                                                                                           ChargeBoxIdentity,
-                                                                                           out var request,
-                                                                                           out var ErrorResponse,
-                                                                                           CustomTriggerMessageRequestParser) && request is not null) {
-
-                                                            #region Send OnTriggerMessageRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnTriggerMessageRequest?.Invoke(Timestamp.Now,
-                                                                                                this,
-                                                                                                request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnTriggerMessageRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            TriggerMessageResponse? response = null;
-
-                                                            var results = OnTriggerMessage?.
-                                                                              GetInvocationList()?.
-                                                                              SafeSelect(subscriber => (subscriber as OnTriggerMessageDelegate)
-                                                                                  (Timestamp.Now,
-                                                                                   this,
-                                                                                   request,
-                                                                                   cancellationTokenSource.Token)).
-                                                                              ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= TriggerMessageResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnTriggerMessageResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnTriggerMessageResponse?.Invoke(Timestamp.Now,
-                                                                                                 this,
-                                                                                                 request,
-                                                                                                 response,
-                                                                                                 response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnTriggerMessageResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnTriggerMessageWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnTriggerMessageWSResponse?.Invoke(Timestamp.Now,
-                                                                                           this,
-                                                                                           requestJSON,
-                                                                                           new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                              OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnTriggerMessageWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "UpdateFirmware":
-                                                {
-
-                                                    #region Send OnUpdateFirmwareWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnUpdateFirmwareWSRequest?.Invoke(Timestamp.Now,
-                                                                                          this,
-                                                                                          requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUpdateFirmwareWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (UpdateFirmwareRequest.TryParse(wsRequestMessage.Message,
-                                                                                           wsRequestMessage.RequestId,
-                                                                                           ChargeBoxIdentity,
-                                                                                           out var request,
-                                                                                           out var ErrorResponse,
-                                                                                           CustomUpdateFirmwareRequestParser) && request is not null) {
-
-                                                            #region Send OnUpdateFirmwareRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnUpdateFirmwareRequest?.Invoke(Timestamp.Now,
-                                                                                                this,
-                                                                                                request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUpdateFirmwareRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            UpdateFirmwareResponse? response = null;
-
-                                                            var results = OnUpdateFirmware?.
-                                                                              GetInvocationList()?.
-                                                                              SafeSelect(subscriber => (subscriber as OnUpdateFirmwareDelegate)
-                                                                                  (Timestamp.Now,
-                                                                                  this,
-                                                                                  request,
-                                                                                  cancellationTokenSource.Token)).
-                                                                              ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= UpdateFirmwareResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnUpdateFirmwareResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnUpdateFirmwareResponse?.Invoke(Timestamp.Now,
-                                                                                                 this,
-                                                                                                 request,
-                                                                                                 response,
-                                                                                                 response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUpdateFirmwareResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnUpdateFirmwareWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnUpdateFirmwareWSResponse?.Invoke(Timestamp.Now,
-                                                                                           this,
-                                                                                           requestJSON,
-                                                                                           new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                              OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUpdateFirmwareWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-
-                                            case "ReserveNow":
-                                                {
-
-                                                    #region Send OnReserveNowWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnReserveNowWSRequest?.Invoke(Timestamp.Now,
-                                                                                      this,
-                                                                                      requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnReserveNowWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (ReserveNowRequest.TryParse(wsRequestMessage.Message,
-                                                                                       wsRequestMessage.RequestId,
-                                                                                       ChargeBoxIdentity,
-                                                                                       out var request,
-                                                                                       out var ErrorResponse,
-                                                                                       CustomReserveNowRequestParser) && request is not null) {
-
-                                                            #region Send OnReserveNowRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnReserveNowRequest?.Invoke(Timestamp.Now,
-                                                                                            this,
-                                                                                            request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnReserveNowRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            ReserveNowResponse? response = null;
-
-                                                            var results = OnReserveNow?.
-                                                                              GetInvocationList()?.
-                                                                              SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)
-                                                                                  (Timestamp.Now,
-                                                                                   this,
-                                                                                   request,
-                                                                                   cancellationTokenSource.Token)).
-                                                                              ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= ReserveNowResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnReserveNowResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnReserveNowResponse?.Invoke(Timestamp.Now,
-                                                                                             this,
-                                                                                             request,
-                                                                                             response,
-                                                                                             response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnReserveNowResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnReserveNowWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnReserveNowWSResponse?.Invoke(Timestamp.Now,
-                                                                                       this,
-                                                                                       requestJSON,
-                                                                                       new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                          OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnReserveNowWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "CancelReservation":
-                                                {
-
-                                                    #region Send OnCancelReservationWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnCancelReservationWSRequest?.Invoke(Timestamp.Now,
-                                                                                             this,
-                                                                                             requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnCancelReservationWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (CancelReservationRequest.TryParse(wsRequestMessage.Message,
-                                                                                              wsRequestMessage.RequestId,
-                                                                                              ChargeBoxIdentity,
-                                                                                              out var request,
-                                                                                              out var ErrorResponse,
-                                                                                              CustomCancelReservationRequestParser) && request is not null) {
-
-                                                            #region Send OnCancelReservationRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnCancelReservationRequest?.Invoke(Timestamp.Now,
-                                                                                                   this,
-                                                                                                   request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnCancelReservationRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            CancelReservationResponse? response = null;
-
-                                                            var results = OnCancelReservation?.
-                                                                              GetInvocationList()?.
-                                                                              SafeSelect(subscriber => (subscriber as OnCancelReservationDelegate)
-                                                                                  (Timestamp.Now,
-                                                                                   this,
-                                                                                   request,
-                                                                                   cancellationTokenSource.Token)).
-                                                                              ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= CancelReservationResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnCancelReservationResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnCancelReservationResponse?.Invoke(Timestamp.Now,
-                                                                                                    this,
-                                                                                                    request,
-                                                                                                    response,
-                                                                                                    response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnCancelReservationResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnCancelReservationWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnCancelReservationWSResponse?.Invoke(Timestamp.Now,
-                                                                                              this,
-                                                                                              requestJSON,
-                                                                                              new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                                 OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnCancelReservationWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "RemoteStartTransaction":
-                                                {
-
-                                                    #region Send OnRemoteStartTransactionWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnRemoteStartTransactionWSRequest?.Invoke(Timestamp.Now,
-                                                                                                  this,
-                                                                                                  requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStartTransactionWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (RemoteStartTransactionRequest.TryParse(wsRequestMessage.Message,
-                                                                                                   wsRequestMessage.RequestId,
-                                                                                                   ChargeBoxIdentity,
-                                                                                                   out var request,
-                                                                                                   out var ErrorResponse,
-                                                                                                   CustomRemoteStartTransactionRequestParser) && request is not null) {
-
-                                                            #region Send OnRemoteStartTransactionRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnRemoteStartTransactionRequest?.Invoke(Timestamp.Now,
-                                                                                                        this,
-                                                                                                        request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStartTransactionRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            RemoteStartTransactionResponse? response = null;
-
-                                                            var results = OnRemoteStartTransaction?.
-                                                                                GetInvocationList()?.
-                                                                                SafeSelect(subscriber => (subscriber as OnRemoteStartTransactionDelegate)
-                                                                                    (Timestamp.Now,
-                                                                                        this,
-                                                                                        request,
-                                                                                        cancellationTokenSource.Token)).
-                                                                                ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= RemoteStartTransactionResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnRemoteStartTransactionResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnRemoteStartTransactionResponse?.Invoke(Timestamp.Now,
-                                                                                                         this,
-                                                                                                         request,
-                                                                                                         response,
-                                                                                                         response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStartTransactionResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnRemoteStartTransactionWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnRemoteStartTransactionWSResponse?.Invoke(Timestamp.Now,
-                                                                                                   this,
-                                                                                                   requestJSON,
-                                                                                                   new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                                      OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStartTransactionWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "RemoteStopTransaction":
-                                                {
-
-                                                    #region Send OnRemoteStopTransactionWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnRemoteStopTransactionWSRequest?.Invoke(Timestamp.Now,
-                                                                                                 this,
-                                                                                                 requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStopTransactionWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (RemoteStopTransactionRequest.TryParse(wsRequestMessage.Message,
-                                                                                                  wsRequestMessage.RequestId,
-                                                                                                  ChargeBoxIdentity,
-                                                                                                  out var request,
-                                                                                                  out var ErrorResponse,
-                                                                                                  CustomRemoteStopTransactionRequestParser) && request is not null) {
-
-                                                            #region Send OnRemoteStopTransactionRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnRemoteStopTransactionRequest?.Invoke(Timestamp.Now,
-                                                                                                       this,
-                                                                                                       request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStopTransactionRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            RemoteStopTransactionResponse? response = null;
-
-                                                            var results = OnRemoteStopTransaction?.
-                                                                                GetInvocationList()?.
-                                                                                SafeSelect(subscriber => (subscriber as OnRemoteStopTransactionDelegate)
-                                                                                    (Timestamp.Now,
-                                                                                        this,
-                                                                                        request,
-                                                                                        cancellationTokenSource.Token)).
-                                                                                ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= RemoteStopTransactionResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnRemoteStopTransactionResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnRemoteStopTransactionResponse?.Invoke(Timestamp.Now,
-                                                                                                        this,
-                                                                                                        request,
-                                                                                                        response,
-                                                                                                        response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStopTransactionResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnRemoteStopTransactionWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnRemoteStopTransactionWSResponse?.Invoke(Timestamp.Now,
-                                                                                                  this,
-                                                                                                  requestJSON,
-                                                                                                  new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                                     OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStopTransactionWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "SetChargingProfile":
-                                                {
-
-                                                    #region Send OnSetChargingProfileWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnSetChargingProfileWSRequest?.Invoke(Timestamp.Now,
-                                                                                              this,
-                                                                                              requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSetChargingProfileWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (SetChargingProfileRequest.TryParse(wsRequestMessage.Message,
-                                                                                               wsRequestMessage.RequestId,
-                                                                                               ChargeBoxIdentity,
-                                                                                               out var request,
-                                                                                               out var ErrorResponse,
-                                                                                               CustomSetChargingProfileRequestParser) && request is not null) {
-
-                                                            #region Send OnSetChargingProfileRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnSetChargingProfileRequest?.Invoke(Timestamp.Now,
-                                                                                                    this,
-                                                                                                    request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSetChargingProfileRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            SetChargingProfileResponse? response = null;
-
-                                                            var results = OnSetChargingProfile?.
-                                                                                GetInvocationList()?.
-                                                                                SafeSelect(subscriber => (subscriber as OnSetChargingProfileDelegate)
-                                                                                    (Timestamp.Now,
-                                                                                        this,
-                                                                                        request,
-                                                                                        cancellationTokenSource.Token)).
-                                                                                ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= SetChargingProfileResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnSetChargingProfileResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnSetChargingProfileResponse?.Invoke(Timestamp.Now,
-                                                                                                     this,
-                                                                                                     request,
-                                                                                                     response,
-                                                                                                     response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSetChargingProfileResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnSetChargingProfileWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnSetChargingProfileWSResponse?.Invoke(Timestamp.Now,
-                                                                                               this,
-                                                                                               requestJSON,
-                                                                                               new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                                  OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSetChargingProfileWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "ClearChargingProfile":
-                                                {
-
-                                                    #region Send OnClearChargingProfileWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnClearChargingProfileWSRequest?.Invoke(Timestamp.Now,
-                                                                                                this,
-                                                                                                requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearChargingProfileWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (ClearChargingProfileRequest.TryParse(wsRequestMessage.Message,
-                                                                                                 wsRequestMessage.RequestId,
-                                                                                                 ChargeBoxIdentity,
-                                                                                                 out var request,
-                                                                                                 out var ErrorResponse,
-                                                                                                 CustomClearChargingProfileRequestParser) && request is not null) {
-
-                                                            #region Send OnClearChargingProfileRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnClearChargingProfileRequest?.Invoke(Timestamp.Now,
-                                                                                                      this,
-                                                                                                      request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearChargingProfileRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            ClearChargingProfileResponse? response = null;
-
-                                                            var results = OnClearChargingProfile?.
-                                                                                GetInvocationList()?.
-                                                                                SafeSelect(subscriber => (subscriber as OnClearChargingProfileDelegate)
-                                                                                    (Timestamp.Now,
-                                                                                        this,
-                                                                                        request,
-                                                                                        cancellationTokenSource.Token)).
-                                                                                ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= ClearChargingProfileResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnClearChargingProfileResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnClearChargingProfileResponse?.Invoke(Timestamp.Now,
-                                                                                                       this,
-                                                                                                       request,
-                                                                                                       response,
-                                                                                                       response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearChargingProfileResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnClearChargingProfileWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnClearChargingProfileWSResponse?.Invoke(Timestamp.Now,
-                                                                                                 this,
-                                                                                                 requestJSON,
-                                                                                                 new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                                    OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearChargingProfileWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "GetCompositeSchedule":
-                                                {
-
-                                                    #region Send OnGetCompositeScheduleWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnGetCompositeScheduleWSRequest?.Invoke(Timestamp.Now,
-                                                                                                this,
-                                                                                                requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetCompositeScheduleWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (GetCompositeScheduleRequest.TryParse(wsRequestMessage.Message,
-                                                                                                 wsRequestMessage.RequestId,
-                                                                                                 ChargeBoxIdentity,
-                                                                                                 out var request,
-                                                                                                 out var ErrorResponse,
-                                                                                                 CustomGetCompositeScheduleRequestParser) && request is not null) {
-
-                                                            #region Send OnGetCompositeScheduleRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnGetCompositeScheduleRequest?.Invoke(Timestamp.Now,
-                                                                                                      this,
-                                                                                                      request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetCompositeScheduleRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            GetCompositeScheduleResponse? response = null;
-
-                                                            var results = OnGetCompositeSchedule?.
-                                                                                GetInvocationList()?.
-                                                                                SafeSelect(subscriber => (subscriber as OnGetCompositeScheduleDelegate)
-                                                                                    (Timestamp.Now,
-                                                                                        this,
-                                                                                        request,
-                                                                                        cancellationTokenSource.Token)).
-                                                                                ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= GetCompositeScheduleResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnGetCompositeScheduleResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnGetCompositeScheduleResponse?.Invoke(Timestamp.Now,
-                                                                                                       this,
-                                                                                                       request,
-                                                                                                       response,
-                                                                                                       response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetCompositeScheduleResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnGetCompositeScheduleWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnGetCompositeScheduleWSResponse?.Invoke(Timestamp.Now,
-                                                                                                 this,
-                                                                                                 requestJSON,
-                                                                                                 new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                                    OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetCompositeScheduleWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "UnlockConnector":
-                                                {
-
-                                                    #region Send OnUnlockConnectorWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnUnlockConnectorWSRequest?.Invoke(Timestamp.Now,
-                                                                                           this,
-                                                                                           requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUnlockConnectorWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (UnlockConnectorRequest.TryParse(wsRequestMessage.Message,
-                                                                                            wsRequestMessage.RequestId,
-                                                                                            ChargeBoxIdentity,
-                                                                                            out var request,
-                                                                                            out var ErrorResponse,
-                                                                                            CustomUnlockConnectorRequestParser) && request is not null) {
-
-                                                            #region Send OnUnlockConnectorRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnUnlockConnectorRequest?.Invoke(Timestamp.Now,
-                                                                                                 this,
-                                                                                                 request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUnlockConnectorRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            UnlockConnectorResponse? response = null;
-
-                                                            var results = OnUnlockConnector?.
-                                                                                GetInvocationList()?.
-                                                                                SafeSelect(subscriber => (subscriber as OnUnlockConnectorDelegate)
-                                                                                    (Timestamp.Now,
-                                                                                        this,
-                                                                                        request,
-                                                                                        cancellationTokenSource.Token)).
-                                                                                ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= UnlockConnectorResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnUnlockConnectorResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnUnlockConnectorResponse?.Invoke(Timestamp.Now,
-                                                                                                  this,
-                                                                                                  request,
-                                                                                                  response,
-                                                                                                  response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUnlockConnectorResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnUnlockConnectorWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnUnlockConnectorWSResponse?.Invoke(Timestamp.Now,
-                                                                                            this,
-                                                                                            requestJSON,
-                                                                                            new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                               OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUnlockConnectorWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-
-                                            case "GetLocalListVersion":
-                                                {
-
-                                                    #region Send OnGetLocalListVersionWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnGetLocalListVersionWSRequest?.Invoke(Timestamp.Now,
-                                                                                               this,
-                                                                                               requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetLocalListVersionWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (GetLocalListVersionRequest.TryParse(wsRequestMessage.Message,
-                                                                                                wsRequestMessage.RequestId,
-                                                                                                ChargeBoxIdentity,
-                                                                                                out var request,
-                                                                                                out var ErrorResponse,
-                                                                                                CustomGetLocalListVersionRequestParser) && request is not null) {
-
-                                                            #region Send OnGetLocalListVersionRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnGetLocalListVersionRequest?.Invoke(Timestamp.Now,
-                                                                                                     this,
-                                                                                                     request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetLocalListVersionRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            GetLocalListVersionResponse? response = null;
-
-                                                            var results = OnGetLocalListVersion?.
-                                                                                GetInvocationList()?.
-                                                                                SafeSelect(subscriber => (subscriber as OnGetLocalListVersionDelegate)
-                                                                                    (Timestamp.Now,
-                                                                                        this,
-                                                                                        request,
-                                                                                        cancellationTokenSource.Token)).
-                                                                                ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= GetLocalListVersionResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnGetLocalListVersionResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnGetLocalListVersionResponse?.Invoke(Timestamp.Now,
-                                                                                                      this,
-                                                                                                      request,
-                                                                                                      response,
-                                                                                                      response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetLocalListVersionResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnGetLocalListVersionWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnGetLocalListVersionWSResponse?.Invoke(Timestamp.Now,
-                                                                                                this,
-                                                                                                requestJSON,
-                                                                                                new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                                   OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetLocalListVersionWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "SendLocalList":
-                                                {
-
-                                                    #region Send OnSendLocalListWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnSendLocalListWSRequest?.Invoke(Timestamp.Now,
-                                                                                         this,
-                                                                                         requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSendLocalListWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (SendLocalListRequest.TryParse(wsRequestMessage.Message,
-                                                                                          wsRequestMessage.RequestId,
-                                                                                          ChargeBoxIdentity,
-                                                                                          out var request,
-                                                                                          out var ErrorResponse,
-                                                                                          CustomSendLocalListRequestParser) && request is not null) {
-
-                                                            #region Send OnSendLocalListRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnSendLocalListRequest?.Invoke(Timestamp.Now,
-                                                                                               this,
-                                                                                               request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSendLocalListRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            SendLocalListResponse? response = null;
-
-                                                            var results = OnSendLocalList?.
-                                                                                GetInvocationList()?.
-                                                                                SafeSelect(subscriber => (subscriber as OnSendLocalListDelegate)
-                                                                                    (Timestamp.Now,
-                                                                                        this,
-                                                                                        request,
-                                                                                        cancellationTokenSource.Token)).
-                                                                                ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response = SendLocalListResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnSendLocalListResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnSendLocalListResponse?.Invoke(Timestamp.Now,
-                                                                                                this,
-                                                                                                request,
-                                                                                                response,
-                                                                                                response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSendLocalListResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnSendLocalListWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnSendLocalListWSResponse?.Invoke(Timestamp.Now,
-                                                                                          this,
-                                                                                          requestJSON,
-                                                                                          new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                             OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSendLocalListWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                            case "ClearCache":
-                                                {
-
-                                                    #region Send OnClearCacheWSRequest event
-
-                                                    try
-                                                    {
-
-                                                        OnClearCacheWSRequest?.Invoke(Timestamp.Now,
-                                                                                      this,
-                                                                                      requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearCacheWSRequest));
-                                                    }
-
-                                                    #endregion
-
-                                                    try
-                                                    {
-
-                                                        if (ClearCacheRequest.TryParse(wsRequestMessage.Message,
-                                                                                       wsRequestMessage.RequestId,
-                                                                                       ChargeBoxIdentity,
-                                                                                       out var request,
-                                                                                       out var ErrorResponse,
-                                                                                       CustomClearCacheRequestParser) && request is not null) {
-
-                                                            #region Send OnClearCacheRequest event
-
-                                                            try
-                                                            {
-
-                                                                OnClearCacheRequest?.Invoke(Timestamp.Now,
-                                                                                            this,
-                                                                                            request);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearCacheRequest));
-                                                            }
-
-                                                            #endregion
-
-                                                            #region Call async subscribers
-
-                                                            ClearCacheResponse? response = null;
-
-                                                            var results = OnClearCache?.
-                                                                                GetInvocationList()?.
-                                                                                SafeSelect(subscriber => (subscriber as OnClearCacheDelegate)
-                                                                                    (Timestamp.Now,
-                                                                                        this,
-                                                                                        request,
-                                                                                        cancellationTokenSource.Token)).
-                                                                                ToArray();
-
-                                                            if (results?.Length > 0)
-                                                            {
-
-                                                                await Task.WhenAll(results);
-
-                                                                response = results.FirstOrDefault()?.Result;
-
-                                                            }
-
-                                                            response ??= ClearCacheResponse.Failed(request);
-
-                                                            #endregion
-
-                                                            #region Send OnClearCacheResponse event
-
-                                                            try
-                                                            {
-
-                                                                OnClearCacheResponse?.Invoke(Timestamp.Now,
-                                                                                             this,
-                                                                                             request,
-                                                                                             response,
-                                                                                             response.Runtime);
-
-                                                            }
-                                                            catch (Exception e)
-                                                            {
-                                                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearCacheResponse));
-                                                            }
-
-                                                            #endregion
-
-                                                            OCPPResponseJSON = response.ToJSON();
-
-                                                        }
-
-                                                        else
-                                                            ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
-                                                                                                                     wsRequestMessage.Action,
-                                                                                                                     requestJSON);
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
-                                                                                                                      wsRequestMessage.Action,
-                                                                                                                      requestJSON,
-                                                                                                                      e);
-                                                    }
-
-                                                    #region Send OnClearCacheWSResponse event
-
-                                                    try
-                                                    {
-
-                                                        OnClearCacheWSResponse?.Invoke(Timestamp.Now,
-                                                                                       this,
-                                                                                       requestJSON,
-                                                                                       new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                                          OCPPResponseJSON).ToJSON());
-
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearCacheWSResponse));
-                                                    }
-
-                                                    #endregion
-
-                                                }
-                                                break;
-
-                                        }
-
-                                        if (OCPPResponseJSON is not null)
-                                        {
-
-                                            var wsResponseMessage = new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
-                                                                                                       OCPPResponseJSON);
-
-                                            SendWebSocketFrame(new WebSocketFrame(
-                                                                   WebSocketFrame.Fin.Final,
-                                                                   WebSocketFrame.MaskStatus.On,
-                                                                   new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
-                                                                   WebSocketFrame.Opcodes.Text,
-                                                                   wsResponseMessage.ToByteArray(),
-                                                                   WebSocketFrame.Rsv.Off,
-                                                                   WebSocketFrame.Rsv.Off,
-                                                                   WebSocketFrame.Rsv.Off
-                                                               ));
-
-                                            File.AppendAllText(LogfileName,
-                                                               String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
-                                                                             "ChargeBoxId: ",  ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
-                                                                             "Message sent: ", wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
-                                                                             "--------------------------------------------------------------------------------------------",  Environment.NewLine));
-
-                                        }
+                                        response = results.FirstOrDefault()?.Result;
 
                                     }
 
-                                    else if (OCPP_WebSocket_ResponseMessage.TryParse(textPayload, out var wsResponseMessage) && wsResponseMessage is not null)
+                                    response ??= ChangeAvailabilityResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnChangeAvailabilityResponse event
+
+                                    try
                                     {
-                                        lock (requests)
-                                        {
 
-                                            if (requests.TryGetValue(wsResponseMessage.RequestId, out var resp))
-                                                resp.Response = wsResponseMessage.Message;
+                                        OnChangeAvailabilityResponse?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request,
+                                                                                response,
+                                                                                response.Runtime);
 
-                                            else
-                                                DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP response message: " + textPayload);
-
-                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeAvailabilityResponse));
                                     }
 
-                                    else if (OCPP_WebSocket_ErrorMessage.   TryParse(textPayload, out var wsErrorMessage))
-                                    {
-                                        DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP error message: " + textPayload);
-                                    }
+                                    #endregion
 
-                                    else
-                                        DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP request/response message: " + textPayload);
+                                    OCPPResponseJSON = response.ToJSON();
 
                                 }
-                                break;
 
-                                case WebSocketFrame.Opcodes.Ping: {
-
-                                    DebugX.Log(nameof(ChargePointWSClient) + ": Ping received: " + frame.Payload.ToUTF8String());
-
-                                    SendWebSocketFrame(new WebSocketFrame(
-                                                           WebSocketFrame.Fin.Final,
-                                                           WebSocketFrame.MaskStatus.On,
-                                                           new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
-                                                           WebSocketFrame.Opcodes.Pong,
-                                                           frame.Payload,
-                                                           WebSocketFrame.Rsv.Off,
-                                                           WebSocketFrame.Rsv.Off,
-                                                           WebSocketFrame.Rsv.Off
-                                                       ));
-
-                                }
-                                break;
-
-                                case WebSocketFrame.Opcodes.Pong: {
-                                    DebugX.Log(nameof(ChargePointWSClient) + ": Pong received: " + frame.Payload.ToUTF8String());
-                                }
-                                break;
-
-                                default:
-                                    DebugX.Log(nameof(ChargePointWSClient), " Received unknown " + frame.Opcode + " frame!");
-                                    break;
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
 
                             }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnChangeAvailabilityWSResponse event
+
+                            try
+                            {
+
+                                OnChangeAvailabilityWSResponse?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        requestJSON,
+                                                                        new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                            OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeAvailabilityWSResponse));
+                            }
+
+                            #endregion
 
                         }
+                        break;
 
-                    }
+                    case "GetConfiguration":
+                        {
 
-                    if ((UInt64) buffer.Length > frameLength)
-                    {
-                        var newBuffer = new Byte[(UInt64) buffer.Length - frameLength];
-                        Array.Copy(buffer, (UInt32) frameLength, newBuffer, 0, newBuffer.Length);
-                        buffer = newBuffer;
-                    }
-                    else
-                        buffer = null;
+                            #region Send OnGetConfigurationWSRequest event
 
-                } while (buffer is not null);
+                            try
+                            {
+
+                                OnGetConfigurationWSRequest?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetConfigurationWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (GetConfigurationRequest.TryParse(wsRequestMessage.Message,
+                                                                        wsRequestMessage.RequestId,
+                                                                        ChargeBoxIdentity,
+                                                                        out var request,
+                                                                        out var ErrorResponse,
+                                                                        CustomGetConfigurationRequestParser) && request is not null) {
+
+                                    #region Send OnGetConfigurationRequest event
+
+                                    try
+                                    {
+
+                                        OnGetConfigurationRequest?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetConfigurationRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    GetConfigurationResponse? response = null;
+
+                                    var results = OnGetConfiguration?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnGetConfigurationDelegate)
+                                                            (Timestamp.Now,
+                                                            this,
+                                                            request,
+                                                            cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= GetConfigurationResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnGetConfigurationResponse event
+
+                                    try
+                                    {
+
+                                        OnGetConfigurationResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            request,
+                                                                            response,
+                                                                            response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetConfigurationResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnGetConfigurationWSResponse event
+
+                            try
+                            {
+
+                                OnGetConfigurationWSResponse?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        requestJSON,
+                                                                        new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                        OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetConfigurationWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "ChangeConfiguration":
+                        {
+
+                            #region Send OnChangeConfigurationWSRequest event
+
+                            try
+                            {
+
+                                OnChangeConfigurationWSRequest?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeConfigurationWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (ChangeConfigurationRequest.TryParse(wsRequestMessage.Message,
+                                                                        wsRequestMessage.RequestId,
+                                                                        ChargeBoxIdentity,
+                                                                        out var request,
+                                                                        out var ErrorResponse,
+                                                                        CustomChangeConfigurationRequestParser) && request is not null) {
+
+                                    #region Send OnChangeConfigurationRequest event
+
+                                    try
+                                    {
+
+                                        OnChangeConfigurationRequest?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeConfigurationRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    ChangeConfigurationResponse? response = null;
+
+                                    var results = OnChangeConfiguration?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnChangeConfigurationDelegate)
+                                                            (Timestamp.Now,
+                                                            this,
+                                                            request,
+                                                            cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= ChangeConfigurationResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnChangeConfigurationResponse event
+
+                                    try
+                                    {
+
+                                        OnChangeConfigurationResponse?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request,
+                                                                                response,
+                                                                                response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeConfigurationResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnChangeConfigurationWSResponse event
+
+                            try
+                            {
+
+                                OnChangeConfigurationWSResponse?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        requestJSON,
+                                                                        new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                            OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnChangeConfigurationWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "DataTransfer":
+                        {
+
+                            #region Send OnIncomingDataTransferWSRequest event
+
+                            try
+                            {
+
+                                OnIncomingDataTransferWSRequest?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingDataTransferWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (CS.DataTransferRequest.TryParse(wsRequestMessage.Message,
+                                                                    wsRequestMessage.RequestId,
+                                                                    ChargeBoxIdentity,
+                                                                    out var request,
+                                                                    out var ErrorResponse,
+                                                                    CustomIncomingDataTransferRequestParser) && request is not null) {
+
+                                    #region Send OnIncomingDataTransferRequest event
+
+                                    try
+                                    {
+
+                                        OnIncomingDataTransferRequest?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnDataTransferRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    DataTransferResponse? response = null;
+
+                                    var results = OnIncomingDataTransfer?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
+                                                            (Timestamp.Now,
+                                                            this,
+                                                            request,
+                                                            cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= DataTransferResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnIncomingDataTransferResponse event
+
+                                    try
+                                    {
+
+                                            OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
+                                                                                    this,
+                                                                                    request,
+                                                                                    response,
+                                                                                    response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingDataTransferResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnIncomingDataTransferWSResponse event
+
+                            try
+                            {
+
+                                OnIncomingDataTransferWSResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            requestJSON,
+                                                                            new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                            OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnIncomingDataTransferWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "GetDiagnostics":
+                        {
+
+                            #region Send OnGetDiagnosticsWSRequest event
+
+                            try
+                            {
+
+                                OnGetDiagnosticsWSRequest?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetDiagnosticsWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (GetDiagnosticsRequest.TryParse(wsRequestMessage.Message,
+                                                                    wsRequestMessage.RequestId,
+                                                                    ChargeBoxIdentity,
+                                                                    out var request,
+                                                                    out var ErrorResponse,
+                                                                    CustomGetDiagnosticsRequestParser) && request is not null) {
+
+                                    #region Send OnGetDiagnosticsRequest event
+
+                                    try
+                                    {
+
+                                        OnGetDiagnosticsRequest?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetDiagnosticsRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    GetDiagnosticsResponse? response = null;
+
+                                    var results = OnGetDiagnostics?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnGetDiagnosticsDelegate)
+                                                            (Timestamp.Now,
+                                                            this,
+                                                            request,
+                                                            cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= GetDiagnosticsResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnGetDiagnosticsResponse event
+
+                                    try
+                                    {
+
+                                        OnGetDiagnosticsResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            request,
+                                                                            response,
+                                                                            response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetDiagnosticsResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnGetDiagnosticsWSResponse event
+
+                            try
+                            {
+
+                                OnGetDiagnosticsWSResponse?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    requestJSON,
+                                                                    new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                        OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetDiagnosticsWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "TriggerMessage":
+                        {
+
+                            #region Send OnTriggerMessageWSRequest event
+
+                            try
+                            {
+
+                                OnTriggerMessageWSRequest?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnTriggerMessageWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (TriggerMessageRequest.TryParse(wsRequestMessage.Message,
+                                                                    wsRequestMessage.RequestId,
+                                                                    ChargeBoxIdentity,
+                                                                    out var request,
+                                                                    out var ErrorResponse,
+                                                                    CustomTriggerMessageRequestParser) && request is not null) {
+
+                                    #region Send OnTriggerMessageRequest event
+
+                                    try
+                                    {
+
+                                        OnTriggerMessageRequest?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnTriggerMessageRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    TriggerMessageResponse? response = null;
+
+                                    var results = OnTriggerMessage?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnTriggerMessageDelegate)
+                                                            (Timestamp.Now,
+                                                            this,
+                                                            request,
+                                                            cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= TriggerMessageResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnTriggerMessageResponse event
+
+                                    try
+                                    {
+
+                                        OnTriggerMessageResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            request,
+                                                                            response,
+                                                                            response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnTriggerMessageResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnTriggerMessageWSResponse event
+
+                            try
+                            {
+
+                                OnTriggerMessageWSResponse?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    requestJSON,
+                                                                    new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                        OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnTriggerMessageWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "UpdateFirmware":
+                        {
+
+                            #region Send OnUpdateFirmwareWSRequest event
+
+                            try
+                            {
+
+                                OnUpdateFirmwareWSRequest?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUpdateFirmwareWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (UpdateFirmwareRequest.TryParse(wsRequestMessage.Message,
+                                                                    wsRequestMessage.RequestId,
+                                                                    ChargeBoxIdentity,
+                                                                    out var request,
+                                                                    out var ErrorResponse,
+                                                                    CustomUpdateFirmwareRequestParser) && request is not null) {
+
+                                    #region Send OnUpdateFirmwareRequest event
+
+                                    try
+                                    {
+
+                                        OnUpdateFirmwareRequest?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUpdateFirmwareRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    UpdateFirmwareResponse? response = null;
+
+                                    var results = OnUpdateFirmware?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnUpdateFirmwareDelegate)
+                                                            (Timestamp.Now,
+                                                            this,
+                                                            request,
+                                                            cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= UpdateFirmwareResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnUpdateFirmwareResponse event
+
+                                    try
+                                    {
+
+                                        OnUpdateFirmwareResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            request,
+                                                                            response,
+                                                                            response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUpdateFirmwareResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnUpdateFirmwareWSResponse event
+
+                            try
+                            {
+
+                                OnUpdateFirmwareWSResponse?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    requestJSON,
+                                                                    new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                        OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUpdateFirmwareWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+
+                    case "ReserveNow":
+                        {
+
+                            #region Send OnReserveNowWSRequest event
+
+                            try
+                            {
+
+                                OnReserveNowWSRequest?.Invoke(Timestamp.Now,
+                                                                this,
+                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnReserveNowWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (ReserveNowRequest.TryParse(wsRequestMessage.Message,
+                                                                wsRequestMessage.RequestId,
+                                                                ChargeBoxIdentity,
+                                                                out var request,
+                                                                out var ErrorResponse,
+                                                                CustomReserveNowRequestParser) && request is not null) {
+
+                                    #region Send OnReserveNowRequest event
+
+                                    try
+                                    {
+
+                                        OnReserveNowRequest?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnReserveNowRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    ReserveNowResponse? response = null;
+
+                                    var results = OnReserveNow?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)
+                                                            (Timestamp.Now,
+                                                            this,
+                                                            request,
+                                                            cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= ReserveNowResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnReserveNowResponse event
+
+                                    try
+                                    {
+
+                                        OnReserveNowResponse?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        request,
+                                                                        response,
+                                                                        response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnReserveNowResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnReserveNowWSResponse event
+
+                            try
+                            {
+
+                                OnReserveNowWSResponse?.Invoke(Timestamp.Now,
+                                                                this,
+                                                                requestJSON,
+                                                                new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                    OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnReserveNowWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "CancelReservation":
+                        {
+
+                            #region Send OnCancelReservationWSRequest event
+
+                            try
+                            {
+
+                                OnCancelReservationWSRequest?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnCancelReservationWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (CancelReservationRequest.TryParse(wsRequestMessage.Message,
+                                                                        wsRequestMessage.RequestId,
+                                                                        ChargeBoxIdentity,
+                                                                        out var request,
+                                                                        out var ErrorResponse,
+                                                                        CustomCancelReservationRequestParser) && request is not null) {
+
+                                    #region Send OnCancelReservationRequest event
+
+                                    try
+                                    {
+
+                                        OnCancelReservationRequest?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnCancelReservationRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    CancelReservationResponse? response = null;
+
+                                    var results = OnCancelReservation?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnCancelReservationDelegate)
+                                                            (Timestamp.Now,
+                                                            this,
+                                                            request,
+                                                            cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= CancelReservationResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnCancelReservationResponse event
+
+                                    try
+                                    {
+
+                                        OnCancelReservationResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            request,
+                                                                            response,
+                                                                            response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnCancelReservationResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnCancelReservationWSResponse event
+
+                            try
+                            {
+
+                                OnCancelReservationWSResponse?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        requestJSON,
+                                                                        new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                            OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnCancelReservationWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "RemoteStartTransaction":
+                        {
+
+                            #region Send OnRemoteStartTransactionWSRequest event
+
+                            try
+                            {
+
+                                OnRemoteStartTransactionWSRequest?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStartTransactionWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (RemoteStartTransactionRequest.TryParse(wsRequestMessage.Message,
+                                                                            wsRequestMessage.RequestId,
+                                                                            ChargeBoxIdentity,
+                                                                            out var request,
+                                                                            out var ErrorResponse,
+                                                                            CustomRemoteStartTransactionRequestParser) && request is not null) {
+
+                                    #region Send OnRemoteStartTransactionRequest event
+
+                                    try
+                                    {
+
+                                        OnRemoteStartTransactionRequest?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStartTransactionRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    RemoteStartTransactionResponse? response = null;
+
+                                    var results = OnRemoteStartTransaction?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnRemoteStartTransactionDelegate)
+                                                            (Timestamp.Now,
+                                                                this,
+                                                                request,
+                                                                cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= RemoteStartTransactionResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnRemoteStartTransactionResponse event
+
+                                    try
+                                    {
+
+                                        OnRemoteStartTransactionResponse?.Invoke(Timestamp.Now,
+                                                                                    this,
+                                                                                    request,
+                                                                                    response,
+                                                                                    response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStartTransactionResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnRemoteStartTransactionWSResponse event
+
+                            try
+                            {
+
+                                OnRemoteStartTransactionWSResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            requestJSON,
+                                                                            new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                                OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStartTransactionWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "RemoteStopTransaction":
+                        {
+
+                            #region Send OnRemoteStopTransactionWSRequest event
+
+                            try
+                            {
+
+                                OnRemoteStopTransactionWSRequest?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStopTransactionWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (RemoteStopTransactionRequest.TryParse(wsRequestMessage.Message,
+                                                                            wsRequestMessage.RequestId,
+                                                                            ChargeBoxIdentity,
+                                                                            out var request,
+                                                                            out var ErrorResponse,
+                                                                            CustomRemoteStopTransactionRequestParser) && request is not null) {
+
+                                    #region Send OnRemoteStopTransactionRequest event
+
+                                    try
+                                    {
+
+                                        OnRemoteStopTransactionRequest?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStopTransactionRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    RemoteStopTransactionResponse? response = null;
+
+                                    var results = OnRemoteStopTransaction?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnRemoteStopTransactionDelegate)
+                                                            (Timestamp.Now,
+                                                                this,
+                                                                request,
+                                                                cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= RemoteStopTransactionResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnRemoteStopTransactionResponse event
+
+                                    try
+                                    {
+
+                                        OnRemoteStopTransactionResponse?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request,
+                                                                                response,
+                                                                                response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStopTransactionResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnRemoteStopTransactionWSResponse event
+
+                            try
+                            {
+
+                                OnRemoteStopTransactionWSResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            requestJSON,
+                                                                            new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                                OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnRemoteStopTransactionWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "SetChargingProfile":
+                        {
+
+                            #region Send OnSetChargingProfileWSRequest event
+
+                            try
+                            {
+
+                                OnSetChargingProfileWSRequest?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSetChargingProfileWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (SetChargingProfileRequest.TryParse(wsRequestMessage.Message,
+                                                                        wsRequestMessage.RequestId,
+                                                                        ChargeBoxIdentity,
+                                                                        out var request,
+                                                                        out var ErrorResponse,
+                                                                        CustomSetChargingProfileRequestParser) && request is not null) {
+
+                                    #region Send OnSetChargingProfileRequest event
+
+                                    try
+                                    {
+
+                                        OnSetChargingProfileRequest?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSetChargingProfileRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    SetChargingProfileResponse? response = null;
+
+                                    var results = OnSetChargingProfile?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnSetChargingProfileDelegate)
+                                                            (Timestamp.Now,
+                                                                this,
+                                                                request,
+                                                                cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= SetChargingProfileResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnSetChargingProfileResponse event
+
+                                    try
+                                    {
+
+                                        OnSetChargingProfileResponse?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request,
+                                                                                response,
+                                                                                response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSetChargingProfileResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnSetChargingProfileWSResponse event
+
+                            try
+                            {
+
+                                OnSetChargingProfileWSResponse?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        requestJSON,
+                                                                        new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                            OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSetChargingProfileWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "ClearChargingProfile":
+                        {
+
+                            #region Send OnClearChargingProfileWSRequest event
+
+                            try
+                            {
+
+                                OnClearChargingProfileWSRequest?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearChargingProfileWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (ClearChargingProfileRequest.TryParse(wsRequestMessage.Message,
+                                                                            wsRequestMessage.RequestId,
+                                                                            ChargeBoxIdentity,
+                                                                            out var request,
+                                                                            out var ErrorResponse,
+                                                                            CustomClearChargingProfileRequestParser) && request is not null) {
+
+                                    #region Send OnClearChargingProfileRequest event
+
+                                    try
+                                    {
+
+                                        OnClearChargingProfileRequest?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearChargingProfileRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    ClearChargingProfileResponse? response = null;
+
+                                    var results = OnClearChargingProfile?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnClearChargingProfileDelegate)
+                                                            (Timestamp.Now,
+                                                                this,
+                                                                request,
+                                                                cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= ClearChargingProfileResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnClearChargingProfileResponse event
+
+                                    try
+                                    {
+
+                                        OnClearChargingProfileResponse?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request,
+                                                                                response,
+                                                                                response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearChargingProfileResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnClearChargingProfileWSResponse event
+
+                            try
+                            {
+
+                                OnClearChargingProfileWSResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            requestJSON,
+                                                                            new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                            OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearChargingProfileWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "GetCompositeSchedule":
+                        {
+
+                            #region Send OnGetCompositeScheduleWSRequest event
+
+                            try
+                            {
+
+                                OnGetCompositeScheduleWSRequest?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetCompositeScheduleWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (GetCompositeScheduleRequest.TryParse(wsRequestMessage.Message,
+                                                                            wsRequestMessage.RequestId,
+                                                                            ChargeBoxIdentity,
+                                                                            out var request,
+                                                                            out var ErrorResponse,
+                                                                            CustomGetCompositeScheduleRequestParser) && request is not null) {
+
+                                    #region Send OnGetCompositeScheduleRequest event
+
+                                    try
+                                    {
+
+                                        OnGetCompositeScheduleRequest?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetCompositeScheduleRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    GetCompositeScheduleResponse? response = null;
+
+                                    var results = OnGetCompositeSchedule?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnGetCompositeScheduleDelegate)
+                                                            (Timestamp.Now,
+                                                                this,
+                                                                request,
+                                                                cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= GetCompositeScheduleResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnGetCompositeScheduleResponse event
+
+                                    try
+                                    {
+
+                                        OnGetCompositeScheduleResponse?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request,
+                                                                                response,
+                                                                                response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetCompositeScheduleResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnGetCompositeScheduleWSResponse event
+
+                            try
+                            {
+
+                                OnGetCompositeScheduleWSResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            requestJSON,
+                                                                            new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                            OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetCompositeScheduleWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "UnlockConnector":
+                        {
+
+                            #region Send OnUnlockConnectorWSRequest event
+
+                            try
+                            {
+
+                                OnUnlockConnectorWSRequest?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUnlockConnectorWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (UnlockConnectorRequest.TryParse(wsRequestMessage.Message,
+                                                                    wsRequestMessage.RequestId,
+                                                                    ChargeBoxIdentity,
+                                                                    out var request,
+                                                                    out var ErrorResponse,
+                                                                    CustomUnlockConnectorRequestParser) && request is not null) {
+
+                                    #region Send OnUnlockConnectorRequest event
+
+                                    try
+                                    {
+
+                                        OnUnlockConnectorRequest?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUnlockConnectorRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    UnlockConnectorResponse? response = null;
+
+                                    var results = OnUnlockConnector?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnUnlockConnectorDelegate)
+                                                            (Timestamp.Now,
+                                                                this,
+                                                                request,
+                                                                cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= UnlockConnectorResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnUnlockConnectorResponse event
+
+                                    try
+                                    {
+
+                                        OnUnlockConnectorResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            request,
+                                                                            response,
+                                                                            response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUnlockConnectorResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnUnlockConnectorWSResponse event
+
+                            try
+                            {
+
+                                OnUnlockConnectorWSResponse?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    requestJSON,
+                                                                    new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                        OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnUnlockConnectorWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+
+                    case "GetLocalListVersion":
+                        {
+
+                            #region Send OnGetLocalListVersionWSRequest event
+
+                            try
+                            {
+
+                                OnGetLocalListVersionWSRequest?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetLocalListVersionWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (GetLocalListVersionRequest.TryParse(wsRequestMessage.Message,
+                                                                        wsRequestMessage.RequestId,
+                                                                        ChargeBoxIdentity,
+                                                                        out var request,
+                                                                        out var ErrorResponse,
+                                                                        CustomGetLocalListVersionRequestParser) && request is not null) {
+
+                                    #region Send OnGetLocalListVersionRequest event
+
+                                    try
+                                    {
+
+                                        OnGetLocalListVersionRequest?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetLocalListVersionRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    GetLocalListVersionResponse? response = null;
+
+                                    var results = OnGetLocalListVersion?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnGetLocalListVersionDelegate)
+                                                            (Timestamp.Now,
+                                                                this,
+                                                                request,
+                                                                cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= GetLocalListVersionResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnGetLocalListVersionResponse event
+
+                                    try
+                                    {
+
+                                        OnGetLocalListVersionResponse?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request,
+                                                                                response,
+                                                                                response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetLocalListVersionResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnGetLocalListVersionWSResponse event
+
+                            try
+                            {
+
+                                OnGetLocalListVersionWSResponse?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        requestJSON,
+                                                                        new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                            OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnGetLocalListVersionWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "SendLocalList":
+                        {
+
+                            #region Send OnSendLocalListWSRequest event
+
+                            try
+                            {
+
+                                OnSendLocalListWSRequest?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSendLocalListWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (SendLocalListRequest.TryParse(wsRequestMessage.Message,
+                                                                    wsRequestMessage.RequestId,
+                                                                    ChargeBoxIdentity,
+                                                                    out var request,
+                                                                    out var ErrorResponse,
+                                                                    CustomSendLocalListRequestParser) && request is not null) {
+
+                                    #region Send OnSendLocalListRequest event
+
+                                    try
+                                    {
+
+                                        OnSendLocalListRequest?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSendLocalListRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    SendLocalListResponse? response = null;
+
+                                    var results = OnSendLocalList?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnSendLocalListDelegate)
+                                                            (Timestamp.Now,
+                                                                this,
+                                                                request,
+                                                                cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response = SendLocalListResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnSendLocalListResponse event
+
+                                    try
+                                    {
+
+                                        OnSendLocalListResponse?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        request,
+                                                                        response,
+                                                                        response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSendLocalListResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnSendLocalListWSResponse event
+
+                            try
+                            {
+
+                                OnSendLocalListWSResponse?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    requestJSON,
+                                                                    new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                        OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSendLocalListWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "ClearCache":
+                        {
+
+                            #region Send OnClearCacheWSRequest event
+
+                            try
+                            {
+
+                                OnClearCacheWSRequest?.Invoke(Timestamp.Now,
+                                                                this,
+                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearCacheWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (ClearCacheRequest.TryParse(wsRequestMessage.Message,
+                                                                wsRequestMessage.RequestId,
+                                                                ChargeBoxIdentity,
+                                                                out var request,
+                                                                out var ErrorResponse,
+                                                                CustomClearCacheRequestParser) && request is not null) {
+
+                                    #region Send OnClearCacheRequest event
+
+                                    try
+                                    {
+
+                                        OnClearCacheRequest?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearCacheRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    ClearCacheResponse? response = null;
+
+                                    var results = OnClearCache?.
+                                                        GetInvocationList()?.
+                                                        SafeSelect(subscriber => (subscriber as OnClearCacheDelegate)
+                                                            (Timestamp.Now,
+                                                                this,
+                                                                request,
+                                                                cancellationTokenSource.Token)).
+                                                        ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= ClearCacheResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnClearCacheResponse event
+
+                                    try
+                                    {
+
+                                        OnClearCacheResponse?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        request,
+                                                                        response,
+                                                                        response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearCacheResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(wsRequestMessage.RequestId,
+                                                                                                wsRequestMessage.Action,
+                                                                                                requestJSON,
+                                                                                                e);
+                            }
+
+                            #region Send OnClearCacheWSResponse event
+
+                            try
+                            {
+
+                                OnClearCacheWSResponse?.Invoke(Timestamp.Now,
+                                                                this,
+                                                                requestJSON,
+                                                                new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                                    OCPPResponseJSON).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnClearCacheWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                }
+
+                if (OCPPResponseJSON is not null)
+                {
+
+                    var wsResponseMessage = new OCPP_WebSocket_ResponseMessage(wsRequestMessage.RequestId,
+                                                                                OCPPResponseJSON);
+
+                    SendWebSocketFrame(new WebSocketFrame(
+                                            WebSocketFrame.Fin.Final,
+                                            WebSocketFrame.MaskStatus.On,
+                                            new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
+                                            WebSocketFrame.Opcodes.Text,
+                                            wsResponseMessage.ToByteArray(),
+                                            WebSocketFrame.Rsv.Off,
+                                            WebSocketFrame.Rsv.Off,
+                                            WebSocketFrame.Rsv.Off
+                                        ));
+
+                    File.AppendAllText(LogfileName,
+                                        String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                                Environment.NewLine,
+                                                        "ChargeBoxId: ",  ChargeBoxIdentity.ToString(),                                             Environment.NewLine,
+                                                        "Message sent: ", wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
+                                                        "--------------------------------------------------------------------------------------------",  Environment.NewLine));
+
+                }
 
             }
+
+            else if (OCPP_WebSocket_ResponseMessage.TryParse(textPayload, out var wsResponseMessage) && wsResponseMessage is not null)
+            {
+                lock (requests)
+                {
+
+                    if (requests.TryGetValue(wsResponseMessage.RequestId, out var resp))
+                        resp.Response = wsResponseMessage.Message;
+
+                    else
+                        DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP response message: " + textPayload);
+
+                }
+            }
+
+            else if (OCPP_WebSocket_ErrorMessage.   TryParse(textPayload, out var wsErrorMessage))
+            {
+                DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP error message: " + textPayload);
+            }
+
+            else
+                DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP request/response message: " + textPayload);
 
         }
 
         #endregion
+
 
         public readonly Dictionary<Request_Id, SendRequestState2> requests = new ();
 
@@ -4754,46 +3786,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             return requestId;
 
-        }
-
-        #endregion
-
-        #region SendWebSocketFrame(WebSocketFrame)
-
-        public void SendWebSocketFrame(WebSocketFrame WebSocketFrame)
-        {
-            if (HTTPStream is not null)
-            {
-                lock (HTTPStream)
-                {
-
-                    try
-                    {
-
-                        if (SlowNetworkSimulationDelay.HasValue)
-                        {
-                            foreach (var _byte in WebSocketFrame.ToByteArray())
-                            {
-                                HTTPStream.Write(new Byte[] { _byte });
-                                HTTPStream.Flush();
-                                Thread.Sleep(SlowNetworkSimulationDelay.Value);
-                            }
-                        }
-
-                        else
-                        {
-                            HTTPStream.Write(WebSocketFrame.ToByteArray());
-                            HTTPStream.Flush();
-                        }
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.LogException(e, "Sending a web socket frame in " + nameof(ChargePointWSClient));
-                    }
-
-                }
-            }
         }
 
         #endregion
@@ -5849,71 +4841,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-
-        #region Close()
-
-        public void Close()
-        {
-
-            try
-            {
-                if (HTTPStream is not null)
-                {
-                    HTTPStream.Close();
-                    HTTPStream.Dispose();
-                }
-            }
-            catch (Exception)
-            { }
-
-            try
-            {
-                if (TLSStream is not null)
-                {
-                    TLSStream.Close();
-                    TLSStream.Dispose();
-                }
-            }
-            catch (Exception)
-            { }
-
-            try
-            {
-                if (TCPStream is not null)
-                {
-                    TCPStream.Close();
-                    TCPStream.Dispose();
-                }
-            }
-            catch (Exception)
-            { }
-
-            try
-            {
-                if (TCPSocket is not null)
-                {
-                    TCPSocket.Close();
-                    //TCPClient.Dispose();
-                }
-            }
-            catch (Exception)
-            { }
-
-        }
-
-        #endregion
-
-        #region Dispose()
-
-        /// <summary>
-        /// Dispose this object.
-        /// </summary>
-        public void Dispose()
-        {
-            Close();
-        }
-
-        #endregion
 
     }
 

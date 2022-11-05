@@ -1051,17 +1051,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(10);
 
 
-                ResetResponse response = null;
+                ResetResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Invalid reset request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid reset request for charge box '" + Request.ChargeBoxId + "'!");
                     response = new ResetResponse(Request,
                                                  ResetStatus.Rejected);
                 }
                 else
                 {
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming '" + Request.ResetType + "' reset request.");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming '" + Request.ResetType + "' reset request accepted.");
                     response = new ResetResponse(Request,
                                                  ResetStatus.Accepted);
                 }
@@ -1123,12 +1123,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(10);
 
 
-                ChangeAvailabilityResponse response = null;
+                ChangeAvailabilityResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Invalid ChangeAvailability request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid ChangeAvailability request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new ChangeAvailabilityResponse(Request,
                                                               AvailabilityStatus.Rejected);
@@ -1137,7 +1137,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming ChangeAvailability '" + Request.Availability + "' request for connector '" + Request.ConnectorId + "'.");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming ChangeAvailability '" + Request.Availability + "' request for connector '" + Request.ConnectorId + "'.");
 
                     if (connectors.ContainsKey(Request.ConnectorId))
                     {
@@ -1210,12 +1210,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(10);
 
 
-                GetConfigurationResponse response = null;
+                GetConfigurationResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Invalid GetConfiguration request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid GetConfiguration request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new GetConfigurationResponse(Request,
                                                             new ConfigurationKey[0],
@@ -1225,7 +1225,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming GetConfiguration request.");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming GetConfiguration request.");
 
                     var _configurationKeys  = new List<ConfigurationKey>();
                     var _unkownKeys         = new List<String>();
@@ -1319,12 +1319,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(10);
 
 
-                ChangeConfigurationResponse response = null;
+                ChangeConfigurationResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Invalid ChangeConfiguration request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid ChangeConfiguration request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new ChangeConfigurationResponse(Request,
                                                                ConfigurationStatus.Rejected);
@@ -1333,7 +1333,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming ChangeConfiguration for '" + Request.Key + "' with value '" + Request.Value + "'.");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming ChangeConfiguration for '" + Request.Key + "' with value '" + Request.Value + "'.");
 
                     if (Configuration.TryGetValue(Request.Key, out ConfigurationData Data))
                     {
@@ -1427,12 +1427,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(10);
 
 
-                DataTransferResponse response = null;
+                DataTransferResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Invalid DataTransfer request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid DataTransfer request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new DataTransferResponse(Request,
                                                         DataTransferStatus.Rejected);
@@ -1441,7 +1441,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming DataTransfer request: " + Request.VendorId + "." + Request.MessageId + ": " + (Request.Data ?? ""));
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming DataTransfer request: " + Request.VendorId + "." + Request.MessageId + ": " + (Request.Data ?? ""));
 
                     if (Request.VendorId. ToLower() == "graphdefined" &&
                         Request.MessageId.ToLower() == "hello" &&
@@ -1514,12 +1514,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(10);
 
 
-                GetDiagnosticsResponse response = null;
+                GetDiagnosticsResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Invalid GetDiagnostics request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid GetDiagnostics request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new GetDiagnosticsResponse(Request);
 
@@ -1527,7 +1527,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming GetDiagnostics request");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming GetDiagnostics request");
 
                     response = new GetDiagnosticsResponse(Request);
 
@@ -1590,12 +1590,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(10);
 
 
-                TriggerMessageResponse response = null;
+                TriggerMessageResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Invalid TriggerMessage request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid TriggerMessage request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new TriggerMessageResponse(Request,
                                                           TriggerMessageStatus.Rejected);
@@ -1604,7 +1604,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming TriggerMessage request for '" + Request.RequestedMessage + "' at connector '" + Request.ConnectorId + "'.");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming TriggerMessage request for '" + Request.RequestedMessage + "' at connector '" + Request.ConnectorId + "'.");
 
                     response = new TriggerMessageResponse(Request,
                                                           TriggerMessageStatus.Rejected);
@@ -1668,12 +1668,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(10);
 
 
-                UpdateFirmwareResponse response = null;
+                UpdateFirmwareResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Invalid UpdateFirmware request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid UpdateFirmware request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new UpdateFirmwareResponse(Request);
 
@@ -1681,7 +1681,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming UpdateFirmware request for '" + Request.Location + "'.");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming UpdateFirmware request for '" + Request.Location + "'.");
 
                     response = new UpdateFirmwareResponse(Request);
 
@@ -1859,12 +1859,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(10);
 
 
-                RemoteStartTransactionResponse response = null;
+                RemoteStartTransactionResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Invalid RemoteStartTransaction request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid RemoteStartTransaction request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new RemoteStartTransactionResponse(Request,
                                                                   RemoteStartStopStatus.Rejected);
@@ -1873,7 +1873,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming RemoteStartTransaction for '" + Request.ConnectorId + "' with IdTag '" + Request.IdTag + "'.");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming RemoteStartTransaction for '" + Request.ConnectorId + "' with IdTag '" + Request.IdTag + "'.");
 
                     // ToDo: lock(connectors)
 
@@ -2013,12 +2013,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(10);
 
 
-                RemoteStopTransactionResponse response = null;
+                RemoteStopTransactionResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Invalid RemoteStopTransaction request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid RemoteStopTransaction request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new RemoteStopTransactionResponse(Request,
                                                                  RemoteStartStopStatus.Rejected);
@@ -2027,7 +2027,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming RemoteStopTransaction for '" + Request.TransactionId + "'.");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming RemoteStopTransaction for '" + Request.TransactionId + "'.");
 
                     // ToDo: lock(connectors)
 
@@ -2156,12 +2156,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(10);
 
 
-                SetChargingProfileResponse response = null;
+                SetChargingProfileResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Invalid SetChargingProfile request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid SetChargingProfile request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new SetChargingProfileResponse(Request,
                                                               ChargingProfileStatus.Rejected);
@@ -2177,7 +2177,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming SetChargingProfile for '" + Request.ConnectorId + "'.");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming SetChargingProfile for '" + Request.ConnectorId + "'.");
 
                     // ToDo: lock(connectors)
 
@@ -2263,7 +2263,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                ClearChargingProfileResponse response = null;
+                ClearChargingProfileResponse? response = null;
 
 
 
@@ -2320,7 +2320,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                GetCompositeScheduleResponse response = null;
+                GetCompositeScheduleResponse? response = null;
 
 
 
@@ -2380,12 +2380,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(10);
 
 
-                UnlockConnectorResponse response = null;
+                UnlockConnectorResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Invalid UnlockConnector request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid UnlockConnector request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new UnlockConnectorResponse(Request,
                                                            UnlockStatus.UnlockFailed);
@@ -2394,7 +2394,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming UnlockConnector for '" + Request.ConnectorId + "'.");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming UnlockConnector for '" + Request.ConnectorId + "'.");
 
                     // ToDo: lock(connectors)
 
@@ -2471,12 +2471,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(10);
 
 
-                GetLocalListVersionResponse response = null;
+                GetLocalListVersionResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Invalid GetLocalListVersion request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid GetLocalListVersion request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new GetLocalListVersionResponse(Request,
                                                                0);
@@ -2485,7 +2485,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming GetLocalListVersion request.");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming GetLocalListVersion request.");
 
                     response = new GetLocalListVersionResponse(Request,
                                                                0);
@@ -2549,12 +2549,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(10);
 
 
-                SendLocalListResponse response = null;
+                SendLocalListResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Invalid SendLocalList request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid SendLocalList request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new SendLocalListResponse(Request,
                                                          UpdateStatus.NotSupported);
@@ -2563,7 +2563,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming SendLocalList request: '" + Request.UpdateType + "' version '" + Request.ListVersion + "'.");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming SendLocalList request: '" + Request.UpdateType + "' version '" + Request.ListVersion + "'.");
 
                     response = new SendLocalListResponse(Request,
                                                          UpdateStatus.NotSupported);
@@ -2627,12 +2627,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 await Task.Delay(10);
 
 
-                ClearCacheResponse response = null;
+                ClearCacheResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Invalid ClearCache request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid ClearCache request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new ClearCacheResponse(Request,
                                                       ClearCacheStatus.Rejected);
@@ -2641,7 +2641,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    Console.WriteLine("ChargeBox: " + ChargeBoxId + ": Incoming ClearCache request.");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming ClearCache request.");
 
                     response = new ClearCacheResponse(Request,
                                                       ClearCacheStatus.Rejected);
@@ -2720,7 +2720,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 catch (Exception e)
                 {
 
-                    while (e.InnerException != null)
+                    while (e.InnerException is not null)
                         e = e.InnerException;
 
                     DebugX.LogException(e);
@@ -2758,7 +2758,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region SendBootNotification             (CancellationToken= null, EventTrackingId = null, RequestTimeout = null)
+        #region SendBootNotification             (CancellationToken = null, EventTrackingId = null, RequestTimeout = null)
 
         /// <summary>
         /// Send a boot notification.
@@ -2877,7 +2877,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region SendHeartbeat                    (CancellationToken= null, EventTrackingId = null, RequestTimeout = null)
+        #region SendHeartbeat                    (CancellationToken = null, EventTrackingId = null, RequestTimeout = null)
 
         /// <summary>
         /// Send a heartbeat.

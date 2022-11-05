@@ -162,17 +162,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
                 if (!Request_Id.TryParse(JSON[1]?.Value<String>() ?? "", out var requestId))
                     return false;
 
-                if (JSON[2] is not JObject jsonMessage)
-                    return false;
-
                 var action = JSON[2]?.Value<String>();
                 if (action is null)
                     return false;
 
+                if (JSON[3] is not JObject jsonMessage)
+                    return false;
+
                 RequestMessage = new OCPP_WebSocket_RequestMessage(requestId,
-                                                                 action,
-                                                                 jsonMessage,
-                                                                 messageType);
+                                                                   action,
+                                                                   jsonMessage,
+                                                                   messageType);
 
                 return true;
 
