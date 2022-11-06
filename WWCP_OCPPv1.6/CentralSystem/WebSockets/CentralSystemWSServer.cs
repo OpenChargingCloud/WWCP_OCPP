@@ -33,6 +33,28 @@ using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
+    /// <summary>
+    /// The delegate for the HTTP web socket request log.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the incoming request.</param>
+    /// <param name="WebSocketServer">The sending WebSocket server.</param>
+    /// <param name="Request">The incoming request.</param>
+    public delegate Task WebSocketRequestLogHandler(DateTime         Timestamp,
+                                                    WebSocketServer  WebSocketServer,
+                                                    JArray           Request);
+
+    /// <summary>
+    /// The delegate for the HTTP web socket response log.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the incoming request.</param>
+    /// <param name="WebSocketServer">The sending WebSocket server.</param>
+    /// <param name="Request">The incoming WebSocket request.</param>
+    /// <param name="Response">The outgoing WebSocket response.</param>
+    public delegate Task WebSocketResponseLogHandler(DateTime         Timestamp,
+                                                     WebSocketServer  WebSocketServer,
+                                                     JArray           Request,
+                                                     JArray           Response);
+
 
     public delegate Task OnNewCentralSystemWSConnectionDelegate(DateTime             Timestamp,
                                                                 ICentralSystem       CentralSystem,
@@ -1522,35 +1544,35 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region (protected) ProcessTextMessages          (Connection, EventTrackingId, OCPPTextMessage, CancellationToken)
+        #region (protected) ProcessTextMessages          (RequestTimestamp, Connection, OCPPTextMessage, EventTrackingId, CancellationToken)
 
         /// <summary>
         /// Process all text messages of this web socket API.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
-        /// <param name="EventTrackingId">The event tracking identification.</param>
         /// <param name="Connection">The web socket connection.</param>
-        /// <param name="OCPPMessage">The received OCPP message.</param>
+        /// <param name="OCPPTextMessage">The received OCPP message.</param>
+        /// <param name="EventTrackingId">The event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
         public override async Task<WebSocketTextMessageResponse> ProcessTextMessage(DateTime             RequestTimestamp,
-                                                                                    EventTracking_Id     EventTrackingId,
                                                                                     WebSocketConnection  Connection,
-                                                                                    String               OCPPMessage,
+                                                                                    String               OCPPTextMessage,
+                                                                                    EventTracking_Id     EventTrackingId,
                                                                                     CancellationToken    CancellationToken)
         {
 
-            if (OCPPMessage.Trim().IsNullOrEmpty())
+            if (OCPPTextMessage.Trim().IsNullOrEmpty())
             {
 
                 DebugX.Log(nameof(CentralSystemWSServer) + " The given OCPP message must not be null or empty!");
 
                 // "No response" to the charge point!
                 return new WebSocketTextMessageResponse(
-                           EventTrackingId,
                            RequestTimestamp,
-                           OCPPMessage,
+                           OCPPTextMessage,
                            Timestamp.Now,
-                           new JArray().ToString(JSONFormating)
+                           new JArray().ToString(JSONFormating),
+                           EventTrackingId
                        );
 
             }
@@ -1561,7 +1583,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                var JSON = JArray.Parse(OCPPMessage);
+                var JSON = JArray.Parse(OCPPTextMessage);
 
                 File.AppendAllText(LogfileName,
                                    String.Concat("Timestamp: ",        Timestamp.Now.ToIso8601(),                                                    Environment.NewLine,
@@ -1602,7 +1624,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                  OCPP_WebSocket_ErrorCodes.ProtocolError,
                                                  "The given 'charge box identity' must not be null or empty!",
                                                  new JObject(
-                                                     new JProperty("request", OCPPMessage)
+                                                     new JProperty("request", OCPPTextMessage)
                                                  )
                                              );
 
@@ -1612,7 +1634,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                  OCPP_WebSocket_ErrorCodes.ProtocolError,
                                                  "The given 'request identification' must not be null or empty!",
                                                  new JObject(
-                                                     new JProperty("request", OCPPMessage)
+                                                     new JProperty("request", OCPPTextMessage)
                                                  )
                                              );
 
@@ -1622,7 +1644,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                  OCPP_WebSocket_ErrorCodes.ProtocolError,
                                                  "The given 'action' must not be null or empty!",
                                                  new JObject(
-                                                     new JProperty("request", OCPPMessage)
+                                                     new JProperty("request", OCPPTextMessage)
                                                  )
                                              );
 
@@ -1632,7 +1654,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                  OCPP_WebSocket_ErrorCodes.ProtocolError,
                                                  "The given request JSON payload must not be null!",
                                                  new JObject(
-                                                     new JProperty("request", OCPPMessage)
+                                                     new JProperty("request", OCPPTextMessage)
                                                  )
                                              );
 
@@ -1748,7 +1770,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                     OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                     "The given 'BootNotification' request could not be parsed!",
                                                                     new JObject(
-                                                                        new JProperty("request",       OCPPMessage),
+                                                                        new JProperty("request",       OCPPTextMessage),
                                                                         new JProperty("errorResponse", errorResponse)
                                                                     )
                                                                 );
@@ -1762,7 +1784,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                 OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                 "Processing the given 'BootNotification' request led to an exception!",
                                                                 JSONObject.Create(
-                                                                    new JProperty("request",    OCPPMessage),
+                                                                    new JProperty("request",    OCPPTextMessage),
                                                                     new JProperty("exception",  e.Message),
                                                                     new JProperty("stacktrace", e.StackTrace)
                                                                 )
@@ -1897,7 +1919,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                     OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                     "The given 'Heartbeat' request could not be parsed!",
                                                                     new JObject(
-                                                                        new JProperty("request",       OCPPMessage),
+                                                                        new JProperty("request",       OCPPTextMessage),
                                                                         new JProperty("errorResponse", errorResponse)
                                                                     )
                                                                 );
@@ -1911,7 +1933,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                 OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                 "Processing the given 'Heartbeat' request led to an exception!",
                                                                 JSONObject.Create(
-                                                                    new JProperty("request",    OCPPMessage),
+                                                                    new JProperty("request",    OCPPTextMessage),
                                                                     new JProperty("exception",  e.Message),
                                                                     new JProperty("stacktrace", e.StackTrace)
                                                                 )
@@ -2047,7 +2069,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                     OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                     "The given 'Authorize' request could not be parsed!",
                                                                     new JObject(
-                                                                        new JProperty("request",       OCPPMessage),
+                                                                        new JProperty("request",       OCPPTextMessage),
                                                                         new JProperty("errorResponse", errorResponse)
                                                                     )
                                                                 );
@@ -2061,7 +2083,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                 OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                 "Processing the given 'Authorize' request led to an exception!",
                                                                 JSONObject.Create(
-                                                                    new JProperty("request",    OCPPMessage),
+                                                                    new JProperty("request",    OCPPTextMessage),
                                                                     new JProperty("exception",  e.Message),
                                                                     new JProperty("stacktrace", e.StackTrace)
                                                                 )
@@ -2196,7 +2218,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                     OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                     "The given 'StartTransaction' request could not be parsed!",
                                                                     new JObject(
-                                                                        new JProperty("request",       OCPPMessage),
+                                                                        new JProperty("request",       OCPPTextMessage),
                                                                         new JProperty("errorResponse", errorResponse)
                                                                     )
                                                                 );
@@ -2210,7 +2232,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                 OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                 "Processing the given 'StartTransaction' request led to an exception!",
                                                                 JSONObject.Create(
-                                                                    new JProperty("request",    OCPPMessage),
+                                                                    new JProperty("request",    OCPPTextMessage),
                                                                     new JProperty("exception",  e.Message),
                                                                     new JProperty("stacktrace", e.StackTrace)
                                                                 ));
@@ -2344,7 +2366,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                     OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                     "The given 'StatusNotification' request could not be parsed!",
                                                                     new JObject(
-                                                                        new JProperty("request",       OCPPMessage),
+                                                                        new JProperty("request",       OCPPTextMessage),
                                                                         new JProperty("errorResponse", errorResponse)
                                                                     )
                                                                 );
@@ -2358,7 +2380,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                 OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                 "Processing the given 'StatusNotification' request led to an exception!",
                                                                 JSONObject.Create(
-                                                                    new JProperty("request",    OCPPMessage),
+                                                                    new JProperty("request",    OCPPTextMessage),
                                                                     new JProperty("exception",  e.Message),
                                                                     new JProperty("stacktrace", e.StackTrace)
                                                                 )
@@ -2493,7 +2515,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                     OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                     "The given 'MeterValues' request could not be parsed!",
                                                                     new JObject(
-                                                                        new JProperty("request",       OCPPMessage),
+                                                                        new JProperty("request",       OCPPTextMessage),
                                                                         new JProperty("errorResponse", errorResponse)
                                                                     )
                                                                 );
@@ -2507,7 +2529,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                 OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                 "Processing the given 'MeterValues' request led to an exception!",
                                                                 JSONObject.Create(
-                                                                    new JProperty("request",     OCPPMessage),
+                                                                    new JProperty("request",     OCPPTextMessage),
                                                                     new JProperty("exception",   e.Message),
                                                                     new JProperty("stacktrace",  e.StackTrace)
                                                                 )
@@ -2642,7 +2664,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                     OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                     "The given 'StopTransaction' request could not be parsed!",
                                                                     new JObject(
-                                                                        new JProperty("request",       OCPPMessage),
+                                                                        new JProperty("request",       OCPPTextMessage),
                                                                         new JProperty("errorResponse", errorResponse)
                                                                     )
                                                                 );
@@ -2656,7 +2678,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                 OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                 "Processing the given 'StopTransaction' request led to an exception!",
                                                                 JSONObject.Create(
-                                                                    new JProperty("request",    OCPPMessage),
+                                                                    new JProperty("request",    OCPPTextMessage),
                                                                     new JProperty("exception",  e.Message),
                                                                     new JProperty("stacktrace", e.StackTrace)
                                                                 )
@@ -2792,7 +2814,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                     OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                     "The given 'IncomingDataTransfer' request could not be parsed!",
                                                                     new JObject(
-                                                                        new JProperty("request",       OCPPMessage),
+                                                                        new JProperty("request",       OCPPTextMessage),
                                                                         new JProperty("errorResponse", errorResponse)
                                                                     )
                                                                 );
@@ -2806,7 +2828,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                 OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                 "Processing the given 'IncomingDataTransfer' request led to an exception!",
                                                                 JSONObject.Create(
-                                                                    new JProperty("request",    OCPPMessage),
+                                                                    new JProperty("request",    OCPPTextMessage),
                                                                     new JProperty("exception",  e.Message),
                                                                     new JProperty("stacktrace", e.StackTrace)
                                                                 )
@@ -2941,7 +2963,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                     OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                     "The given 'DiagnosticsStatusNotification' request could not be parsed!",
                                                                     new JObject(
-                                                                        new JProperty("request",       OCPPMessage),
+                                                                        new JProperty("request",       OCPPTextMessage),
                                                                         new JProperty("errorResponse", errorResponse)
                                                                     )
                                                                 );
@@ -2955,7 +2977,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                 OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                 "Processing the given 'DiagnosticsStatusNotification' request led to an exception!",
                                                                 JSONObject.Create(
-                                                                    new JProperty("request",    OCPPMessage),
+                                                                    new JProperty("request",    OCPPTextMessage),
                                                                     new JProperty("exception",  e.Message),
                                                                     new JProperty("stacktrace", e.StackTrace)
                                                                 )
@@ -3090,7 +3112,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                     OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                     "The given 'FirmwareStatusNotification' request could not be parsed!",
                                                                     new JObject(
-                                                                        new JProperty("request",       OCPPMessage),
+                                                                        new JProperty("request",       OCPPTextMessage),
                                                                         new JProperty("errorResponse", errorResponse)
                                                                     )
                                                                 );
@@ -3104,7 +3126,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                 OCPP_WebSocket_ErrorCodes.FormationViolation,
                                                                 "Processing the given 'FirmwareStatusNotification' request led to an exception!",
                                                                 JSONObject.Create(
-                                                                    new JProperty("request",    OCPPMessage),
+                                                                    new JProperty("request",    OCPPTextMessage),
                                                                     new JProperty("exception",  e.Message),
                                                                     new JProperty("stacktrace", e.StackTrace)
                                                                 )
@@ -3250,7 +3272,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     // It does not make much sense to send this error to a charging station as no one will read it there!
-                    DebugX.Log(nameof(CentralSystemWSServer) + " The OCPP message '" + OCPPMessage + "' is invalid!");
+                    DebugX.Log(nameof(CentralSystemWSServer) + " The OCPP message '" + OCPPTextMessage + "' is invalid!");
 
                     //new WSErrorMessage(Request_Id.Parse(JSON.Count >= 2 ? JSON[1]?.Value<String>()?.Trim() : "unknown"),
                     //                                  WSErrorCodes.FormationViolation,
@@ -3269,7 +3291,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 // It does not make much sense to send this error to a charging station as no one will read it there!
-                DebugX.LogException(e, "The OCPP message '" + OCPPMessage + "' received in " + nameof(CentralSystemWSServer) + " led to an exception!");
+                DebugX.LogException(e, "The OCPP message '" + OCPPTextMessage + "' received in " + nameof(CentralSystemWSServer) + " led to an exception!");
 
                 //ErrorMessage = new WSErrorMessage(Request_Id.Parse(JSON != null && JSON.Count >= 2
                 //                                                       ? JSON?[1].Value<String>()?.Trim()
@@ -3286,13 +3308,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             // The response to the charge point...
             return new WebSocketTextMessageResponse(
-                       EventTrackingId,
                        RequestTimestamp,
-                       OCPPMessage,
+                       OCPPTextMessage,
                        Timestamp.Now,
                        (OCPPResponse?.     ToJSON() ??
-                        OCPPErrorResponse?.ToJSON() ??
-                        new JArray())?.ToString(JSONFormating) ?? ""
+                        OCPPErrorResponse?.ToJSON())?.ToString(JSONFormating)
+                           ?? String.Empty,
+                       EventTrackingId
                    );
 
         }
