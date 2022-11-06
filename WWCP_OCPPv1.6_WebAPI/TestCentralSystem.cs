@@ -738,7 +738,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                           server,
                                                           eventTrackingId) => {
 
-                DebugX.Log("Web socket server has started on " + server.IPSocket);
+                DebugX.Log("OCPP " + Version.Number + " web socket server has started on " + server.IPSocket);
 
             };
 
@@ -829,18 +829,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region OnCloseMessageReceived
 
-            centralSystemServer.OnCloseMessageReceived += async (timestamp,
-                                                                 server,
-                                                                 connection,
-                                                                 message,
-                                                                 eventTrackingId) => {
+            //centralSystemServer.OnCloseMessageReceived += async (timestamp,
+            //                                                     server,
+            //                                                     connection,
+            //                                                     message,
+            //                                                     eventTrackingId) => {
 
-                DebugX.Log(String.Concat("HTTP web socket server on ",
-                                         server.IPSocket,
-                                         " closed connection to ",
-                                         connection.RemoteSocket));
+            //    DebugX.Log(String.Concat("HTTP web socket server on ",
+            //                             server.IPSocket,
+            //                             " closed connection to ",
+            //                             connection.RemoteSocket));
 
-            };
+            //};
 
             #endregion
 
