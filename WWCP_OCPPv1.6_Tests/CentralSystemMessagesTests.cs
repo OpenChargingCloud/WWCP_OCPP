@@ -108,11 +108,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 var resetType  = ResetTypes.Hard;
                 var response1  = await testCentralSystem01.Reset(chargingStation2.ChargeBoxId, resetType);
 
-                Assert.AreEqual  (ResultCodes.Server,    response1.Result.ResultCode);
-                Assert.IsNotEmpty(                       response1.Result.Description);
-                Assert.AreEqual  (ResetStatus.Unknown,   response1.Status);
+                Assert.AreEqual  (ResultCodes.NetworkError,  response1.Result.ResultCode);
+                Assert.IsNotEmpty(                           response1.Result.Description);
+                Assert.AreEqual  (ResetStatus.Unknown,       response1.Status);
 
-                Assert.AreEqual  (0,                     resetRequests.Count);
+                Assert.AreEqual  (0,                         resetRequests.Count);
 
             }
 
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                                                                  connectorId,
                                                                                  availability);
 
-                Assert.AreEqual  (ResultCodes.Server,           response1.Result.ResultCode);
+                Assert.AreEqual  (ResultCodes.NetworkError,     response1.Result.ResultCode);
                 Assert.IsNotEmpty(                              response1.Result.Description);
                 Assert.AreEqual  (AvailabilityStatus.Unknown,   response1.Status);
 

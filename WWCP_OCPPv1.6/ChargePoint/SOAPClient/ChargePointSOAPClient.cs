@@ -519,56 +519,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         // <cs:chargeBoxIdentity se:mustUnderstand="true">CP1234</cs:chargeBoxIdentity>
 
 
-        #region SendBootNotification             (Request, ...)
+        #region SendBootNotification             (Request)
 
         /// <summary>
         /// Send a boot notification.
         /// </summary>
         /// <param name="Request">A boot notification request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<BootNotificationResponse>
-
-            SendBootNotification(BootNotificationRequest  Request,
-
-                                 DateTime?                Timestamp           = null,
-                                 CancellationToken?       CancellationToken   = null,
-                                 EventTracking_Id?        EventTrackingId     = null,
-                                 TimeSpan?                RequestTimeout      = null)
-
+        public async Task<BootNotificationResponse> SendBootNotification(BootNotificationRequest Request)
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given boot notification request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<BootNotificationResponse>? result = null;
-
-            #endregion
-
             #region Send OnBootNotificationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnBootNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnBootNotificationRequest?.Invoke(startTime,
                                                   this,
                                                   Request);
 
@@ -581,106 +548,108 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                    VirtualHostname,
-                                                    false,
-                                                    null,
-                                                    RemoteCertificateValidator,
-                                                    ClientCertificateSelector,
-                                                    ClientCert,
-                                                    TLSProtocol,
-                                                    PreferIPv4,
-                                                    HTTPUserAgent,
-                                                    URLPathPrefix,
-                                                    WSSLoginPassword,
-                                                    HTTPContentType,
-                                                    RequestTimeout,
-                                                    TransmissionRetryDelay,
-                                                    MaxNumberOfRetries,
-                                                    UseHTTPPipelining,
-                                                    HTTPLogger,
-                                                    DNSClient))
+            HTTPResponse<BootNotificationResponse>? result = null;
+
+            using (var soapClient = new SOAPClient(RemoteURL,
+                                                   VirtualHostname,
+                                                   false,
+                                                   null,
+                                                   RemoteCertificateValidator,
+                                                   ClientCertificateSelector,
+                                                   ClientCert,
+                                                   TLSProtocol,
+                                                   PreferIPv4,
+                                                   HTTPUserAgent,
+                                                   URLPathPrefix,
+                                                   WSSLoginPassword,
+                                                   HTTPContentType,
+                                                   RequestTimeout,
+                                                   TransmissionRetryDelay,
+                                                   MaxNumberOfRetries,
+                                                   UseHTTPPipelining,
+                                                   HTTPLogger,
+                                                   DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
-                                                                    "/BootNotification",
-                                                                    Request_Id.NewRandom().ToString(),
-                                                                    From,
-                                                                    To,
-                                                                    Request.ToXML()),
-                                                 "BootNotification",
-                                                 RequestLogDelegate:   OnBootNotificationSOAPRequest,
-                                                 ResponseLogDelegate:  OnBootNotificationSOAPResponse,
-                                                 CancellationToken:    CancellationToken,
-                                                 EventTrackingId:      EventTrackingId,
-                                                 RequestTimeout:       RequestTimeout,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
+                                                                   "/" + Request.Action,
+                                                                   Request_Id.NewRandom().ToString(),
+                                                                   From,
+                                                                   To,
+                                                                   Request.ToXML()),
+                                                Request.Action,
+                                                RequestLogDelegate:   OnBootNotificationSOAPRequest,
+                                                ResponseLogDelegate:  OnBootNotificationSOAPResponse,
+                                                CancellationToken:    Request.CancellationToken,
+                                                EventTrackingId:      Request.EventTrackingId,
+                                                RequestTimeout:       Request.RequestTimeout,
 
-                                                 #region OnSuccess
+                #region OnSuccess
 
-                                                 OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
-                                                                                                      BootNotificationResponse.Parse),
+                OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
+                                                                     BootNotificationResponse.Parse),
 
-                                                 #endregion
+                #endregion
 
-                                                 #region OnSOAPFault
+                #region OnSOAPFault
 
-                                                 OnSOAPFault: (timestamp, soapclient, httpresponse) => {
+                OnSOAPFault: (timestamp, soapclient, httpresponse) => {
 
-                                                     SendSOAPError(timestamp, this, httpresponse.Content);
+                    SendSOAPError(timestamp, this, httpresponse.Content);
 
-                                                     return new HTTPResponse<BootNotificationResponse>(httpresponse,
-                                                                                                       new BootNotificationResponse(
-                                                                                                           Request,
-                                                                                                           Result.Format(
-                                                                                                               "Invalid SOAP => " +
-                                                                                                               httpresponse.HTTPBody.ToUTF8String()
-                                                                                                           )
-                                                                                                       ),
-                                                                                                       IsFault: true);
+                    return new HTTPResponse<BootNotificationResponse>(httpresponse,
+                                                                      new BootNotificationResponse(
+                                                                          Request,
+                                                                          Result.Format(
+                                                                              "Invalid SOAP => " +
+                                                                              httpresponse.HTTPBody.ToUTF8String()
+                                                                          )
+                                                                      ),
+                                                                      IsFault: true);
 
-                                                 },
+                },
 
-                                                 #endregion
+                #endregion
 
-                                                 #region OnHTTPError
+                #region OnHTTPError
 
-                                                 OnHTTPError: (timestamp, soapclient, httpresponse) => {
+                OnHTTPError: (timestamp, soapclient, httpresponse) => {
 
-                                                     SendHTTPError(timestamp, this, httpresponse);
+                    SendHTTPError(timestamp, this, httpresponse);
 
-                                                     return new HTTPResponse<BootNotificationResponse>(httpresponse,
-                                                                                                       new BootNotificationResponse(
-                                                                                                           Request,
-                                                                                                           Result.Server(
-                                                                                                                httpresponse.HTTPStatusCode.ToString() +
-                                                                                                                " => " +
-                                                                                                                httpresponse.HTTPBody.      ToUTF8String()
-                                                                                                           )
-                                                                                                       ),
-                                                                                                       IsFault: true);
+                    return new HTTPResponse<BootNotificationResponse>(httpresponse,
+                                                                      new BootNotificationResponse(
+                                                                          Request,
+                                                                          Result.Server(
+                                                                               httpresponse.HTTPStatusCode.ToString() +
+                                                                               " => " +
+                                                                               httpresponse.HTTPBody.      ToUTF8String()
+                                                                          )
+                                                                      ),
+                                                                      IsFault: true);
 
-                                                 },
+                },
 
-                                                 #endregion
+                #endregion
 
-                                                 #region OnException
+                #region OnException
 
-                                                 OnException: (timestamp, sender, exception) => {
+                OnException: (timestamp, sender, exception) => {
 
-                                                     SendException(timestamp, sender, exception);
+                    SendException(timestamp, sender, exception);
 
-                                                     return HTTPResponse<BootNotificationResponse>.ExceptionThrown(new BootNotificationResponse(
-                                                                                                                       Request,
-                                                                                                                       Result.Format(exception.Message +
-                                                                                                                                     " => " +
-                                                                                                                                     exception.StackTrace)),
-                                                                                                                   exception);
+                    return HTTPResponse<BootNotificationResponse>.ExceptionThrown(new BootNotificationResponse(
+                                                                                      Request,
+                                                                                      Result.Format(exception.Message +
+                                                                                                    " => " +
+                                                                                                    exception.StackTrace)),
+                                                                                  exception);
 
-                                                 }
+                }
 
-                                                 #endregion
+                #endregion
 
-                                                );
+               );
 
             }
 
@@ -690,14 +659,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnBootNotificationResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnBootNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnBootNotificationResponse?.Invoke(endTime,
                                                    this,
                                                    Request,
                                                    result.Content,
-                                                   org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                   endTime - startTime);
 
             }
             catch (Exception e)

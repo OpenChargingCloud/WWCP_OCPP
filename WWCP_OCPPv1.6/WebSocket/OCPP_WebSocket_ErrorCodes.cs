@@ -21,11 +21,11 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
+namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extention methods for OCPP web socket error codes.
+    /// Extention methods for OCPP error codes.
     /// </summary>
     public static class OCPP_WebSocket_ErrorCodesExtentions
     {
@@ -34,14 +34,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// Indicates whether this OCPP web socket error code. is null or empty.
         /// </summary>
         /// <param name="errorCode">An OCPP web socket error code.</param>
-        public static Boolean IsNullOrEmpty(this OCPP_WebSocket_ErrorCodes? errorCode)
+        public static Boolean IsNullOrEmpty(this ResultCodes? errorCode)
             => !errorCode.HasValue || errorCode.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this OCPP web socket error code. is null or empty.
         /// </summary>
         /// <param name="errorCode">An OCPP web socket error code.</param>
-        public static Boolean IsNotNullOrEmpty(this OCPP_WebSocket_ErrorCodes? errorCode)
+        public static Boolean IsNotNullOrEmpty(this ResultCodes? errorCode)
             => errorCode.HasValue && errorCode.Value.IsNotNullOrEmpty;
 
     }
@@ -50,9 +50,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
     /// <summary>
     /// An OCPP web socket error code.
     /// </summary>
-    public readonly struct OCPP_WebSocket_ErrorCodes : IId,
-                                                       IEquatable<OCPP_WebSocket_ErrorCodes>,
-                                                       IComparable<OCPP_WebSocket_ErrorCodes>
+    public readonly struct ResultCodes : IId,
+                                         IEquatable<ResultCodes>,
+                                         IComparable<ResultCodes>
     {
 
         #region Data
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// Create a new error code based on the given string.
         /// </summary>
         /// <param name="String">The string representation of the error code.</param>
-        private OCPP_WebSocket_ErrorCodes(String String)
+        private ResultCodes(String String)
         {
             this.InternalId  = String;
         }
@@ -106,11 +106,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// Parse the given string as an OCPP web socket error code.
         /// </summary>
         /// <param name="Text">A text representation of an OCPP web socket error code.</param>
-        public static OCPP_WebSocket_ErrorCodes Parse(String Text)
+        public static ResultCodes Parse(String Text)
         {
 
-            if (TryParse(Text, out var requestId))
-                return requestId;
+            if (TryParse(Text, out var errorCode))
+                return errorCode;
 
             throw new ArgumentException("Invalid text representation of an OCPP web socket error code: '" + Text + "'!",
                                         nameof(Text));
@@ -125,11 +125,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// Try to parse the given text as an OCPP web socket error code.
         /// </summary>
         /// <param name="Text">A text representation of an OCPP web socket error code.</param>
-        public static OCPP_WebSocket_ErrorCodes? TryParse(String Text)
+        public static ResultCodes? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var requestId))
-                return requestId;
+            if (TryParse(Text, out var errorCode))
+                return errorCode;
 
             return null;
 
@@ -144,14 +144,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// </summary>
         /// <param name="Text">A text representation of an OCPP web socket error code.</param>
         /// <param name="errorCode">The parsed OCPP web socket error code.</param>
-        public static Boolean TryParse(String Text, out OCPP_WebSocket_ErrorCodes errorCode)
+        public static Boolean TryParse(String Text, out ResultCodes errorCode)
         {
 
             Text = Text.Trim();
 
             if (Text.IsNotNullOrEmpty())
             {
-                errorCode = new OCPP_WebSocket_ErrorCodes(Text);
+                errorCode = new ResultCodes(Text);
                 return true;
             }
 
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// <summary>
         /// Clone this OCPP web socket error code.
         /// </summary>
-        public OCPP_WebSocket_ErrorCodes Clone
+        public ResultCodes Clone
 
             => new (
                    new String(InternalId?.ToCharArray())
@@ -179,57 +179,62 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// <summary>
         /// Requested Action is not known by receiver.
         /// </summary>
-        public static readonly OCPP_WebSocket_ErrorCodes NotImplemented                  = new ("NotImplemented");
+        public static readonly ResultCodes OK                              = new ("OK");
+
+        /// <summary>
+        /// Requested Action is not known by receiver.
+        /// </summary>
+        public static readonly ResultCodes NotImplemented                  = new ("NotImplemented");
 
         /// <summary>
         /// Requested Action is recognized but not supported by the receiver.
         /// </summary>
-        public static readonly OCPP_WebSocket_ErrorCodes NotSupported                    = new("NotSupported");
+        public static readonly ResultCodes NotSupported                    = new("NotSupported");
 
         /// <summary>
         /// An internal error occurred and the receiver was not able to process the requested Action successfully.
         /// </summary>
-        public static readonly OCPP_WebSocket_ErrorCodes InternalError                   = new ("InternalError");
+        public static readonly ResultCodes InternalError                   = new ("InternalError");
 
         /// <summary>
         /// Payload for Action is incomplete.
         /// </summary>
-        public static readonly OCPP_WebSocket_ErrorCodes ProtocolError                   = new("ProtocolError");
+        public static readonly ResultCodes ProtocolError                   = new("ProtocolError");
 
         /// <summary>
         /// During the processing of Action a security issue occurred preventing receiver from completing the Action successfully.
         /// </summary>
-        public static readonly OCPP_WebSocket_ErrorCodes SecurityError                   = new("SecurityError");
+        public static readonly ResultCodes SecurityError                   = new("SecurityError");
 
         /// <summary>
         /// Payload for Action is syntactically incorrect or not conform the PDU structure for Action.
         /// </summary>
-        public static readonly OCPP_WebSocket_ErrorCodes FormationViolation              = new("FormationViolation");
+        public static readonly ResultCodes FormationViolation              = new("FormationViolation");
 
         /// <summary>
         /// Payload is syntactically correct but at least one field contains an invalid value.
         /// </summary>
-        public static readonly OCPP_WebSocket_ErrorCodes PropertyConstraintViolation     = new("PropertyConstraintViolation");
+        public static readonly ResultCodes PropertyConstraintViolation     = new("PropertyConstraintViolation");
 
         /// <summary>
         /// Payload for Action is syntactically correct but at least one of the fields violates occurence constraints.
         /// </summary>
-        public static readonly OCPP_WebSocket_ErrorCodes OccurenceConstraintViolation    = new("OccurenceConstraintViolation");
+        public static readonly ResultCodes OccurenceConstraintViolation    = new("OccurenceConstraintViolation");
 
         /// <summary>
         /// Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12).
         /// </summary>
-        public static readonly OCPP_WebSocket_ErrorCodes TypeConstraintViolation         = new("TypeConstraintViolation");
+        public static readonly ResultCodes TypeConstraintViolation         = new("TypeConstraintViolation");
 
         /// <summary>
         /// Any other error not covered by the previous ones.
         /// </summary>
-        public static readonly OCPP_WebSocket_ErrorCodes GenericError                    = new("GenericError");
+        public static readonly ResultCodes GenericError                    = new("GenericError");
 
 
-        public static readonly OCPP_WebSocket_ErrorCodes UnknownClient                   = new("UnknownClient");
-        public static readonly OCPP_WebSocket_ErrorCodes NetworkError                    = new("NetworkError");
-        public static readonly OCPP_WebSocket_ErrorCodes Timeout                         = new("Timeout");
+        public static readonly ResultCodes UnknownClient                   = new("UnknownClient");
+        public static readonly ResultCodes NetworkError                    = new("NetworkError");
+        public static readonly ResultCodes Timeout                         = new("Timeout");
 
 
 
@@ -243,8 +248,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// <param name="ErrorCode1">An OCPP web socket error code.</param>
         /// <param name="ErrorCode2">Another OCPP web socket error code.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (OCPP_WebSocket_ErrorCodes ErrorCode1,
-                                           OCPP_WebSocket_ErrorCodes ErrorCode2)
+        public static Boolean operator == (ResultCodes ErrorCode1,
+                                           ResultCodes ErrorCode2)
 
             => ErrorCode1.Equals(ErrorCode2);
 
@@ -258,8 +263,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// <param name="ErrorCode1">An OCPP web socket error code.</param>
         /// <param name="ErrorCode2">Another OCPP web socket error code.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (OCPP_WebSocket_ErrorCodes ErrorCode1,
-                                           OCPP_WebSocket_ErrorCodes ErrorCode2)
+        public static Boolean operator != (ResultCodes ErrorCode1,
+                                           ResultCodes ErrorCode2)
 
             => !ErrorCode1.Equals(ErrorCode2);
 
@@ -273,8 +278,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// <param name="ErrorCode1">An OCPP web socket error code.</param>
         /// <param name="ErrorCode2">Another OCPP web socket error code.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (OCPP_WebSocket_ErrorCodes ErrorCode1,
-                                          OCPP_WebSocket_ErrorCodes ErrorCode2)
+        public static Boolean operator < (ResultCodes ErrorCode1,
+                                          ResultCodes ErrorCode2)
 
             => ErrorCode1.CompareTo(ErrorCode2) < 0;
 
@@ -288,8 +293,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// <param name="ErrorCode1">An OCPP web socket error code.</param>
         /// <param name="ErrorCode2">Another OCPP web socket error code.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (OCPP_WebSocket_ErrorCodes ErrorCode1,
-                                           OCPP_WebSocket_ErrorCodes ErrorCode2)
+        public static Boolean operator <= (ResultCodes ErrorCode1,
+                                           ResultCodes ErrorCode2)
 
             => ErrorCode1.CompareTo(ErrorCode2) <= 0;
 
@@ -303,8 +308,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// <param name="ErrorCode1">An OCPP web socket error code.</param>
         /// <param name="ErrorCode2">Another OCPP web socket error code.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (OCPP_WebSocket_ErrorCodes ErrorCode1,
-                                          OCPP_WebSocket_ErrorCodes ErrorCode2)
+        public static Boolean operator > (ResultCodes ErrorCode1,
+                                          ResultCodes ErrorCode2)
 
             => ErrorCode1.CompareTo(ErrorCode2) > 0;
 
@@ -318,8 +323,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// <param name="ErrorCode1">An OCPP web socket error code.</param>
         /// <param name="ErrorCode2">Another OCPP web socket error code.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (OCPP_WebSocket_ErrorCodes ErrorCode1,
-                                           OCPP_WebSocket_ErrorCodes ErrorCode2)
+        public static Boolean operator >= (ResultCodes ErrorCode1,
+                                           ResultCodes ErrorCode2)
 
             => ErrorCode1.CompareTo(ErrorCode2) >= 0;
 
@@ -337,9 +342,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// <param name="Object">An OCPP web socket error code to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is OCPP_WebSocket_ErrorCodes requestId
-                   ? CompareTo(requestId)
-                   : throw new ArgumentException("The given object is not a error code!",
+            => Object is ResultCodes errorCode
+                   ? CompareTo(errorCode)
+                   : throw new ArgumentException("The given object is not an error code!",
                                                  nameof(Object));
 
         #endregion
@@ -350,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// Compares two OCPP web socket error codes.
         /// </summary>
         /// <param name="errorCode">An OCPP web socket error code to compare with.</param>
-        public Int32 CompareTo(OCPP_WebSocket_ErrorCodes errorCode)
+        public Int32 CompareTo(ResultCodes errorCode)
 
             => String.Compare(InternalId,
                               errorCode.InternalId,
@@ -370,8 +375,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// <param name="Object">An OCPP web socket error code to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is OCPP_WebSocket_ErrorCodes requestId &&
-                   Equals(requestId);
+            => Object is ResultCodes errorCode &&
+                   Equals(errorCode);
 
         #endregion
 
@@ -381,7 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// Compares two OCPP web socket error codes for equality.
         /// </summary>
         /// <param name="errorCode">An OCPP web socket error code to compare with.</param>
-        public Boolean Equals(OCPP_WebSocket_ErrorCodes errorCode)
+        public Boolean Equals(ResultCodes errorCode)
 
             => String.Equals(InternalId,
                              errorCode.InternalId,

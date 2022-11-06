@@ -31,12 +31,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     {
 
         /// <summary>
+        /// The unique identification of the request.
+        /// </summary>
+        Request_Id  RequestId           { get; }
+
+        /// <summary>
         /// The timestamp of the request message creation.
         /// </summary>
-        DateTime  RequestTimestamp   { get; }
+        DateTime    RequestTimestamp    { get; }
 
 
         JObject ToJSON();
+
 
     }
 

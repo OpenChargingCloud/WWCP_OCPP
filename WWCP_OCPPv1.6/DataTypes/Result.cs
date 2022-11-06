@@ -17,7 +17,9 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
+using static cloud.charging.open.protocols.OCPPv1_6.CS.CentralSystemWSServer;
 
 #endregion
 
@@ -42,6 +44,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public String?      Description    { get; }
 
+        /// <summary>
+        /// Human-readable error details.
+        /// </summary>
+        public String?      Details        { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -52,15 +59,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ResultCode">The machine-readable result code.</param>
         /// <param name="Description">A human-readable error description.</param>
         public Result(ResultCodes  ResultCode,
-                      String?      Description   = null)
+                      String?      Description   = null,
+                      String?      Details       = null)
         {
 
             this.ResultCode   = ResultCode;
             this.Description  = Description?.Trim();
+            this.Details      = Details?.Trim();
 
         }
 
         #endregion
+
+
+        public static Result FromSendRequestState(SendRequestState SendRequestState)
+
+            => new (
+                   SendRequestState.ErrorCode ?? ResultCodes.GenericError,
+                   SendRequestState.ErrorDescription,
+                   SendRequestState.ErrorDetails?.ToString()
+               );
 
 
         #region Static methods
@@ -69,10 +87,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Unknown result code.
         /// </summary>
         /// <param name="Description">A human-readable error description.</param>
-        public static Result Unknown(String? Description = null)
+        public static Result GenericError(String? Description   = null,
+                                          String? Details       = null)
 
-            => new (ResultCodes.Unknown,
-                    Description);
+            => new (ResultCodes.GenericError,
+                    Description,
+                    Details);
 
 
         /// <summary>
@@ -85,34 +105,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     Description);
 
 
-        /// <summary>
-        /// Only part of the data was accepted.
-        /// </summary>
-        /// <param name="Description">A human-readable error description.</param>
-        public static Result Partly(String? Description = null)
+        ///// <summary>
+        ///// Only part of the data was accepted.
+        ///// </summary>
+        ///// <param name="Description">A human-readable error description.</param>
+        //public static Result Partly(String? Description = null)
 
-            => new (ResultCodes.Partly,
-                    Description);
-
-
-        /// <summary>
-        /// Wrong username and/or password.
-        /// </summary>
-        /// <param name="Description">A human-readable error description.</param>
-        public static Result NotAuthorized(String? Description = null)
-
-            => new (ResultCodes.NotAuthorized,
-                    Description);
+        //    => new (ResultCodes.Partly,
+        //            Description);
 
 
-        /// <summary>
-        /// One or more ID (EVSE/Contract) were not valid for this user.
-        /// </summary>
-        /// <param name="Description">A human-readable error description.</param>
-        public static Result InvalidId(String? Description = null)
+        ///// <summary>
+        ///// Wrong username and/or password.
+        ///// </summary>
+        ///// <param name="Description">A human-readable error description.</param>
+        //public static Result NotAuthorized(String? Description = null)
 
-            => new (ResultCodes.InvalidId,
-                    Description);
+        //    => new (ResultCodes.NotAuthorized,
+        //            Description);
+
+
+        ///// <summary>
+        ///// One or more ID (EVSE/Contract) were not valid for this user.
+        ///// </summary>
+        ///// <param name="Description">A human-readable error description.</param>
+        //public static Result InvalidId(String? Description = null)
+
+        //    => new (ResultCodes.InvalidId,
+        //            Description);
 
 
         /// <summary>
@@ -121,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Description">A human-readable error description.</param>
         public static Result Server(String? Description = null)
 
-            => new (ResultCodes.Server,
+            => new (ResultCodes.NetworkError,
                     Description);
 
 
@@ -131,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Description">A human-readable error description.</param>
         public static Result Format(String? Description = null)
 
-            => new (ResultCodes.Format,
+            => new (ResultCodes.FormationViolation,
                     Description);
 
         #endregion

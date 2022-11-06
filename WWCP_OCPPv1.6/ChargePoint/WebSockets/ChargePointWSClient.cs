@@ -32,6 +32,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 #endregion
 
@@ -57,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             public DateTime                       Timeout             { get; }
 
             public JObject?                       Response            { get; set; }
-            public OCPP_WebSocket_ErrorCodes?     ErrorCode           { get; set; }
+            public ResultCodes?     ErrorCode           { get; set; }
             public String?                        ErrorDescription    { get; set; }
             public JObject?                       ErrorDetails        { get; set; }
 
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                      DateTime                       Timeout,
 
                                      JObject?                       Response           = null,
-                                     OCPP_WebSocket_ErrorCodes?     ErrorCode          = null,
+                                     ResultCodes?     ErrorCode          = null,
                                      String?                        ErrorDescription   = null,
                                      JObject?                       ErrorDetails       = null)
             {
@@ -95,8 +96,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public  new const  String  DefaultHTTPUserAgent  = "GraphDefined OCPP " + Version.Number + " CP WebSocket Client";
 
         private new const  String  LogfileName           = "ChargePointWSClient.log";
-
-        private            Int64   internalRequestId     = 100000;
 
         #endregion
 
@@ -3695,13 +3694,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public readonly Dictionary<Request_Id, SendRequestState2> requests = new ();
 
 
-        #region SendRequest(Action, Message)
+        #region SendRequest(Action, RequestId, Message)
 
-        public async Task<Request_Id?> SendRequest(String   Action,
-                                                   JObject  Message)
+        public async Task<Request_Id?> SendRequest(String      Action,
+                                                   Request_Id  RequestId,
+                                                   JObject     Message)
         {
-
-            Request_Id? requestId = null;
 
             if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
                                            ConfigureAwait(false))
@@ -3712,12 +3710,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     if (HTTPStream is not null)
                     {
 
-                        Interlocked.Increment(ref internalRequestId);
-
-                        requestId = Request_Id.Parse(internalRequestId.ToString());
-
                         var wsRequestMessage = new OCPP_WebSocket_RequestMessage(
-                                                   requestId.Value,
+                                                   RequestId,
                                                    Action,
                                                    Message
                                                );
@@ -3733,18 +3727,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                WebSocketFrame.Rsv.Off
                                            ));
 
-                        requests.Add(requestId.Value,
+                        requests.Add(RequestId,
                                      new SendRequestState2(
                                          Timestamp.Now,
                                          wsRequestMessage,
                                          Timestamp.Now + TimeSpan.FromSeconds(10)
                                      ));
 
-                        File.AppendAllText(LogfileName,
-                                           String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                               Environment.NewLine,
-                                                         "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                            Environment.NewLine,
-                                                         "Message sent: ",      wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
-                                                         "--------------------------------------------------------------------------------------------", Environment.NewLine));
+                        //File.AppendAllText(LogfileName,
+                        //                   String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                               Environment.NewLine,
+                        //                                 "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                            Environment.NewLine,
+                        //                                 "Message sent: ",      wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
+                        //                                 "--------------------------------------------------------------------------------------------", Environment.NewLine));
 
                     }
                     else
@@ -3775,7 +3769,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             else
                 DebugX.LogT("Could not aquire the maintenance tasks lock!");
 
-            return requestId;
+            return RequestId;
 
         }
 
@@ -3830,53 +3824,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         }
 
 
-        #region SendBootNotification             (Request, ...)
+
+
+        #region SendBootNotification             (Request)
 
         /// <summary>
         /// Send a boot notification.
         /// </summary>
         /// <param name="Request">A boot notification request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<BootNotificationResponse>
 
-            SendBootNotification(BootNotificationRequest  Request,
-
-                                 DateTime?                Timestamp           = null,
-                                 CancellationToken?       CancellationToken   = null,
-                                 EventTracking_Id?        EventTrackingId     = null,
-                                 TimeSpan?                RequestTimeout      = null)
+            SendBootNotification(BootNotificationRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given boot notification request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-            #endregion
-
             #region Send OnBootNotificationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnBootNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnBootNotificationRequest?.Invoke(startTime,
                                                   this,
                                                   Request);
 
@@ -3889,8 +3858,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var requestId  = await SendRequest("BootNotification",
-                                               Request.ToJSON());
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
 
             if (!BootNotificationResponse.TryParse(Request,
                                                   (await WaitForResponse(requestId)) ?? new JObject(),
@@ -3902,19 +3872,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             response ??= new BootNotificationResponse(Request,
-                                                      Result.Unknown());
+                                                      Result.GenericError());
 
 
             #region Send OnBootNotificationResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnBootNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnBootNotificationResponse?.Invoke(endTime,
                                                    this,
                                                    Request,
                                                    response,
-                                                   org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                   endTime - startTime);
 
             }
             catch (Exception e)
@@ -3989,8 +3961,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var requestId  = await SendRequest("Heartbeat",
-                                               Request.ToJSON());
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
 
             if (!HeartbeatResponse.TryParse(Request,
                                            (await WaitForResponse(requestId)) ?? new JObject(),
@@ -4002,7 +3975,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             response ??= new HeartbeatResponse(Request,
-                                               Result.Unknown());
+                                               Result.GenericError());
 
 
             #region Send OnHeartbeatResponse event
@@ -4090,8 +4063,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var requestId  = await SendRequest("Authorize",
-                                               Request.ToJSON());
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
 
             if (!AuthorizeResponse.TryParse(Request,
                                            (await WaitForResponse(requestId)) ?? new JObject(),
@@ -4103,7 +4077,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             response ??= new AuthorizeResponse(Request,
-                                               Result.Unknown());
+                                               Result.GenericError());
 
 
             #region Send OnAuthorizeResponse event
@@ -4190,8 +4164,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var requestId  = await SendRequest("StartTransaction",
-                                               Request.ToJSON());
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
 
             if (!StartTransactionResponse.TryParse(Request,
                                                   (await WaitForResponse(requestId)) ?? new JObject(),
@@ -4203,7 +4178,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             response ??= new StartTransactionResponse(Request,
-                                                      Result.Unknown());
+                                                      Result.GenericError());
 
 
             #region Send OnStartTransactionResponse event
@@ -4290,8 +4265,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var requestId  = await SendRequest("StatusNotification",
-                                               Request.ToJSON());
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
 
             if (!StatusNotificationResponse.TryParse(Request,
                                                     (await WaitForResponse(requestId)) ?? new JObject(),
@@ -4303,7 +4279,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             response ??= new StatusNotificationResponse(Request,
-                                                        Result.Unknown());
+                                                        Result.GenericError());
 
 
             #region Send OnStatusNotificationResponse event
@@ -4390,7 +4366,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var requestId = await SendRequest("MeterValues",
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
                                               Request.ToJSON());
 
             if (!MeterValuesResponse.TryParse(Request,
@@ -4403,7 +4380,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             response ??= new MeterValuesResponse(Request,
-                                                 Result.Unknown());
+                                                 Result.GenericError());
 
 
             #region Send OnMeterValuesResponse event
@@ -4490,7 +4467,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var requestId = await SendRequest("StopTransaction",
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
                                               Request.ToJSON());
 
             if (!StopTransactionResponse.TryParse(Request,
@@ -4503,7 +4481,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             response ??= new StopTransactionResponse(Request,
-                                                     Result.Unknown());
+                                                     Result.GenericError());
 
 
             #region Send OnStopTransactionResponse event
@@ -4591,7 +4569,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var requestId = await SendRequest("DataTransfer",
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
                                               Request.ToJSON());
 
             if (!CS.DataTransferResponse.TryParse(Request,
@@ -4604,7 +4583,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             response ??= new CS.DataTransferResponse(Request,
-                                                     Result.Unknown());
+                                                     Result.GenericError());
 
 
             #region Send OnDataTransferResponse event
@@ -4691,7 +4670,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var requestId = await SendRequest("DiagnosticsStatusNotification",
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
                                               Request.ToJSON());
 
             if (!DiagnosticsStatusNotificationResponse.TryParse(Request,
@@ -4704,7 +4684,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             response ??= new DiagnosticsStatusNotificationResponse(Request,
-                                                                   Result.Unknown());
+                                                                   Result.GenericError());
 
 
             #region Send OnDiagnosticsStatusNotificationResponse event
@@ -4791,7 +4771,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            var requestId = await SendRequest("FirmwareStatusNotification",
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
                                               Request.ToJSON());
 
             if (!FirmwareStatusNotificationResponse.TryParse(Request,
@@ -4804,7 +4785,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
             response ??= new FirmwareStatusNotificationResponse(Request,
-                                                                Result.Unknown());
+                                                                Result.GenericError());
 
 
             #region Send OnFirmwareStatusNotificationResponse event

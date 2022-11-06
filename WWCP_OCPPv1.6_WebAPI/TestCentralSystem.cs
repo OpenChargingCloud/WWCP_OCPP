@@ -56,6 +56,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         public    static readonly  IPPort                                                      DefaultHTTPUploadPort   = IPPort.Parse(9901);
 
+        private                    Int64                                                       internalRequestId       = 900000;
+
         #endregion
 
         #region Properties
@@ -91,6 +93,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public Boolean RequireAuthentication { get; }
 
+        /// <summary>
+        /// The default request timeout for all requests.
+        /// </summary>
+        public TimeSpan                 DefaultRequestTimeout       { get; }
+
 
         /// <summary>
         /// The unique identifications of all connected or reachable charge boxes.
@@ -99,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => reachableChargingBoxes.Values.SelectMany(box => box.Item1.ChargeBoxIds);
 
 
-        public Dictionary<String, Transaction_Id> TransactionIds = new Dictionary<String, Transaction_Id>();
+        public Dictionary<String, Transaction_Id> TransactionIds = new ();
 
         #endregion
 
@@ -658,7 +665,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ContentType">An optional HTTP content type to use.</param>
         /// <param name="RegisterHTTPRootService">Register HTTP root services for sending a notice to clients connecting via HTML or plain text.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
-        /// <param name="AutoStart">Start the server immediately.</param>
+        /// <param name="Autostart">Start the server immediately.</param>
         public CentralSystemSOAPServer CreateSOAPService(String           HTTPServerName            = CentralSystemSOAPServer.DefaultHTTPServerName,
                                                          IPPort?          TCPPort                   = null,
                                                          String           ServiceName               = null,
@@ -666,7 +673,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                          HTTPContentType  ContentType               = null,
                                                          Boolean          RegisterHTTPRootService   = true,
                                                          DNSClient        DNSClient                 = null,
-                                                         Boolean          AutoStart                 = false)
+                                                         Boolean          Autostart                 = false)
         {
 
             var centralSystemServer = new CentralSystemSOAPServer(HTTPServerName,
@@ -676,7 +683,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                   ContentType,
                                                                   RegisterHTTPRootService,
                                                                   DNSClient ?? this.DNSClient,
-                                                                  AutoStart);
+                                                                  Autostart);
 
             Attach(centralSystemServer);
 
@@ -695,7 +702,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
-        /// <param name="AutoStart">Start the server immediately.</param>
+        /// <param name="Autostart">Start the server immediately.</param>
         public CentralSystemWSServer CreateWebSocketService(String       HTTPServerName               = CentralSystemWSServer.DefaultHTTPServerName,
                                                             IIPAddress?  IPAddress                    = null,
                                                             IPPort?      TCPPort                      = null,
@@ -705,7 +712,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                             TimeSpan?    SlowNetworkSimulationDelay   = null,
 
                                                             DNSClient?   DNSClient                    = null,
-                                                            Boolean      AutoStart                    = false)
+                                                            Boolean      Autostart                    = false)
         {
 
             var centralSystemServer = new CentralSystemWSServer(
@@ -719,10 +726,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                           SlowNetworkSimulationDelay,
 
                                           DNSClient ?? this.DNSClient,
-                                          AutoStart
+                                          false
                                       );
 
             Attach(centralSystemServer);
+
+
+            #region OnServerStarted
+
+            centralSystemServer.OnServerStarted += async (Timestamp,
+                                                          server,
+                                                          eventTrackingId) => {
+
+                DebugX.Log("Web socket server has started on " + server.IPSocket);
+
+            };
+
+            #endregion
 
 
             #region OnNewTCPConnection
@@ -764,50 +784,70 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region OnTextMessageRequest
 
+            centralSystemServer.OnTextMessageRequest += async (timestamp,
+                                                               webSocketServer,
+                                                               webSocketConnection,
+                                                               webSocketTextMessageRequest,
+                                                               cancellationToken) => {
 
-            //centralSystemServer.OnTextMessageRequest += (timestamp,
-            //                                             webSocketServer,
-            //                                             webSocketConnection,
-            //                                             webSocketTextMessageRequest,
-            //                                             cancellationToken) => {
+                if (OnTextMessageRequest is not null)
+                    await OnTextMessageRequest.Invoke(timestamp,
+                                                      webSocketServer,
+                                                      webSocketConnection,
+                                                      webSocketTextMessageRequest,
+                                                      cancellationToken);
 
-            //    OnTextMessageRequest?.Invoke(Timestamp,
-            //                                 WebSocketServer,
-            //                                 Sender,
-            //                                 TextRequestMessage,
-            //                                 EventTrackingId,
-            //                                 CancellationToken);
-
-            //};
-
+            };
 
             #endregion
 
             #region OnTextMessageResponse
 
-            //centralSystemServer.OnTextMessageResponse += async (Timestamp,
-            //                                                    WebSocketServer,
-            //                                                    Sender,
-            //                                                    TextRequestMessage,
-            //                                                    TextResponseMessage,
-            //                                                    EventTrackingId,
-            //                                                    CancellationToken) => {
+            centralSystemServer.OnTextMessageResponse += async (timestamp,
+                                                                webSocketServer,
+                                                                webSocketConnection,
+                                                                eventTrackingId,
+                                                                requestTimestamp,
+                                                                requestMessage,
+                                                                responseTimestamp,
+                                                                responseMessage) => {
 
-            //    OnTextMessageResponse?.Invoke(Timestamp,
-            //                                  WebSocketServer,
-            //                                  Sender,
-            //                                  TextRequestMessage,
-            //                                  TextResponseMessage,
-            //                                  EventTrackingId,
-            //                                  CancellationToken);
+                if (OnTextMessageResponse is not null)
+                    await OnTextMessageResponse.Invoke(timestamp,
+                                                       webSocketServer,
+                                                       webSocketConnection,
+                                                       eventTrackingId,
+                                                       requestTimestamp,
+                                                       requestMessage,
+                                                       responseTimestamp,
+                                                       responseMessage);
 
-            //};
+            };
 
             #endregion
 
 
-            //OnCloseMessage;
+            #region OnCloseMessageReceived
 
+            centralSystemServer.OnCloseMessageReceived += async (timestamp,
+                                                                 server,
+                                                                 connection,
+                                                                 message,
+                                                                 eventTrackingId) => {
+
+                DebugX.Log(String.Concat("HTTP web socket server on ",
+                                         server.IPSocket,
+                                         " closed connection to ",
+                                         connection.RemoteSocket));
+
+            };
+
+            #endregion
+
+
+
+            if (Autostart)
+                centralSystemServer.Start();
 
             return centralSystemServer;
 
@@ -3547,6 +3587,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
+        #region (private) NextRequestId
+
+        private Request_Id NextRequestId
+        {
+            get
+            {
+
+                Interlocked.Increment(ref internalRequestId);
+
+                return Request_Id.Parse(internalRequestId.ToString());
+
+            }
+        }
+
+        #endregion
+
 
         #region Reset                 (ChargeBoxId, ResetType, ...)
 
@@ -3556,24 +3612,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ResetType">The type of reset that the charge point should perform.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.ResetResponse> Reset(ChargeBox_Id       ChargeBoxId,
-                                                  ResetTypes         ResetType,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.ResetResponse>
 
-                                                  EventTracking_Id?  EventTrackingId   = null)
+            Reset(ChargeBox_Id        ChargeBoxId,
+                  ResetTypes          ResetType,
+
+                  DateTime?           RequestTimestamp    = null,
+                  TimeSpan?           RequestTimeout      = null,
+                  EventTracking_Id?   EventTrackingId     = null,
+                  CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new ResetRequest(ChargeBoxId,
-                                           ResetType,
+            #region Create request
 
-                                           Request_Id.NewRandom(),
-                                           null,
-                                           null,
-                                           EventTrackingId);
+            var startTime  = Timestamp.Now;
+
+            var request    = new ResetRequest(
+                                 ChargeBoxId,
+                                 ResetType,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnResetRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -3640,29 +3712,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ConnectorId">The identification of the connector for which its availability should be changed. Id '0' (zero) is used if the availability of the entire charge point and all its connectors should be changed.</param>
         /// <param name="Availability">The new availability of the charge point or charge point connector.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.ChangeAvailabilityResponse> ChangeAvailability(ChargeBox_Id       ChargeBoxId,
-                                                                            Connector_Id       ConnectorId,
-                                                                            Availabilities     Availability,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.ChangeAvailabilityResponse>
 
-                                                                            EventTracking_Id?  EventTrackingId   = null)
+            ChangeAvailability(ChargeBox_Id        ChargeBoxId,
+                               Connector_Id        ConnectorId,
+                               Availabilities      Availability,
+
+                               DateTime?           RequestTimestamp    = null,
+                               TimeSpan?           RequestTimeout      = null,
+                               EventTracking_Id?   EventTrackingId     = null,
+                               CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new ChangeAvailabilityRequest(
-                              ChargeBoxId,
-                              ConnectorId,
-                              Availability,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new ChangeAvailabilityRequest(
+                                 ChargeBoxId,
+                                 ConnectorId,
+                                 Availability,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnChangeAvailabilityRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -3728,27 +3813,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Keys">An optional enumeration of keys for which the configuration is requested. Return all keys if empty.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.GetConfigurationResponse> GetConfiguration(ChargeBox_Id          ChargeBoxId,
-                                                                        IEnumerable<String>?  Keys              = null,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.GetConfigurationResponse>
 
-                                                                        EventTracking_Id?     EventTrackingId   = null)
+            GetConfiguration(ChargeBox_Id          ChargeBoxId,
+                             IEnumerable<String>?  Keys                = null,
+
+                             DateTime?             RequestTimestamp    = null,
+                             TimeSpan?             RequestTimeout      = null,
+                             EventTracking_Id?     EventTrackingId     = null,
+                             CancellationToken?    CancellationToken   = null)
+
         {
 
-            var request = new GetConfigurationRequest(
-                              ChargeBoxId,
-                              Keys,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetConfigurationRequest(
+                                 ChargeBoxId,
+                                 Keys,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnGetConfigurationRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -3815,29 +3913,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Key">The name of the configuration setting to change.</param>
         /// <param name="Value">The new value as string for the setting.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.ChangeConfigurationResponse> ChangeConfiguration(ChargeBox_Id       ChargeBoxId,
-                                                                              String             Key,
-                                                                              String             Value,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.ChangeConfigurationResponse>
 
-                                                                              EventTracking_Id?  EventTrackingId   = null)
+            ChangeConfiguration(ChargeBox_Id        ChargeBoxId,
+                                String              Key,
+                                String              Value,
+
+                                DateTime?           RequestTimestamp    = null,
+                                TimeSpan?           RequestTimeout      = null,
+                                EventTracking_Id?   EventTrackingId     = null,
+                                CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new ChangeConfigurationRequest(
-                              ChargeBoxId,
-                              Key,
-                              Value,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new ChangeConfigurationRequest(
+                                 ChargeBoxId,
+                                 Key,
+                                 Value,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnChangeConfigurationRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -3905,31 +4016,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.DataTransferResponse> DataTransfer(ChargeBox_Id       ChargeBoxId,
-                                                                String             VendorId,
-                                                                String?            MessageId         = null,
-                                                                String?            Data              = null,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.DataTransferResponse>
 
-                                                                EventTracking_Id?  EventTrackingId   = null)
+            DataTransfer(ChargeBox_Id        ChargeBoxId,
+                         String              VendorId,
+                         String?             MessageId           = null,
+                         String?             Data                = null,
+
+                         DateTime?           RequestTimestamp    = null,
+                         TimeSpan?           RequestTimeout      = null,
+                         EventTracking_Id?   EventTrackingId     = null,
+                         CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new DataTransferRequest(
-                              ChargeBoxId,
-                              VendorId,
-                              MessageId,
-                              Data,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new DataTransferRequest(
+                                 ChargeBoxId,
+                                 VendorId,
+                                 MessageId,
+                                 Data,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnDataTransferRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -3999,35 +4123,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Retries">The optional number of retries of a charge point for trying to upload the diagnostics before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.GetDiagnosticsResponse> GetDiagnostics(ChargeBox_Id       ChargeBoxId,
-                                                                    String             Location,
-                                                                    DateTime?          StartTime         = null,
-                                                                    DateTime?          StopTime          = null,
-                                                                    Byte?              Retries           = null,
-                                                                    TimeSpan?          RetryInterval     = null,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.GetDiagnosticsResponse>
 
-                                                                    EventTracking_Id?  EventTrackingId   = null)
+            GetDiagnostics(ChargeBox_Id        ChargeBoxId,
+                           String              Location,
+                           DateTime?           StartTime           = null,
+                           DateTime?           StopTime            = null,
+                           Byte?               Retries             = null,
+                           TimeSpan?           RetryInterval       = null,
+
+                           DateTime?           RequestTimestamp    = null,
+                           TimeSpan?           RequestTimeout      = null,
+                           EventTracking_Id?   EventTrackingId     = null,
+                           CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new GetDiagnosticsRequest(
-                              ChargeBoxId,
-                              Location,
-                              StartTime,
-                              StopTime,
-                              Retries,
-                              RetryInterval,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetDiagnosticsRequest(
+                                 ChargeBoxId,
+                                 Location,
+                                 StartTime,
+                                 StopTime,
+                                 Retries,
+                                 RetryInterval,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnGetDiagnosticsRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -4094,29 +4231,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="ConnectorId">Optional connector identification whenever the message applies to a specific connector.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.TriggerMessageResponse> TriggerMessage(ChargeBox_Id       ChargeBoxId,
-                                                                    MessageTriggers    RequestedMessage,
-                                                                    Connector_Id?      ConnectorId       = null,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.TriggerMessageResponse>
 
-                                                                    EventTracking_Id?  EventTrackingId   = null)
+            TriggerMessage(ChargeBox_Id        ChargeBoxId,
+                           MessageTriggers     RequestedMessage,
+                           Connector_Id?       ConnectorId         = null,
+
+                           DateTime?           RequestTimestamp    = null,
+                           TimeSpan?           RequestTimeout      = null,
+                           EventTracking_Id?   EventTrackingId     = null,
+                           CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new TriggerMessageRequest(
-                              ChargeBoxId,
-                              RequestedMessage,
-                              ConnectorId,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new TriggerMessageRequest(
+                                 ChargeBoxId,
+                                 RequestedMessage,
+                                 ConnectorId,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnTriggerMessageRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -4185,33 +4335,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.UpdateFirmwareResponse> UpdateFirmware(ChargeBox_Id       ChargeBoxId,
-                                                                    String             Location,
-                                                                    DateTime           RetrieveDate,
-                                                                    Byte?              Retries           = null,
-                                                                    TimeSpan?          RetryInterval     = null,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.UpdateFirmwareResponse>
 
-                                                                    EventTracking_Id?  EventTrackingId   = null)
+            UpdateFirmware(ChargeBox_Id        ChargeBoxId,
+                           String              Location,
+                           DateTime            RetrieveDate,
+                           Byte?               Retries             = null,
+                           TimeSpan?           RetryInterval       = null,
+
+                           DateTime?           RequestTimestamp    = null,
+                           TimeSpan?           RequestTimeout      = null,
+                           EventTracking_Id?   EventTrackingId     = null,
+                           CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new UpdateFirmwareRequest(
-                              ChargeBoxId,
-                              Location,
-                              RetrieveDate,
-                              Retries,
-                              RetryInterval,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new UpdateFirmwareRequest(
+                                 ChargeBoxId,
+                                 Location,
+                                 RetrieveDate,
+                                 Retries,
+                                 RetryInterval,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnUpdateFirmwareRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -4282,35 +4445,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="IdTag">The identifier for which the charge point has to reserve a connector.</param>
         /// <param name="ParentIdTag">An optional ParentIdTag.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.ReserveNowResponse> ReserveNow(ChargeBox_Id       ChargeBoxId,
-                                                            Connector_Id       ConnectorId,
-                                                            Reservation_Id     ReservationId,
-                                                            DateTime           ExpiryDate,
-                                                            IdToken            IdTag,
-                                                            IdToken?           ParentIdTag       = null,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.ReserveNowResponse>
 
-                                                            EventTracking_Id?  EventTrackingId   = null)
+            ReserveNow(ChargeBox_Id        ChargeBoxId,
+                       Connector_Id        ConnectorId,
+                       Reservation_Id      ReservationId,
+                       DateTime            ExpiryDate,
+                       IdToken             IdTag,
+                       IdToken?            ParentIdTag         = null,
+
+                       DateTime?           RequestTimestamp    = null,
+                       TimeSpan?           RequestTimeout      = null,
+                       EventTracking_Id?   EventTrackingId     = null,
+                       CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new ReserveNowRequest(
-                              ChargeBoxId,
-                              ConnectorId,
-                              ReservationId,
-                              ExpiryDate,
-                              IdTag,
-                              ParentIdTag,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new ReserveNowRequest(
+                                 ChargeBoxId,
+                                 ConnectorId,
+                                 ReservationId,
+                                 ExpiryDate,
+                                 IdTag,
+                                 ParentIdTag,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnReserveNowRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -4376,27 +4552,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.CancelReservationResponse> CancelReservation(ChargeBox_Id       ChargeBoxId,
-                                                                          Reservation_Id     ReservationId,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.CancelReservationResponse>
 
-                                                                          EventTracking_Id?  EventTrackingId   = null)
+            CancelReservation(ChargeBox_Id        ChargeBoxId,
+                              Reservation_Id      ReservationId,
+
+                              DateTime?           RequestTimestamp    = null,
+                              TimeSpan?           RequestTimeout      = null,
+                              EventTracking_Id?   EventTrackingId     = null,
+                              CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new CancelReservationRequest(
-                              ChargeBoxId,
-                              ReservationId,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new CancelReservationRequest(
+                                 ChargeBoxId,
+                                 ReservationId,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnCancelReservationRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -4464,31 +4653,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ConnectorId">An optional connector identification on which the charging transaction should be started (SHALL be > 0).</param>
         /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.RemoteStartTransactionResponse> RemoteStartTransaction(ChargeBox_Id       ChargeBoxId,
-                                                                                    IdToken            IdTag,
-                                                                                    Connector_Id?      ConnectorId       = null,
-                                                                                    ChargingProfile?   ChargingProfile   = null,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.RemoteStartTransactionResponse>
 
-                                                                                    EventTracking_Id?  EventTrackingId   = null)
+            RemoteStartTransaction(ChargeBox_Id        ChargeBoxId,
+                                   IdToken             IdTag,
+                                   Connector_Id?       ConnectorId         = null,
+                                   ChargingProfile?    ChargingProfile     = null,
+
+                                   DateTime?           RequestTimestamp    = null,
+                                   TimeSpan?           RequestTimeout      = null,
+                                   EventTracking_Id?   EventTrackingId     = null,
+                                   CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new RemoteStartTransactionRequest(
-                              ChargeBoxId,
-                              IdTag,
-                              ConnectorId,
-                              ChargingProfile,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new RemoteStartTransactionRequest(
+                                 ChargeBoxId,
+                                 IdTag,
+                                 ConnectorId,
+                                 ChargingProfile,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnRemoteStartTransactionRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -4554,27 +4756,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="TransactionId">The identification of the transaction which the charge point is requested to stop.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.RemoteStopTransactionResponse> RemoteStopTransaction(ChargeBox_Id       ChargeBoxId,
-                                                                                  Transaction_Id     TransactionId,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.RemoteStopTransactionResponse>
 
-                                                                                  EventTracking_Id?  EventTrackingId   = null)
+            RemoteStopTransaction(ChargeBox_Id        ChargeBoxId,
+                                  Transaction_Id      TransactionId,
+
+                                  DateTime?           RequestTimestamp    = null,
+                                  TimeSpan?           RequestTimeout      = null,
+                                  EventTracking_Id?   EventTrackingId     = null,
+                                  CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new RemoteStopTransactionRequest(
-                              ChargeBoxId,
-                              TransactionId,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new RemoteStopTransactionRequest(
+                                 ChargeBoxId,
+                                 TransactionId,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnRemoteStopTransactionRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -4641,29 +4856,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ConnectorId">The connector to which the charging profile applies. If connectorId = 0, the message contains an overall limit for the charge point.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.SetChargingProfileResponse> SetChargingProfile(ChargeBox_Id       ChargeBoxId,
-                                                                            Connector_Id       ConnectorId,
-                                                                            ChargingProfile    ChargingProfile,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.SetChargingProfileResponse>
 
-                                                                            EventTracking_Id?  EventTrackingId   = null)
+            SetChargingProfile(ChargeBox_Id        ChargeBoxId,
+                               Connector_Id        ConnectorId,
+                               ChargingProfile     ChargingProfile,
+
+                               DateTime?           RequestTimestamp    = null,
+                               TimeSpan?           RequestTimeout      = null,
+                               EventTracking_Id?   EventTrackingId     = null,
+                               CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new SetChargingProfileRequest(
-                              ChargeBoxId,
-                              ConnectorId,
-                              ChargingProfile,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new SetChargingProfileRequest(
+                                 ChargeBoxId,
+                                 ConnectorId,
+                                 ChargingProfile,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnSetChargingProfileRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -4732,33 +4960,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargingProfilePurpose">The optional purpose of the charging profiles that will be cleared, if they meet the other criteria in the request.</param>
         /// <param name="StackLevel">The optional stack level for which charging profiles will be cleared, if they meet the other criteria in the request.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.ClearChargingProfileResponse> ClearChargingProfile(ChargeBox_Id              ChargeBoxId,
-                                                                                ChargingProfile_Id?       ChargingProfileId        = null,
-                                                                                Connector_Id?             ConnectorId              = null,
-                                                                                ChargingProfilePurposes?  ChargingProfilePurpose   = null,
-                                                                                UInt32?                   StackLevel               = null,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.ClearChargingProfileResponse>
 
-                                                                                EventTracking_Id?         EventTrackingId          = null)
+            ClearChargingProfile(ChargeBox_Id              ChargeBoxId,
+                                 ChargingProfile_Id?       ChargingProfileId        = null,
+                                 Connector_Id?             ConnectorId              = null,
+                                 ChargingProfilePurposes?  ChargingProfilePurpose   = null,
+                                 UInt32?                   StackLevel               = null,
+
+                                 DateTime?                 RequestTimestamp         = null,
+                                 TimeSpan?                 RequestTimeout           = null,
+                                 EventTracking_Id?         EventTrackingId          = null,
+                                 CancellationToken?        CancellationToken        = null)
+
         {
 
-            var request = new ClearChargingProfileRequest(
-                              ChargeBoxId,
-                              ChargingProfileId,
-                              ConnectorId,
-                              ChargingProfilePurpose,
-                              StackLevel,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new ClearChargingProfileRequest(
+                                 ChargeBoxId,
+                                 ChargingProfileId,
+                                 ConnectorId,
+                                 ChargingProfilePurpose,
+                                 StackLevel,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnClearChargingProfileRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -4826,31 +5067,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Duration">The length of requested schedule.</param>
         /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.GetCompositeScheduleResponse> GetCompositeSchedule(ChargeBox_Id        ChargeBoxId,
-                                                                                Connector_Id        ConnectorId,
-                                                                                TimeSpan            Duration,
-                                                                                ChargingRateUnits?  ChargingRateUnit   = null,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.GetCompositeScheduleResponse>
 
-                                                                                EventTracking_Id?   EventTrackingId    = null)
+            GetCompositeSchedule(ChargeBox_Id        ChargeBoxId,
+                                 Connector_Id        ConnectorId,
+                                 TimeSpan            Duration,
+                                 ChargingRateUnits?  ChargingRateUnit    = null,
+
+                                 DateTime?           RequestTimestamp    = null,
+                                 TimeSpan?           RequestTimeout      = null,
+                                 EventTracking_Id?   EventTrackingId     = null,
+                                 CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new GetCompositeScheduleRequest(
-                              ChargeBoxId,
-                              ConnectorId,
-                              Duration,
-                              ChargingRateUnit,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetCompositeScheduleRequest(
+                                 ChargeBoxId,
+                                 ConnectorId,
+                                 Duration,
+                                 ChargingRateUnit,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnGetCompositeScheduleRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -4916,27 +5170,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.UnlockConnectorResponse> UnlockConnector(ChargeBox_Id       ChargeBoxId,
-                                                                      Connector_Id       ConnectorId,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.UnlockConnectorResponse>
 
-                                                                      EventTracking_Id?  EventTrackingId   = null)
+            UnlockConnector(ChargeBox_Id        ChargeBoxId,
+                            Connector_Id        ConnectorId,
+
+                            DateTime?           RequestTimestamp    = null,
+                            TimeSpan?           RequestTimeout      = null,
+                            EventTracking_Id?   EventTrackingId     = null,
+                            CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new UnlockConnectorRequest(
-                              ChargeBoxId,
-                              ConnectorId,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new UnlockConnectorRequest(
+                                 ChargeBoxId,
+                                 ConnectorId,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnUnlockConnectorRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -5001,24 +5268,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Return the local white list of the given charge box.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.GetLocalListVersionResponse> GetLocalListVersion(ChargeBox_Id       ChargeBoxId,
-                                                                              EventTracking_Id?  EventTrackingId   = null)
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.GetLocalListVersionResponse>
+
+            GetLocalListVersion(ChargeBox_Id        ChargeBoxId,
+
+                                DateTime?           RequestTimestamp    = null,
+                                TimeSpan?           RequestTimeout      = null,
+                                EventTracking_Id?   EventTrackingId     = null,
+                                CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new GetLocalListVersionRequest(
-                              ChargeBoxId,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetLocalListVersionRequest(
+                                 ChargeBoxId,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnGetLocalListVersionRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -5086,31 +5368,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="UpdateType">The type of update (full or differential).</param>
         /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charge point. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
         /// 
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.SendLocalListResponse> SendLocalList(ChargeBox_Id                     ChargeBoxId,
-                                                                  UInt64                           ListVersion,
-                                                                  UpdateTypes                      UpdateType,
-                                                                  IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.SendLocalListResponse>
 
-                                                                  EventTracking_Id?                EventTrackingId          = null)
+            SendLocalList(ChargeBox_Id                     ChargeBoxId,
+                          UInt64                           ListVersion,
+                          UpdateTypes                      UpdateType,
+                          IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
+
+                          DateTime?                        RequestTimestamp         = null,
+                          TimeSpan?                        RequestTimeout           = null,
+                          EventTracking_Id?                EventTrackingId          = null,
+                          CancellationToken?               CancellationToken        = null)
+
         {
 
-            var request = new SendLocalListRequest(
-                              ChargeBoxId,
-                              ListVersion,
-                              UpdateType,
-                              LocalAuthorizationList,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new SendLocalListRequest(
+                                 ChargeBoxId,
+                                 ListVersion,
+                                 UpdateType,
+                                 LocalAuthorizationList,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnSendLocalListRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {
@@ -5174,24 +5469,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Clear the local white liste cache of the given charge box.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        public async Task<CP.ClearCacheResponse> ClearCache(ChargeBox_Id       ChargeBoxId,
-                                                            EventTracking_Id?  EventTrackingId   = null)
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.ClearCacheResponse>
+
+            ClearCache(ChargeBox_Id        ChargeBoxId,
+
+                       DateTime?           RequestTimestamp    = null,
+                       TimeSpan?           RequestTimeout      = null,
+                       EventTracking_Id?   EventTrackingId     = null,
+                       CancellationToken?  CancellationToken   = null)
+
         {
 
-            var request = new ClearCacheRequest(
-                              ChargeBoxId,
+            #region Create request
 
-                              Request_Id.NewRandom(),
-                              Timestamp.Now,
-                              TimeSpan.FromSeconds(30),
-                              EventTrackingId,
-                              null
-                          );
+            var startTime  = Timestamp.Now;
+
+            var request    = new ClearCacheRequest(
+                                 ChargeBoxId,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
 
             #region Send OnClearCacheRequest event
-
-            var startTime = Timestamp.Now;
 
             try
             {

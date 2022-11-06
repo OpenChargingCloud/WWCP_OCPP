@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             public DateTime                       Timeout             { get; }
 
             public JObject?                       Response            { get; set; }
-            public OCPP_WebSocket_ErrorCodes?     ErrorCode           { get; set; }
+            public ResultCodes?                   ErrorCode           { get; set; }
             public String?                        ErrorDescription    { get; set; }
             public JObject?                       ErrorDetails        { get; set; }
 
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     DateTime                       Timeout,
 
                                     JObject?                       Response           = null,
-                                    OCPP_WebSocket_ErrorCodes?     ErrorCode          = null,
+                                    ResultCodes?                   ErrorCode          = null,
                                     String?                        ErrorDescription   = null,
                                     JObject?                       ErrorDetails       = null)
             {
@@ -549,12 +549,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event OnIncomingDataTransferRequestDelegate?   OnDataTransferRequest;
+        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnIncomingDataTransferResponseDelegate?  OnDataTransferResponse;
+        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
         #endregion
 
@@ -900,6 +900,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             : base(IPAddress,
                    TCPPort ?? IPPort.Parse(8000),
                    HTTPServerName,
+                   null,
+                   null,
+                   null,
 
                    DisableWebSocketPings,
                    WebSocketPingEvery,
@@ -921,487 +924,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (AutoStart)
                 Start();
 
-        }
-
-        event OnCancelReservationRequestDelegate? ICentralSystemClient.OnCancelReservationRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnCancelReservationResponseDelegate? ICentralSystemClient.OnCancelReservationResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnChangeAvailabilityRequestDelegate? ICentralSystemClient.OnChangeAvailabilityRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnChangeAvailabilityResponseDelegate? ICentralSystemClient.OnChangeAvailabilityResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnChangeConfigurationRequestDelegate? ICentralSystemClient.OnChangeConfigurationRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnChangeConfigurationResponseDelegate? ICentralSystemClient.OnChangeConfigurationResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnClearCacheRequestDelegate? ICentralSystemClient.OnClearCacheRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnClearCacheResponseDelegate? ICentralSystemClient.OnClearCacheResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnClearChargingProfileRequestDelegate? ICentralSystemClient.OnClearChargingProfileRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnClearChargingProfileResponseDelegate? ICentralSystemClient.OnClearChargingProfileResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnDataTransferRequestDelegate? ICentralSystemClient.OnDataTransferRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnDataTransferResponseDelegate? ICentralSystemClient.OnDataTransferResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnGetCompositeScheduleRequestDelegate? ICentralSystemClient.OnGetCompositeScheduleRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnGetCompositeScheduleResponseDelegate? ICentralSystemClient.OnGetCompositeScheduleResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnGetConfigurationRequestDelegate? ICentralSystemClient.OnGetConfigurationRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnGetConfigurationResponseDelegate? ICentralSystemClient.OnGetConfigurationResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnGetDiagnosticsRequestDelegate? ICentralSystemClient.OnGetDiagnosticsRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnGetDiagnosticsResponseDelegate? ICentralSystemClient.OnGetDiagnosticsResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnGetLocalListVersionRequestDelegate? ICentralSystemClient.OnGetLocalListVersionRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnGetLocalListVersionResponseDelegate? ICentralSystemClient.OnGetLocalListVersionResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnRemoteStartTransactionRequestDelegate? ICentralSystemClient.OnRemoteStartTransactionRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnRemoteStartTransactionResponseDelegate? ICentralSystemClient.OnRemoteStartTransactionResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnRemoteStopTransactionRequestDelegate? ICentralSystemClient.OnRemoteStopTransactionRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnRemoteStopTransactionResponseDelegate? ICentralSystemClient.OnRemoteStopTransactionResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnReserveNowRequestDelegate? ICentralSystemClient.OnReserveNowRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnReserveNowResponseDelegate? ICentralSystemClient.OnReserveNowResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnResetResponseDelegate? ICentralSystemClient.OnResetResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnSendLocalListRequestDelegate? ICentralSystemClient.OnSendLocalListRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnSendLocalListResponseDelegate? ICentralSystemClient.OnSendLocalListResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnSetChargingProfileRequestDelegate? ICentralSystemClient.OnSetChargingProfileRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnSetChargingProfileResponseDelegate? ICentralSystemClient.OnSetChargingProfileResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnTriggerMessageRequestDelegate? ICentralSystemClient.OnTriggerMessageRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnTriggerMessageResponseDelegate? ICentralSystemClient.OnTriggerMessageResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnUnlockConnectorRequestDelegate? ICentralSystemClient.OnUnlockConnectorRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnUnlockConnectorResponseDelegate? ICentralSystemClient.OnUnlockConnectorResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnUpdateFirmwareRequestDelegate? ICentralSystemClient.OnUpdateFirmwareRequest
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event OnUpdateFirmwareResponseDelegate? ICentralSystemClient.OnUpdateFirmwareResponse
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
         }
 
         #endregion
@@ -1467,8 +989,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (Connection.Request.Authorization is HTTPBasicAuthentication basicAuthentication)
                 {
 
-                    if (ChargingBoxLogins.TryGetValue(basicAuthentication.Username, out String? Password) &&
-                        basicAuthentication.Password == Password)
+                    if (ChargingBoxLogins.TryGetValue(basicAuthentication.Username, out var password) &&
+                        basicAuthentication.Password == password)
                     {
                         DebugX.Log(nameof(CentralSystemWSServer), " connection from " + Connection.RemoteSocket + " using authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
                         return null;
@@ -1510,6 +1032,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 ChargeBox_Id.TryParse(Connection.Request.Path.ToString().Substring(Connection.Request.Path.ToString().LastIndexOf("/") + 1), out var chargeBoxId))
             {
 
+                // Add the chargeBoxId to the web socket connection
                 Connection.AddCustomData("chargeBoxId", chargeBoxId);
 
                 lock (connectedChargingBoxes)
@@ -1525,6 +1048,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
+            #region Send OnNewCentralSystemWSConnection event
+
             var OnNewCentralSystemWSConnectionLocal = OnNewCentralSystemWSConnection;
             if (OnNewCentralSystemWSConnectionLocal is not null)
             {
@@ -1536,6 +1061,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        CancellationToken);
 
             }
+
+            #endregion
 
             return Task.CompletedTask;
 
@@ -1583,13 +1110,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                var JSON = JArray.Parse(OCPPTextMessage);
+                var json = JArray.Parse(OCPPTextMessage);
 
-                File.AppendAllText(LogfileName,
-                                   String.Concat("Timestamp: ",        Timestamp.Now.ToIso8601(),                                                    Environment.NewLine,
-                                                 "ChargeBoxId: ",      Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId")?.ToString() ?? "-",  Environment.NewLine,
-                                                 "Message received: ", JSON.ToString(Newtonsoft.Json.Formatting.Indented),                           Environment.NewLine,
-                                                 "--------------------------------------------------------------------------------------------",     Environment.NewLine));
+                //File.AppendAllText(LogfileName,
+                //                   String.Concat("Timestamp: ",        Timestamp.Now.ToIso8601(),                                                    Environment.NewLine,
+                //                                 "ChargeBoxId: ",      Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId")?.ToString() ?? "-",  Environment.NewLine,
+                //                                 "Message received: ", JSON.ToString(Newtonsoft.Json.Formatting.Indented),                           Environment.NewLine,
+                //                                 "--------------------------------------------------------------------------------------------",     Environment.NewLine));
 
                 #region MessageType 2: CALL        (A request from a charge point)
 
@@ -1603,25 +1130,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 //    }
                 // ]
 
-                if (JSON.Count             == 4                   &&
-                    JSON[0].Type           == JTokenType.Integer  &&
-                    JSON[0].Value<Byte>()  == 2                   &&
-                    JSON[1].Type == JTokenType.String             &&
-                    JSON[2].Type == JTokenType.String             &&
-                    JSON[3].Type == JTokenType.Object)
+                if (json.Count             == 4                   &&
+                    json[0].Type           == JTokenType.Integer  &&
+                    json[0].Value<Byte>()  == 2                   &&
+                    json[1].Type == JTokenType.String             &&
+                    json[2].Type == JTokenType.String             &&
+                    json[3].Type == JTokenType.Object)
                 {
 
                     #region Initial checks
 
                     var chargeBoxId  = Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId");
-                    var requestId    = Request_Id.TryParse(JSON[1]?.Value<String>() ?? "");
-                    var action       = JSON[2]?.Value<String>()?.Trim();
-                    var requestData  = JSON[3]?.Value<JObject>();
+                    var requestId    = Request_Id.TryParse(json[1]?.Value<String>() ?? "");
+                    var action       = json[2]?.Value<String>()?.Trim();
+                    var requestData  = json[3]?.Value<JObject>();
 
                     if (!chargeBoxId.HasValue)
                         OCPPErrorResponse  = new OCPP_WebSocket_ErrorMessage(
                                                  requestId ?? Request_Id.Parse("0"),
-                                                 OCPP_WebSocket_ErrorCodes.ProtocolError,
+                                                 ResultCodes.ProtocolError,
                                                  "The given 'charge box identity' must not be null or empty!",
                                                  new JObject(
                                                      new JProperty("request", OCPPTextMessage)
@@ -1631,7 +1158,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     else if (!requestId.HasValue)
                         OCPPErrorResponse  = new OCPP_WebSocket_ErrorMessage(
                                                  Request_Id.Parse("0"),
-                                                 OCPP_WebSocket_ErrorCodes.ProtocolError,
+                                                 ResultCodes.ProtocolError,
                                                  "The given 'request identification' must not be null or empty!",
                                                  new JObject(
                                                      new JProperty("request", OCPPTextMessage)
@@ -1641,7 +1168,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     else if (action is null || action.IsNullOrEmpty())
                         OCPPErrorResponse  = new OCPP_WebSocket_ErrorMessage(
                                                  requestId.Value,
-                                                 OCPP_WebSocket_ErrorCodes.ProtocolError,
+                                                 ResultCodes.ProtocolError,
                                                  "The given 'action' must not be null or empty!",
                                                  new JObject(
                                                      new JProperty("request", OCPPTextMessage)
@@ -1651,7 +1178,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     else if (requestData is null)
                         OCPPErrorResponse  = new OCPP_WebSocket_ErrorMessage(
                                                  requestId.Value,
-                                                 OCPP_WebSocket_ErrorCodes.ProtocolError,
+                                                 ResultCodes.ProtocolError,
                                                  "The given request JSON payload must not be null!",
                                                  new JObject(
                                                      new JProperty("request", OCPPTextMessage)
@@ -1678,7 +1205,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnBootNotificationWSRequest?.Invoke(Timestamp.Now,
                                                                             this,
-                                                                            JSON);
+                                                                            json);
 
                                     }
                                     catch (Exception e)
@@ -1767,7 +1294,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                    ResultCodes.FormationViolation,
                                                                     "The given 'BootNotification' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -1781,7 +1308,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                ResultCodes.FormationViolation,
                                                                 "Processing the given 'BootNotification' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -1799,7 +1326,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnBootNotificationWSResponse?.Invoke(Timestamp.Now,
                                                                              this,
-                                                                             JSON,
+                                                                             json,
                                                                              OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
 
                                     }
@@ -1827,7 +1354,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnHeartbeatWSRequest?.Invoke(Timestamp.Now,
                                                                      this,
-                                                                     JSON);
+                                                                     json);
 
                                     }
                                     catch (Exception e)
@@ -1916,7 +1443,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                    ResultCodes.FormationViolation,
                                                                     "The given 'Heartbeat' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -1930,7 +1457,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                ResultCodes.FormationViolation,
                                                                 "Processing the given 'Heartbeat' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -1948,7 +1475,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnHeartbeatWSResponse?.Invoke(Timestamp.Now,
                                                                       this,
-                                                                      JSON,
+                                                                      json,
                                                                       OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
 
                                     }
@@ -1977,7 +1504,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnAuthorizeWSRequest?.Invoke(Timestamp.Now,
                                                                      this,
-                                                                     JSON);
+                                                                     json);
 
                                     }
                                     catch (Exception e)
@@ -2066,7 +1593,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                    ResultCodes.FormationViolation,
                                                                     "The given 'Authorize' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -2080,7 +1607,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                ResultCodes.FormationViolation,
                                                                 "Processing the given 'Authorize' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -2098,7 +1625,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnAuthorizeWSResponse?.Invoke(Timestamp.Now,
                                                                       this,
-                                                                      JSON,
+                                                                      json,
                                                                       OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
 
                                     }
@@ -2126,7 +1653,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnStartTransactionWSRequest?.Invoke(Timestamp.Now,
                                                                             this,
-                                                                            JSON);
+                                                                            json);
 
                                     }
                                     catch (Exception e)
@@ -2215,7 +1742,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                    ResultCodes.FormationViolation,
                                                                     "The given 'StartTransaction' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -2229,7 +1756,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                ResultCodes.FormationViolation,
                                                                 "Processing the given 'StartTransaction' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -2246,7 +1773,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnStartTransactionWSResponse?.Invoke(Timestamp.Now,
                                                                              this,
-                                                                             JSON,
+                                                                             json,
                                                                              OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
 
                                     }
@@ -2274,7 +1801,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnStatusNotificationWSRequest?.Invoke(Timestamp.Now,
                                                                               this,
-                                                                              JSON);
+                                                                              json);
 
                                     }
                                     catch (Exception e)
@@ -2363,7 +1890,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                    ResultCodes.FormationViolation,
                                                                     "The given 'StatusNotification' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -2377,7 +1904,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                ResultCodes.FormationViolation,
                                                                 "Processing the given 'StatusNotification' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -2395,7 +1922,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnStatusNotificationWSResponse?.Invoke(Timestamp.Now,
                                                                                this,
-                                                                               JSON,
+                                                                               json,
                                                                                OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
 
                                     }
@@ -2423,7 +1950,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnMeterValuesWSRequest?.Invoke(Timestamp.Now,
                                                                        this,
-                                                                       JSON);
+                                                                       json);
 
                                     }
                                     catch (Exception e)
@@ -2512,7 +2039,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                    ResultCodes.FormationViolation,
                                                                     "The given 'MeterValues' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -2526,7 +2053,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                ResultCodes.FormationViolation,
                                                                 "Processing the given 'MeterValues' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",     OCPPTextMessage),
@@ -2544,7 +2071,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnMeterValuesWSResponse?.Invoke(Timestamp.Now,
                                                                         this,
-                                                                        JSON,
+                                                                        json,
                                                                         OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
 
                                     }
@@ -2572,7 +2099,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnStopTransactionWSRequest?.Invoke(Timestamp.Now,
                                                                            this,
-                                                                           JSON);
+                                                                           json);
 
                                     }
                                     catch (Exception e)
@@ -2661,7 +2188,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                    ResultCodes.FormationViolation,
                                                                     "The given 'StopTransaction' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -2675,7 +2202,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                ResultCodes.FormationViolation,
                                                                 "Processing the given 'StopTransaction' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -2693,7 +2220,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnStopTransactionWSResponse?.Invoke(Timestamp.Now,
                                                                             this,
-                                                                            JSON,
+                                                                            json,
                                                                             OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
 
                                     }
@@ -2710,7 +2237,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                             #endregion
 
 
-                            #region IncomingDataTransfer
+                            #region DataTransfer
 
                             case "DataTransfer":
                                 {
@@ -2722,7 +2249,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnIncomingDataTransferWSRequest?.Invoke(Timestamp.Now,
                                                                                 this,
-                                                                                JSON);
+                                                                                json);
 
                                     }
                                     catch (Exception e)
@@ -2811,7 +2338,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                    ResultCodes.FormationViolation,
                                                                     "The given 'IncomingDataTransfer' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -2825,7 +2352,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                ResultCodes.FormationViolation,
                                                                 "Processing the given 'IncomingDataTransfer' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -2843,7 +2370,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnIncomingDataTransferWSResponse?.Invoke(Timestamp.Now,
                                                                                  this,
-                                                                                 JSON,
+                                                                                 json,
                                                                                  OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
 
                                     }
@@ -2871,7 +2398,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnDiagnosticsStatusNotificationWSRequest?.Invoke(Timestamp.Now,
                                                                                          this,
-                                                                                         JSON);
+                                                                                         json);
 
                                     }
                                     catch (Exception e)
@@ -2960,7 +2487,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                    ResultCodes.FormationViolation,
                                                                     "The given 'DiagnosticsStatusNotification' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -2974,7 +2501,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                ResultCodes.FormationViolation,
                                                                 "Processing the given 'DiagnosticsStatusNotification' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -2992,7 +2519,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnDiagnosticsStatusNotificationWSResponse?.Invoke(Timestamp.Now,
                                                                                           this,
-                                                                                          JSON,
+                                                                                          json,
                                                                                           OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
 
                                     }
@@ -3020,7 +2547,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnFirmwareStatusNotificationWSRequest?.Invoke(Timestamp.Now,
                                                                                       this,
-                                                                                      JSON);
+                                                                                      json);
 
                                     }
                                     catch (Exception e)
@@ -3109,7 +2636,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                    ResultCodes.FormationViolation,
                                                                     "The given 'FirmwareStatusNotification' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -3123,7 +2650,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                OCPP_WebSocket_ErrorCodes.FormationViolation,
+                                                                ResultCodes.FormationViolation,
                                                                 "Processing the given 'FirmwareStatusNotification' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -3141,7 +2668,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OnFirmwareStatusNotificationWSResponse?.Invoke(Timestamp.Now,
                                                                                        this,
-                                                                                       JSON,
+                                                                                       json,
                                                                                        OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
 
                                     }
@@ -3190,20 +2717,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 //    }
                 // ]
 
-                else if (JSON.Count             == 3         &&
-                         JSON[0].Type == JTokenType.Integer  &&
-                         JSON[0].Value<Byte>()  == 3         &&
-                         JSON[1].Type == JTokenType.String   &&
-                         JSON[2].Type == JTokenType.Object)
+                else if (json.Count             == 3         &&
+                         json[0].Type == JTokenType.Integer  &&
+                         json[0].Value<Byte>()  == 3         &&
+                         json[1].Type == JTokenType.String   &&
+                         json[2].Type == JTokenType.Object)
                 {
+
                     lock (requests)
                     {
-                        if (Request_Id.TryParse(JSON[1]?.Value<String>() ?? "", out var requestId) &&
+                        if (Request_Id.TryParse(json[1]?.Value<String>() ?? "", out var requestId) &&
                             requests.TryGetValue(requestId, out var request))
                         {
-                            request.Response = JSON[2] as JObject;
+                            request.Response = json[2] as JObject;
                         }
                     }
+
+                    // No response to the charge point!
+
                 }
 
                 #endregion
@@ -3233,36 +2764,35 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 // TypeConstraintViolation       Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12)
                 // GenericError                  Any other error not covered by the previous ones
 
-                else if (JSON.Count             == 5                   &&
-                         JSON[0].Type           == JTokenType.Integer  &&
-                         JSON[0].Value<Byte>()  == 4                   &&
-                         JSON[1].Type == JTokenType.String             &&
-                         JSON[2].Type == JTokenType.String             &&
-                         JSON[3].Type == JTokenType.String             &&
-                         JSON[4].Type == JTokenType.Object)
+                else if (json.Count             == 5                   &&
+                         json[0].Type           == JTokenType.Integer  &&
+                         json[0].Value<Byte>()  == 4                   &&
+                         json[1].Type == JTokenType.String             &&
+                         json[2].Type == JTokenType.String             &&
+                         json[3].Type == JTokenType.String             &&
+                         json[4].Type == JTokenType.Object)
                 {
 
                     lock (requests)
                     {
-                        if (Request_Id.TryParse(JSON[1]?.Value<String>() ?? "", out var requestId) &&
+                        if (Request_Id.TryParse(json[1]?.Value<String>() ?? "", out var requestId) &&
                             requests.TryGetValue(requestId, out var request))
                         {
 
                             // ToDo: Refactor 
-                            if (OCPP_WebSocket_ErrorCodes.TryParse(JSON[2]?.Value<String>() ?? "", out var errorCode))
+                            if (ResultCodes.TryParse(json[2]?.Value<String>() ?? "", out var errorCode))
                                 request.ErrorCode = errorCode;
                             else
-                                request.ErrorCode = OCPP_WebSocket_ErrorCodes.GenericError;
+                                request.ErrorCode = ResultCodes.GenericError;
 
                             request.Response          = null;
-                            request.ErrorDescription  = JSON[3]?.Value<String>();
-                            request.ErrorDetails      = JSON[4] as JObject;
+                            request.ErrorDescription  = json[3]?.Value<String>();
+                            request.ErrorDetails      = json[4] as JObject;
 
                         }
                     }
 
-                    //// No response to the charge point!
-                    //return null;
+                    // No response to the charge point!
 
                 }
 
@@ -3382,7 +2912,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
                     if (requests.TryGetValue(RequestId, out var sendRequestState) && sendRequestState is not null)
                     {
-                        sendRequestState.ErrorCode = OCPP_WebSocket_ErrorCodes.Timeout;
+                        sendRequestState.ErrorCode = ResultCodes.Timeout;
                         requests.Remove(RequestId);
                         return sendRequestState;
                     }
@@ -3400,7 +2930,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
                     if (requests.TryGetValue(RequestId, out var sendRequestState) && sendRequestState is not null)
                     {
-                        sendRequestState.ErrorCode = OCPP_WebSocket_ErrorCodes.Timeout;
+                        sendRequestState.ErrorCode = ResultCodes.Timeout;
                         requests.Remove(RequestId);
                         return sendRequestState;
                     }
@@ -3423,7 +2953,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                        ),
                        now,
                        new JObject(),
-                       OCPP_WebSocket_ErrorCodes.InternalError
+                       ResultCodes.InternalError
                    );
 
         }
@@ -3510,38 +3040,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<ResetResponse> Reset(ResetRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomResetRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnResetRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnResetRequest?.Invoke(startTime,
+                                       this,
+                                       Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnResetRequest));
+            }
+
+            #endregion
+
+
+            ResetResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomResetRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (ResetResponse.TryParse(Request,
-                                           result.Response,
+                                           sendRequestState.Response,
                                            out var resetResponse,
                                            out var errorResponse))
                 {
-                    return resetResponse!;
+                    response = resetResponse!;
                 }
 
-                return new ResetResponse(Request,
-                                         Result.Unknown());
+                else
+                    response = new ResetResponse(Request,
+                                                 Result.Format(errorResponse));
 
             }
+            else
+                response = new ResetResponse(Request,
+                                             Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnResetResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new ResetResponse(Request,
-                                         Result.Unknown(result.ErrorDescription));
+                OnResetResponse?.Invoke(endTime,
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnResetResponse));
+            }
 
-            return new ResetResponse(Request,
-                                     Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -3552,38 +3120,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomChangeAvailabilityRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnChangeAvailabilityRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnChangeAvailabilityRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnChangeAvailabilityRequest));
+            }
+
+            #endregion
+
+
+            ChangeAvailabilityResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomChangeAvailabilityRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (ChangeAvailabilityResponse.TryParse(Request,
-                                                        result.Response,
+                                                        sendRequestState.Response,
                                                         out var changeAvailabilityResponse,
                                                         out var errorResponse))
                 {
-                    return changeAvailabilityResponse!;
+                    response = changeAvailabilityResponse!;
                 }
 
-                return new ChangeAvailabilityResponse(Request,
-                                                      Result.Unknown());
+                else
+                    response = new ChangeAvailabilityResponse(Request,
+                                                              Result.Format(errorResponse));
 
             }
+            else
+                response = new ChangeAvailabilityResponse(Request,
+                                                          Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnChangeAvailabilityResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new ChangeAvailabilityResponse(Request,
-                                                      Result.Unknown(result.ErrorDescription));
+                OnChangeAvailabilityResponse?.Invoke(endTime,
+                                                     this,
+                                                     Request,
+                                                     response,
+                                                     endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnChangeAvailabilityResponse));
+            }
 
-            return new ChangeAvailabilityResponse(Request,
-                                                  Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -3594,38 +3200,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<GetConfigurationResponse> GetConfiguration(GetConfigurationRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomGetConfigurationRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnGetConfigurationRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetConfigurationRequest?.Invoke(startTime,
+                                                  this,
+                                                  Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetConfigurationRequest));
+            }
+
+            #endregion
+
+
+            GetConfigurationResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomGetConfigurationRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (GetConfigurationResponse.TryParse(Request,
-                                                      result.Response,
-                                                      out var changeConfigurationResponse,
+                                                      sendRequestState.Response,
+                                                      out var getConfigurationResponse,
                                                       out var errorResponse))
                 {
-                    return changeConfigurationResponse!;
+                    response = getConfigurationResponse!;
                 }
 
-                return new GetConfigurationResponse(Request,
-                                                    Result.Unknown());
+                else
+                    response = new GetConfigurationResponse(Request,
+                                                            Result.Format(errorResponse));
 
             }
+            else
+                response = new GetConfigurationResponse(Request,
+                                                        Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnGetConfigurationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new GetConfigurationResponse(Request,
-                                                    Result.Unknown(result.ErrorDescription));
+                OnGetConfigurationResponse?.Invoke(endTime,
+                                                   this,
+                                                   Request,
+                                                   response,
+                                                   endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetConfigurationResponse));
+            }
 
-            return new GetConfigurationResponse(Request,
-                                                Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -3636,38 +3280,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<ChangeConfigurationResponse> ChangeConfiguration(ChangeConfigurationRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomChangeConfigurationRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnChangeConfigurationRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnChangeConfigurationRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnChangeConfigurationRequest));
+            }
+
+            #endregion
+
+
+            ChangeConfigurationResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomChangeConfigurationRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (ChangeConfigurationResponse.TryParse(Request,
-                                                         result.Response,
+                                                         sendRequestState.Response,
                                                          out var changeConfigurationResponse,
                                                          out var errorResponse))
                 {
-                    return changeConfigurationResponse!;
+                    response = changeConfigurationResponse!;
                 }
 
-                return new ChangeConfigurationResponse(Request,
-                                                       Result.Unknown());
+                else
+                    response = new ChangeConfigurationResponse(Request,
+                                                               Result.Format(errorResponse));
 
             }
+            else
+                response = new ChangeConfigurationResponse(Request,
+                                                           Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnChangeConfigurationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new ChangeConfigurationResponse(Request,
-                                                       Result.Unknown(result.ErrorDescription));
+                OnChangeConfigurationResponse?.Invoke(endTime,
+                                                      this,
+                                                      Request,
+                                                      response,
+                                                      endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnChangeConfigurationResponse));
+            }
 
-            return new ChangeConfigurationResponse(Request,
-                                                   Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -3678,38 +3360,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<CP.DataTransferResponse> DataTransfer(DataTransferRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomDataTransferRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnDataTransferRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDataTransferRequest?.Invoke(startTime,
+                                              this,
+                                              Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDataTransferRequest));
+            }
+
+            #endregion
+
+
+            CP.DataTransferResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomDataTransferRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (CP.DataTransferResponse.TryParse(Request,
-                                                     result.Response,
+                                                     sendRequestState.Response,
                                                      out var dataTransferResponse,
                                                      out var errorResponse))
                 {
-                    return dataTransferResponse!;
+                    response = dataTransferResponse!;
                 }
 
-                return new CP.DataTransferResponse(Request,
-                                                   Result.Unknown());
+                else
+                    response = new CP.DataTransferResponse(Request,
+                                                           Result.Format(errorResponse));
 
             }
+            else
+                response = new CP.DataTransferResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnDataTransferResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new CP.DataTransferResponse(Request,
-                                                   Result.Unknown(result.ErrorDescription));
+                OnDataTransferResponse?.Invoke(endTime,
+                                               this,
+                                               Request,
+                                               response,
+                                               endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDataTransferResponse));
+            }
 
-            return new CP.DataTransferResponse(Request,
-                                               Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -3720,38 +3440,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<GetDiagnosticsResponse> GetDiagnostics(GetDiagnosticsRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomGetDiagnosticsRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnGetDiagnosticsRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetDiagnosticsRequest?.Invoke(startTime,
+                                                this,
+                                                Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetDiagnosticsRequest));
+            }
+
+            #endregion
+
+
+            GetDiagnosticsResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomGetDiagnosticsRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (GetDiagnosticsResponse.TryParse(Request,
-                                                    result.Response,
+                                                    sendRequestState.Response,
                                                     out var getDiagnosticsResponse,
                                                     out var errorResponse))
                 {
-                    return getDiagnosticsResponse!;
+                    response = getDiagnosticsResponse!;
                 }
 
-                return new GetDiagnosticsResponse(Request,
-                                                  Result.Unknown());
+                else
+                    response = new GetDiagnosticsResponse(Request,
+                                                          Result.Format(errorResponse));
 
             }
+            else
+                response = new GetDiagnosticsResponse(Request,
+                                                      Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnGetDiagnosticsResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new GetDiagnosticsResponse(Request,
-                                                  Result.Unknown(result.ErrorDescription));
+                OnGetDiagnosticsResponse?.Invoke(endTime,
+                                                 this,
+                                                 Request,
+                                                 response,
+                                                 endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetDiagnosticsResponse));
+            }
 
-            return new GetDiagnosticsResponse(Request,
-                                              Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -3762,38 +3520,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomTriggerMessageRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnTriggerMessageRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnTriggerMessageRequest?.Invoke(startTime,
+                                                this,
+                                                Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnTriggerMessageRequest));
+            }
+
+            #endregion
+
+
+            TriggerMessageResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomTriggerMessageRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (TriggerMessageResponse.TryParse(Request,
-                                                    result.Response,
+                                                    sendRequestState.Response,
                                                     out var triggerMessageResponse,
                                                     out var errorResponse))
                 {
-                    return triggerMessageResponse!;
+                    response = triggerMessageResponse!;
                 }
 
-                return new TriggerMessageResponse(Request,
-                                                  Result.Unknown());
+                else
+                    response = new TriggerMessageResponse(Request,
+                                                          Result.Format(errorResponse));
 
             }
+            else
+                response = new TriggerMessageResponse(Request,
+                                                      Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnTriggerMessageResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new TriggerMessageResponse(Request,
-                                                  Result.Unknown(result.ErrorDescription));
+                OnTriggerMessageResponse?.Invoke(endTime,
+                                                 this,
+                                                 Request,
+                                                 response,
+                                                 endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnTriggerMessageResponse));
+            }
 
-            return new TriggerMessageResponse(Request,
-                                              Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -3804,38 +3600,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomUpdateFirmwareRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnUpdateFirmwareRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateFirmwareRequest?.Invoke(startTime,
+                                                this,
+                                                Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnUpdateFirmwareRequest));
+            }
+
+            #endregion
+
+
+            UpdateFirmwareResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomUpdateFirmwareRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (UpdateFirmwareResponse.TryParse(Request,
-                                                    result.Response,
+                                                    sendRequestState.Response,
                                                     out var updateFirmwareResponse,
                                                     out var errorResponse))
                 {
-                    return updateFirmwareResponse!;
+                    response = updateFirmwareResponse!;
                 }
 
-                return new UpdateFirmwareResponse(Request,
-                                                  Result.Unknown());
+                else
+                    response = new UpdateFirmwareResponse(Request,
+                                                          Result.Format(errorResponse));
 
             }
+            else
+                response = new UpdateFirmwareResponse(Request,
+                                                      Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnUpdateFirmwareResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new UpdateFirmwareResponse(Request,
-                                                  Result.Unknown(result.ErrorDescription));
+                OnUpdateFirmwareResponse?.Invoke(endTime,
+                                                 this,
+                                                 Request,
+                                                 response,
+                                                 endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnUpdateFirmwareResponse));
+            }
 
-            return new UpdateFirmwareResponse(Request,
-                                              Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -3847,38 +3681,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<ReserveNowResponse> ReserveNow(ReserveNowRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomReserveNowRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnReserveNowRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnReserveNowRequest?.Invoke(startTime,
+                                            this,
+                                            Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnReserveNowRequest));
+            }
+
+            #endregion
+
+
+            ReserveNowResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomReserveNowRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (ReserveNowResponse.TryParse(Request,
-                                                result.Response,
-                                                out var reserveNowResponse,
-                                                out var errorReponse))
+                                                    sendRequestState.Response,
+                                                    out var reserveNowResponse,
+                                                    out var errorResponse))
                 {
-                    return reserveNowResponse!;
+                    response = reserveNowResponse!;
                 }
 
-                return new ReserveNowResponse(Request,
-                                              Result.Unknown());
+                else
+                    response = new ReserveNowResponse(Request,
+                                                      Result.Format(errorResponse));
 
             }
+            else
+                response = new ReserveNowResponse(Request,
+                                                  Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnReserveNowResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new ReserveNowResponse(Request,
-                                              Result.Unknown(result.ErrorDescription));
+                OnReserveNowResponse?.Invoke(endTime,
+                                             this,
+                                             Request,
+                                             response,
+                                             endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnReserveNowResponse));
+            }
 
-            return new ReserveNowResponse(Request,
-                                          Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -3889,38 +3761,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<CancelReservationResponse> CancelReservation(CancelReservationRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomCancelReservationRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnCancelReservationRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnCancelReservationRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnCancelReservationRequest));
+            }
+
+            #endregion
+
+
+            CancelReservationResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomCancelReservationRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (CancelReservationResponse.TryParse(Request,
-                                                       result.Response,
+                                                       sendRequestState.Response,
                                                        out var cancelReservationResponse,
                                                        out var errorResponse))
                 {
-                    return cancelReservationResponse!;
+                    response = cancelReservationResponse!;
                 }
 
-                return new CancelReservationResponse(Request,
-                                                     Result.Unknown());
+                else
+                    response = new CancelReservationResponse(Request,
+                                                             Result.Format(errorResponse));
 
             }
+            else
+                response = new CancelReservationResponse(Request,
+                                                         Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnCancelReservationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new CancelReservationResponse(Request,
-                                                     Result.Unknown(result.ErrorDescription));
+                OnCancelReservationResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnCancelReservationResponse));
+            }
 
-            return new CancelReservationResponse(Request,
-                                                 Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -3931,41 +3841,81 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<RemoteStartTransactionResponse> RemoteStartTransaction(RemoteStartTransactionRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomRemoteStartTransactionRequestSerializer,
-                                                          CustomChargingProfileSerializer,
-                                                          CustomChargingScheduleSerializer,
-                                                          CustomChargingSchedulePeriodSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnRemoteStartTransactionRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnRemoteStartTransactionRequest?.Invoke(startTime,
+                                                        this,
+                                                        Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnRemoteStartTransactionRequest));
+            }
+
+            #endregion
+
+
+            RemoteStartTransactionResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(
+                                                         CustomRemoteStartTransactionRequestSerializer,
+                                                         CustomChargingProfileSerializer,
+                                                         CustomChargingScheduleSerializer,
+                                                         CustomChargingSchedulePeriodSerializer
+                                                     ),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (RemoteStartTransactionResponse.TryParse(Request,
-                                                            result.Response,
+                                                            sendRequestState.Response,
                                                             out var remoteStartTransactionResponse,
                                                             out var errorResponse))
                 {
-                    return remoteStartTransactionResponse!;
+                    response = remoteStartTransactionResponse!;
                 }
 
-                return new RemoteStartTransactionResponse(Request,
-                                                          Result.Unknown());
+                else
+                    response = new RemoteStartTransactionResponse(Request,
+                                                                  Result.Format(errorResponse));
 
             }
+            else
+                response = new RemoteStartTransactionResponse(Request,
+                                                              Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnRemoteStartTransactionResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new RemoteStartTransactionResponse(Request,
-                                                          Result.Unknown(result.ErrorDescription));
+                OnRemoteStartTransactionResponse?.Invoke(endTime,
+                                                         this,
+                                                         Request,
+                                                         response,
+                                                         endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnRemoteStartTransactionResponse));
+            }
 
-            return new RemoteStartTransactionResponse(Request,
-                                                      Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -3976,38 +3926,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<RemoteStopTransactionResponse> RemoteStopTransaction(RemoteStopTransactionRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomRemoteStopTransactionRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnRemoteStopTransactionRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnRemoteStopTransactionRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnRemoteStopTransactionRequest));
+            }
+
+            #endregion
+
+
+            RemoteStopTransactionResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomRemoteStopTransactionRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (RemoteStopTransactionResponse.TryParse(Request,
-                                                           result.Response,
+                                                           sendRequestState.Response,
                                                            out var remoteStopTransactionResponse,
                                                            out var errorResponse))
                 {
-                    return remoteStopTransactionResponse!;
+                    response = remoteStopTransactionResponse!;
                 }
 
-                return new RemoteStopTransactionResponse(Request,
-                                                         Result.Unknown());
+                else
+                    response = new RemoteStopTransactionResponse(Request,
+                                                                 Result.Format(errorResponse));
 
             }
+            else
+                response = new RemoteStopTransactionResponse(Request,
+                                                             Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnRemoteStopTransactionResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new RemoteStopTransactionResponse(Request,
-                                                         Result.Unknown(result.ErrorDescription));
+                OnRemoteStopTransactionResponse?.Invoke(endTime,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnRemoteStopTransactionResponse));
+            }
 
-            return new RemoteStopTransactionResponse(Request,
-                                                     Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -4018,38 +4006,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomSetChargingProfileRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnSetChargingProfileRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetChargingProfileRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSetChargingProfileRequest));
+            }
+
+            #endregion
+
+
+            SetChargingProfileResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomSetChargingProfileRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (SetChargingProfileResponse.TryParse(Request,
-                                                        result.Response,
+                                                        sendRequestState.Response,
                                                         out var setChargingProfileResponse,
                                                         out var errorResponse))
                 {
-                    return setChargingProfileResponse!;
+                    response = setChargingProfileResponse!;
                 }
 
-                return new SetChargingProfileResponse(Request,
-                                                      Result.Unknown());
+                else
+                    response = new SetChargingProfileResponse(Request,
+                                                              Result.Format(errorResponse));
 
             }
+            else
+                response = new SetChargingProfileResponse(Request,
+                                                          Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnSetChargingProfileResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new SetChargingProfileResponse(Request,
-                                                      Result.Unknown(result.ErrorDescription));
+                OnSetChargingProfileResponse?.Invoke(endTime,
+                                                     this,
+                                                     Request,
+                                                     response,
+                                                     endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSetChargingProfileResponse));
+            }
 
-            return new SetChargingProfileResponse(Request,
-                                                  Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -4060,38 +4086,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomClearChargingProfileRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnClearChargingProfileRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearChargingProfileRequest?.Invoke(startTime,
+                                                      this,
+                                                      Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnClearChargingProfileRequest));
+            }
+
+            #endregion
+
+
+            ClearChargingProfileResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomClearChargingProfileRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (ClearChargingProfileResponse.TryParse(Request,
-                                                          result.Response,
+                                                          sendRequestState.Response,
                                                           out var clearChargingProfileResponse,
                                                           out var errorResponse))
                 {
-                    return clearChargingProfileResponse!;
+                    response = clearChargingProfileResponse!;
                 }
 
-                return new ClearChargingProfileResponse(Request,
-                                                        Result.Unknown());
+                else
+                    response = new ClearChargingProfileResponse(Request,
+                                                                Result.Format(errorResponse));
 
             }
+            else
+                response = new ClearChargingProfileResponse(Request,
+                                                            Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnClearChargingProfileResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new ClearChargingProfileResponse(Request,
-                                                        Result.Unknown(result.ErrorDescription));
+                OnClearChargingProfileResponse?.Invoke(endTime,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnClearChargingProfileResponse));
+            }
 
-            return new ClearChargingProfileResponse(Request,
-                                                    Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -4103,38 +4167,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomGetCompositeScheduleRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnGetCompositeScheduleRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetCompositeScheduleRequest?.Invoke(startTime,
+                                                      this,
+                                                      Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetCompositeScheduleRequest));
+            }
+
+            #endregion
+
+
+            GetCompositeScheduleResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomGetCompositeScheduleRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (GetCompositeScheduleResponse.TryParse(Request,
-                                                          result.Response,
-                                                          out var clearChargingProfileResponse,
+                                                          sendRequestState.Response,
+                                                          out var getCompositeScheduleResponse,
                                                           out var errorResponse))
                 {
-                    return clearChargingProfileResponse!;
+                    response = getCompositeScheduleResponse!;
                 }
 
-                return new GetCompositeScheduleResponse(Request,
-                                                        Result.Unknown());
+                else
+                    response = new GetCompositeScheduleResponse(Request,
+                                                                Result.Format(errorResponse));
 
             }
+            else
+                response = new GetCompositeScheduleResponse(Request,
+                                                            Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnGetCompositeScheduleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new GetCompositeScheduleResponse(Request,
-                                                        Result.Unknown(result.ErrorDescription));
+                OnGetCompositeScheduleResponse?.Invoke(endTime,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetCompositeScheduleResponse));
+            }
 
-            return new GetCompositeScheduleResponse(Request,
-                                                    Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -4145,38 +4247,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomUnlockConnectorRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnUnlockConnectorRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUnlockConnectorRequest?.Invoke(startTime,
+                                                 this,
+                                                 Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnUnlockConnectorRequest));
+            }
+
+            #endregion
+
+
+            UnlockConnectorResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomUnlockConnectorRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (UnlockConnectorResponse.TryParse(Request,
-                                                     result.Response,
+                                                     sendRequestState.Response,
                                                      out var unlockConnectorResponse,
                                                      out var errorResponse))
                 {
-                    return unlockConnectorResponse!;
+                    response = unlockConnectorResponse!;
                 }
 
-                return new UnlockConnectorResponse(Request,
-                                                   Result.Unknown());
+                else
+                    response = new UnlockConnectorResponse(Request,
+                                                           Result.Format(errorResponse));
 
             }
+            else
+                response = new UnlockConnectorResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnUnlockConnectorResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new UnlockConnectorResponse(Request,
-                                                   Result.Unknown(result.ErrorDescription));
+                OnUnlockConnectorResponse?.Invoke(endTime,
+                                                  this,
+                                                  Request,
+                                                  response,
+                                                  endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnUnlockConnectorResponse));
+            }
 
-            return new UnlockConnectorResponse(Request,
-                                               Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -4188,38 +4328,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomGetLocalListVersionRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnGetLocalListVersionRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetLocalListVersionRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetLocalListVersionRequest));
+            }
+
+            #endregion
+
+
+            GetLocalListVersionResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomGetLocalListVersionRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (GetLocalListVersionResponse.TryParse(Request,
-                                                         result.Response,
-                                                         out var unlockConnectorResponse,
+                                                         sendRequestState.Response,
+                                                         out var getLocalListVersionResponse,
                                                          out var errorResponse))
                 {
-                    return unlockConnectorResponse!;
+                    response = getLocalListVersionResponse!;
                 }
 
-                return new GetLocalListVersionResponse(Request,
-                                                       Result.Unknown());
+                else
+                    response = new GetLocalListVersionResponse(Request,
+                                                               Result.Format(errorResponse));
 
             }
+            else
+                response = new GetLocalListVersionResponse(Request,
+                                                           Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnGetLocalListVersionResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new GetLocalListVersionResponse(Request,
-                                                       Result.Unknown(result.ErrorDescription));
+                OnGetLocalListVersionResponse?.Invoke(endTime,
+                                                      this,
+                                                      Request,
+                                                      response,
+                                                      endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetLocalListVersionResponse));
+            }
 
-            return new GetLocalListVersionResponse(Request,
-                                                   Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -4230,38 +4408,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<SendLocalListResponse> SendLocalList(SendLocalListRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomSendLocalListRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnSendLocalListRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSendLocalListRequest?.Invoke(startTime,
+                                               this,
+                                               Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSendLocalListRequest));
+            }
+
+            #endregion
+
+
+            SendLocalListResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomSendLocalListRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (SendLocalListResponse.TryParse(Request,
-                                                   result.Response,
-                                                   out var unlockConnectorResponse,
+                                                   sendRequestState.Response,
+                                                   out var sendLocalListResponse,
                                                    out var errorResponse))
                 {
-                    return unlockConnectorResponse!;
+                    response = sendLocalListResponse!;
                 }
 
-                return new SendLocalListResponse(Request,
-                                                 Result.Unknown());
+                else
+                    response = new SendLocalListResponse(Request,
+                                                         Result.Format(errorResponse));
 
             }
+            else
+                response = new SendLocalListResponse(Request,
+                                                     Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnSendLocalListResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new SendLocalListResponse(Request,
-                                                 Result.Unknown(result.ErrorDescription));
+                OnSendLocalListResponse?.Invoke(endTime,
+                                                this,
+                                                Request,
+                                                response,
+                                                endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSendLocalListResponse));
+            }
 
-            return new SendLocalListResponse(Request,
-                                             Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 
@@ -4272,38 +4488,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<ClearCacheResponse> ClearCache(ClearCacheRequest Request)
         {
 
-            var result = await SendRequest(Request.RequestId,
-                                           Request.ChargeBoxId,
-                                           Request.Action,
-                                           Request.ToJSON(CustomClearCacheRequestSerializer),
-                                           Request.RequestTimeout);
+            #region Send OnClearCacheRequest event
 
-            if (result?.Response is not null)
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearCacheRequest?.Invoke(startTime,
+                                            this,
+                                            Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnClearCacheRequest));
+            }
+
+            #endregion
+
+
+            ClearCacheResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomClearCacheRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
             {
 
                 if (ClearCacheResponse.TryParse(Request,
-                                                result.Response,
-                                                out var unlockConnectorResponse,
+                                                sendRequestState.Response,
+                                                out var clearCacheResponse,
                                                 out var errorResponse))
                 {
-                    return unlockConnectorResponse!;
+                    response = clearCacheResponse!;
                 }
 
-                return new ClearCacheResponse(Request,
-                                              Result.Unknown());
+                else
+                    response = new ClearCacheResponse(Request,
+                                                      Result.Format(errorResponse));
 
             }
+            else
+                response = new ClearCacheResponse(Request,
+                                                  Result.FromSendRequestState(sendRequestState));
 
-            if (result?.ErrorCode.HasValue == true)
+
+            #region Send OnClearCacheResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
             {
 
-                return new ClearCacheResponse(Request,
-                                              Result.Unknown(result.ErrorDescription));
+                OnClearCacheResponse?.Invoke(endTime,
+                                             this,
+                                             Request,
+                                             response,
+                                             endTime - startTime);
 
             }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnClearCacheResponse));
+            }
 
-            return new ClearCacheResponse(Request,
-                                          Result.Unknown());
+            #endregion
+
+            return response;
 
         }
 

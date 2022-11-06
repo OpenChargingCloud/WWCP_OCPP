@@ -186,19 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Send a boot notification.
         /// </summary>
         /// <param name="Request">A boot notification request.</param>
-        /// 
-        /// <param name="Timestamp">An optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<BootNotificationResponse>
-
-            SendBootNotification(BootNotificationRequest  Request,
-
-                                 DateTime?                Timestamp           = null,
-                                 CancellationToken?       CancellationToken   = null,
-                                 EventTracking_Id?        EventTrackingId     = null,
-                                 TimeSpan?                RequestTimeout      = null);
+        public Task<BootNotificationResponse> SendBootNotification(BootNotificationRequest Request);
 
 
         /// <summary>
