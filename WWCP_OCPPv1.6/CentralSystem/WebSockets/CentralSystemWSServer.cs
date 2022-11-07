@@ -3016,9 +3016,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                var webSocketConnection  = WebSocketConnections.LastOrDefault(ws => ws.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId") == ChargeBoxId);
+                var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId") == ChargeBoxId).
+                                                                 ToArray();
 
-                if (webSocketConnection is not null)
+                if (webSocketConnections.Any())
                 {
 
                     requests.Add(RequestId,
@@ -3029,17 +3030,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                      RequestTimeout
                                  ));
 
-                    SendFrame(webSocketConnection,
-                              new WebSocketFrame(
-                                  WebSocketFrame.Fin.Final,
-                                  WebSocketFrame.MaskStatus.Off,
-                                  new Byte[4],
-                                  WebSocketFrame.Opcodes.Text,
-                                  wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.None).ToUTF8Bytes(),
-                                  WebSocketFrame.Rsv.Off,
-                                  WebSocketFrame.Rsv.Off,
-                                  WebSocketFrame.Rsv.Off
-                              ));
+                    foreach (var webSocketConnection in webSocketConnections)
+                    {
+
+                        var success = SendFrame(webSocketConnection,
+                                                new WebSocketFrame(
+                                                    WebSocketFrame.Fin.Final,
+                                                    WebSocketFrame.MaskStatus.Off,
+                                                    new Byte[4],
+                                                    WebSocketFrame.Opcodes.Text,
+                                                    wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.None).ToUTF8Bytes(),
+                                                    WebSocketFrame.Rsv.Off,
+                                                    WebSocketFrame.Rsv.Off,
+                                                    WebSocketFrame.Rsv.Off
+                                                ));
+
+                        if (success)
+                            break;
+
+                        else
+                            RemoveConnection(webSocketConnection);
+
+                    }
 
                     //await File.AppendAllTextAsync(LogfileName,
                     //                              String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                                    Environment.NewLine,

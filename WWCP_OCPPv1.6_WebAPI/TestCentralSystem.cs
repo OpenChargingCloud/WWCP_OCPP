@@ -58,6 +58,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         private                    Int64                                                       internalRequestId       = 900000;
 
+        private                    TimeSpan                                                    defaultRequestTimeout   = TimeSpan.FromSeconds(30);
+
         #endregion
 
         #region Properties
@@ -74,11 +76,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => CentralSystemId.ToString();
 
 
-        public UploadAPI  HTTPUploadAPI     { get; }
+        public UploadAPI  HTTPUploadAPI             { get; }
 
-        public IPPort     HTTPUploadPort    { get; }
+        public IPPort     HTTPUploadPort            { get; }
 
-        public DNSClient  DNSClient         { get; }
+        public DNSClient  DNSClient                 { get; }
+
+        /// <summary>
+        /// Require a HTTP Basic Authentication of all charging boxes.
+        /// </summary>
+        public Boolean    RequireAuthentication     { get; }
+
+        /// <summary>
+        /// The default request timeout for all requests.
+        /// </summary>
+        public TimeSpan   DefaultRequestTimeout     { get; }
 
 
         /// <summary>
@@ -86,18 +98,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public IEnumerable<ICentralSystemServer> CentralSystemServers
             => centralSystemServers;
-
-
-        /// <summary>
-        /// Require a HTTP Basic Authentication of all charging boxes.
-        /// </summary>
-        public Boolean RequireAuthentication { get; }
-
-        /// <summary>
-        /// The default request timeout for all requests.
-        /// </summary>
-        public TimeSpan                 DefaultRequestTimeout       { get; }
-
 
         /// <summary>
         /// The unique identifications of all connected or reachable charge boxes.
@@ -590,6 +590,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         public TestCentralSystem(CentralSystem_Id  CentralSystemId,
                                  Boolean           RequireAuthentication   = true,
+                                 TimeSpan?         DefaultRequestTimeout   = null,
                                  IPPort?           HTTPUploadPort          = null,
                                  DNSClient?        DNSClient               = null)
         {
@@ -599,7 +600,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             this.CentralSystemId         = CentralSystemId;
             this.RequireAuthentication   = RequireAuthentication;
-            this.HTTPUploadPort          = HTTPUploadPort ?? DefaultHTTPUploadPort;
+            this.DefaultRequestTimeout   = DefaultRequestTimeout ?? defaultRequestTimeout;
+            this.HTTPUploadPort          = HTTPUploadPort        ?? DefaultHTTPUploadPort;
             this.centralSystemServers    = new HashSet<ICentralSystemServer>();
             this.reachableChargingBoxes  = new Dictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>>();
             this.chargeBoxes             = new Dictionary<ChargeBox_Id, ChargeBox>();
