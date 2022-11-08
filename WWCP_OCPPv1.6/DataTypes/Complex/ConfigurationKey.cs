@@ -28,6 +28,12 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using System.Net.NetworkInformation;
+using Org.BouncyCastle.Crypto.Tls;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using static cloud.charging.open.protocols.OCPPv1_6.ConfigurationKey;
+using System.Configuration;
+using System.Security.Policy;
 
 #endregion
 
@@ -435,7 +441,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Well-known configuration keys
 
         /// <summary>
-        /// The password used for HTTP Basic Authentication of a charge point.
+        /// The basic authentication password is used for HTTP Basic Authentication, minimal length: 16 bytes.
+        /// It is strongly advised to be randomly generated binary to get maximal entropy.Hexadecimal represented(20 bytes maximum,
+        /// represented as a string of up to 40 hexadecimal digits).
+        /// This configuration key is write-only, so that it cannot be accidentally stored in plaintext by the Central System when
+        /// it reads out all configuration keys.
+        /// This configuration key is required unless only "security profile 3 - TLS with client side certificates" is implemented.
         /// </summary>
         public static readonly ConfigurationKey AuthorizationKey                = new (Keys.WebSocketPingInterval,
                                                                                        KeyStatus.   Optional,
@@ -463,7 +474,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
             /// <summary>
-            /// The password used for HTTP Basic Authentication of a charge point.
+            /// The basic authentication password is used for HTTP Basic Authentication, minimal length: 16 bytes.
+            /// It is strongly advised to be randomly generated binary to get maximal entropy.Hexadecimal represented(20 bytes maximum,
+            /// represented as a string of up to 40 hexadecimal digits).
+            /// This configuration key is write-only, so that it cannot be accidentally stored in plaintext by the Central System when
+            /// it reads out all configuration keys.
+            /// This configuration key is required unless only "security profile 3 - TLS with client side certificates" is implemented.
+            /// optional, W, String
             /// </summary>
             public const String AuthorizationKey                            = "AuthorizationKey";
 
@@ -797,6 +814,70 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             /// optional, R, Boolean
             /// </summary>
             public const String ReserveConnectorZeroSupported               = "ReserveConnectorZeroSupported";
+
+
+
+
+            /// <summary>
+            /// When set to true, only one certificate (plus a temporarily fallback certificate) of certificateType CentralSystemRootCertificate is
+            /// allowed to be installed at a time.When installing a new Central System Root certificate, the new certificate SHALL replace the
+            /// old one AND the new Central System Root Certificate MUST be signed by the old Central System Root Certificate it is replacing.
+            /// This configuration key is required unless only "security profile 1 - Unsecured Transport with Basic Authentication" is
+            /// implemented.Please note that security profile 1 SHOULD only be used in trusted networks.
+            /// 
+            /// Note: When using this additional security mechanism please be aware that the Charge Point needs to perform a full certificate chain
+            /// verification when the new Central System Root certificate is being installed.However, once the old Central System Root certificate
+            /// is set as the fallback certificate, the Charge Point needs to perform a partial certificate chain verification when verifying the
+            /// server certificate during the TLS handshake. Otherwise the verification will fail once the old Central System Root (fallback)
+            /// certificate is either expired or removed.
+            /// optional, R, Boolean
+            /// </summary>
+            public const String AdditionalRootCertificateCheck              = "AdditionalRootCertificateCheck";
+
+            /// <summary>
+            /// This configuration key can be used to limit the size of the 'certificateChain' field from the CertificateSigned.req PDU.
+            /// The value of this configuration key has a maximum limit of 10.000 characters.
+            /// optional, R, integer
+            /// </summary>
+            public const String CertificateSignedMaxChainSize               = "CertificateSignedMaxChainSize";
+
+            /// <summary>
+            /// Maximum number of Root/CA certificates that can be installed in the Charge Point.
+            /// optional, R, integer
+            /// </summary>
+            public const String CertificateStoreMaxLength                   = "CertificateStoreMaxLength";
+
+            /// <summary>
+            /// This configuration key contains CPO name (or an organization trusted by the CPO) as used in the Charge Point Certificate.
+            /// This is the CPO name that is to be used in a CSR send via: SignCertificate.req.
+            /// optional, RW, String
+            /// </summary>
+            public const String CpoName                                     = "CpoName";
+
+            /// <summary>
+            /// This configuration key is used to set the security profile used by the Charge Point.
+            /// 
+            /// The value of this configuration key can only be increased to a higher level, not decreased to a lower level, if the Charge Point
+            /// receives a lower value then currently configured,the Charge Point SHALL Rejected the ChangeConfiguration.req
+            /// Before accepting the new value, the Charge Point SHALL check if all the prerequisites for the new Security Profile are met, if
+            /// not, the Charge Point SHALL Rejected the ChangeConfiguration.req.
+            /// 
+            /// After the security profile was successfully changed, the Charge Point disconnects from the Central System and SHALL
+            /// reconnect using the new configured Security Profile.
+            /// 
+            /// Default, when no security profile is yet configured: 0.
+            /// optional, RW, integer
+            /// </summary>
+            public const String SecurityProfile                             = "SecurityProfile";
+
+
+            // CertificateSignedMaxSize
+
+            // public const String Central System Certificate
+            // public const String Central System Root Certificate
+            // public const String Charge Point Certificate
+            // public const String Firmware Signing Certificate
+            // public const String Manufacturer Root Certificate
 
         }
 

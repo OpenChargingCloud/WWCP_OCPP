@@ -789,16 +789,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             unchecked
             {
 
-                return ChargingProfileId     .GetHashCode()       * 29 ^
-                       StackLevel            .GetHashCode()       * 23 ^
-                       ChargingProfilePurpose.GetHashCode()       * 19 ^
-                       ChargingProfileKind   .GetHashCode()       * 17 ^
-                       ChargingSchedule      .GetHashCode()       * 13 ^
+                return ChargingProfileId     .GetHashCode()       * 23 ^
+                       StackLevel            .GetHashCode()       * 19 ^
+                       ChargingProfilePurpose.GetHashCode()       * 17 ^
+                       ChargingProfileKind   .GetHashCode()       * 13 ^
+                       ChargingSchedule      .GetHashCode()       * 11 ^
 
-                       (TransactionId?.       GetHashCode() ?? 0) * 11 ^
-                       (RecurrencyKind?.      GetHashCode() ?? 0) *  7 ^
-                       (ValidFrom?.           GetHashCode() ?? 0) *  5 ^
-                       (ValidTo?.             GetHashCode() ?? 0) *  3;
+                       (TransactionId?.       GetHashCode() ?? 0) *  7 ^
+                       (RecurrencyKind?.      GetHashCode() ?? 0) *  5 ^
+                       (ValidFrom?.           GetHashCode() ?? 0) *  3 ^
+                       (ValidTo?.             GetHashCode() ?? 0);
 
             }
         }

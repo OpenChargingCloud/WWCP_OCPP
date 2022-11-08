@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
     /// <summary>
-    /// Defines the reset-status-values.
+    /// Defines the update-status-values.
     /// </summary>
     public enum UpdateStatus
     {

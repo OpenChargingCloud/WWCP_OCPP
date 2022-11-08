@@ -25,7 +25,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
@@ -62,6 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a new DataTransfer request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// 
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
@@ -70,14 +71,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         public DataTransferRequest(ChargeBox_Id        ChargeBoxId,
                                    String              VendorId,
-                                   String?             MessageId           = null,
-                                   String?             Data                = null,
+                                   String?             MessageId                 = null,
+                                   String?             Data                      = null,
 
-                                   Request_Id?         RequestId           = null,
-                                   DateTime?           RequestTimestamp    = null,
-                                   TimeSpan?           RequestTimeout      = null,
-                                   EventTracking_Id?   EventTrackingId     = null,
-                                   CancellationToken?  CancellationToken   = null)
+                                   Request_Id?         RequestId                 = null,
+                                   DateTime?           RequestTimestamp          = null,
+                                   TimeSpan?           RequestTimeout            = null,
+                                   EventTracking_Id?   EventTrackingId           = null,
+                                   CancellationToken?  CancellationToken         = null)
 
             : base(ChargeBoxId,
                    "DataTransfer",
@@ -89,9 +90,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         {
 
-            this.VendorId   = VendorId?. Trim() ?? throw new ArgumentNullException(nameof(VendorId), "The given vendor identification must not be null or empty!");
-            this.MessageId  = MessageId?.Trim();
-            this.Data       = Data?.     Trim();
+            #region Initial checks
+
+            this.VendorId = VendorId.Trim();
+
+            if (this.VendorId.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(VendorId), "The given vendor identification must not be null or empty!");
+
+            #endregion
+
+            this.MessageId  = MessageId;
+            this.Data       = Data;
 
         }
 
@@ -102,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
         //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-        //                xmlns:ns   = "urn://Ocpp/Cp/2015/10/">
+        //                xmlns:ns   = "urn://Ocpp/Cs/2015/10/">
         //
         //    <soap:Header>
         //       ...
@@ -158,28 +167,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        public static DataTransferRequest Parse(XElement      XML,
-                                                Request_Id    RequestId,
-                                                ChargeBox_Id  ChargeBoxId)
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static DataTransferRequest Parse(XElement              XML,
+                                                Request_Id            RequestId,
+                                                ChargeBox_Id          ChargeBoxId,
+                                                OnExceptionDelegate?  OnException   = null)
         {
 
             if (TryParse(XML,
                          RequestId,
                          ChargeBoxId,
                          out var dataTransferRequest,
-                         out var errorResponse))
+                         OnException))
             {
                 return dataTransferRequest!;
             }
 
-            throw new ArgumentException("The given XML representation of a data transfer request is invalid: " + errorResponse,
+            throw new ArgumentException("The given XML representation of a data transfer request is invalid: ", // + errorResponse,
                                         nameof(XML));
 
         }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomDataTransferRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomBootNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a data transfer request.
@@ -187,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomDataTransferRequestParser">A delegate to parse custom DataTransfer requests.</param>
+        /// <param name="CustomDataTransferRequestParser">A delegate to parse custom data transfer requests.</param>
         public static DataTransferRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
                                                 ChargeBox_Id                                       ChargeBoxId,
@@ -211,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out DataTransferRequest, out ErrorResponse)
+        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out DataTransferRequest, OnException = null)
 
         /// <summary>
         /// Try to parse the given XML representation of a data transfer request.
@@ -220,45 +231,43 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement                  XML,
                                        Request_Id                RequestId,
                                        ChargeBox_Id              ChargeBoxId,
                                        out DataTransferRequest?  DataTransferRequest,
-                                       out String?               ErrorResponse)
+                                       OnExceptionDelegate?      OnException   = null)
         {
 
             try
             {
 
                 DataTransferRequest = new DataTransferRequest(
-
                                           ChargeBoxId,
-
-                                          XML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CP + "vendorId"),
-                                          XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "messageId"),
-                                          XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "data"),
-
+                                          XML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "vendorId"),
+                                          XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "messageId"),
+                                          XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "data"),
                                           RequestId
-
                                       );
 
-                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-                DataTransferRequest  = null;
-                ErrorResponse        = "The given XML representation of a data transfer request is invalid: " + e.Message;
+
+                OnException?.Invoke(Timestamp.Now, XML, e);
+
+                DataTransferRequest = null;
                 return false;
+
             }
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out DataTransferRequest, out ErrorResponse, CustomDataTransferRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out DataTransferRequest, OnException = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -269,6 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                   JSON,
                                        Request_Id                RequestId,
                                        ChargeBox_Id              ChargeBoxId,
@@ -305,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 DataTransferRequest = null;
 
-                #region VendorId        [optional]
+                #region VendorId        [mandatory]
 
                 if (!JSON.ParseMandatoryText("vendorId",
                                              "vendor identification",
@@ -380,23 +390,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public XElement ToXML()
 
-            => new (OCPPNS.OCPPv1_6_CP + "dataTransferRequest",
+            => new (OCPPNS.OCPPv1_6_CS + "dataTransferRequest",
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "vendorId",         VendorId),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "vendorId",         VendorId),
 
                    MessageId.IsNotNullOrEmpty()
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "messageId",  MessageId)
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "messageId",  MessageId)
                        : null,
 
                    Data.IsNotNullOrEmpty()
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "data",       Data)
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "data",       Data)
                        : null
 
                );
 
         #endregion
 
-        #region ToJSON(CustomDataTransferRequestSerializer = null)
+        #region ToJSON(CustomDataTransferSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -408,8 +418,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomDataTransferRequestSerializer">A delegate to serialize custom DataTransfer requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest>? CustomDataTransferRequestSerializer)
+        /// <param name="CustomDataTransferSerializer">A delegate to serialize custom DataTransfer requests.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest>? CustomDataTransferSerializer)
         {
 
             var json = JSONObject.Create(
@@ -426,8 +436,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                        );
 
-            return CustomDataTransferRequestSerializer is not null
-                       ? CustomDataTransferRequestSerializer(this, json)
+            return CustomDataTransferSerializer is not null
+                       ? CustomDataTransferSerializer(this, json)
                        : json;
 
         }
@@ -490,8 +500,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Object">A data transfer request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is DataTransferRequest dataTransferRequest &&
-                   Equals(dataTransferRequest);
+            => Object is BootNotificationRequest bootNotificationRequest &&
+                   Equals(bootNotificationRequest);
 
         #endregion
 
@@ -503,7 +513,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="DataTransferRequest">A data transfer request to compare with.</param>
         public override Boolean Equals(DataTransferRequest? DataTransferRequest)
 
-            => DataTransferRequest is not null &&
+            => DataTransferRequest is not null               &&
 
                VendorId.Equals(DataTransferRequest.VendorId) &&
 
@@ -528,10 +538,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return VendorId.   GetHashCode()       * 5 ^
+                return VendorId.  GetHashCode()       * 5 ^
 
-                       (MessageId?.GetHashCode() ?? 0) * 3^
-                       (Data?.     GetHashCode() ?? 0);
+                      (MessageId?.GetHashCode() ?? 0) * 3 ^
+                      (Data?.     GetHashCode() ?? 0);
 
             }
         }
@@ -546,9 +556,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public override String ToString()
 
             => String.Concat(
-                   VendorId,                      " / ",
-                   MessageId              ?? "-", " / ",
-                   Data?.SubstringMax(20) ?? "-"
+                   VendorId,                      ", ",
+                   MessageId              ?? "-", ", ",
+                   Data?.SubstringMax(20) ?? ""
                );
 
         #endregion

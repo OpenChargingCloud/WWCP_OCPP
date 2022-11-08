@@ -18,6 +18,8 @@
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
+    // ToDo: Should not be an enum, but a struct to allow extensibility!
+
     /// <summary>
     /// Extentions methods for the message triggers.
     /// </summary>
@@ -30,10 +32,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             => Text.Trim() switch {
                    "BootNotification"               => MessageTriggers.BootNotification,
+                   "LogStatusNotification"          => MessageTriggers.LogStatusNotification,
                    "DiagnosticsStatusNotification"  => MessageTriggers.DiagnosticsStatusNotification,
                    "FirmwareStatusNotification"     => MessageTriggers.FirmwareStatusNotification,
                    "Heartbeat"                      => MessageTriggers.Heartbeat,
                    "MeterValues"                    => MessageTriggers.MeterValues,
+                   "SignChargePointCertificate"     => MessageTriggers.SignChargePointCertificate,
                    "StatusNotification"             => MessageTriggers.StatusNotification,
                    _                                => MessageTriggers.Unknown
                };
@@ -46,10 +50,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             => MessageTrigger switch {
                    MessageTriggers.BootNotification               => "BootNotification",
+                   MessageTriggers.LogStatusNotification          => "LogStatusNotification",
                    MessageTriggers.DiagnosticsStatusNotification  => "DiagnosticsStatusNotification",
                    MessageTriggers.FirmwareStatusNotification     => "FirmwareStatusNotification",
                    MessageTriggers.Heartbeat                      => "Heartbeat",
                    MessageTriggers.MeterValues                    => "MeterValues",
+                   MessageTriggers.SignChargePointCertificate     => "SignChargePointCertificate",
                    MessageTriggers.StatusNotification             => "StatusNotification",
                    _                                              => "unknown"
                };
@@ -76,6 +82,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         BootNotification,
 
         /// <summary>
+        /// To trigger LogStatusNotification.req.
+        /// </summary>
+        LogStatusNotification,
+
+        /// <summary>
         /// To trigger a DiagnosticsStatusNotification request.
         /// </summary>
         DiagnosticsStatusNotification,
@@ -94,6 +105,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// To trigger a MeterValues request.
         /// </summary>
         MeterValues,
+
+        /// <summary>
+        /// To trigger a SignCertificate.req with certificateType: ChargePointCertificate.
+        /// </summary>
+        SignChargePointCertificate,
 
         /// <summary>
         /// To trigger a StatusNotification request.

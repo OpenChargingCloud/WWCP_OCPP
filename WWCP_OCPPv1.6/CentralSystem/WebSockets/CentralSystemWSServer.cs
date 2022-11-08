@@ -17,6 +17,7 @@
 
 #region Usings
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -27,7 +28,6 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
-using System.Collections.Generic;
 
 #endregion
 
@@ -128,36 +128,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Data
 
         /// <summary>
-        /// The default HTTP/SOAP/XML server name.
+        /// The default HTTP server name.
         /// </summary>
-        public const String                     DefaultHTTPServerName   = "GraphDefined OCPP " + Version.Number + " HTTP/WebSocket/JSON Central System API";
+        public const            String                                                          DefaultHTTPServerName       = "GraphDefined OCPP " + Version.Number + " HTTP/WebSocket/JSON Central System API";
 
         /// <summary>
-        /// The default HTTP/SOAP/XML server TCP port.
+        /// The default HTTP server TCP port.
         /// </summary>
-        public static readonly IPPort           DefaultHTTPServerPort   = IPPort.Parse(2010);
+        public static readonly  IPPort                                                          DefaultHTTPServerPort       = IPPort.Parse(2010);
 
         /// <summary>
-        /// The default HTTP/SOAP/XML server URI prefix.
+        /// The default HTTP server URI prefix.
         /// </summary>
-        public static readonly HTTPPath         DefaultURLPrefix        = HTTPPath.Parse("/" + Version.Number);
-
-        /// <summary>
-        /// The default HTTP/SOAP/XML content type.
-        /// </summary>
-        public static readonly HTTPContentType  DefaultContentType      = HTTPContentType.XMLTEXT_UTF8;
+        public static readonly  HTTPPath                                                        DefaultURLPrefix            = HTTPPath.Parse("/" + Version.Number);
 
         /// <summary>
         /// The default request timeout.
         /// </summary>
-        public static readonly TimeSpan         DefaultRequestTimeout   = TimeSpan.FromMinutes(1);
+        public static readonly  TimeSpan                                                        DefaultRequestTimeout       = TimeSpan.FromMinutes(1);
 
 
-        private readonly Dictionary<ChargeBox_Id, Tuple<WebSocketConnection, DateTime>> connectedChargingBoxes;
+        private readonly        Dictionary<ChargeBox_Id, Tuple<WebSocketConnection, DateTime>>  connectedChargingBoxes;
 
-        private const String LogfileName = "CentralSystemWSServer.log";
+        private readonly        Dictionary<Request_Id, SendRequestState>                        requests;
 
-        private const Newtonsoft.Json.Formatting JSONFormating = Newtonsoft.Json.Formatting.None;
+
+        private const           String                                                          LogfileName                 = "CentralSystemWSServer.log";
+
+        private const           Formatting                                                      JSONFormating               = Formatting.None;
 
         #endregion
 
@@ -167,10 +165,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// The sender identification.
         /// </summary>
         String IEventSender.Id { get; }
-
-
-        public readonly Dictionary<Request_Id, SendRequestState> requests;
-
 
         public IEnumerable<ChargeBox_Id> ChargeBoxIds
             => connectedChargingBoxes.Keys;
@@ -183,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Logins and passwords for HTTP Basic Authentication.
         /// </summary>
-        public Dictionary<String, String?>                                        ChargingBoxLogins                                   { get; }
+        public Dictionary<ChargeBox_Id, String?>                                  ChargingBoxLogins                                   { get; }
 
         #endregion
 
@@ -914,24 +908,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         {
 
-            this.requests                        = new Dictionary<Request_Id, SendRequestState>();
             this.RequireAuthentication           = RequireAuthentication;
-            this.ChargingBoxLogins               = new Dictionary<String, String?>();
+            this.ChargingBoxLogins               = new Dictionary<ChargeBox_Id, String?>();
             this.connectedChargingBoxes          = new Dictionary<ChargeBox_Id, Tuple<WebSocketConnection, DateTime>>();
+            this.requests                        = new Dictionary<Request_Id, SendRequestState>();
 
+            base.OnValidateTCPConnection        += ValidateTCPConnection;
             base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
             base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
-
-            base.OnCloseMessageReceived         += async (timestamp, server, connection, frame, eventTrackingId) => {
-                lock (connectedChargingBoxes)
-                {
-                    if (connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId", out var chargeBoxId))
-                    {
-                        connectedChargingBoxes.Remove(chargeBoxId);
-                        DebugX.Log(nameof(CentralSystemWSServer), " Charge box " + chargeBoxId + " disconnected!");
-                    }
-                }
-            };
+            base.OnCloseMessageReceived         += ProcessCloseMessage;
 
             if (AutoStart)
                 Start();
@@ -940,6 +925,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+
+        #region (protected) ValidateTCPConnection        (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
+
+        private async Task<Boolean?> ValidateTCPConnection(DateTime                      LogTimestamp,
+                                                           WebSocketServer               Server,
+                                                           System.Net.Sockets.TcpClient  Connection,
+                                                           EventTracking_Id              EventTrackingId,
+                                                           CancellationToken             CancellationToken)
+        {
+
+            return true;
+
+        }
+
+        #endregion
 
         #region (protected) ValidateWebSocketConnection  (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
@@ -1001,7 +1001,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (Connection.Request.Authorization is HTTPBasicAuthentication basicAuthentication)
                 {
 
-                    if (ChargingBoxLogins.TryGetValue(basicAuthentication.Username, out var password) &&
+                    if (ChargingBoxLogins.TryGetValue(ChargeBox_Id.Parse(basicAuthentication.Username), out var password) &&
                         basicAuthentication.Password == password)
                     {
                         DebugX.Log(nameof(CentralSystemWSServer), " connection from " + Connection.RemoteSocket + " using authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
@@ -1096,6 +1096,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             return Task.CompletedTask;
 
+        }
+
+        #endregion
+
+        #region (protected) ProcessCloseMessage          (LogTimestamp, Server, Connection, Message, EventTrackingId)
+
+        protected async Task ProcessCloseMessage(DateTime LogTimestamp, WebSocketServer Server, WebSocketConnection Connection, WebSocketFrame Message, EventTracking_Id EventTrackingId)
+        {
+            lock (connectedChargingBoxes)
+            {
+                if (Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId", out var chargeBoxId))
+                {
+                    connectedChargingBoxes.Remove(chargeBoxId);
+                    DebugX.Log(nameof(CentralSystemWSServer), " Charge box " + chargeBoxId + " disconnected!");
+                }
+            }
         }
 
         #endregion
@@ -2877,6 +2893,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                        EventTrackingId
                    );
 
+        }
+
+        #endregion
+
+
+        #region AddHTTPBasicAuth(ChargeBoxId, Password)
+
+        /// <summary>
+        /// Add the given HTTP Basic Authentication password for the given charge box.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of the charge box.</param>
+        /// <param name="Password">The password of the charge box.</param>
+        public void AddHTTPBasicAuth(ChargeBox_Id  ChargeBoxId,
+                                     String        Password)
+        {
+            lock (ChargingBoxLogins)
+            {
+
+                if (ChargingBoxLogins.ContainsKey(ChargeBoxId))
+                    ChargingBoxLogins.Remove(ChargeBoxId);
+
+                ChargingBoxLogins.Add(ChargeBoxId,
+                                      Password);
+
+            }
         }
 
         #endregion

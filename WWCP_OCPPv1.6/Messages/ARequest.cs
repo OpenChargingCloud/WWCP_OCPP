@@ -83,20 +83,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Constructor(s)
 
-        ///// <summary>
-        ///// Create a new generic request message.
-        ///// </summary>
-        //public ARequest()
-        //{
-
-        //    this.RequestId         = Request_Id.Parse("0");
-        //    this.RequestTimestamp  = Timestamp.Now;
-        //    this.EventTrackingId   = EventTracking_Id.New;
-        //    this.ChargeBoxId       = ChargeBox_Id.Parse("0");
-        //    this.WebSocketAction   = "";
-
-        //}
-
         /// <summary>
         /// Create a new generic OCPP request message.
         /// </summary>

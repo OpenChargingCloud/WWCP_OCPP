@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CancelReservationRequest">The parsed CancelReservation request.</param>
+        /// <param name="CancelReservationRequest">The parsed cancel reservation request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                        JSON,
                                        Request_Id                     RequestId,
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CancelReservationRequest">The parsed CancelReservation request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCancelReservationRequestParser">A delegate to parse custom CancelReservation requests.</param>
+        /// <param name="CustomCancelReservationRequestParser">A delegate to parse custom cancel reservation requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
                                        ChargeBox_Id                                            ChargeBoxId,
@@ -354,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCancelReservationRequestSerializer">A delegate to serialize custom CancelReservation requests.</param>
+        /// <param name="CustomCancelReservationRequestSerializer">A delegate to serialize custom cancel reservation requests.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationRequest>? CustomCancelReservationRequestSerializer)
         {
 

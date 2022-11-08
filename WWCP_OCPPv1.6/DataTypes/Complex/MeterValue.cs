@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Try to parse the given XML representation of a meter value.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="MeterValue">The parsed connector type.</param>
+        /// <param name="MeterValue">The parsed meter value.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(XElement              XML,
                                        out MeterValue?       MeterValue,
@@ -343,7 +343,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Try to parse the given JSON representation of a meter value.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="MeterValue">The parsed connector type.</param>
+        /// <param name="MeterValue">The parsed meter value.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject          JSON,
                                        out MeterValue?  MeterValue,
@@ -359,7 +359,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Try to parse the given JSON representation of a meter value.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="MeterValue">The parsed connector type.</param>
+        /// <param name="MeterValue">The parsed meter value.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomMeterValueParser">A delegate to parse custom MeterValues.</param>
         public static Boolean TryParse(JObject                                   JSON,
@@ -471,8 +471,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="MeterValue1">An id tag info.</param>
-        /// <param name="MeterValue2">Another id tag info.</param>
+        /// <param name="MeterValue1">A meter value.</param>
+        /// <param name="MeterValue2">Another meter value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (MeterValue MeterValue1, MeterValue MeterValue2)
         {
@@ -496,8 +496,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="MeterValue1">An id tag info.</param>
-        /// <param name="MeterValue2">Another id tag info.</param>
+        /// <param name="MeterValue1">A meter value.</param>
+        /// <param name="MeterValue2">Another meter value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (MeterValue MeterValue1, MeterValue MeterValue2)
 

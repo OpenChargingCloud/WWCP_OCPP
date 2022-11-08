@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
             Assert.IsNotNull(testBackendWebSockets01);
 
-            testCentralSystem01.AddBasicAuth("test01", "1234abcd");
+            testCentralSystem01.AddHTTPBasicAuth(ChargeBox_Id.Parse("test01"), "1234abcd");
 
         }
 

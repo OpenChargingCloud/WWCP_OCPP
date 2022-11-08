@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2014-2022 GraphDefined GmbH
- * This file is part of WWCP <https://github.com/OpenChargingCloud/WWCP_OCPP>
+ * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,13 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
     /// A data transfer response.
     /// </summary>
-    public class DataTransferResponse : AResponse<CP.DataTransferRequest,
+    public class DataTransferResponse : AResponse<CS.DataTransferRequest,
                                                      DataTransferResponse>
     {
 
@@ -51,15 +51,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region DataTransferResponse(Request, IdTagInfo)
+        #region DataTransferResponse(Request, Status, Data = null)
 
         /// <summary>
         /// Create a new data transfer response.
         /// </summary>
-        /// <param name="Request">The incoming data transfer request leading to this response.</param>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="Status">The success or failure status of the data transfer.</param>
         /// <param name="Data">Optional response data.</param>
-        public DataTransferResponse(CP.DataTransferRequest  Request,
+        public DataTransferResponse(CS.DataTransferRequest  Request,
                                     DataTransferStatus      Status,
                                     String?                 Data   = null)
 
@@ -80,9 +80,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Create a new data transfer response.
         /// </summary>
-        /// <param name="Request">The incoming data transfer request leading to this response.</param>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public DataTransferResponse(CP.DataTransferRequest  Request,
+        public DataTransferResponse(CS.DataTransferRequest  Request,
                                     Result                  Result)
 
             : base(Request,
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Documentation
 
         // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-        //                xmlns:ns   = "urn://Ocpp/Cs/2015/10/">
+        //                xmlns:ns   = "urn://Ocpp/Cp/2015/10/">
         //    <soap:Header/>
         //    <soap:Body>
         //       <ns:dataTransferResponse>
@@ -144,14 +144,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (Request, DataTransferResponseXML)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a data transfer response.
         /// </summary>
-        /// <param name="Request">The incoming data transfer request leading to this response.</param>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
-        public static DataTransferResponse Parse(CP.DataTransferRequest  Request,
+        public static DataTransferResponse Parse(CS.DataTransferRequest  Request,
                                                  XElement                XML)
         {
 
@@ -170,17 +170,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (Request, DataTransferResponseJSON, CustomDataTransferResponseParser = null)
+        #region (static) Parse   (Request, JSON, CustomDataTransferResponseSerializer = null)
 
         /// <summary>
         /// Parse the given JSON representation of a data transfer response.
         /// </summary>
-        /// <param name="Request">The incoming data transfer request leading to this response.</param>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
-        public static DataTransferResponse Parse(CP.DataTransferRequest                              Request,
+        public static DataTransferResponse Parse(CS.DataTransferRequest                              Request,
                                                  JObject                                             JSON,
-                                                 CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser   = null)
+                                                 CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser  = null)
         {
 
             if (TryParse(Request,
@@ -203,12 +203,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         /// <summary>
         /// Try to parse the given XML representation of a data transfer response.
-        /// </summary
-        /// <param name="Request">The incoming data transfer request leading to this response.</param>
+        /// </summary>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CP.DataTransferRequest     Request,
+        public static Boolean TryParse(CS.DataTransferRequest     Request,
                                        XElement                   XML,
                                        out DataTransferResponse?  DataTransferResponse,
                                        out String?                ErrorResponse)
@@ -221,10 +221,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                            Request,
 
-                                           XML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CS + "status",
+                                           XML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CP + "status",
                                                                      DataTransferStatusExtentions.Parse),
 
-                                           XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "data")
+                                           XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "data")
 
                                        );
 
@@ -243,17 +243,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out DataTransferResponse, out ErrorResponse)
+        #region (static) TryParse(Request, JSON, out DataTransferResponse, out ErrorResponse, CustomDataTransferResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a data transfer response.
-        /// </summary
-        /// <param name="Request">The incoming data transfer request leading to this response.</param>
+        /// </summary>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
-        public static Boolean TryParse(CP.DataTransferRequest                              Request,
+        public static Boolean TryParse(CS.DataTransferRequest                              Request,
                                        JObject                                             JSON,
                                        out DataTransferResponse?                           DataTransferResponse,
                                        out String?                                         ErrorResponse,
@@ -265,13 +265,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 DataTransferResponse = null;
 
-                #region Status
+                #region DataTransferStatus
 
                 if (!JSON.MapMandatory("status",
-                                                           "data transfer status",
-                                                           DataTransferStatusExtentions.Parse,
-                                                           out DataTransferStatus  DataTransferStatus,
-                                                           out                     ErrorResponse))
+                                       "data transfer status",
+                                       DataTransferStatusExtentions.Parse,
+                                       out DataTransferStatus DataTransferStatus,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region Data
 
-                var Data = JSON.GetString("data");
+                var Data = JSON.GetString("data")?.Trim();
 
                 #endregion
 
@@ -314,12 +314,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public XElement ToXML()
 
-            => new (OCPPNS.OCPPv1_6_CS + "dataTransferResponse",
+            => new (OCPPNS.OCPPv1_6_CP + "dataTransferResponse",
 
-                   new XElement(OCPPNS.OCPPv1_6_CS + "status",  Status.AsText()),
+                   new XElement(OCPPNS.OCPPv1_6_CP + "status",      Status.AsText()),
 
                    Data.IsNullOrEmpty()
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "data",  Data)
+                       ? new XElement(OCPPNS.OCPPv1_6_CP + "data",  Data)
                        : null
 
                );
@@ -331,16 +331,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomDataTransferResponseSerializer">A delegate to serialize custom authorize responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferResponse>? CustomDataTransferResponseSerializer = null)
+        /// <param name="CustomDataTransferResponseSerializer">A delegate to serialize custom data transfer responses.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferResponse>?  CustomDataTransferResponseSerializer  = null)
         {
 
             var json = JSONObject.Create(
 
-                           new JProperty("status",      DataTransferStatusExtentions.AsText(Status)),
+                           new JProperty("status",  Status.AsText()),
 
                            Data.IsNotNullOrEmpty()
-                               ? new JProperty("data",  Data)
+                               ? new JProperty("data", Data)
                                : null
 
                        );
@@ -359,8 +359,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The data transfer failed.
         /// </summary>
-        /// <param name="Request">The incoming data transfer request leading to this response.</param>
-        public static DataTransferResponse Failed(CP.DataTransferRequest Request)
+        /// <param name="Request">The data transfer request leading to this response.</param>
+        public static DataTransferResponse Failed(CS.DataTransferRequest  Request)
 
             => new (Request,
                     Result.Server());
@@ -423,8 +423,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Object">A data transfer response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is BootNotificationResponse bootNotificationResponse &&
-                   Equals(bootNotificationResponse);
+            => Object is DataTransferResponse dataTransferResponse &&
+                   Equals(dataTransferResponse);
 
         #endregion
 
@@ -458,9 +458,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return Status.GetHashCode() * 3 ^
+                return Status.GetHashCode() * 11 ^
 
-                       Data?. GetHashCode() ?? 0;
+                       (Data != null
+                           ? Data.GetHashCode()
+                           : 0);
 
             }
         }
@@ -474,8 +476,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Status, " / ",
-                             Data?.SubstringMax(20) ?? "-");
+            => String.Concat(Status, " / ", Data.SubstringMax(20));
 
         #endregion
 

@@ -847,7 +847,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-
             if (Autostart)
                 centralSystemServer.Start();
 
@@ -1701,18 +1700,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        public void AddBasicAuth(String Login, String Password)
+        #region AddHTTPBasicAuth(ChargeBoxId, Password)
+
+        /// <summary>
+        /// Add the given HTTP Basic Authentication password for the given charge box.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of the charge box.</param>
+        /// <param name="Password">The password of the charge box.</param>
+        public void AddHTTPBasicAuth(ChargeBox_Id  ChargeBoxId,
+                                     String        Password)
         {
 
             foreach (var centralSystemServer in centralSystemServers)
             {
                 if (centralSystemServer is CentralSystemWSServer centralSystemWSServer)
                 {
-                    centralSystemWSServer.ChargingBoxLogins.Add(Login, Password);
+
+                    centralSystemWSServer.AddHTTPBasicAuth(ChargeBoxId,
+                                                           Password);
+
                 }
             }
 
         }
+
+        #endregion
 
 
         #region ChargeBoxes
@@ -3664,18 +3676,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.ResetResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.Reset(request);
+                               ? await centralSystem.Item1.Reset(request)
 
-            else
-                response = new CP.ResetResponse(request,
-                                                Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.ResetResponse(request,
-                                              Result.Server("Response is null!"));
+                               : new CP.ResetResponse(request,
+                                                      Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnResetResponse event
@@ -3766,18 +3772,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.ChangeAvailabilityResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.ChangeAvailability(request);
+                               ? await centralSystem.Item1.ChangeAvailability(request)
 
-            else
-                response = new CP.ChangeAvailabilityResponse(request,
-                                                             Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.ChangeAvailabilityResponse(request,
-                                                           Result.Server("Response is null!"));
+                               : new CP.ChangeAvailabilityResponse(request,
+                                                                   Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnChangeAvailabilityResponse event
@@ -3865,18 +3865,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.GetConfigurationResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.GetConfiguration(request);
+                               ? await centralSystem.Item1.GetConfiguration(request)
 
-            else
-                response = new CP.GetConfigurationResponse(request,
-                                                           Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.GetConfigurationResponse(request,
-                                                         Result.Server("Response is null!"));
+                               : new CP.GetConfigurationResponse(request,
+                                                                 Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnGetConfigurationResponse event
@@ -3967,18 +3961,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.ChangeConfigurationResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.ChangeConfiguration(request);
+                               ? await centralSystem.Item1.ChangeConfiguration(request)
 
-            else
-                response = new CP.ChangeConfigurationResponse(request,
-                                                              Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.ChangeConfigurationResponse(request,
-                                                            Result.Server("Response is null!"));
+                               : new CP.ChangeConfigurationResponse(request,
+                                                                    Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnChangeConfigurationResponse event
@@ -4072,18 +4060,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.DataTransferResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.DataTransfer(request);
+                               ? await centralSystem.Item1.DataTransfer(request)
 
-            else
-                response = new CP.DataTransferResponse(request,
-                                                       Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.DataTransferResponse(request,
-                                                     Result.Server("Response is null!"));
+                               : new CP.DataTransferResponse(request,
+                                                             Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnDataTransferResponse event
@@ -4183,18 +4165,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.GetDiagnosticsResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.GetDiagnostics(request);
+                               ? await centralSystem.Item1.GetDiagnostics(request)
 
-            else
-                response = new CP.GetDiagnosticsResponse(request,
-                                                         Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.GetDiagnosticsResponse(request,
-                                                       Result.Server("Response is null!"));
+                               : new CP.GetDiagnosticsResponse(request,
+                                                               Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnGetDiagnosticsResponse event
@@ -4285,18 +4261,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.TriggerMessageResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.TriggerMessage(request);
+                               ? await centralSystem.Item1.TriggerMessage(request)
 
-            else
-                response = new CP.TriggerMessageResponse(request,
-                                                         Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.TriggerMessageResponse(request,
-                                                       Result.Server("Response is null!"));
+                               : new CP.TriggerMessageResponse(request,
+                                                               Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnTriggerMessageResponse event
@@ -4393,18 +4363,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.UpdateFirmwareResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.UpdateFirmware(request);
+                               ? await centralSystem.Item1.UpdateFirmware(request)
 
-            else
-                response = new CP.UpdateFirmwareResponse(request,
-                                                         Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.UpdateFirmwareResponse(request,
-                                                       Result.Server("Response is null!"));
+                               : new CP.UpdateFirmwareResponse(request,
+                                                               Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnUpdateFirmwareResponse event
@@ -4505,18 +4469,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.ReserveNowResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.ReserveNow(request);
+                               ? await centralSystem.Item1.ReserveNow(request)
 
-            else
-                response = new CP.ReserveNowResponse(request,
-                                                     Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.ReserveNowResponse(request,
-                                                   Result.Server("Response is null!"));
+                               : new CP.ReserveNowResponse(request,
+                                                           Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnReserveNowResponse event
@@ -4604,18 +4562,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.CancelReservationResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.CancelReservation(request);
+                               ? await centralSystem.Item1.CancelReservation(request)
 
-            else
-                response = new CP.CancelReservationResponse(request,
-                                                            Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.CancelReservationResponse(request,
-                                                          Result.Server("Response is null!"));
+                               : new CP.CancelReservationResponse(request,
+                                                                  Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnCancelReservationResponse event
@@ -4709,18 +4661,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.RemoteStartTransactionResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.RemoteStartTransaction(request);
+                               ? await centralSystem.Item1.RemoteStartTransaction(request)
 
-            else
-                response = new CP.RemoteStartTransactionResponse(request,
-                                                                 Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.RemoteStartTransactionResponse(request,
-                                                               Result.Server("Response is null!"));
+                               : new CP.RemoteStartTransactionResponse(request,
+                                                                       Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnRemoteStartTransactionResponse event
@@ -4808,18 +4754,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.RemoteStopTransactionResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.RemoteStopTransaction(request);
+                               ? await centralSystem.Item1.RemoteStopTransaction(request)
 
-            else
-                response = new CP.RemoteStopTransactionResponse(request,
-                                                                Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.RemoteStopTransactionResponse(request,
-                                                              Result.Server("Response is null!"));
+                               : new CP.RemoteStopTransactionResponse(request,
+                                                                      Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnRemoteStopTransactionResponse event
@@ -4910,18 +4850,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.SetChargingProfileResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.SetChargingProfile(request);
+                               ? await centralSystem.Item1.SetChargingProfile(request)
 
-            else
-                response = new CP.SetChargingProfileResponse(request,
-                                                             Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.SetChargingProfileResponse(request,
-                                                           Result.Server("Response is null!"));
+                               : new CP.SetChargingProfileResponse(request,
+                                                                   Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnSetChargingProfileResponse event
@@ -5018,18 +4952,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.ClearChargingProfileResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.ClearChargingProfile(request);
+                               ? await centralSystem.Item1.ClearChargingProfile(request)
 
-            else
-                response = new CP.ClearChargingProfileResponse(request,
-                                                               Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.ClearChargingProfileResponse(request,
-                                                             Result.Server("Response is null!"));
+                               : new CP.ClearChargingProfileResponse(request,
+                                                                     Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnClearChargingProfileResponse event
@@ -5123,18 +5051,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.GetCompositeScheduleResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.GetCompositeSchedule(request);
+                               ? await centralSystem.Item1.GetCompositeSchedule(request)
 
-            else
-                response = new CP.GetCompositeScheduleResponse(request,
-                                                               Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.GetCompositeScheduleResponse(request,
-                                                             Result.Server("Response is null!"));
+                               : new CP.GetCompositeScheduleResponse(request,
+                                                                     Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnGetCompositeScheduleResponse event
@@ -5222,18 +5144,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.UnlockConnectorResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.UnlockConnector(request);
+                               ? await centralSystem.Item1.UnlockConnector(request)
 
-            else
-                response = new CP.UnlockConnectorResponse(request,
-                                                          Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.UnlockConnectorResponse(request,
-                                                        Result.Server("Response is null!"));
+                               : new CP.UnlockConnectorResponse(request,
+                                                                Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnUnlockConnectorResponse event
@@ -5319,18 +5235,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.GetLocalListVersionResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.GetLocalListVersion(request);
+                               ? await centralSystem.Item1.GetLocalListVersion(request)
 
-            else
-                response = new CP.GetLocalListVersionResponse(request,
-                                                              Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.GetLocalListVersionResponse(request,
-                                                            Result.Server("Response is null!"));
+                               : new CP.GetLocalListVersionResponse(request,
+                                                                    Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnGetLocalListVersionResponse event
@@ -5424,18 +5334,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.SendLocalListResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.SendLocalList(request);
+                               ? await centralSystem.Item1.SendLocalList(request)
 
-            else
-                response = new CP.SendLocalListResponse(request,
-                                                        Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.SendLocalListResponse(request,
-                                                      Result.Server("Response is null!"));
+                               : new CP.SendLocalListResponse(request,
+                                                              Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnSendLocalListResponse event
@@ -5520,18 +5424,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CP.ClearCacheResponse response;
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-            if (reachableChargingBoxes.TryGetValue(ChargeBoxId, out var webSocketServer))
-                response = await webSocketServer.Item1.ClearCache(request);
+                               ? await centralSystem.Item1.ClearCache(request)
 
-            else
-                response = new CP.ClearCacheResponse(request,
-                                                     Result.Server("Unknown or unreachable charging box!"));
-
-
-            response ??= new CP.ClearCacheResponse(request,
-                                                   Result.Server("Response is null!"));
+                               : new CP.ClearCacheResponse(request,
+                                                           Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnClearCacheResponse event
@@ -5560,6 +5458,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         }
 
         #endregion
+
 
     }
 
