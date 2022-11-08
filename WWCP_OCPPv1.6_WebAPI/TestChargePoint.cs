@@ -100,31 +100,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             /// <summary>
             /// The configuration value.
             /// </summary>
-            public String   Value              { get; set; }
+            public String        Value             { get; set; }
 
             /// <summary>
             /// This configuration value can not be changed.
             /// </summary>
-            public Boolean  IsReadOnly         { get; }
+            public AccessRights  AccessRights      { get; }
 
             /// <summary>
             /// Changing this configuration value requires a reboot of the charge box to take effect.
             /// </summary>
-            public Boolean  RebootRequired     { get; }
+            public Boolean       RebootRequired    { get; }
 
             /// <summary>
             /// Create a new configuration value.
             /// </summary>
             /// <param name="Value">The configuration value.</param>
-            /// <param name="IsReadOnly">This configuration value can not be changed.</param>
+            /// <param name="AccessRights">This configuration value is: read/write, read-only, write-only.</param>
             /// <param name="RebootRequired">Changing this configuration value requires a reboot of the charge box to take effect.</param>
-            public ConfigurationData(String   Value,
-                                     Boolean  IsReadOnly,
-                                     Boolean  RebootRequired = false)
+            public ConfigurationData(String        Value,
+                                     AccessRights  AccessRights,
+                                     Boolean       RebootRequired = false)
             {
 
                 this.Value           = Value;
-                this.IsReadOnly      = IsReadOnly;
+                this.AccessRights    = AccessRights;
                 this.RebootRequired  = RebootRequired;
 
             }
@@ -833,9 +833,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
 
             this.Configuration = new Dictionary<String, ConfigurationData> {
-                { "hello",          new ConfigurationData("world", true,  false) },
-                { "changeMe",       new ConfigurationData("now",   false, false) },
-                { "doNotChangeMe",  new ConfigurationData("never", true,  false) }
+                { "hello",          new ConfigurationData("world",    AccessRights.ReadOnly,  false) },
+                { "changeMe",       new ConfigurationData("now",      AccessRights.ReadWrite, false) },
+                { "doNotChangeMe",  new ConfigurationData("never",    AccessRights.ReadOnly,  false) },
+                { "password",       new ConfigurationData("12345678", AccessRights.WriteOnly, false) }
             };
             this.EnquedRequests           = new List<EnquedRequest>();
 
@@ -1255,7 +1256,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                             if (Configuration.TryGetValue(key, out var configurationData))
                                 configurationKeys.Add(new ConfigurationKey(key,
-                                                                           configurationData.IsReadOnly,
+                                                                           configurationData.AccessRights,
                                                                            configurationData.Value));
 
                             else
@@ -1268,7 +1269,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         foreach (var configuration in Configuration)
                         {
                             configurationKeys.Add(new ConfigurationKey(configuration.Key,
-                                                                       configuration.Value.IsReadOnly,
+                                                                       configuration.Value.AccessRights,
                                                                        configuration.Value.Value));
                         }
                     }
@@ -1355,7 +1356,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     if (Configuration.TryGetValue(Request.Key, out var configurationData))
                     {
-                        if (configurationData.IsReadOnly)
+                        if (configurationData.AccessRights == AccessRights.ReadOnly)
                         {
 
                             response                 = new ChangeConfigurationResponse(Request,
@@ -1377,9 +1378,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     else
                     {
 
-                        Configuration.Add(Request.Key, new ConfigurationData(Request.Value,
-                                                                             false,
-                                                                             false));
+                        Configuration.Add(Request.Key,
+                                          new ConfigurationData(Request.Value,
+                                                                AccessRights.ReadWrite,
+                                                                false));
 
                         response  = new ChangeConfigurationResponse(Request,
                                                                     ConfigurationStatus.Accepted);

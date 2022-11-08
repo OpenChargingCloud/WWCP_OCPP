@@ -175,7 +175,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         //                             },
         //                             "status": {
         //                                 "type": "string",
-        //                                 "additionalProperties": false,
         //                                 "enum": [
         //                                     "Accepted",
         //                                     "Blocked",

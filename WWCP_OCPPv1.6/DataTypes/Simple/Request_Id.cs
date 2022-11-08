@@ -100,6 +100,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
+        // Maximum of 36 characters, to allow for GUIDs
+        // Sometimes called: messageId?!?!
+
         #region (static) NewRandom(Length = 30, IsLocal = false)
 
         /// <summary>
