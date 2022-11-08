@@ -1077,6 +1077,80 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
+
+        // Security extensions
+
+        #region CertificateSigned
+
+        /// <summary>
+        /// Send the signed certificate to the charge point.
+        /// </summary>
+        /// <param name="Request">A certificate signed request.</param>
+        Task<CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request);
+
+        #endregion
+
+        #region DeleteCertificate
+
+        /// <summary>
+        /// Delete the given certificate on the charge point.
+        /// </summary>
+        /// <param name="Request">A delete certificate request.</param>
+        Task<DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request);
+
+        #endregion
+
+        #region ExtendedTriggerMessage
+
+        /// <summary>
+        /// Send an extended trigger message to the charge point.
+        /// </summary>
+        /// <param name="Request">A extended trigger message request.</param>
+        Task<ExtendedTriggerMessageResponse> ExtendedTriggerMessage(ExtendedTriggerMessageRequest Request);
+
+        #endregion
+
+        #region GetInstalledCertificateIds
+
+        /// <summary>
+        /// Retrieve a list of all installed certificates within the charge point.
+        /// </summary>
+        /// <param name="Request">A get installed certificate ids request.</param>
+        Task<GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request);
+
+        #endregion
+
+        #region GetLog
+
+        /// <summary>
+        /// Retrieve log files from the charge point.
+        /// </summary>
+        /// <param name="Request">A get log request.</param>
+        Task<GetLogResponse> GetLog(GetLogRequest Request);
+
+        #endregion
+
+        #region InstallCertificate
+
+        /// <summary>
+        /// Install the given certificate within the charge point.
+        /// </summary>
+        /// <param name="Request">An install certificate request.</param>
+        Task<InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request);
+
+        #endregion
+
+        #region SignedUpdateFirmware
+
+        /// <summary>
+        /// Update the firmware of the charge point.
+        /// </summary>
+        /// <param name="Request">A signed update firmware request.</param>
+        Task<SignedUpdateFirmwareResponse> SignedUpdateFirmware(SignedUpdateFirmwareRequest Request);
+
+        #endregion
+
+
     }
 
 }

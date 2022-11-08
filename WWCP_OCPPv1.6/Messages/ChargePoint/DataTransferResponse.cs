@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomDataTransferResponseSerializer">A delegate to serialize custom authorize responses.</param>
+        /// <param name="CustomDataTransferResponseSerializer">A delegate to serialize custom data transfer responses.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferResponse>? CustomDataTransferResponseSerializer = null)
         {
 
@@ -423,8 +423,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Object">A data transfer response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is BootNotificationResponse bootNotificationResponse &&
-                   Equals(bootNotificationResponse);
+            => Object is DataTransferResponse dataTransferResponse &&
+                   Equals(dataTransferResponse);
 
         #endregion
 

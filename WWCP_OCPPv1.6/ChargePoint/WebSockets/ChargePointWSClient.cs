@@ -32,7 +32,6 @@ using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
-using Org.BouncyCastle.Asn1.Ocsp;
 
 #endregion
 
@@ -156,6 +155,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        //ToDo: Add reponse serializers!!!
+
         #region Events
 
         // Outgoing messages (to central system)
@@ -163,22 +164,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnBootNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a boot notification Request will be send to the central system.
+        /// An event fired whenever a boot notification request will be send to the central system.
         /// </summary>
         public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a boot notification websocket Request will be send to the central system.
+        /// An event fired whenever a boot notification request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler?             OnBootNotificationWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a boot notification websocket Request was received.
+        /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
         public event ClientResponseLogHandler?            OnBootNotificationWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a boot notification Request was received.
+        /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
         public event OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
 
@@ -187,22 +188,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnHeartbeatRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a heartbeat Request will be send to the central system.
+        /// An event fired whenever a heartbeat request will be send to the central system.
         /// </summary>
         public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
 
         /// <summary>
-        /// An event fired whenever a heartbeat websocket Request will be send to the central system.
+        /// An event fired whenever a heartbeat request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler?      OnHeartbeatWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a heartbeat websocket Request was received.
+        /// An event fired whenever a response to a heartbeat request was received.
         /// </summary>
         public event ClientResponseLogHandler?     OnHeartbeatWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a heartbeat Request was received.
+        /// An event fired whenever a response to a heartbeat request was received.
         /// </summary>
         public event OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
 
@@ -212,22 +213,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnAuthorizeRequest/-Response
 
         /// <summary>
-        /// An event fired whenever an authorize Request will be send to the central system.
+        /// An event fired whenever an authorize request will be send to the central system.
         /// </summary>
         public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
 
         /// <summary>
-        /// An event fired whenever an authorize websocket Request will be send to the central system.
+        /// An event fired whenever an authorize request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler?      OnAuthorizeWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to an authorize websocket Request was received.
+        /// An event fired whenever a response to an authorize request was received.
         /// </summary>
         public event ClientResponseLogHandler?     OnAuthorizeWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to an authorize Request was received.
+        /// An event fired whenever a response to an authorize request was received.
         /// </summary>
         public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
 
@@ -236,22 +237,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnStartTransactionRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a start transaction Request will be send to the central system.
+        /// An event fired whenever a start transaction request will be send to the central system.
         /// </summary>
         public event OnStartTransactionRequestDelegate?   OnStartTransactionRequest;
 
         /// <summary>
-        /// An event fired whenever a start transaction websocket Request will be send to the central system.
+        /// An event fired whenever a start transaction request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler?             OnStartTransactionWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a start transaction websocket Request was received.
+        /// An event fired whenever a response to a start transaction request was received.
         /// </summary>
         public event ClientResponseLogHandler?            OnStartTransactionWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a start transaction Request was received.
+        /// An event fired whenever a response to a start transaction request was received.
         /// </summary>
         public event OnStartTransactionResponseDelegate?  OnStartTransactionResponse;
 
@@ -260,22 +261,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a status notification Request will be send to the central system.
+        /// An event fired whenever a status notification request will be send to the central system.
         /// </summary>
         public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a status notification websocket Request will be send to the central system.
+        /// An event fired whenever a status notification request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler?               OnStatusNotificationWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a status notification websocket Request was received.
+        /// An event fired whenever a response to a status notification request was received.
         /// </summary>
         public event ClientResponseLogHandler?              OnStatusNotificationWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a status notification Request was received.
+        /// An event fired whenever a response to a status notification request was received.
         /// </summary>
         public event OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
 
@@ -284,22 +285,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnMeterValuesRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a meter values Request will be send to the central system.
+        /// An event fired whenever a meter values request will be send to the central system.
         /// </summary>
         public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
 
         /// <summary>
-        /// An event fired whenever a meter values websocket Request will be send to the central system.
+        /// An event fired whenever a meter values request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler?        OnMeterValuesWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a meter values websocket Request was received.
+        /// An event fired whenever a response to a meter values request was received.
         /// </summary>
         public event ClientResponseLogHandler?       OnMeterValuesWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a meter values Request was received.
+        /// An event fired whenever a response to a meter values request was received.
         /// </summary>
         public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
 
@@ -308,22 +309,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnStopTransactionRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a stop transaction Request will be send to the central system.
+        /// An event fired whenever a stop transaction request will be send to the central system.
         /// </summary>
         public event OnStopTransactionRequestDelegate?   OnStopTransactionRequest;
 
         /// <summary>
-        /// An event fired whenever a stop transaction websocket Request will be send to the central system.
+        /// An event fired whenever a stop transaction request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler?            OnStopTransactionWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a stop transaction websocket Request was received.
+        /// An event fired whenever a response to a stop transaction request was received.
         /// </summary>
         public event ClientResponseLogHandler?           OnStopTransactionWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a stop transaction Request was received.
+        /// An event fired whenever a response to a stop transaction request was received.
         /// </summary>
         public event OnStopTransactionResponseDelegate?  OnStopTransactionResponse;
 
@@ -333,22 +334,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnDataTransferRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a data transfer Request will be send to the central system.
+        /// An event fired whenever a data transfer request will be send to the central system.
         /// </summary>
         public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
-        /// An event fired whenever a data transfer websocket Request will be send to the central system.
+        /// An event fired whenever a data transfer request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler?         OnDataTransferWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a data transfer websocket Request was received.
+        /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
         public event ClientResponseLogHandler?        OnDataTransferWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a data transfer Request was received.
+        /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
         public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
@@ -357,22 +358,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnDiagnosticsStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a diagnostics status notification Request will be send to the central system.
+        /// An event fired whenever a diagnostics status notification request will be send to the central system.
         /// </summary>
         public event OnDiagnosticsStatusNotificationRequestDelegate?   OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a diagnostics status notification websocket Request will be send to the central system.
+        /// An event fired whenever a diagnostics status notification request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler?                          OnDiagnosticsStatusNotificationWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a diagnostics status notification websocket Request was received.
+        /// An event fired whenever a response to a diagnostics status notification request was received.
         /// </summary>
         public event ClientResponseLogHandler?                         OnDiagnosticsStatusNotificationWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a diagnostics status notification Request was received.
+        /// An event fired whenever a response to a diagnostics status notification request was received.
         /// </summary>
         public event OnDiagnosticsStatusNotificationResponseDelegate?  OnDiagnosticsStatusNotificationResponse;
 
@@ -381,26 +382,126 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnFirmwareStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a firmware status notification Request will be send to the central system.
+        /// An event fired whenever a firmware status notification request will be send to the central system.
         /// </summary>
         public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a firmware status notification websocket Request will be send to the central system.
+        /// An event fired whenever a firmware status notification request will be send to the central system.
         /// </summary>
         public event ClientRequestLogHandler?                       OnFirmwareStatusNotificationWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a firmware status notification websocket Request was received.
+        /// An event fired whenever a response to a firmware status notification request was received.
         /// </summary>
         public event ClientResponseLogHandler?                      OnFirmwareStatusNotificationWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a firmware status notification Request was received.
+        /// An event fired whenever a response to a firmware status notification request was received.
         /// </summary>
         public event OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
 
         #endregion
+
+
+        // Security extensions
+
+        #region OnLogStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a log status notification request will be send to the central system.
+        /// </summary>
+        public event OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a log status notification request will be send to the central system.
+        /// </summary>
+        public event ClientRequestLogHandler?                  OnLogStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a log status notification request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                 OnLogStatusNotificationWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a log status notification request was received.
+        /// </summary>
+        public event OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
+
+        #endregion
+
+        #region OnSecurityEventNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a security event notification request will be send to the central system.
+        /// </summary>
+        public event OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a security event notification request will be send to the central system.
+        /// </summary>
+        public event ClientRequestLogHandler?                      OnSecurityEventNotificationWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a security event notification request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                     OnSecurityEventNotificationWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a security event notification request was received.
+        /// </summary>
+        public event OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
+
+        #endregion
+
+        #region OnSignCertificateRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a sign certificate request will be send to the central system.
+        /// </summary>
+        public event OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
+
+        /// <summary>
+        /// An event fired whenever a sign certificate request will be send to the central system.
+        /// </summary>
+        public event ClientRequestLogHandler?            OnSignCertificateWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a sign certificate request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?           OnSignCertificateWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a sign certificate request was received.
+        /// </summary>
+        public event OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
+
+        #endregion
+
+        #region OnSignedFirmwareStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a signed firmware status notification request will be send to the central system.
+        /// </summary>
+        public event OnSignedFirmwareStatusNotificationRequestDelegate?   OnSignedFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a signed firmware status notification request will be send to the central system.
+        /// </summary>
+        public event ClientRequestLogHandler?                             OnSignedFirmwareStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a signed firmware status notification request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                            OnSignedFirmwareStatusNotificationWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a signed firmware status notification request was received.
+        /// </summary>
+        public event OnSignedFirmwareStatusNotificationResponseDelegate?  OnSignedFirmwareStatusNotificationResponse;
+
+        #endregion
+
 
 
         // Incoming messages (from central system)
@@ -957,6 +1058,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public event WSClientResponseLogHandler?      OnClearCacheWSResponse;
 
         #endregion
+
+
+        // Security extensions
+
 
         #endregion
 
@@ -3902,53 +4007,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region SendHeartbeat                    (Request, ...)
+        #region SendHeartbeat                    (Request)
 
         /// <summary>
         /// Send a heartbeat.
         /// </summary>
         /// <param name="Request">A heartbeat request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<HeartbeatResponse>
 
-            SendHeartbeat(HeartbeatRequest    Request,
-
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id?   EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null)
+            SendHeartbeat(HeartbeatRequest  Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given heartbeat Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-            #endregion
-
             #region Send OnHeartbeatRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnHeartbeatRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnHeartbeatRequest?.Invoke(startTime,
                                            this,
                                            Request);
 
@@ -3980,14 +4058,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnHeartbeatResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnHeartbeatResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnHeartbeatResponse?.Invoke(endTime,
                                             this,
                                             Request,
                                             response,
-                                            org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                            endTime - startTime);
 
             }
             catch (Exception e)
@@ -4004,53 +4084,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region Authorize                        (Request, ...)
+        #region Authorize                        (Request)
 
         /// <summary>
         /// Authorize the given token.
         /// </summary>
         /// <param name="Request">An authorize request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthorizeResponse>
 
-            Authorize(AuthorizeRequest    Request,
-
-                      DateTime?           Timestamp           = null,
-                      CancellationToken?  CancellationToken   = null,
-                      EventTracking_Id?   EventTrackingId     = null,
-                      TimeSpan?           RequestTimeout      = null)
+            Authorize(AuthorizeRequest  Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given authorize Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-            #endregion
-
             #region Send OnAuthorizeRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnAuthorizeRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnAuthorizeRequest?.Invoke(startTime,
                                            this,
                                            Request);
 
@@ -4082,14 +4135,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnAuthorizeResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnAuthorizeResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnAuthorizeResponse?.Invoke(endTime,
                                             this,
                                             Request,
                                             response,
-                                            org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                            endTime - startTime);
 
             }
             catch (Exception e)
@@ -4105,53 +4160,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region StartTransaction                 (Request, ...)
+        #region StartTransaction                 (Request)
 
         /// <summary>
         /// Start a charging process at the given connector.
         /// </summary>
         /// <param name="Request">A start transaction request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<StartTransactionResponse>
 
-            StartTransaction(StartTransactionRequest  Request,
-
-                             DateTime?                Timestamp           = null,
-                             CancellationToken?       CancellationToken   = null,
-                             EventTracking_Id?        EventTrackingId     = null,
-                             TimeSpan?                RequestTimeout      = null)
+            StartTransaction(StartTransactionRequest  Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given start transaction Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-            #endregion
-
             #region Send OnStartTransactionRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnStartTransactionRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnStartTransactionRequest?.Invoke(startTime,
                                                   this,
                                                   Request);
 
@@ -4183,14 +4211,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnStartTransactionResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnStartTransactionResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnStartTransactionResponse?.Invoke(endTime,
                                                    this,
                                                    Request,
                                                    response,
-                                                   org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                   endTime - startTime);
 
             }
             catch (Exception e)
@@ -4206,53 +4236,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region SendStatusNotification           (Request, ...)
+        #region SendStatusNotification           (Request)
 
         /// <summary>
         /// Send a status notification for the given connector.
         /// </summary>
         /// <param name="Request">A status notification request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<StatusNotificationResponse>
 
-            SendStatusNotification(StatusNotificationRequest  Request,
-
-                                   DateTime?                  Timestamp           = null,
-                                   CancellationToken?         CancellationToken   = null,
-                                   EventTracking_Id?          EventTrackingId     = null,
-                                   TimeSpan?                  RequestTimeout      = null)
+            SendStatusNotification(StatusNotificationRequest  Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given status notification Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-            #endregion
-
             #region Send OnStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnStatusNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnStatusNotificationRequest?.Invoke(startTime,
                                                     this,
                                                     Request);
 
@@ -4284,14 +4287,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnStatusNotificationResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnStatusNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnStatusNotificationResponse?.Invoke(endTime,
                                                      this,
                                                      Request,
                                                      response,
-                                                     org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                     endTime - startTime);
 
             }
             catch (Exception e)
@@ -4307,53 +4312,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region SendMeterValues                  (Request, ...)
+        #region SendMeterValues                  (Request)
 
         /// <summary>
         /// Send a meter values for the given connector.
         /// </summary>
         /// <param name="Request">A meter values request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<MeterValuesResponse>
 
-            SendMeterValues(MeterValuesRequest  Request,
-
-                            DateTime?           Timestamp           = null,
-                            CancellationToken?  CancellationToken   = null,
-                            EventTracking_Id?   EventTrackingId     = null,
-                            TimeSpan?           RequestTimeout      = null)
+            SendMeterValues(MeterValuesRequest  Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given meter values Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-            #endregion
-
             #region Send OnMeterValuesRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnMeterValuesRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnMeterValuesRequest?.Invoke(startTime,
                                              this,
                                              Request);
 
@@ -4385,14 +4363,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnMeterValuesResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnMeterValuesResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnMeterValuesResponse?.Invoke(endTime,
                                               this,
                                               Request,
                                               response,
-                                              org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                              endTime - startTime);
 
             }
             catch (Exception e)
@@ -4408,53 +4388,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region StopTransaction                  (Request, ...)
+        #region StopTransaction                  (Request)
 
         /// <summary>
         /// Stop a charging process at the given connector.
         /// </summary>
         /// <param name="Request">A stop transaction request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<StopTransactionResponse>
 
-            StopTransaction(StopTransactionRequest  Request,
-
-                            DateTime?               Timestamp           = null,
-                            CancellationToken?      CancellationToken   = null,
-                            EventTracking_Id?       EventTrackingId     = null,
-                            TimeSpan?               RequestTimeout      = null)
+            StopTransaction(StopTransactionRequest  Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given stop transaction Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-            #endregion
-
             #region Send OnStopTransactionRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnStopTransactionRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnStopTransactionRequest?.Invoke(startTime,
                                                  this,
                                                  Request);
 
@@ -4486,14 +4439,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnStopTransactionResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnStopTransactionResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnStopTransactionResponse?.Invoke(endTime,
                                                   this,
                                                   Request,
                                                   response,
-                                                  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                  endTime - startTime);
 
             }
             catch (Exception e)
@@ -4510,53 +4465,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region TransferData                     (Request, ...)
+        #region TransferData                     (Request)
 
         /// <summary>
         /// Send the given vendor-specific data to the central system.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<CS.DataTransferResponse>
 
-            TransferData(DataTransferRequest  Request,
-
-                         DateTime?            Timestamp           = null,
-                         CancellationToken?   CancellationToken   = null,
-                         EventTracking_Id?    EventTrackingId     = null,
-                         TimeSpan?            RequestTimeout      = null)
+            TransferData(DataTransferRequest  Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given data transfer Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-            #endregion
-
             #region Send OnDataTransferRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnDataTransferRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnDataTransferRequest?.Invoke(startTime,
                                               this,
                                               Request);
 
@@ -4588,14 +4516,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnDataTransferResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnDataTransferResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnDataTransferResponse?.Invoke(endTime,
                                                this,
                                                Request,
                                                response,
-                                               org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                               endTime - startTime);
 
             }
             catch (Exception e)
@@ -4611,53 +4541,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region SendDiagnosticsStatusNotification(Request, ...)
+        #region SendDiagnosticsStatusNotification(Request)
 
         /// <summary>
         /// Send a diagnostics status notification to the central system.
         /// </summary>
         /// <param name="Request">A diagnostics status notification request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<DiagnosticsStatusNotificationResponse>
 
-            SendDiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest  Request,
-
-                                              DateTime?                             Timestamp           = null,
-                                              CancellationToken?                    CancellationToken   = null,
-                                              EventTracking_Id?                     EventTrackingId     = null,
-                                              TimeSpan?                             RequestTimeout      = null)
+            SendDiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest  Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given diagnostics status notification Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-            #endregion
-
             #region Send OnDiagnosticsStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnDiagnosticsStatusNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnDiagnosticsStatusNotificationRequest?.Invoke(startTime,
                                                                this,
                                                                Request);
 
@@ -4689,14 +4592,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnDiagnosticsStatusNotificationResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnDiagnosticsStatusNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnDiagnosticsStatusNotificationResponse?.Invoke(endTime,
                                                                 this,
                                                                 Request,
                                                                 response,
-                                                                org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                                endTime - startTime);
 
             }
             catch (Exception e)
@@ -4712,53 +4617,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region SendFirmwareStatusNotification   (Request, ...)
+        #region SendFirmwareStatusNotification   (Request)
 
         /// <summary>
         /// Send a firmware status notification to the central system.
         /// </summary>
         /// <param name="Request">A firmware status notification request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<FirmwareStatusNotificationResponse>
 
-            SendFirmwareStatusNotification(FirmwareStatusNotificationRequest  Request,
-
-                                           DateTime?                          Timestamp           = null,
-                                           CancellationToken?                 CancellationToken   = null,
-                                           EventTracking_Id?                  EventTrackingId     = null,
-                                           TimeSpan?                          RequestTimeout      = null)
+            SendFirmwareStatusNotification(FirmwareStatusNotificationRequest  Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given firmware status notification Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-            #endregion
-
             #region Send OnFirmwareStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnFirmwareStatusNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnFirmwareStatusNotificationRequest?.Invoke(startTime,
                                                             this,
                                                             Request);
 
@@ -4790,14 +4668,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnFirmwareStatusNotificationResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnFirmwareStatusNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnFirmwareStatusNotificationResponse?.Invoke(endTime,
                                                              this,
                                                              Request,
                                                              response,
-                                                             org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                             endTime - startTime);
 
             }
             catch (Exception e)
@@ -4812,6 +4692,319 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         }
 
         #endregion
+
+
+        // Security extensions
+
+        #region LogStatusNotification            (Request)
+
+        /// <summary>
+        /// Send a log status notification to the central system.
+        /// </summary>
+        /// <param name="Request">A start transaction request.</param>
+        public async Task<LogStatusNotificationResponse>
+
+            LogStatusNotification(LogStatusNotificationRequest  Request)
+
+        {
+
+            #region Send OnLogStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnLogStatusNotificationRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnLogStatusNotificationRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!LogStatusNotificationResponse.TryParse(Request,
+                                                       (await WaitForResponse(requestId)) ?? new JObject(),
+                                                        out var response,
+                                                        out var errorResponse))
+            {
+                response = new LogStatusNotificationResponse(Request,
+                                                             Result.Format(errorResponse));
+            }
+
+            response ??= new LogStatusNotificationResponse(Request,
+                                                           Result.GenericError());
+
+
+            #region Send OnLogStatusNotificationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnLogStatusNotificationResponse?.Invoke(endTime,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnLogStatusNotificationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SecurityEventNotification        (Request)
+
+        /// <summary>
+        /// Stop a charging process at the given connector.
+        /// </summary>
+        /// <param name="Request">A stop transaction request.</param>
+        public async Task<SecurityEventNotificationResponse>
+
+            SecurityEventNotification(SecurityEventNotificationRequest  Request)
+
+        {
+
+            #region Send OnSecurityEventNotificationRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSecurityEventNotificationRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSecurityEventNotificationRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!SecurityEventNotificationResponse.TryParse(Request,
+                                                           (await WaitForResponse(requestId)) ?? new JObject(),
+                                                            out var response,
+                                                            out var errorResponse))
+            {
+                response = new SecurityEventNotificationResponse(Request,
+                                                                 Result.Format(errorResponse));
+            }
+
+            response ??= new SecurityEventNotificationResponse(Request,
+                                                               Result.GenericError());
+
+
+            #region Send OnSecurityEventNotificationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSecurityEventNotificationResponse?.Invoke(endTime,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSecurityEventNotificationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SignCertificate                  (Request)
+
+        /// <summary>
+        /// Send certificate signing request to the central system.
+        /// </summary>
+        /// <param name="Request">A stop transaction request.</param>
+        public async Task<SignCertificateResponse>
+
+            SignCertificate(SignCertificateRequest  Request)
+
+        {
+
+            #region Send OnSignCertificateRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSignCertificateRequest?.Invoke(startTime,
+                                                 this,
+                                                 Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSignCertificateRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!SignCertificateResponse.TryParse(Request,
+                                                 (await WaitForResponse(requestId)) ?? new JObject(),
+                                                  out var response,
+                                                  out var errorResponse))
+            {
+                response = new SignCertificateResponse(Request,
+                                                       Result.Format(errorResponse));
+            }
+
+            response ??= new SignCertificateResponse(Request,
+                                                     Result.GenericError());
+
+
+            #region Send OnSignCertificateResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSignCertificateResponse?.Invoke(endTime,
+                                                  this,
+                                                  Request,
+                                                  response,
+                                                  endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSignCertificateResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SignedFirmwareStatusNotification (Request)
+
+        /// <summary>
+        /// Send a signed firmware status notification to the central system.
+        /// </summary>
+        /// <param name="Request">A stop transaction request.</param>
+        public async Task<SignedFirmwareStatusNotificationResponse>
+
+            SignedFirmwareStatusNotification(SignedFirmwareStatusNotificationRequest  Request)
+
+        {
+
+            #region Send OnSignedFirmwareStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSignedFirmwareStatusNotificationRequest?.Invoke(startTime,
+                                                                  this,
+                                                                  Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSignedFirmwareStatusNotificationRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!SignedFirmwareStatusNotificationResponse.TryParse(Request,
+                                                                  (await WaitForResponse(requestId)) ?? new JObject(),
+                                                                   out var response,
+                                                                   out var errorResponse))
+            {
+                response = new SignedFirmwareStatusNotificationResponse(Request,
+                                                                        Result.Format(errorResponse));
+            }
+
+            response ??= new SignedFirmwareStatusNotificationResponse(Request,
+                                                                      Result.GenericError());
+
+
+            #region Send OnSignedFirmwareStatusNotificationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSignedFirmwareStatusNotificationResponse?.Invoke(endTime,
+                                                                   this,
+                                                                   Request,
+                                                                   response,
+                                                                   endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnSignedFirmwareStatusNotificationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        // LogStatusNotification
+        // SecurityEventNotification
+        // SignCertificate
+        // SignedFirmwareStatusNotification
 
 
     }

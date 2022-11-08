@@ -338,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 UpdateFirmwareRequest = null;
 
-                #region Location         [optional]
+                #region Location         [mandatory]
 
                 if (!JSON.ParseMandatoryText("location",
                                              "location",
@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region RetrieveDate     [optional]
+                #region RetrieveDate     [mandatory]
 
                 if (!JSON.ParseMandatory("retrieveDate",
                                          "retrieve date",
@@ -622,6 +622,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                  : "");
 
         #endregion
+
 
     }
 

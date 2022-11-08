@@ -684,56 +684,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region SendHeartbeat                    (Request, ...)
+        #region SendHeartbeat                    (Request)
 
         /// <summary>
         /// Send a heartbeat.
         /// </summary>
         /// <param name="Request">A heartbeat request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<HeartbeatResponse>
-
-            SendHeartbeat(HeartbeatRequest    Request,
-
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id?   EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null)
+        public async Task<HeartbeatResponse> SendHeartbeat(HeartbeatRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given heartbeat Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<HeartbeatResponse>? result = null;
-
-            #endregion
-
             #region Send OnHeartbeatRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnHeartbeatRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnHeartbeatRequest?.Invoke(startTime,
                                            this,
                                            Request);
 
@@ -745,6 +713,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
+
+            HTTPResponse<HeartbeatResponse>? result = null;
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                     VirtualHostname,
@@ -776,9 +746,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                  "Heartbeat",
                                                  RequestLogDelegate:   OnHeartbeatSOAPRequest,
                                                  ResponseLogDelegate:  OnHeartbeatSOAPResponse,
-                                                 CancellationToken:    CancellationToken,
-                                                 EventTrackingId:      EventTrackingId,
-                                                 RequestTimeout:       RequestTimeout,
+                                                 CancellationToken:    Request.CancellationToken,
+                                                 EventTrackingId:      Request.EventTrackingId,
+                                                 RequestTimeout:       Request.RequestTimeout,
 
                                                  #region OnSuccess
 
@@ -854,14 +824,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnHeartbeatResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnHeartbeatResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnHeartbeatResponse?.Invoke(endTime,
                                             this,
                                             Request,
                                             result.Content,
-                                            org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                            endTime - startTime);
 
             }
             catch (Exception e)
@@ -878,56 +850,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region Authorize                        (Request, ...)
+        #region Authorize                        (Request)
 
         /// <summary>
         /// Authorize the given token.
         /// </summary>
         /// <param name="Request">An authorize request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<AuthorizeResponse>
-
-            Authorize(AuthorizeRequest    Request,
-
-                      DateTime?           Timestamp           = null,
-                      CancellationToken?  CancellationToken   = null,
-                      EventTracking_Id?   EventTrackingId     = null,
-                      TimeSpan?           RequestTimeout      = null)
+        public async Task<AuthorizeResponse> Authorize(AuthorizeRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given authorize Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<AuthorizeResponse>? result = null;
-
-            #endregion
-
             #region Send OnAuthorizeRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnAuthorizeRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnAuthorizeRequest?.Invoke(startTime,
                                            this,
                                            Request);
 
@@ -939,6 +879,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
+
+            HTTPResponse<AuthorizeResponse>? result = null;
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                     VirtualHostname,
@@ -970,9 +912,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                  "Authorize",
                                                  RequestLogDelegate:   OnAuthorizeSOAPRequest,
                                                  ResponseLogDelegate:  OnAuthorizeSOAPResponse,
-                                                 CancellationToken:    CancellationToken,
-                                                 EventTrackingId:      EventTrackingId,
-                                                 RequestTimeout:       RequestTimeout,
+                                                 CancellationToken:    Request.CancellationToken,
+                                                 EventTrackingId:      Request.EventTrackingId,
+                                                 RequestTimeout:       Request.RequestTimeout,
 
                                                  #region OnSuccess
 
@@ -1049,14 +991,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnAuthorizeResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnAuthorizeResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnAuthorizeResponse?.Invoke(endTime,
                                             this,
                                             Request,
                                             result.Content,
-                                            org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                            endTime - startTime);
 
             }
             catch (Exception e)
@@ -1072,56 +1016,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region StartTransaction                 (Request, ...)
+        #region StartTransaction                 (Request)
 
         /// <summary>
         /// Start a charging process at the given connector.
         /// </summary>
         /// <param name="Request">A start transaction request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<StartTransactionResponse>
-
-            StartTransaction(StartTransactionRequest  Request,
-
-                             DateTime?                Timestamp           = null,
-                             CancellationToken?       CancellationToken   = null,
-                             EventTracking_Id?        EventTrackingId     = null,
-                             TimeSpan?                RequestTimeout      = null)
+        public async Task<StartTransactionResponse> StartTransaction(StartTransactionRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given start transaction Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<StartTransactionResponse>? result = null;
-
-            #endregion
-
             #region Send OnStartTransactionRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnStartTransactionRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnStartTransactionRequest?.Invoke(startTime,
                                                   this,
                                                   Request);
 
@@ -1133,6 +1045,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
+
+            HTTPResponse<StartTransactionResponse>? result = null;
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                     VirtualHostname,
@@ -1164,9 +1078,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                  "StartTransaction",
                                                  RequestLogDelegate:   OnStartTransactionSOAPRequest,
                                                  ResponseLogDelegate:  OnStartTransactionSOAPResponse,
-                                                 CancellationToken:    CancellationToken,
-                                                 EventTrackingId:      EventTrackingId,
-                                                 RequestTimeout:       RequestTimeout,
+                                                 CancellationToken:    Request.CancellationToken,
+                                                 EventTrackingId:      Request.EventTrackingId,
+                                                 RequestTimeout:       Request.RequestTimeout,
 
                                                  #region OnSuccess
 
@@ -1243,14 +1157,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnStartTransactionResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnStartTransactionResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnStartTransactionResponse?.Invoke(endTime,
                                                    this,
                                                    Request,
                                                    result.Content,
-                                                   org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                   endTime - startTime);
 
             }
             catch (Exception e)
@@ -1266,56 +1182,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region SendStatusNotification           (Request, ...)
+        #region SendStatusNotification           (Request)
 
         /// <summary>
         /// Send a status notification for the given connector.
         /// </summary>
         /// <param name="Request">A status notification request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<StatusNotificationResponse>
-
-            SendStatusNotification(StatusNotificationRequest  Request,
-
-                                   DateTime?                  Timestamp           = null,
-                                   CancellationToken?         CancellationToken   = null,
-                                   EventTracking_Id?          EventTrackingId     = null,
-                                   TimeSpan?                  RequestTimeout      = null)
+        public async Task<StatusNotificationResponse> SendStatusNotification(StatusNotificationRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given status notification Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<StatusNotificationResponse>? result = null;
-
-            #endregion
-
             #region Send OnStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnStatusNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnStatusNotificationRequest?.Invoke(startTime,
                                                     this,
                                                     Request);
 
@@ -1327,6 +1211,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
+
+            HTTPResponse<StatusNotificationResponse>? result = null;
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                     VirtualHostname,
@@ -1358,9 +1244,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                  "StatusNotification",
                                                  RequestLogDelegate:   OnStatusNotificationSOAPRequest,
                                                  ResponseLogDelegate:  OnStatusNotificationSOAPResponse,
-                                                 CancellationToken:    CancellationToken,
-                                                 EventTrackingId:      EventTrackingId,
-                                                 RequestTimeout:       RequestTimeout,
+                                                 CancellationToken:    Request.CancellationToken,
+                                                 EventTrackingId:      Request.EventTrackingId,
+                                                 RequestTimeout:       Request.RequestTimeout,
 
                                                  #region OnSuccess
 
@@ -1437,14 +1323,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnStatusNotificationResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnStatusNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnStatusNotificationResponse?.Invoke(endTime,
                                                      this,
                                                      Request,
                                                      result.Content,
-                                                     org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                     endTime - startTime);
 
             }
             catch (Exception e)
@@ -1460,56 +1348,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region SendMeterValues                  (Request, ...)
+        #region SendMeterValues                  (Request)
 
         /// <summary>
         /// Send a meter values for the given connector.
         /// </summary>
         /// <param name="Request">A meter values request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<MeterValuesResponse>
-
-            SendMeterValues(MeterValuesRequest  Request,
-
-                            DateTime?           Timestamp           = null,
-                            CancellationToken?  CancellationToken   = null,
-                            EventTracking_Id?   EventTrackingId     = null,
-                            TimeSpan?           RequestTimeout      = null)
+        public async Task<MeterValuesResponse> SendMeterValues(MeterValuesRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given meter values Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<MeterValuesResponse>? result = null;
-
-            #endregion
-
             #region Send OnMeterValuesRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnMeterValuesRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnMeterValuesRequest?.Invoke(startTime,
                                              this,
                                              Request);
 
@@ -1521,6 +1377,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
+
+            HTTPResponse<MeterValuesResponse>? result = null;
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                     VirtualHostname,
@@ -1552,9 +1410,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                  "MeterValues",
                                                  RequestLogDelegate:   OnMeterValuesSOAPRequest,
                                                  ResponseLogDelegate:  OnMeterValuesSOAPResponse,
-                                                 CancellationToken:    CancellationToken,
-                                                 EventTrackingId:      EventTrackingId,
-                                                 RequestTimeout:       RequestTimeout,
+                                                 CancellationToken:    Request.CancellationToken,
+                                                 EventTrackingId:      Request.EventTrackingId,
+                                                 RequestTimeout:       Request.RequestTimeout,
 
                                                  #region OnSuccess
 
@@ -1631,14 +1489,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnMeterValuesResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnMeterValuesResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnMeterValuesResponse?.Invoke(endTime,
                                               this,
                                               Request,
                                               result.Content,
-                                              org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                              endTime - startTime);
 
             }
             catch (Exception e)
@@ -1654,56 +1514,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region StopTransaction                  (Request, ...)
+        #region StopTransaction                  (Request)
 
         /// <summary>
         /// Stop a charging process at the given connector.
         /// </summary>
         /// <param name="Request">A stop transaction request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<StopTransactionResponse>
-
-            StopTransaction(StopTransactionRequest  Request,
-
-                            DateTime?               Timestamp           = null,
-                            CancellationToken?      CancellationToken   = null,
-                            EventTracking_Id?       EventTrackingId     = null,
-                            TimeSpan?               RequestTimeout      = null)
+        public async Task<StopTransactionResponse> StopTransaction(StopTransactionRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given stop transaction Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<StopTransactionResponse>? result = null;
-
-            #endregion
-
             #region Send OnStopTransactionRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnStopTransactionRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnStopTransactionRequest?.Invoke(startTime,
                                                  this,
                                                  Request);
 
@@ -1715,6 +1543,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
+
+            HTTPResponse<StopTransactionResponse>? result = null;
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                     VirtualHostname,
@@ -1746,9 +1576,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                  "StopTransaction",
                                                  RequestLogDelegate:   OnStopTransactionSOAPRequest,
                                                  ResponseLogDelegate:  OnStopTransactionSOAPResponse,
-                                                 CancellationToken:    CancellationToken,
-                                                 EventTrackingId:      EventTrackingId,
-                                                 RequestTimeout:       RequestTimeout,
+                                                 CancellationToken:    Request.CancellationToken,
+                                                 EventTrackingId:      Request.EventTrackingId,
+                                                 RequestTimeout:       Request.RequestTimeout,
 
                                                  #region OnSuccess
 
@@ -1824,14 +1654,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnStopTransactionResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnStopTransactionResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnStopTransactionResponse?.Invoke(endTime,
                                                   this,
                                                   Request,
                                                   result.Content,
-                                                  org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                  endTime - startTime);
 
             }
             catch (Exception e)
@@ -1848,56 +1680,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region TransferData                     (Request, ...)
+        #region TransferData                     (Request)
 
         /// <summary>
         /// Send the given vendor-specific data to the central system.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<CS.DataTransferResponse>
-
-            TransferData(DataTransferRequest  Request,
-
-                         DateTime?            Timestamp           = null,
-                         CancellationToken?   CancellationToken   = null,
-                         EventTracking_Id?    EventTrackingId     = null,
-                         TimeSpan?            RequestTimeout      = null)
+        public async Task<CS.DataTransferResponse> TransferData(DataTransferRequest Request)
 
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given data transfer Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<CS.DataTransferResponse>? result = null;
-
-            #endregion
-
             #region Send OnDataTransferRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnDataTransferRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnDataTransferRequest?.Invoke(startTime,
                                               this,
                                               Request);
 
@@ -1909,6 +1709,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
+
+            HTTPResponse<CS.DataTransferResponse>? result = null;
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                     VirtualHostname,
@@ -1940,9 +1742,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                  "DataTransfer",
                                                  RequestLogDelegate:   OnDataTransferSOAPRequest,
                                                  ResponseLogDelegate:  OnDataTransferSOAPResponse,
-                                                 CancellationToken:    CancellationToken,
-                                                 EventTrackingId:      EventTrackingId,
-                                                 RequestTimeout:       RequestTimeout,
+                                                 CancellationToken:    Request.CancellationToken,
+                                                 EventTrackingId:      Request.EventTrackingId,
+                                                 RequestTimeout:       Request.RequestTimeout,
 
                                                  #region OnSuccess
 
@@ -2019,14 +1821,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnDataTransferResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnDataTransferResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnDataTransferResponse?.Invoke(endTime,
                                                this,
                                                Request,
                                                result.Content,
-                                               org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                               endTime - startTime);
 
             }
             catch (Exception e)
@@ -2042,56 +1846,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region SendDiagnosticsStatusNotification(Request, ...)
+        #region SendDiagnosticsStatusNotification(Request)
 
         /// <summary>
         /// Send a diagnostics status notification to the central system.
         /// </summary>
         /// <param name="Request">A diagnostics status notification request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<DiagnosticsStatusNotificationResponse>
-
-            SendDiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest  Request,
-
-                                              DateTime?                             Timestamp           = null,
-                                              CancellationToken?                    CancellationToken   = null,
-                                              EventTracking_Id?                     EventTrackingId     = null,
-                                              TimeSpan?                             RequestTimeout      = null)
-
+        public async Task<DiagnosticsStatusNotificationResponse> SendDiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest Request)
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given diagnostics status notification Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<DiagnosticsStatusNotificationResponse>? result = null;
-
-            #endregion
-
             #region Send OnDiagnosticsStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnDiagnosticsStatusNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnDiagnosticsStatusNotificationRequest?.Invoke(startTime,
                                                                this,
                                                                Request);
 
@@ -2103,6 +1874,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
+
+            HTTPResponse<DiagnosticsStatusNotificationResponse>? result = null;
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                     VirtualHostname,
@@ -2134,9 +1907,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                  "DiagnosticsStatusNotification",
                                                  RequestLogDelegate:   OnDiagnosticsStatusNotificationSOAPRequest,
                                                  ResponseLogDelegate:  OnDiagnosticsStatusNotificationSOAPResponse,
-                                                 CancellationToken:    CancellationToken,
-                                                 EventTrackingId:      EventTrackingId,
-                                                 RequestTimeout:       RequestTimeout,
+                                                 CancellationToken:    Request.CancellationToken,
+                                                 EventTrackingId:      Request.EventTrackingId,
+                                                 RequestTimeout:       Request.RequestTimeout,
 
                                                  #region OnSuccess
 
@@ -2213,14 +1986,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnDiagnosticsStatusNotificationResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnDiagnosticsStatusNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnDiagnosticsStatusNotificationResponse?.Invoke(endTime,
                                                                 this,
                                                                 Request,
                                                                 result.Content,
-                                                                org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                                endTime - startTime);
 
             }
             catch (Exception e)
@@ -2236,56 +2011,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region SendFirmwareStatusNotification   (Request, ...)
+        #region SendFirmwareStatusNotification   (Request)
 
         /// <summary>
         /// Send a firmware status notification to the central system.
         /// </summary>
         /// <param name="Request">A firmware status notification request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<FirmwareStatusNotificationResponse>
-
-            SendFirmwareStatusNotification(FirmwareStatusNotificationRequest  Request,
-
-                                           DateTime?                          Timestamp           = null,
-                                           CancellationToken?                 CancellationToken   = null,
-                                           EventTracking_Id?                  EventTrackingId     = null,
-                                           TimeSpan?                          RequestTimeout      = null)
-
+        public async Task<FirmwareStatusNotificationResponse> SendFirmwareStatusNotification(FirmwareStatusNotificationRequest Request)
         {
 
-            #region Initial checks
-
-            if (Request is null)
-                throw new ArgumentNullException(nameof(Request), "The given firmware status notification Request must not be null!");
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            HTTPResponse<FirmwareStatusNotificationResponse>? result = null;
-
-            #endregion
-
             #region Send OnFirmwareStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
-                OnFirmwareStatusNotificationRequest?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnFirmwareStatusNotificationRequest?.Invoke(startTime,
                                                             this,
                                                             Request);
 
@@ -2297,6 +2039,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
+
+            HTTPResponse<FirmwareStatusNotificationResponse>? result = null;
 
             using (var _OCPPClient = new SOAPClient(RemoteURL,
                                                     VirtualHostname,
@@ -2328,9 +2072,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                  "FirmwareStatusNotification",
                                                  RequestLogDelegate:   OnFirmwareStatusNotificationSOAPRequest,
                                                  ResponseLogDelegate:  OnFirmwareStatusNotificationSOAPResponse,
-                                                 CancellationToken:    CancellationToken,
-                                                 EventTrackingId:      EventTrackingId,
-                                                 RequestTimeout:       RequestTimeout,
+                                                 CancellationToken:    Request.CancellationToken,
+                                                 EventTrackingId:      Request.EventTrackingId,
+                                                 RequestTimeout:       Request.RequestTimeout,
 
                                                  #region OnSuccess
 
@@ -2407,14 +2151,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Send OnFirmwareStatusNotificationResponse event
 
+            var endTime = Timestamp.Now;
+
             try
             {
 
-                OnFirmwareStatusNotificationResponse?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                OnFirmwareStatusNotificationResponse?.Invoke(endTime,
                                                              this,
                                                              Request,
                                                              result.Content,
-                                                             org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - Timestamp.Value);
+                                                             endTime - startTime);
 
             }
             catch (Exception e)
@@ -2426,6 +2172,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             return result.Content;
 
+        }
+
+        #endregion
+
+
+        // Security extensions
+
+        #region Security extensions
+
+        public Task<LogStatusNotificationResponse> LogStatusNotification(LogStatusNotificationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SecurityEventNotificationResponse> SecurityEventNotification(SecurityEventNotificationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SignCertificateResponse> SignCertificate(SignCertificateRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SignedFirmwareStatusNotificationResponse> SignedFirmwareStatusNotification(SignedFirmwareStatusNotificationRequest Request)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Properties
 
         /// <summary>
-        /// The success or failure of the unlock connector command.
+        /// The success or failure of the unlock connector request.
         /// </summary>
         public UnlockStatus  Status    { get; }
 
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Create a new unlock connector response.
         /// </summary>
         /// <param name="Request">The unlock connector request leading to this response.</param>
-        /// <param name="Status">The success or failure of the unlock connector command.</param>
+        /// <param name="Status">The success or failure of the unlock connector request.</param>
         public UnlockConnectorResponse(CS.UnlockConnectorRequest  Request,
                                        UnlockStatus               Status)
 

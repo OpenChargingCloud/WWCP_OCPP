@@ -257,6 +257,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
+
+
+
+
         // CS -> CP
 
         #region OnReset
@@ -524,6 +528,107 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
         public event CP.OnClearCacheResponseDelegate?  OnClearCacheResponse;
+
+        #endregion
+
+
+        // Security extensions
+
+        #region OnCertificateSigned
+
+        /// <summary>
+        /// An event sent whenever a certificate signed request was sent.
+        /// </summary>
+        public event CP.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a certificate signed request was sent.
+        /// </summary>
+        public event CP.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
+
+        #endregion
+
+        #region OnDeleteCertificate
+
+        /// <summary>
+        /// An event sent whenever a delete certificate request was sent.
+        /// </summary>
+        public event CP.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a delete certificate request was sent.
+        /// </summary>
+        public event CP.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
+
+        #endregion
+
+        #region OnExtendedTriggerMessage
+
+        /// <summary>
+        /// An event sent whenever an extended trigger message request was sent.
+        /// </summary>
+        public event CP.OnExtendedTriggerMessageRequestDelegate?   OnExtendedTriggerMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an extended trigger message request was sent.
+        /// </summary>
+        public event CP.OnExtendedTriggerMessageResponseDelegate?  OnExtendedTriggerMessageResponse;
+
+        #endregion
+
+        #region OnGetInstalledCertificateIds
+
+        /// <summary>
+        /// An event sent whenever a get installed certificate ids request was sent.
+        /// </summary>
+        public event CP.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a get installed certificate ids request was sent.
+        /// </summary>
+        public event CP.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
+
+        #endregion
+
+        #region OnGetLog
+
+        /// <summary>
+        /// An event sent whenever a get log request was sent.
+        /// </summary>
+        public event CP.OnGetLogRequestDelegate?   OnGetLogRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a get log request was sent.
+        /// </summary>
+        public event CP.OnGetLogResponseDelegate?  OnGetLogResponse;
+
+        #endregion
+
+        #region OnInstallCertificate
+
+        /// <summary>
+        /// An event sent whenever an install certificate request was sent.
+        /// </summary>
+        public event CP.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an install certificate request was sent.
+        /// </summary>
+        public event CP.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+
+        #endregion
+
+        #region OnSignedUpdateFirmware
+
+        /// <summary>
+        /// An event sent whenever a signed update firmware request was sent.
+        /// </summary>
+        public event CP.OnSignedUpdateFirmwareRequestDelegate?   OnSignedUpdateFirmwareRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a signed update firmware request was sent.
+        /// </summary>
+        public event CP.OnSignedUpdateFirmwareResponseDelegate?  OnSignedUpdateFirmwareResponse;
 
         #endregion
 
@@ -5459,6 +5564,697 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
+
+
+        // Security extensions
+
+        #region CertificateSigned         (ChargeBoxId, CertificateChain, ...)
+
+        /// <summary>
+        /// Clear the local white liste cache of the given charge box.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CertificateChain">The signed PEM encoded X.509 certificates. This can also contain the necessary sub CA certificates.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.CertificateSignedResponse>
+
+            CertificateSigned(ChargeBox_Id        ChargeBoxId,
+                              String              CertificateChain,
+
+                              DateTime?           RequestTimestamp    = null,
+                              TimeSpan?           RequestTimeout      = null,
+                              EventTracking_Id?   EventTrackingId     = null,
+                              CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new CertificateSignedRequest(
+                                 ChargeBoxId,
+                                 CertificateChain,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnCertificateSignedRequest event
+
+            try
+            {
+
+                OnCertificateSignedRequest?.Invoke(startTime,
+                                                   this,
+                                                   request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnCertificateSignedRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.CertificateSigned(request)
+
+                               : new CP.CertificateSignedResponse(request,
+                                                           Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnCertificateSignedResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnCertificateSignedResponse?.Invoke(endTime,
+                                                    this,
+                                                    request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnCertificateSignedResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region DeleteCertificate         (ChargeBoxId, CertificateHashData, ...)
+
+        /// <summary>
+        /// Delete the given certificate on the charge point.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CertificateHashData">Indicates the certificate which should be deleted.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.DeleteCertificateResponse>
+
+            DeleteCertificate(ChargeBox_Id         ChargeBoxId,
+                              CertificateHashData  CertificateHashData,
+
+                              DateTime?            RequestTimestamp    = null,
+                              TimeSpan?            RequestTimeout      = null,
+                              EventTracking_Id?    EventTrackingId     = null,
+                              CancellationToken?   CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new DeleteCertificateRequest(
+                                 ChargeBoxId,
+                                 CertificateHashData,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnDeleteCertificateRequest event
+
+            try
+            {
+
+                OnDeleteCertificateRequest?.Invoke(startTime,
+                                                   this,
+                                                   request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnDeleteCertificateRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.DeleteCertificate(request)
+
+                               : new CP.DeleteCertificateResponse(request,
+                                                                  Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnDeleteCertificateResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteCertificateResponse?.Invoke(endTime,
+                                                    this,
+                                                    request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnDeleteCertificateResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region ExtendedTriggerMessage    (ChargeBoxId, RequestedMessage, ConnectorId = null, ...)
+
+        /// <summary>
+        /// Send an extended trigger message to the charge point.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="RequestedMessage">The message to trigger.</param>
+        /// <param name="ConnectorId">Optional connector identification whenever the message applies to a specific connector.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.ExtendedTriggerMessageResponse>
+
+            ExtendedTriggerMessage(ChargeBox_Id        ChargeBoxId,
+                                   MessageTriggers     RequestedMessage,
+                                   Connector_Id?       ConnectorId         = null,
+
+                                   DateTime?           RequestTimestamp    = null,
+                                   TimeSpan?           RequestTimeout      = null,
+                                   EventTracking_Id?   EventTrackingId     = null,
+                                   CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new ExtendedTriggerMessageRequest(
+                                 ChargeBoxId,
+                                 RequestedMessage,
+                                 ConnectorId,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnExtendedTriggerMessageRequest event
+
+            try
+            {
+
+                OnExtendedTriggerMessageRequest?.Invoke(startTime,
+                                                        this,
+                                                        request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnExtendedTriggerMessageRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.ExtendedTriggerMessage(request)
+
+                               : new CP.ExtendedTriggerMessageResponse(request,
+                                                                       Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnExtendedTriggerMessageResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnExtendedTriggerMessageResponse?.Invoke(endTime,
+                                                         this,
+                                                         request,
+                                                         response,
+                                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnExtendedTriggerMessageResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetInstalledCertificateIds(ChargeBoxId, CertificateType, ...)
+
+        /// <summary>
+        /// Retrieve a list of all installed certificates within the charge point.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CertificateType">The type of the certificates requested.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.GetInstalledCertificateIdsResponse>
+
+            GetInstalledCertificateIds(ChargeBox_Id        ChargeBoxId,
+                                       CertificateUse      CertificateType,
+
+                                       DateTime?           RequestTimestamp    = null,
+                                       TimeSpan?           RequestTimeout      = null,
+                                       EventTracking_Id?   EventTrackingId     = null,
+                                       CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetInstalledCertificateIdsRequest(
+                                 ChargeBoxId,
+                                 CertificateType,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnGetInstalledCertificateIdsRequest event
+
+            try
+            {
+
+                OnGetInstalledCertificateIdsRequest?.Invoke(startTime,
+                                                            this,
+                                                            request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetInstalledCertificateIdsRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.GetInstalledCertificateIds(request)
+
+                               : new CP.GetInstalledCertificateIdsResponse(request,
+                                                                           Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnGetInstalledCertificateIdsResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetInstalledCertificateIdsResponse?.Invoke(endTime,
+                                                             this,
+                                                             request,
+                                                             response,
+                                                             endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetInstalledCertificateIdsResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetLog                    (ChargeBoxId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
+
+        /// <summary>
+        /// Retrieve log files from the charge point.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="LogType">The type of the certificates requested.</param>
+        /// <param name="LogRequestId">The unique identification of this request.</param>
+        /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
+        /// <param name="Retries">This specifies how many times the Charge Point must try to upload the log before giving up. If this field is not present, it is left to Charge Point to decide how many times it wants to retry.</param>
+        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to Charge Point to decide how long to wait between attempts.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.GetLogResponse>
+
+            GetLog(ChargeBox_Id        ChargeBoxId,
+                   LogTypes            LogType,
+                   Int32               LogRequestId,
+                   LogParameters       Log,
+                   Byte?               Retries             = null,
+                   TimeSpan?           RetryInterval       = null,
+
+                   DateTime?           RequestTimestamp    = null,
+                   TimeSpan?           RequestTimeout      = null,
+                   EventTracking_Id?   EventTrackingId     = null,
+                   CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetLogRequest(
+                                 ChargeBoxId,
+                                 LogType,
+                                 LogRequestId,
+                                 Log,
+                                 Retries,
+                                 RetryInterval,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnGetLogRequest event
+
+            try
+            {
+
+                OnGetLogRequest?.Invoke(startTime,
+                                        this,
+                                        request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetLogRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.GetLog(request)
+
+                               : new CP.GetLogResponse(request,
+                                                       Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnGetLogResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetLogResponse?.Invoke(endTime,
+                                         this,
+                                         request,
+                                         response,
+                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetLogResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region InstallCertificate        (ChargeBoxId, CertificateType, Certificate, ...)
+
+        /// <summary>
+        /// Install the given certificate within the charge point.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CertificateType">The type of the certificate.</param>
+        /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.InstallCertificateResponse>
+
+            InstallCertificate(ChargeBox_Id        ChargeBoxId,
+                               CertificateUse      CertificateType,
+                               String              Certificate,
+
+                               DateTime?           RequestTimestamp    = null,
+                               TimeSpan?           RequestTimeout      = null,
+                               EventTracking_Id?   EventTrackingId     = null,
+                               CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new InstallCertificateRequest(
+                                 ChargeBoxId,
+                                 CertificateType,
+                                 Certificate,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnInstallCertificateRequest event
+
+            try
+            {
+
+                OnInstallCertificateRequest?.Invoke(startTime,
+                                                    this,
+                                                    request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnInstallCertificateRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.InstallCertificate(request)
+
+                               : new CP.InstallCertificateResponse(request,
+                                                                   Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnInstallCertificateResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnInstallCertificateResponse?.Invoke(endTime,
+                                                     this,
+                                                     request,
+                                                     response,
+                                                     endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnInstallCertificateResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SignedUpdateFirmware      (ChargeBoxId, Firmware, UpdateRequestId, Retries = null, RetryInterval = null, ...)
+
+        /// <summary>
+        /// Update the firmware of the charge point.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="Firmware">The firmware image to be installed on the Charge Point.</param>
+        /// <param name="UpdateRequestId">The unique identification of this signed update firmware request</param>
+        /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
+        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CP.SignedUpdateFirmwareResponse>
+
+            SignedUpdateFirmware(ChargeBox_Id        ChargeBoxId,
+                                 FirmwareImage       Firmware,
+                                 Int32               UpdateRequestId,
+                                 Byte?               Retries             = null,
+                                 TimeSpan?           RetryInterval       = null,
+
+                                 DateTime?           RequestTimestamp    = null,
+                                 TimeSpan?           RequestTimeout      = null,
+                                 EventTracking_Id?   EventTrackingId     = null,
+                                 CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new SignedUpdateFirmwareRequest(
+                                 ChargeBoxId,
+                                 Firmware,
+                                 UpdateRequestId,
+                                 Retries,
+                                 RetryInterval,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnSignedUpdateFirmwareRequest event
+
+            try
+            {
+
+                OnSignedUpdateFirmwareRequest?.Invoke(startTime,
+                                                      this,
+                                                      request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSignedUpdateFirmwareRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.SignedUpdateFirmware(request)
+
+                               : new CP.SignedUpdateFirmwareResponse(request,
+                                                                     Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnSignedUpdateFirmwareResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSignedUpdateFirmwareResponse?.Invoke(endTime,
+                                                       this,
+                                                       request,
+                                                       response,
+                                                       endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSignedUpdateFirmwareResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+
+        // CertificateSigned
+        // DeleteCertificate
+        // ExtendedTriggerMessage
+        // GetInstalledCertificateIds
+        // GetLog
+        // InstallCertificate
+        // SignedUpdateFirmware
 
     }
 

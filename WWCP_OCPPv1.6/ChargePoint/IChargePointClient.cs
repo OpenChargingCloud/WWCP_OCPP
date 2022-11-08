@@ -182,183 +182,157 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
+        #region SendBootNotification
+
         /// <summary>
         /// Send a boot notification.
         /// </summary>
         /// <param name="Request">A boot notification request.</param>
         public Task<BootNotificationResponse> SendBootNotification(BootNotificationRequest Request);
 
+        #endregion
+
+        #region SendHeartbeat
 
         /// <summary>
         /// Send a heartbeat.
         /// </summary>
         /// <param name="Request">A heartbeat request.</param>
-        /// 
-        /// <param name="Timestamp">An optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<HeartbeatResponse>
+        public Task<HeartbeatResponse> SendHeartbeat(HeartbeatRequest Request);
 
-            SendHeartbeat(HeartbeatRequest    Request,
+        #endregion
 
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id?   EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
-
-
+        #region Authorize
 
         /// <summary>
         /// Authorize the given token.
         /// </summary>
         /// <param name="Request">An authorize request.</param>
-        /// 
-        /// <param name="Timestamp">An optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<AuthorizeResponse>
+        public Task<AuthorizeResponse> Authorize(AuthorizeRequest Request);
 
-            Authorize(AuthorizeRequest    Request,
+        #endregion
 
-                      DateTime?           Timestamp           = null,
-                      CancellationToken?  CancellationToken   = null,
-                      EventTracking_Id?   EventTrackingId     = null,
-                      TimeSpan?           RequestTimeout      = null);
-
+        #region StartTransaction
 
         /// <summary>
         /// Start a charging process at the given connector.
         /// </summary>
         /// <param name="Request">A start transaction request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<StartTransactionResponse>
+        public Task<StartTransactionResponse> StartTransaction(StartTransactionRequest Request);
 
-            StartTransaction(StartTransactionRequest  Request,
+        #endregion
 
-                             DateTime?                Timestamp          = null,
-                             CancellationToken?       CancellationToken  = null,
-                             EventTracking_Id?        EventTrackingId    = null,
-                             TimeSpan?                RequestTimeout     = null);
-
+        #region SendStatusNotification
 
         /// <summary>
         /// Send a status notification for the given connector.
         /// </summary>
         /// <param name="Request">A status notification request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<StatusNotificationResponse>
+        public Task<StatusNotificationResponse> SendStatusNotification(StatusNotificationRequest Request);
 
-            SendStatusNotification(StatusNotificationRequest  Request,
+        #endregion
 
-                                   DateTime?                  Timestamp          = null,
-                                   CancellationToken?         CancellationToken  = null,
-                                   EventTracking_Id?          EventTrackingId    = null,
-                                   TimeSpan?                  RequestTimeout     = null);
-
+        #region SendMeterValues
 
         /// <summary>
         /// Send a meter values for the given connector.
         /// </summary>
         /// <param name="Request">A meter values request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<MeterValuesResponse>
+        public Task<MeterValuesResponse> SendMeterValues(MeterValuesRequest Request);
 
-            SendMeterValues(MeterValuesRequest  Request,
+        #endregion
 
-                            DateTime?           Timestamp          = null,
-                            CancellationToken?  CancellationToken  = null,
-                            EventTracking_Id?   EventTrackingId    = null,
-                            TimeSpan?           RequestTimeout     = null);
-
+        #region StopTransaction
 
         /// <summary>
         /// Stop a charging process at the given connector.
         /// </summary>
         /// <param name="Request">A stop transaction request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<StopTransactionResponse>
+        public Task<StopTransactionResponse> StopTransaction(StopTransactionRequest Request);
 
-            StopTransaction(StopTransactionRequest  Request,
+        #endregion
 
-                            DateTime?               Timestamp          = null,
-                            CancellationToken?      CancellationToken  = null,
-                            EventTracking_Id?       EventTrackingId    = null,
-                            TimeSpan?               RequestTimeout     = null);
-
+        #region TransferData
 
         /// <summary>
         /// Send the given vendor-specific data to the central system.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<CS.DataTransferResponse>
+        public Task<CS.DataTransferResponse> TransferData(DataTransferRequest Request);
 
-            TransferData(DataTransferRequest  Request,
+        #endregion
 
-                         DateTime?            Timestamp          = null,
-                         CancellationToken?   CancellationToken  = null,
-                         EventTracking_Id?    EventTrackingId    = null,
-                         TimeSpan?            RequestTimeout     = null);
-
+        #region SendDiagnosticsStatusNotification
 
         /// <summary>
         /// Send a diagnostics status notification to the central system.
         /// </summary>
         /// <param name="Request">A diagnostics status notification request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<DiagnosticsStatusNotificationResponse>
+        public Task<DiagnosticsStatusNotificationResponse> SendDiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest Request);
 
-            SendDiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest  Request,
+        #endregion
 
-                                              DateTime?                             Timestamp          = null,
-                                              CancellationToken?                    CancellationToken  = null,
-                                              EventTracking_Id?                     EventTrackingId    = null,
-                                              TimeSpan?                             RequestTimeout     = null);
-
+        #region SendFirmwareStatusNotification
 
         /// <summary>
         /// Send a firmware status notification to the central system.
         /// </summary>
         /// <param name="Request">A firmware status notification request.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<FirmwareStatusNotificationResponse>
+        public Task<FirmwareStatusNotificationResponse> SendFirmwareStatusNotification(FirmwareStatusNotificationRequest Request);
 
-            SendFirmwareStatusNotification(FirmwareStatusNotificationRequest  Request,
+        #endregion
 
-                                           DateTime?                          Timestamp          = null,
-                                           CancellationToken?                 CancellationToken  = null,
-                                           EventTracking_Id?                  EventTrackingId    = null,
-                                           TimeSpan?                          RequestTimeout     = null);
+
+        // Security extensions
+
+        #region LogStatusNotification
+
+        /// <summary>
+        /// Send a log status notification to the central system.
+        /// </summary>
+        /// <param name="Request">A log status notification request.</param>
+        public Task<LogStatusNotificationResponse>
+
+            LogStatusNotification(LogStatusNotificationRequest  Request);
+
+        #endregion
+
+        #region SecurityEventNotification
+
+        /// <summary>
+        /// Send a security event notification to the central system.
+        /// </summary>
+        /// <param name="Request">A security event notification request.</param>
+        public Task<SecurityEventNotificationResponse>
+
+            SecurityEventNotification(SecurityEventNotificationRequest  Request);
+
+        #endregion
+
+        #region SignCertificate
+
+        /// <summary>
+        /// Send certificate signing request to the central system.
+        /// </summary>
+        /// <param name="Request">A sign certificate request.</param>
+        public Task<SignCertificateResponse>
+
+            SignCertificate(SignCertificateRequest  Request);
+
+        #endregion
+
+        #region SignedFirmwareStatusNotification
+
+        /// <summary>
+        /// Send a signed firmware status notification to the central system.
+        /// </summary>
+        /// <param name="Request">A signed firmware status notification request.</param>
+        public Task<SignedFirmwareStatusNotificationResponse>
+
+            SignedFirmwareStatusNotification(SignedFirmwareStatusNotificationRequest  Request);
+
+        #endregion
+
 
     }
 

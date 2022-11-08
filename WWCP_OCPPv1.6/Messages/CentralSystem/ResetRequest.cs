@@ -447,14 +447,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="ResetRequest">A reset request to compare with.</param>
         public override Boolean Equals(ResetRequest? ResetRequest)
-        {
 
-            if (ResetRequest is null)
-                return false;
-
-            return ResetType.Equals(ResetRequest.ResetType);
-
-        }
+            => ResetRequest is not null &&
+                   ResetType.Equals(ResetRequest.ResetType);
 
         #endregion
 

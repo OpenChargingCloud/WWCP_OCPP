@@ -2978,11 +2978,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.HeartbeatResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.SendHeartbeat(request,
-                                                        startTime,
-                                                        CancellationToken,
-                                                        EventTrackingId,
-                                                        RequestTimeout ?? DefaultRequestTimeout);
+                response = await CPClient.SendHeartbeat(request);
 
             if (response is not null)
             {
@@ -3081,12 +3077,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.AuthorizeResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.Authorize(request,
-
-                                                    startTime,
-                                                    CancellationToken,
-                                                    EventTrackingId,
-                                                    RequestTimeout ?? DefaultRequestTimeout);
+                response = await CPClient.Authorize(request);
 
             response ??= new CS.AuthorizeResponse(request,
                                                   Result.Server("Response is null!"));
@@ -3191,12 +3182,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.StartTransactionResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.StartTransaction(request,
-
-                                                           startTime,
-                                                           CancellationToken,
-                                                           EventTrackingId,
-                                                           RequestTimeout ?? DefaultRequestTimeout);
+                response = await CPClient.StartTransaction(request);
 
             if (response is not null)
             {
@@ -3326,12 +3312,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.StatusNotificationResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.SendStatusNotification(request,
-
-                                                                 startTime,
-                                                                 CancellationToken,
-                                                                 EventTrackingId,
-                                                                 RequestTimeout ?? DefaultRequestTimeout);
+                response = await CPClient.SendStatusNotification(request);
 
             response ??= new CS.StatusNotificationResponse(request,
                                                            Result.Server("Response is null!"));
@@ -3430,12 +3411,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.MeterValuesResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.SendMeterValues(request,
-
-                                                          startTime,
-                                                          CancellationToken,
-                                                          EventTrackingId,
-                                                          RequestTimeout ?? DefaultRequestTimeout);
+                response = await CPClient.SendMeterValues(request);
 
             response ??= new CS.MeterValuesResponse(request,
                                                     Result.Server("Response is null!"));
@@ -3543,12 +3519,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.StopTransactionResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.StopTransaction(request,
-
-                                                          startTime,
-                                                          CancellationToken,
-                                                          EventTrackingId,
-                                                          RequestTimeout ?? DefaultRequestTimeout);
+                response = await CPClient.StopTransaction(request);
 
             response ??= new CS.StopTransactionResponse(request,
                                                         Result.Server("Response is null!"));
@@ -3648,12 +3619,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.DataTransferResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.TransferData(request,
-
-                                                       startTime,
-                                                       CancellationToken,
-                                                       EventTrackingId,
-                                                       RequestTimeout ?? DefaultRequestTimeout);
+                response = await CPClient.TransferData(request);
 
             response ??= new CS.DataTransferResponse(request,
                                                      Result.Server("Response is null!"));
@@ -3746,12 +3712,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.DiagnosticsStatusNotificationResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.SendDiagnosticsStatusNotification(request,
-
-                                                                            startTime,
-                                                                            CancellationToken,
-                                                                            EventTrackingId,
-                                                                            RequestTimeout ?? DefaultRequestTimeout);
+                response = await CPClient.SendDiagnosticsStatusNotification(request);
 
             response ??= new CS.DiagnosticsStatusNotificationResponse(request,
                                                                       Result.Server("Response is null!"));
@@ -3844,12 +3805,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.FirmwareStatusNotificationResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.SendFirmwareStatusNotification(request,
-
-                                                                         startTime,
-                                                                         CancellationToken,
-                                                                         EventTrackingId,
-                                                                         RequestTimeout ?? DefaultRequestTimeout);
+                response = await CPClient.SendFirmwareStatusNotification(request);
 
             response ??= new CS.FirmwareStatusNotificationResponse(request,
                                                                    Result.Server("Response is null!"));

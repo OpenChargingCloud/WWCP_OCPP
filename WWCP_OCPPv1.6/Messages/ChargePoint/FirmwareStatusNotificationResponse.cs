@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Create a new firmware status notification response.
         /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="Request">The firmware status notification request leading to this response.</param>
         public FirmwareStatusNotificationResponse(CP.FirmwareStatusNotificationRequest  Request)
 
             : base(Request,
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomFirmwareStatusNotificationResponseSerializer">A delegate to serialize custom FirmwareStatusNotification responses.</param>
+        /// <param name="CustomFirmwareStatusNotificationResponseSerializer">A delegate to serialize custom firmware status notification responses.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<FirmwareStatusNotificationResponse>? CustomFirmwareStatusNotificationResponseSerializer = null)
         {
 
@@ -325,8 +325,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Object">A firmware status notification response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is BootNotificationResponse bootNotificationResponse &&
-                   Equals(bootNotificationResponse);
+            => Object is FirmwareStatusNotificationResponse firmwareStatusNotificationResponse &&
+                   Equals(firmwareStatusNotificationResponse);
 
         #endregion
 

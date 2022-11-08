@@ -308,4 +308,120 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
     #endregion
 
+
+    // Security extensions
+
+    #region OnLogStatusNotification
+
+    /// <summary>
+    /// A delegate called whenever a log status notification request will be send to the central system.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnLogStatusNotificationRequestDelegate (DateTime                       LogTimestamp,
+                                                                 IEventSender                   Sender,
+                                                                 LogStatusNotificationRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a log status notification request was received.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnLogStatusNotificationResponseDelegate(DateTime                        LogTimestamp,
+                                                                 IEventSender                    Sender,
+                                                                 LogStatusNotificationRequest    Request,
+                                                                 LogStatusNotificationResponse   Response,
+                                                                 TimeSpan                        Runtime);
+
+    #endregion
+
+    #region OnSecurityEventNotification
+
+    /// <summary>
+    /// A delegate called whenever a security event notification request will be send to the central system.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnSecurityEventNotificationRequestDelegate (DateTime                           LogTimestamp,
+                                                                     IEventSender                       Sender,
+                                                                     SecurityEventNotificationRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a security event notification request was received.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnSecurityEventNotificationResponseDelegate(DateTime                            LogTimestamp,
+                                                                     IEventSender                        Sender,
+                                                                     SecurityEventNotificationRequest    Request,
+                                                                     SecurityEventNotificationResponse   Response,
+                                                                     TimeSpan                            Runtime);
+
+    #endregion
+
+    #region OnSignCertificate
+
+    /// <summary>
+    /// A delegate called whenever a sign certificate request will be send to the central system.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnSignCertificateRequestDelegate (DateTime                 LogTimestamp,
+                                                           IEventSender             Sender,
+                                                           SignCertificateRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a sign certificate request was received.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnSignCertificateResponseDelegate(DateTime                  LogTimestamp,
+                                                           IEventSender              Sender,
+                                                           SignCertificateRequest    Request,
+                                                           SignCertificateResponse   Response,
+                                                           TimeSpan                  Runtime);
+
+    #endregion
+
+    #region OnSignedFirmwareStatusNotification
+
+    /// <summary>
+    /// A delegate called whenever a signed firmware status notification request will be send to the central system.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnSignedFirmwareStatusNotificationRequestDelegate (DateTime                                  LogTimestamp,
+                                                                            IEventSender                              Sender,
+                                                                            SignedFirmwareStatusNotificationRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a signed firmware status notification request was received.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnSignedFirmwareStatusNotificationResponseDelegate(DateTime                                   LogTimestamp,
+                                                                            IEventSender                               Sender,
+                                                                            SignedFirmwareStatusNotificationRequest    Request,
+                                                                            SignedFirmwareStatusNotificationResponse   Response,
+                                                                            TimeSpan                                   Runtime);
+
+    #endregion
+
+
 }

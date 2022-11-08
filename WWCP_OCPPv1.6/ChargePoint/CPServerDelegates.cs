@@ -938,4 +938,345 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
     #endregion
 
+
+
+    // Security extensions...
+
+    #region OnCertificateSigned
+
+    /// <summary>
+    /// A clear cache request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnCertificateSignedRequestDelegate(DateTime                      Timestamp,
+                                           IEventSender                  Sender,
+                                           CS.CertificateSignedRequest   Request);
+
+
+    /// <summary>
+    /// A clear cache request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<CertificateSignedResponse>
+
+        OnCertificateSignedDelegate(DateTime                      Timestamp,
+                                    IEventSender                  Sender,
+                                    CS.CertificateSignedRequest   Request,
+                                    CancellationToken             CancellationToken);
+
+
+    /// <summary>
+    /// A clear cache response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnCertificateSignedResponseDelegate(DateTime                       Timestamp,
+                                            IEventSender                   Sender,
+                                            CS.CertificateSignedRequest    Request,
+                                            CP.CertificateSignedResponse   Response,
+                                            TimeSpan                       Runtime);
+
+    #endregion
+
+    #region OnDeleteCertificate
+
+    /// <summary>
+    /// A delete certificate request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnDeleteCertificateRequestDelegate(DateTime                      Timestamp,
+                                           IEventSender                  Sender,
+                                           CS.DeleteCertificateRequest   Request);
+
+
+    /// <summary>
+    /// A delete certificate request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<DeleteCertificateResponse>
+
+        OnDeleteCertificateDelegate(DateTime                      Timestamp,
+                                    IEventSender                  Sender,
+                                    CS.DeleteCertificateRequest   Request,
+                                    CancellationToken             CancellationToken);
+
+
+    /// <summary>
+    /// A delete certificate response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnDeleteCertificateResponseDelegate(DateTime                       Timestamp,
+                                            IEventSender                   Sender,
+                                            CS.DeleteCertificateRequest    Request,
+                                            CP.DeleteCertificateResponse   Response,
+                                            TimeSpan                       Runtime);
+
+    #endregion
+
+    #region OnExtendedTriggerMessage
+
+    /// <summary>
+    /// An extended trigger message request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnExtendedTriggerMessageRequestDelegate(DateTime                           Timestamp,
+                                                IEventSender                       Sender,
+                                                CS.ExtendedTriggerMessageRequest   Request);
+
+
+    /// <summary>
+    /// An extended trigger message request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ExtendedTriggerMessageResponse>
+
+        OnExtendedTriggerMessageDelegate(DateTime                           Timestamp,
+                                         IEventSender                       Sender,
+                                         CS.ExtendedTriggerMessageRequest   Request,
+                                         CancellationToken                  CancellationToken);
+
+
+    /// <summary>
+    /// An extended trigger message response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnExtendedTriggerMessageResponseDelegate(DateTime                            Timestamp,
+                                                 IEventSender                        Sender,
+                                                 CS.ExtendedTriggerMessageRequest    Request,
+                                                 CP.ExtendedTriggerMessageResponse   Response,
+                                                 TimeSpan                            Runtime);
+
+    #endregion
+
+    #region OnGetInstalledCertificateIds
+
+    /// <summary>
+    /// A get installed certificate ids request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnGetInstalledCertificateIdsRequestDelegate(DateTime                               Timestamp,
+                                                    IEventSender                           Sender,
+                                                    CS.GetInstalledCertificateIdsRequest   Request);
+
+
+    /// <summary>
+    /// A get installed certificate ids request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<GetInstalledCertificateIdsResponse>
+
+        OnGetInstalledCertificateIdsDelegate(DateTime                               Timestamp,
+                                             IEventSender                           Sender,
+                                             CS.GetInstalledCertificateIdsRequest   Request,
+                                             CancellationToken                      CancellationToken);
+
+
+    /// <summary>
+    /// A get installed certificate ids response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnGetInstalledCertificateIdsResponseDelegate(DateTime                                Timestamp,
+                                                     IEventSender                            Sender,
+                                                     CS.GetInstalledCertificateIdsRequest    Request,
+                                                     CP.GetInstalledCertificateIdsResponse   Response,
+                                                     TimeSpan                                Runtime);
+
+    #endregion
+
+    #region OnGetLog
+
+    /// <summary>
+    /// A get log request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnGetLogRequestDelegate(DateTime           Timestamp,
+                                IEventSender       Sender,
+                                CS.GetLogRequest   Request);
+
+
+    /// <summary>
+    /// A get log request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<GetLogResponse>
+
+        OnGetLogDelegate(DateTime            Timestamp,
+                         IEventSender        Sender,
+                         CS.GetLogRequest    Request,
+                         CancellationToken   CancellationToken);
+
+
+    /// <summary>
+    /// A get log response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnGetLogResponseDelegate(DateTime            Timestamp,
+                                 IEventSender        Sender,
+                                 CS.GetLogRequest    Request,
+                                 CP.GetLogResponse   Response,
+                                 TimeSpan            Runtime);
+
+    #endregion
+
+    #region OnInstallCertificate
+
+    /// <summary>
+    /// An install certificate request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnInstallCertificateRequestDelegate(DateTime                       Timestamp,
+                                            IEventSender                   Sender,
+                                            CS.InstallCertificateRequest   Request);
+
+
+    /// <summary>
+    /// An install certificate request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<InstallCertificateResponse>
+
+        OnInstallCertificateDelegate(DateTime                       Timestamp,
+                                     IEventSender                   Sender,
+                                     CS.InstallCertificateRequest   Request,
+                                     CancellationToken              CancellationToken);
+
+
+    /// <summary>
+    /// An install certificate response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnInstallCertificateResponseDelegate(DateTime                        Timestamp,
+                                             IEventSender                    Sender,
+                                             CS.InstallCertificateRequest    Request,
+                                             CP.InstallCertificateResponse   Response,
+                                             TimeSpan                        Runtime);
+
+    #endregion
+
+    #region OnSignedUpdateFirmware
+
+    /// <summary>
+    /// A signed update firmware request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnSignedUpdateFirmwareRequestDelegate(DateTime                         Timestamp,
+                                              IEventSender                     Sender,
+                                              CS.SignedUpdateFirmwareRequest   Request);
+
+
+    /// <summary>
+    /// A signed update firmware request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<SignedUpdateFirmwareResponse>
+
+        OnSignedUpdateFirmwareDelegate(DateTime                         Timestamp,
+                                       IEventSender                     Sender,
+                                       CS.SignedUpdateFirmwareRequest   Request,
+                                       CancellationToken                CancellationToken);
+
+
+    /// <summary>
+    /// A signed update firmware response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnSignedUpdateFirmwareResponseDelegate(DateTime                          Timestamp,
+                                               IEventSender                      Sender,
+                                               CS.SignedUpdateFirmwareRequest    Request,
+                                               CP.SignedUpdateFirmwareResponse   Response,
+                                               TimeSpan                          Runtime);
+
+    #endregion
+
+
 }

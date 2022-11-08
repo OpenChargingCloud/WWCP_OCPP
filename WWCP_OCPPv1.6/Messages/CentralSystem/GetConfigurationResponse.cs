@@ -473,7 +473,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             => GetConfigurationResponse is not null &&
 
                ConfigurationKeys.Count().Equals(GetConfigurationResponse.ConfigurationKeys.Count()) &&
-               UnknownKeys.      Count().Equals(GetConfigurationResponse.UnknownKeys.      Count());
+               ConfigurationKeys.All(configurationKey => GetConfigurationResponse.ConfigurationKeys.Contains(configurationKey)) &&
+
+               UnknownKeys.      Count().Equals(GetConfigurationResponse.UnknownKeys.      Count()) &&
+               UnknownKeys.      All(unknownKey       => GetConfigurationResponse.UnknownKeys.      Contains(unknownKey));
 
         #endregion
 

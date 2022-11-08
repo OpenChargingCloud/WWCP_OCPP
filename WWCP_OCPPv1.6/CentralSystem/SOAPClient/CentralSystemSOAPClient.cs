@@ -4101,6 +4101,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
+        #region Security extensions... not implemented!
+
+        public Task<CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ExtendedTriggerMessageResponse> ExtendedTriggerMessage(ExtendedTriggerMessageRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetLogResponse> GetLog(GetLogRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SignedUpdateFirmwareResponse> SignedUpdateFirmware(SignedUpdateFirmwareRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+
     }
 
 }

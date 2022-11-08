@@ -35,12 +35,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a boot notification WS request will be send to the central system.
         /// </summary>
-        event ClientRequestLogHandler             OnBootNotificationWSRequest;
+        event ClientRequestLogHandler   OnBootNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a boot notification WS request was received.
         /// </summary>
-        event ClientResponseLogHandler            OnBootNotificationWSResponse;
+        event ClientResponseLogHandler  OnBootNotificationWSResponse;
 
         #endregion
 
@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a heartbeat WS request will be send to the central system.
         /// </summary>
-        event ClientRequestLogHandler      OnHeartbeatWSRequest;
+        event ClientRequestLogHandler   OnHeartbeatWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a heartbeat WS request was received.
         /// </summary>
-        event ClientResponseLogHandler     OnHeartbeatWSResponse;
+        event ClientResponseLogHandler  OnHeartbeatWSResponse;
 
         #endregion
 
@@ -64,12 +64,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever an authorize WS request will be send to the central system.
         /// </summary>
-        event ClientRequestLogHandler      OnAuthorizeWSRequest;
+        event ClientRequestLogHandler   OnAuthorizeWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to an authorize WS request was received.
         /// </summary>
-        event ClientResponseLogHandler     OnAuthorizeWSResponse;
+        event ClientResponseLogHandler  OnAuthorizeWSResponse;
 
         #endregion
 
@@ -78,12 +78,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a start transaction WS request will be send to the central system.
         /// </summary>
-        event ClientRequestLogHandler             OnStartTransactionWSRequest;
+        event ClientRequestLogHandler   OnStartTransactionWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a start transaction WS request was received.
         /// </summary>
-        event ClientResponseLogHandler            OnStartTransactionWSResponse;
+        event ClientResponseLogHandler  OnStartTransactionWSResponse;
 
         #endregion
 
@@ -92,12 +92,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a status notification WS request will be send to the central system.
         /// </summary>
-        event ClientRequestLogHandler               OnStatusNotificationWSRequest;
+        event ClientRequestLogHandler   OnStatusNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a status notification WS request was received.
         /// </summary>
-        event ClientResponseLogHandler              OnStatusNotificationWSResponse;
+        event ClientResponseLogHandler  OnStatusNotificationWSResponse;
 
         #endregion
 
@@ -106,12 +106,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a meter values WS request will be send to the central system.
         /// </summary>
-        event ClientRequestLogHandler        OnMeterValuesWSRequest;
+        event ClientRequestLogHandler   OnMeterValuesWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a meter values WS request was received.
         /// </summary>
-        event ClientResponseLogHandler       OnMeterValuesWSResponse;
+        event ClientResponseLogHandler  OnMeterValuesWSResponse;
 
         #endregion
 
@@ -120,12 +120,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a stop transaction WS request will be send to the central system.
         /// </summary>
-        event ClientRequestLogHandler            OnStopTransactionWSRequest;
+        event ClientRequestLogHandler   OnStopTransactionWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a stop transaction WS request was received.
         /// </summary>
-        event ClientResponseLogHandler           OnStopTransactionWSResponse;
+        event ClientResponseLogHandler  OnStopTransactionWSResponse;
 
         #endregion
 
@@ -135,12 +135,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a data transfer WS request will be send to the central system.
         /// </summary>
-        event ClientRequestLogHandler         OnDataTransferWSRequest;
+        event ClientRequestLogHandler   OnDataTransferWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer WS request was received.
         /// </summary>
-        event ClientResponseLogHandler        OnDataTransferWSResponse;
+        event ClientResponseLogHandler  OnDataTransferWSResponse;
 
         #endregion
 
@@ -149,12 +149,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a diagnostics status notification WS request will be send to the central system.
         /// </summary>
-        event ClientRequestLogHandler                          OnDiagnosticsStatusNotificationWSRequest;
+        event ClientRequestLogHandler   OnDiagnosticsStatusNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a diagnostics status notification WS request was received.
         /// </summary>
-        event ClientResponseLogHandler                         OnDiagnosticsStatusNotificationWSResponse;
+        event ClientResponseLogHandler  OnDiagnosticsStatusNotificationWSResponse;
 
         #endregion
 
@@ -163,14 +163,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a firmware status notification WS request will be send to the central system.
         /// </summary>
-        event ClientRequestLogHandler                       OnFirmwareStatusNotificationWSRequest;
+        event ClientRequestLogHandler   OnFirmwareStatusNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a firmware status notification WS request was received.
         /// </summary>
-        event ClientResponseLogHandler                      OnFirmwareStatusNotificationWSResponse;
+        event ClientResponseLogHandler  OnFirmwareStatusNotificationWSResponse;
 
         #endregion
+
+
+        // Security extensions
+
+        #region OnLogStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a log status notification WS request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler   OnLogStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a log status notification WS request was received.
+        /// </summary>
+        event ClientResponseLogHandler  OnLogStatusNotificationWSResponse;
+
+        #endregion
+
+        #region OnSecurityEventNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a security event notification WS request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler   OnSecurityEventNotificationWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a security event notification WS request was received.
+        /// </summary>
+        event ClientResponseLogHandler  OnSecurityEventNotificationWSResponse;
+
+        #endregion
+
+        #region OnSignCertificateRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a sign certificate WS request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler   OnSignCertificateWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a sign certificate WS request was received.
+        /// </summary>
+        event ClientResponseLogHandler  OnSignCertificateWSResponse;
+
+        #endregion
+
+        #region OnSignedFirmwareStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a signed firmware status notification WS request will be send to the central system.
+        /// </summary>
+        event ClientRequestLogHandler   OnSignedFirmwareStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a signed firmware status notification WS request was received.
+        /// </summary>
+        event ClientResponseLogHandler  OnSignedFirmwareStatusNotificationWSResponse;
+
+        #endregion
+
 
     }
 

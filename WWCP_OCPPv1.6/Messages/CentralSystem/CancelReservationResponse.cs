@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 CancelReservationResponse = null;
 
-                #region IdTagInfo
+                #region Status
 
                 if (!JSON.MapMandatory("status",
                                        "cancel reservation status",

@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomBootNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomDataTransferRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a data transfer request.
@@ -500,8 +500,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Object">A data transfer request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is BootNotificationRequest bootNotificationRequest &&
-                   Equals(bootNotificationRequest);
+            => Object is DataTransferRequest dataTransferRequest &&
+                   Equals(dataTransferRequest);
 
         #endregion
 

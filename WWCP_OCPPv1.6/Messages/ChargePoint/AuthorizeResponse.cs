@@ -362,10 +362,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The authorize request leading to this response.</param>
         public static AuthorizeResponse Failed(CP.AuthorizeRequest Request)
 
-            => new AuthorizeResponse(Request,
-                                     new IdTagInfo(
-                                         AuthorizationStatus.Error
-                                     ));
+            => new (Request,
+                    new IdTagInfo(
+                        AuthorizationStatus.Error
+                    ));
 
         #endregion
 

@@ -552,4 +552,203 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
     #endregion
 
+
+    // Security extensions...
+
+    #region OnCertificateSigned
+
+    /// <summary>
+    /// A delegate called whenever an install certificate request will be send to a charge point.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnCertificateSignedRequestDelegate(DateTime                   LogTimestamp,
+                                                            ICentralSystemClient       Sender,
+                                                            CertificateSignedRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to an install certificate request was received.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnCertificateSignedResponseDelegate(DateTime                       LogTimestamp,
+                                                             ICentralSystemClient           Sender,
+                                                             CS.CertificateSignedRequest    Request,
+                                                             CP.CertificateSignedResponse   Response,
+                                                             TimeSpan                       Runtime);
+
+    #endregion
+
+    #region OnDeleteCertificate
+
+    /// <summary>
+    /// A delegate called whenever a delete certificate request will be send to a charge point.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnDeleteCertificateRequestDelegate(DateTime                   LogTimestamp,
+                                                            ICentralSystemClient       Sender,
+                                                            DeleteCertificateRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a delete certificate request was received.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnDeleteCertificateResponseDelegate(DateTime                       LogTimestamp,
+                                                             ICentralSystemClient           Sender,
+                                                             CS.DeleteCertificateRequest    Request,
+                                                             CP.DeleteCertificateResponse   Response,
+                                                             TimeSpan                       Runtime);
+
+    #endregion
+
+    #region OnExtendedTriggerMessage
+
+    /// <summary>
+    /// A delegate called whenever an extended trigger message request will be send to a charge point.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnExtendedTriggerMessageRequestDelegate(DateTime                        LogTimestamp,
+                                                                 ICentralSystemClient            Sender,
+                                                                 ExtendedTriggerMessageRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to an extended trigger message request was received.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnExtendedTriggerMessageResponseDelegate(DateTime                            LogTimestamp,
+                                                                  ICentralSystemClient                Sender,
+                                                                  CS.ExtendedTriggerMessageRequest    Request,
+                                                                  CP.ExtendedTriggerMessageResponse   Response,
+                                                                  TimeSpan                            Runtime);
+
+    #endregion
+
+    #region OnGetInstalledCertificateIds
+
+    /// <summary>
+    /// A delegate called whenever a get installed certificate ids request will be send to a charge point.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnGetInstalledCertificateIdsRequestDelegate(DateTime                            LogTimestamp,
+                                                                     ICentralSystemClient                Sender,
+                                                                     GetInstalledCertificateIdsRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a get installed certificate ids request was received.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnGetInstalledCertificateIdsResponseDelegate(DateTime                                LogTimestamp,
+                                                                      ICentralSystemClient                    Sender,
+                                                                      CS.GetInstalledCertificateIdsRequest    Request,
+                                                                      CP.GetInstalledCertificateIdsResponse   Response,
+                                                                      TimeSpan                                Runtime);
+
+    #endregion
+
+    #region OnGetLog
+
+    /// <summary>
+    /// A delegate called whenever a get log request will be send to a charge point.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnGetLogRequestDelegate(DateTime               LogTimestamp,
+                                                 ICentralSystemClient   Sender,
+                                                 GetLogRequest          Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a get log request was received.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnGetLogResponseDelegate(DateTime               LogTimestamp,
+                                                  ICentralSystemClient   Sender,
+                                                  CS.GetLogRequest       Request,
+                                                  CP.GetLogResponse      Response,
+                                                  TimeSpan               Runtime);
+
+    #endregion
+
+    #region OnInstallCertificate
+
+    /// <summary>
+    /// A delegate called whenever an install certificate request will be send to a charge point.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnInstallCertificateRequestDelegate(DateTime                    LogTimestamp,
+                                                             ICentralSystemClient        Sender,
+                                                             InstallCertificateRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to an install certificate request was received.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnInstallCertificateResponseDelegate(DateTime                        LogTimestamp,
+                                                              ICentralSystemClient            Sender,
+                                                              CS.InstallCertificateRequest    Request,
+                                                              CP.InstallCertificateResponse   Response,
+                                                              TimeSpan                        Runtime);
+
+    #endregion
+
+    #region OnSignedUpdateFirmware
+
+    /// <summary>
+    /// A delegate called whenever a signed update firmware request will be send to a charge point.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnSignedUpdateFirmwareRequestDelegate(DateTime                    LogTimestamp,
+                                                             ICentralSystemClient          Sender,
+                                                             SignedUpdateFirmwareRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a signed update firmware request was received.
+    /// </summary>
+    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnSignedUpdateFirmwareResponseDelegate(DateTime                          LogTimestamp,
+                                                                ICentralSystemClient              Sender,
+                                                                CS.SignedUpdateFirmwareRequest    Request,
+                                                                CP.SignedUpdateFirmwareResponse   Response,
+                                                                TimeSpan                          Runtime);
+
+    #endregion
+
 }

@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// A update firmware response.
+    /// An update firmware response.
     /// </summary>
     public class UpdateFirmwareResponse : AResponse<CS.UpdateFirmwareRequest,
                                                        UpdateFirmwareResponse>
@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Compares two update firmware responses for equality.
         /// </summary>
-        /// <param name="UpdateFirmwareResponse1">A update firmware response.</param>
+        /// <param name="UpdateFirmwareResponse1">An update firmware response.</param>
         /// <param name="UpdateFirmwareResponse2">Another update firmware response.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (UpdateFirmwareResponse UpdateFirmwareResponse1,
@@ -304,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Compares two update firmware responses for inequality.
         /// </summary>
-        /// <param name="UpdateFirmwareResponse1">A update firmware response.</param>
+        /// <param name="UpdateFirmwareResponse1">An update firmware response.</param>
         /// <param name="UpdateFirmwareResponse2">Another update firmware response.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (UpdateFirmwareResponse UpdateFirmwareResponse1,
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Compares two update firmware responses for equality.
         /// </summary>
-        /// <param name="Object">A update firmware response to compare with.</param>
+        /// <param name="Object">An update firmware response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is UpdateFirmwareResponse updateFirmwareResponse &&
@@ -336,7 +336,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Compares two update firmware responses for equality.
         /// </summary>
-        /// <param name="UpdateFirmwareResponse">A update firmware response to compare with.</param>
+        /// <param name="UpdateFirmwareResponse">An update firmware response to compare with.</param>
         public override Boolean Equals(UpdateFirmwareResponse? UpdateFirmwareResponse)
 
             => UpdateFirmwareResponse is not null;
@@ -352,6 +352,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => base.GetHashCode();
 
         #endregion
@@ -362,6 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => "UpdateFirmwareResponse";
 
         #endregion

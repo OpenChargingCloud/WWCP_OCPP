@@ -377,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Compares two authorize requests for equality.
         /// </summary>
-        /// <param name="AuthorizeRequest1">A authorize request.</param>
+        /// <param name="AuthorizeRequest1">An authorize request.</param>
         /// <param name="AuthorizeRequest2">Another authorize request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AuthorizeRequest AuthorizeRequest1,
@@ -403,7 +403,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Compares two authorize requests for inequality.
         /// </summary>
-        /// <param name="AuthorizeRequest1">A authorize request.</param>
+        /// <param name="AuthorizeRequest1">An authorize request.</param>
         /// <param name="AuthorizeRequest2">Another authorize request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AuthorizeRequest AuthorizeRequest1,
