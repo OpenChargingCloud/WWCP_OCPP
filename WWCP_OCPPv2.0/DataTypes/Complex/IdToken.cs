@@ -181,9 +181,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="IdTokenJSON">The JSON to be parsed.</param>
         /// <param name="IdToken">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              IdTokenJSON,
-                                       out IdToken          IdToken,
-                                       OnExceptionDelegate  OnException  = null)
+        public static Boolean TryParse(JObject      IdTokenJSON,
+                                       out IdToken  IdToken,
+                                       out String?  ErrorResponse)
         {
 
             try
@@ -195,8 +195,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!IdTokenJSON.ParseMandatoryText("idToken",
                                                     "identification token",
-                                                    out String  Value,
-                                                    out String  ErrorResponse))
+                                                    out String Value,
+                                                    out ErrorResponse))
                 {
                     return false;
                 }
@@ -259,12 +259,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, IdTokenJSON, e);
-
+                ErrorResponse = null;
                 IdToken = default;
                 return false;
-
             }
 
         }

@@ -173,9 +173,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="MeterValue">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              JSON,
-                                       out MeterValue       MeterValue,
-                                       OnExceptionDelegate  OnException  = null)
+        public static Boolean TryParse(JObject          JSON,
+                                       out MeterValue?  MeterValue,
+                                       out String?      ErrorResponse)
         {
 
             try
@@ -186,10 +186,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 #region SampledValues
 
                 if (!JSON.ParseMandatoryJSON("sampledValue",
-                                                       "sampled (energy) meter values",
-                                                       SampledValue.TryParse,
-                                                       out IEnumerable<SampledValue>  SampledValues,
-                                                       out String                     ErrorResponse))
+                                             "sampled (energy) meter values",
+                                             SampledValue.TryParse,
+                                             out IEnumerable<SampledValue> SampledValues,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -234,12 +234,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, JSON, e);
-
+                ErrorResponse = null;
                 MeterValue = default;
                 return false;
-
             }
 
         }

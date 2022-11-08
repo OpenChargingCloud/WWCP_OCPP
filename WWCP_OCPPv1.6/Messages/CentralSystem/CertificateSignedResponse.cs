@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System.Xml.Linq;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -38,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Properties
 
         /// <summary>
-        /// The success or failure of the reservation cancellation.
+        /// The success or failure of the certificate sign request.
         /// </summary>
         public CertificateSignedStatus  Status    { get; }
 
@@ -52,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Create a new certificate signed response.
         /// </summary>
         /// <param name="Request">The certificate signed request leading to this response.</param>
-        /// <param name="Status">The success or failure of the reservation.</param>
+        /// <param name="Status">The success or failure of the certificate sign request.</param>
         public CertificateSignedResponse(CS.CertificateSignedRequest  Request,
                                          CertificateSignedStatus      Status)
 
@@ -89,64 +87,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Documentation
 
-        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-        //                xmlns:ns   = "urn://Ocpp/Cp/2015/10/">
-        //    <soap:Header/>
-        //    <soap:Body>
-        //       <ns:cancelReservationStatus>
-        //
-        //          <ns:status>?</ns:status>
-        //
-        //       </ns:cancelReservationStatus>
-        //    </soap:Body>
-        // </soap:Envelope>
-
         // {
-        //     "$schema": "http://json-schema.org/draft-04/schema#",
-        //     "id":      "urn:OCPP:1.6:2019:12:CertificateSignedResponse",
-        //     "title":   "CertificateSignedResponse",
-        //     "type":    "object",
-        //     "properties": {
-        //         "status": {
-        //             "type": "string",
-        //             "additionalProperties": false,
-        //             "enum": [
-        //                 "Accepted",
-        //                 "Rejected"
-        //             ]
-        //         }
-        //     },
-        //     "additionalProperties": false,
-        //     "required": [
-        //         "status"
-        //     ]
+        //   "$schema": "http://json-schema.org/draft-06/schema#",
+        //   "$id": "urn:OCPP:Cp:1.6:2020:3:CertificateSigned.conf",
+        //   "definitions": {
+        //     "CertificateSignedStatusEnumType": {
+        //       "type": "string",
+        //       "additionalProperties": false,
+        //       "enum": [
+        //         "Accepted",
+        //         "Rejected"
+        //       ]
+        //     }
+        // },
+        //   "type": "object",
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "status": {
+        //         "$ref": "#/definitions/CertificateSignedStatusEnumType"
+        //     }
+        // },
+        //   "required": [
+        //     "status"
+        //   ]
         // }
-
-        #endregion
-
-        #region (static) Parse   (Request, XML)
-
-        /// <summary>
-        /// Parse the given XML representation of a certificate signed response.
-        /// </summary>
-        /// <param name="Request">The certificate signed request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        public static CertificateSignedResponse Parse(CS.CertificateSignedRequest  Request,
-                                                      XElement                     XML)
-        {
-
-            if (TryParse(Request,
-                         XML,
-                         out var cancelReservationResponse,
-                         out var errorResponse))
-            {
-                return cancelReservationResponse!;
-            }
-
-            throw new ArgumentException("The given XML representation of a certificate signed response is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
 
         #endregion
 
@@ -165,57 +129,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             if (TryParse(Request,
                          JSON,
-                         out var cancelReservationResponse,
+                         out var certificateSignedResponse,
                          out var errorResponse,
                          CustomCertificateSignedResponseParser))
             {
-                return cancelReservationResponse!;
+                return certificateSignedResponse!;
             }
 
             throw new ArgumentException("The given JSON representation of a certificate signed response is invalid: " + errorResponse,
                                         nameof(JSON));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, XML,  out CertificateSignedResponse, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a certificate signed response.
-        /// </summary>
-        /// <param name="Request">The certificate signed request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="CertificateSignedResponse">The parsed certificate signed response.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CS.CertificateSignedRequest     Request,
-                                       XElement                        XML,
-                                       out CertificateSignedResponse?  CertificateSignedResponse,
-                                       out String?                     ErrorResponse)
-        {
-
-            try
-            {
-
-                CertificateSignedResponse = new CertificateSignedResponse(
-
-                                                Request,
-
-                                                XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                   CertificateSignedStatusExtentions.Parse)
-
-                                            );
-
-                ErrorResponse = null;
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                CertificateSignedResponse  = null;
-                ErrorResponse              = "The given XML representation of a certificate signed response is invalid: " + e.Message;
-                return false;
-            }
 
         }
 
@@ -243,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 CertificateSignedResponse = null;
 
-                #region IdTagInfo
+                #region Status
 
                 if (!JSON.MapMandatory("status",
                                        "certificate signed status",
@@ -275,19 +197,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
         }
-
-        #endregion
-
-        #region ToXML()
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        public XElement ToXML()
-
-            => new (OCPPNS.OCPPv1_6_CP + "cancelReservationResponse",
-                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
-               );
 
         #endregion
 
@@ -382,8 +291,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Object">A certificate signed response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is CertificateSignedResponse cancelReservationResponse &&
-                   Equals(cancelReservationResponse);
+            => Object is CertificateSignedResponse certificateSignedResponse &&
+                   Equals(certificateSignedResponse);
 
         #endregion
 

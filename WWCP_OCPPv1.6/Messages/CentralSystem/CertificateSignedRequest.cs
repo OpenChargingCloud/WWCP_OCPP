@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomCertificateSignedRequestParser">A delegate to parse custom CertificateSigned requests.</param>
+        /// <param name="CustomCertificateSignedRequestParser">A delegate to parse custom certificate signed requests.</param>
         public static CertificateSignedRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
                                                      ChargeBox_Id                                            ChargeBoxId,
@@ -116,11 +116,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (TryParse(JSON,
                          RequestId,
                          ChargeBoxId,
-                         out var cancelReservationRequest,
+                         out var certificateSignedRequest,
                          out var errorResponse,
                          CustomCertificateSignedRequestParser))
             {
-                return cancelReservationRequest!;
+                return certificateSignedRequest!;
             }
 
             throw new ArgumentException("The given JSON representation of a certificate signed request is invalid: " + errorResponse,
@@ -266,10 +266,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (CertificateSignedRequest1, CertificateSignedRequest2)
 
         /// <summary>
-        /// Compares two CertificateSigned requests for equality.
+        /// Compares two certificate signed requests for equality.
         /// </summary>
-        /// <param name="CertificateSignedRequest1">A CertificateSigned request.</param>
-        /// <param name="CertificateSignedRequest2">Another CertificateSigned request.</param>
+        /// <param name="CertificateSignedRequest1">A certificate signed request.</param>
+        /// <param name="CertificateSignedRequest2">Another certificate signed request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (CertificateSignedRequest CertificateSignedRequest1,
                                            CertificateSignedRequest CertificateSignedRequest2)
@@ -292,10 +292,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (CertificateSignedRequest1, CertificateSignedRequest2)
 
         /// <summary>
-        /// Compares two CertificateSigned requests for inequality.
+        /// Compares two certificate signed requests for inequality.
         /// </summary>
-        /// <param name="CertificateSignedRequest1">A CertificateSigned request.</param>
-        /// <param name="CertificateSignedRequest2">Another CertificateSigned request.</param>
+        /// <param name="CertificateSignedRequest1">A certificate signed request.</param>
+        /// <param name="CertificateSignedRequest2">Another certificate signed request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (CertificateSignedRequest CertificateSignedRequest1,
                                            CertificateSignedRequest CertificateSignedRequest2)
@@ -316,8 +316,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Object">A certificate signed request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is CertificateSignedRequest cancelReservationRequest &&
-                   Equals(cancelReservationRequest);
+            => Object is CertificateSignedRequest certificateSignedRequest &&
+                   Equals(certificateSignedRequest);
 
         #endregion
 

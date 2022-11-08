@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 if (ChargingStationJSON.ParseOptionalJSON("Modem",
                                                           "wireless communication module",
                                                           OCPPv2_0.Modem.TryParse,
-                                                          out Modem  Modem,
+                                                          out Modem? Modem,
                                                           out        ErrorResponse,
                                                           OnException))
                 {

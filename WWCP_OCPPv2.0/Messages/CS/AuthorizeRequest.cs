@@ -318,9 +318,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AuthorizeRequest">The parsed authorize request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject               JSON,
-                                       out AuthorizeRequest  AuthorizeRequest,
-                                       OnExceptionDelegate   OnException  = null)
+        public static Boolean TryParse(JObject                JSON,
+                                       out AuthorizeRequest?  AuthorizeRequest,
+                                       out String?            ErrorResponse)
         {
 
             try
@@ -330,12 +330,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #region IdToken
 
-                if (!JSON.ParseMandatory3("idTag",
-                                                          "identification tag",
-                                                          OCPPv2_0.IdToken.TryParse,
-                                                          out IdToken  IdToken,
-                                                          out String   ErrorResponse,
-                                                          OnException))
+                if (!JSON.ParseMandatoryJSONStruct("idTag",
+                                                   "identification tag",
+                                                   OCPPv2_0.IdToken.TryParse,
+                                                   out IdToken IdToken,
+                                                   out ErrorResponse))
                 {
                     return false;
                 }
@@ -360,10 +359,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 #region ISO15118CertificateHashData
 
                 if (JSON.ParseOptionalJSON("iso15118CertificateHashData",
-                                                           "electric vehicle/user certificate",
-                                                           OCSPRequestData.TryParse,
-                                                           out IEnumerable<OCSPRequestData>  ISO15118CertificateHashData,
-                                                           out                               ErrorResponse))
+                                           "electric vehicle/user certificate",
+                                           OCSPRequestData.TryParse,
+                                           out IEnumerable<OCSPRequestData> ISO15118CertificateHashData,
+                                           out ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -400,9 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, JSON, e);
-
+                ErrorResponse = null;
                 AuthorizeRequest = null;
                 return false;
 

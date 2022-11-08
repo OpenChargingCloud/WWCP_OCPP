@@ -162,9 +162,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="ModemJSON">The JSON to be parsed.</param>
         /// <param name="Modem">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              ModemJSON,
-                                       out Modem            Modem,
-                                       OnExceptionDelegate  OnException  = null)
+        public static Boolean TryParse(JObject      ModemJSON,
+                                       out Modem?   Modem,
+                                       out String?  ErrorResponse)
         {
 
             try
@@ -176,8 +176,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (ModemJSON.ParseOptional("iccid",
                                             "integrated circuit card identifier",
-                                            out String  ICCID,
-                                            out String  ErrorResponse))
+                                            out String ICCID,
+                                            out ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -191,8 +191,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (ModemJSON.ParseOptional("imsi",
                                             "international mobile subscriber identity",
-                                            out String  IMSI,
-                                            out         ErrorResponse))
+                                            out String IMSI,
+                                            out ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -207,8 +207,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 if (ModemJSON.ParseOptionalJSON("customData",
                                                 "custom data",
                                                 OCPPv2_0.CustomData.TryParse,
-                                                out CustomData  CustomData,
-                                                out             ErrorResponse))
+                                                out CustomData CustomData,
+                                                out ErrorResponse))
                 {
 
                     if (ErrorResponse != null)
@@ -228,12 +228,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, ModemJSON, e);
-
+                ErrorResponse = null;
                 Modem = default;
                 return false;
-
             }
 
         }

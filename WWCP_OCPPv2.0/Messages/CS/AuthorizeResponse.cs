@@ -405,8 +405,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static Boolean TryParse(CP.AuthorizeRequest    Request,
                                        JObject                JSON,
-                                       out AuthorizeResponse  AuthorizeResponse,
-                                       OnExceptionDelegate    OnException  = null)
+                                       out AuthorizeResponse?  AuthorizeResponse,
+                                       out String? ErrorResponse)
         {
 
             try
@@ -416,12 +416,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region IdTokenInfo
 
-                if (!JSON.ParseMandatoryJSON("idTagInfo",
-                                                              "identification tag information",
-                                                              OCPPv2_0.IdTokenInfo.TryParse,
-                                                              out IdTokenInfo  IdTokenInfo,
-                                                              out String       ErrorResponse,
-                                                              OnException))
+                if (!JSON.ParseMandatoryJSONStruct("idTagInfo",
+                                                   "identification tag information",
+                                                   OCPPv2_0.IdTokenInfo.TryParse,
+                                                   out IdTokenInfo IdTokenInfo,
+                                                   out ErrorResponse))
                 {
                     return false;
                 }
@@ -454,12 +453,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, JSON, e);
-
+                ErrorResponse = null;
                 AuthorizeResponse = null;
                 return false;
-
             }
 
         }
