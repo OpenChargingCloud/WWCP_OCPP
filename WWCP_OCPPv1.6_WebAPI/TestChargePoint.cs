@@ -2696,6 +2696,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #endregion
 
+
+            //ToDo: Add security extensions
+
         }
 
         #endregion
@@ -3838,6 +3841,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
+
+        //ToDo: Add security extensions
 
     }
 

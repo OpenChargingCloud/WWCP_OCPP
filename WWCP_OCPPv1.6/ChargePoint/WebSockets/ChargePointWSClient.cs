@@ -3930,7 +3930,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
 
-
         #region SendBootNotification             (Request)
 
         /// <summary>
@@ -4999,12 +4998,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         }
 
         #endregion
-
-
-        // LogStatusNotification
-        // SecurityEventNotification
-        // SignCertificate
-        // SignedFirmwareStatusNotification
 
 
     }

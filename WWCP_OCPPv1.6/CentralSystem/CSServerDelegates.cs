@@ -507,4 +507,200 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
     #endregion
 
+
+    // Security extensions
+
+    #region OnLogStatusNotification
+
+    /// <summary>
+    /// A log status notification request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    public delegate Task
+
+        OnLogStatusNotificationRequestDelegate(DateTime                          Timestamp,
+                                               IEventSender                      Sender,
+                                               CP.LogStatusNotificationRequest   Request);
+
+
+    /// <summary>
+    /// A log status notification at the given charge point.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<LogStatusNotificationResponse>
+
+        OnLogStatusNotificationDelegate(DateTime                          Timestamp,
+                                        IEventSender                      Sender,
+                                        CP.LogStatusNotificationRequest   Request,
+                                        CancellationToken                 CancellationToken);
+
+
+    /// <summary>
+    /// A log status notification response.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="Response">The stop transaction response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task
+
+        OnLogStatusNotificationResponseDelegate(DateTime                           Timestamp,
+                                                IEventSender                       Sender,
+                                                CP.LogStatusNotificationRequest    Request,
+                                                CS.LogStatusNotificationResponse   Response,
+                                                TimeSpan                           Runtime);
+
+    #endregion
+
+    #region OnSecurityEventNotification
+
+    /// <summary>
+    /// A security event notification request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    public delegate Task
+
+        OnSecurityEventNotificationRequestDelegate(DateTime                              Timestamp,
+                                                   IEventSender                          Sender,
+                                                   CP.SecurityEventNotificationRequest   Request);
+
+
+    /// <summary>
+    /// A security event notification at the given charge point.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<SecurityEventNotificationResponse>
+
+        OnSecurityEventNotificationDelegate(DateTime                              Timestamp,
+                                            IEventSender                          Sender,
+                                            CP.SecurityEventNotificationRequest   Request,
+                                            CancellationToken                     CancellationToken);
+
+
+    /// <summary>
+    /// A security event notification response.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="Response">The stop transaction response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task
+
+        OnSecurityEventNotificationResponseDelegate(DateTime                               Timestamp,
+                                                    IEventSender                           Sender,
+                                                    CP.SecurityEventNotificationRequest    Request,
+                                                    CS.SecurityEventNotificationResponse   Response,
+                                                    TimeSpan                               Runtime);
+
+    #endregion
+
+    #region OnSignCertificate
+
+    /// <summary>
+    /// A sign certificate request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    public delegate Task
+
+        OnSignCertificateRequestDelegate(DateTime                    Timestamp,
+                                         IEventSender                Sender,
+                                         CP.SignCertificateRequest   Request);
+
+
+    /// <summary>
+    /// A sign certificate at the given charge point.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<SignCertificateResponse>
+
+        OnSignCertificateDelegate(DateTime                    Timestamp,
+                                  IEventSender                Sender,
+                                  CP.SignCertificateRequest   Request,
+                                  CancellationToken           CancellationToken);
+
+
+    /// <summary>
+    /// A sign certificate response.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="Response">The stop transaction response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task
+
+        OnSignCertificateResponseDelegate(DateTime                     Timestamp,
+                                          IEventSender                 Sender,
+                                          CP.SignCertificateRequest    Request,
+                                          CS.SignCertificateResponse   Response,
+                                          TimeSpan                     Runtime);
+
+    #endregion
+
+    #region OnSignedFirmwareStatusNotification
+
+    /// <summary>
+    /// A signed firmware status notification request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    public delegate Task
+
+        OnSignedFirmwareStatusNotificationRequestDelegate(DateTime                   Timestamp,
+                                         IEventSender               Sender,
+                                         CP.SignedFirmwareStatusNotificationRequest  Request);
+
+
+    /// <summary>
+    /// A signed firmware status notification at the given charge point.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<SignedFirmwareStatusNotificationResponse>
+
+        OnSignedFirmwareStatusNotificationDelegate(DateTime                   Timestamp,
+                                  IEventSender               Sender,
+                                  CP.SignedFirmwareStatusNotificationRequest  Request,
+                                  CancellationToken          CancellationToken);
+
+
+    /// <summary>
+    /// A signed firmware status notification response.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="Response">The stop transaction response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task
+
+        OnSignedFirmwareStatusNotificationResponseDelegate(DateTime                    Timestamp,
+                                          IEventSender                Sender,
+                                          CP.SignedFirmwareStatusNotificationRequest   Request,
+                                          CS.SignedFirmwareStatusNotificationResponse  Response,
+                                          TimeSpan                    Runtime);
+
+    #endregion
+
+
 }

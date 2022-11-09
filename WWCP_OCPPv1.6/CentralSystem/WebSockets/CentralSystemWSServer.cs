@@ -493,6 +493,126 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
+        // Security extensions
+
+        #region OnLogStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a log status notification web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                OnLogStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a log status notification request was received.
+        /// </summary>
+        public event OnLogStatusNotificationRequestDelegate?    OnLogStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a log status notification request was received.
+        /// </summary>
+        public event OnLogStatusNotificationDelegate?           OnLogStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a log status notification request was sent.
+        /// </summary>
+        public event OnLogStatusNotificationResponseDelegate?   OnLogStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a log status notification request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?               OnLogStatusNotificationWSResponse;
+
+        #endregion
+
+        #region OnSecurityEventNotification
+
+        /// <summary>
+        /// An event sent whenever a security event notification web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                    OnSecurityEventNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a security event notification request was received.
+        /// </summary>
+        public event OnSecurityEventNotificationRequestDelegate?    OnSecurityEventNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a security event notification request was received.
+        /// </summary>
+        public event OnSecurityEventNotificationDelegate?           OnSecurityEventNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a security event notification request was sent.
+        /// </summary>
+        public event OnSecurityEventNotificationResponseDelegate?   OnSecurityEventNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a security event notification request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                   OnSecurityEventNotificationWSResponse;
+
+        #endregion
+
+        #region OnSignCertificate
+
+        /// <summary>
+        /// An event sent whenever a sign certificate web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?          OnSignCertificateWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a sign certificate request was received.
+        /// </summary>
+        public event OnSignCertificateRequestDelegate?    OnSignCertificateRequest;
+
+        /// <summary>
+        /// An event sent whenever a sign certificate request was received.
+        /// </summary>
+        public event OnSignCertificateDelegate?           OnSignCertificate;
+
+        /// <summary>
+        /// An event sent whenever a response to a sign certificate request was sent.
+        /// </summary>
+        public event OnSignCertificateResponseDelegate?   OnSignCertificateResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a sign certificate request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?         OnSignCertificateWSResponse;
+
+        #endregion
+
+        #region OnSignedFirmwareStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                           OnSignedFirmwareStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        public event OnSignedFirmwareStatusNotificationRequestDelegate?    OnSignedFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        public event OnSignedFirmwareStatusNotificationDelegate?           OnSignedFirmwareStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a firmware status notification request was sent.
+        /// </summary>
+        public event OnSignedFirmwareStatusNotificationResponseDelegate?   OnSignedFirmwareStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a firmware status notification request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                          OnSignedFirmwareStatusNotificationWSResponse;
+
+        #endregion
+
+
+
         // CS -> CP
 
         #region OnReset
@@ -871,111 +991,133 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// A delegate to parse custom BootNotification requests.
         /// </summary>
-        public CustomJObjectParserDelegate<BootNotificationRequest>?                CustomBootNotificationRequestParser                 { get; set; }
+        public CustomJObjectParserDelegate<BootNotificationRequest>?                  CustomBootNotificationRequestParser                    { get; set; }
 
         /// <summary>
         /// A delegate to parse custom Heartbeat requests.
         /// </summary>
-        public CustomJObjectParserDelegate<HeartbeatRequest>?                       CustomHeartbeatRequestParser                        { get; set; }
+        public CustomJObjectParserDelegate<HeartbeatRequest>?                         CustomHeartbeatRequestParser                           { get; set; }
 
 
         /// <summary>
         /// A delegate to parse custom Authorize requests.
         /// </summary>
-        public CustomJObjectParserDelegate<AuthorizeRequest>?                       CustomAuthorizeRequestParser                        { get; set; }
+        public CustomJObjectParserDelegate<AuthorizeRequest>?                         CustomAuthorizeRequestParser                           { get; set; }
 
         /// <summary>
         /// A delegate to parse custom StartTransaction requests.
         /// </summary>
-        public CustomJObjectParserDelegate<StartTransactionRequest>?                CustomStartTransactionRequestParser                 { get; set; }
+        public CustomJObjectParserDelegate<StartTransactionRequest>?                  CustomStartTransactionRequestParser                    { get; set; }
 
         /// <summary>
         /// A delegate to parse custom StatusNotification requests.
         /// </summary>
-        public CustomJObjectParserDelegate<StatusNotificationRequest>?              CustomStatusNotificationRequestParser               { get; set; }
+        public CustomJObjectParserDelegate<StatusNotificationRequest>?                CustomStatusNotificationRequestParser                  { get; set; }
 
         /// <summary>
         /// A delegate to parse custom MeterValues requests.
         /// </summary>
-        public CustomJObjectParserDelegate<MeterValuesRequest>?                     CustomMeterValuesRequestParser                      { get; set; }
+        public CustomJObjectParserDelegate<MeterValuesRequest>?                       CustomMeterValuesRequestParser                         { get; set; }
 
         /// <summary>
         /// A delegate to parse custom StopTransaction requests.
         /// </summary>
-        public CustomJObjectParserDelegate<StopTransactionRequest>?                 CustomStopTransactionRequestParser                  { get; set; }
+        public CustomJObjectParserDelegate<StopTransactionRequest>?                   CustomStopTransactionRequestParser                     { get; set; }
 
 
         /// <summary>
         /// A delegate to parse custom DataTransfer requests.
         /// </summary>
-        public CustomJObjectParserDelegate<CP.DataTransferRequest>?                 CustomDataTransferRequestParser                     { get; set; }
+        public CustomJObjectParserDelegate<CP.DataTransferRequest>?                   CustomDataTransferRequestParser                        { get; set; }
 
         /// <summary>
         /// A delegate to parse custom DiagnosticsStatusNotification requests.
         /// </summary>
-        public CustomJObjectParserDelegate<DiagnosticsStatusNotificationRequest>?   CustomDiagnosticsStatusNotificationRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<DiagnosticsStatusNotificationRequest>?     CustomDiagnosticsStatusNotificationRequestParser       { get; set; }
 
         /// <summary>
         /// A delegate to parse custom FirmwareStatusNotification requests.
         /// </summary>
-        public CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>?      CustomFirmwareStatusNotificationRequestParser       { get; set; }
-
-
-
-        public CustomJObjectSerializerDelegate<ResetRequest>?                       CustomResetRequestSerializer                        { get; set; }
-
-        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?          CustomChangeAvailabilityRequestSerializer           { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetConfigurationRequest>?            CustomGetConfigurationRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<ChangeConfigurationRequest>?         CustomChangeConfigurationRequestSerializer          { get; set; }
-
-        public CustomJObjectSerializerDelegate<DataTransferRequest>?                CustomDataTransferRequestSerializer                 { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetDiagnosticsRequest>?              CustomGetDiagnosticsRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?              CustomTriggerMessageRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?              CustomUpdateFirmwareRequestSerializer               { get; set; }
-
-
-
-        public CustomJObjectSerializerDelegate<ReserveNowRequest>?                  CustomReserveNowRequestSerializer                   { get; set; }
-
-        public CustomJObjectSerializerDelegate<CancelReservationRequest>?           CustomCancelReservationRequestSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<RemoteStartTransactionRequest>?      CustomRemoteStartTransactionRequestSerializer       { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingProfile>?                    CustomChargingProfileSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedule>?                   CustomChargingScheduleSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?             CustomChargingSchedulePeriodSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<RemoteStopTransactionRequest>?       CustomRemoteStopTransactionRequestSerializer        { get; set; }
-
-        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?          CustomSetChargingProfileRequestSerializer           { get; set; }
-
-        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?        CustomClearChargingProfileRequestSerializer         { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?        CustomGetCompositeScheduleRequestSerializer         { get; set; }
-
-        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?             CustomUnlockConnectorRequestSerializer              { get; set; }
-
-
-        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?         CustomGetLocalListVersionRequestSerializer          { get; set; }
-
-        public CustomJObjectSerializerDelegate<SendLocalListRequest>?               CustomSendLocalListRequestSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<AuthorizationData>?                  CustomAuthorizationDataSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<IdTagInfo>?                          CustomIdTagInfoResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                  CustomClearCacheRequestSerializer                   { get; set; }
+        public CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>?        CustomFirmwareStatusNotificationRequestParser          { get; set; }
 
 
         // Security extensions
-        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?           CustomCertificateSignedRequestSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?           CustomDeleteCertificateRequestSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<ExtendedTriggerMessageRequest>?      CustomExtendedTriggerMessageRequestSerializer       { get; set; }
-        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?  CustomGetInstalledCertificateIdsRequestSerializer   { get; set; }
-        public CustomJObjectSerializerDelegate<GetLogRequest>?                      CustomGetLogRequestSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<InstallCertificateRequest>?          CustomInstallCertificateRequestSerializer           { get; set; }
-        public CustomJObjectSerializerDelegate<SignedUpdateFirmwareRequest>?        CustomSignedUpdateFirmwareRequestSerializer         { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom LogStatusNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<LogStatusNotificationRequest>?             CustomLogStatusNotificationRequestParser               { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom SecurityEventNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<SecurityEventNotificationRequest>?         CustomSecurityEventNotificationRequestParser           { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom SignCertificate requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<SignCertificateRequest>?                   CustomSignCertificateRequestParser                     { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom SignedFirmwareStatusNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<SignedFirmwareStatusNotificationRequest>?  CustomSignedFirmwareStatusNotificationRequestParser    { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<ResetRequest>?                         CustomResetRequestSerializer                           { get; set; }
+
+        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?            CustomChangeAvailabilityRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetConfigurationRequest>?              CustomGetConfigurationRequestSerializer                { get; set; }
+
+        public CustomJObjectSerializerDelegate<ChangeConfigurationRequest>?           CustomChangeConfigurationRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?                  CustomDataTransferRequestSerializer                    { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetDiagnosticsRequest>?                CustomGetDiagnosticsRequestSerializer                  { get; set; }
+
+        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                CustomTriggerMessageRequestSerializer                  { get; set; }
+
+        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?                CustomUpdateFirmwareRequestSerializer                  { get; set; }
+
+
+
+        public CustomJObjectSerializerDelegate<ReserveNowRequest>?                    CustomReserveNowRequestSerializer                      { get; set; }
+
+        public CustomJObjectSerializerDelegate<CancelReservationRequest>?             CustomCancelReservationRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<RemoteStartTransactionRequest>?        CustomRemoteStartTransactionRequestSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfile>?                      CustomChargingProfileSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedule>?                     CustomChargingScheduleSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?               CustomChargingSchedulePeriodSerializer                 { get; set; }
+
+        public CustomJObjectSerializerDelegate<RemoteStopTransactionRequest>?         CustomRemoteStopTransactionRequestSerializer           { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?            CustomSetChargingProfileRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?          CustomClearChargingProfileRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?          CustomGetCompositeScheduleRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?               CustomUnlockConnectorRequestSerializer                 { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?           CustomGetLocalListVersionRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<SendLocalListRequest>?                 CustomSendLocalListRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<AuthorizationData>?                    CustomAuthorizationDataSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<IdTagInfo>?                            CustomIdTagInfoResponseSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                    CustomClearCacheRequestSerializer                      { get; set; }
+
+
+        // Security extensions
+        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?             CustomCertificateSignedRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?             CustomDeleteCertificateRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<ExtendedTriggerMessageRequest>?        CustomExtendedTriggerMessageRequestSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?    CustomGetInstalledCertificateIdsRequestSerializer      { get; set; }
+        public CustomJObjectSerializerDelegate<GetLogRequest>?                        CustomGetLogRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<InstallCertificateRequest>?            CustomInstallCertificateRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<SignedUpdateFirmwareRequest>?          CustomSignedUpdateFirmwareRequestSerializer            { get; set; }
 
         #endregion
 
@@ -2839,6 +2981,613 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                 break;
 
                             #endregion
+
+
+                            // Security extensions
+
+                            #region LogStatusNotification
+
+                            case "LogStatusNotification":
+                                {
+
+                                    #region Send OnLogStatusNotificationWSRequest event
+
+                                    try
+                                    {
+
+                                        OnLogStatusNotificationWSRequest?.Invoke(Timestamp.Now,
+                                                                                 this,
+                                                                                 json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnLogStatusNotificationWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (LogStatusNotificationRequest.TryParse(requestData,
+                                                                                  requestId.Value,
+                                                                                  chargeBoxId.Value,
+                                                                                  out var request,
+                                                                                  out var errorResponse,
+                                                                                  CustomLogStatusNotificationRequestParser) && request is not null) {
+
+                                            #region Send OnLogStatusNotificationRequest event
+
+                                            try
+                                            {
+
+                                                OnLogStatusNotificationRequest?.Invoke(Timestamp.Now,
+                                                                                       this,
+                                                                                       request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnLogStatusNotificationRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            LogStatusNotificationResponse? response = null;
+
+                                            var responseTasks = OnLogStatusNotification?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnLogStatusNotificationDelegate)
+                                                                        (Timestamp.Now,
+                                                                         this,
+                                                                         request,
+                                                                         CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= LogStatusNotificationResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnLogStatusNotificationResponse event
+
+                                            try
+                                            {
+
+                                                OnLogStatusNotificationResponse?.Invoke(Timestamp.Now,
+                                                                                        this,
+                                                                                        request,
+                                                                                        response,
+                                                                                        response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnLogStatusNotificationResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'LogStatusNotification' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'LogStatusNotification' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnLogStatusNotificationWSResponse event
+
+                                    try
+                                    {
+
+                                        OnLogStatusNotificationWSResponse?.Invoke(Timestamp.Now,
+                                                                                  this,
+                                                                                  json,
+                                                                                  OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnLogStatusNotificationWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region SecurityEventNotification
+
+                            case "SecurityEventNotification":
+                                {
+
+                                    #region Send OnSecurityEventNotificationWSRequest event
+
+                                    try
+                                    {
+
+                                        OnSecurityEventNotificationWSRequest?.Invoke(Timestamp.Now,
+                                                                           this,
+                                                                           json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSecurityEventNotificationWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (SecurityEventNotificationRequest.TryParse(requestData,
+                                                                             requestId.Value,
+                                                                             chargeBoxId.Value,
+                                                                             out var request,
+                                                                             out var errorResponse,
+                                                                             CustomSecurityEventNotificationRequestParser) && request is not null) {
+
+                                            #region Send OnSecurityEventNotificationRequest event
+
+                                            try
+                                            {
+
+                                                OnSecurityEventNotificationRequest?.Invoke(Timestamp.Now,
+                                                                                 this,
+                                                                                 request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSecurityEventNotificationRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            SecurityEventNotificationResponse? response = null;
+
+                                            var responseTasks = OnSecurityEventNotification?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnSecurityEventNotificationDelegate)
+                                                                        (Timestamp.Now,
+                                                                         this,
+                                                                         request,
+                                                                         CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= SecurityEventNotificationResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnSecurityEventNotificationResponse event
+
+                                            try
+                                            {
+
+                                                OnSecurityEventNotificationResponse?.Invoke(Timestamp.Now,
+                                                                                  this,
+                                                                                  request,
+                                                                                  response,
+                                                                                  response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSecurityEventNotificationResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'SecurityEventNotification' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'SecurityEventNotification' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnSecurityEventNotificationWSResponse event
+
+                                    try
+                                    {
+
+                                        OnSecurityEventNotificationWSResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            json,
+                                                                            OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSecurityEventNotificationWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region SignCertificate
+
+                            case "SignCertificate":
+                                {
+
+                                    #region Send OnSignCertificateWSRequest event
+
+                                    try
+                                    {
+
+                                        OnSignCertificateWSRequest?.Invoke(Timestamp.Now,
+                                                                           this,
+                                                                           json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignCertificateWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (SignCertificateRequest.TryParse(requestData,
+                                                                             requestId.Value,
+                                                                             chargeBoxId.Value,
+                                                                             out var request,
+                                                                             out var errorResponse,
+                                                                             CustomSignCertificateRequestParser) && request is not null) {
+
+                                            #region Send OnSignCertificateRequest event
+
+                                            try
+                                            {
+
+                                                OnSignCertificateRequest?.Invoke(Timestamp.Now,
+                                                                                 this,
+                                                                                 request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignCertificateRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            SignCertificateResponse? response = null;
+
+                                            var responseTasks = OnSignCertificate?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnSignCertificateDelegate)
+                                                                        (Timestamp.Now,
+                                                                         this,
+                                                                         request,
+                                                                         CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= SignCertificateResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnSignCertificateResponse event
+
+                                            try
+                                            {
+
+                                                OnSignCertificateResponse?.Invoke(Timestamp.Now,
+                                                                                  this,
+                                                                                  request,
+                                                                                  response,
+                                                                                  response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignCertificateResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'SignCertificate' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'SignCertificate' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnSignCertificateWSResponse event
+
+                                    try
+                                    {
+
+                                        OnSignCertificateWSResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            json,
+                                                                            OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignCertificateWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region SignedFirmwareStatusNotification
+
+                            case "SignedFirmwareStatusNotification":
+                                {
+
+                                    #region Send OnSignedFirmwareStatusNotificationWSRequest event
+
+                                    try
+                                    {
+
+                                        OnSignedFirmwareStatusNotificationWSRequest?.Invoke(Timestamp.Now,
+                                                                           this,
+                                                                           json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignedFirmwareStatusNotificationWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (SignedFirmwareStatusNotificationRequest.TryParse(requestData,
+                                                                             requestId.Value,
+                                                                             chargeBoxId.Value,
+                                                                             out var request,
+                                                                             out var errorResponse,
+                                                                             CustomSignedFirmwareStatusNotificationRequestParser) && request is not null) {
+
+                                            #region Send OnSignedFirmwareStatusNotificationRequest event
+
+                                            try
+                                            {
+
+                                                OnSignedFirmwareStatusNotificationRequest?.Invoke(Timestamp.Now,
+                                                                                 this,
+                                                                                 request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignedFirmwareStatusNotificationRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            SignedFirmwareStatusNotificationResponse? response = null;
+
+                                            var responseTasks = OnSignedFirmwareStatusNotification?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnSignedFirmwareStatusNotificationDelegate)
+                                                                        (Timestamp.Now,
+                                                                         this,
+                                                                         request,
+                                                                         CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= SignedFirmwareStatusNotificationResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnSignedFirmwareStatusNotificationResponse event
+
+                                            try
+                                            {
+
+                                                OnSignedFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
+                                                                                  this,
+                                                                                  request,
+                                                                                  response,
+                                                                                  response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignedFirmwareStatusNotificationResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'SignedFirmwareStatusNotification' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'SignedFirmwareStatusNotification' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnSignedFirmwareStatusNotificationWSResponse event
+
+                                    try
+                                    {
+
+                                        OnSignedFirmwareStatusNotificationWSResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            json,
+                                                                            OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignedFirmwareStatusNotificationWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+
+                            //ToDo: Add security extensions
+
+                            // LogStatusNotification
+                            // SecurityEventNotification
+                            // SignCertificate
+                            // SignedFirmwareStatusNotification
 
 
                             default:
