@@ -651,15 +651,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var json = JSONObject.Create(
 
-                           new JProperty("chargingProfileId",       ChargingProfileId.ToString()),
+                           new JProperty("chargingProfileId",       ChargingProfileId.      ToString()),
 
                            TransactionId is not null
-                               ? new JProperty("transactionId",     TransactionId.    Value)
+                               ? new JProperty("transactionId",     TransactionId.    Value.ToString())
                                : null,
 
                            new JProperty("stackLevel",              StackLevel),
-                           new JProperty("chargingProfilePurpose",  ChargingProfilePurpose.AsText()),
-                           new JProperty("chargingProfileKind",     ChargingProfileKind.   AsText()),
+                           new JProperty("chargingProfilePurpose",  ChargingProfilePurpose. AsText()),
+                           new JProperty("chargingProfileKind",     ChargingProfileKind.    AsText()),
 
                            ValidFrom.HasValue
                                ? new JProperty("validFrom",         ValidFrom.        Value.ToIso8601())

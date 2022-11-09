@@ -3582,8 +3582,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                             #endregion
 
 
-                            //ToDo: Add security extensions
-
                             // LogStatusNotification
                             // SecurityEventNotification
                             // SignCertificate
