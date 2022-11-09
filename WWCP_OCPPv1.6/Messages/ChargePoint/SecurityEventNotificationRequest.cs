@@ -209,8 +209,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region SecurityEvent    [mandatory]
 
-                if (!JSON.ParseMandatory("status",
-                                         "status",
+                if (!JSON.ParseMandatory("type",
+                                         "type",
                                          OCPPv1_6.SecurityEvent.TryParse,
                                          out SecurityEvent SecurityEvent,
                                          out ErrorResponse))

@@ -57,7 +57,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Data
 
-        private readonly UInt64 InternalId;
+        /// <summary>
+        /// The nummeric value of the transaction identification.
+        /// </summary>
+        public readonly UInt64 Value;
 
         #endregion
 
@@ -67,19 +70,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Indicates whether this identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
-            => false;
+            => Value == 0;
 
         /// <summary>
         /// Indicates whether this identification is NOT null or empty.
         /// </summary>
         public Boolean IsNotNullOrEmpty
-            => true;
+            => Value != 0;
 
         /// <summary>
         /// The length of the tag identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId.ToString().Length;
+            => (UInt64) Value.ToString().Length;
 
         #endregion
 
@@ -91,11 +94,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Number">A number.</param>
         private ChargingProfile_Id(UInt64 Number)
         {
-            this.InternalId = Number;
+            this.Value = Number;
         }
 
         #endregion
 
+
+        #region (static) NewRandom
+
+        /// <summary>
+        /// Create a new random charging profile identification.
+        /// </summary>
+        public static ChargingProfile_Id NewRandom
+
+#pragma warning disable SCS0005 // Weak random number generator.
+            => new ((UInt64) Random.Shared.Next(Int32.MaxValue));
+#pragma warning restore SCS0005 // Weak random number generator.
+
+        #endregion
 
         #region (static) Parse   (Text)
 
@@ -215,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public ChargingProfile_Id Clone
 
-            => new (InternalId);
+            => new (Value);
 
         #endregion
 
@@ -339,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargingProfileId">A charging profile identification to compare with.</param>
         public Int32 CompareTo(ChargingProfile_Id ChargingProfileId)
 
-            => InternalId.CompareTo(ChargingProfileId.InternalId);
+            => Value.CompareTo(ChargingProfileId.Value);
 
         #endregion
 
@@ -368,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargingProfileId">A charging profile identification to compare with.</param>
         public Boolean Equals(ChargingProfile_Id ChargingProfileId)
 
-            => InternalId.Equals(ChargingProfileId.InternalId);
+            => Value.Equals(ChargingProfileId.Value);
 
         #endregion
 
@@ -382,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => InternalId.GetHashCode();
+            => Value.GetHashCode();
 
         #endregion
 
@@ -393,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public override String ToString()
 
-            => InternalId.ToString();
+            => Value.ToString();
 
         #endregion
 

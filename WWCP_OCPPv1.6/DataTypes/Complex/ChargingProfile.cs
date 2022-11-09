@@ -606,7 +606,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="XName">An alternative XML element name [default: "OCPPv1_6_CP:chargingProfile"]</param>
         public XElement ToXML(XName? XName = null)
 
-            => new XElement(XName ?? OCPPNS.OCPPv1_6_CP + "chargingProfile",
+            => new (XName ?? OCPPNS.OCPPv1_6_CP + "chargingProfile",
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "chargingProfileId",        ChargingProfileId.ToString()),
 
@@ -651,7 +651,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var json = JSONObject.Create(
 
-                           new JProperty("chargingProfileId",       ChargingProfileId.      ToString()),
+                           new JProperty("chargingProfileId",       ChargingProfileId.Value),
 
                            TransactionId is not null
                                ? new JProperty("transactionId",     TransactionId.    Value.Value)
