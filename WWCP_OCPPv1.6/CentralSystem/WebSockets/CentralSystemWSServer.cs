@@ -1317,7 +1317,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         try
                         {
-                            oldChargingBox_WebSocketConnection.TcpClient.Close();
+                            oldChargingBox_WebSocketConnection.Close();
                         }
                         catch (Exception e)
                         {
@@ -1360,8 +1360,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
                 if (Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId", out var chargeBoxId))
                 {
+                    //DebugX.Log(nameof(CentralSystemWSServer), " Charge box " + chargeBoxId + " disconnected!");
                     connectedChargingBoxes.Remove(chargeBoxId);
-                    DebugX.Log(nameof(CentralSystemWSServer), " Charge box " + chargeBoxId + " disconnected!");
                 }
             }
         }
@@ -3937,25 +3937,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                     WebSocketFrame.MaskStatus.Off,
                                                     new Byte[4],
                                                     WebSocketFrame.Opcodes.Text,
-                                                    wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.None).ToUTF8Bytes(),
+                                                    wsRequestMessage.ToJSON().ToString(Formatting.None).ToUTF8Bytes(),
                                                     WebSocketFrame.Rsv.Off,
                                                     WebSocketFrame.Rsv.Off,
                                                     WebSocketFrame.Rsv.Off
                                                 ));
 
-                        if (success)
+                        if (success == SendStatus.Success)
                             break;
 
                         else
                             RemoveConnection(webSocketConnection);
 
                     }
-
-                    //await File.AppendAllTextAsync(LogfileName,
-                    //                              String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                                    Environment.NewLine,
-                    //                                            "ChargeBoxId: ",  ChargeBoxId.ToString(),                                                       Environment.NewLine,
-                    //                                            "Message sent: ", wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented),      Environment.NewLine,
-                    //                                            "--------------------------------------------------------------------------------------------", Environment.NewLine));
 
                     return SendJSONResults.Success;
 
