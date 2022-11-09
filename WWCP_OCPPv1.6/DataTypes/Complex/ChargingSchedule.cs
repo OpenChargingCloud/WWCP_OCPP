@@ -429,10 +429,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="XName">An alternative XML element name [default: "OCPPv1_6_CP:chargingSchedule"]</param>
         public XElement ToXML(XName? XName = null)
 
-            => new XElement(XName ?? OCPPNS.OCPPv1_6_CP + "chargingSchedule",
+            => new (XName ?? OCPPNS.OCPPv1_6_CP + "chargingSchedule",
 
                    Duration.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "duration",         Duration.Value)
+                       ? new XElement(OCPPNS.OCPPv1_6_CP + "duration",         (Int32) Math.Round(Duration.Value.TotalSeconds, 0))
                        : null,
 
                    StartSchedule.HasValue
@@ -465,7 +465,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var json = JSONObject.Create(
 
                            Duration.HasValue
-                               ? new JProperty("duration",          Duration.Value)
+                               ? new JProperty("duration",          (Int32) Math.Round(Duration.Value.TotalSeconds, 0))
                                : null,
 
                            StartSchedule.HasValue

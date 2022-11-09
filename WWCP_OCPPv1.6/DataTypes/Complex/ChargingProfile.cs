@@ -611,7 +611,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    new XElement(OCPPNS.OCPPv1_6_CP + "chargingProfileId",        ChargingProfileId.ToString()),
 
                    TransactionId != null
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "transactionId",      TransactionId.ToString())
+                       ? new XElement(OCPPNS.OCPPv1_6_CP + "transactionId",      TransactionId.    Value.Value)
                        : null,
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "stackLevel",               StackLevel),
