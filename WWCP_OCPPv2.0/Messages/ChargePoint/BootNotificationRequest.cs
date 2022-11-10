@@ -53,29 +53,40 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         [Mandatory]
         public BootReasons      Reason             { get; }
 
-        /// <summary>
-        /// The custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData       CustomData         { get; }
-
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a boot notification request.
+        /// Create a new boot notification request.
         /// </summary>
         /// <param name="ChargingStation">A physical system where an electrical vehicle (EV) can be charged.</param>
         /// <param name="Reason">The the reason for sending this boot notification to the CSMS.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public BootNotificationRequest(ChargingStation  ChargingStation,
-                                       BootReasons      Reason,
-                                       CustomData       CustomData   = null)
+        public BootNotificationRequest(ChargeBox_Id        ChargeBoxId,
+                                       ChargingStation     ChargingStation,
+                                       BootReasons         Reason,
+
+                                       CustomData?         CustomData          = null,
+                                       Request_Id?         RequestId           = null,
+                                       DateTime?           RequestTimestamp    = null,
+                                       TimeSpan?           RequestTimeout      = null,
+                                       EventTracking_Id?   EventTrackingId     = null,
+                                       CancellationToken?  CancellationToken   = null)
+
+            : base(ChargeBoxId,
+                   "BootNotification",
+                   CustomData,
+                   RequestId,
+                   RequestTimestamp,
+                   RequestTimeout,
+                   EventTrackingId,
+                   CancellationToken)
+
         {
 
             this.ChargingStation  = ChargingStation;
             this.Reason           = Reason;
-            this.CustomData       = CustomData;
 
         }
 
@@ -304,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                            out             ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -390,13 +401,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                            new JProperty("chargingStation",   ChargingStation.ToJSON(CustomChargingStationResponseSerializer)),
                            new JProperty("reason",            Reason.         AsText()),
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData", CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomBootNotificationRequestSerializer != null
+            return CustomBootNotificationRequestSerializer is not null
                        ? CustomBootNotificationRequestSerializer(this, JSON)
                        : JSON;
 
@@ -489,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                    Reason.         Equals(BootNotificationRequest.Reason)          &&
 
                    ((CustomData == null && BootNotificationRequest.CustomData == null) ||
-                    (CustomData != null && BootNotificationRequest.CustomData != null && CustomData.Equals(BootNotificationRequest.CustomData)));
+                    (CustomData is not null && BootNotificationRequest.CustomData is not null && CustomData.Equals(BootNotificationRequest.CustomData)));
 
         }
 
@@ -511,7 +522,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 return ChargingStation.GetHashCode() * 5 ^
                        Reason.         GetHashCode() * 3 ^
 
-                       (CustomData != null
+                       (CustomData is not null
                             ? CustomData.GetHashCode()
                             : 0);
 

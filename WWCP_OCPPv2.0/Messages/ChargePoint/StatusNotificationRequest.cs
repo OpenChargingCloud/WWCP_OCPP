@@ -287,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                            out             ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -375,11 +375,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                            new JProperty("evseId",            EVSEId.         ToString()),
                            new JProperty("connectorId",       ConnectorId.    ToString()),
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null);
 
-            return CustomStatusNotificationRequestSerializer != null
+            return CustomStatusNotificationRequestSerializer is not null
                        ? CustomStatusNotificationRequestSerializer(this, JSON)
                        : JSON;
 
@@ -474,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                    ConnectorId.    Equals(StatusNotificationRequest.ConnectorId)     &&
 
                    ((CustomData == null && StatusNotificationRequest.CustomData == null) ||
-                    (CustomData != null && StatusNotificationRequest.CustomData != null && CustomData.Equals(StatusNotificationRequest.CustomData)));
+                    (CustomData is not null && StatusNotificationRequest.CustomData is not null && CustomData.Equals(StatusNotificationRequest.CustomData)));
 
         }
 
@@ -498,7 +498,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                        EVSEId.         GetHashCode() *  5 ^
                        ConnectorId.    GetHashCode() *  3 ^
 
-                       (CustomData != null
+                       (CustomData is not null
                             ? CustomData.GetHashCode()
                             : 0);
 

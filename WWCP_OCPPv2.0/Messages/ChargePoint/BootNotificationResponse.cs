@@ -17,12 +17,9 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -60,12 +57,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// An optional element providing more information about the registration status.
         /// </summary>
-        public StatusInfo          StatusInfo    { get; }
+        public StatusInfo?         StatusInfo    { get; }
 
         /// <summary>
         /// The custom data object to allow to store any kind of customer specific data.
         /// </summary>
-        public CustomData          CustomData    { get; }
+        public CustomData?         CustomData    { get; }
 
         #endregion
 
@@ -86,8 +83,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                         RegistrationStatus          Status,
                                         DateTime                    CurrentTime,
                                         TimeSpan                    Interval,
-                                        StatusInfo                  StatusInfo   = null,
-                                        CustomData                  CustomData   = null)
+                                        StatusInfo?                 StatusInfo   = null,
+                                        CustomData?                 CustomData   = null)
 
             : base(Request,
                    Result.OK())
@@ -246,34 +243,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region (static) Parse   (Request, BootNotificationResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a boot notification response.
-        /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
-        /// <param name="BootNotificationResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static BootNotificationResponse Parse(CP.BootNotificationRequest  Request,
-                                                     String                      BootNotificationResponseText,
-                                                     OnExceptionDelegate         OnException = null)
-        {
-
-
-            if (TryParse(Request,
-                         BootNotificationResponseText,
-                         out BootNotificationResponse bootNotificationResponse,
-                         OnException))
-            {
-                return bootNotificationResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
         #region (static) TryParse(Request, BootNotificationResponseJSON, out BootNotificationResponse, OnException = null)
 
         /// <summary>
@@ -347,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                                                    OnException))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -363,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                            out             ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -395,48 +364,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region (static) TryParse(Request, BootNotificationResponseText, out BootNotificationResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a boot notification response.
-        /// </summary>
-        /// <param name="Request">The boot notification request leading to this response.</param>
-        /// <param name="BootNotificationResponseText">The text to be parsed.</param>
-        /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CP.BootNotificationRequest    Request,
-                                       String                        BootNotificationResponseText,
-                                       out BootNotificationResponse  BootNotificationResponse,
-                                       OnExceptionDelegate           OnException  = null)
-        {
-
-            try
-            {
-
-                BootNotificationResponseText = BootNotificationResponseText?.Trim();
-
-                if (BootNotificationResponseText.IsNotNullOrEmpty() &&
-                    TryParse(Request,
-                             JObject.Parse(BootNotificationResponseText),
-                             out BootNotificationResponse,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, BootNotificationResponseText, e);
-            }
-
-            BootNotificationResponse = null;
-            return false;
-
-        }
-
-        #endregion
-
         #region ToJSON(CustomBootNotificationResponseSerializer = null)
 
         /// <summary>
@@ -461,13 +388,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                                                                        CustomCustomDataResponseSerializer))
                                : null,
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomBootNotificationResponseSerializer != null
+            return CustomBootNotificationResponseSerializer is not null
                        ? CustomBootNotificationResponseSerializer(this, JSON)
                        : JSON;
 
@@ -482,7 +409,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// The boot notification failed.
         /// </summary>
         public static BootNotificationResponse Failed(CP.BootNotificationRequest Request)
-            => new BootNotificationResponse(Request, Result.Server());
+
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -575,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                     (StatusInfo != null && BootNotificationResponse.StatusInfo != null && StatusInfo.Equals(BootNotificationResponse.StatusInfo))) &&
 
                    ((CustomData == null && BootNotificationResponse.CustomData == null) ||
-                    (CustomData != null && BootNotificationResponse.CustomData != null && CustomData.Equals(BootNotificationResponse.CustomData)));
+                    (CustomData is not null && BootNotificationResponse.CustomData is not null && CustomData.Equals(BootNotificationResponse.CustomData)));
 
         }
 
@@ -602,7 +531,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                             ? StatusInfo.GetHashCode()
                             : 0) * 3 ^
 
-                       (CustomData != null
+                       (CustomData is not null
                             ? CustomData.GetHashCode()
                             : 0);
 

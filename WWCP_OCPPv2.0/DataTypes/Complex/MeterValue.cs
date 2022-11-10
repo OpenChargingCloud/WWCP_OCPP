@@ -17,13 +17,9 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -31,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// A (energy) meter value.
+    /// A meter value.
     /// </summary>
     public class MeterValue
     {
@@ -39,33 +35,33 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Properties
 
         /// <summary>
-        /// The sampled (energy) meter values.
+        /// The sampled meter values.
         /// </summary>
         public IEnumerable<SampledValue>  SampledValues    { get; }
 
         /// <summary>
-        /// The common timestamp of all sampled (energy) meter values.
+        /// The common timestamp of all sampled meter values.
         /// </summary>
         public DateTime                   Timestamp        { get; }
 
         /// <summary>
         /// An optional custom data object to allow to store any kind of customer specific data.
         /// </summary>
-        public CustomData                 CustomData       { get; }
+        public CustomData?                CustomData       { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new (energy) meter value.
+        /// Create a new meter value.
         /// </summary>
-        /// <param name="SampledValues">The sampled (energy) meter values.</param>
-        /// <param name="Timestamp">The common timestamp of all sampled (energy) meter values.</param>
+        /// <param name="SampledValues">The sampled meter values.</param>
+        /// <param name="Timestamp">The common timestamp of all sampled meter values.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public MeterValue(IEnumerable<SampledValue>  SampledValues,
                           DateTime                   Timestamp,
-                          CustomData                 CustomData   = null)
+                          CustomData?                CustomData   = null)
         {
 
             this.SampledValues  = SampledValues;
@@ -73,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             this.CustomData     = CustomData;
 
             if (!this.SampledValues.SafeAny())
-                throw new ArgumentNullException(nameof(SampledValues), "The given enumeration of sampled (energy) meter values must not be null or empty!");
+                throw new ArgumentNullException(nameof(SampledValues), "The given enumeration of sampled meter values must not be null or empty!");
 
         }
 
@@ -116,66 +112,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (MeterValueJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomMeterValueParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an (energy) meter value.
-        /// </summary>
-        /// <param name="MeterValueJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MeterValue Parse(JObject              MeterValueJSON,
-                                       OnExceptionDelegate  OnException   = null)
-        {
-
-            if (TryParse(MeterValueJSON,
-                         out MeterValue evse,
-                         OnException))
-            {
-                return evse;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) Parse   (MeterValueText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of an (energy) meter value.
-        /// </summary>
-        /// <param name="MeterValueText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MeterValue Parse(String               MeterValueText,
-                                       OnExceptionDelegate  OnException   = null)
-        {
-
-
-            if (TryParse(MeterValueText,
-                         out MeterValue evse,
-                         OnException))
-            {
-                return evse;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(JSON, out MeterValue, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given JSON representation of an (energy) meter value.
+        /// Parse the given JSON representation of a meter value.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="MeterValue">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="CustomMeterValueParser">A delegate to parse custom meter values.</param>
+        public static MeterValue Parse(JObject                                   JSON,
+                                       CustomJObjectParserDelegate<MeterValue>?  CustomMeterValueParser   = null)
+        {
+
+            if (TryParse(JSON,
+                         out var meterValue,
+                         out var errorResponse,
+                         CustomMeterValueParser))
+            {
+                return meterValue!;
+            }
+
+            throw new ArgumentException("The given JSON representation of a meter value is invalid: " + errorResponse,
+                                        nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(JSON, out MeterValue, out ErrorResponse, CustomMeterValueParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a meter value.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="MeterValue">The parsed meter value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject          JSON,
                                        out MeterValue?  MeterValue,
                                        out String?      ErrorResponse)
+
+            => TryParse(JSON,
+                        out MeterValue,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a meter value.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="MeterValue">The parsed meter value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomMeterValueParser">A delegate to parse custom meter values.</param>
+        public static Boolean TryParse(JObject                                   JSON,
+                                       out MeterValue?                           MeterValue,
+                                       out String?                               ErrorResponse,
+                                       CustomJObjectParserDelegate<MeterValue>?  CustomMeterValueParser)
         {
 
             try
@@ -183,10 +176,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 MeterValue = default;
 
-                #region SampledValues
+                #region SampledValues    [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("sampledValue",
-                                             "sampled (energy) meter values",
+                                             "sampled meter values",
                                              SampledValue.TryParse,
                                              out IEnumerable<SampledValue> SampledValues,
                                              out ErrorResponse))
@@ -196,28 +189,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region Timestamp
+                #region Timestamp        [mandatory]
 
                 if (!JSON.ParseMandatory("timestamp",
-                                                   "common timestamp",
-                                                   out DateTime  Timestamp,
-                                                   out           ErrorResponse))
+                                         "common timestamp",
+                                         out DateTime Timestamp,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region CustomData
+                #region CustomData       [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPPv2_0.CustomData.TryParse,
-                                           out CustomData  CustomData,
-                                           out             ErrorResponse))
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -229,54 +222,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                             Timestamp,
                                             CustomData);
 
+                if (CustomMeterValueParser is not null)
+                    MeterValue = CustomMeterValueParser(JSON,
+                                                        MeterValue);
+
                 return true;
 
             }
             catch (Exception e)
             {
-                ErrorResponse = null;
-                MeterValue = default;
+                MeterValue     = default;
+                ErrorResponse  = "The given JSON representation of a meter value is invalid: " + e.Message;
                 return false;
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(MeterValueText, out MeterValue, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of an (energy) meter value.
-        /// </summary>
-        /// <param name="MeterValueText">The text to be parsed.</param>
-        /// <param name="MeterValue">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               MeterValueText,
-                                       out MeterValue       MeterValue,
-                                       OnExceptionDelegate  OnException  = null)
-        {
-
-            try
-            {
-
-                MeterValueText = MeterValueText?.Trim();
-
-                if (MeterValueText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(MeterValueText),
-                             out MeterValue,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, MeterValueText, e);
-            }
-
-            MeterValue = default;
-            return false;
 
         }
 
@@ -292,11 +250,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="CustomSignedMeterValueResponseSerializer">A delegate to serialize custom SignedMeterValue objects.</param>
         /// <param name="CustomUnitsOfMeasureResponseSerializer">A delegate to serialize custom UnitsOfMeasure objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValue>       CustomMeterValueResponseSerializer         = null,
-                              CustomJObjectSerializerDelegate<SampledValue>     CustomSampledValueResponseSerializer       = null,
-                              CustomJObjectSerializerDelegate<SignedMeterValue> CustomSignedMeterValueResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<UnitsOfMeasure>   CustomUnitsOfMeasureResponseSerializer     = null,
-                              CustomJObjectSerializerDelegate<CustomData>       CustomCustomDataResponseSerializer         = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValue>?       CustomMeterValueResponseSerializer         = null,
+                              CustomJObjectSerializerDelegate<SampledValue>?     CustomSampledValueResponseSerializer       = null,
+                              CustomJObjectSerializerDelegate<SignedMeterValue>? CustomSignedMeterValueResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<UnitsOfMeasure>?   CustomUnitsOfMeasureResponseSerializer     = null,
+                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataResponseSerializer         = null)
         {
 
             var JSON = JSONObject.Create(
@@ -307,13 +265,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                                                                                                       CustomCustomDataResponseSerializer)))),
                            new JProperty("timestamp",         Timestamp.ToIso8601()),
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomMeterValueResponseSerializer != null
+            return CustomMeterValueResponseSerializer is not null
                        ? CustomMeterValueResponseSerializer(this, JSON)
                        : JSON;
 
@@ -329,10 +287,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="MeterValue1">An id tag info.</param>
-        /// <param name="MeterValue2">Another id tag info.</param>
+        /// <param name="MeterValue1">A meter value.</param>
+        /// <param name="MeterValue2">Another meter value.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (MeterValue MeterValue1, MeterValue MeterValue2)
+        public static Boolean operator == (MeterValue MeterValue1,
+                                           MeterValue MeterValue2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -342,9 +301,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             // If one is null, but not both, return false.
             if (MeterValue1 is null || MeterValue2 is null)
                 return false;
-
-            if (MeterValue1 is null)
-                throw new ArgumentNullException(nameof(MeterValue1),  "The given id tag info must not be null!");
 
             return MeterValue1.Equals(MeterValue2);
 
@@ -357,10 +313,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="MeterValue1">An id tag info.</param>
-        /// <param name="MeterValue2">Another id tag info.</param>
+        /// <param name="MeterValue1">A meter value.</param>
+        /// <param name="MeterValue2">Another meter value.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (MeterValue MeterValue1, MeterValue MeterValue2)
+        public static Boolean operator != (MeterValue MeterValue1,
+                                           MeterValue MeterValue2)
+
             => !(MeterValue1 == MeterValue2);
 
         #endregion
@@ -372,45 +330,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two meter values for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A meter value to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is MeterValue MeterValue))
-                return false;
-
-            return Equals(MeterValue);
-
-        }
+            => Object is MeterValue meterValue &&
+                   Equals(meterValue);
 
         #endregion
 
         #region Equals(MeterValue)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two meter values for equality.
         /// </summary>
-        /// <param name="MeterValue">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="MeterValue">A meter value to compare with.</param>
         public Boolean Equals(MeterValue MeterValue)
-        {
 
-            if (MeterValue is null)
-                return false;
+            => MeterValue is not null &&
+               //ToDo: Compare SampledValues!
+               Timestamp.Equals(MeterValue.Timestamp) &&
 
-            return //ToDo: Compare SampledValues!
-                   Timestamp.Equals(MeterValue.Timestamp) &&
-
-                   ((CustomData == null && MeterValue.CustomData == null) ||
-                    (CustomData != null && MeterValue.CustomData != null && CustomData.Equals(MeterValue.CustomData)));
-
-        }
+             ((CustomData is     null && MeterValue.CustomData is     null) ||
+              (CustomData is not null && MeterValue.CustomData is not null && CustomData.Equals(MeterValue.CustomData)));
 
         #endregion
 
@@ -428,11 +371,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             {
 
                 return //ToDo: Add SampledValues!
-                       Timestamp.GetHashCode() * 3 ^
+                       Timestamp.  GetHashCode() * 3 ^
 
-                       (CustomData != null
-                            ? CustomData.GetHashCode()
-                            : 0);
+                       CustomData?.GetHashCode() ?? 0;
 
             }
         }

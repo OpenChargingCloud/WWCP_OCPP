@@ -17,14 +17,9 @@
 
 #region Usings
 
-using System;
-using System.Xml.Linq;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -42,44 +37,58 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The identifier that needs to be authorized.
         /// </summary>
-        public IdToken                       IdToken                        { get; }
+        public IdToken                        IdToken                        { get; }
 
         /// <summary>
         /// The optional X.509 certificated presented by the electric vehicle/user (PEM format) 5500
         /// </summary>
-        public String                        Certificate                    { get; }
+        public String?                        Certificate                    { get; }
 
         /// <summary>
         /// Optional information to verify the electric vehicle/user contract certificate via OCSP. [0...4]
         /// </summary>
-        public IEnumerable<OCSPRequestData>  ISO15118CertificateHashData    { get; }
-
-        /// <summary>
-        /// The custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData                    CustomData                     { get; }
+        public IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create an authorize request.
+        /// Create a new authorize request.
         /// </summary>
         /// <param name="IdToken">The identifier that needs to be authorized.</param>
         /// <param name="Certificate">An optional X.509 certificated presented by the electric vehicle/user (PEM format).</param>
         /// <param name="ISO15118CertificateHashData">Optional information to verify the electric vehicle/user contract certificate via OCSP.</param>
+        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public AuthorizeRequest(IdToken                       IdToken,
-                                String                        Certificate                   = null,
-                                IEnumerable<OCSPRequestData>  ISO15118CertificateHashData   = null,
-                                CustomData                    CustomData                    = null)
+        public AuthorizeRequest(ChargeBox_Id                   ChargeBoxId,
+                                IdToken                        IdToken,
+                                String?                        Certificate                   = null,
+                                IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData   = null,
+
+                                CustomData?                    CustomData                    = null,
+                                Request_Id?                    RequestId                     = null,
+                                DateTime?                      RequestTimestamp              = null,
+                                TimeSpan?                      RequestTimeout                = null,
+                                EventTracking_Id?              EventTrackingId               = null,
+                                CancellationToken?             CancellationToken             = null)
+
+            : base(ChargeBoxId,
+                   "Authorize",
+                   CustomData,
+                   RequestId,
+                   RequestTimestamp,
+                   RequestTimeout,
+                   EventTrackingId,
+                   CancellationToken)
+
         {
 
-            this.IdToken                      = IdToken                     ?? throw new ArgumentNullException(nameof(IdToken), "The given identification token must not be null!");
+            this.IdToken                      = IdToken;
             this.Certificate                  = Certificate;
-            this.ISO15118CertificateHashData  = ISO15118CertificateHashData ?? new OCSPRequestData[0];
-            this.CustomData                   = CustomData;
+            this.ISO15118CertificateHashData  = ISO15118CertificateHashData is not null
+                                                    ? ISO15118CertificateHashData.Distinct()
+                                                    : Array.Empty<OCSPRequestData>();
 
         }
 
@@ -274,31 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         {
 
             if (TryParse(AuthorizeRequestJSON,
-                         out AuthorizeRequest authorizeRequest,
-                         OnException))
-            {
-                return authorizeRequest;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) Parse   (AuthorizeRequestText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a authorize request.
-        /// </summary>
-        /// <param name="AuthorizeRequestText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AuthorizeRequest Parse(String               AuthorizeRequestText,
-                                             OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(AuthorizeRequestText,
-                         out AuthorizeRequest authorizeRequest,
+                         out var authorizeRequest,
                          OnException))
             {
                 return authorizeRequest;
@@ -349,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                                        out         ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -365,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                            out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -381,7 +366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                            out             ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -409,46 +394,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region (static) TryParse(AuthorizeRequestText, out AuthorizeRequest, OnException = null)
+        #region ToJSON(CustomAuthorizeRequestSerializer = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an authorize request.
+        /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="AuthorizeRequestText">The text to be parsed.</param>
-        /// <param name="AuthorizeRequest">The parsed authorize request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                AuthorizeRequestText,
-                                       out AuthorizeRequest  AuthorizeRequest,
-                                       OnExceptionDelegate   OnException  = null)
-        {
+        public override JObject ToJSON()
+            => ToJSON(null);
 
-            try
-            {
-
-                AuthorizeRequestText = AuthorizeRequestText?.Trim();
-
-                if (AuthorizeRequestText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(AuthorizeRequestText),
-                             out AuthorizeRequest,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, AuthorizeRequestText, e);
-            }
-
-            AuthorizeRequest = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region ToJSON(CustomAuthorizeRequestSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -458,11 +411,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom AdditionalInfo objects.</param>
         /// <param name="CustomOCSPRequestDataResponseSerializer">A delegate to serialize custom OCSPRequestDatas.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeRequest> CustomAuthorizeRequestSerializer          = null,
-                              CustomJObjectSerializerDelegate<IdToken>          CustomIdTokenResponseSerializer           = null,
-                              CustomJObjectSerializerDelegate<AdditionalInfo>   CustomAdditionalInfoResponseSerializer    = null,
-                              CustomJObjectSerializerDelegate<OCSPRequestData>  CustomOCSPRequestDataResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>       CustomCustomDataResponseSerializer        = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeRequest>?  CustomAuthorizeRequestSerializer          = null,
+                              CustomJObjectSerializerDelegate<IdToken>?           CustomIdTokenResponseSerializer           = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?    CustomAdditionalInfoResponseSerializer    = null,
+                              CustomJObjectSerializerDelegate<OCSPRequestData>?   CustomOCSPRequestDataResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataResponseSerializer        = null)
         {
 
             var JSON = JSONObject.Create(
@@ -475,18 +428,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                ? new JProperty("certificate",                  Certificate)
                                : null,
 
-                           ISO15118CertificateHashData.SafeAny()
+                           ISO15118CertificateHashData.Any()
                                ? new JProperty("iso15118CertificateHashData",  new JArray(ISO15118CertificateHashData.SafeSelect(hashData => hashData.ToJSON(CustomOCSPRequestDataResponseSerializer,
                                                                                                                                                              CustomCustomDataResponseSerializer))))
                                : null,
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",                   CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomAuthorizeRequestSerializer != null
+            return CustomAuthorizeRequestSerializer is not null
                        ? CustomAuthorizeRequestSerializer(this, JSON)
                        : JSON;
 

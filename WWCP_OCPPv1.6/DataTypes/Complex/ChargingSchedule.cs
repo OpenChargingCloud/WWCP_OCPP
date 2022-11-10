@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(JSON, out ChargingSchedule, CustomChargingScheduleParser = null)
+        #region (static) TryParse(JSON, out ChargingSchedule, out ErrorResponse, CustomChargingScheduleParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -498,10 +498,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingSchedule1">An id tag info.</param>
-        /// <param name="ChargingSchedule2">Another id tag info.</param>
+        /// <param name="ChargingSchedule1">A charging schedule.</param>
+        /// <param name="ChargingSchedule2">Another charging schedule.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingSchedule ChargingSchedule1, ChargingSchedule ChargingSchedule2)
+        public static Boolean operator == (ChargingSchedule ChargingSchedule1,
+                                           ChargingSchedule ChargingSchedule2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -523,8 +524,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingSchedule1">An id tag info.</param>
-        /// <param name="ChargingSchedule2">Another id tag info.</param>
+        /// <param name="ChargingSchedule1">A charging schedule.</param>
+        /// <param name="ChargingSchedule2">Another charging schedule.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (ChargingSchedule ChargingSchedule1,
                                            ChargingSchedule ChargingSchedule2)
@@ -540,9 +541,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two charging schedules for equality.
         /// </summary>
-        /// <param name="Object">An id tag info to compare with.</param>
+        /// <param name="Object">A charging schedule to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ChargingSchedule chargingSchedule &&
@@ -553,9 +554,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Equals(ChargingSchedule)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two charging schedules for equality.
         /// </summary>
-        /// <param name="ChargingSchedule">An id tag info to compare with.</param>
+        /// <param name="ChargingSchedule">A charging schedule to compare with.</param>
         public Boolean Equals(ChargingSchedule? ChargingSchedule)
 
             => ChargingSchedule is not null                                                             &&

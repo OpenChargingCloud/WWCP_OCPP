@@ -17,12 +17,9 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -40,17 +37,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The unit of the measured value. 20
         /// </summary>
-        public String      Unit          { get; }
+        public String       Unit          { get; }
 
         /// <summary>
         /// Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power.
         /// </summary>
-        public Int32       Multiplier    { get; }
+        public Int32        Multiplier    { get; }
 
         /// <summary>
         /// An optional custom data object to allow to store any kind of customer specific data.
         /// </summary>
-        public CustomData  CustomData    { get; }
+        public CustomData?  CustomData    { get; }
 
         #endregion
 
@@ -62,9 +59,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Unit">The unit of the measured value.</param>
         /// <param name="Multiplier">Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public UnitsOfMeasure(String      Unit,
-                              Int32       Multiplier,
-                              CustomData  CustomData  = null)
+        public UnitsOfMeasure(String       Unit,
+                              Int32        Multiplier,
+                              CustomData?  CustomData  = null)
         {
 
             this.Unit        = Unit?.Trim() ?? throw new ArgumentNullException(nameof(Unit), "The given unit of measure must not be null or empty!");
@@ -106,66 +103,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (UnitsOfMeasureJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomUnitsOfMeasureParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a units of measure.
-        /// </summary>
-        /// <param name="UnitsOfMeasureJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static UnitsOfMeasure Parse(JObject              UnitsOfMeasureJSON,
-                                           OnExceptionDelegate  OnException   = null)
-        {
-
-            if (TryParse(UnitsOfMeasureJSON,
-                         out UnitsOfMeasure modem,
-                         OnException))
-            {
-                return modem;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) Parse   (UnitsOfMeasureText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a units of measure.
-        /// </summary>
-        /// <param name="UnitsOfMeasureText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static UnitsOfMeasure Parse(String               UnitsOfMeasureText,
-                                           OnExceptionDelegate  OnException   = null)
-        {
-
-
-            if (TryParse(UnitsOfMeasureText,
-                         out UnitsOfMeasure modem,
-                         OnException))
-            {
-                return modem;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(JSON, out UnitsOfMeasure, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a units of measure.
+        /// Parse the given JSON representation of a unit of measure.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="UnitsOfMeasure">The parsed units of measure.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="CustomUnitsOfMeasureParser">A delegate to parse custom units of measure.</param>
+        public static UnitsOfMeasure Parse(JObject                                       JSON,
+                                           CustomJObjectParserDelegate<UnitsOfMeasure>?  CustomUnitsOfMeasureParser   = null)
+        {
+
+            if (TryParse(JSON,
+                         out var unitsOfMeasure,
+                         out var errorResponse,
+                         CustomUnitsOfMeasureParser))
+            {
+                return unitsOfMeasure!;
+            }
+
+            throw new ArgumentException("The given JSON representation of a unit of measure is invalid: " + errorResponse,
+                                        nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(JSON, out UnitsOfMeasure, out ErrorResponse, CustomUnitsOfMeasureParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a unit of measure.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="UnitsOfMeasure">The parsed unit of measure.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject              JSON,
-                                       out UnitsOfMeasure   UnitsOfMeasure,
-                                       OnExceptionDelegate  OnException  = null)
+                                       out UnitsOfMeasure?  UnitsOfMeasure,
+                                       out String?          ErrorResponse)
+
+            => TryParse(JSON,
+                        out UnitsOfMeasure,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a unit of measure.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="UnitsOfMeasure">The parsed unit of measure.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomUnitsOfMeasureParser">A delegate to parse custom units of measure.</param>
+        public static Boolean TryParse(JObject                                       JSON,
+                                       out UnitsOfMeasure?                           UnitsOfMeasure,
+                                       out String?                                   ErrorResponse,
+                                       CustomJObjectParserDelegate<UnitsOfMeasure>?  CustomUnitsOfMeasureParser   = null)
         {
 
             try
@@ -176,9 +170,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 #region Unit
 
                 if (!JSON.ParseMandatoryText("unit",
-                                                           "unit measure",
-                                                           out String  Unit,
-                                                           out String  ErrorResponse))
+                                             "unit measure",
+                                             out String Unit,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -188,9 +182,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 #region Multiplier
 
                 if (!JSON.ParseMandatory("multiplier",
-                                                       "multiplier",
-                                                       out Int32  Multiplier,
-                                                       out        ErrorResponse))
+                                         "multiplier",
+                                         out Int32 Multiplier,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -202,13 +196,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPPv2_0.CustomData.TryParse,
-                                           out CustomData  CustomData,
-                                           out             ErrorResponse))
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -218,57 +210,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                     Multiplier,
                                                     CustomData);
 
+                if (CustomUnitsOfMeasureParser is not null)
+                    UnitsOfMeasure = CustomUnitsOfMeasureParser(JSON,
+                                                                UnitsOfMeasure);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, JSON, e);
-
-                UnitsOfMeasure = default;
+                UnitsOfMeasure  = default;
+                ErrorResponse   = "The given JSON representation of a unit of measure is invalid: " + e.Message;
                 return false;
-
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(UnitsOfMeasureText, out UnitsOfMeasure, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a units of measure.
-        /// </summary>
-        /// <param name="UnitsOfMeasureText">The text to be parsed.</param>
-        /// <param name="UnitsOfMeasure">The parsed units of measure.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               UnitsOfMeasureText,
-                                       out UnitsOfMeasure   UnitsOfMeasure,
-                                       OnExceptionDelegate  OnException  = null)
-        {
-
-            try
-            {
-
-                UnitsOfMeasureText = UnitsOfMeasureText?.Trim();
-
-                if (UnitsOfMeasureText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(UnitsOfMeasureText),
-                             out UnitsOfMeasure,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, UnitsOfMeasureText, e);
-            }
-
-            UnitsOfMeasure = default;
-            return false;
 
         }
 
@@ -279,10 +233,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomUnitsOfMeasureResponseSerializer">A delegate to serialize custom UnitsOfMeasure objects.</param>
+        /// <param name="CustomUnitsOfMeasureResponseSerializer">A delegate to serialize custom units of measure.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<UnitsOfMeasure>  CustomUnitsOfMeasureResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>      CustomCustomDataResponseSerializer       = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<UnitsOfMeasure>?  CustomUnitsOfMeasureResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataResponseSerializer       = null)
         {
 
             var JSON = JSONObject.Create(
@@ -293,13 +247,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                ? new JProperty("multiplier",   Multiplier)
                                : null,
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomUnitsOfMeasureResponseSerializer != null
+            return CustomUnitsOfMeasureResponseSerializer is not null
                        ? CustomUnitsOfMeasureResponseSerializer(this, JSON)
                        : JSON;
 
@@ -318,7 +272,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="UnitsOfMeasure1">An id tag info.</param>
         /// <param name="UnitsOfMeasure2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (UnitsOfMeasure UnitsOfMeasure1, UnitsOfMeasure UnitsOfMeasure2)
+        public static Boolean operator == (UnitsOfMeasure UnitsOfMeasure1,
+                                           UnitsOfMeasure UnitsOfMeasure2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -328,9 +283,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             // If one is null, but not both, return false.
             if (UnitsOfMeasure1 is null || UnitsOfMeasure2 is null)
                 return false;
-
-            if (UnitsOfMeasure1 is null)
-                throw new ArgumentNullException(nameof(UnitsOfMeasure1),  "The given id tag info must not be null!");
 
             return UnitsOfMeasure1.Equals(UnitsOfMeasure2);
 
@@ -346,7 +298,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="UnitsOfMeasure1">An id tag info.</param>
         /// <param name="UnitsOfMeasure2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (UnitsOfMeasure UnitsOfMeasure1, UnitsOfMeasure UnitsOfMeasure2)
+        public static Boolean operator != (UnitsOfMeasure UnitsOfMeasure1,
+                                           UnitsOfMeasure UnitsOfMeasure2)
+
             => !(UnitsOfMeasure1 == UnitsOfMeasure2);
 
         #endregion
@@ -358,45 +312,34 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two units of measure for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A unit of measure to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is UnitsOfMeasure UnitsOfMeasure))
-                return false;
-
-            return Equals(UnitsOfMeasure);
-
-        }
+            => Object is UnitsOfMeasure unitOfMeasure &&
+                   Equals(unitOfMeasure);
 
         #endregion
 
         #region Equals(UnitsOfMeasure)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two units of measure for equality.
         /// </summary>
-        /// <param name="UnitsOfMeasure">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="UnitsOfMeasure">A unit of measure to compare with.</param>
         public Boolean Equals(UnitsOfMeasure UnitsOfMeasure)
-        {
 
-            if (UnitsOfMeasure is null)
-                return false;
+            => UnitsOfMeasure is not null &&
 
-            return String.Equals(Unit, UnitsOfMeasure.Unit, StringComparison.OrdinalIgnoreCase) &&
-                   Multiplier.Equals(UnitsOfMeasure.Multiplier)                                 &&
+               String.Equals(Unit,
+                             UnitsOfMeasure.Unit,
+                             StringComparison.OrdinalIgnoreCase) &&
 
-                   ((CustomData == null && UnitsOfMeasure.CustomData == null) ||
-                    (CustomData != null && UnitsOfMeasure.CustomData != null && CustomData.Equals(UnitsOfMeasure.CustomData)));
+               Multiplier.Equals(UnitsOfMeasure.Multiplier) &&
 
-        }
+               ((CustomData is     null && UnitsOfMeasure.CustomData is     null) ||
+                (CustomData is not null && UnitsOfMeasure.CustomData is not null && CustomData.Equals(UnitsOfMeasure.CustomData)));
 
         #endregion
 
@@ -413,12 +356,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Unit.      GetHashCode() * 5 ^
-                       Multiplier.GetHashCode() * 3 ^
+                return Unit.       GetHashCode() * 5 ^
+                       Multiplier. GetHashCode() * 3 ^
 
-                       (CustomData != null
-                            ? CustomData.GetHashCode()
-                            : 0);
+                       CustomData?.GetHashCode() ?? 0;
 
             }
         }

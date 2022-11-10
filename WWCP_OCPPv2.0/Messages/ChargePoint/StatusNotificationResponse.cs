@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                            out String      ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -287,13 +287,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var JSON = JSONObject.Create(
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomStatusNotificationResponseSerializer != null
+            return CustomStatusNotificationResponseSerializer is not null
                        ? CustomStatusNotificationResponseSerializer(this, JSON)
                        : JSON;
 
@@ -396,7 +396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                 return false;
 
             return (CustomData == null && StatusNotificationResponse.CustomData == null) ||
-                   (CustomData != null && StatusNotificationResponse.CustomData != null && CustomData.Equals(StatusNotificationResponse.CustomData));
+                   (CustomData is not null && StatusNotificationResponse.CustomData is not null && CustomData.Equals(StatusNotificationResponse.CustomData));
 
         }
 
@@ -415,7 +415,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             unchecked
             {
 
-                return CustomData != null
+                return CustomData is not null
                            ? CustomData.GetHashCode()
                            : 0;
 

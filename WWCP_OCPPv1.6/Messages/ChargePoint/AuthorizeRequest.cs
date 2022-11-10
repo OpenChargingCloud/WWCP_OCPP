@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new Authorize request.
+        /// Create a new authorize request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="IdTag">The identifier that needs to be authorized.</param>

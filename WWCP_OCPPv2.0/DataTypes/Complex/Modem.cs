@@ -17,12 +17,9 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -40,17 +37,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The ICCID of the modem’s SIM card. 20
         /// </summary>
-        public String      ICCID         { get; }
+        public String?      ICCID         { get; }
 
         /// <summary>
         /// The IMSI of the modem’s SIM card. 20
         /// </summary>
-        public String      IMSI          { get; }
+        public String?      IMSI          { get; }
 
         /// <summary>
         /// An optional custom data object to allow to store any kind of customer specific data.
         /// </summary>
-        public CustomData  CustomData    { get; }
+        public CustomData?  CustomData    { get; }
 
         #endregion
 
@@ -59,12 +56,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Create a new wireless communication module.
         /// </summary>
-        /// <param name="ICCID">The integrated circuit card identifier of the modem’s SIM card.</param>
-        /// <param name="IMSI">The IMSI of the modem’s SIM card.</param>
+        /// <param name="ICCID">An optional integrated circuit card identifier of the modem’s SIM card.</param>
+        /// <param name="IMSI">An optional IMSI of the modem’s SIM card.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public Modem(String      ICCID,
-                     String      IMSI,
-                     CustomData  CustomData  = null)
+        public Modem(String?      ICCID,
+                     String?      IMSI,
+                     CustomData?  CustomData   = null)
         {
 
             this.ICCID       = ICCID;
@@ -105,66 +102,61 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (ModemJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomModemParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a communication module.
         /// </summary>
-        /// <param name="ModemJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Modem Parse(JObject              ModemJSON,
-                                  OnExceptionDelegate  OnException   = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomModemParser">A delegate to parse custom modem values.</param>
+        public static Modem Parse(JObject                              JSON,
+                                  CustomJObjectParserDelegate<Modem>?  CustomModemParser   = null)
         {
 
-            if (TryParse(ModemJSON,
-                         out Modem modem,
-                         OnException))
+            if (TryParse(JSON,
+                         out var modem,
+                         out var errorResponse,
+                         CustomModemParser))
             {
-                return modem;
+                return modem!;
             }
 
-            return default;
+            throw new ArgumentException("The given JSON representation of a modem is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (ModemText, OnException = null)
+        #region (static) TryParse(ModemJSON, out Modem, out ErrorResponse, CustomModemParser = null)
 
-        /// <summary>
-        /// Parse the given text representation of a communication module.
-        /// </summary>
-        /// <param name="ModemText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Modem Parse(String               ModemText,
-                                  OnExceptionDelegate  OnException   = null)
-        {
-
-
-            if (TryParse(ModemText,
-                         out Modem modem,
-                         OnException))
-            {
-                return modem;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(ModemJSON, out Modem, OnException = null)
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a communication module.
         /// </summary>
-        /// <param name="ModemJSON">The JSON to be parsed.</param>
+        /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="Modem">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject      ModemJSON,
+        public static Boolean TryParse(JObject      JSON,
                                        out Modem?   Modem,
                                        out String?  ErrorResponse)
+
+            => TryParse(JSON,
+                        out Modem,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a communication module.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="Modem">The parsed connector type.</param>
+        /// <param name="CustomModemParser">A delegate to parse custom modem values.</param>
+        public static Boolean TryParse(JObject                              JSON,
+                                       out Modem?                           Modem,
+                                       out String?                          ErrorResponse,
+                                       CustomJObjectParserDelegate<Modem>?  CustomModemParser   = null)
         {
 
             try
@@ -172,48 +164,42 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 Modem = default;
 
-                #region ICCID
+                #region ICCID         [optional]
 
-                if (ModemJSON.ParseOptional("iccid",
-                                            "integrated circuit card identifier",
-                                            out String ICCID,
-                                            out ErrorResponse))
+                if (JSON.ParseOptional("iccid",
+                                       "integrated circuit card identifier",
+                                       out String? ICCID,
+                                       out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region IMSI
+                #region IMSI          [optional]
 
-                if (ModemJSON.ParseOptional("imsi",
-                                            "international mobile subscriber identity",
-                                            out String IMSI,
-                                            out ErrorResponse))
+                if (JSON.ParseOptional("imsi",
+                                       "international mobile subscriber identity",
+                                       out String? IMSI,
+                                       out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region CustomData
+                #region CustomData    [optional]
 
-                if (ModemJSON.ParseOptionalJSON("customData",
-                                                "custom data",
-                                                OCPPv2_0.CustomData.TryParse,
-                                                out CustomData CustomData,
-                                                out ErrorResponse))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -223,54 +209,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                   IMSI?. Trim(),
                                   CustomData);
 
+                if (CustomModemParser is not null)
+                    Modem = CustomModemParser(JSON,
+                                              Modem);
+
                 return true;
 
             }
             catch (Exception e)
             {
-                ErrorResponse = null;
-                Modem = default;
+                Modem          = default;
+                ErrorResponse  = "The given JSON representation of a modem is invalid: " + e.Message;
                 return false;
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(ModemText, out Modem, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a communication module.
-        /// </summary>
-        /// <param name="ModemText">The text to be parsed.</param>
-        /// <param name="Modem">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               ModemText,
-                                       out Modem            Modem,
-                                       OnExceptionDelegate  OnException  = null)
-        {
-
-            try
-            {
-
-                ModemText = ModemText?.Trim();
-
-                if (ModemText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(ModemText),
-                             out Modem,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, ModemText, e);
-            }
-
-            Modem = default;
-            return false;
 
         }
 
@@ -281,29 +232,29 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomModemResponseSerializer">A delegate to serialize custom Modems.</param>
+        /// <param name="CustomModemResponseSerializer">A delegate to serialize custom modems.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<Modem>      CustomModemResponseSerializer        = null,
-                              CustomJObjectSerializerDelegate<CustomData> CustomCustomDataResponseSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<Modem>?       CustomModemResponseSerializer        = null,
+                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataResponseSerializer   = null)
         {
 
             var JSON = JSONObject.Create(
 
-                           IMSI != null
+                           IMSI is not null
                                ? new JProperty("iccid",       ICCID)
                                : null,
 
-                           IMSI != null
+                           IMSI is not null
                                ? new JProperty("imsi",        IMSI)
                                : null,
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomModemResponseSerializer != null
+            return CustomModemResponseSerializer is not null
                        ? CustomModemResponseSerializer(this, JSON)
                        : JSON;
 
@@ -322,7 +273,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Modem1">An id tag info.</param>
         /// <param name="Modem2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Modem Modem1, Modem Modem2)
+        public static Boolean operator == (Modem Modem1,
+                                           Modem Modem2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -332,9 +284,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             // If one is null, but not both, return false.
             if (Modem1 is null || Modem2 is null)
                 return false;
-
-            if (Modem1 is null)
-                throw new ArgumentNullException(nameof(Modem1),  "The given id tag info must not be null!");
 
             return Modem1.Equals(Modem2);
 
@@ -350,7 +299,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Modem1">An id tag info.</param>
         /// <param name="Modem2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Modem Modem1, Modem Modem2)
+        public static Boolean operator != (Modem Modem1,
+                                           Modem Modem2)
+
             => !(Modem1 == Modem2);
 
         #endregion
@@ -362,48 +313,34 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two modems for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A modem to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is Modem Modem))
-                return false;
-
-            return Equals(Modem);
-
-        }
+            => Object is Modem modem &&
+                   Equals(modem);
 
         #endregion
 
         #region Equals(Modem)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two modems for equality.
         /// </summary>
-        /// <param name="Modem">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="Modem">A modem to compare with.</param>
         public Boolean Equals(Modem Modem)
-        {
 
-            if (Modem is null)
-                return false;
+            => Modem is not null &&
 
-            return ((ICCID      == null && Modem.ICCID      == null) ||
-                    (ICCID      != null && Modem.ICCID      != null && ICCID.     Equals(Modem.ICCID))) &&
+             ((ICCID      is     null && Modem.ICCID      is     null) ||
+              (ICCID      is not null && Modem.ICCID      is not null && ICCID.     Equals(Modem.ICCID))) &&
 
-                   ((IMSI       == null && Modem.IMSI       == null) ||
-                    (IMSI       != null && Modem.IMSI       != null && IMSI.      Equals(Modem.IMSI)))  &&
+             ((IMSI       is     null && Modem.IMSI       is     null) ||
+              (IMSI       is not null && Modem.IMSI       is not null && IMSI.      Equals(Modem.IMSI)))  &&
 
-                   ((CustomData == null && Modem.CustomData == null) ||
-                    (CustomData != null && Modem.CustomData != null && CustomData.Equals(Modem.CustomData)));
-
-        }
+             ((CustomData is     null && Modem.CustomData is     null) ||
+              (CustomData is not null && Modem.CustomData is not null && CustomData.Equals(Modem.CustomData)));
 
         #endregion
 
@@ -420,17 +357,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return (ICCID != null
-                            ? ICCID.GetHashCode() * 5
-                            : 0) ^
-
-                       (IMSI != null
-                            ? IMSI.GetHashCode()  * 3
-                            : 0) ^
-
-                       (CustomData != null
-                            ? CustomData.GetHashCode()
-                            : 0);
+                return (ICCID?.     GetHashCode() ?? 0) * 5 ^
+                       (IMSI?.      GetHashCode() ?? 0) * 3 ^
+                       (CustomData?.GetHashCode() ?? 0);
 
             }
         }
@@ -445,10 +374,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public override String ToString()
 
             => new String[] {
-                   ICCID != null ? "ICCID: " + ICCID : null,
-                   IMSI  != null ? "IMSI: "  + IMSI  : null
+
+                    ICCID is not null
+                        ? "ICCID: " + ICCID
+                        : "",
+
+                    IMSI  is not null
+                        ? "IMSI: "  + IMSI
+                        : "",
                }.
-               SafeWhere(_ => _ != null).
+               Where(element => element.IsNotNullOrEmpty()).
                AggregateWith(", ");
 
         #endregion

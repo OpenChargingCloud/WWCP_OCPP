@@ -17,12 +17,9 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -30,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// A signed (energy) meter value.
+    /// A signed meter value.
     /// </summary>
     public class SignedMeterValue
     {
@@ -40,45 +37,45 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The signed meter value (base64 encoded). 2500
         /// </summary>
-        public String      SignedMeterData    { get; }
+        public String       SignedMeterData    { get; }
 
         /// <summary>
         /// Method used to create the digital signature. 50
         /// </summary>
-        public String      SigningMethod      { get; }
+        public String       SigningMethod      { get; }
 
         /// <summary>
         /// Method used to encode the meter values before applying the digital signature algorithm. 50
         /// </summary>
-        public String      EncodingMethod     { get; }
+        public String       EncodingMethod     { get; }
 
         /// <summary>
         /// The optional public key (base64 encoded). 2500
         /// </summary>
-        public String      PublicKey          { get; }
+        public String?      PublicKey          { get; }
 
         /// <summary>
         /// An optional custom data object to allow to store any kind of customer specific data.
         /// </summary>
-        public CustomData  CustomData         { get; }
+        public CustomData?  CustomData         { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new signed (energy) meter value.
+        /// Create a new signed meter value.
         /// </summary>
         /// <param name="SignedMeterData">The signed meter value (base64 encoded).</param>
         /// <param name="SigningMethod">Method used to create the digital signature.</param>
         /// <param name="EncodingMethod">Method used to encode the meter values before applying the digital signature algorithm.</param>
         /// <param name="PublicKey">The optional public key (base64 encoded).</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SignedMeterValue(String      SignedMeterData,
-                                String      SigningMethod,
-                                String      EncodingMethod,
-                                String      PublicKey    = null,
-                                CustomData  CustomData   = null)
+        public SignedMeterValue(String       SignedMeterData,
+                                String       SigningMethod,
+                                String       EncodingMethod,
+                                String?      PublicKey    = null,
+                                CustomData?  CustomData   = null)
         {
 
             this.SignedMeterData  = SignedMeterData;
@@ -137,66 +134,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (SignedMeterValueJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomSignedMeterValueParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a communication module.
+        /// Parse the given JSON representation of a signed meter value.
         /// </summary>
-        /// <param name="SignedMeterValueJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SignedMeterValue Parse(JObject              SignedMeterValueJSON,
-                                             OnExceptionDelegate  OnException   = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomSignedMeterValueParser">A delegate to parse custom signed meter values.</param>
+        public static SignedMeterValue Parse(JObject                                         JSON,
+                                             CustomJObjectParserDelegate<SignedMeterValue>?  CustomSignedMeterValueParser   = null)
         {
 
-            if (TryParse(SignedMeterValueJSON,
-                         out SignedMeterValue evse,
-                         OnException))
+            if (TryParse(JSON,
+                         out var signedMeterValue,
+                         out var errorResponse,
+                         CustomSignedMeterValueParser))
             {
-                return evse;
+                return signedMeterValue!;
             }
 
-            return default;
+            throw new ArgumentException("The given JSON representation of a signed meter value is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (SignedMeterValueText, OnException = null)
+        #region (static) TryParse(JSON, out SignedMeterValue, out ErrorResponse, CustomSignedMeterValueParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Parse the given text representation of a communication module.
-        /// </summary>
-        /// <param name="SignedMeterValueText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SignedMeterValue Parse(String               SignedMeterValueText,
-                                             OnExceptionDelegate  OnException   = null)
-        {
-
-
-            if (TryParse(SignedMeterValueText,
-                         out SignedMeterValue evse,
-                         OnException))
-            {
-                return evse;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(JSON, out SignedMeterValue, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a communication module.
+        /// Try to parse the given JSON representation of a signed meter value.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SignedMeterValue">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject               JSON,
-                                       out SignedMeterValue  SignedMeterValue,
-                                       OnExceptionDelegate   OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                JSON,
+                                       out SignedMeterValue?  SignedMeterValue,
+                                       out String?            ErrorResponse)
+
+            => TryParse(JSON,
+                        out SignedMeterValue,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a signed meter value.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="SignedMeterValue">The parsed connector type.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSignedMeterValueParser">A delegate to parse custom signed meter values.</param>
+        public static Boolean TryParse(JObject                                         JSON,
+                                       out SignedMeterValue?                           SignedMeterValue,
+                                       out String?                                     ErrorResponse,
+                                       CustomJObjectParserDelegate<SignedMeterValue>?  CustomSignedMeterValueParser   = null)
         {
 
             try
@@ -207,9 +201,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 #region SignedMeterData
 
                 if (!JSON.ParseMandatoryText("signedMeterData",
-                                                             "signed meter data",
-                                                             out String  SignedMeterData,
-                                                             out String  ErrorResponse))
+                                             "signed meter data",
+                                             out String SignedMeterData,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -219,9 +213,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 #region SigningMethod
 
                 if (!JSON.ParseMandatoryText("SigningMethod",
-                                                             "signing method",
-                                                             out String  SigningMethod,
-                                                             out         ErrorResponse))
+                                             "signing method",
+                                             out String SigningMethod,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -231,9 +225,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 #region EncodingMethod
 
                 if (!JSON.ParseMandatoryText("encodingMethod",
-                                                             "encoding method",
-                                                             out String  EncodingMethod,
-                                                             out         ErrorResponse))
+                                             "encoding method",
+                                             out String EncodingMethod,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -243,9 +237,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 #region PublicKey
 
                 if (!JSON.ParseMandatoryText("publicKey",
-                                                             "public key",
-                                                             out String  PublicKey,
-                                                             out         ErrorResponse))
+                                             "public key",
+                                             out String PublicKey,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -257,13 +251,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPPv2_0.CustomData.TryParse,
-                                           out CustomData  CustomData,
-                                           out             ErrorResponse))
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -275,57 +267,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                         PublicKey,
                                                         CustomData);
 
+                if (CustomSignedMeterValueParser is not null)
+                    SignedMeterValue = CustomSignedMeterValueParser(JSON,
+                                                                    SignedMeterValue);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, JSON, e);
-
-                SignedMeterValue = default;
+                SignedMeterValue  = default;
+                ErrorResponse     = "The given JSON representation of a signed meter value is invalid: " + e.Message;
                 return false;
-
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(SignedMeterValueText, out SignedMeterValue, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a communication module.
-        /// </summary>
-        /// <param name="SignedMeterValueText">The text to be parsed.</param>
-        /// <param name="SignedMeterValue">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                SignedMeterValueText,
-                                       out SignedMeterValue  SignedMeterValue,
-                                       OnExceptionDelegate   OnException  = null)
-        {
-
-            try
-            {
-
-                SignedMeterValueText = SignedMeterValueText?.Trim();
-
-                if (SignedMeterValueText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(SignedMeterValueText),
-                             out SignedMeterValue,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, SignedMeterValueText, e);
-            }
-
-            SignedMeterValue = default;
-            return false;
 
         }
 
@@ -336,10 +290,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSignedMeterValueResponseSerializer">A delegate to serialize custom SignedMeterValue objects.</param>
+        /// <param name="CustomSignedMeterValueResponseSerializer">A delegate to serialize custom signed meter values.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SignedMeterValue> CustomSignedMeterValueResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>       CustomCustomDataResponseSerializer         = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SignedMeterValue>?  CustomSignedMeterValueResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataResponseSerializer         = null)
         {
 
             var JSON = JSONObject.Create(
@@ -348,17 +302,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                            new JProperty("signingMethod",     SigningMethod),
                            new JProperty("encodingMethod",    EncodingMethod),
 
-                           PublicKey != null
+                           PublicKey  is not null
                                ? new JProperty("publicKey",   PublicKey)
                                : null,
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomSignedMeterValueResponseSerializer != null
+            return CustomSignedMeterValueResponseSerializer is not null
                        ? CustomSignedMeterValueResponseSerializer(this, JSON)
                        : JSON;
 
@@ -377,7 +331,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="SignedMeterValue1">An id tag info.</param>
         /// <param name="SignedMeterValue2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (SignedMeterValue SignedMeterValue1, SignedMeterValue SignedMeterValue2)
+        public static Boolean operator == (SignedMeterValue SignedMeterValue1,
+                                           SignedMeterValue SignedMeterValue2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -387,9 +342,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             // If one is null, but not both, return false.
             if (SignedMeterValue1 is null || SignedMeterValue2 is null)
                 return false;
-
-            if (SignedMeterValue1 is null)
-                throw new ArgumentNullException(nameof(SignedMeterValue1),  "The given id tag info must not be null!");
 
             return SignedMeterValue1.Equals(SignedMeterValue2);
 
@@ -405,7 +357,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="SignedMeterValue1">An id tag info.</param>
         /// <param name="SignedMeterValue2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (SignedMeterValue SignedMeterValue1, SignedMeterValue SignedMeterValue2)
+        public static Boolean operator != (SignedMeterValue SignedMeterValue1,
+                                           SignedMeterValue SignedMeterValue2)
+
             => !(SignedMeterValue1 == SignedMeterValue2);
 
         #endregion
@@ -417,49 +371,35 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two signed meter values for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A signed meter value to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is SignedMeterValue SignedMeterValue))
-                return false;
-
-            return Equals(SignedMeterValue);
-
-        }
+            => Object is SignedMeterValue signedMeterValue &&
+                   Equals(signedMeterValue);
 
         #endregion
 
         #region Equals(SignedMeterValue)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two signed meter values for equality.
         /// </summary>
-        /// <param name="SignedMeterValue">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="SignedMeterValue">A signed meter value to compare with.</param>
         public Boolean Equals(SignedMeterValue SignedMeterValue)
-        {
 
-            if (SignedMeterValue is null)
-                return false;
+            => SignedMeterValue is not null &&
 
-            return String.Equals(SignedMeterData, SignedMeterValue.SignedMeterData, StringComparison.OrdinalIgnoreCase) &&
-                   String.Equals(SigningMethod,   SignedMeterValue.SigningMethod,   StringComparison.OrdinalIgnoreCase) &&
-                   String.Equals(EncodingMethod,  SignedMeterValue.EncodingMethod,  StringComparison.OrdinalIgnoreCase) &&
+               String.Equals(SignedMeterData, SignedMeterValue.SignedMeterData, StringComparison.OrdinalIgnoreCase) &&
+               String.Equals(SigningMethod,   SignedMeterValue.SigningMethod,   StringComparison.OrdinalIgnoreCase) &&
+               String.Equals(EncodingMethod,  SignedMeterValue.EncodingMethod,  StringComparison.OrdinalIgnoreCase) &&
 
-                   ((PublicKey == null  && SignedMeterValue.PublicKey  == null) ||
-                    (PublicKey != null  && SignedMeterValue.PublicKey  != null && PublicKey. Equals(SignedMeterValue.PublicKey))) &&
+             ((PublicKey is     null  && SignedMeterValue.PublicKey  is     null) ||
+              (PublicKey is not null  && SignedMeterValue.PublicKey  is not null && PublicKey. Equals(SignedMeterValue.PublicKey))) &&
 
-                   ((CustomData == null && SignedMeterValue.CustomData == null) ||
-                    (CustomData != null && SignedMeterValue.CustomData != null && CustomData.Equals(SignedMeterValue.CustomData)));
-
-        }
+             ((CustomData is     null && SignedMeterValue.CustomData is     null) ||
+              (CustomData is not null && SignedMeterValue.CustomData is not null && CustomData.Equals(SignedMeterValue.CustomData)));
 
         #endregion
 
@@ -476,17 +416,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return SignedMeterData.  GetHashCode() * 11 ^
-                       SigningMethod.    GetHashCode() *  7 ^
-                       EncodingMethod.   GetHashCode() *  5 ^
+                return SignedMeterData.GetHashCode()       * 11 ^
+                       SigningMethod.  GetHashCode()       *  7 ^
+                       EncodingMethod. GetHashCode()       *  5 ^
 
-                       (PublicKey != null
-                            ? PublicKey. GetHashCode() *  3
-                            : 0) ^
-
-                       (CustomData != null
-                            ? CustomData.GetHashCode()
-                            : 0);
+                       (PublicKey?.    GetHashCode() ?? 0) *  3 ^
+                       (CustomData?.   GetHashCode() ?? 0);
 
             }
         }

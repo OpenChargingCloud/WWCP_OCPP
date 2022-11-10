@@ -17,14 +17,10 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
-using Org.BouncyCastle.Utilities.Collections;
+using System.Linq;
 
 #endregion
 
@@ -63,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Additional identification token.
         /// </summary>
-        public IdToken               GroupIdToken           { get; }
+        public IdToken?              GroupIdToken           { get; }
 
         /// <summary>
         /// The first optional preferred user interface language of identifier user.
@@ -78,12 +74,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// An optional message to be displayed at a charging station.
         /// </summary>
-        public MessageContent        PersonalMessage        { get; }
+        public MessageContent?       PersonalMessage        { get; }
 
         /// <summary>
         /// The custom data object to allow to store any kind of customer specific data.
         /// </summary>
-        public CustomData            CustomData             { get; }
+        public CustomData?           CustomData             { get; }
 
         #endregion
 
@@ -101,21 +97,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Language2">The second optional preferred user interface language of identifier user.</param>
         /// <param name="PersonalMessage">An optional message to be displayed at a charging station.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public IdTokenInfo(AuthorizationStatus   Status,
-                           Int16                 ChargingPriority      = 0,
-                           DateTime?             CacheExpiryDateTime   = null,
-                           IEnumerable<EVSE_Id>  ValidEVSEIds          = null,
-                           IdToken               GroupIdToken          = null,
-                           Language_Id?          Language1             = null,
-                           Language_Id?          Language2             = null,
-                           MessageContent        PersonalMessage       = null,
-                           CustomData            CustomData            = null)
+        public IdTokenInfo(AuthorizationStatus    Status,
+                           Int16                  ChargingPriority      = 0,
+                           DateTime?              CacheExpiryDateTime   = null,
+                           IEnumerable<EVSE_Id>?  ValidEVSEIds          = null,
+                           IdToken?               GroupIdToken          = null,
+                           Language_Id?           Language1             = null,
+                           Language_Id?           Language2             = null,
+                           MessageContent?        PersonalMessage       = null,
+                           CustomData?            CustomData            = null)
         {
 
             this.Status               = Status;
             this.ChargingPriority     = ChargingPriority;
             this.CacheExpiryDateTime  = CacheExpiryDateTime;
-            this.ValidEVSEIds         = ValidEVSEIds ?? new EVSE_Id[0];
+            this.ValidEVSEIds         = ValidEVSEIds is not null ? ValidEVSEIds.Distinct() : Array.Empty<EVSE_Id>();
             this.GroupIdToken         = GroupIdToken;
             this.Language1            = Language1;
             this.Language2            = Language2;
@@ -186,66 +182,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (IdTokenInfoJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomIdTokenInfoParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a communication module.
+        /// Parse the given JSON representation of id token information.
         /// </summary>
-        /// <param name="IdTokenInfoJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static IdTokenInfo Parse(JObject              IdTokenInfoJSON,
-                                           OnExceptionDelegate  OnException   = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomIdTokenInfoParser">A delegate to parse custom id token information.</param>
+        public static IdTokenInfo Parse(JObject                                    JSON,
+                                        CustomJObjectParserDelegate<IdTokenInfo>?  CustomIdTokenInfoParser   = null)
         {
 
-            if (TryParse(IdTokenInfoJSON,
-                         out IdTokenInfo modem,
-                         OnException))
+            if (TryParse(JSON,
+                         out var idTokenInfo,
+                         out var errorResponse,
+                         CustomIdTokenInfoParser))
             {
-                return modem;
+                return idTokenInfo!;
             }
 
-            return default;
+            throw new ArgumentException("The given JSON representation of id token information is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (IdTokenInfoText, OnException = null)
+        #region (static) TryParse(IdTokenInfoJSON, out IdTokenInfo, out ErrorResponse, CustomIdTokenInfoParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Parse the given text representation of a communication module.
+        /// Try to parse the given JSON representation of id token information.
         /// </summary>
-        /// <param name="IdTokenInfoText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static IdTokenInfo Parse(String               IdTokenInfoText,
-                                           OnExceptionDelegate  OnException   = null)
-        {
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="IdTokenInfo">The parsed id token information.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject           JSON,
+                                       out IdTokenInfo?  IdTokenInfo,
+                                       out String?       ErrorResponse)
 
+            => TryParse(JSON,
+                        out IdTokenInfo,
+                        out ErrorResponse,
+                        null);
 
-            if (TryParse(IdTokenInfoText,
-                         out IdTokenInfo modem,
-                         OnException))
-            {
-                return modem;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(IdTokenInfoJSON, out IdTokenInfo, OnException = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a communication module.
+        /// Try to parse the given JSON representation of id token information.
         /// </summary>
-        /// <param name="IdTokenInfoJSON">The JSON to be parsed.</param>
-        /// <param name="IdTokenInfo">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              IdTokenInfoJSON,
-                                       out IdTokenInfo      IdTokenInfo,
-                                       OnExceptionDelegate  OnException  = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="IdTokenInfo">The parsed id token information.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomIdTokenInfoParser">A delegate to parse custom id token information.</param>
+        public static Boolean TryParse(JObject                                    JSON,
+                                       out IdTokenInfo?                           IdTokenInfo,
+                                       out String?                                ErrorResponse,
+                                       CustomJObjectParserDelegate<IdTokenInfo>?  CustomIdTokenInfoParser)
         {
 
             try
@@ -253,144 +246,126 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 IdTokenInfo = default;
 
-                #region AuthorizationStatus
+                #region AuthorizationStatus    [mandatory]
 
-                if (!IdTokenInfoJSON.MapMandatory("status",
-                                                  "authorization status",
-                                                  AuthorizationStatusExtentions.Parse,
-                                                  out AuthorizationStatus  AuthorizationStatus,
-                                                  out String               ErrorResponse))
+                if (!JSON.MapMandatory("status",
+                                       "authorization status",
+                                       AuthorizationStatusExtentions.Parse,
+                                       out AuthorizationStatus AuthorizationStatus,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region ChargingPriority
+                #region ChargingPriority       [optional]
 
-                if (IdTokenInfoJSON.ParseOptional("chargingPriority",
-                                                  "charging priority",
-                                                  Int16.TryParse,
-                                                  out Int16  ChargingPriority,
-                                                  out        ErrorResponse))
+                if (JSON.ParseOptional("chargingPriority",
+                                       "charging priority",
+                                       Int16.TryParse,
+                                       out Int16 ChargingPriority,
+                                       out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region CacheExpiryDateTime
+                #region CacheExpiryDateTime    [optional]
 
-                if (IdTokenInfoJSON.ParseOptional("cacheExpiryDateTime",
-                                                  "cache expiry timestamp",
-                                                  out DateTime?  CacheExpiryDateTime,
-                                                  out            ErrorResponse))
+                if (JSON.ParseOptional("cacheExpiryDateTime",
+                                       "cache expiry timestamp",
+                                       out DateTime? CacheExpiryDateTime,
+                                       out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region ValidEVSEIds
+                #region ValidEVSEIds           [optional]
 
-                if (IdTokenInfoJSON.ParseOptionalHashSet("evseId",
-                                                         "valid EVSE identifications",
-                                                         EVSE_Id.TryParse,
-                                                         out HashSet<EVSE_Id>  ValidEVSEIds,
-                                                         out                   ErrorResponse))
+                if (JSON.ParseOptionalHashSet("evseId",
+                                              "valid EVSE identifications",
+                                              EVSE_Id.TryParse,
+                                              out HashSet<EVSE_Id> ValidEVSEIds,
+                                              out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region GroupIdToken
+                #region GroupIdToken           [optional]
 
-                if (IdTokenInfoJSON.ParseOptional("groupIdToken",
-                                                  "group identification token",
-                                                  IdToken.TryParse,
-                                                  out IdToken  GroupIdToken,
-                                                  out          ErrorResponse,
-                                                  OnException))
+                if (JSON.ParseOptionalJSON("groupIdToken",
+                                           "group identification token",
+                                           IdToken.TryParse,
+                                           out IdToken GroupIdToken,
+                                           out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region Language1
+                #region Language1              [optional]
 
-                if (IdTokenInfoJSON.ParseOptional("language1",
-                                                  "first preferred user interface language",
-                                                  Language_Id.TryParse,
-                                                  out Language_Id  Language1,
-                                                  out              ErrorResponse))
+                if (JSON.ParseOptional("language1",
+                                       "first preferred user interface language",
+                                       Language_Id.TryParse,
+                                       out Language_Id Language1,
+                                       out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region Language2
+                #region Language2              [optional]
 
-                if (IdTokenInfoJSON.ParseOptional("language2",
-                                                  "second preferred user interface language",
-                                                  Language_Id.TryParse,
-                                                  out Language_Id  Language2,
-                                                  out              ErrorResponse))
+                if (JSON.ParseOptional("language2",
+                                       "second preferred user interface language",
+                                       Language_Id.TryParse,
+                                       out Language_Id Language2,
+                                       out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region PersonalMessage
+                #region PersonalMessage        [optional]
 
-                if (IdTokenInfoJSON.ParseOptional("personalMessage",
-                                                  "personal message",
-                                                  MessageContent.TryParse,
-                                                  out MessageContent  PersonalMessage,
-                                                  out                 ErrorResponse,
-                                                  OnException))
+                if (JSON.ParseOptionalJSON("personalMessage",
+                                           "personal message",
+                                           MessageContent.TryParse,
+                                           out MessageContent PersonalMessage,
+                                           out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region CustomData
+                #region CustomData             [optional]
 
-                if (IdTokenInfoJSON.ParseOptionalJSON("customData",
-                                                         "custom data",
-                                                         OCPPv2_0.CustomData.TryParse,
-                                                         out CustomData  CustomData,
-                                                         out             ErrorResponse))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -406,57 +381,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                               PersonalMessage,
                                               CustomData);
 
+                if (CustomIdTokenInfoParser is not null)
+                    IdTokenInfo = CustomIdTokenInfoParser(JSON,
+                                                          IdTokenInfo);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, IdTokenInfoJSON, e);
-
-                IdTokenInfo = default;
+                IdTokenInfo    = default;
+                ErrorResponse  = "The given JSON representation of id token information is invalid: " + e.Message;
                 return false;
-
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(IdTokenInfoText, out IdTokenInfo, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a communication module.
-        /// </summary>
-        /// <param name="IdTokenInfoText">The text to be parsed.</param>
-        /// <param name="IdTokenInfo">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               IdTokenInfoText,
-                                       out IdTokenInfo   IdTokenInfo,
-                                       OnExceptionDelegate  OnException  = null)
-        {
-
-            try
-            {
-
-                IdTokenInfoText = IdTokenInfoText?.Trim();
-
-                if (IdTokenInfoText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(IdTokenInfoText),
-                             out IdTokenInfo,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, IdTokenInfoText, e);
-            }
-
-            IdTokenInfo = default;
-            return false;
 
         }
 
@@ -472,11 +409,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom AdditionalInfo objects.</param>
         /// <param name="CustomMessageContentResponseSerializer">A delegate to serialize custom MessageContent objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<IdTokenInfo>     CustomIdTokenInfoResponseSerializer      = null,
-                              CustomJObjectSerializerDelegate<IdToken>         CustomIdTokenResponseSerializer          = null,
-                              CustomJObjectSerializerDelegate<AdditionalInfo>  CustomAdditionalInfoResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<MessageContent>  CustomMessageContentResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>      CustomCustomDataResponseSerializer       = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<IdTokenInfo>?     CustomIdTokenInfoResponseSerializer      = null,
+                              CustomJObjectSerializerDelegate<IdToken>?         CustomIdTokenResponseSerializer          = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?  CustomAdditionalInfoResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<MessageContent>?  CustomMessageContentResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataResponseSerializer       = null)
         {
 
             var JSON = JSONObject.Create(
@@ -495,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                ? new JProperty("evseId",               new JArray(ValidEVSEIds.SafeSelect(evseId => evseId.ToString())))
                                : null,
 
-                           GroupIdToken != null
+                           GroupIdToken is not null
                                ? new JProperty("groupIdToken",         GroupIdToken.ToJSON(CustomIdTokenResponseSerializer,
                                                                                            CustomAdditionalInfoResponseSerializer,
                                                                                            CustomCustomDataResponseSerializer))
@@ -509,18 +446,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                ? new JProperty("language2",            Language2.Value.ToString())
                                : null,
 
-                           PersonalMessage != null
+                           PersonalMessage is not null
                                ? new JProperty("personalMessage",      PersonalMessage.ToJSON(CustomMessageContentResponseSerializer,
                                                                                               CustomCustomDataResponseSerializer))
                                : null,
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",           CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomIdTokenInfoResponseSerializer != null
+            return CustomIdTokenInfoResponseSerializer is not null
                        ? CustomIdTokenInfoResponseSerializer(this, JSON)
                        : JSON;
 
@@ -539,7 +476,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="IdTokenInfo1">An id tag info.</param>
         /// <param name="IdTokenInfo2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (IdTokenInfo IdTokenInfo1, IdTokenInfo IdTokenInfo2)
+        public static Boolean operator == (IdTokenInfo IdTokenInfo1,
+                                           IdTokenInfo IdTokenInfo2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -549,9 +487,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             // If one is null, but not both, return false.
             if (IdTokenInfo1 is null || IdTokenInfo2 is null)
                 return false;
-
-            if (IdTokenInfo1 is null)
-                throw new ArgumentNullException(nameof(IdTokenInfo1),  "The given id tag info must not be null!");
 
             return IdTokenInfo1.Equals(IdTokenInfo2);
 
@@ -567,7 +502,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="IdTokenInfo1">An id tag info.</param>
         /// <param name="IdTokenInfo2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (IdTokenInfo IdTokenInfo1, IdTokenInfo IdTokenInfo2)
+        public static Boolean operator != (IdTokenInfo IdTokenInfo1,
+                                           IdTokenInfo IdTokenInfo2)
+
             => !(IdTokenInfo1 == IdTokenInfo2);
 
         #endregion
@@ -579,62 +516,49 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two id token information for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">Id token information to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is IdTokenInfo IdTokenInfo))
-                return false;
-
-            return Equals(IdTokenInfo);
-
-        }
+            => Object is MeterValue meterValue &&
+                   Equals(meterValue);
 
         #endregion
 
         #region Equals(IdTokenInfo)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two id token information for equality.
         /// </summary>
-        /// <param name="IdTokenInfo">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="IdTokenInfo">Id token information to compare with.</param>
         public Boolean Equals(IdTokenInfo IdTokenInfo)
-        {
 
-            if (IdTokenInfo is null)
-                return false;
+            => IdTokenInfo is not null &&
 
-            return Status.          Equals(IdTokenInfo.Status)           &&
-                   ChargingPriority.Equals(IdTokenInfo.ChargingPriority) &&
+               Status.          Equals(IdTokenInfo.Status)           &&
+               ChargingPriority.Equals(IdTokenInfo.ChargingPriority) &&
 
-                   ((!CacheExpiryDateTime.HasValue && !IdTokenInfo.CacheExpiryDateTime.HasValue) ||
-                     (CacheExpiryDateTime.HasValue &&  IdTokenInfo.CacheExpiryDateTime.HasValue && CacheExpiryDateTime.Equals(IdTokenInfo.CacheExpiryDateTime))) &&
+               ValidEVSEIds.Count().Equals(IdTokenInfo.ValidEVSEIds.Count())                   &&
+               ValidEVSEIds.All(validEVSEId => IdTokenInfo.ValidEVSEIds.Contains(validEVSEId)) &&
 
-                   //ToDo: Compare ValidEVSEIds!
+            ((!CacheExpiryDateTime.HasValue && !IdTokenInfo.CacheExpiryDateTime.HasValue) ||
+              (CacheExpiryDateTime.HasValue &&  IdTokenInfo.CacheExpiryDateTime.HasValue && CacheExpiryDateTime.Equals(IdTokenInfo.CacheExpiryDateTime))) &&
 
-                   ((GroupIdToken == null && IdTokenInfo.GroupIdToken == null) ||
-                    (GroupIdToken != null && IdTokenInfo.GroupIdToken != null && GroupIdToken.Equals(IdTokenInfo.GroupIdToken))) &&
+            ((!Language1.          HasValue && !IdTokenInfo.Language1.          HasValue) ||
+              (Language1.          HasValue &&  IdTokenInfo.Language1.          HasValue && Language1.          Equals(IdTokenInfo.Language1)))           &&
 
-                   ((!Language1.HasValue && !IdTokenInfo.Language1.HasValue) ||
-                     (Language1.HasValue &&  IdTokenInfo.Language1.HasValue && Language1.Equals(IdTokenInfo.Language1))) &&
+            ((!Language2.          HasValue && !IdTokenInfo.Language2.          HasValue) ||
+              (Language2.          HasValue &&  IdTokenInfo.Language2.          HasValue && Language2.          Equals(IdTokenInfo.Language2)))           &&
 
-                   ((!Language2.HasValue && !IdTokenInfo.Language2.HasValue) ||
-                     (Language2.HasValue &&  IdTokenInfo.Language2.HasValue && Language2.Equals(IdTokenInfo.Language2))) &&
+             ((GroupIdToken    is     null  &&  IdTokenInfo.GroupIdToken     is     null) ||
+              (GroupIdToken    is not null  &&  IdTokenInfo.GroupIdToken     is not null && GroupIdToken.       Equals(IdTokenInfo.GroupIdToken)))        &&
 
-                   ((PersonalMessage == null && IdTokenInfo.PersonalMessage == null) ||
-                    (PersonalMessage != null && IdTokenInfo.PersonalMessage != null && PersonalMessage.Equals(IdTokenInfo.PersonalMessage))) &&
+             ((PersonalMessage is     null  &&  IdTokenInfo.PersonalMessage  is     null) ||
+              (PersonalMessage is not null  &&  IdTokenInfo.PersonalMessage  is not null && PersonalMessage.    Equals(IdTokenInfo.PersonalMessage)))     &&
 
-                   ((CustomData == null && IdTokenInfo.CustomData == null) ||
-                    (CustomData != null && IdTokenInfo.CustomData != null && CustomData.Equals(IdTokenInfo.CustomData)));
-
-        }
+             ((CustomData      is     null  &&  IdTokenInfo.CustomData       is     null) ||
+              (CustomData      is not null  &&  IdTokenInfo.CustomData       is not null && CustomData.         Equals(IdTokenInfo.CustomData)));
 
         #endregion
 
@@ -651,34 +575,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Status.          GetHashCode() * 21 ^
-                       ChargingPriority.GetHashCode() * 17 ^
-
-                       (CacheExpiryDateTime.HasValue
-                            ? CacheExpiryDateTime.Value.GetHashCode() * 13
-                            : 0) ^
+                return Status.               GetHashCode()       * 19 ^
+                       ChargingPriority.     GetHashCode()       * 17 ^
 
                        //ToDo: Add ValidEVSEIds!
 
-                       (GroupIdToken != null
-                            ? GroupIdToken.   GetHashCode() * 11
-                            : 0) ^
-
-                       (Language1.HasValue
-                            ? Language1.Value.GetHashCode() *  7
-                            : 0) ^
-
-                       (Language2.HasValue
-                            ? Language2.Value.GetHashCode() *  5
-                            : 0) ^
-
-                       (PersonalMessage != null
-                            ? PersonalMessage.GetHashCode() *  3
-                            : 0) ^
-
-                       (CustomData != null
-                            ? CustomData.GetHashCode()
-                            : 0);
+                       (CacheExpiryDateTime?.GetHashCode() ?? 0) * 13 ^
+                       (GroupIdToken?.       GetHashCode() ?? 0) * 11 ^
+                       (Language1?.          GetHashCode() ?? 0) *  7 ^
+                       (Language2?.          GetHashCode() ?? 0) *  5 ^
+                       (PersonalMessage?.    GetHashCode() ?? 0) *  3 ^
+                       (CustomData?.         GetHashCode() ?? 0);
 
             }
         }

@@ -366,34 +366,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region (static) Parse   (Request, AuthorizeResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of an authorize response.
-        /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
-        /// <param name="AuthorizeResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AuthorizeResponse Parse(CP.AuthorizeRequest  Request,
-                                              String               AuthorizeResponseText,
-                                              OnExceptionDelegate  OnException = null)
-        {
-
-
-            if (TryParse(Request,
-                         AuthorizeResponseText,
-                         out AuthorizeResponse authorizeResponse,
-                         OnException))
-            {
-                return authorizeResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
         #region (static) TryParse(Request, JSON, out AuthorizeResponse, OnException = null)
 
         /// <summary>
@@ -436,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                            out             ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -457,48 +429,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                 AuthorizeResponse = null;
                 return false;
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, AuthorizeResponseText, out AuthorizeResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of an authorize response.
-        /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
-        /// <param name="AuthorizeResponseText">The text to be parsed.</param>
-        /// <param name="AuthorizeResponse">The parsed authorize response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CP.AuthorizeRequest    Request,
-                                       String                 AuthorizeResponseText,
-                                       out AuthorizeResponse  AuthorizeResponse,
-                                       OnExceptionDelegate    OnException  = null)
-        {
-
-            try
-            {
-
-                AuthorizeResponseText = AuthorizeResponseText?.Trim();
-
-                if (AuthorizeResponseText.IsNotNullOrEmpty() &&
-                    TryParse(Request,
-                             JObject.Parse(AuthorizeResponseText),
-                             out AuthorizeResponse,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, AuthorizeResponseText, e);
-            }
-
-            AuthorizeResponse = null;
-            return false;
 
         }
 
@@ -531,13 +461,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                                                                  CustomMessageContentResponseSerializer,
                                                                                  CustomCustomDataResponseSerializer)),
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomAuthorizeResponseSerializer != null
+            return CustomAuthorizeResponseSerializer is not null
                        ? CustomAuthorizeResponseSerializer(this, JSON)
                        : JSON;
 

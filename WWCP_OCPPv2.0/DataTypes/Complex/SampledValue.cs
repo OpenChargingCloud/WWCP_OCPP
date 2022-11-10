@@ -17,12 +17,9 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -65,17 +62,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// 
         /// </summary>
-        public SignedMeterValue       SignedMeterValue    { get; }
+        public SignedMeterValue?      SignedMeterValue    { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public UnitsOfMeasure         UnitOfMeasure       { get; }
+        public UnitsOfMeasure?        UnitOfMeasure       { get; }
 
         /// <summary>
         /// An optional custom data object to allow to store any kind of customer specific data.
         /// </summary>
-        public CustomData             CustomData          { get; }
+        public CustomData?            CustomData          { get; }
 
         #endregion
 
@@ -97,9 +94,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                             Measurands?            Measurand          = null,
                             Phases?                Phase              = null,
                             MeasurementLocations?  Location           = null,
-                            SignedMeterValue       SignedMeterValue   = null,
-                            UnitsOfMeasure         UnitOfMeasure      = null,
-                            CustomData             CustomData         = null)
+                            SignedMeterValue?      SignedMeterValue   = null,
+                            UnitsOfMeasure?        UnitOfMeasure      = null,
+                            CustomData?            CustomData         = null)
         {
 
             this.Value             = Value;
@@ -160,66 +157,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (SampledValueJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomSampledValueParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a communication module.
-        /// </summary>
-        /// <param name="SampledValueJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SampledValue Parse(JObject              SampledValueJSON,
-                                         OnExceptionDelegate  OnException   = null)
-        {
-
-            if (TryParse(SampledValueJSON,
-                         out SampledValue evse,
-                         OnException))
-            {
-                return evse;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) Parse   (SampledValueText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a communication module.
-        /// </summary>
-        /// <param name="SampledValueText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SampledValue Parse(String               SampledValueText,
-                                         OnExceptionDelegate  OnException   = null)
-        {
-
-
-            if (TryParse(SampledValueText,
-                         out SampledValue evse,
-                         OnException))
-            {
-                return evse;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(JSON, out SampledValue, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a communication module.
+        /// Parse the given JSON representation of a sampled value.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SampledValue">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              JSON,
-                                       out SampledValue     SampledValue,
-                                       OnExceptionDelegate  OnException  = null)
+        /// <param name="CustomSampledValueParser">A delegate to parse custom sampled values.</param>
+        public static SampledValue Parse(JObject                                     JSON,
+                                         CustomJObjectParserDelegate<SampledValue>?  CustomSampledValueParser   = null)
+        {
+
+            if (TryParse(JSON,
+                         out var sampledValue,
+                         out var errorResponse,
+                         CustomSampledValueParser))
+            {
+                return sampledValue!;
+            }
+
+            throw new ArgumentException("The given JSON representation of a sampled value is invalid: " + errorResponse,
+                                        nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(JSON, out SampledValue, out ErrorResponse, CustomSampledValueParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a sampled value.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="SampledValue">The parsed sampled value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject            JSON,
+                                       out SampledValue?  SampledValue,
+                                       out String?        ErrorResponse)
+
+            => TryParse(JSON,
+                        out SampledValue,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a sampled value.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="SampledValue">The parsed sampled value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSampledValueParser">A delegate to parse custom sampled values.</param>
+        public static Boolean TryParse(JObject                                     JSON,
+                                       out SampledValue?                           SampledValue,
+                                       out String?                                 ErrorResponse,
+                                       CustomJObjectParserDelegate<SampledValue>?  CustomSampledValueParser   = null)
         {
 
             try
@@ -227,112 +221,98 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 SampledValue = default;
 
-                #region Value
+                #region Value               [mandatory]
 
                 if (!JSON.ParseMandatory("value",
-                                                     "value",
-                                                     out Decimal  Value,
-                                                     out String   ErrorResponse))
+                                         "value",
+                                         out Decimal Value,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Context
+                #region Context             [optional]
 
                 if (JSON.ParseOptional("context",
-                                                   "context",
-                                                   ReadingContextsExtentions.Parse,
-                                                   out ReadingContexts?  Context,
-                                                   out                   ErrorResponse))
+                                       "context",
+                                       ReadingContextsExtentions.Parse,
+                                       out ReadingContexts? Context,
+                                       out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region Measurand
+                #region Measurand           [optional]
 
                 if (JSON.ParseOptional("measurand",
-                                                   "measurand",
-                                                   MeasurandsExtentions.Parse,
-                                                   out Measurands?  Measurand,
-                                                   out              ErrorResponse))
+                                       "measurand",
+                                       MeasurandsExtentions.Parse,
+                                       out Measurands? Measurand,
+                                       out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region Phase
+                #region Phase               [optional]
 
                 if (JSON.ParseOptional("phase",
-                                                   "phase",
-                                                   PhasesExtentions.Parse,
-                                                   out Phases?  Phase,
-                                                   out          ErrorResponse))
+                                       "phase",
+                                       PhasesExtentions.Parse,
+                                       out Phases? Phase,
+                                       out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region Location
+                #region Location            [optional]
 
                 if (JSON.ParseOptional("location",
-                                                   "measurment location",
-                                                   MeasurementLocationsExtentions.Parse,
-                                                   out MeasurementLocations?  Location,
-                                                   out                        ErrorResponse))
+                                       "measurment location",
+                                       MeasurementLocationsExtentions.Parse,
+                                       out MeasurementLocations? Location,
+                                       out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region SignedMeterValue
+                #region SignedMeterValue    [optional]
 
-                if (JSON.ParseOptional("signedMeterValue",
-                                                   "signed meter value",
-                                                   OCPPv2_0.SignedMeterValue.TryParse,
-                                                   out SignedMeterValue  SignedMeterValue,
-                                                   out                   ErrorResponse,
-                                                   OnException))
+                if (JSON.ParseOptionalJSON("signedMeterValue",
+                                           "signed meter value",
+                                           OCPPv2_0.SignedMeterValue.TryParse,
+                                           out SignedMeterValue SignedMeterValue,
+                                           out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
                 #region UnitOfMeasure
 
-                if (JSON.ParseOptional("unitOfMeasure",
-                                                   "unit of measure",
-                                                   UnitsOfMeasure.TryParse,
-                                                   out UnitsOfMeasure  UnitOfMeasure,
-                                                   out                 ErrorResponse,
-                                                   OnException))
+                if (JSON.ParseOptionalJSON("unitOfMeasure",
+                                           "unit of measure",
+                                           UnitsOfMeasure.TryParse,
+                                           out UnitsOfMeasure UnitOfMeasure,
+                                           out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -342,13 +322,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPPv2_0.CustomData.TryParse,
-                                           out CustomData  CustomData,
-                                           out             ErrorResponse))
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -363,57 +341,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                 UnitOfMeasure,
                                                 CustomData);
 
+                if (CustomSampledValueParser is not null)
+                    SampledValue = CustomSampledValueParser(JSON,
+                                                            SampledValue);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, JSON, e);
-
-                SampledValue = default;
+                SampledValue   = default;
+                ErrorResponse  = "The given JSON representation of a sampled value is invalid: " + e.Message;
                 return false;
-
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(SampledValueText, out SampledValue, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a communication module.
-        /// </summary>
-        /// <param name="SampledValueText">The text to be parsed.</param>
-        /// <param name="SampledValue">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               SampledValueText,
-                                       out SampledValue     SampledValue,
-                                       OnExceptionDelegate  OnException  = null)
-        {
-
-            try
-            {
-
-                SampledValueText = SampledValueText?.Trim();
-
-                if (SampledValueText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(SampledValueText),
-                             out SampledValue,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, SampledValueText, e);
-            }
-
-            SampledValue = default;
-            return false;
 
         }
 
@@ -428,10 +368,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="CustomSignedMeterValueResponseSerializer">A delegate to serialize custom SignedMeterValue objects.</param>
         /// <param name="CustomUnitsOfMeasureResponseSerializer">A delegate to serialize custom UnitsOfMeasure objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SampledValue>     CustomSampledValueResponseSerializer       = null,
-                              CustomJObjectSerializerDelegate<SignedMeterValue> CustomSignedMeterValueResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<UnitsOfMeasure>   CustomUnitsOfMeasureResponseSerializer     = null,
-                              CustomJObjectSerializerDelegate<CustomData>       CustomCustomDataResponseSerializer         = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SampledValue>?     CustomSampledValueResponseSerializer       = null,
+                              CustomJObjectSerializerDelegate<SignedMeterValue>? CustomSignedMeterValueResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<UnitsOfMeasure>?   CustomUnitsOfMeasureResponseSerializer     = null,
+                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataResponseSerializer         = null)
         {
 
             var JSON = JSONObject.Create(
@@ -454,23 +394,23 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                ? new JProperty("location",          Location.  Value.AsText())
                                : null,
 
-                           SignedMeterValue != null
+                           SignedMeterValue is not null
                                ? new JProperty("signedMeterValue",  SignedMeterValue.ToJSON(CustomSignedMeterValueResponseSerializer,
                                                                                             CustomCustomDataResponseSerializer))
                                : null,
 
-                           UnitOfMeasure != null
+                           UnitOfMeasure is not null
                                ? new JProperty("unitOfMeasure",     UnitOfMeasure.   ToJSON(CustomUnitsOfMeasureResponseSerializer,
                                                                                             CustomCustomDataResponseSerializer))
                                : null,
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",        CustomData.      ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomSampledValueResponseSerializer != null
+            return CustomSampledValueResponseSerializer is not null
                        ? CustomSampledValueResponseSerializer(this, JSON)
                        : JSON;
 
@@ -489,7 +429,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="SampledValue1">An id tag info.</param>
         /// <param name="SampledValue2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (SampledValue SampledValue1, SampledValue SampledValue2)
+        public static Boolean operator == (SampledValue SampledValue1,
+                                           SampledValue SampledValue2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -499,9 +440,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             // If one is null, but not both, return false.
             if (SampledValue1 is null || SampledValue2 is null)
                 return false;
-
-            if (SampledValue1 is null)
-                throw new ArgumentNullException(nameof(SampledValue1),  "The given id tag info must not be null!");
 
             return SampledValue1.Equals(SampledValue2);
 
@@ -517,7 +455,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="SampledValue1">An id tag info.</param>
         /// <param name="SampledValue2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (SampledValue SampledValue1, SampledValue SampledValue2)
+        public static Boolean operator != (SampledValue SampledValue1,
+                                           SampledValue SampledValue2)
+
             => !(SampledValue1 == SampledValue2);
 
         #endregion
@@ -529,62 +469,48 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two sampled values for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A sampled value to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is SampledValue SampledValue))
-                return false;
-
-            return Equals(SampledValue);
-
-        }
+            => Object is SampledValue sampledValue &&
+                   Equals(sampledValue);
 
         #endregion
 
         #region Equals(SampledValue)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two sampled values for equality.
         /// </summary>
-        /// <param name="SampledValue">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="SampledValue">A sampled value to compare with.</param>
         public Boolean Equals(SampledValue SampledValue)
-        {
 
-            if (SampledValue is null)
-                return false;
+            => SampledValue is not null &&
 
-            return Value.Equals(SampledValue.Value) &&
+               Value.Equals(SampledValue.Value) &&
 
-                   ((!Context.HasValue   && !SampledValue.Context.HasValue) ||
-                     (Context.HasValue   &&  SampledValue.Context.HasValue   && Context.  Value.Equals(SampledValue.Context.  Value))) &&
+            ((!Context.HasValue   && !SampledValue.Context.HasValue) ||
+              (Context.HasValue   &&  SampledValue.Context.HasValue   && Context.  Value.Equals(SampledValue.Context.  Value))) &&
 
-                   ((!Measurand.HasValue && !SampledValue.Measurand.HasValue) ||
-                     (Measurand.HasValue &&  SampledValue.Measurand.HasValue && Measurand.Value.Equals(SampledValue.Measurand.Value))) &&
+            ((!Measurand.HasValue && !SampledValue.Measurand.HasValue) ||
+              (Measurand.HasValue &&  SampledValue.Measurand.HasValue && Measurand.Value.Equals(SampledValue.Measurand.Value))) &&
 
-                   ((!Phase.HasValue     && !SampledValue.Phase.HasValue) ||
-                     (Phase.HasValue     &&  SampledValue.Phase.HasValue     && Phase.    Value.Equals(SampledValue.Phase.    Value))) &&
+            ((!Phase.HasValue     && !SampledValue.Phase.HasValue) ||
+              (Phase.HasValue     &&  SampledValue.Phase.HasValue     && Phase.    Value.Equals(SampledValue.Phase.    Value))) &&
 
-                   ((!Location.HasValue  && !SampledValue.Location.HasValue) ||
-                     (Location.HasValue  &&  SampledValue.Location.HasValue  && Location. Value.Equals(SampledValue.Location. Value))) &&
+            ((!Location.HasValue  && !SampledValue.Location.HasValue) ||
+              (Location.HasValue  &&  SampledValue.Location.HasValue  && Location. Value.Equals(SampledValue.Location. Value))) &&
 
-                   ((SignedMeterValue == null && SampledValue.SignedMeterValue == null) ||
-                    (SignedMeterValue != null && SampledValue.SignedMeterValue != null   && SignedMeterValue.Equals(SampledValue.SignedMeterValue))) &&
+            ((SignedMeterValue is     null && SampledValue.SignedMeterValue is     null) ||
+             (SignedMeterValue is not null && SampledValue.SignedMeterValue is not null   && SignedMeterValue.Equals(SampledValue.SignedMeterValue))) &&
 
-                   ((UnitOfMeasure    == null && SampledValue.UnitOfMeasure    == null) ||
-                    (UnitOfMeasure    != null && SampledValue.UnitOfMeasure    != null   && UnitOfMeasure.   Equals(SampledValue.UnitOfMeasure)))    &&
+            ((UnitOfMeasure    is     null && SampledValue.UnitOfMeasure    is     null) ||
+             (UnitOfMeasure    is not null && SampledValue.UnitOfMeasure    is not null   && UnitOfMeasure.   Equals(SampledValue.UnitOfMeasure)))    &&
 
-                   ((CustomData       == null && SampledValue.CustomData       == null) ||
-                    (CustomData       != null && SampledValue.CustomData       != null   && CustomData.      Equals(SampledValue.CustomData)));
-
-        }
+            ((CustomData       is     null && SampledValue.CustomData       is     null) ||
+             (CustomData       is not null && SampledValue.CustomData       is not null   && CustomData.      Equals(SampledValue.CustomData)));
 
         #endregion
 
@@ -601,35 +527,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Value.                  GetHashCode() * 21 ^
+                return Value.            GetHashCode()       * 19 ^
 
-                       (Context.HasValue
-                            ? Context.         GetHashCode() * 17
-                            : 0) ^
-
-                       (Measurand.HasValue
-                            ? Measurand.       GetHashCode() * 13
-                            : 0) ^
-
-                       (Phase.HasValue
-                            ? Phase.           GetHashCode() * 11
-                            : 0) ^
-
-                       (Location.HasValue
-                            ? Location.        GetHashCode() *  7
-                            : 0) ^
-
-                       (SignedMeterValue != null
-                            ? SignedMeterValue.GetHashCode() *  5
-                            : 0) ^
-
-                       (UnitOfMeasure != null
-                            ? UnitOfMeasure.   GetHashCode() *  3
-                            : 0) ^
-
-                       (CustomData != null
-                            ? CustomData.      GetHashCode()
-                            : 0);
+                      (Context?.         GetHashCode() ?? 0) * 17 ^
+                      (Measurand?.       GetHashCode() ?? 0) * 13 ^
+                      (Phase?.           GetHashCode() ?? 0) * 11 ^
+                      (Location?.        GetHashCode() ?? 0) *  7 ^
+                      (SignedMeterValue?.GetHashCode() ?? 0) *  5 ^
+                      (UnitOfMeasure?.   GetHashCode() ?? 0) *  3 ^
+                      (CustomData?.      GetHashCode() ?? 0);
 
             }
         }
@@ -643,7 +549,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Value, UnitOfMeasure != null ? " " + UnitOfMeasure.Unit : "");
+            => String.Concat(Value,
+                             UnitOfMeasure is not null
+                                 ? " " + UnitOfMeasure.Unit
+                                 : "");
 
         #endregion
 

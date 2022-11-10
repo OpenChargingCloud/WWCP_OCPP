@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                            out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -311,13 +311,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                            new JProperty("additionalIdToken",  AdditionalIdToken),
                            new JProperty("type",               Type),
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomAdditionalInfoResponseSerializer != null
+            return CustomAdditionalInfoResponseSerializer is not null
                        ? CustomAdditionalInfoResponseSerializer(this, JSON)
                        : JSON;
 
@@ -412,7 +412,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                    String.Equals(Type,              AdditionalInfo.Type,              StringComparison.OrdinalIgnoreCase) &&
 
                    ((CustomData == null && AdditionalInfo.CustomData == null) ||
-                    (CustomData != null && AdditionalInfo.CustomData != null && CustomData.Equals(AdditionalInfo.CustomData)));
+                    (CustomData is not null && AdditionalInfo.CustomData is not null && CustomData.Equals(AdditionalInfo.CustomData)));
 
         }
 
@@ -434,7 +434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 return AdditionalIdToken.GetHashCode() * 5 ^
                        Type.             GetHashCode() * 3 ^
 
-                       (CustomData != null
+                       (CustomData is not null
                             ? CustomData.GetHashCode()
                             : 0);
 

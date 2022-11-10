@@ -313,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                           out             ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -403,13 +403,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                            new JProperty("serialNumber",      SerialNumber),
                            new JProperty("responderURL",      ResponderURL),
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomOCSPRequestDataResponseSerializer != null
+            return CustomOCSPRequestDataResponseSerializer is not null
                        ? CustomOCSPRequestDataResponseSerializer(this, JSON)
                        : JSON;
 
@@ -507,7 +507,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                    ResponderURL.  Equals(OCSPRequestData.ResponderURL)   &&
 
                    ((CustomData == null && OCSPRequestData.CustomData == null) ||
-                    (CustomData != null && OCSPRequestData.CustomData != null && CustomData.Equals(OCSPRequestData.CustomData)));
+                    (CustomData is not null && OCSPRequestData.CustomData is not null && CustomData.Equals(OCSPRequestData.CustomData)));
 
         }
 
@@ -532,7 +532,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        SerialNumber.  GetHashCode() *  5 ^
                        ResponderURL.  GetHashCode() *  3 ^
 
-                       (CustomData != null
+                       (CustomData is not null
                             ? CustomData.GetHashCode()
                             : 0);
 

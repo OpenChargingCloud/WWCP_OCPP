@@ -17,12 +17,9 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -55,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// An optional custom data object to allow to store any kind of customer specific data.
         /// </summary>
-        public CustomData      CustomData    { get; }
+        public CustomData?     CustomData    { get; }
 
         #endregion
 
@@ -71,10 +68,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public MessageContent(String          Content,
                               Language_Id     Language,
                               MessageFormats  Format,
-                              CustomData      CustomData   = null)
+                              CustomData?     CustomData   = null)
         {
 
-            this.Content     = Content?.Trim();
+            this.Content     = Content.Trim();
             this.Language    = Language;
             this.Format      = Format;
             this.CustomData  = CustomData;
@@ -123,66 +120,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (MessageContentJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomMessageContentParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a message content.
+        /// Parse the given JSON representation of message content.
         /// </summary>
-        /// <param name="MessageContentJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MessageContent Parse(JObject              MessageContentJSON,
-                                           OnExceptionDelegate  OnException   = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomMessageContentParser">A delegate to parse custom message content.</param>
+        public static MessageContent Parse(JObject                                       JSON,
+                                           CustomJObjectParserDelegate<MessageContent>?  CustomMessageContentParser   = null)
         {
 
-            if (TryParse(MessageContentJSON,
-                         out MessageContent modem,
-                         OnException))
+            if (TryParse(JSON,
+                         out var messageContent,
+                         out var errorResponse,
+                         CustomMessageContentParser))
             {
-                return modem;
+                return messageContent!;
             }
 
-            return default;
+            throw new ArgumentException("The given JSON representation of message content is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (MessageContentText, OnException = null)
+        #region (static) TryParse(JSON, out MessageContent, out OnException, CustomMessageContentParser = null)
 
-        /// <summary>
-        /// Parse the given text representation of a message content.
-        /// </summary>
-        /// <param name="MessageContentText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static MessageContent Parse(String               MessageContentText,
-                                           OnExceptionDelegate  OnException   = null)
-        {
-
-
-            if (TryParse(MessageContentText,
-                         out MessageContent modem,
-                         OnException))
-            {
-                return modem;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(MessageContentJSON, out MessageContent, OnException = null)
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a message content.
         /// </summary>
-        /// <param name="MessageContentJSON">The JSON to be parsed.</param>
-        /// <param name="MessageContent">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              MessageContentJSON,
-                                       out MessageContent   MessageContent,
-                                       OnExceptionDelegate  OnException  = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="MessageContent">The parsed message content.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject              JSON,
+                                       out MessageContent?  MessageContent,
+                                       out String?          ErrorResponse)
+
+            => TryParse(JSON,
+                        out MessageContent,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a message content.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="MessageContent">The parsed message content.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomMessageContentParser">A delegate to parse custom message content.</param>
+        public static Boolean TryParse(JObject                                       JSON,
+                                       out MessageContent?                           MessageContent,
+                                       out String?                                   ErrorResponse,
+                                       CustomJObjectParserDelegate<MessageContent>?  CustomMessageContentParser   = null)
         {
 
             try
@@ -190,54 +184,54 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 MessageContent = default;
 
-                #region Content
+                #region Content       [mandatory]
 
-                if (!MessageContentJSON.ParseMandatoryText("content",
-                                                           "message content",
-                                                           out String  Content,
-                                                           out String  ErrorResponse))
+                if (!JSON.ParseMandatoryText("content",
+                                             "message content",
+                                             out String Content,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Language
+                #region Language      [mandatory]
 
-                if (!MessageContentJSON.MapMandatory("language",
-                                                     "message language",
-                                                     Language_Id.Parse,
-                                                     out Language_Id  Language,
-                                                     out              ErrorResponse))
+                if (!JSON.MapMandatory("language",
+                                       "message language",
+                                       Language_Id.Parse,
+                                       out Language_Id Language,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Format
+                #region Format        [mandatory]
 
-                if (!MessageContentJSON.MapMandatory("format",
-                                                     "message format",
-                                                     MessageFormatsExtentions.Parse,
-                                                     out MessageFormats  Format,
-                                                     out                 ErrorResponse))
+                if (!JSON.MapMandatory("format",
+                                       "message format",
+                                       MessageFormatsExtentions.Parse,
+                                       out MessageFormats Format,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region CustomData
+                #region CustomData    [optional]
 
-                if (MessageContentJSON.ParseOptionalJSON("customData",
+                if (JSON.ParseOptionalJSON("customData",
                                                          "custom data",
                                                          OCPPv2_0.CustomData.TryParse,
                                                          out CustomData  CustomData,
                                                          out             ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -250,57 +244,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                     Format,
                                                     CustomData);
 
+                if (CustomMessageContentParser is not null)
+                    MessageContent = CustomMessageContentParser(JSON,
+                                                                MessageContent);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, MessageContentJSON, e);
-
-                MessageContent = default;
+                MessageContent  = default;
+                ErrorResponse   = "The given JSON representation of message content is invalid: " + e.Message;
                 return false;
-
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(MessageContentText, out MessageContent, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a message content.
-        /// </summary>
-        /// <param name="MessageContentText">The text to be parsed.</param>
-        /// <param name="MessageContent">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               MessageContentText,
-                                       out MessageContent   MessageContent,
-                                       OnExceptionDelegate  OnException  = null)
-        {
-
-            try
-            {
-
-                MessageContentText = MessageContentText?.Trim();
-
-                if (MessageContentText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(MessageContentText),
-                             out MessageContent,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, MessageContentText, e);
-            }
-
-            MessageContent = default;
-            return false;
 
         }
 
@@ -313,8 +269,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="CustomMessageContentResponseSerializer">A delegate to serialize custom MessageContent objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<MessageContent>  CustomMessageContentResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>      CustomCustomDataResponseSerializer       = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<MessageContent>?  CustomMessageContentResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataResponseSerializer       = null)
         {
 
             var JSON = JSONObject.Create(
@@ -323,13 +279,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                            new JProperty("language",  Language.ToString()),
                            new JProperty("format",    Format.  AsText()),
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomMessageContentResponseSerializer != null
+            return CustomMessageContentResponseSerializer is not null
                        ? CustomMessageContentResponseSerializer(this, JSON)
                        : JSON;
 
@@ -348,7 +304,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="MessageContent1">An id tag info.</param>
         /// <param name="MessageContent2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (MessageContent MessageContent1, MessageContent MessageContent2)
+        public static Boolean operator == (MessageContent MessageContent1,
+                                           MessageContent MessageContent2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -358,9 +315,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             // If one is null, but not both, return false.
             if (MessageContent1 is null || MessageContent2 is null)
                 return false;
-
-            if (MessageContent1 is null)
-                throw new ArgumentNullException(nameof(MessageContent1),  "The given id tag info must not be null!");
 
             return MessageContent1.Equals(MessageContent2);
 
@@ -376,7 +330,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="MessageContent1">An id tag info.</param>
         /// <param name="MessageContent2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (MessageContent MessageContent1, MessageContent MessageContent2)
+        public static Boolean operator != (MessageContent MessageContent1,
+                                           MessageContent MessageContent2)
+
             => !(MessageContent1 == MessageContent2);
 
         #endregion
@@ -388,46 +344,35 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two message contents for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">Message content to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is MessageContent MessageContent))
-                return false;
-
-            return Equals(MessageContent);
-
-        }
+            => Object is MessageContent messageContent &&
+                   Equals(messageContent);
 
         #endregion
 
         #region Equals(MessageContent)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two message contents for equality.
         /// </summary>
-        /// <param name="MessageContent">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="MessageContent">Message content to compare with.</param>
         public Boolean Equals(MessageContent MessageContent)
-        {
 
-            if (MessageContent is null)
-                return false;
+            => MessageContent is not null &&
 
-            return String.Equals(Content, MessageContent.Content, StringComparison.OrdinalIgnoreCase) &&
-                   Language.Equals(MessageContent.Language) &&
-                   Format.  Equals(MessageContent.Format)   &&
+               String.Equals(Content,
+                             MessageContent.Content,
+                             StringComparison.OrdinalIgnoreCase) &&
 
-                   ((CustomData == null && MessageContent.CustomData == null) ||
-                    (CustomData != null && MessageContent.CustomData != null && CustomData.Equals(MessageContent.CustomData)));
+               Language.Equals(MessageContent.Language) &&
+               Format.  Equals(MessageContent.Format)   &&
 
-        }
+             ((CustomData is     null && MessageContent.CustomData is     null) ||
+              (CustomData is not null && MessageContent.CustomData is not null && CustomData.Equals(MessageContent.CustomData)));
 
         #endregion
 
@@ -444,13 +389,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Content. GetHashCode() * 7 ^
-                       Language.GetHashCode() * 5 ^
-                       Format.  GetHashCode() * 3 ^
+                return Content.    GetHashCode() * 7 ^
+                       Language.   GetHashCode() * 5 ^
+                       Format.     GetHashCode() * 3 ^
 
-                       (CustomData != null
-                            ? CustomData.GetHashCode()
-                            : 0);
+                       CustomData?.GetHashCode() ?? 0;
 
             }
         }

@@ -86,62 +86,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (JSON)
+        #region (static) Parse   (JSON, CustomCustomDataParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a custom data object.
+        /// Parse the given JSON representation of custom data.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        public static CustomData Parse(JObject JSON)
+        /// <param name="CustomCustomDataParser">A delegate to parse custom custom data.</param>
+        public static CustomData Parse(JObject                                   JSON,
+                                       CustomJObjectParserDelegate<CustomData>?  CustomCustomDataParser   = null)
         {
 
             if (TryParse(JSON,
-                         out CustomData  customData,
-                         out String      ErrorResponse))
+                         out var customData,
+                         out var errorResponse,
+                         CustomCustomDataParser))
             {
-                return customData;
+                return customData!;
             }
 
-            throw new ArgumentException("The given JSON representation of a custom data object is invalid: " + ErrorResponse, nameof(JSON));
+            throw new ArgumentException("The given JSON representation of custom data is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Text)
+        #region (static) TryParse(JSON, out CustomData, out ErrorResponse, CustomCustomDataParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Parse the given text representation of a custom data object.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        public static CustomData Parse(String Text)
-        {
-
-
-            if (TryParse(Text,
-                         out CustomData  customData,
-                         out String      ErrorResponse))
-            {
-                return customData;
-            }
-
-            throw new ArgumentException("The given text representation of a custom data object is invalid: " + ErrorResponse, nameof(Text));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(JSON, out CustomData, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a custom data object.
+        /// Try to parse the given JSON representation of custom data.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomData">The parsed custom data object.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject         JSON,
-                                       out CustomData  CustomData,
-                                       out String      ErrorResponse)
+        public static Boolean TryParse(JObject          JSON,
+                                       out CustomData?  CustomData,
+                                       out String?      ErrorResponse)
+
+            => TryParse(JSON,
+                        out CustomData,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of custom data.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomData">The parsed custom data object.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom custom data.</param>
+        public static Boolean TryParse(JObject                                   JSON,
+                                       out CustomData?                           CustomData,
+                                       out String?                               ErrorResponse,
+                                       CustomJObjectParserDelegate<CustomData>?  CustomCustomDataParser)
         {
 
             try
@@ -151,11 +152,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region VendorId
 
-                if (!CustomData.ParseMandatory("vendorId",
-                                               "vendor identification",
-                                               Vendor_Id.TryParse,
-                                               out Vendor_Id  VendorId,
-                                               out            ErrorResponse))
+                if (!JSON.ParseMandatory("vendorId",
+                                         "vendor identification",
+                                         Vendor_Id.TryParse,
+                                         out Vendor_Id VendorId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -166,45 +167,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 CustomData = new CustomData(VendorId,
                                             JSON);
 
+                if (CustomCustomDataParser is not null)
+                    CustomData = CustomCustomDataParser(JSON,
+                                                        CustomData);
+
                 return true;
 
             }
             catch (Exception e)
             {
                 CustomData     = default;
-                ErrorResponse  = "The given JSON representation of a custom data object is invalid: " + e.Message;
-                return false;
-            }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Text, out CustomData, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given text representation of a custom data object.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="CustomData">The parsed custom data object.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(String          Text,
-                                       out CustomData  CustomData,
-                                       out String      ErrorResponse)
-        {
-
-            try
-            {
-
-                return TryParse(JObject.Parse(Text),
-                                out CustomData,
-                                out ErrorResponse);
-
-            }
-            catch (Exception e)
-            {
-                CustomData     = default;
-                ErrorResponse  = "The given text representation of a custom data object is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of custom data is invalid: " + e.Message;
                 return false;
             }
 
@@ -218,11 +191,23 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<CustomData> CustomCustomDataResponseSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<CustomData>? CustomCustomDataResponseSerializer = null)
+        {
 
-            => CustomCustomDataResponseSerializer != null
+            var JSON = JSONObject.Create(
+                           new JProperty("vendorId", VendorId.ToString())
+                       );
+
+            foreach (var jtoken in Children())
+            {
+                JSON.Add(jtoken);
+            }
+
+            return CustomCustomDataResponseSerializer is not null
                        ? CustomCustomDataResponseSerializer(this, this)
                        : this;
+
+        }
 
         #endregion
 

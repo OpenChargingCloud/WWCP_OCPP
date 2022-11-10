@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                  out                ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                out             ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -298,13 +298,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                ? new JProperty("connectorId",  ConnectorId.Value.ToString())
                                : null,
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomEVSEResponseSerializer != null
+            return CustomEVSEResponseSerializer is not null
                        ? CustomEVSEResponseSerializer(this, JSON)
                        : JSON;
 
@@ -401,7 +401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                      (ConnectorId.HasValue &&  EVSE.ConnectorId.HasValue && ConnectorId.Value.Equals(EVSE.ConnectorId.Value))) &&
 
                    ((CustomData == null    &&  EVSE.CustomData == null) ||
-                    (CustomData != null    &&  EVSE.CustomData != null   && CustomData.Equals(EVSE.CustomData)));
+                    (CustomData is not null    &&  EVSE.CustomData is not null   && CustomData.Equals(EVSE.CustomData)));
 
         }
 
@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                             ? ConnectorId.GetHashCode() * 3
                             : 0) ^
 
-                       (CustomData != null
+                       (CustomData is not null
                             ? CustomData.GetHashCode()
                             : 0);
 

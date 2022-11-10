@@ -17,13 +17,9 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -31,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// A case insensitive identifier for authorization.
+    /// A case insensitive authorization identifier.
     /// </summary>
     public class IdToken
     {
@@ -44,40 +40,40 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public String                       Value              { get; }
 
         /// <summary>
-        /// The type of the identification token.
+        /// The type of the authorization identification.
         /// </summary>
         public IdTokenTypes                 Type               { get; }
 
         /// <summary>
-        /// Optional information which can be validated by the CSMS in addition to the regular authorization with identification token.
+        /// Optional information which can be validated by the CSMS in addition to the regular authorization with authorization identification.
         /// </summary>
         public IEnumerable<AdditionalInfo>  AdditionalInfos    { get; }
 
         /// <summary>
         /// An optional custom data object to allow to store any kind of customer specific data.
         /// </summary>
-        public CustomData                   CustomData         { get; }
+        public CustomData?                  CustomData         { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a case insensitive identifier for authorization.
+        /// Create a new case insensitive authorization identifier.
         /// </summary>
         /// <param name="Value">The hidden case insensitive identification of an RFID tag, or an UUID.</param>
-        /// <param name="Type">The type of the identification token.</param>
-        /// <param name="AdditionalInfos">Optional information which can be validated by the CSMS in addition to the regular authorization with identification token.</param>
+        /// <param name="Type">The type of the authorization identification.</param>
+        /// <param name="AdditionalInfos">Optional information which can be validated by the CSMS in addition to the regular authorization with authorization identification.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public IdToken(String                       Value,
                        IdTokenTypes                 Type,
                        IEnumerable<AdditionalInfo>  AdditionalInfos,
-                       CustomData                   CustomData  = null)
+                       CustomData?                  CustomData   = null)
         {
 
             this.Value            = Value?.Trim()   ?? throw new ArgumentNullException(nameof(Value), "The given identifier must not be null or empty!");
             this.Type             = Type;
-            this.AdditionalInfos  = AdditionalInfos ?? new AdditionalInfo[0];
+            this.AdditionalInfos  = AdditionalInfos ?? Array.Empty<AdditionalInfo>();
             this.CustomData       = CustomData;
 
         }
@@ -124,66 +120,64 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (IdTokenJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomIdTokenParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a communication module.
+        /// Parse the given JSON representation of an authorization identification.
         /// </summary>
-        /// <param name="IdTokenJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static IdToken Parse(JObject              IdTokenJSON,
-                                    OnExceptionDelegate  OnException   = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomIdTokenParser">A delegate to parse custom authorization identifications.</param>
+        public static IdToken Parse(JObject                                JSON,
+                                    CustomJObjectParserDelegate<IdToken>?  CustomIdTokenParser   = null)
         {
 
-            if (TryParse(IdTokenJSON,
-                         out IdToken modem,
-                         OnException))
+            if (TryParse(JSON,
+                         out var idToken,
+                         out var errorResponse))
             {
-                return modem;
+                return idToken!;
             }
 
-            return default;
+            throw new ArgumentException("The given JSON representation of a charging schedule is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (IdTokenText, OnException = null)
+        #region (static) TryParse(JSON, out IdToken, out ErrorResponse, CustomIdTokenParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Parse the given text representation of a communication module.
+        /// Try to parse the given JSON representation of an authorization identification.
         /// </summary>
-        /// <param name="IdTokenText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static IdToken Parse(String               IdTokenText,
-                                    OnExceptionDelegate  OnException   = null)
-        {
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="IdToken">The parsed authorization identification.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject       JSON,
+                                       out IdToken?  IdToken,
+                                       out String?   ErrorResponse)
 
+            => TryParse(JSON,
+                        out IdToken,
+                        out ErrorResponse,
+                        null);
 
-            if (TryParse(IdTokenText,
-                         out IdToken modem,
-                         OnException))
-            {
-                return modem;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(IdTokenJSON, out IdToken, OnException = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a communication module.
+        /// Try to parse the given JSON representation of an authorization identification.
         /// </summary>
-        /// <param name="IdTokenJSON">The JSON to be parsed.</param>
-        /// <param name="IdToken">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject      IdTokenJSON,
-                                       out IdToken  IdToken,
-                                       out String?  ErrorResponse)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="IdToken">The parsed authorization identification.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomIdTokenParser">A delegate to parse custom authorization identifications.</param>
+        public static Boolean TryParse(JObject                                JSON,
+                                       out IdToken?                           IdToken,
+                                       out String?                            ErrorResponse,
+                                       CustomJObjectParserDelegate<IdToken>?  CustomIdTokenParser)
+
+
         {
 
             try
@@ -191,57 +185,55 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 IdToken = default;
 
-                #region Value/idToken
+                #region Value/idToken      [mandatory]
 
-                if (!IdTokenJSON.ParseMandatoryText("idToken",
-                                                    "identification token",
-                                                    out String Value,
-                                                    out ErrorResponse))
+                if (!JSON.ParseMandatoryText("idToken",
+                                             "authorization identification",
+                                             out String Value,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Type
+                #region Type               [mandatory]
 
-                if (!IdTokenJSON.MapMandatory("type",
-                                              "type",
-                                              IdTokenTypesExtentions.Parse,
-                                              out IdTokenTypes  Type,
-                                              out               ErrorResponse))
+                if (!JSON.MapMandatory("type",
+                                       "type",
+                                       IdTokenTypesExtentions.Parse,
+                                       out IdTokenTypes Type,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region AdditionalInfos
+                #region AdditionalInfos    [optional]
 
-                if (IdTokenJSON.ParseOptionalJSON("additionalInfo",
-                                                  "additional information",
-                                                  AdditionalInfo.TryParse,
-                                                  out IEnumerable<AdditionalInfo>  AdditionalInfos,
-                                                  out                              ErrorResponse))
+                if (JSON.ParseOptionalJSON("additionalInfo",
+                                           "additional information",
+                                           AdditionalInfo.TryParse,
+                                           out IEnumerable<AdditionalInfo> AdditionalInfos,
+                                           out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region CustomData
+                #region CustomData         [optional]
 
-                if (IdTokenJSON.ParseOptionalJSON("customData",
-                                                  "custom data",
-                                                  OCPPv2_0.CustomData.TryParse,
-                                                  out CustomData  CustomData,
-                                                  out             ErrorResponse))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -254,54 +246,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                       AdditionalInfos,
                                       CustomData);
 
+                if (CustomIdTokenParser is not null)
+                    IdToken = CustomIdTokenParser(JSON,
+                                                  IdToken);
+
                 return true;
 
             }
             catch (Exception e)
             {
-                ErrorResponse = null;
-                IdToken = default;
+                IdToken        = default;
+                ErrorResponse  = "The given JSON representation of a charging schedule is invalid: " + e.Message;
                 return false;
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(IdTokenText, out IdToken, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a communication module.
-        /// </summary>
-        /// <param name="IdTokenText">The text to be parsed.</param>
-        /// <param name="IdToken">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               IdTokenText,
-                                       out IdToken          IdToken,
-                                       OnExceptionDelegate  OnException  = null)
-        {
-
-            try
-            {
-
-                IdTokenText = IdTokenText?.Trim();
-
-                if (IdTokenText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(IdTokenText),
-                             out IdToken,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, IdTokenText, e);
-            }
-
-            IdToken = default;
-            return false;
 
         }
 
@@ -315,9 +272,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="CustomIdTokenResponseSerializer">A delegate to serialize custom IdTokens.</param>
         /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom AdditionalInfo objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<IdToken>         CustomIdTokenResponseSerializer          = null,
-                              CustomJObjectSerializerDelegate<AdditionalInfo>  CustomAdditionalInfoResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>      CustomCustomDataResponseSerializer       = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<IdToken>?         CustomIdTokenResponseSerializer          = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?  CustomAdditionalInfoResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataResponseSerializer       = null)
         {
 
             var JSON = JSONObject.Create(
@@ -330,13 +287,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                                                                                                                 CustomCustomDataResponseSerializer))))
                                : null,
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomIdTokenResponseSerializer != null
+            return CustomIdTokenResponseSerializer is not null
                        ? CustomIdTokenResponseSerializer(this, JSON)
                        : JSON;
 
@@ -366,9 +323,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             if (IdToken1 is null || IdToken2 is null)
                 return false;
 
-            if (IdToken1 is null)
-                throw new ArgumentNullException(nameof(IdToken1),  "The given id tag info must not be null!");
-
             return IdToken1.Equals(IdToken2);
 
         }
@@ -383,7 +337,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="IdToken1">An id tag info.</param>
         /// <param name="IdToken2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (IdToken IdToken1, IdToken IdToken2)
+        public static Boolean operator != (IdToken IdToken1,
+                                           IdToken IdToken2)
+
             => !(IdToken1 == IdToken2);
 
         #endregion
@@ -395,47 +351,33 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two id tokens for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">An id token to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is IdToken IdToken))
-                return false;
-
-            return Equals(IdToken);
-
-        }
+            => Object is IdToken idToken &&
+                   Equals(idToken);
 
         #endregion
 
         #region Equals(IdToken)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two id tokens for equality.
         /// </summary>
-        /// <param name="IdToken">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="IdToken">An id token to compare with.</param>
         public Boolean Equals(IdToken IdToken)
-        {
 
-            if (IdToken is null)
-                return false;
+            => IdToken is not null &&
 
-            return String.Equals(Value, IdToken.Value, StringComparison.OrdinalIgnoreCase) &&
-                   Type.Equals(IdToken.Type)                                               &&
+               String.Equals(Value, IdToken.Value, StringComparison.OrdinalIgnoreCase) &&
+               Type.  Equals(IdToken.Type)                                             &&
 
-                   //ToDo: Compare enumeration of AdditionalInfos!
+               //ToDo: Compare enumeration of AdditionalInfos!
 
-                   ((CustomData == null && IdToken.CustomData == null) ||
-                    (CustomData != null && IdToken.CustomData != null && CustomData.Equals(IdToken.CustomData)));
-
-        }
+             ((CustomData is     null && IdToken.CustomData is     null) ||
+              (CustomData is not null && IdToken.CustomData is not null && CustomData.Equals(IdToken.CustomData)));
 
         #endregion
 
@@ -452,14 +394,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Value.GetHashCode() * 5 ^
-                       Type. GetHashCode() * 3 ^
+                return Value.      GetHashCode() * 5 ^
+                       Type.       GetHashCode() * 3 ^
 
                        //ToDo: Add enumeration of AdditionalInfos!
 
-                       (CustomData != null
-                            ? CustomData.GetHashCode()
-                            : 0);
+                       CustomData?.GetHashCode() ?? 0;
 
             }
         }

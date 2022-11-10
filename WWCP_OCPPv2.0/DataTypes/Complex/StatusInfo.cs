@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                  out         ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                            out             ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -298,13 +298,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                ? new JProperty("additionalInfo",  AdditionalInfo)
                                : null,
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
 
-            return CustomStatusInfoResponseSerializer != null
+            return CustomStatusInfoResponseSerializer is not null
                        ? CustomStatusInfoResponseSerializer(this, JSON)
                        : JSON;
 

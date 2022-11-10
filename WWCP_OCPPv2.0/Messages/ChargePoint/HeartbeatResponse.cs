@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                            out             ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -320,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var JSON = JSONObject.Create(
 
-                           CustomData != null
+                           CustomData is not null
                                ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null,
 
@@ -328,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                        );
 
-            return CustomHeartbeatResponseSerializer != null
+            return CustomHeartbeatResponseSerializer is not null
                        ? CustomHeartbeatResponseSerializer(this, JSON)
                        : JSON;
 
