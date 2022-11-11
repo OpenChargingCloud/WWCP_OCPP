@@ -17,12 +17,9 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -212,66 +209,56 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region (static) Parse   (BootNotificationRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomBootNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a boot notification request.
         /// </summary>
-        /// <param name="BootNotificationRequestJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static BootNotificationRequest Parse(JObject              BootNotificationRequestJSON,
-                                                    OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom boot notification requests.</param>
+        public static BootNotificationRequest Parse(JObject                                                JSON,
+                                                    Request_Id                                             RequestId,
+                                                    ChargeBox_Id                                           ChargeBoxId,
+                                                    CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser   = null)
         {
 
 
-            if (TryParse(BootNotificationRequestJSON,
-                         out BootNotificationRequest bootNotificationRequest,
-                         OnException))
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out var bootNotificationRequest,
+                         out var errorResponse,
+                         CustomBootNotificationRequestParser))
             {
-                return bootNotificationRequest;
+                return bootNotificationRequest!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a boot notification request is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (BootNotificationRequestText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a boot notification request.
-        /// </summary>
-        /// <param name="BootNotificationRequestText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static BootNotificationRequest Parse(String               BootNotificationRequestText,
-                                                    OnExceptionDelegate  OnException   = null)
-        {
-
-            if (TryParse(BootNotificationRequestText,
-                         out BootNotificationRequest bootNotificationRequest,
-                         OnException))
-            {
-                return bootNotificationRequest;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(BootNotificationRequestJSON, out BootNotificationRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out BootNotificationRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a boot notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="BootNotificationRequest">The parsed boot notification request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                      JSON,
-                                       out BootNotificationRequest  BootNotificationRequest,
-                                       OnExceptionDelegate          OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom boot notification requests.</param>
+        public static Boolean TryParse(JObject                                                JSON,
+                                       Request_Id                                             RequestId,
+                                       ChargeBox_Id                                           ChargeBoxId,
+                                       out BootNotificationRequest?                           BootNotificationRequest,
+                                       out String?                                            ErrorResponse,
+                                       CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser)
         {
 
             try
@@ -279,105 +266,69 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 BootNotificationRequest = null;
 
-                #region ChargingStation
+                #region ChargingStation    [mandatory]
 
-                if (!JSON.ParseMandatory3("chargingStation",
-                                                                 "charging station",
-                                                                 ChargingStation.TryParse,
-                                                                 out ChargingStation  chargingStation,
-                                                                 out String           ErrorResponse,
-                                                                 OnException))
+                if (!JSON.ParseMandatoryJSON("chargingStation",
+                                             "charging station",
+                                             OCPPv2_0.ChargingStation.TryParse,
+                                             out ChargingStation? ChargingStation,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
+                if (ChargingStation is null)
+                    return false;
+
                 #endregion
 
-                #region Reason
+                #region Reason             [mandatory]
 
                 if (!JSON.MapMandatory("reason",
-                                                              "boot reason",
-                                                              BootReasonsExtentions.Parse,
-                                                              out BootReasons  Reason,
-                                                              out              ErrorResponse))
+                                       "boot reason",
+                                       BootReasonsExtentions.Parse,
+                                       out BootReasons Reason,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region CustomData
+                #region CustomData         [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPPv2_0.CustomData.TryParse,
-                                           out CustomData  CustomData,
-                                           out             ErrorResponse))
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
 
-                BootNotificationRequest = new BootNotificationRequest(chargingStation,
+                BootNotificationRequest = new BootNotificationRequest(ChargeBoxId,
+                                                                      ChargingStation,
                                                                       Reason,
-                                                                      CustomData);
+                                                                      CustomData,
+                                                                      RequestId);
+
+                if (CustomBootNotificationRequestParser is not null)
+                    BootNotificationRequest = CustomBootNotificationRequestParser(JSON,
+                                                                                  BootNotificationRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, JSON, e);
-
-                BootNotificationRequest = null;
+                BootNotificationRequest  = null;
+                ErrorResponse            = "The given JSON representation of a boot notification request is invalid: " + e.Message;
                 return false;
-
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(BootNotificationRequestText, out BootNotificationRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a boot notification request.
-        /// </summary>
-        /// <param name="BootNotificationRequestText">The text to be parsed.</param>
-        /// <param name="BootNotificationRequest">The parsed boot notification request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                       BootNotificationRequestText,
-                                       out BootNotificationRequest  BootNotificationRequest,
-                                       OnExceptionDelegate          OnException  = null)
-        {
-
-            try
-            {
-
-                BootNotificationRequestText = BootNotificationRequestText?.Trim();
-
-                if (BootNotificationRequestText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(BootNotificationRequestText),
-                                           out BootNotificationRequest,
-                                           OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, BootNotificationRequestText, e);
-            }
-
-            BootNotificationRequest = null;
-            return false;
 
         }
 
@@ -388,12 +339,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        public override JObject ToJSON()
+            => ToJSON(null);
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         /// <param name="CustomBootNotificationRequestSerializer">A delegate to serialize custom boot notification requests.</param>
         /// <param name="CustomChargingStationResponseSerializer">A delegate to serialize custom ChargingStations.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<BootNotificationRequest> CustomBootNotificationRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<ChargingStation>         CustomChargingStationResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>              CustomCustomDataResponseSerializer        = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<BootNotificationRequest>?  CustomBootNotificationRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<ChargingStation>?          CustomChargingStationResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataResponseSerializer        = null)
         {
 
             var JSON = JSONObject.Create(
@@ -402,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                            new JProperty("reason",            Reason.         AsText()),
 
                            CustomData is not null
-                               ? new JProperty("customData", CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
@@ -426,7 +384,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="BootNotificationRequest1">A boot notification request.</param>
         /// <param name="BootNotificationRequest2">Another boot notification request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (BootNotificationRequest BootNotificationRequest1, BootNotificationRequest BootNotificationRequest2)
+        public static Boolean operator == (BootNotificationRequest BootNotificationRequest1,
+                                           BootNotificationRequest BootNotificationRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -451,7 +410,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="BootNotificationRequest1">A boot notification request.</param>
         /// <param name="BootNotificationRequest2">Another boot notification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (BootNotificationRequest BootNotificationRequest1, BootNotificationRequest BootNotificationRequest2)
+        public static Boolean operator != (BootNotificationRequest BootNotificationRequest1,
+                                           BootNotificationRequest BootNotificationRequest2)
 
             => !(BootNotificationRequest1 == BootNotificationRequest2);
 
@@ -464,22 +424,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two boot notification requests for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A boot notification request to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is BootNotificationRequest BootNotificationRequest))
-                return false;
-
-            return Equals(BootNotificationRequest);
-
-        }
+            => Object is BootNotificationRequest bootNotificationRequest &&
+                   Equals(bootNotificationRequest);
 
         #endregion
 
@@ -489,20 +440,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// Compares two boot notification requests for equality.
         /// </summary>
         /// <param name="BootNotificationRequest">A boot notification request to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(BootNotificationRequest BootNotificationRequest)
-        {
+        public override Boolean Equals(BootNotificationRequest? BootNotificationRequest)
 
-            if (BootNotificationRequest is null)
-                return false;
+            => BootNotificationRequest is not null &&
 
-            return ChargingStation.Equals(BootNotificationRequest.ChargingStation) &&
-                   Reason.         Equals(BootNotificationRequest.Reason)          &&
+               ChargingStation.Equals(BootNotificationRequest.ChargingStation) &&
+               Reason.         Equals(BootNotificationRequest.Reason)          &&
 
-                   ((CustomData == null && BootNotificationRequest.CustomData == null) ||
-                    (CustomData is not null && BootNotificationRequest.CustomData is not null && CustomData.Equals(BootNotificationRequest.CustomData)));
-
-        }
+             ((CustomData is     null && BootNotificationRequest.CustomData is     null) ||
+              (CustomData is not null && BootNotificationRequest.CustomData is not null && CustomData.Equals(BootNotificationRequest.CustomData)));
 
         #endregion
 
@@ -541,6 +487,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             => String.Concat("Boot reason: " + Reason.AsText());
 
         #endregion
+
 
     }
 

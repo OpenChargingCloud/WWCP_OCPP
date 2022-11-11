@@ -17,12 +17,9 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -40,17 +37,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// A predefined case-insensitive code for the reason why the status is returned in this response. 20
         /// </summary>
-        public String      ReasonCode        { get; }
+        public String       ReasonCode        { get; }
 
         /// <summary>
         /// Additional text to provide detailed information. 512
         /// </summary>
-        public String      AdditionalInfo    { get; }
+        public String?      AdditionalInfo    { get; }
 
         /// <summary>
         /// An optional custom data object to allow to store any kind of customer specific data.
         /// </summary>
-        public CustomData  CustomData        { get; }
+        public CustomData?  CustomData        { get; }
 
         #endregion
 
@@ -62,14 +59,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="ReasonCode">A predefined case-insensitive code for the reason why the status is returned in this response.</param>
         /// <param name="AdditionalInfo">Additional text to provide detailed information.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public StatusInfo(String      ReasonCode,
-                          String      AdditionalInfo   = null,
-                          CustomData  CustomData       = null)
+        public StatusInfo(String       ReasonCode,
+                          String?      AdditionalInfo   = null,
+                          CustomData?  CustomData       = null)
         {
 
-            this.ReasonCode      = ReasonCode?.Trim() ?? throw new ArgumentNullException(nameof(ReasonCode), "The given reason code must not be null or empty!");
+            this.ReasonCode      = ReasonCode.Trim();
             this.AdditionalInfo  = AdditionalInfo;
             this.CustomData      = CustomData;
+
+            if (ReasonCode.IsNullOrEmpty())
+                 throw new ArgumentNullException(nameof(ReasonCode), "The given reason code must not be null or empty!");
 
         }
 
@@ -108,66 +108,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (StatusInfoJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomStatusInfoParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a communication module.
-        /// </summary>
-        /// <param name="StatusInfoJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StatusInfo Parse(JObject              StatusInfoJSON,
-                                       OnExceptionDelegate  OnException   = null)
-        {
-
-            if (TryParse(StatusInfoJSON,
-                         out StatusInfo modem,
-                         OnException))
-            {
-                return modem;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) Parse   (StatusInfoText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a communication module.
-        /// </summary>
-        /// <param name="StatusInfoText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StatusInfo Parse(String               StatusInfoText,
-                                       OnExceptionDelegate  OnException   = null)
-        {
-
-
-            if (TryParse(StatusInfoText,
-                         out StatusInfo modem,
-                         OnException))
-            {
-                return modem;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(JSON, out StatusInfo, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a communication module.
+        /// Parse the given JSON representation of status information.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="StatusInfo">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              JSON,
-                                       out StatusInfo       StatusInfo,
-                                       OnExceptionDelegate  OnException  = null)
+        /// <param name="CustomStatusInfoParser">A delegate to parse custom status information.</param>
+        public static StatusInfo Parse(JObject                                   JSON,
+                                       CustomJObjectParserDelegate<StatusInfo>?  CustomStatusInfoParser   = null)
+        {
+
+            if (TryParse(JSON,
+                         out var statusInfo,
+                         out var errorResponse,
+                         CustomStatusInfoParser))
+            {
+                return statusInfo!;
+            }
+
+            throw new ArgumentException("The given JSON representation of status information is invalid: " + errorResponse,
+                                        nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(JSON, out StatusInfo, out ErrorResponse, CustomStatusInfoParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+
+        /// <summary>
+        /// Try to parse the given JSON representation of status information.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="StatusInfo">The parsed status information.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject          JSON,
+                                       out StatusInfo?  StatusInfo,
+                                       out String?      ErrorResponse)
+
+            => TryParse(JSON,
+                        out StatusInfo,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of status information.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="StatusInfo">The parsed status information.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomStatusInfoParser">A delegate to parse custom status information.</param>
+        public static Boolean TryParse(JObject                                   JSON,
+                                       out StatusInfo?                           StatusInfo,
+                                       out String?                               ErrorResponse,
+                                       CustomJObjectParserDelegate<StatusInfo>?  CustomStatusInfoParser)
         {
 
             try
@@ -175,34 +172,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 StatusInfo = default;
 
-                #region ReasonCode
+                #region ReasonCode        [mandatory]
 
                 if (!JSON.ParseMandatoryText("reasonCode",
-                                                       "reason code",
-                                                       out String  ReasonCode,
-                                                       out String  ErrorResponse))
+                                             "reason code",
+                                             out String ReasonCode,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region AdditionalInfo
+                #region AdditionalInfo    [optional]
 
                 if (JSON.ParseOptional("additionalInfo",
-                                                 "additional information",
-                                                 out String  AdditionalInfo,
-                                                 out         ErrorResponse))
+                                       "additional information",
+                                       out String? AdditionalInfo,
+                                       out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region CustomData
+                #region CustomData        [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -219,61 +214,23 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 #endregion
 
 
-                StatusInfo = new StatusInfo(ReasonCode?.    Trim(),
+                StatusInfo = new StatusInfo(ReasonCode.     Trim(),
                                             AdditionalInfo?.Trim(),
                                             CustomData);
+
+                if (CustomStatusInfoParser is not null)
+                    StatusInfo = CustomStatusInfoParser(JSON,
+                                                        StatusInfo);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, JSON, e);
-
-                StatusInfo = default;
+                StatusInfo     = null;
+                ErrorResponse  = "The given JSON representation of status information is invalid: " + e.Message;
                 return false;
-
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(StatusInfoText, out StatusInfo, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a communication module.
-        /// </summary>
-        /// <param name="StatusInfoText">The text to be parsed.</param>
-        /// <param name="StatusInfo">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               StatusInfoText,
-                                       out StatusInfo       StatusInfo,
-                                       OnExceptionDelegate  OnException  = null)
-        {
-
-            try
-            {
-
-                StatusInfoText = StatusInfoText?.Trim();
-
-                if (StatusInfoText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(StatusInfoText),
-                             out StatusInfo,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, StatusInfoText, e);
-            }
-
-            StatusInfo = default;
-            return false;
 
         }
 
@@ -286,15 +243,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom StatusInfo object.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<StatusInfo> CustomStatusInfoResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData> CustomCustomDataResponseSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StatusInfo>?  CustomStatusInfoResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataResponseSerializer   = null)
         {
 
             var JSON = JSONObject.Create(
 
                            new JProperty("reasonCode",            ReasonCode),
 
-                           AdditionalInfo != null
+                           AdditionalInfo is not null
                                ? new JProperty("additionalInfo",  AdditionalInfo)
                                : null,
 
@@ -323,7 +280,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="StatusInfo1">An id tag info.</param>
         /// <param name="StatusInfo2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (StatusInfo StatusInfo1, StatusInfo StatusInfo2)
+        public static Boolean operator == (StatusInfo StatusInfo1,
+                                           StatusInfo StatusInfo2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -333,9 +291,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             // If one is null, but not both, return false.
             if (StatusInfo1 is null || StatusInfo2 is null)
                 return false;
-
-            if (StatusInfo1 is null)
-                throw new ArgumentNullException(nameof(StatusInfo1),  "The given id tag info must not be null!");
 
             return StatusInfo1.Equals(StatusInfo2);
 
@@ -351,7 +306,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="StatusInfo1">An id tag info.</param>
         /// <param name="StatusInfo2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (StatusInfo StatusInfo1, StatusInfo StatusInfo2)
+        public static Boolean operator != (StatusInfo StatusInfo1,
+                                           StatusInfo StatusInfo2)
+
             => !(StatusInfo1 == StatusInfo2);
 
         #endregion
@@ -363,47 +320,33 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two status information for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">Status information to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is StatusInfo StatusInfo))
-                return false;
-
-            return Equals(StatusInfo);
-
-        }
+            => Object is StatusInfo statusInfo &&
+                   Equals(statusInfo);
 
         #endregion
 
         #region Equals(StatusInfo)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two status information for equality.
         /// </summary>
-        /// <param name="StatusInfo">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="StatusInfo">Status information to compare with.</param>
         public Boolean Equals(StatusInfo StatusInfo)
-        {
 
-            if (StatusInfo is null)
-                return false;
+            => StatusInfo is not null &&
 
-            return ReasonCode.Equals(StatusInfo.ReasonCode) &&
+               ReasonCode.Equals(StatusInfo.ReasonCode) &&
 
-                   ((AdditionalInfo == null && StatusInfo.AdditionalInfo == null) ||
-                    (AdditionalInfo != null && StatusInfo.AdditionalInfo != null && AdditionalInfo.Equals(StatusInfo.AdditionalInfo))) &&
+             ((AdditionalInfo is     null && StatusInfo.AdditionalInfo is     null) ||
+              (AdditionalInfo is not null && StatusInfo.AdditionalInfo is not null && AdditionalInfo.Equals(StatusInfo.AdditionalInfo))) &&
 
-                   ((CustomData     == null && StatusInfo.CustomData     == null) ||
-                    (CustomData     != null && StatusInfo.CustomData     != null && CustomData.    Equals(StatusInfo.CustomData)));
-
-        }
+             ((CustomData     is     null && StatusInfo.CustomData     is     null) ||
+              (CustomData     is not null && StatusInfo.CustomData     is not null && CustomData.    Equals(StatusInfo.CustomData)));
 
         #endregion
 
@@ -420,11 +363,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return ReasonCode.GetHashCode() * 3 ^
+                return ReasonCode.      GetHashCode()       * 5 ^
 
-                       (AdditionalInfo != null
-                            ? AdditionalInfo.GetHashCode()
-                            : 0);
+                       (AdditionalInfo?.GetHashCode() ?? 0) * 3 ^
+                       (CustomData?.    GetHashCode() ?? 0);
 
             }
         }

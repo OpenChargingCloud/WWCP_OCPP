@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// The common interface of a request message.
+    /// The common interface of all request messages.
     /// </summary>
     public interface IRequest
     {
@@ -41,8 +41,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         DateTime    RequestTimestamp    { get; }
 
 
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         JObject ToJSON();
-
 
     }
 

@@ -59,11 +59,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// </summary>
         public StatusInfo?         StatusInfo    { get; }
 
-        /// <summary>
-        /// The custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData?         CustomData    { get; }
-
         #endregion
 
         #region Constructor(s)
@@ -87,7 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                         CustomData?                 CustomData   = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   CustomData)
 
         {
 
@@ -95,7 +91,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             this.CurrentTime  = CurrentTime;
             this.Interval     = Interval;
             this.StatusInfo   = StatusInfo;
-            this.CustomData   = CustomData;
 
         }
 
@@ -215,35 +210,37 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region (static) Parse   (Request, BootNotificationResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomBootNotificationResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a boot notification response.
         /// </summary>
         /// <param name="Request">The boot notification request leading to this response.</param>
-        /// <param name="BootNotificationResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static BootNotificationResponse Parse(CP.BootNotificationRequest  Request,
-                                                     JObject                     BootNotificationResponseJSON,
-                                                     OnExceptionDelegate         OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomBootNotificationResponseParser">A delegate to parse custom boot notification responses.</param>
+        public static BootNotificationResponse Parse(CP.BootNotificationRequest                              Request,
+                                                     JObject                                                 JSON,
+                                                     CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null)
         {
 
 
             if (TryParse(Request,
-                         BootNotificationResponseJSON,
-                         out BootNotificationResponse bootNotificationResponse,
-                         OnException))
+                         JSON,
+                         out var bootNotificationResponse,
+                         out var errorResponse,
+                         CustomBootNotificationResponseParser))
             {
-                return bootNotificationResponse;
+                return bootNotificationResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a boot notification response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, BootNotificationResponseJSON, out BootNotificationResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out BootNotificationResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a boot notification response.
@@ -251,11 +248,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The boot notification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CP.BootNotificationRequest    Request,
-                                       JObject                       JSON,
-                                       out BootNotificationResponse  BootNotificationResponse,
-                                       OnExceptionDelegate           OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomBootNotificationResponseParser">A delegate to parse custom boot notification responses.</param>
+        public static Boolean TryParse(CP.BootNotificationRequest                              Request,
+                                       JObject                                                 JSON,
+                                       out BootNotificationResponse?                           BootNotificationResponse,
+                                       out String?                                             ErrorResponse,
+                                       CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null)
         {
 
             try
@@ -263,13 +262,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 BootNotificationResponse = null;
 
-                #region Status
+                #region Status         [mandatory]
 
                 if (!JSON.MapMandatory("status",
-                                                               "registration status",
-                                                               RegistrationStatusExtentions.Parse,
-                                                               out RegistrationStatus  RegistrationStatus,
-                                                               out String              ErrorResponse))
+                                       "registration status",
+                                       RegistrationStatusExtentions.Parse,
+                                       out RegistrationStatus RegistrationStatus,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
@@ -282,59 +281,54 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #endregion
 
-                #region CurrentTime
+                #region CurrentTime    [mandatory]
 
                 if (!JSON.ParseMandatory("currentTime",
-                                                                 "current time",
-                                                                 out DateTime  CurrentTime,
-                                                                 out           ErrorResponse))
+                                         "current time",
+                                         out DateTime CurrentTime,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Interval
+                #region Interval       [mandatory]
 
                 if (!JSON.ParseMandatory("interval",
-                                                                 "heartbeat interval",
-                                                                 out TimeSpan  Interval,
-                                                                 out           ErrorResponse))
+                                         "heartbeat interval",
+                                         out TimeSpan Interval,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region StatusInfo
+                #region StatusInfo     [optional]
 
                 if (JSON.ParseOptionalJSON("statusInfo",
-                                                                   "status info",
-                                                                   OCPPv2_0.StatusInfo.TryParse,
-                                                                   out StatusInfo  StatusInfo,
-                                                                   out             ErrorResponse,
-                                                                   OnException))
+                                           "status info",
+                                           OCPPv2_0.StatusInfo.TryParse,
+                                           out StatusInfo StatusInfo,
+                                           out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region CustomData
+                #region CustomData     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPPv2_0.CustomData.TryParse,
-                                           out CustomData  CustomData,
-                                           out             ErrorResponse))
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -347,17 +341,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                                                         StatusInfo,
                                                                         CustomData);
 
+                if (CustomBootNotificationResponseParser is not null)
+                    BootNotificationResponse = CustomBootNotificationResponseParser(JSON,
+                                                                                    BootNotificationResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, JSON, e);
-
-                BootNotificationResponse = null;
+                BootNotificationResponse  = null;
+                ErrorResponse             = "The given JSON representation of a boot notification response is invalid: " + e.Message;
                 return false;
-
             }
 
         }
@@ -372,9 +367,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="CustomBootNotificationResponseSerializer">A delegate to serialize custom boot notification responses.</param>
         /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom StatusInfo object.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<BootNotificationResponse> CustomBootNotificationResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>               CustomStatusInfoResponseSerializer         = null,
-                              CustomJObjectSerializerDelegate<CustomData>               CustomCustomDataResponseSerializer         = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<BootNotificationResponse>?  CustomBootNotificationResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                CustomStatusInfoResponseSerializer         = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataResponseSerializer         = null)
         {
 
             var JSON = JSONObject.Create(
@@ -383,7 +378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                            new JProperty("currentTime",       CurrentTime.      ToIso8601()),
                            new JProperty("interval",          (UInt32) Interval.TotalSeconds),
 
-                           StatusInfo != null
+                           StatusInfo is not null
                                ? new JProperty("statusInfo",  StatusInfo.       ToJSON(CustomStatusInfoResponseSerializer,
                                                                                        CustomCustomDataResponseSerializer))
                                : null,
@@ -426,7 +421,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="BootNotificationResponse1">A boot notification response.</param>
         /// <param name="BootNotificationResponse2">Another boot notification response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (BootNotificationResponse BootNotificationResponse1, BootNotificationResponse BootNotificationResponse2)
+        public static Boolean operator == (BootNotificationResponse BootNotificationResponse1,
+                                           BootNotificationResponse BootNotificationResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -451,7 +447,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="BootNotificationResponse1">A boot notification response.</param>
         /// <param name="BootNotificationResponse2">Another boot notification response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (BootNotificationResponse BootNotificationResponse1, BootNotificationResponse BootNotificationResponse2)
+        public static Boolean operator != (BootNotificationResponse BootNotificationResponse1,
+                                           BootNotificationResponse BootNotificationResponse2)
 
             => !(BootNotificationResponse1 == BootNotificationResponse2);
 
@@ -464,22 +461,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two boot notification responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A boot notification response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is BootNotificationResponse BootNotificationResponse))
-                return false;
-
-            return Equals(BootNotificationResponse);
-
-        }
+            => Object is BootNotificationResponse bootNotificationResponse &&
+                   Equals(bootNotificationResponse);
 
         #endregion
 
@@ -489,24 +477,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Compares two boot notification responses for equality.
         /// </summary>
         /// <param name="BootNotificationResponse">A boot notification response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(BootNotificationResponse BootNotificationResponse)
-        {
+        public override Boolean Equals(BootNotificationResponse? BootNotificationResponse)
 
-            if (BootNotificationResponse is null)
-                return false;
+            => BootNotificationResponse is not null &&
 
-            return Status.     Equals(BootNotificationResponse.Status)      &&
-                   CurrentTime.Equals(BootNotificationResponse.CurrentTime) &&
-                   Interval.   Equals(BootNotificationResponse.Interval) &&
+               Status.     Equals(BootNotificationResponse.Status)      &&
+               CurrentTime.Equals(BootNotificationResponse.CurrentTime) &&
+               Interval.   Equals(BootNotificationResponse.Interval)    &&
 
-                   ((StatusInfo == null && BootNotificationResponse.StatusInfo == null) ||
-                    (StatusInfo != null && BootNotificationResponse.StatusInfo != null && StatusInfo.Equals(BootNotificationResponse.StatusInfo))) &&
+             ((StatusInfo is     null && BootNotificationResponse.StatusInfo is     null) ||
+              (StatusInfo is not null && BootNotificationResponse.StatusInfo is not null && StatusInfo.Equals(BootNotificationResponse.StatusInfo))) &&
 
-                   ((CustomData == null && BootNotificationResponse.CustomData == null) ||
-                    (CustomData is not null && BootNotificationResponse.CustomData is not null && CustomData.Equals(BootNotificationResponse.CustomData)));
-
-        }
+             ((CustomData is     null && BootNotificationResponse.CustomData is     null) ||
+              (CustomData is not null && BootNotificationResponse.CustomData is not null && CustomData.Equals(BootNotificationResponse.CustomData)));
 
         #endregion
 
@@ -523,17 +506,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             unchecked
             {
 
-                return Status.     GetHashCode() * 11 ^
-                       CurrentTime.GetHashCode() *  7 ^
-                       Interval.   GetHashCode() *  5^
+                return Status.      GetHashCode()       * 11 ^
+                       CurrentTime. GetHashCode()       *  7 ^
+                       Interval.    GetHashCode()       *  5 ^
 
-                       (StatusInfo != null
-                            ? StatusInfo.GetHashCode()
-                            : 0) * 3 ^
-
-                       (CustomData is not null
-                            ? CustomData.GetHashCode()
-                            : 0);
+                       (StatusInfo?.GetHashCode() ?? 0) *  3 ^
+                       (CustomData?.GetHashCode() ?? 0);
 
             }
         }
@@ -552,6 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                    Interval.TotalSeconds, " sec(s))");
 
         #endregion
+
 
     }
 

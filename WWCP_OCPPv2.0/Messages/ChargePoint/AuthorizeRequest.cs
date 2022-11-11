@@ -271,41 +271,55 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region (static) Parse   (AuthorizeRequestText, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomAuthorizeRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an authorize request.
         /// </summary>
-        /// <param name="AuthorizeRequestJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AuthorizeRequest Parse(JObject              AuthorizeRequestJSON,
-                                             OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom authorize requests.</param>
+        public static AuthorizeRequest Parse(JObject                                         JSON,
+                                             Request_Id                                      RequestId,
+                                             ChargeBox_Id                                    ChargeBoxId,
+                                             CustomJObjectParserDelegate<AuthorizeRequest>?  CustomAuthorizeRequestParser   = null)
         {
 
-            if (TryParse(AuthorizeRequestJSON,
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
                          out var authorizeRequest,
-                         OnException))
+                         out var errorResponse,
+                         CustomAuthorizeRequestParser))
             {
-                return authorizeRequest;
+                return authorizeRequest!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of an authorize request is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(AuthorizeRequestJSON, out AuthorizeRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out AuthorizeRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of an authorize request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="AuthorizeRequest">The parsed authorize request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                JSON,
-                                       out AuthorizeRequest?  AuthorizeRequest,
-                                       out String?            ErrorResponse)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom authorize requests.</param>
+        public static Boolean TryParse(JObject                                         JSON,
+                                       Request_Id                                      RequestId,
+                                       ChargeBox_Id                                    ChargeBoxId,
+                                       out AuthorizeRequest?                           AuthorizeRequest,
+                                       out String?                                     ErrorResponse,
+                                       CustomJObjectParserDelegate<AuthorizeRequest>?  CustomAuthorizeRequestParser)
         {
 
             try
@@ -313,35 +327,36 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 AuthorizeRequest = null;
 
-                #region IdToken
+                #region IdToken                        [mandatory]
 
-                if (!JSON.ParseMandatoryJSONStruct("idTag",
-                                                   "identification tag",
-                                                   OCPPv2_0.IdToken.TryParse,
-                                                   out IdToken IdToken,
-                                                   out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("idTag",
+                                             "identification tag",
+                                             OCPPv2_0.IdToken.TryParse,
+                                             out IdToken? IdToken,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
+                if (IdToken is null)
+                    return false;
+
                 #endregion
 
-                #region Certificate
+                #region Certificate                    [optional]
 
                 if (JSON.ParseOptional("certificate",
-                                                       "electric vehicle/user certificate",
-                                                       out String  Certificate,
-                                                       out         ErrorResponse))
+                                       "electric vehicle/user certificate",
+                                       out String? Certificate,
+                                       out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region ISO15118CertificateHashData
+                #region ISO15118CertificateHashData    [optional]
 
                 if (JSON.ParseOptionalJSON("iso15118CertificateHashData",
                                            "electric vehicle/user certificate",
@@ -349,52 +364,72 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                            out IEnumerable<OCSPRequestData> ISO15118CertificateHashData,
                                            out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
-                #region CustomData
+                #region CustomData                     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPPv2_0.CustomData.TryParse,
-                                           out CustomData  CustomData,
-                                           out             ErrorResponse))
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId                    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
                 }
 
                 #endregion
 
 
-                AuthorizeRequest = new AuthorizeRequest(IdToken,
+                AuthorizeRequest = new AuthorizeRequest(ChargeBoxId,
+                                                        IdToken,
                                                         Certificate?.Trim(),
                                                         ISO15118CertificateHashData,
-                                                        CustomData);
+                                                        CustomData,
+                                                        RequestId);
+
+                if (CustomAuthorizeRequestParser is not null)
+                    AuthorizeRequest = CustomAuthorizeRequestParser(JSON,
+                                                                    AuthorizeRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                ErrorResponse = null;
-                AuthorizeRequest = null;
+                AuthorizeRequest  = null;
+                ErrorResponse     = "The given JSON representation of an authorize request is invalid: " + e.Message;
                 return false;
-
             }
 
         }
 
         #endregion
 
-        #region ToJSON(CustomAuthorizeRequestSerializer = null)
+        #region ToJSON(CustomAuthorizeRequestSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -428,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                ? new JProperty("certificate",                  Certificate)
                                : null,
 
-                           ISO15118CertificateHashData.Any()
+                           ISO15118CertificateHashData is not null && ISO15118CertificateHashData.Any()
                                ? new JProperty("iso15118CertificateHashData",  new JArray(ISO15118CertificateHashData.SafeSelect(hashData => hashData.ToJSON(CustomOCSPRequestDataResponseSerializer,
                                                                                                                                                              CustomCustomDataResponseSerializer))))
                                : null,
@@ -458,7 +493,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="AuthorizeRequest1">A authorize request.</param>
         /// <param name="AuthorizeRequest2">Another authorize request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (AuthorizeRequest AuthorizeRequest1, AuthorizeRequest AuthorizeRequest2)
+        public static Boolean operator == (AuthorizeRequest AuthorizeRequest1,
+                                           AuthorizeRequest AuthorizeRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -483,7 +519,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="AuthorizeRequest1">A authorize request.</param>
         /// <param name="AuthorizeRequest2">Another authorize request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (AuthorizeRequest AuthorizeRequest1, AuthorizeRequest AuthorizeRequest2)
+        public static Boolean operator != (AuthorizeRequest AuthorizeRequest1,
+                                           AuthorizeRequest AuthorizeRequest2)
 
             => !(AuthorizeRequest1 == AuthorizeRequest2);
 
@@ -496,22 +533,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two authorize requests for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">An authorize request to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is AuthorizeRequest AuthorizeRequest))
-                return false;
-
-            return Equals(AuthorizeRequest);
-
-        }
+            => Object is AuthorizeRequest authorizeRequest &&
+                   Equals(authorizeRequest);
 
         #endregion
 
@@ -520,17 +548,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// Compares two authorize requests for equality.
         /// </summary>
-        /// <param name="AuthorizeRequest">A authorize request to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(AuthorizeRequest AuthorizeRequest)
-        {
+        /// <param name="AuthorizeRequest">An authorize request to compare with.</param>
+        public override Boolean Equals(AuthorizeRequest? AuthorizeRequest)
 
-            if (AuthorizeRequest is null)
-                return false;
-
-            return IdToken.Equals(AuthorizeRequest.IdToken);
-
-        }
+            => AuthorizeRequest is not null &&
+                   IdToken.Equals(AuthorizeRequest.IdToken);
 
         #endregion
 
@@ -543,6 +565,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+
             => IdToken.GetHashCode();
 
         #endregion
@@ -553,9 +576,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => IdToken.ToString();
 
         #endregion
+
 
     }
 

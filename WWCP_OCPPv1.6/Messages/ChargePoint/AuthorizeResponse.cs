@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 return authorizeResponse!;
             }
 
-            throw new ArgumentException("The given JSON representation of an authorize request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an authorize response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -269,7 +269,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AuthorizeResponse">The parsed authorize response.</param>
-        /// <param name="CustomAuthorizeResponseParser">A delegate to parse custom Authorize responses.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomAuthorizeResponseParser">A delegate to parse custom authorize responses.</param>
         public static Boolean TryParse(CP.AuthorizeRequest                              Request,
                                        JObject                                          JSON,
                                        out AuthorizeResponse?                           AuthorizeResponse,

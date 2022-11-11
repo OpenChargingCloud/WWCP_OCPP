@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom Authorize requests.</param>
+        /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom authorize requests.</param>
         public static AuthorizeRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
                                              ChargeBox_Id                                    ChargeBoxId,
@@ -467,6 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             => IdTag.ToString();
 
         #endregion
+
 
     }
 

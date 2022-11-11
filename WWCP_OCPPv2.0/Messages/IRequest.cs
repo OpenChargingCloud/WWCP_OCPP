@@ -17,7 +17,7 @@
 
 #region Usings
 
-using System;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -25,15 +25,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// The common interface of a request message.
+    /// The common interface of all request messages.
     /// </summary>
     public interface IRequest
     {
 
         /// <summary>
+        /// The unique identification of the request.
+        /// </summary>
+        Request_Id  RequestId           { get; }
+
+        /// <summary>
         /// The timestamp of the request message creation.
         /// </summary>
-        DateTime  RequestTimestamp   { get; }
+        DateTime    RequestTimestamp    { get; }
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        JObject ToJSON();
 
     }
 

@@ -17,12 +17,9 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -41,12 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// The current time at the central system.
         /// </summary>
-        public DateTime    CurrentTime    { get; }
-
-        /// <summary>
-        /// An optional custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData  CustomData     { get; }
+        public DateTime  CurrentTime    { get; }
 
         #endregion
 
@@ -62,15 +54,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public HeartbeatResponse(CP.HeartbeatRequest  Request,
                                  DateTime             CurrentTime,
-                                 CustomData           CustomData   = null)
+                                 CustomData?          CustomData   = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   CustomData)
 
         {
 
             this.CurrentTime  = CurrentTime;
-            this.CustomData   = CustomData;
 
         }
 
@@ -91,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         {
 
-            this.CurrentTime = DateTime.UtcNow;
+            this.CurrentTime = Timestamp.Now;
 
         }
 
@@ -141,61 +133,36 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region (static) Parse   (Request, HeartbeatResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomHeartbeatResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a heartbeat response.
         /// </summary>
         /// <param name="Request">The heartbeat request leading to this response.</param>
-        /// <param name="HeartbeatResponseJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static HeartbeatResponse Parse(CP.HeartbeatRequest  Request,
-                                              JObject              HeartbeatResponseJSON,
-                                              OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomHeartbeatResponseParser">A delegate to parse custom heartbeat responses.</param>
+        public static HeartbeatResponse Parse(CP.HeartbeatRequest                              Request,
+                                              JObject                                          JSON,
+                                              CustomJObjectParserDelegate<HeartbeatResponse>?  CustomHeartbeatResponseParser   = null)
         {
 
             if (TryParse(Request,
-                         HeartbeatResponseJSON,
-                         out HeartbeatResponse heartbeatResponse,
-                         OnException))
+                         JSON,
+                         out var heartbeatResponse,
+                         out var errorResponse,
+                         CustomHeartbeatResponseParser))
             {
-                return heartbeatResponse;
+                return heartbeatResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a heartbeat response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (Request, HeartbeatResponseText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a heartbeat response.
-        /// </summary>
-        /// <param name="Request">The heartbeat request leading to this response.</param>
-        /// <param name="HeartbeatResponseText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static HeartbeatResponse Parse(CP.HeartbeatRequest  Request,
-                                              String               HeartbeatResponseText,
-                                              OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(Request,
-                         HeartbeatResponseText,
-                         out HeartbeatResponse heartbeatResponse,
-                         OnException))
-            {
-                return heartbeatResponse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, HeartbeatResponseJSON, out HeartbeatResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out HeartbeatResponse, out ErrorResponse, CustomHeartbeatResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a heartbeat response.
@@ -203,11 +170,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The heartbeat request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="HeartbeatResponse">The parsed heartbeat response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CP.HeartbeatRequest    Request,
-                                       JObject                JSON,
-                                       out HeartbeatResponse  HeartbeatResponse,
-                                       OnExceptionDelegate    OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomHeartbeatResponseParser">A delegate to parse custom heartbeat responses.</param>
+        public static Boolean TryParse(CP.HeartbeatRequest                              Request,
+                                       JObject                                          JSON,
+                                       out HeartbeatResponse?                           HeartbeatResponse,
+                                       out String?                                      ErrorResponse,
+                                       CustomJObjectParserDelegate<HeartbeatResponse>?  CustomHeartbeatResponseParser   = null)
         {
 
             try
@@ -215,30 +184,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 HeartbeatResponse = null;
 
-                #region CurrentTime
+                #region CurrentTime    [mandatory]
 
                 if (!JSON.ParseMandatory("currentTime",
-                                                          "current time",
-                                                          out DateTime  CurrentTime,
-                                                          out String    ErrorResponse))
+                                         "current time",
+                                         out DateTime CurrentTime,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region CustomData
+                #region CustomData     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPPv2_0.CustomData.TryParse,
-                                           out CustomData  CustomData,
-                                           out             ErrorResponse))
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -248,60 +215,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                                           CurrentTime,
                                                           CustomData);
 
+                if (CustomHeartbeatResponseParser is not null)
+                    HeartbeatResponse = CustomHeartbeatResponseParser(JSON,
+                                                                      HeartbeatResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, JSON, e);
-
-                HeartbeatResponse = null;
+                HeartbeatResponse  = null;
+                ErrorResponse      = "The given JSON representation of a heartbeat response is invalid: " + e.Message;
                 return false;
-
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, HeartbeatResponseText, out HeartbeatResponse, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a heartbeat response.
-        /// </summary>
-        /// <param name="Request">The heartbeat request leading to this response.</param>
-        /// <param name="HeartbeatResponseText">The text to be parsed.</param>
-        /// <param name="HeartbeatResponse">The parsed heartbeat response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CP.HeartbeatRequest    Request,
-                                       String                 HeartbeatResponseText,
-                                       out HeartbeatResponse  HeartbeatResponse,
-                                       OnExceptionDelegate    OnException  = null)
-        {
-
-            try
-            {
-
-                HeartbeatResponseText = HeartbeatResponseText?.Trim();
-
-                if (HeartbeatResponseText.IsNotNullOrEmpty() &&
-                    TryParse(Request,
-                             JObject.Parse(HeartbeatResponseText),
-                             out HeartbeatResponse,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, HeartbeatResponseText, e);
-            }
-
-            HeartbeatResponse = null;
-            return false;
 
         }
 
@@ -314,8 +240,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// </summary>
         /// <param name="CustomHeartbeatResponseSerializer">A delegate to serialize custom heartbeat responses.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatResponse>  CustomHeartbeatResponseSerializer    = null,
-                              CustomJObjectSerializerDelegate<CustomData>         CustomCustomDataResponseSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatResponse>?  CustomHeartbeatResponseSerializer    = null,
+                              CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataResponseSerializer   = null)
         {
 
             var JSON = JSONObject.Create(
@@ -345,8 +271,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The heartbeat request leading to this response.</param>
         public static HeartbeatResponse Failed(CP.HeartbeatRequest Request)
 
-            => new HeartbeatResponse(Request,
-                                     DateTime.UtcNow);
+            => new (Request,
+                    Timestamp.Now);
 
         #endregion
 
@@ -361,7 +287,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="HeartbeatResponse1">A heartbeat response.</param>
         /// <param name="HeartbeatResponse2">Another heartbeat response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (HeartbeatResponse HeartbeatResponse1, HeartbeatResponse HeartbeatResponse2)
+        public static Boolean operator == (HeartbeatResponse HeartbeatResponse1,
+                                           HeartbeatResponse HeartbeatResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -386,7 +313,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="HeartbeatResponse1">A heartbeat response.</param>
         /// <param name="HeartbeatResponse2">Another heartbeat response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (HeartbeatResponse HeartbeatResponse1, HeartbeatResponse HeartbeatResponse2)
+        public static Boolean operator != (HeartbeatResponse HeartbeatResponse1,
+                                           HeartbeatResponse HeartbeatResponse2)
 
             => !(HeartbeatResponse1 == HeartbeatResponse2);
 
@@ -399,22 +327,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two heartbeat responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A heartbeat response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is HeartbeatResponse HeartbeatResponse))
-                return false;
-
-            return Equals(HeartbeatResponse);
-
-        }
+            => Object is HeartbeatResponse heartbeatResponse &&
+                   Equals(heartbeatResponse);
 
         #endregion
 
@@ -424,16 +343,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Compares two heartbeat responses for equality.
         /// </summary>
         /// <param name="HeartbeatResponse">A heartbeat response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(HeartbeatResponse HeartbeatResponse)
-        {
+        public override Boolean Equals(HeartbeatResponse? HeartbeatResponse)
 
-            if (HeartbeatResponse is null)
-                return false;
-
-            return CurrentTime.Equals(HeartbeatResponse.CurrentTime);
-
-        }
+            => HeartbeatResponse is not null &&
+                   CurrentTime.Equals(HeartbeatResponse.CurrentTime);
 
         #endregion
 
@@ -461,6 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             => CurrentTime.ToIso8601();
 
         #endregion
+
 
     }
 

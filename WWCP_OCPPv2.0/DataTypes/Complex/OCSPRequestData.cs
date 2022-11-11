@@ -17,13 +17,9 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
-using System.Security.Policy;
 
 #endregion
 
@@ -66,14 +62,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// An optional custom data object to allow to store any kind of customer specific data.
         /// </summary>
-        public CustomData      CustomData        { get; }
+        public CustomData?     CustomData        { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new wireless communication module.
+        /// Create new OCSP request data.
         /// </summary>
         /// <param name="HashAlgorithm">The used hash algorithm.</param>
         /// <param name="IssuerNameHash">The hashed value of the issuer distinguished name (DN).</param>
@@ -86,14 +82,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                String          IssuerKeyHash,
                                String          SerialNumber,
                                String          ResponderURL,
-                               CustomData      CustomData   = null)
+                               CustomData?     CustomData   = null)
         {
 
             this.HashAlgorithm   = HashAlgorithm;
-            this.IssuerNameHash  = IssuerNameHash?.Trim();
-            this.IssuerKeyHash   = IssuerKeyHash?. Trim();
-            this.SerialNumber    = SerialNumber?.  Trim();
-            this.ResponderURL    = ResponderURL?.  Trim();
+            this.IssuerNameHash  = IssuerNameHash.Trim();
+            this.IssuerKeyHash   = IssuerKeyHash. Trim();
+            this.SerialNumber    = SerialNumber.  Trim();
+            this.ResponderURL    = ResponderURL.  Trim();
             this.CustomData      = CustomData;
 
             if (this.IssuerNameHash.IsNullOrEmpty())
@@ -162,80 +158,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (OCSPRequestDataJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomOCSPRequestDataParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a communication module.
         /// </summary>
-        /// <param name="OCSPRequestDataJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static OCSPRequestData Parse(JObject              OCSPRequestDataJSON,
-                                            OnExceptionDelegate  OnException   = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomOCSPRequestDataParser">A delegate to parse custom OCSP request data.</param>
+        public static OCSPRequestData Parse(JObject                                        JSON,
+                                            CustomJObjectParserDelegate<OCSPRequestData>?  CustomOCSPRequestDataParser   = null)
         {
 
-            if (TryParse(OCSPRequestDataJSON,
-                         out OCSPRequestData modem,
-                         OnException))
+            if (TryParse(JSON,
+                         out var ocspRequestData,
+                         out var errorResponse,
+                         CustomOCSPRequestDataParser))
             {
-                return modem;
+                return ocspRequestData!;
             }
 
-            return default;
+            throw new ArgumentException("The given JSON representation of OCSP request data is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (OCSPRequestDataText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a communication module.
-        /// </summary>
-        /// <param name="OCSPRequestDataText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static OCSPRequestData Parse(String               OCSPRequestDataText,
-                                            OnExceptionDelegate  OnException   = null)
-        {
-
-
-            if (TryParse(OCSPRequestDataText,
-                         out OCSPRequestData modem,
-                         OnException))
-            {
-                return modem;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(OCSPRequestDataJSON, out OCSPRequestData, OnException = null)
+        #region (static) TryParse(OCSPRequestDataJSON, out OCSPRequestData, out ErrorResponse, CustomOCSPRequestDataParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a communication module.
+        /// Try to parse the given JSON representation of OCSP request data.
         /// </summary>
-        /// <param name="OCSPRequestDataJSON">The JSON to be parsed.</param>
-        /// <param name="OCSPRequestData">The parsed connector type.</param>
-        public static Boolean TryParse(JObject              OCSPRequestDataJSON,
-                                       out OCSPRequestData  OCSPRequestData)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="OCSPRequestData">The parsed OCSP request data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject               JSON,
+                                       out OCSPRequestData?  OCSPRequestData,
+                                       out String?           ErrorResponse)
 
-            => TryParse(OCSPRequestDataJSON,
+            => TryParse(JSON,
                         out OCSPRequestData,
+                        out ErrorResponse,
                         null);
 
+
         /// <summary>
-        /// Try to parse the given JSON representation of a communication module.
+        /// Try to parse the given JSON representation of OCSP request data.
         /// </summary>
-        /// <param name="OCSPRequestDataJSON">The JSON to be parsed.</param>
-        /// <param name="OCSPRequestData">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              OCSPRequestDataJSON,
-                                       out OCSPRequestData  OCSPRequestData,
-                                       OnExceptionDelegate  OnException  = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="OCSPRequestData">The parsed OCSP request data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomOCSPRequestDataParser">A delegate to parse custom OCSP request data.</param>
+        public static Boolean TryParse(JObject                                        JSON,
+                                       out OCSPRequestData?                           OCSPRequestData,
+                                       out String?                                    ErrorResponse,
+                                       CustomJObjectParserDelegate<OCSPRequestData>?  CustomOCSPRequestDataParser)
         {
 
             try
@@ -243,142 +222,102 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 OCSPRequestData = default;
 
-                #region HashAlgorithm
+                #region HashAlgorithm     [mandatory]
 
-                if (!OCSPRequestDataJSON.MapMandatory("hashAlgorithm",
-                                                      "hash algorithm",
-                                                      HashAlgorithmsExtentions.Parse,
-                                                      out HashAlgorithms  HashAlgorithm,
-                                                      out String          ErrorResponse))
+                if (!JSON.MapMandatory("hashAlgorithm",
+                                       "hash algorithm",
+                                       HashAlgorithmsExtentions.Parse,
+                                       out HashAlgorithms HashAlgorithm,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region IssuerNameHash
+                #region IssuerNameHash    [mandatory]
 
-                if (!OCSPRequestDataJSON.ParseMandatoryText("issuerNameHash",
-                                                            "issuer name hash",
-                                                            out String  IssuerNameHash,
-                                                            out         ErrorResponse))
+                if (!JSON.ParseMandatoryText("issuerNameHash",
+                                             "issuer name hash",
+                                             out String IssuerNameHash,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region IssuerKeyHash
+                #region IssuerKeyHash     [mandatory]
 
-                if (!OCSPRequestDataJSON.ParseMandatoryText("issuerKeyHash",
-                                                            "issuer key hash",
-                                                            out String  IssuerKeyHash,
-                                                            out         ErrorResponse))
+                if (!JSON.ParseMandatoryText("issuerKeyHash",
+                                             "issuer key hash",
+                                             out String IssuerKeyHash,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region SerialNumber
+                #region SerialNumber      [mandatory]
 
-                if (!OCSPRequestDataJSON.ParseMandatoryText("serialNumber",
-                                                            "certificate serial number",
-                                                            out String  SerialNumber,
-                                                            out         ErrorResponse))
+                if (!JSON.ParseMandatoryText("serialNumber",
+                                             "certificate serial number",
+                                             out String SerialNumber,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region ResponderURL
+                #region ResponderURL      [mandatory]
 
-                if (!OCSPRequestDataJSON.ParseMandatoryText("responderURL",
-                                                            "responder URL",
-                                                            out String  ResponderURL,
-                                                            out         ErrorResponse))
+                if (!JSON.ParseMandatoryText("responderURL",
+                                             "responder URL",
+                                             out String ResponderURL,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region CustomData
+                #region CustomData        [optional]
 
-                if (OCSPRequestDataJSON.ParseOptionalJSON("customData",
-                                                          "custom data",
-                                                          OCPPv2_0.CustomData.TryParse,
-                                                          out CustomData  CustomData,
-                                                          out             ErrorResponse))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
 
                 OCSPRequestData = new OCSPRequestData(HashAlgorithm,
-                                                      IssuerNameHash?.Trim(),
-                                                      IssuerKeyHash?. Trim(),
-                                                      SerialNumber?.  Trim(),
-                                                      ResponderURL?.  Trim(),
+                                                      IssuerNameHash.Trim(),
+                                                      IssuerKeyHash. Trim(),
+                                                      SerialNumber.  Trim(),
+                                                      ResponderURL.  Trim(),
                                                       CustomData);
+
+                if (CustomOCSPRequestDataParser is not null)
+                    OCSPRequestData = CustomOCSPRequestDataParser(JSON,
+                                                                  OCSPRequestData);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, OCSPRequestDataJSON, e);
-
-                OCSPRequestData = default;
+                OCSPRequestData  = null;
+                ErrorResponse    = "The given JSON representation of OCSP request data is invalid: " + e.Message;
                 return false;
-
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(OCSPRequestDataText, out OCSPRequestData, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a communication module.
-        /// </summary>
-        /// <param name="OCSPRequestDataText">The text to be parsed.</param>
-        /// <param name="OCSPRequestData">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               OCSPRequestDataText,
-                                       out OCSPRequestData  OCSPRequestData,
-                                       OnExceptionDelegate  OnException  = null)
-        {
-
-            try
-            {
-
-                OCSPRequestDataText = OCSPRequestDataText?.Trim();
-
-                if (OCSPRequestDataText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(OCSPRequestDataText),
-                             out OCSPRequestData,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, OCSPRequestDataText, e);
-            }
-
-            OCSPRequestData = default;
-            return false;
 
         }
 
@@ -391,8 +330,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="CustomOCSPRequestDataResponseSerializer">A delegate to serialize custom OCSPRequestDatas.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<OCSPRequestData> CustomOCSPRequestDataResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>      CustomCustomDataResponseSerializer        = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<OCSPRequestData>?  CustomOCSPRequestDataResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataResponseSerializer        = null)
         {
 
             var JSON = JSONObject.Create(
@@ -428,7 +367,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="OCSPRequestData1">An id tag info.</param>
         /// <param name="OCSPRequestData2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (OCSPRequestData OCSPRequestData1, OCSPRequestData OCSPRequestData2)
+        public static Boolean operator == (OCSPRequestData OCSPRequestData1,
+                                           OCSPRequestData OCSPRequestData2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -438,9 +378,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             // If one is null, but not both, return false.
             if (OCSPRequestData1 is null || OCSPRequestData2 is null)
                 return false;
-
-            if (OCSPRequestData1 is null)
-                throw new ArgumentNullException(nameof(OCSPRequestData1),  "The given id tag info must not be null!");
 
             return OCSPRequestData1.Equals(OCSPRequestData2);
 
@@ -456,7 +393,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="OCSPRequestData1">An id tag info.</param>
         /// <param name="OCSPRequestData2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (OCSPRequestData OCSPRequestData1, OCSPRequestData OCSPRequestData2)
+        public static Boolean operator != (OCSPRequestData OCSPRequestData1,
+                                           OCSPRequestData OCSPRequestData2)
+
             => !(OCSPRequestData1 == OCSPRequestData2);
 
         #endregion
@@ -468,48 +407,34 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two OCSP request data for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">OCSP request data to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is OCSPRequestData OCSPRequestData))
-                return false;
-
-            return Equals(OCSPRequestData);
-
-        }
+            => Object is OCSPRequestData ocspRequestData &&
+                   Equals(ocspRequestData);
 
         #endregion
 
         #region Equals(OCSPRequestData)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two OCSP request data for equality.
         /// </summary>
-        /// <param name="OCSPRequestData">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="OCSPRequestData">OCSP request data to compare with.</param>
         public Boolean Equals(OCSPRequestData OCSPRequestData)
-        {
 
-            if (OCSPRequestData is null)
-                return false;
+            => OCSPRequestData is not null &&
 
-            return HashAlgorithm. Equals(OCSPRequestData.HashAlgorithm)  &&
-                   IssuerNameHash.Equals(OCSPRequestData.IssuerNameHash) &&
-                   IssuerKeyHash. Equals(OCSPRequestData.IssuerKeyHash)  &&
-                   SerialNumber.  Equals(OCSPRequestData.SerialNumber)   &&
-                   ResponderURL.  Equals(OCSPRequestData.ResponderURL)   &&
+               HashAlgorithm. Equals(OCSPRequestData.HashAlgorithm)  &&
+               IssuerNameHash.Equals(OCSPRequestData.IssuerNameHash) &&
+               IssuerKeyHash. Equals(OCSPRequestData.IssuerKeyHash)  &&
+               SerialNumber.  Equals(OCSPRequestData.SerialNumber)   &&
+               ResponderURL.  Equals(OCSPRequestData.ResponderURL)   &&
 
-                   ((CustomData == null && OCSPRequestData.CustomData == null) ||
-                    (CustomData is not null && OCSPRequestData.CustomData is not null && CustomData.Equals(OCSPRequestData.CustomData)));
-
-        }
+             ((CustomData is     null && OCSPRequestData.CustomData is     null) ||
+              (CustomData is not null && OCSPRequestData.CustomData is not null && CustomData.Equals(OCSPRequestData.CustomData)));
 
         #endregion
 
@@ -532,9 +457,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        SerialNumber.  GetHashCode() *  5 ^
                        ResponderURL.  GetHashCode() *  3 ^
 
-                       (CustomData is not null
-                            ? CustomData.GetHashCode()
-                            : 0);
+                       CustomData?.   GetHashCode() ?? 0;
 
             }
         }

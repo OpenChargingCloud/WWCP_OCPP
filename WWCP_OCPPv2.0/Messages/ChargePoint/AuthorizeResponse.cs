@@ -17,12 +17,9 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -43,11 +40,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// </summary>
         public IdTokenInfo  IdTokenInfo    { get; }
 
-        /// <summary>
-        /// The custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData   CustomData     { get; }
-
         #endregion
 
         #region Constructor(s)
@@ -62,15 +54,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public AuthorizeResponse(CP.AuthorizeRequest  Request,
                                  IdTokenInfo          IdTokenInfo,
-                                 CustomData           CustomData = null)
+                                 CustomData?          CustomData   = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   CustomData)
 
         {
 
             this.IdTokenInfo  = IdTokenInfo;
-            this.CustomData   = CustomData;
 
         }
 
@@ -338,35 +330,37 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region (static) Parse   (Request, AuthorizeResponseJSON, OnException = null)
+        #region (static) Parse   (Request, JSON, CustomAuthorizeResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an authorize response.
         /// </summary>
         /// <param name="Request">The authorize request leading to this response.</param>
-        /// <param name="AuthorizeResponseJSON">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static AuthorizeResponse Parse(CP.AuthorizeRequest  Request,
-                                              JObject              AuthorizeResponseJSON,
-                                              OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomAuthorizeResponseParser">A delegate to parse custom authorize responses.</param>
+        public static AuthorizeResponse Parse(CP.AuthorizeRequest                              Request,
+                                              JObject                                          JSON,
+                                              CustomJObjectParserDelegate<AuthorizeResponse>?  CustomAuthorizeResponseParser   = null)
         {
 
 
             if (TryParse(Request,
-                         AuthorizeResponseJSON,
-                         out AuthorizeResponse authorizeResponse,
-                         OnException))
+                         JSON,
+                         out var authorizeResponse,
+                         out var errorResponse,
+                         CustomAuthorizeResponseParser))
             {
-                return authorizeResponse;
+                return authorizeResponse!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of an authorize response is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out AuthorizeResponse, OnException = null)
+        #region (static) TryParse(Request, JSON, out AuthorizeResponse, out ErrorResponse, out ErrorResponse, CustomAuthorizeResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of an authorize response.
@@ -374,11 +368,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AuthorizeResponse">The parsed authorize response.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(CP.AuthorizeRequest    Request,
-                                       JObject                JSON,
-                                       out AuthorizeResponse?  AuthorizeResponse,
-                                       out String? ErrorResponse)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomAuthorizeResponseParser">A delegate to parse custom authorize responses.</param>
+        public static Boolean TryParse(CP.AuthorizeRequest                              Request,
+                                       JObject                                          JSON,
+                                       out AuthorizeResponse?                           AuthorizeResponse,
+                                       out String?                                      ErrorResponse,
+                                       CustomJObjectParserDelegate<AuthorizeResponse>?  CustomAuthorizeResponseParser   = null)
         {
 
             try
@@ -386,31 +382,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 AuthorizeResponse = null;
 
-                #region IdTokenInfo
+                #region IdTokenInfo    [mandatory]
 
-                if (!JSON.ParseMandatoryJSONStruct("idTagInfo",
-                                                   "identification tag information",
-                                                   OCPPv2_0.IdTokenInfo.TryParse,
-                                                   out IdTokenInfo IdTokenInfo,
-                                                   out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("idTagInfo",
+                                             "identification tag information",
+                                             OCPPv2_0.IdTokenInfo.TryParse,
+                                             out IdTokenInfo? IdTokenInfo,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
+                if (IdTokenInfo is null)
+                    return false;
+
                 #endregion
 
-                #region CustomData
+                #region CustomData     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPPv2_0.CustomData.TryParse,
-                                           out CustomData  CustomData,
-                                           out             ErrorResponse))
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -420,13 +417,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                                           IdTokenInfo,
                                                           CustomData);
 
+                if (CustomAuthorizeResponseParser is not null)
+                    AuthorizeResponse = CustomAuthorizeResponseParser(JSON,
+                                                                      AuthorizeResponse);
+
                 return true;
 
             }
             catch (Exception e)
             {
-                ErrorResponse = null;
-                AuthorizeResponse = null;
+                AuthorizeResponse  = null;
+                ErrorResponse      = "The given JSON representation of an authorize response is invalid: " + e.Message;
                 return false;
             }
 
@@ -434,7 +435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region ToJSON(CustomAuthorizeResponseSerializer = null, CustomIdTokenInfoResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomAuthorizeResponseSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -445,12 +446,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom AdditionalInfo objects.</param>
         /// <param name="CustomMessageContentResponseSerializer">A delegate to serialize custom MessageContent objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeResponse>  CustomAuthorizeResponseSerializer        = null,
-                              CustomJObjectSerializerDelegate<IdTokenInfo>        CustomIdTokenInfoResponseSerializer      = null,
-                              CustomJObjectSerializerDelegate<IdToken>            CustomIdTokenResponseSerializer          = null,
-                              CustomJObjectSerializerDelegate<AdditionalInfo>     CustomAdditionalInfoResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<MessageContent>     CustomMessageContentResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>         CustomCustomDataResponseSerializer       = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeResponse>?  CustomAuthorizeResponseSerializer        = null,
+                              CustomJObjectSerializerDelegate<IdTokenInfo>?        CustomIdTokenInfoResponseSerializer      = null,
+                              CustomJObjectSerializerDelegate<IdToken>?            CustomIdTokenResponseSerializer          = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?     CustomAdditionalInfoResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<MessageContent>?     CustomMessageContentResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataResponseSerializer       = null)
         {
 
             var JSON = JSONObject.Create(
@@ -484,10 +485,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The authorize request leading to this response.</param>
         public static AuthorizeResponse Failed(CP.AuthorizeRequest Request)
 
-            => new AuthorizeResponse(Request,
-                                     new IdTokenInfo(
-                                         AuthorizationStatus.Invalid
-                                     ));
+            => new (Request,
+                    new IdTokenInfo(
+                        AuthorizationStatus.Invalid
+                    ));
 
         #endregion
 
@@ -502,7 +503,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="AuthorizeResponse1">A authorize response.</param>
         /// <param name="AuthorizeResponse2">Another authorize response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (AuthorizeResponse AuthorizeResponse1, AuthorizeResponse AuthorizeResponse2)
+        public static Boolean operator == (AuthorizeResponse AuthorizeResponse1,
+                                           AuthorizeResponse AuthorizeResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -510,7 +512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) AuthorizeResponse1 == null) || ((Object) AuthorizeResponse2 == null))
+            if (AuthorizeResponse1 is null || AuthorizeResponse2 is null)
                 return false;
 
             return AuthorizeResponse1.Equals(AuthorizeResponse2);
@@ -527,7 +529,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="AuthorizeResponse1">A authorize response.</param>
         /// <param name="AuthorizeResponse2">Another authorize response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (AuthorizeResponse AuthorizeResponse1, AuthorizeResponse AuthorizeResponse2)
+        public static Boolean operator != (AuthorizeResponse AuthorizeResponse1,
+                                           AuthorizeResponse AuthorizeResponse2)
 
             => !(AuthorizeResponse1 == AuthorizeResponse2);
 
@@ -540,24 +543,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two authorize responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">An authorize response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            // Check if the given object is a authorize response.
-            var AuthorizeResponse = Object as AuthorizeResponse;
-            if ((Object) AuthorizeResponse == null)
-                return false;
-
-            return this.Equals(AuthorizeResponse);
-
-        }
+            => Object is AuthorizeResponse authorizeResponse &&
+                   Equals(authorizeResponse);
 
         #endregion
 
@@ -566,17 +558,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// Compares two authorize responses for equality.
         /// </summary>
-        /// <param name="AuthorizeResponse">A authorize response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(AuthorizeResponse AuthorizeResponse)
-        {
+        /// <param name="AuthorizeResponse">An authorize response to compare with.</param>
+        public override Boolean Equals(AuthorizeResponse? AuthorizeResponse)
 
-            if ((Object) AuthorizeResponse == null)
-                return false;
-
-            return IdTokenInfo.Equals(AuthorizeResponse.IdTokenInfo);
-
-        }
+            => AuthorizeResponse is not null &&
+                   IdTokenInfo.Equals(AuthorizeResponse.IdTokenInfo);
 
         #endregion
 
@@ -604,6 +590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             => IdTokenInfo.ToString();
 
         #endregion
+
 
     }
 

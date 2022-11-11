@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// The common interface of a response message.
+    /// The common interface of all response messages.
     /// </summary>
     public interface IResponse
     {

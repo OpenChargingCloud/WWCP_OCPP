@@ -17,12 +17,9 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -35,25 +32,31 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
     public class HeartbeatRequest : ARequest<HeartbeatRequest>
     {
 
-        #region Properties
-
-        /// <summary>
-        /// An optional custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData  CustomData    { get; }
-
-        #endregion
-
         #region Constructor(s)
 
         /// <summary>
         /// Create a heartbeat request.
         /// </summary>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public HeartbeatRequest(CustomData CustomData = null)
-        {
-            this.CustomData = CustomData;
-        }
+        public HeartbeatRequest(ChargeBox_Id        ChargeBoxId,
+
+                                CustomData?         CustomData          = null,
+                                Request_Id?         RequestId           = null,
+                                DateTime?           RequestTimestamp    = null,
+                                TimeSpan?           RequestTimeout      = null,
+                                EventTracking_Id?   EventTrackingId     = null,
+                                CancellationToken?  CancellationToken   = null)
+
+            : base(ChargeBoxId,
+                   "Heartbeat",
+                   CustomData,
+                   RequestId,
+                   RequestTimestamp,
+                   RequestTimeout,
+                   EventTrackingId,
+                   CancellationToken)
+
+        { }
 
         #endregion
 
@@ -91,65 +94,55 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region (static) Parse   (HeartbeatRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomHeartbeatRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a heartbeat request.
         /// </summary>
-        /// <param name="HeartbeatRequestJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static HeartbeatRequest Parse(JObject              HeartbeatRequestJSON,
-                                             OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomHeartbeatRequestParser">A delegate to parse custom heartbeat requests.</param>
+        public static HeartbeatRequest Parse(JObject                                         JSON,
+                                             Request_Id                                      RequestId,
+                                             ChargeBox_Id                                    ChargeBoxId,
+                                             CustomJObjectParserDelegate<HeartbeatRequest>?  CustomHeartbeatRequestParser   = null)
         {
 
-            if (TryParse(HeartbeatRequestJSON,
-                         out HeartbeatRequest heartbeatRequest,
-                         OnException))
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out var heartbeatRequest,
+                         out var errorResponse,
+                         CustomHeartbeatRequestParser))
             {
-                return heartbeatRequest;
+                return heartbeatRequest!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a heartbeat request is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (HeartbeatRequestText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a heartbeat request.
-        /// </summary>
-        /// <param name="HeartbeatRequestText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static HeartbeatRequest Parse(String               HeartbeatRequestText,
-                                             OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(HeartbeatRequestText,
-                         out HeartbeatRequest heartbeatRequest,
-                         OnException))
-            {
-                return heartbeatRequest;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(HeartbeatRequestJSON, out HeartbeatRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out HeartbeatRequest, out ErrorResponse, CustomHeartbeatRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a heartbeat request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject               JSON,
-                                       out HeartbeatRequest  HeartbeatRequest,
-                                       OnExceptionDelegate   OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomHeartbeatRequestParser">A delegate to parse custom heartbeat requests.</param>
+        public static Boolean TryParse(JObject                                         JSON,
+                                       Request_Id                                      RequestId,
+                                       ChargeBox_Id                                    ChargeBoxId,
+                                       out HeartbeatRequest?                           HeartbeatRequest,
+                                       out String?                                     ErrorResponse,
+                                       CustomJObjectParserDelegate<HeartbeatRequest>?  CustomHeartbeatRequestParser)
         {
 
             try
@@ -157,76 +150,57 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 HeartbeatRequest = null;
 
-                #region CustomData
+                #region CustomData     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPPv2_0.CustomData.TryParse,
-                                           out CustomData  CustomData,
-                                           out String      ErrorResponse))
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
 
                 }
 
                 #endregion
 
 
-                HeartbeatRequest = new HeartbeatRequest(CustomData);
+                HeartbeatRequest = new HeartbeatRequest(ChargeBoxId,
+                                                        CustomData,
+                                                        RequestId);
+
+                if (CustomHeartbeatRequestParser is not null)
+                    HeartbeatRequest = CustomHeartbeatRequestParser(JSON,
+                                                                    HeartbeatRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, JSON, e);
-
-                HeartbeatRequest = null;
+                HeartbeatRequest  = null;
+                ErrorResponse     = "The given JSON representation of a heartbeat request is invalid: " + e.Message;
                 return false;
-
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(HeartbeatRequestText, out HeartbeatRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a heartbeat request.
-        /// </summary>
-        /// <param name="HeartbeatRequestText">The text to be parsed.</param>
-        /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                HeartbeatRequestText,
-                                       out HeartbeatRequest  HeartbeatRequest,
-                                       OnExceptionDelegate   OnException  = null)
-        {
-
-            try
-            {
-
-                HeartbeatRequestText = HeartbeatRequestText?.Trim();
-
-                if (HeartbeatRequestText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(HeartbeatRequestText),
-                             out HeartbeatRequest,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, HeartbeatRequestText, e);
-            }
-
-            HeartbeatRequest = null;
-            return false;
 
         }
 
@@ -237,10 +211,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        public override JObject ToJSON()
+            => ToJSON(null);
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         /// <param name="CustomHeartbeatRequestSerializer">A delegate to serialize custom heartbeat requests.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatRequest> CustomHeartbeatRequestSerializer     = null,
-                              CustomJObjectSerializerDelegate<CustomData>       CustomCustomDataResponseSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatRequest>?  CustomHeartbeatRequestSerializer     = null,
+                              CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataResponseSerializer   = null)
         {
 
             var JSON = JSONObject.Create(
@@ -270,7 +251,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="HeartbeatRequest1">A heartbeat request.</param>
         /// <param name="HeartbeatRequest2">Another heartbeat request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (HeartbeatRequest HeartbeatRequest1, HeartbeatRequest HeartbeatRequest2)
+        public static Boolean operator == (HeartbeatRequest HeartbeatRequest1,
+                                           HeartbeatRequest HeartbeatRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -308,22 +290,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two heartbeat requests for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A heartbeat request to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is HeartbeatRequest HeartbeatRequest))
-                return false;
-
-            return Equals(HeartbeatRequest);
-
-        }
+            => Object is HeartbeatRequest heartbeatRequest &&
+                   Equals(heartbeatRequest);
 
         #endregion
 
@@ -333,16 +306,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// Compares two heartbeat requests for equality.
         /// </summary>
         /// <param name="HeartbeatRequest">A heartbeat request to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(HeartbeatRequest HeartbeatRequest)
-        {
+        public override Boolean Equals(HeartbeatRequest? HeartbeatRequest)
 
-            if (HeartbeatRequest is null)
-                return false;
-
-            return Object.ReferenceEquals(this, HeartbeatRequest);
-
-        }
+            => HeartbeatRequest is not null;
 
         #endregion
 
@@ -370,6 +336,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             => "HeartbeatRequest";
 
         #endregion
+
 
     }
 

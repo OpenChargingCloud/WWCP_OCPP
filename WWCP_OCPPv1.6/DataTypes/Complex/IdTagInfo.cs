@@ -219,6 +219,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (static) TryParse(JSON, out IdTagInfo, out ErrorResponse, CustomIdTagInfoParser = null)
 
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+
         /// <summary>
         /// Try to parse the given JSON representation of an identification tag info.
         /// </summary>

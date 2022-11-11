@@ -17,13 +17,9 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
-using cloud.charging.open.protocols.OCPPv2_0;
 
 #endregion
 
@@ -41,27 +37,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The time for which the status is reported.
         /// </summary>
-        public DateTime               Timestamp          { get; }
+        public DateTime         Timestamp          { get; }
 
         /// <summary>
         /// The current status of the connector.
         /// </summary>
-        public ConnectorStatus        ConnectorStatus    { get; }
+        public ConnectorStatus  ConnectorStatus    { get; }
 
         /// <summary>
         /// The identification of the EVSE to which the connector belongs for which the the status is reported.
         /// </summary>
-        public EVSE_Id                EVSEId             { get; }
+        public EVSE_Id          EVSEId             { get; }
 
         /// <summary>
         /// The identification of the connector within the EVSE for which the status is reported.
         /// </summary>
-        public Connector_Id           ConnectorId        { get; }
-
-        /// <summary>
-        /// The custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData             CustomData         { get; }
+        public Connector_Id     ConnectorId        { get; }
 
         #endregion
 
@@ -75,18 +66,34 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="EVSEId">The identification of the EVSE to which the connector belongs for which the the status is reported.</param>
         /// <param name="ConnectorId">The identification of the connector within the EVSE for which the status is reported.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public StatusNotificationRequest(DateTime         Timestamp,
-                                         ConnectorStatus  ConnectorStatus,
-                                         EVSE_Id          EVSEId,
-                                         Connector_Id     ConnectorId,
-                                         CustomData       CustomData   = null)
+        public StatusNotificationRequest(ChargeBox_Id        ChargeBoxId,
+                                         DateTime            Timestamp,
+                                         ConnectorStatus     ConnectorStatus,
+                                         EVSE_Id             EVSEId,
+                                         Connector_Id        ConnectorId,
+
+                                         CustomData?         CustomData          = null,
+                                         Request_Id?         RequestId           = null,
+                                         DateTime?           RequestTimestamp    = null,
+                                         TimeSpan?           RequestTimeout      = null,
+                                         EventTracking_Id?   EventTrackingId     = null,
+                                         CancellationToken?  CancellationToken   = null)
+
+            : base(ChargeBoxId,
+                   "StatusNotification",
+                   CustomData,
+                   RequestId,
+                   RequestTimestamp,
+                   RequestTimeout,
+                   EventTrackingId,
+                   CancellationToken)
+
         {
 
             this.Timestamp        = Timestamp;
             this.ConnectorStatus  = ConnectorStatus;
             this.EVSEId           = EVSEId;
             this.ConnectorId      = ConnectorId;
-            this.CustomData       = CustomData;
 
         }
 
@@ -161,65 +168,55 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region (static) Parse   (StatusNotificationRequestJSON, OnException = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomStatusNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a status notification request.
         /// </summary>
-        /// <param name="StatusNotificationRequestJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StatusNotificationRequest Parse(JObject              StatusNotificationRequestJSON,
-                                                      OnExceptionDelegate  OnException = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom status notification requests.</param>
+        public static StatusNotificationRequest Parse(JObject                                                  JSON,
+                                                      Request_Id                                               RequestId,
+                                                      ChargeBox_Id                                             ChargeBoxId,
+                                                      CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser   = null)
         {
 
-            if (TryParse(StatusNotificationRequestJSON,
-                         out StatusNotificationRequest statusNotificationRequest,
-                         OnException))
+            if (TryParse(JSON,
+                         RequestId,
+                         ChargeBoxId,
+                         out var statusNotificationRequest,
+                         out var errorResponse,
+                         CustomStatusNotificationRequestParser))
             {
-                return statusNotificationRequest;
+                return statusNotificationRequest!;
             }
 
-            return null;
+            throw new ArgumentException("The given JSON representation of a status notification request is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (StatusNotificationRequestText, OnException = null)
-
-        /// <summary>
-        /// Parse the given text representation of a status notification request.
-        /// </summary>
-        /// <param name="StatusNotificationRequestText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static StatusNotificationRequest Parse(String               StatusNotificationRequestText,
-                                                      OnExceptionDelegate  OnException = null)
-        {
-
-            if (TryParse(StatusNotificationRequestText,
-                         out StatusNotificationRequest statusNotificationRequest,
-                         OnException))
-            {
-                return statusNotificationRequest;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(StatusNotificationRequestJSON, out StatusNotificationRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out StatusNotificationRequest, out ErrorResponse, CustomStatusNotificationRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a status notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject                        JSON,
-                                       out StatusNotificationRequest  StatusNotificationRequest,
-                                       OnExceptionDelegate            OnException  = null)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom status notification requests.</param>
+        public static Boolean TryParse(JObject                                                  JSON,
+                                       Request_Id                                               RequestId,
+                                       ChargeBox_Id                                             ChargeBoxId,
+                                       out StatusNotificationRequest?                           StatusNotificationRequest,
+                                       out String?                                              ErrorResponse,
+                                       CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser)
         {
 
             try
@@ -227,64 +224,64 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 StatusNotificationRequest = null;
 
-                #region Timestamp
+                #region Timestamp          [mandatory]
 
                 if (!JSON.ParseMandatory("timestamp",
-                                                                  "timestamp",
-                                                                  out DateTime  Timestamp,
-                                                                  out String    ErrorResponse))
+                                         "timestamp",
+                                         out DateTime Timestamp,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region ConnectorStatus
+                #region ConnectorStatus    [mandatory]
 
                 if (!JSON.MapMandatory("connectorStatus",
-                                                                "connector status",
-                                                                ConnectorStatusExtentions.Parse,
-                                                                out ConnectorStatus  ConnectorStatus,
-                                                                out                  ErrorResponse))
+                                       "connector status",
+                                       ConnectorStatusExtentions.Parse,
+                                       out ConnectorStatus ConnectorStatus,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region EVSEId
+                #region EVSEId             [mandatory]
 
                 if (!JSON.ParseMandatory("EVSEId",
-                                                                  "EVSE identification",
-                                                                  EVSE_Id.TryParse,
-                                                                  out EVSE_Id  EVSEId,
-                                                                  out          ErrorResponse))
+                                         "EVSE identification",
+                                         EVSE_Id.TryParse,
+                                         out EVSE_Id EVSEId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region ConnectorId
+                #region ConnectorId        [mandatory]
 
                 if (!JSON.ParseMandatory("connectorId",
-                                                                  "connector identification",
-                                                                  Connector_Id.TryParse,
-                                                                  out Connector_Id  ConnectorId,
-                                                                  out               ErrorResponse))
+                                         "connector identification",
+                                         Connector_Id.TryParse,
+                                         out Connector_Id ConnectorId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region CustomData
+                #region CustomData         [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPPv2_0.CustomData.TryParse,
-                                           out CustomData  CustomData,
-                                           out             ErrorResponse))
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
@@ -294,64 +291,47 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #endregion
 
+                #region ChargeBoxId        [optional, OCPP_CSE]
 
-                StatusNotificationRequest = new StatusNotificationRequest(Timestamp,
+                if (JSON.ParseOptional("chargeBoxId",
+                                       "charge box identification",
+                                       ChargeBox_Id.TryParse,
+                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse is not null)
+                        return false;
+
+                    if (chargeBoxId_PayLoad.HasValue)
+                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+
+                }
+
+                #endregion
+
+
+                StatusNotificationRequest = new StatusNotificationRequest(ChargeBoxId,
+                                                                          Timestamp,
                                                                           ConnectorStatus,
                                                                           EVSEId,
                                                                           ConnectorId,
-                                                                          CustomData);
+                                                                          CustomData,
+                                                                          RequestId);
+
+                if (CustomStatusNotificationRequestParser is not null)
+                    StatusNotificationRequest = CustomStatusNotificationRequestParser(JSON,
+                                                                                      StatusNotificationRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, JSON, e);
-
-                StatusNotificationRequest = null;
+                StatusNotificationRequest  = null;
+                ErrorResponse              = "The given JSON representation of a status notification request is invalid: " + e.Message;
                 return false;
-
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(StatusNotificationRequestText, out StatusNotificationRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a status notification request.
-        /// </summary>
-        /// <param name="StatusNotificationRequestText">The text to be parsed.</param>
-        /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String                         StatusNotificationRequestText,
-                                       out StatusNotificationRequest  StatusNotificationRequest,
-                                       OnExceptionDelegate            OnException  = null)
-        {
-
-            try
-            {
-
-                StatusNotificationRequestText = StatusNotificationRequestText?.Trim();
-
-                if (StatusNotificationRequestText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(StatusNotificationRequestText),
-                                           out StatusNotificationRequest,
-                                           OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, StatusNotificationRequestText, e);
-            }
-
-            StatusNotificationRequest = null;
-            return false;
 
         }
 
@@ -362,10 +342,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
+        public override JObject ToJSON()
+            => ToJSON(null);
+
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         /// <param name="CustomStatusNotificationRequestSerializer">A delegate to serialize custom StatusNotification requests.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<StatusNotificationRequest> CustomStatusNotificationRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>                CustomCustomDataResponseSerializer          = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataResponseSerializer          = null)
         {
 
             var JSON = JSONObject.Create(
@@ -376,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                            new JProperty("connectorId",       ConnectorId.    ToString()),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.     ToJSON(CustomCustomDataResponseSerializer))
                                : null);
 
             return CustomStatusNotificationRequestSerializer is not null
@@ -398,7 +385,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="StatusNotificationRequest1">A status notification request.</param>
         /// <param name="StatusNotificationRequest2">Another status notification request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (StatusNotificationRequest StatusNotificationRequest1, StatusNotificationRequest StatusNotificationRequest2)
+        public static Boolean operator == (StatusNotificationRequest StatusNotificationRequest1,
+                                           StatusNotificationRequest StatusNotificationRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -423,7 +411,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="StatusNotificationRequest1">A status notification request.</param>
         /// <param name="StatusNotificationRequest2">Another status notification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (StatusNotificationRequest StatusNotificationRequest1, StatusNotificationRequest StatusNotificationRequest2)
+        public static Boolean operator != (StatusNotificationRequest StatusNotificationRequest1,
+                                           StatusNotificationRequest StatusNotificationRequest2)
 
             => !(StatusNotificationRequest1 == StatusNotificationRequest2);
 
@@ -436,22 +425,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two status notification requests for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A status notification request to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is StatusNotificationRequest StatusNotificationRequest))
-                return false;
-
-            return Equals(StatusNotificationRequest);
-
-        }
+            => Object is StatusNotificationRequest statusNotificationRequest &&
+                   Equals(statusNotificationRequest);
 
         #endregion
 
@@ -461,22 +441,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// Compares two status notification requests for equality.
         /// </summary>
         /// <param name="StatusNotificationRequest">A status notification request to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(StatusNotificationRequest StatusNotificationRequest)
-        {
+        public override Boolean Equals(StatusNotificationRequest? StatusNotificationRequest)
 
-            if (StatusNotificationRequest is null)
-                return false;
+            => StatusNotificationRequest is not null &&
 
-            return Timestamp.      Equals(StatusNotificationRequest.Timestamp)       &&
-                   ConnectorStatus.Equals(StatusNotificationRequest.ConnectorStatus) &&
-                   EVSEId.         Equals(StatusNotificationRequest.EVSEId)          &&
-                   ConnectorId.    Equals(StatusNotificationRequest.ConnectorId)     &&
+               Timestamp.      Equals(StatusNotificationRequest.Timestamp)       &&
+               ConnectorStatus.Equals(StatusNotificationRequest.ConnectorStatus) &&
+               EVSEId.         Equals(StatusNotificationRequest.EVSEId)          &&
+               ConnectorId.    Equals(StatusNotificationRequest.ConnectorId)     &&
 
-                   ((CustomData == null && StatusNotificationRequest.CustomData == null) ||
-                    (CustomData is not null && StatusNotificationRequest.CustomData is not null && CustomData.Equals(StatusNotificationRequest.CustomData)));
-
-        }
+             ((CustomData is     null && StatusNotificationRequest.CustomData is     null) ||
+              (CustomData is not null && StatusNotificationRequest.CustomData is not null && CustomData.Equals(StatusNotificationRequest.CustomData)));
 
         #endregion
 
@@ -498,9 +473,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                        EVSEId.         GetHashCode() *  5 ^
                        ConnectorId.    GetHashCode() *  3 ^
 
-                       (CustomData is not null
-                            ? CustomData.GetHashCode()
-                            : 0);
+                       CustomData?.    GetHashCode() ?? 0;
 
             }
         }
@@ -519,6 +492,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                              " => ", ConnectorStatus);
 
         #endregion
+
 
     }
 
