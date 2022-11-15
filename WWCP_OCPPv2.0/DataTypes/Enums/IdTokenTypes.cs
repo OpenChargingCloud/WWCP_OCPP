@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
@@ -33,84 +27,36 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Parse(Text)
 
         public static IdTokenTypes Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Central":
-                    return IdTokenTypes.Central;
-
-                case "eMAID":
-                    return IdTokenTypes.eMAID;
-
-                case "ISO14443":
-                    return IdTokenTypes.ISO14443;
-
-                case "ISO15693":
-                    return IdTokenTypes.ISO15693;
-
-                case "KeyCode":
-                    return IdTokenTypes.KeyCode;
-
-                case "Local":
-                    return IdTokenTypes.Local;
-
-                case "MacAddress":
-                    return IdTokenTypes.MacAddress;
-
-                case "NoAuthorization":
-                    return IdTokenTypes.NoAuthorization;
-
-
-                default:
-                    return IdTokenTypes.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Central"          => IdTokenTypes.Central,
+                   "eMAID"            => IdTokenTypes.eMAID,
+                   "ISO14443"         => IdTokenTypes.ISO14443,
+                   "ISO15693"         => IdTokenTypes.ISO15693,
+                   "KeyCode"          => IdTokenTypes.KeyCode,
+                   "Local"            => IdTokenTypes.Local,
+                   "MacAddress"       => IdTokenTypes.MacAddress,
+                   "NoAuthorization"  => IdTokenTypes.NoAuthorization,
+                   _                  => IdTokenTypes.Unknown
+               };
 
         #endregion
 
         #region AsText(this IdTokenTypes)
 
         public static String AsText(this IdTokenTypes IdTokenTypes)
-        {
 
-            switch (IdTokenTypes)
-            {
-
-                case IdTokenTypes.Central:
-                    return "Central";
-
-                case IdTokenTypes.eMAID:
-                    return "eMAID";
-
-                case IdTokenTypes.ISO14443:
-                    return "ISO14443";
-
-                case IdTokenTypes.ISO15693:
-                    return "ISO15693";
-
-                case IdTokenTypes.KeyCode:
-                    return "KeyCode";
-
-                case IdTokenTypes.Local:
-                    return "Local";
-
-                case IdTokenTypes.MacAddress:
-                    return "MacAddress";
-
-                case IdTokenTypes.NoAuthorization:
-                    return "NoAuthorization";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => IdTokenTypes switch {
+                   IdTokenTypes.Central          => "Central",
+                   IdTokenTypes.eMAID            => "eMAID",
+                   IdTokenTypes.ISO14443         => "ISO14443",
+                   IdTokenTypes.ISO15693         => "ISO15693",
+                   IdTokenTypes.KeyCode          => "KeyCode",
+                   IdTokenTypes.Local            => "Local",
+                   IdTokenTypes.MacAddress       => "MacAddress",
+                   IdTokenTypes.NoAuthorization  => "NoAuthorization",
+                   _                             => "unknown"
+               };
 
         #endregion
 

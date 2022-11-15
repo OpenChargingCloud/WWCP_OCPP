@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
@@ -33,78 +27,34 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Parse(Text)
 
         public static AuthorizeCertificateStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Accepted":
-                    return AuthorizeCertificateStatus.Accepted;
-
-                case "SignatureError":
-                    return AuthorizeCertificateStatus.SignatureError;
-
-                case "CertificateExpired":
-                    return AuthorizeCertificateStatus.CertificateExpired;
-
-                case "CertificateRevoked":
-                    return AuthorizeCertificateStatus.CertificateRevoked;
-
-                case "NoCertificateAvailable":
-                    return AuthorizeCertificateStatus.NoCertificateAvailable;
-
-                case "CertChainError":
-                    return AuthorizeCertificateStatus.CertChainError;
-
-                case "ContractCancelled":
-                    return AuthorizeCertificateStatus.ContractCancelled;
-
-
-                default:
-                    return AuthorizeCertificateStatus.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Accepted"                => AuthorizeCertificateStatus.Accepted,
+                   "SignatureError"          => AuthorizeCertificateStatus.SignatureError,
+                   "CertificateExpired"      => AuthorizeCertificateStatus.CertificateExpired,
+                   "CertificateRevoked"      => AuthorizeCertificateStatus.CertificateRevoked,
+                   "NoCertificateAvailable"  => AuthorizeCertificateStatus.NoCertificateAvailable,
+                   "CertChainError"          => AuthorizeCertificateStatus.CertChainError,
+                   "ContractCancelled"       => AuthorizeCertificateStatus.ContractCancelled,
+                   _                         => AuthorizeCertificateStatus.Unknown
+               };
 
         #endregion
 
         #region AsText(this AuthorizeCertificateStatus)
 
         public static String AsText(this AuthorizeCertificateStatus AuthorizeCertificateStatus)
-        {
 
-            switch (AuthorizeCertificateStatus)
-            {
-
-                case AuthorizeCertificateStatus.Accepted:
-                    return "Accepted";
-
-                case AuthorizeCertificateStatus.SignatureError:
-                    return "SignatureError";
-
-                case AuthorizeCertificateStatus.CertificateExpired:
-                    return "CertificateExpired";
-
-                case AuthorizeCertificateStatus.CertificateRevoked:
-                    return "CertificateRevoked";
-
-                case AuthorizeCertificateStatus.NoCertificateAvailable:
-                    return "NoCertificateAvailable";
-
-                case AuthorizeCertificateStatus.CertChainError:
-                    return "CertChainError";
-
-                case AuthorizeCertificateStatus.ContractCancelled:
-                    return "ContractCancelled";
-
-
-                default:
-                    return "Unknown";
-
-            }
-
-        }
+            => AuthorizeCertificateStatus switch {
+                   AuthorizeCertificateStatus.Accepted                => "Accepted",
+                   AuthorizeCertificateStatus.SignatureError          => "SignatureError",
+                   AuthorizeCertificateStatus.CertificateExpired      => "CertificateExpired",
+                   AuthorizeCertificateStatus.CertificateRevoked      => "CertificateRevoked",
+                   AuthorizeCertificateStatus.NoCertificateAvailable  => "NoCertificateAvailable",
+                   AuthorizeCertificateStatus.CertChainError          => "CertChainError",
+                   AuthorizeCertificateStatus.ContractCancelled       => "ContractCancelled",
+                   _                                                  => "Unknown"
+               };
 
         #endregion
 

@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
@@ -33,54 +27,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Parse(Text)
 
         public static HashAlgorithms Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "SHA256":
-                    return HashAlgorithms.SHA256;
-
-                case "SHA384":
-                    return HashAlgorithms.SHA384;
-
-                case "SHA512":
-                    return HashAlgorithms.SHA512;
-
-
-                default:
-                    return HashAlgorithms.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "SHA256"  => HashAlgorithms.SHA256,
+                   "SHA384"  => HashAlgorithms.SHA384,
+                   "SHA512"  => HashAlgorithms.SHA512,
+                   _         => HashAlgorithms.Unknown
+               };
 
         #endregion
 
         #region AsText(this HashAlgorithm)
 
         public static String AsText(this HashAlgorithms HashAlgorithm)
-        {
 
-            switch (HashAlgorithm)
-            {
-
-                case HashAlgorithms.SHA256:
-                    return "SHA256";
-
-                case HashAlgorithms.SHA384:
-                    return "SHA384";
-
-                case HashAlgorithms.SHA512:
-                    return "SHA512";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => HashAlgorithm switch {
+                   HashAlgorithms.SHA256  => "SHA256",
+                   HashAlgorithms.SHA384  => "SHA384",
+                   HashAlgorithms.SHA512  => "SHA512",
+                   _                      => "unknown"
+               };
 
         #endregion
 

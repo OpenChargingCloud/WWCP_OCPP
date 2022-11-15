@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
@@ -33,66 +27,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Parse(Text)
 
         public static ConnectorStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Available":
-                    return ConnectorStatus.Available;
-
-                case "Occupied":
-                    return ConnectorStatus.Occupied;
-
-                case "Reserved":
-                    return ConnectorStatus.Reserved;
-
-                case "Unavailable":
-                    return ConnectorStatus.Unavailable;
-
-                case "Faulted":
-                    return ConnectorStatus.Faulted;
-
-
-                default:
-                    return ConnectorStatus.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Available"    => ConnectorStatus.Available,
+                   "Occupied"     => ConnectorStatus.Occupied,
+                   "Reserved"     => ConnectorStatus.Reserved,
+                   "Unavailable"  => ConnectorStatus.Unavailable,
+                   "Faulted"      => ConnectorStatus.Faulted,
+                   _              => ConnectorStatus.Unknown
+               };
 
         #endregion
 
         #region AsText(this ConnectorStatus)
 
         public static String AsText(this ConnectorStatus ConnectorStatus)
-        {
 
-            switch (ConnectorStatus)
-            {
-
-                case ConnectorStatus.Available:
-                    return "Available";
-
-                case ConnectorStatus.Occupied:
-                    return "Occupied";
-
-                case ConnectorStatus.Reserved:
-                    return "Reserved";
-
-                case ConnectorStatus.Unavailable:
-                    return "Unavailable";
-
-                case ConnectorStatus.Faulted:
-                    return "Faulted";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => ConnectorStatus switch {
+                ConnectorStatus.Available    => "Available",
+                ConnectorStatus.Occupied     => "Occupied",
+                ConnectorStatus.Reserved     => "Reserved",
+                ConnectorStatus.Unavailable  => "Unavailable",
+                ConnectorStatus.Faulted      => "Faulted",
+                _                            => "unknown"
+            };
 
         #endregion
 

@@ -62,12 +62,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public IdToken?              GroupIdToken           { get; }
 
         /// <summary>
-        /// The first optional preferred user interface language of identifier user.
+        /// The first optional preferred user interface language of identifier user. [max 8]
         /// </summary>
         public Language_Id?          Language1              { get; }
 
         /// <summary>
-        /// The second optional preferred user interface language of identifier user.
+        /// The second optional preferred user interface language of identifier user. [max 8]
         /// </summary>
         public Language_Id?          Language2              { get; }
 
@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="PersonalMessage">An optional message to be displayed at a charging station.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public IdTokenInfo(AuthorizationStatus    Status,
-                           Int16                  ChargingPriority      = 0,
+                           Int16?                 ChargingPriority      = 0,
                            DateTime?              CacheExpiryDateTime   = null,
                            IEnumerable<EVSE_Id>?  ValidEVSEIds          = null,
                            IdToken?               GroupIdToken          = null,
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         {
 
             this.Status               = Status;
-            this.ChargingPriority     = ChargingPriority;
+            this.ChargingPriority     = ChargingPriority ?? 0;
             this.CacheExpiryDateTime  = CacheExpiryDateTime;
             this.ValidEVSEIds         = ValidEVSEIds is not null ? ValidEVSEIds.Distinct() : Array.Empty<EVSE_Id>();
             this.GroupIdToken         = GroupIdToken;
@@ -125,60 +125,57 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Documentation
 
-        // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:IdTokenInfoType",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "description": "ID_ Token\r\nurn:x-oca:ocpp:uid:2:233247\r\nContains status information about an identifier.\r\nIt is advised to not stop charging for a token that expires during charging, as ExpiryDate is only used for caching purposes. If ExpiryDate is not given, the status has no end date.\r\n",
-        //   "javaType": "IdTokenInfo",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "status": {
-        //       "$ref": "#/definitions/AuthorizationStatusEnumType"
-        //     },
-        //     "cacheExpiryDateTime": {
-        //       "description": "ID_ Token. Expiry. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569373\r\nDate and Time after which the token must be considered invalid.\r\n",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "chargingPriority": {
-        //       "description": "Priority from a business point of view. Default priority is 0, The range is from -9 to 9. Higher values indicate a higher priority. The chargingPriority in &lt;&lt;transactioneventresponse,TransactionEventResponse&gt;&gt; overrules this one. \r\n",
-        //       "type": "integer"
-        //     },
-        //     "language1": {
-        //       "description": "ID_ Token. Language1. Language_ Code\r\nurn:x-oca:ocpp:uid:1:569374\r\nPreferred user interface language of identifier user. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.\r\n\r\n",
-        //       "type": "string",
-        //       "maxLength": 8
-        //     },
-        //     "evseId": {
-        //       "description": "Only used when the IdToken is only valid for one or more specific EVSEs, not for the entire Charging Station.\r\n\r\n",
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "type": "integer"
+        //     "IdTokenInfoType": {
+        //       "description": "ID_ Token\r\nurn:x-oca:ocpp:uid:2:233247\r\nContains status information about an identifier.\r\nIt is advised to not stop charging for a token that expires during charging, as ExpiryDate is only used for caching purposes. If ExpiryDate is not given, the status has no end date.\r\n",
+        //       "javaType": "IdTokenInfo",
+        //       "type": "object",
+        //       "additionalProperties": false,
+        //       "properties": {
+        //         "customData": {
+        //           "$ref": "#/definitions/CustomDataType"
+        //         },
+        //         "status": {
+        //           "$ref": "#/definitions/AuthorizationStatusEnumType"
+        //         },
+        //         "cacheExpiryDateTime": {
+        //           "description": "ID_ Token. Expiry. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569373\r\nDate and Time after which the token must be considered invalid.\r\n",
+        //           "type": "string",
+        //           "format": "date-time"
+        //         },
+        //         "chargingPriority": {
+        //           "description": "Priority from a business point of view. Default priority is 0, The range is from -9 to 9. Higher values indicate a higher priority. The chargingPriority in &lt;&lt;transactioneventresponse,TransactionEventResponse&gt;&gt; overrules this one. \r\n",
+        //           "type": "integer"
+        //         },
+        //         "language1": {
+        //           "description": "ID_ Token. Language1. Language_ Code\r\nurn:x-oca:ocpp:uid:1:569374\r\nPreferred user interface language of identifier user. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.\r\n\r\n",
+        //           "type": "string",
+        //           "maxLength": 8
+        //         },
+        //         "evseId": {
+        //           "description": "Only used when the IdToken is only valid for one or more specific EVSEs, not for the entire Charging Station.\r\n\r\n",
+        //           "type": "array",
+        //           "additionalItems": false,
+        //           "items": {
+        //             "type": "integer"
+        //           },
+        //           "minItems": 1
+        //         },
+        //         "groupIdToken": {
+        //           "$ref": "#/definitions/IdTokenType"
+        //         },
+        //         "language2": {
+        //           "description": "ID_ Token. Language2. Language_ Code\r\nurn:x-oca:ocpp:uid:1:569375\r\nSecond preferred user interface language of identifier user. Don’t use when language1 is omitted, has to be different from language1. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.\r\n",
+        //           "type": "string",
+        //           "maxLength": 8
+        //         },
+        //         "personalMessage": {
+        //           "$ref": "#/definitions/MessageContentType"
+        //         }
         //       },
-        //       "minItems": 1
-        //     },
-        //     "groupIdToken": {
-        //       "$ref": "#/definitions/IdTokenType"
-        //     },
-        //     "language2": {
-        //       "description": "ID_ Token. Language2. Language_ Code\r\nurn:x-oca:ocpp:uid:1:569375\r\nSecond preferred user interface language of identifier user. Don’t use when language1 is omitted, has to be different from language1. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.\r\n",
-        //       "type": "string",
-        //       "maxLength": 8
-        //     },
-        //     "personalMessage": {
-        //       "$ref": "#/definitions/MessageContentType"
+        //       "required": [
+        //         "status"
+        //       ]
         //     }
-        //   },
-        //   "required": [
-        //     "status"
-        //   ]
-        // }
 
         #endregion
 

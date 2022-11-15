@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
@@ -33,60 +27,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Parse(Text)
 
         public static MessageFormats Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "ASCII":
-                    return MessageFormats.ASCII;
-
-                case "HTML":
-                    return MessageFormats.HTML;
-
-                case "URI":
-                    return MessageFormats.URI;
-
-                case "UTF8":
-                    return MessageFormats.UTF8;
-
-
-                default:
-                    return MessageFormats.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "ASCII"  => MessageFormats.ASCII,
+                   "HTML"   => MessageFormats.HTML,
+                   "URI"    => MessageFormats.URI,
+                   "UTF8"   => MessageFormats.UTF8,
+                   _        => MessageFormats.Unknown
+               };
 
         #endregion
 
         #region AsText(this MessageFormats)
 
         public static String AsText(this MessageFormats MessageFormats)
-        {
 
-            switch (MessageFormats)
-            {
-
-                case MessageFormats.ASCII:
-                    return "ASCII";
-
-                case MessageFormats.HTML:
-                    return "HTML";
-
-                case MessageFormats.URI:
-                    return "URI";
-
-                case MessageFormats.UTF8:
-                    return "UTF8";
-
-
-                default:
-                    return "Unknown";
-
-            }
-
-        }
+            => MessageFormats switch {
+                   MessageFormats.ASCII  => "ASCII",
+                   MessageFormats.HTML   => "HTML",
+                   MessageFormats.URI    => "URI",
+                   MessageFormats.UTF8   => "UTF8",
+                   _                     => "Unknown"
+               };
 
         #endregion
 

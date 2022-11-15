@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
@@ -33,66 +27,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Parse(Text)
 
         public static ChargingStates Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Charging":
-                    return ChargingStates.Charging;
-
-                case "EVConnected":
-                    return ChargingStates.EVConnected;
-
-                case "SuspendedEV":
-                    return ChargingStates.SuspendedEV;
-
-                case "SuspendedEVSE":
-                    return ChargingStates.SuspendedEVSE;
-
-                case "Idle":
-                    return ChargingStates.Idle;
-
-
-                default:
-                    return ChargingStates.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Charging"       => ChargingStates.Charging,
+                   "EVConnected"    => ChargingStates.EVConnected,
+                   "SuspendedEV"    => ChargingStates.SuspendedEV,
+                   "SuspendedEVSE"  => ChargingStates.SuspendedEVSE,
+                   "Idle"           => ChargingStates.Idle,
+                   _                => ChargingStates.Unknown
+               };
 
         #endregion
 
         #region AsText(this ChargingStates)
 
         public static String AsText(this ChargingStates ChargingStates)
-        {
 
-            switch (ChargingStates)
-            {
-
-                case ChargingStates.Charging:
-                    return "Charging";
-
-                case ChargingStates.EVConnected:
-                    return "EVConnected";
-
-                case ChargingStates.SuspendedEV:
-                    return "SuspendedEV";
-
-                case ChargingStates.SuspendedEVSE:
-                    return "SuspendedEVSE";
-
-                case ChargingStates.Idle:
-                    return "Idle";
-
-
-                default:
-                    return "Unknown";
-
-            }
-
-        }
+            => ChargingStates switch {
+                   ChargingStates.Charging       => "Charging",
+                   ChargingStates.EVConnected    => "EVConnected",
+                   ChargingStates.SuspendedEV    => "SuspendedEV",
+                   ChargingStates.SuspendedEVSE  => "SuspendedEVSE",
+                   ChargingStates.Idle           => "Idle",
+                   _                             => "Unknown"
+               };
 
         #endregion
 
@@ -114,7 +72,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         SuspendedEV,
         SuspendedEVSE,
         Idle
-
 
     }
 

@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
@@ -33,90 +27,38 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Parse(Text)
 
         public static BootReasons Parse(this String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "ApplicationReset":
-                    return BootReasons.ApplicationReset;
-
-                case "FirmwareUpdate":
-                    return BootReasons.FirmwareUpdate;
-
-                case "LocalReset":
-                    return BootReasons.LocalReset;
-
-                case "PowerUp":
-                    return BootReasons.PowerUp;
-
-                case "RemoteReset":
-                    return BootReasons.RemoteReset;
-
-                case "ScheduledReset":
-                    return BootReasons.ScheduledReset;
-
-                case "Triggered":
-                    return BootReasons.Triggered;
-
-                case "Unknown":
-                    return BootReasons.Unknown;
-
-                case "Watchdog":
-                    return BootReasons.Watchdog;
-
-
-                default:
-                    return BootReasons.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                "ApplicationReset"  => BootReasons.ApplicationReset,
+                "FirmwareUpdate"    => BootReasons.FirmwareUpdate,
+                "LocalReset"        => BootReasons.LocalReset,
+                "PowerUp"           => BootReasons.PowerUp,
+                "RemoteReset"       => BootReasons.RemoteReset,
+                "ScheduledReset"    => BootReasons.ScheduledReset,
+                "Triggered"         => BootReasons.Triggered,
+                "Unknown"           => BootReasons.Unknown,
+                "Watchdog"          => BootReasons.Watchdog,
+                _                   => BootReasons.Unknown
+            };
 
         #endregion
 
         #region AsText(this Phase)
 
         public static String AsText(this BootReasons BootReason)
-        {
 
-            switch (BootReason)
-            {
-
-                case BootReasons.ApplicationReset:
-                    return "ApplicationReset";
-
-                case BootReasons.FirmwareUpdate:
-                    return "FirmwareUpdate";
-
-                case BootReasons.LocalReset:
-                    return "LocalReset";
-
-                case BootReasons.PowerUp:
-                    return "PowerUp";
-
-                case BootReasons.RemoteReset:
-                    return "RemoteReset";
-
-                case BootReasons.ScheduledReset:
-                    return "ScheduledReset";
-
-                case BootReasons.Triggered:
-                    return "Triggered";
-
-                case BootReasons.Unknown:
-                    return "Unknown";
-
-                case BootReasons.Watchdog:
-                    return "Watchdog";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => BootReason switch {
+                BootReasons.ApplicationReset  => "ApplicationReset",
+                BootReasons.FirmwareUpdate    => "FirmwareUpdate",
+                BootReasons.LocalReset        => "LocalReset",
+                BootReasons.PowerUp           => "PowerUp",
+                BootReasons.RemoteReset       => "RemoteReset",
+                BootReasons.ScheduledReset    => "ScheduledReset",
+                BootReasons.Triggered         => "Triggered",
+                BootReasons.Unknown           => "Unknown",
+                BootReasons.Watchdog          => "Watchdog",
+                _                             => "unknown"
+            };
 
         #endregion
 

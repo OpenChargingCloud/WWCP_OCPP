@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
@@ -33,90 +27,38 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Parse(Text)
 
         public static AuthorizationStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Accepted":
-                    return AuthorizationStatus.Accepted;
-
-                case "Blocked":
-                    return AuthorizationStatus.Blocked;
-
-                case "ConcurrentTx":
-                    return AuthorizationStatus.ConcurrentTx;
-
-                case "Expired":
-                    return AuthorizationStatus.Expired;
-
-                case "Invalid":
-                    return AuthorizationStatus.Invalid;
-
-                case "NoCredit":
-                    return AuthorizationStatus.NoCredit;
-
-                case "NotAllowedTypeEVSE":
-                    return AuthorizationStatus.NotAllowedTypeEVSE;
-
-                case "NotAtThisLocation":
-                    return AuthorizationStatus.NotAtThisLocation;
-
-                case "NotAtThisTime":
-                    return AuthorizationStatus.NotAtThisTime;
-
-
-                default:
-                    return AuthorizationStatus.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Accepted"            => AuthorizationStatus.Accepted,
+                   "Blocked"             => AuthorizationStatus.Blocked,
+                   "ConcurrentTx"        => AuthorizationStatus.ConcurrentTx,
+                   "Expired"             => AuthorizationStatus.Expired,
+                   "Invalid"             => AuthorizationStatus.Invalid,
+                   "NoCredit"            => AuthorizationStatus.NoCredit,
+                   "NotAllowedTypeEVSE"  => AuthorizationStatus.NotAllowedTypeEVSE,
+                   "NotAtThisLocation"   => AuthorizationStatus.NotAtThisLocation,
+                   "NotAtThisTime"       => AuthorizationStatus.NotAtThisTime,
+                   _                     => AuthorizationStatus.Unknown
+               };
 
         #endregion
 
         #region AsText(this AuthorizationStatus)
 
         public static String AsText(this AuthorizationStatus AuthorizationStatus)
-        {
 
-            switch (AuthorizationStatus)
-            {
-
-                case AuthorizationStatus.Accepted:
-                    return "Accepted";
-
-                case AuthorizationStatus.Blocked:
-                    return "Blocked";
-
-                case AuthorizationStatus.ConcurrentTx:
-                    return "ConcurrentTx";
-
-                case AuthorizationStatus.Expired:
-                    return "Expired";
-
-                case AuthorizationStatus.Invalid:
-                    return "Invalid";
-
-                case AuthorizationStatus.NoCredit:
-                    return "NoCredit";
-
-                case AuthorizationStatus.NotAllowedTypeEVSE:
-                    return "NotAllowedTypeEVSE";
-
-                case AuthorizationStatus.NotAtThisLocation:
-                    return "NotAtThisLocation";
-
-                case AuthorizationStatus.NotAtThisTime:
-                    return "NotAtThisTime";
-
-
-                default:
-                    return "Unknown";
-
-            }
-
-        }
+            => AuthorizationStatus switch {
+                   AuthorizationStatus.Accepted            => "Accepted",
+                   AuthorizationStatus.Blocked             => "Blocked",
+                   AuthorizationStatus.ConcurrentTx        => "ConcurrentTx",
+                   AuthorizationStatus.Expired             => "Expired",
+                   AuthorizationStatus.Invalid             => "Invalid",
+                   AuthorizationStatus.NoCredit            => "NoCredit",
+                   AuthorizationStatus.NotAllowedTypeEVSE  => "NotAllowedTypeEVSE",
+                   AuthorizationStatus.NotAtThisLocation   => "NotAtThisLocation",
+                   AuthorizationStatus.NotAtThisTime       => "NotAtThisTime",
+                   _                                       => "Unknown"
+               };
 
         #endregion
 

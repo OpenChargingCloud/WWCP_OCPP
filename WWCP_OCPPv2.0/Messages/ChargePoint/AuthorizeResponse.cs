@@ -38,23 +38,31 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// The identification token info.
         /// </summary>
-        public IdTokenInfo  IdTokenInfo    { get; }
+        public IdTokenInfo                  IdTokenInfo          { get; }
+
+        /// <summary>
+        /// The optional certificate status information.
+        /// When all certificates are valid: return 'Accepted', but when one of the certificates was revoked, return 'CertificateRevoked'.
+        /// </summary>
+        public AuthorizeCertificateStatus?  CertificateStatus    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region AuthorizeResponse(Request, IdTokenInfo, CustomData = null)
+        #region AuthorizeResponse(Request, IdTokenInfo, CertificateStatus = null, CustomData = null)
 
         /// <summary>
         /// Create an authorize response.
         /// </summary>
         /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="IdTokenInfo">The identification token info.</param>
+        /// <param name="CertificateStatus">The optional certificate status information.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public AuthorizeResponse(CP.AuthorizeRequest  Request,
-                                 IdTokenInfo          IdTokenInfo,
-                                 CustomData?          CustomData   = null)
+        public AuthorizeResponse(CP.AuthorizeRequest          Request,
+                                 IdTokenInfo                  IdTokenInfo,
+                                 AuthorizeCertificateStatus?  CertificateStatus   = null,
+                                 CustomData?                  CustomData          = null)
 
             : base(Request,
                    Result.OK(),
@@ -62,7 +70,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         {
 
-            this.IdTokenInfo  = IdTokenInfo;
+            this.IdTokenInfo        = IdTokenInfo;
+            this.CertificateStatus  = CertificateStatus;
 
         }
 
@@ -382,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 AuthorizeResponse = null;
 
-                #region IdTokenInfo    [mandatory]
+                #region IdTokenInfo          [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("idTagInfo",
                                              "identification tag information",
@@ -398,7 +407,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #endregion
 
-                #region CustomData     [optional]
+                #region CertificateStatus    [optional]
+
+                if (JSON.ParseOptional("certificateStatus",
+                                       "certificate status",
+                                       AuthorizeCertificateStatusExtentions.Parse,
+                                       out AuthorizeCertificateStatus? CertificateStatus,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -415,6 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 AuthorizeResponse = new AuthorizeResponse(Request,
                                                           IdTokenInfo,
+                                                          CertificateStatus,
                                                           CustomData);
 
                 if (CustomAuthorizeResponseParser is not null)
@@ -456,14 +480,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("IdTokenInfo",       IdTokenInfo.ToJSON(CustomIdTokenInfoResponseSerializer,
-                                                                                 CustomIdTokenResponseSerializer,
-                                                                                 CustomAdditionalInfoResponseSerializer,
-                                                                                 CustomMessageContentResponseSerializer,
-                                                                                 CustomCustomDataResponseSerializer)),
+                                 new JProperty("IdTokenInfo",        IdTokenInfo.ToJSON(CustomIdTokenInfoResponseSerializer,
+                                                                                        CustomIdTokenResponseSerializer,
+                                                                                        CustomAdditionalInfoResponseSerializer,
+                                                                                        CustomMessageContentResponseSerializer,
+                                                                                        CustomCustomDataResponseSerializer)),
+
+                           CertificateStatus.HasValue
+                               ? new JProperty("certificateStatus",  CertificateStatus.Value.AsText())
+                               : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",         CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
@@ -562,7 +590,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         public override Boolean Equals(AuthorizeResponse? AuthorizeResponse)
 
             => AuthorizeResponse is not null &&
-                   IdTokenInfo.Equals(AuthorizeResponse.IdTokenInfo);
+
+               IdTokenInfo.Equals(AuthorizeResponse.IdTokenInfo) &&
+
+             ((!CertificateStatus.HasValue && !AuthorizeResponse.CertificateStatus.HasValue) ||
+                CertificateStatus.HasValue &&  AuthorizeResponse.CertificateStatus.HasValue && CertificateStatus.Value.Equals(AuthorizeResponse.CertificateStatus.Value));
 
         #endregion
 

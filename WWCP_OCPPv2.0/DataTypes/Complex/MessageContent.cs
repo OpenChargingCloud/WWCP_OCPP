@@ -35,12 +35,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Properties
 
         /// <summary>
-        /// The message content. 512
+        /// The message content. [max 512]
         /// </summary>
         public String          Content       { get; }
 
         /// <summary>
-        /// The message language identifier, as defined in rfc5646.
+        /// The message language identifier, as defined in rfc5646. [max 8]
         /// </summary>
         public Language_Id     Language      { get; }
 
