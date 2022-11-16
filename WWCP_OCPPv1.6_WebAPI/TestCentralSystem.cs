@@ -5588,7 +5588,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public async Task<CP.CertificateSignedResponse>
 
             CertificateSigned(ChargeBox_Id        ChargeBoxId,
-                              String              CertificateChain,
+                              CertificateChain    CertificateChain,
 
                               DateTime?           RequestTimestamp    = null,
                               TimeSpan?           RequestTimeout      = null,
@@ -6070,7 +6070,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             InstallCertificate(ChargeBox_Id        ChargeBoxId,
                                CertificateUse      CertificateType,
-                               String              Certificate,
+                               Certificate         Certificate,
 
                                DateTime?           RequestTimestamp    = null,
                                TimeSpan?           RequestTimeout      = null,

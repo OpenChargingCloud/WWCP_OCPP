@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The PEM encoded X.509 certificate.
         /// </summary>
-        public String          Certificate        { get; }
+        public Certificate     Certificate        { get; }
 
         #endregion
 
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public InstallCertificateRequest(ChargeBox_Id        ChargeBoxId,
                                          CertificateUse      CertificateType,
-                                         String              Certificate,
+                                         Certificate         Certificate,
 
                                          Request_Id?         RequestId           = null,
                                          DateTime?           RequestTimestamp    = null,
@@ -220,11 +220,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.ParseMandatoryText("certificate",
                                              "certificate",
-                                             out String Certificate,
+                                             out String certificateText,
                                              out ErrorResponse))
                 {
                     return false;
                 }
+
+                if (!OCPPv1_6.Certificate.TryParse(certificateText,
+                                                   out var Certificate,
+                                                   out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (Certificate is null)
+                    return false;
 
                 #endregion
 
@@ -250,7 +260,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 InstallCertificateRequest = new InstallCertificateRequest(ChargeBoxId,
                                                                           CertificateType,
-                                                                          Certificate);
+                                                                          Certificate.Value,
+
+                                                                          RequestId);
 
                 if (CustomInstallCertificateRequestParser is not null)
                     InstallCertificateRequest = CustomInstallCertificateRequestParser(JSON,
@@ -261,8 +273,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                InstallCertificateRequest   = null;
-                ErrorResponse  = "The given JSON representation of an install certificate request is invalid: " + e.Message;
+                InstallCertificateRequest  = null;
+                ErrorResponse              = "The given JSON representation of an install certificate request is invalid: " + e.Message;
                 return false;
             }
 
@@ -281,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var json = JSONObject.Create(
                            new JProperty("certificateType",  CertificateType.AsText()),
-                           new JProperty("certificate",      Certificate)
+                           new JProperty("certificate",      Certificate.    ToString())
                        );
 
             return CustomInstallCertificateRequestSerializer is not null
@@ -402,7 +414,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => String.Concat(CertificateType.ToString(),
                              ", ",
-                             Certificate.SubstringMax(10));
+                             Certificate.ToString().SubstringMax(10));
 
         #endregion
 

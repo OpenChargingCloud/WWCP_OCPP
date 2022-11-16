@@ -21,7 +21,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_0
+namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
@@ -333,13 +333,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 try
                 {
 
-                    var lines        = Lines.AggregateWith('\n') + "\n\n";
+                    var lines        = Lines.Select       (line => line?.Trim()).
+                                             Where        (line => line is not null).
+                                             AggregateWith("\n") + "\n\n";
+
                     var certificate  = new Certificate(lines);
 
-                    Certificate = CustomCertificateParser is not null
-                                      ? CustomCertificateParser(lines,
-                                                                certificate)
-                                      : certificate;
+                    Certificate      = CustomCertificateParser is not null
+                                           ? CustomCertificateParser(lines,
+                                                                     certificate)
+                                           : certificate;
 
                     return true;
 

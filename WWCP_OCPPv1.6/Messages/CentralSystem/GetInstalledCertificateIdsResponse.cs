@@ -17,13 +17,9 @@
 
 #region Usings
 
-using System.Linq;
-using System.Xml.Linq;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using Org.BouncyCastle.Crypto.Tls;
 
 #endregion
 

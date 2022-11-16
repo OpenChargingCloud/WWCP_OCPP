@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// The signed PEM encoded X.509 certificates.
         /// This can also contain the necessary sub CA certificates.
         /// </summary>
-        public String  CertificateChain    { get; }
+        public CertificateChain  CertificateChain    { get; }
 
         #endregion
 
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         public CertificateSignedRequest(ChargeBox_Id        ChargeBoxId,
-                                        String              CertificateChain,
+                                        CertificateChain    CertificateChain,
 
                                         Request_Id?         RequestId           = null,
                                         DateTime?           RequestTimestamp    = null,
@@ -182,11 +182,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.ParseMandatoryText("certificateChain",
                                              "certificate chain",
-                                             out String CertificateChain,
+                                             out String certificateChainText,
                                              out ErrorResponse))
                 {
                     return false;
                 }
+
+                if (!OCPPv1_6.CertificateChain.TryParse(certificateChainText,
+                                                        out var CertificateChain,
+                                                        out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (CertificateChain is null)
+                    return false;
 
                 #endregion
 
@@ -242,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             var json = JSONObject.Create(
-                           new JProperty("certificateChain", CertificateChain)
+                           new JProperty("certificateChain", CertificateChain.ToString())
                        );
 
             return CustomCertificateSignedRequestSerializer is not null
